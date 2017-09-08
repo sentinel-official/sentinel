@@ -1,0 +1,28 @@
+UPDATE APT CACHE:
+    sudo apt-get update
+
+REMOVE PREVIOUS DOCKER PACKAGES:
+    sudo apt-get remove --purge docker*
+
+INSTALL NECESSARY PACKAGES:
+    sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+
+ADD DOCKER OFFICIAL GPG KEY:
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+ADD REPOSITORY TO SOURCES:
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+UPDATE APT CACHE:
+    sudo apt-get update
+
+INSTALL DOCKER PACKAGES:
+    sudo apt-get install docker-ce
+
+GRANT PERMISSIONS TO CURRENT USER BY ADDING HIM TO DOCKER GROUP:
+    sudo usermod -a -G docker $USER
+
+REBOOT
+
+CHECK DOCKER INSTALLATION:
+    docker run hello-world

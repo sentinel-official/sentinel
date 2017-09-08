@@ -1,0 +1,9 @@
+INITIALIZE GENESIS BLOCK:
+    geth init genesis.json --datadir '$HOME/.ethereum/sentinel'
+
+RUN NODE:
+    geth --identity 'DOCKER_A' \
+         --datadir '$HOME/.ethereum/sentinel' \
+         --networkid 8687 \
+         --fast \
+         --bootnodes enode://5f4747ef578d7e6aeebfeff8d75891bcbabee338e73f11f6d5da04a5d5de02947b01d2aaf3daeaa2fa5fefe92b3d355f14a023f324f6d91c8fdd6e0ddbb59c68@10.0.0.20:30301

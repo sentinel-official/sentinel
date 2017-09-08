@@ -18,6 +18,8 @@ This command will run the bootnode server on port *30301/udp*
 
 `cd sentinel-py`
 
+`git checkout poc-beta`
+
 `docker build --tag sentinel --compress .`
 
 These above commands will build Sentinel docker image. To check run `docker images -a`

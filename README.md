@@ -33,3 +33,9 @@ These above commands will build Sentinel docker image. To check run `docker imag
 The above command will provide a JavaScript console
 
 To see the connected peers run `admin.peers` in JS console. To know your node information run `admin.nodeInfo`
+
+### Running an Ethereum wallet
+
+`ethereumwallet --rpc http://127.0.0.1:8545 --network sentinel`
+
+You can download Ethereum wallet from https://github.com/ethereum/mist/releases

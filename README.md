@@ -20,13 +20,15 @@ This command will run the bootnode server on port *30301/udp*
 
 `git checkout poc-beta`
 
-`docker build --tag sentinel --compress .`
+`cd docker/node`
+
+`docker build --tag sentinelbeta/node --compress --force-rm --no-cache .`
 
 These above commands will build Sentinel docker image. To check run `docker images -a`
 
 ### Running a Sentinel Node
 
-`docker run -it -p 30303:30303 -p 30303:30303/udp sentinel`
+`docker run -it -p 30303:30303 -p 30303:30303/udp -p 8545:8545 sentinelbeta/node`
 
 The above command will provide a JavaScript console
 

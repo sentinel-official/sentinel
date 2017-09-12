@@ -1,5 +1,0 @@
-CREATE BOOTNODE PRIVATE KEY:
-    bootnode -genkey bootnode.key
-
-RUN BOOTNODE:
-    bootnode -nodekey bootnode.key --verbosity 6

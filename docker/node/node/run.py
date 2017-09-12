@@ -22,6 +22,9 @@ def get_geth_run_command(identity):
         '--datadir', SENTINEL_DATA_PATH,
         '--networkid', NETWORK_ID,
         '--fast',
+        '--rpc',
+        '--rpcaddr=0.0.0.0',
+        '--rpcapi="{}"'.format(RPC_APIS),
         '--bootnodes', BOOT_NODE,
         'console'
     ]

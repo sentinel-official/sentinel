@@ -28,14 +28,22 @@ These above commands will build Sentinel docker image. To check run `docker imag
 
 ### Running a Sentinel Node
 
-`docker run -it -p 30303:30303 -p 30303:30303/udp -p 8545:8545 sentinelbeta/node`
+For running a Sentinel node first you need to install all the dependencies
 
-The above command will provide a JavaScript console
+`$ wget -c https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/scripts/installers/linux.sh -O ~/install_dependencies.sh`
 
-To see the connected peers run `admin.peers` in JS console. To know your node information run `admin.nodeInfo`
+`$ chmod +x ~/install_dependencies.sh`
 
-### Running an Ethereum wallet
+`$ ~/install_dependencies.sh`
 
-`ethereumwallet --rpc http://127.0.0.1:8545 --network sentinel`
+Run Sentinel node
 
-You can download Ethereum wallet from https://github.com/ethereum/mist/releases
+`$ wget -c https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/scripts/runners/linux.sh -O ~/run_sentinel.sh`
+
+`$ chmod +x ~/run_sentinel.sh`
+
+`$ ~/run_sentinel.sh`
+
+This script will automatically run **geth** inside the Docker container and opens Ethereum Wallet which is connected to Sentinel network.
+
+**YOU CAN'T MINE NOW**

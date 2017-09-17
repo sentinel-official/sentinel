@@ -15,4 +15,6 @@ if [ ${#ETHEREUM_WALLET} -eq 0 ]; then
     sudo apt-get install -f -y
 fi
 
+echo ""
 echo "*** Please Reboot Your System ***"
+echo ""

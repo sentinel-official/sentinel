@@ -6,7 +6,7 @@ import random
 NODE_PATH = os.path.dirname(__file__)
 SENTINEL_DATA_PATH = os.path.join(os.environ['HOME'], '.ethereum/sentinel')
 NETWORK_ID = '78432893'
-BOOT_NODE = 'enode://a6c6934af3f24a2339760cfac0005cb6b11283d1fa65258915732236af47308e08b31374db90238556ac4155f73de5702fbd9a46ff801b830701b578ec33e046@104.198.142.31:30301'
+BOOT_NODE = 'enode://2dd991116df2c71cc4f9ad74d8927fdfdc1bc447915ce10831b47c08f2a09bac509cd8854cb21f9004a18f828a0e733c6ec248e16b67ccf7f30dce374a0d7389@35.187.225.4:30301'
 RPC_APIS = 'admin,debug,eth,miner,net,personal,rpc,txpool,web3'
 
 def generate_node_name(length=8):

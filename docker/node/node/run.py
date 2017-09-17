@@ -24,7 +24,8 @@ def get_geth_run_command(identity):
         '--rpc',
         '--rpcaddr=0.0.0.0',
         '--rpcapi="{}"'.format(RPC_APIS),
-        '--bootnodes', BOOT_NODE
+        '--bootnodes', BOOT_NODE,
+        'console'
     ]
 
     return args

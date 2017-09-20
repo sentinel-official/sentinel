@@ -1,0 +1,26 @@
+FROM ubuntu:16.04
+
+WORKDIR /sentinel
+
+ADD run.py /sentinel
+
+RUN apt update && \
+    apt install -y software-properties-common python3-minimal wget
+
+RUN add-apt-repository -y ppa:ethereum/ethereum
+
+RUN apt update && \
+    apt install -y geth bootnode
+
+RUN wget -O /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' && \
+    python3 /tmp/get-pip.py && \
+    pip3 install 'https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/python-package/dist/sentinel-0.1.dev1-py2.py3-none-any.whl'
+
+RUN apt remove --purge -y software-properties-common wget && \
+    apt -y autoremove && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+EXPOSE 30301/udp 30303 30303/udp 30304/udp 8545
+
+CMD ["python3", "run.py"]

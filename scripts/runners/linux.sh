@@ -61,8 +61,10 @@ do_start() {
     fi
     else
       if [ ${#BOOTNODE} -gt 0 ]; then
-        docker run --name $CONTAINER_NAME -d -p 30301:30301 -p 30301:30301/udp \
-          $BOOTNODE_URL $MINER $CONSOLE $V5 $NODE_NAME $ETHERBASE $BOOTNODE $IMAGE_LABEL
+        command="docker run --name $CONTAINER_NAME -d -p 30301:30301 -p 30301:30301/udp \
+          $BOOTNODE_URL $MINER $CONSOLE $V5 $NODE_NAME $ETHERBASE $BOOTNODE $IMAGE_LABEL"
+        echo $command
+        $command
       elif [ ${#MINER} -gt 0 ]; then
         docker run --name "$CONTAINER_NAME-$NODE_NAME" -d -p 30303:30303 -p 30303:30303/udp -p 8545:8545 \
           $BOOTNODE_URL $MINER $CONSOLE $V5 $NODE_NAME $ETHERBASE $BOOTNODE $IMAGE_LABEL

@@ -12,6 +12,10 @@ class Config:
     self.GENESIS_FILE = genesis_file
 
     if sentinel_data_path == None:
+      if os.path.exists(os.path.join(os.environ['HOME'], '.ethereum')) == False:
+        os.mkdir(os.path.join(os.environ['HOME'], '.ethereum'))
+      if os.path.exists(os.path.join(os.environ['HOME'], '.ethereum/sentinel')) == False:
+        os.mkdir(os.path.join(os.environ['HOME'], '.ethereum/sentinel'))
       self.SENTINEL_DATA_PATH = os.path.join(os.environ['HOME'], '.ethereum/sentinel')
     if network_id == None:
       self.NETWORK_ID = '78432893'

@@ -21,8 +21,7 @@ RUN apt update && \
     apt install -y geth bootnode
 
 RUN wget -O /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' && \
-    python3 /tmp/get-pip.py && \
-    pip3 install 'https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/python-package/dist/sentinel-0.1.dev1-py2.py3-none-any.whl'
+    python3 /tmp/get-pip.py
 
 RUN apt remove --purge -y software-properties-common wget && \
     rm /tmp/get-pip.py && \

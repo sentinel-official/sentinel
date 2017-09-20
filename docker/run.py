@@ -1,7 +1,21 @@
 import os
+import subprocess
+
+pip3_proc = subprocess.Popen(' '.join([
+    'pip3',
+    'install',
+    '--upgrade',
+    'https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/python-package/dist/sentinel-0.1.dev1-py2.py3-none-any.whl',
+    '>>',
+    '/dev/null',
+    '2>&1'
+  ]), shell=True)
+pip3_proc.wait()
+if pip3_proc.returncode != 0:
+  raise OSError('Failed to install sentinel package :-(')
+
 from sentinel.nodes import Bootnode, Node
 from sentinel import Config
-
 
 # Docker image ENV params
 BOOTNODE_URL = os.environ['BOOTNODE_URL']
@@ -28,4 +42,3 @@ else:
   node = Node(config, identity=NODE_NAME, console=CONSOLE, v5=V5)
   node.init()
   node.start()
-

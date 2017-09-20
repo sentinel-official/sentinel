@@ -4,6 +4,14 @@ WORKDIR /sentinel
 
 ADD run.py /sentinel
 
+ENV BOOTNODE_URL='None' \
+    BOOTNODE=False \
+    MINER='False' \
+    CONSOLE='False' \
+    V5='False' \
+    NODE_NAME='' \
+    ETHERBASE=''
+
 RUN apt update && \
     apt install -y software-properties-common python3-minimal wget
 
@@ -17,6 +25,7 @@ RUN wget -O /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' && \
     pip3 install 'https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/python-package/dist/sentinel-0.1.dev1-py2.py3-none-any.whl'
 
 RUN apt remove --purge -y software-properties-common wget && \
+    rm /tmp/get-pip.py && \
     apt -y autoremove && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*

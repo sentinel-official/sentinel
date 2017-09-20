@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DOCKER=$(which 'docker')
-IMAGE_LABEL='sentinelbeta/node'
+IMAGE_LABEL='sentinelbeta/sentinel'
 
 do_update() {
   CONTAINER_ID=$(docker ps -a -q -f name=sentinel)
@@ -62,13 +62,13 @@ do_start() {
     else
       if [ ${#BOOTNODE} -gt 0 ]; then
         docker run --name $CONTAINER_NAME -d -p 30301:30301 -p 30301:30301/udp \
-          $V5 $BOOTNODE $IMAGE_LABEL
+          $BOOTNODE_URL $MINER $CONSOLE $V5 $NODE_NAME $ETHERBASE $BOOTNODE $IMAGE_LABEL
       elif [ ${#MINER} -gt 0 ]; then
         docker run --name "$CONTAINER_NAME-$NODE_NAME" -d -p 30303:30303 -p 30303:30303/udp -p 8545:8545 \
-          $BOOTNODE_URL $MINER $CONSOLE $V5 $NODE_NAME $ETHERBASE $IMAGE_LABEL
+          $BOOTNODE_URL $MINER $CONSOLE $V5 $NODE_NAME $ETHERBASE $BOOTNODE $IMAGE_LABEL
       else
         docker run --name "$CONTAINER_NAME-$NODE_NAME" -d -p 30303:30303 -p 30303:30303/udp -p 8545:8545 \
-          $BOOTNODE_URL $CONSOLE $V5 $NODE_NAME $IMAGE_LABEL
+          $BOOTNODE_URL $MINER $CONSOLE $V5 $NODE_NAME $ETHERBASE $BOOTNODE $IMAGE_LABEL
       fi
     fi
 }

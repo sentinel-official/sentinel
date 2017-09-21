@@ -1,6 +1,11 @@
 import os
 import subprocess
 
+if os.path.exists(os.path.join(os.environ['HOME'], '.ethereum')) == False:
+  os.mkdir(os.path.join(os.environ['HOME'], '.ethereum'))
+if os.path.exists(os.path.join(os.environ['HOME'], '.ethereum/sentinel')) == False:
+  os.mkdir(os.path.join(os.environ['HOME'], '.ethereum/sentinel'))
+
 pip3_proc = subprocess.Popen(' '.join([
     'pip3',
     'install',

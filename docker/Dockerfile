@@ -4,11 +4,11 @@ WORKDIR /sentinel
 
 ADD run.py /sentinel
 
-ENV BOOTNODE_URL='None' \
+ENV BOOTNODE_URL=None \
     BOOTNODE=False \
-    MINER='False' \
-    CONSOLE='False' \
-    V5='False' \
+    MINER=False \
+    CONSOLE=False \
+    V5=False \
     NODE_NAME='' \
     ETHERBASE=''
 

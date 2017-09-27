@@ -17,12 +17,24 @@ do_update() {
 
 do_start() {
   if [ $# -le 0 ]; then echo "Need valid arguments"; exit 3; fi
-  BOOTNODE=; MINER=; ETHERBASE=; V5=; CONSOLE=; BOOTNODE_URL=; NODE_NAME=; CONTAINER_NAME=;
+  BOOTNODE=; MINER=; ETHERBASE=; V5=; CONSOLE=; BOOTNODE_URL=; NODE_NAME=; CONTAINER_NAME=; PORTS=;
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -b) CONTAINER_NAME="sentinel_boot"; BOOTNODE="-e BOOTNODE=True";;
-      -m) CONTAINER_NAME="sentinel_miner"; MINER="-e MINER=True";;
-      -n) CONTAINER_NAME="sentinel_node" ;;
+      --type)
+        if [ "$2" == "boot" ]; then
+          CONTAINER_NAME="sentinel_boot"
+          BOOTNODE="-e BOOTNODE=True"
+        elif [ "$2" == "miner" ]; then
+          CONTAINER_NAME="sentinel_miner"
+          MINER="-e MINER=True"
+        elif [ "$2" == "normal" ]; then
+          CONTAINER_NAME="sentinel_node"
+        elif [ "$2" == "main" ]; then
+          CONTAINER_NAME="sentinel_main"
+          PORTS="-p 30303:30303 -p 30303:30303/udp"
+        fi
+        shift
+      ;;
       --name) NODE_NAME=$2; shift ;;
       --etherbase) ETHERBASE="-e ETHERBASE=$2"; shift ;;
       --bootnode-url) BOOTNODE_URL="-e BOOTNODE_URL=$2"; shift ;;
@@ -31,35 +43,50 @@ do_start() {
       *)
         echo "Usage: ./sentinel.sh start [args]"
         echo "args:"
-        echo "     -b                - For starting a boot node"
-        echo "     -m                - For starting a miner node"
-        echo "     -n                - For starting a normal node"
-        echo "     -v5               - For starting in version 5 mode"
-        echo "     -c                - For JS console (miner|normal)"
+        echo "     --type            - {boot|miner|normal|main}"
         echo "     --name            - Name of the node"
-        echo "     --etherbase       - Ethereum account address (Need for miner node)"
         echo "     --bootnode-url    - Boot node URL for nodes"
+        echo "     --etherbase       - Ethereum account address (Need for miner node)"
+        echo "     -c                - For JS console (miner|normal)"
+        echo "     -v5               - For starting in version 5 mode"
         exit 3
       ;;
     esac
     shift
   done
 
+  if [ ${#BOOTNODE} -le 0 ] && [ ${#BOOTNODE_URL} -le 0 ] && [ "$CONTAINER_NAME" != "sentinel_main" ]; then
+    BOOTNODE_CID=$(docker ps -a -q -f name=sentinel_boot | head -n 1)
+    ENODE_LINE=$(docker logs $BOOTNODE_CID 2>&1 | grep enode | head -n 1)
+    BOOTNODE_URL=enode:${ENODE_LINE#*enode:}
+    BOOTNODE_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $BOOTNODE_CID)
+    BOOTNODE_URL="-e BOOTNODE_URL=${BOOTNODE_URL/@*[::]*:/@$BOOTNODE_IP:}"
+    BOOTNODE_URL="${BOOTNODE_URL/$'\r'/}"
+  fi
+
+  if [ ${#ETHERBASE} -le 0 ] && [ ${#MINER} -gt 0 ]; then
+    ETHERBASE="-e ETHERBASE=0x0000000000000000000000000000000000000001"
+  fi
+
   CONTAINER_ID=$(docker ps -a -q -f name="$CONTAINER_NAME-$NODE_NAME")
   if [ ${#CONTAINER_ID} -gt 0 ]; then
     RUNNING=$(docker ps -a -q -f id=$CONTAINER_ID -f status=running)
     if [ ${#RUNNING} -eq 0 ]; then
-      docker start $CONTAINER_ID
+      if [ ${#CONSOLE} -gt 0 ]; then
+        docker start -i $CONTAINER_ID
+      else
+        docker start $CONTAINER_ID
+      fi
     else
       echo "'$CONTAINER_NAME-$NODE_NAME' is already running..." >&2
     fi
   else
     if [ ${#CONSOLE} -gt 0 ]; then
       docker run --name "$CONTAINER_NAME-$NODE_NAME" -it \
-        -e NODE_NAME=$NODE_NAME $BOOTNODE_URL $MINER $CONSOLE $V5 $ETHERBASE $BOOTNODE $IMAGE_LABEL
+        -e NODE_NAME=$NODE_NAME $BOOTNODE_URL $MINER $CONSOLE $V5 $ETHERBASE $BOOTNODE $PORTS $IMAGE_LABEL
     else
       docker run --name "$CONTAINER_NAME-$NODE_NAME" -d \
-        -e NODE_NAME=$NODE_NAME $BOOTNODE_URL $MINER $CONSOLE $V5 $ETHERBASE $BOOTNODE $IMAGE_LABEL
+        -e NODE_NAME=$NODE_NAME $BOOTNODE_URL $MINER $CONSOLE $V5 $ETHERBASE $BOOTNODE $PORTS $IMAGE_LABEL
     fi
   fi
 }
@@ -69,9 +96,18 @@ do_stop() {
   CONTAINER_NAME=; NODE_NAME=; ALL=; PURGE_ALL=; PURGE=;
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -b) CONTAINER_NAME='sentinel_boot' ;;
-      -m) CONTAINER_NAME='sentinel_miner' ;;
-      -n) CONTAINER_NAME='sentinel_node' ;;
+      --type)
+        if [ "$2" == "boot" ]; then
+          CONTAINER_NAME="sentinel_boot"
+        elif [ "$2" == "miner" ]; then
+          CONTAINER_NAME="sentinel_miner"
+        elif [ "$2" == "normal" ]; then
+          CONTAINER_NAME="sentinel_node"
+        elif [ "$2" == "main" ]; then
+          CONTAINER_NAME="sentinel_main"
+        fi
+        shift
+      ;;
       --name) NODE_NAME="$2"; shift ;;
       --purge) PURGE=True ;;
       --all) ALL=True ;;
@@ -79,12 +115,10 @@ do_stop() {
       *)
         echo "Usage: ./sentinel.sh stop [args]"
         echo "args:"
-        echo "     -b             - For stopping a boot node"
-        echo "     -m             - For stopping a miner node"
-        echo "     -n             - For stopping a normal node"
+        echo "     --type            - {boot|miner|normal|main}"
         echo "     --name         - Name of the node"
-        echo "     --purge        - Remove container"
         echo "     --all          - Stop all Sentinel containers"
+        echo "     --purge        - Remove container"
         echo "     --purge-all    - Remove all Sentinel containers"
         exit 3
       ;;
@@ -103,35 +137,42 @@ do_stop() {
     docker stop "$CONTAINER_NAME-$NODE_NAME" -t 2
   fi
   
-  if [ ${#PURGE} -gt 0 ]; then
+  if [ ${#PURGE} -gt 0 ] && [ ${#CONTAINER_NAME} -gt 0 ]; then
     docker rm $(docker ps -a -q -f name="$CONTAINER_NAME-$NODE_NAME")
   fi
 }
 
 do_show() {
   if [ $# -le 0 ]; then echo "Need valid arguments"; exit 3; fi
-  BOOTNODE_URL=; SHOW_PEERS=; NODE_NAME=; CONTAINER_NAME=; ALL=; IP=;
+  NODE_ADDR=; SHOW_PEERS=; NODE_NAME=; CONTAINER_NAME=; ALL=; IP=;
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -b) CONTAINER_NAME='sentinel_boot' ;;
-      -m) CONTAINER_NAME='sentinel_miner' ;;
-      -n) CONTAINER_NAME='sentinel_node' ;;
+      --type)
+        if [ "$2" == "boot" ]; then
+          CONTAINER_NAME="sentinel_boot"
+        elif [ "$2" == "miner" ]; then
+          CONTAINER_NAME="sentinel_miner"
+        elif [ "$2" == "normal" ]; then
+          CONTAINER_NAME="sentinel_node"
+        elif [ "$2" == "main" ]; then
+          CONTAINER_NAME="sentinel_main"
+        fi
+        shift
+      ;;
       --ip) IP=True ;;
-      --bootnode-url) BOOTNODE_URL=True ;;
+      --node-addr) NODE_ADDR=True ;;
       --show-peers) SHOW_PEERS=True ;;
       --name) NODE_NAME="$2"; shift ;;
       --all) ALL=True ;;
       *)
         echo "Usage: ./sentinel.sh show [args]"
         echo "args:"
-        echo "     -b                - Show info from a boot node"
-        echo "     -m                - Show info from a miner node"
-        echo "     -n                - Show info from a normal node"
-        echo "     --ip              - Show IP address of node"
-        echo "     --bootnode-url    - View boot node enode address"
-        echo "     --show-peers      - View all peers connected to a node (miner|normal)"
+        echo "     --type            - {boot|miner|normal|main}"
         echo "     --name            - Name of the node"
-        echo "     --all        - Show all Sentinel containers"
+        echo "     --all             - Show all Sentinel containers"
+        echo "     --node-addr       - View node enode address"
+        echo "     --ip              - Show IP address of node"
+        echo "     --show-peers      - View all peers connected to a node (miner|normal)"
         exit 3
       ;;
     esac
@@ -150,8 +191,8 @@ do_show() {
   fi
 
   if [ ${#CONTAINER_ID} -gt 0 ]; then
-    if [ ${#BOOTNODE_URL} -gt 0 ]; then
-      URL=$(docker logs "$CONTAINER_NAME-$NODE_NAME" 2>&1 | grep enode | head -n 1)
+    if [ ${#NODE_ADDR} -gt 0 ]; then
+      URL=$(docker logs "$CONTAINER_NAME-$NODE_NAME" 2>&1 | grep self=enode | head -n 1)
       echo "$URL"
     elif [ ${#SHOW_PEERS} -gt 0 ]; then
       docker exec -it "$CONTAINER_NAME-$NODE_NAME" geth --exec 'admin.peers' \

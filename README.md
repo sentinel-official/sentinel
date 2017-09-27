@@ -1,18 +1,6 @@
 # Sentinel POC Beta
 
-## Bootnode
-
-Bootnodes are special nodes, through a node can join the network and find other nodes. For running a bootnode you must install ethereum in your system.
-
-### Running a Bootnode
-
-`$ bootnode -genkey bootnode.key`
-This command will generate a private key and stores it in *bootnode.key* file
-
-`$ bootnode -nodekey bootnode.key --verbosity 6`
-This command will run the bootnode server on port *30301/udp*
-
-### Building Sentinel Docker Image
+## Building Sentinel Docker Image
 
 `$ git clone https://github.com/sentinel-official/sentinel-py.git`
 
@@ -20,13 +8,15 @@ This command will run the bootnode server on port *30301/udp*
 
 `$ git checkout poc-beta`
 
-`$ cd docker/node`
+`$ cd docker/`
 
-`$ docker build --tag sentinelbeta/node --compress --force-rm --no-cache .`
+`$ docker build --tag sentinelbeta/sentinel --compress --force-rm --no-cache .`
 
 These above commands will build Sentinel docker image. To check run `docker images -a`
 
-### Running a Sentinel Node
+## Running Sentinel Nodes
+
+### Download Scripts
 
 For running a Sentinel node first you need to install all the dependencies
 
@@ -36,18 +26,44 @@ For running a Sentinel node first you need to install all the dependencies
 
 `$ ~/install-dependencies.sh`
 
-Run Sentinel node
+`$ wget -c https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/scripts/runners/linux.sh -O ~/sentinel.sh`
 
-`$ wget -c https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/scripts/runners/linux.sh -O ~/sentinel-node.sh`
+`$ chmod +x ~/sentinel.sh`
 
-`$ chmod +x ~/sentinel-node.sh`
+### Starting nodes
 
-Start Sentinel node: `$ ~/sentinel-node.sh start`
+`$ ~/sentinel.sh start --type {boot|normal|miner|main} --name NAME`
 
-Stop Sentinel node: `$ ~/sentinel-node.sh stop`
+Additional flags:
 
-Update Sentinel Docker image: `$ ~/sentinel-node.sh update`
+`-c -- For console`
 
-### Using Ethereum Wallet with Sentinel private network
+`-v5 -- For running in version 5 mode`
 
-`$ ethereumwallet --rpc http://127.0.0.1:8545 --network sentinel`
+`--bootnode-url -- Provide a boot node URL (If this flag is not privided, nodes will connect to the latest created boot node)`
+
+`--etherbase -- Provide Ethereum account address (default: 0x0000000000000000000000000000000000000001)`
+
+### Stopping nodes
+
+Stop a node: `$ ~/sentinel.sh stop --type {boot|normal|miner|main} --name NAME`
+
+Stop all nodes: `$ ~/sentinel.sh stop --all`
+
+Remove specific node: `$ ~/sentinel.sh stop --type {boot|normal|miner|main} --name NAME --purge`
+
+Remove all nodes: `$ ~/sentinel.sh stop --purge-all`
+
+### Show Info of Nodes
+
+View IP address: `$ ~/sentinel.sh show --type {boot|normal|miner|main} --name NAME --ip`
+
+View node enode address: `$ ~/sentinel.sh show --type {boot|normal|miner|main} --name NAME --node-addr`
+
+View peers of a node: `$ ~/sentinel.sh show --type {normal|miner|main} --name NAME --show-peers`
+
+View all Sentinel containers: `$ ~/sentinel.sh show --all`
+
+### Update Sentinel Docker image:
+
+`$ ~/sentinel.sh update`

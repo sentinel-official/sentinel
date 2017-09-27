@@ -31,7 +31,7 @@ do_start() {
           CONTAINER_NAME="sentinel_node"
         elif [ "$2" == "main" ]; then
           CONTAINER_NAME="sentinel_main"
-          PORTS="-p 30303:30303 -p 30303:30303/udp"
+          PORTS="-p 30303:30303 -p 30303:30303/udp -p 8545:8545"
         fi
         shift
       ;;
@@ -115,7 +115,7 @@ do_stop() {
       *)
         echo "Usage: ./sentinel.sh stop [args]"
         echo "args:"
-        echo "     --type            - {boot|miner|normal|main}"
+        echo "     --type         - {boot|miner|normal|main}"
         echo "     --name         - Name of the node"
         echo "     --all          - Stop all Sentinel containers"
         echo "     --purge        - Remove container"

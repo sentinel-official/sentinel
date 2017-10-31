@@ -1,3 +1,3 @@
 from __future__ import absolute_import
 
-from .db import db
+from .mongo import db

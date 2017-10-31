@@ -1,14 +1,12 @@
-"""__doc__"""
-
-import json
 import pprint
+import logging
+from chalk import log
 
 
 pp = pprint.PrettyPrinter(indent=4)
 
-
-def get_body(req):
-    """__doc__"""
-    body = req.stream.read()
-    body = json.loads(body.decode('utf-8'))
-    return body
+logger = logging.getLogger('log')
+handler = log.ChalkHandler()
+handler.setLevel(logging.DEBUG)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)

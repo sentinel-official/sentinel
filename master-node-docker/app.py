@@ -1,15 +1,28 @@
-"""__doc__"""
-
 import falcon
-from sentinel.node import SendInfo
-from sentinel.node import SendState
-from sentinel.client import CreateUser
-from sentinel.client import GetVPNCreds
+
+from sentinel.client import CreateNewAccount
+from sentinel.client import GetBalance
+from sentinel.client import SendAmount
+from sentinel.client import TranscationStatus
+from sentinel.client import GetVPNCredentials
+
+from sentinel.node import RegisterNode
+from sentinel.node import UpdateNodeInfo
+from sentinel.node import DeRegisterNode
+
+from sentinel.utils import JSONTranslator
 
 
-app = falcon.API()
-app.add_route('/sendinfo', SendInfo())
-app.add_route('/sendstate', SendState())
-app.add_route('/createuser', CreateUser())
-app.add_route('/getvpncreds', GetVPNCreds())
+app = falcon.API(middleware=[JSONTranslator()])
 
+# Clients
+app.add_route('/create-new-account', CreateNewAccount())
+app.add_route('/get-balance', GetBalance())
+app.add_route('/send-amount', SendAmount())
+app.add_route('/transcation-status', TranscationStatus())
+app.add_route('/get-vpn-credentials', GetVPNCredentials())
+
+# Nodes
+app.add_route('/register-node', RegisterNode())
+app.add_route('/update-nodeinfo', UpdateNodeInfo())
+app.add_route('/deregister-node', DeRegisterNode())

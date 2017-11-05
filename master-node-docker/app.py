@@ -26,3 +26,9 @@ app.add_route('/get-vpn-credentials', GetVPNCredentials())
 app.add_route('/register-node', RegisterNode())
 app.add_route('/update-nodeinfo', UpdateNodeInfo())
 app.add_route('/deregister-node', DeRegisterNode())
+
+# DEV
+from sentinel.dev import GetFreeAmount
+
+
+app.add_route('/get-free-amount', GetFreeAmount())

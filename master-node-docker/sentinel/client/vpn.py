@@ -1,9 +1,6 @@
 import json
 import falcon
 from ..db import db
-from ..eth import ETHManager
-
-eth = ETHManager()
 
 
 class GetVPNCredentials(object):

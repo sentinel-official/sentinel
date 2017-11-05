@@ -3,12 +3,13 @@ from glob import glob
 from os import path, unlink
 from ethereum.tools import keys
 from web3 import Web3, IPCProvider, HTTPProvider
+from ..utils import logger
 
 
 class ETHManager(object):
     def __init__(self, provider=None, data_dir=None, RPC_url=None):
-        self.data_dir = path.join(path.expanduser('~'), '.ethereum', 'sentinel') if data_dir is None \
-            else data_dir
+        self.data_dir = path.join(path.expanduser(
+            '~'), '.ethereum', 'sentinel') if data_dir is None else data_dir
         self.provider = 'ipc' if provider is None \
             else provider
         self.ipc_path = path.join(self.data_dir, 'geth.ipc')
@@ -42,16 +43,13 @@ class ETHManager(object):
     def balance(self, account_addr):
         weis = self.web3.eth.getBalance(account_addr)
         balance = self.web3.fromWei(weis, 'ether')
+        if type(balance) != int:
+            balance = int(balance.to_eng_string())
         return balance
 
-    def send_amount(self, account_addr, keystore, password, tx_details):
+    def send_amount(self, keystore, password, transaction):
+        account_addr = transaction['from']
         self.write_keystore(account_addr, keystore)
-        transaction = {
-            'from': account_addr,
-            'to': tx_details['to_addr'],
-            'gas': tx_details['gas'],
-            'value': tx_details['amount'],
-        }
         self.web3.personal.unlockAccount(account_addr, password)
         tx_hash = self.web3.eth.sendTransaction(transaction)
         self.web3.personal.lockAccount(account_addr)
@@ -67,3 +65,7 @@ class ETHManager(object):
         keystore_file = open(keystore_path, 'w')
         keystore_file.writelines(keystore)
         keystore_file.close()
+
+
+eth_manager = ETHManager()
+logger.info(eth_manager.web3.isConnected())

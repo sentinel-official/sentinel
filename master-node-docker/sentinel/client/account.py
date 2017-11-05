@@ -1,20 +1,17 @@
 import json
 import falcon
-from ..eth import ETHManager
-from ..utils import logger
-
-eth = ETHManager()
-logger.info(eth.web3.isConnected())
+from ..eth import eth_manager
+from ..eth import contract_manager
 
 
 class CreateNewAccount(object):
     def on_post(self, req, resp):
         password = req.body['password']
 
-        account_addr = eth.create_account(password)
-        private_key = eth.privatekey(account_addr, password)
-        keystore = eth.keystore(account_addr)
-        eth.remove_keystore(account_addr)
+        account_addr = eth_manager.create_account(password)
+        private_key = eth_manager.privatekey(account_addr, password)
+        keystore = eth_manager.keystore(account_addr)
+        eth_manager.remove_keystore(account_addr)
         message = {
             'success': True,
             'account_addr': account_addr,
@@ -32,9 +29,9 @@ class GetBalance(object):
         unit = req.body['unit']
 
         if unit == 'ETH':
-            balance = eth.balance(account_addr)
+            balance = eth_manager.balance(account_addr)
         elif unit == 'SENT':
-            balance = 0
+            balance = contract_manager.balance(account_addr)
         message = {
             'success': True,
             'balance': balance

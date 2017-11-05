@@ -1,8 +1,7 @@
 import json
 import falcon
-from ..eth import ETHManager
-
-eth = ETHManager()
+from ..eth import eth_manager
+from ..eth import contract_manager
 
 
 class SendAmount(object):
@@ -15,15 +14,12 @@ class SendAmount(object):
         password = req.body['password']
         keystore = req.body['keystore']
 
-        tx_details = {
-            'to': to_addr,
-            'gas': gas,
-            'amount': amount,
-        }
         if unit == 'ETH':
-            tx_hash = eth.send_amount(from_addr, keystore, password, tx_details)
+            tx_details = {'from': from_addr, 'to': to_addr,
+                          'gas': gas, 'value': amount}
+            tx_hash = eth_manager.send_amount(keystore, password, tx_details)
         elif unit == 'SENT':
-            tx_hash = ''
+            tx_hash = contract_manager.send_amount(from_addr, to_addr, amount)
         message = {
             'success': True,
             'tx_hash': tx_hash,
@@ -36,7 +32,7 @@ class SendAmount(object):
 class TranscationStatus(object):
     def on_post(self, req, resp):
         tx_hash = req.body['tx_hash']
-        receipt = eth.tx_receipt(tx_hash)
+        receipt = eth_manager.tx_receipt(tx_hash)
         message = {
             'success': True,
             'receipt': receipt

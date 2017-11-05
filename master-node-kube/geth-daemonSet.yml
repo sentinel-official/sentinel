@@ -1,0 +1,82 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: geth
+  labels:
+    app: geth
+spec:
+  template:
+    metadata:
+      labels:
+        app: geth
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
+    spec:
+      serviceAccount: default
+      containers:
+      - name: geth
+        image: asia.gcr.io/sentinel-kube/sentinel-go-client
+        ports:
+        - containerPort: 8545
+          hostPort: 8545
+        - containerPort: 30303
+          hostPort: 30303
+        - containerPort: 1194
+          hostPort: 1194
+        args:
+        - "--datadir=/var/geth"
+        - "--networkid=78432893"
+        - "--rpc"
+        - "--rpcaddr=0.0.0.0"
+        - "--rpcapi=admin,db,eth,debug,miner,net,shh,txpool,personal,web3"
+        - "--rpccorsdomain=*"
+        - "--verbosity=6"
+        resources:
+          requests:
+            cpu: 400m
+        volumeMounts:
+        - name: geth-data
+          mountPath: /var/geth
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8545
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+      - name: geth-auto-peer
+        image: asia.gcr.io/sentinel-kube/sentinel_peers:latest
+        env:
+        - name: SERVICE_NAME
+          value: "geth"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        command: [ "/bin/sh", "-c" ]
+        args:
+        - "set -e -x; while true; do python /etc/auto_peer.py; sleep 15; done"
+      # init genesis data
+      initContainers:
+      - name: init-genesis
+        image: asia.gcr.io/sentinel-kube/sentinel-go-client
+        args:
+        - "init"
+        - "--datadir=/var/geth"
+        - "/etc/geth/genesis.json"
+        volumeMounts:
+        - name: geth-data
+          mountPath: /var/geth
+        - name: genesis-cfg
+          mountPath: /etc/geth/
+      volumes:
+      - name: genesis-cfg
+        configMap:
+          name: geth-config
+      - name: geth-data
+        hostPath:
+          path: /var/geth

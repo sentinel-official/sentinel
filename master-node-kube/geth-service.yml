@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: geth
+  name: geth
+  namespace: default
+spec:
+  selector:
+    app: geth
+  ports:
+  - name: rpc-endpoint
+    port: 8545
+    protocol: TCP
+    targetPort: 8545
+  - name: peer
+    port: 30303
+    protocol: UDP
+    targetPort: 30303

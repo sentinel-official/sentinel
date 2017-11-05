@@ -1,0 +1,24 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: geth-config
+data:
+  genesis.json: |
+    {
+      "nonce": "0x0000000000000001",
+      "timestamp": "0x00",
+      "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "extraData": "0x00",
+      "gasLimit": "0x10000000",
+      "difficulty": "0x40",
+      "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "coinbase": "0x0000000000000000000000000000000000000000",
+      "alloc": {  },
+      "config": {
+        "chainId": 78432893,
+        "homesteadBlock": 0,
+        "eip155Block": 0,
+        "eip158Block": 0
+      }
+    }
+

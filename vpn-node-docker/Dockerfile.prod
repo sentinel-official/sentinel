@@ -1,0 +1,17 @@
+FROM alpine:3.6
+
+ADD sentinel /root/sentinel
+
+ADD run.py /root/
+
+ENV ACCOUNT_ADDR=''
+
+RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
+    apk add --no-cache ca-certificates easy-rsa openvpn ufw@testing wget && \
+    wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
+    python /tmp/get-pip.py && pip install --no-cache-dir requests speedtest_cli && \
+    rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
+
+EXPOSE 1194/udp
+
+ENTRYPOINT ["python", "/root/run.py"]

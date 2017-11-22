@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Platform, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-import { Card, CardItem } from 'native-base';
+import { Platform, StyleSheet, View } from 'react-native';
+import { Card, CardItem, Container, Content, Text, Input, Button } from 'native-base';
 
 
 
-export default class WalletAddress extends Component {
+export default class ImportWallet extends Component {
    
     constructor(props) {
       super(props);
@@ -17,21 +17,13 @@ export default class WalletAddress extends Component {
         console.log(".....clicked....")
       }
     return (
-        <View>
-          <View /* style={StyleSheet.container} */ >
-            <Text style={styles.text}>Your Wallet Address: </Text>
-            <Text style={styles.text}>"0xa75b6544e9ffb1a4a364936d9684a5a47f22b99f"</Text>
-          </View>
-
-
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={()=> navigate('Home')}
-        // onPress={alert}
-      >
-        <Text style={styles.buttonText}>Dashboard </Text>
-      </TouchableOpacity>
-      </View>
+        <Container>
+            <Content>
+                <Card>
+                    <Text note style={{fontSize: 28}}>Welcome!</Text>
+                </Card>
+            </Content>
+        </Container>
     );
   }
 }
@@ -62,5 +54,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   }
 })
-
-

@@ -11,7 +11,7 @@ export default class ReceiveComponent extends Component{
 	  // this.state = {};
 	}
 	render(){
-		console.log(this.props,"jow")
+		console.log(this.props,"Your Props")
         // const { navigate  } = this.props.navigation;        
 		return(
 			 <ReceiveForm /> //navigate={this.props.navigation} />

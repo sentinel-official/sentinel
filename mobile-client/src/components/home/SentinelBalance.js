@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
-import {StyleSheet, FlatList, View } from 'react-native';
-import {Container, Content, Card, CardItem, Icon, Right, Header, Switch, Text, Body}  from 'native-base';
+import {StyleSheet, View } from 'react-native';
+import {Container, Content, Card, Left, CardItem, Footer, FooterTab, Icon,Thumbnail, Right, List, ListItem, Header, Switch, Text, Body}  from 'native-base';
 import TxRx from './TxRx.js';
 
 export default class SentinelBalance extends Component {
@@ -8,15 +8,12 @@ export default class SentinelBalance extends Component {
 	constructor(props){
 		super(props); 
 		 this.state = {
-			// data: []
+			// data: [],
+			SentSentinels: '1000',
+			To: '0xkduek43nj5jsksfeoq93nf491',
+			date: Date.now()
 		};
-		// fetchDetails = async () => {
-		// 	const response = await fetch('https://randomuser.me/api?results=10');
-		// 	console.log("=>=>=>=>=>", response)
-		// 	const json = await response.json();
-		// 	this.setState({data: json.results})
-		// 	console.log(json, "=>=>=>=>=>=>");
-		//   }
+		
 		
 	}
 
@@ -24,7 +21,7 @@ export default class SentinelBalance extends Component {
 		return(
 			<Container>
 			<Content>
-				<Card style={{height: 150}}>
+				<Card>
 					<CardItem>
 						<Text note>
 							Your Balance
@@ -37,25 +34,8 @@ export default class SentinelBalance extends Component {
 						<Text style={styles.balanceText}>0.00 Eths</Text>
 					</CardItem>
 				</Card>
-				<Card>
-				  <CardItem>
-				  	<Text note>
-							Recent Activity
-						</Text>
-				  </CardItem >
-					<CardItem>
-						<Text style={styles.hash}>0x18b62758ced1bba03fb52689313573e09902c415 </Text>
-						<Right>
-							<Icon name='arrow-forward' />
-						</Right>
-					</CardItem>
-					<CardItem>
-						<Text style={styles.hash}>0xf8d1f4738a81b8a0ca19a3f494e10009cda3aa01</Text>
-						<Right>
-							<Icon name='arrow-forward' />
-						</Right>
-					</CardItem>>
-				</Card>
+				<CardItem><Text note>Recent Activity</Text></CardItem>
+					
 			</Content>
 			</Container>
 		);

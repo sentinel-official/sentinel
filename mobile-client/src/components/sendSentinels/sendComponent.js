@@ -11,7 +11,6 @@ export default class ReceiveComponent extends Component{
 	  // this.state = {};
 	}
 	render(){
-		console.log(this.props,"jow")
         const { navigate  } = this.props.navigation;        
 		return(
 			<SendForm navigate={this.props.navigation}/>

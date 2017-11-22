@@ -32,7 +32,6 @@ import material from '../../../native-base-theme/variables/material.js';
 
 import {StyleSheet} from 'react-native';
 import SentinalBalance from './SentinelBalance.js';
-import SideBarComponent from './SideBar/SideBarComponent';
 
 export default class HomeComponent extends Component {
 

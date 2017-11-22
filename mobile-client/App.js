@@ -8,16 +8,12 @@ import RegisterComponent from './src/components/register/RegisterComponent';
 import RegisterationForm from './src/components/register/RegistrationForm';
 import LoginComponent from './src/components/login/LoginComponent';
 import HomeComponent from './src/components/home/HomeComponent';
-import TxComponent from './src/components/transactions/tx/TxComponent';
-import RxComponent from './src/components/transactions/rx/RxComponent';
-import SideBarComponent from './src/components/home/SideBar/SideBarComponent';
 import SendComponent from './src/components/sendSentinels/sendComponent';
 import SendForm from './src/components/sendSentinels/sendForm';
 import ReceiveForm from './src/components/receiveSentinels/receiveForm';
 import NewByPassword from './src/components/register/newByPassword';
 import ImportWallet from './src/components/register/importWallet';
 import ReceiveComponent from './src/components/receiveSentinels/receiveComponent';
-import TxRx from './src/components/home/TxRx';
 import SentinelBalance from './src/components/home/SentinelBalance';
 
 const NavigationApp = StackNavigator({
@@ -103,12 +99,6 @@ const NavigationApp = StackNavigator({
       headerLeft: null
     }
   },
-  Tx: {
-    screen: TxComponent
-  },
-  Rx: {
-    screen: RxComponent
-  }
 },);
 
 async function requestCameraPermission() {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { AppRegistry, View, TouchableNativeFeedback, Button, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import SideBarComponent from './src/components/home/SideBar/SideBarComponent';
 
 export default class Splash extends Component{
 

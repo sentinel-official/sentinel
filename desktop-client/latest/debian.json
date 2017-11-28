@@ -6,5 +6,6 @@
   ],
   "lintianOverrides": [
     "changelog-file-missing-in-native-package"
-  ]
+  ],
+  "depends": ["openvpn", "libgconf2-4", "gksu"]
 }

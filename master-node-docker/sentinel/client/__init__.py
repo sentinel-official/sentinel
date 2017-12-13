@@ -2,6 +2,9 @@ from __future__ import absolute_import
 
 from .account import CreateNewAccount
 from .account import GetBalance
-from .transactions import SendAmount
-from .transactions import TranscationStatus
-from .vpn import GetVPNCredentials
+from .transactions import TransferAmount
+from .transactions import TranscationReceipt
+from .transactions import TransactionHistory
+from .vpn import GetVpnCredentials
+from .vpn import GetVpnsList
+from .vpn import GetVpnUsage

@@ -1,1 +1,2 @@
-MASTER_NODE_URL = 'http://10.0.0.8:8000'
+MASTER_NODE_URL = 'http://35.198.204.28:8000'
+ACCOUNT_DATA_PATH = '/root/account.data'

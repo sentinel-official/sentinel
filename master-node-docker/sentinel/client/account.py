@@ -6,12 +6,22 @@ from ..eth import contract_manager
 
 class CreateNewAccount(object):
     def on_post(self, req, resp):
-        password = req.body['password']
+        """
+        @api {post} /create-new-account Create new account
+        @apiName CreateNewAccount
+        @apiGroup Account
+        @apiParam {string} password Password for creating account.
+        @apiSuccess {String} account_addr Account address.
+        @apiSuccess {String} private_key Private key of the account.
+        @apiSuccess {String} keystore Keystore file data.
+        """
+        password = str(req.body['password'])
 
-        account_addr = eth_manager.create_account(password)
-        private_key = eth_manager.privatekey(account_addr, password)
-        keystore = eth_manager.keystore(account_addr)
+        _, account_addr = eth_manager.create_account(password)
+        _, private_key = eth_manager.get_privatekey(account_addr, password)
+        _, keystore = eth_manager.get_keystore(account_addr)
         eth_manager.remove_keystore(account_addr)
+
         message = {
             'success': True,
             'account_addr': account_addr,
@@ -25,16 +35,31 @@ class CreateNewAccount(object):
 
 class GetBalance(object):
     def on_post(self, req, resp):
-        account_addr = req.body['account_addr']
-        unit = req.body['unit']
+        """
+        @api {post} /get-balance Get the balance of an account
+        @apiName GetBalance
+        @apiGroup Account
+        @apiParam {string} account_addr Account address.
+        @apiParam {string} unit Currency [ SENT or ETH ].
+        @apiSuccess {Number} balance Balance of the account address.
+        """
+        account_addr = str(req.body['account_addr'])
+        unit = str(req.body['unit'])
 
         if unit == 'ETH':
-            balance = eth_manager.balance(account_addr)
+            error, balance = eth_manager.get_balance(account_addr)
         elif unit == 'SENT':
-            balance = contract_manager.balance(account_addr)
-        message = {
-            'success': True,
-            'balance': balance
-        }
+            error, balance = contract_manager.get_balance(account_addr)
+
+        if error is None:
+            message = {
+                'success': True,
+                'balance': balance
+            }
+        else:
+            message = {
+                'success': False,
+                'error': error
+            }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

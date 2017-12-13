@@ -1,48 +1,81 @@
-import urlparse
+import json
+from urlparse import urljoin
 import requests
 from ..config import MASTER_NODE_URL
+from ..config import ACCOUNT_DATA_PATH
 
 
 def register_node(node):
-    if node.location is None:
-        node.update_location()
-    if node.net_speed['download'] is None:
-        node.update_netspeed()
     body = {
         'account': {
-            'address': node.account_addr
+            'addr': node.account['addr']
         },
         'location': node.location,
         'net_speed': node.net_speed
     }
-    url = urlparse.urljoin(MASTER_NODE_URL, 'register-node')
+    url = urljoin(MASTER_NODE_URL, 'node/register')
     res = requests.post(url, json=body)
+
     if res.status_code == 200 and res.ok:
         res_body = res.json()
-        node.set_token(res_body['token'])
+        info = {
+            'type': 'account',
+            'token': res_body['token']
+        }
+        node.update_nodeinfo(info)
         return True
     return False
 
 
-def send_nodeinfo(node, info_type):
-    info = {
-        'type': info_type
-    }
-    if info_type == 'location':
-        info['location'] = node.location
-    elif info_type == 'net_speed':
-        info['net_speed'] = node.net_speed
-    elif info_type == 'ovpn':
-        info['ovpn'] = node.ovpn
-    elif info_type == 'vpn_status':
-        info['vpn_status'] = node.vpn_status
+def create_account(password):
     body = {
-        'account_addr': node.account_addr,
-        'token': node.token,
+        'password': password
+    }
+    url = urljoin(MASTER_NODE_URL, 'node/account')
+    res = requests.post(url, json=body)
+
+    if res.status_code == 200 and res.ok:
+        res_body = res.json()
+        data = {
+            'addr': res_body['account_addr'],
+            'keystore': res_body['keystore'],
+            'password': password,
+            'private_key': res_body['private_key'],
+            'token': None
+        }
+        data = json.dumps(data)
+        data_file = open(ACCOUNT_DATA_PATH, 'w')
+        data_file.writelines(data)
+        data_file.close()
+        return True
+    return False
+
+
+def send_nodeinfo(node, info):
+    body = {
+        'account_addr': node.account['addr'],
+        'token': node.account['token'],
         'info': info
     }
-    url = urlparse.urljoin(MASTER_NODE_URL, 'update-nodeinfo')
+    url = urljoin(MASTER_NODE_URL, 'node/update-nodeinfo')
     res = requests.post(url, json=body)
+
+    if res.status_code == 200 and res.ok:
+        return True
+    return False
+
+
+def send_client_usage(node, used_bytes):
+    body = {
+        'account_addr': node.account['addr'],
+        'token': node.account['token'],
+        'keystore': node.account['keystore'],
+        'password': node.account['password'],
+        'used_bytes': used_bytes
+    }
+    url = urljoin(MASTER_NODE_URL, 'node/add-usage')
+    res = requests.post(url, json=body)
+
     if res.status_code == 200 and res.ok:
         return True
     return False
@@ -50,11 +83,26 @@ def send_nodeinfo(node, info_type):
 
 def deregister_node(node):
     body = {
-        'account_addr': node.account_addr,
-        'token': node.token
+        'account_addr': node.account['addr'],
+        'token': node.account['token']
     }
-    url = urlparse.urljoin(MASTER_NODE_URL, 'deregister-node')
+    url = urljoin(MASTER_NODE_URL, 'node/deregister')
     res = requests.post(url, json=body)
+
+    if res.status_code == 200 and res.ok:
+        return True
+    return False
+
+
+def get_amount(node, amount, unit):
+    body = {
+        'account_addr': node.account['addr'],
+        'unit': unit,
+        'amount': amount * (10 ** 18) if unit == 'ETH' else amount
+    }
+    url = urljoin(MASTER_NODE_URL, 'dev/transfer-amount')
+    res = requests.post(url, json=body)
+
     if res.status_code == 200 and res.ok:
         return True
     return False

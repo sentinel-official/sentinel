@@ -10,9 +10,18 @@ COINBASE = eth_manager.web3.eth.coinbase
 
 class GetFreeAmount(object):
     def on_post(self, req, resp):
-        account_addr = req.body['account_addr']
-        unit = req.body['unit']
-        amount = req.body['amount']
+        """
+        @api {post} /get-free-amount Get free amount to an account
+        @apiName GetFreeAmount
+        @apiGroup Development
+        @apiParam {String} account_addr An account address.
+        @apiParam {String} unit Currency unit [ SENT or ETH ].
+        @apiParam {Number} amount Value of the amount.
+        @apiSuccess {String} tx_hash Hash of the initiated transaction.
+        """
+        account_addr = str(req.body['account_addr'])
+        unit = str(req.body['unit'])
+        amount = int(req.body['amount'])
 
         if unit == 'ETH':
             transaction = {
@@ -20,15 +29,23 @@ class GetFreeAmount(object):
                 'to': account_addr,
                 'value': amount
             }
-            eth_manager.web3.personal.unlockAccount(COINBASE, COINBASE_PASSWORD)
-            tx_hash = eth_manager.web3.eth.sendTransaction(transaction)
-            eth_manager.web3.personal.lockAccount(COINBASE)
+            error, tx_hash = eth_manager.transfer_amount(
+                COINBASE, COINBASE_PASSWORD, transaction)
         elif unit == 'SENT':
-            tx_hash = contract_manager.send_amount(COINBASE, account_addr, amount)
-        message = {
-            'success': True,
-            'tx_hash': tx_hash,
-            'message': 'Transaction initiated successfully.'
-        }
+            error, tx_hash = contract_manager.transfer_amount(
+                COINBASE, COINBASE_PASSWORD, account_addr, amount, False)
+
+        if error is None:
+            message = {
+                'success': True,
+                'tx_hash': tx_hash,
+                'message': 'Transaction initiated successfully.'
+            }
+        else:
+            message = {
+                'success': False,
+                'error': error,
+                'message': 'Error occurred while initiating transaction.'
+            }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

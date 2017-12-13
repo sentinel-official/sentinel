@@ -1,46 +1,75 @@
 import json
 from urllib2 import urlopen
 from speedtest_cli import Speedtest
+from ..config import ACCOUNT_DATA_PATH
 
 
 class Node(object):
-    def __init__(self, account_addr, update=True):
+    def __init__(self, resume=True):
         self.speed_test = Speedtest()
-        self.speed_test.get_best_server()
         self.location = None
         self.net_speed = {
             'best_server': {
-                'host': self.speed_test.best['host'],
-                'latency': self.speed_test.best['latency']
+                'host': None,
+                'latency': None
             },
             'download': None,
             'upload': None
         }
-        self.account_addr = account_addr
-        self.ovpn = None
-        self.token = None
-        self.vpn_status = None
-        if update is True:
-            self.update_location()
-            self.update_netspeed()
-
-    def update_location(self):
-        web_url = 'http://ipinfo.io/json'
-        response = json.load(urlopen(web_url))
-        self.location = {
-            'latitude': response['loc'].split(',')[0],
-            'longitude': response['loc'].split(',')[1]
+        self.vpn = {
+            'ovpn': None,
+            'status': None
+        }
+        self.account = {
+            'addr': None,
+            'keystore': None,
+            'password': None,
+            'private_key': None,
+            'token': None
         }
 
-    def update_netspeed(self):
-        self.net_speed['download'] = self.speed_test.download()
-        self.net_speed['upload'] = self.speed_test.upload()
+        if resume is True:
+            data = json.load(open(ACCOUNT_DATA_PATH, 'r'))
 
-    def set_ovpn(self, ovpn):
-        self.ovpn = ovpn
+            self.account['addr'] = data['addr']
+            self.account['keystore'] = data['keystore']
+            self.account['password'] = data['password']
+            self.account['private_key'] = data['private_key']
+            self.account['token'] = data['token']
 
-    def set_token(self, token):
-        self.token = token
+            self.update_nodeinfo({'type': 'location'})
+            self.update_nodeinfo({'type': 'netspeed'})
 
-    def set_vpn_status(self, status):
-        self.vpn_status = status
+    def save_account_data(self):
+        data_file = open(ACCOUNT_DATA_PATH, 'w')
+        data = json.dumps(self.account)
+        # Must encrypt before save
+        data_file.writelines(data)
+        data_file.close()
+
+    def update_nodeinfo(self, info=None):
+        if info['type'] == 'location':
+            web_url = 'http://ipinfo.io/json'
+            response = json.load(urlopen(web_url))
+            self.location = {
+                'latitude': response['loc'].split(',')[0],
+                'longitude': response['loc'].split(',')[1]
+            }
+        elif info['type'] == 'netspeed':
+            self.speed_test.get_best_server()
+            self.net_speed['best_server'] = {
+                'host': self.speed_test.best['host'],
+                'latency': self.speed_test.best['latency']
+            }
+            self.net_speed['download'] = self.speed_test.download()
+            self.net_speed['upload'] = self.speed_test.upload()
+        elif info['type'] == 'account':
+            if info['token'] is not None:
+                self.account['token'] = info['token']
+            self.save_account_data()
+
+    def update_vpninfo(self, info=None):
+        if info['type'] == 'ovpn':
+            self.vpn['ovpn'] = info['ovpn']
+        elif info['type'] == 'status':
+            self.vpn['status'] = info['status']

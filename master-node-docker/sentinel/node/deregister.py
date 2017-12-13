@@ -9,16 +9,17 @@ class DeRegisterNode(object):
         token = req.body['token']
 
         node = db.nodes.find_one_and_delete(
-            {'account.address': account_addr, 'token': token})
+            {'account.addr': account_addr, 'token': token})
+
         if node is None:
             message = {
                 'success': False,
-                'message': 'Node is not registered or Error occurred while deleting node.'
+                'message': 'Node not registered.'
             }
         else:
             message = {
                 'success': True,
-                'message': 'Deleted successfully.'
+                'message': 'Node deregistred successfully.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

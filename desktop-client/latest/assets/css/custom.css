@@ -177,3 +177,25 @@ ul.list-group {
 a:hover {
     color: #288D97 !important;
 }
+
+b {
+    color: #111;
+}
+
+.btn {
+    border: 1px solid #ccc !important;
+    border-radius: 10px;
+    min-height: 26px;
+    min-width: 80px;
+    color: #333 !important;
+}
+
+#wallethistory {
+    padding: 10px;
+}
+
+.single-transaction-block {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}

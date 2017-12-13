@@ -14,7 +14,7 @@
             <label for="toAddress">To</label>
             <input type="text" name="to_addr" id="toAddress" />
           </div>
-          <div class="field half">
+          <div class="field half" style="padding: 0">
             <label for="amount">Amount (SENT)</label>
             <input type="text" name="amount" id="amount" />
           </div>
@@ -22,14 +22,15 @@
             <label for="gas">Gas (SENT)</label>
             <input type="text" name="gas" value="90000" id="gas"/>
           </div>
-          <div class="field half">
+          <div class="clearfix"></div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea name="message" id="message" rows="2"></textarea>
+          </div>
+          <div class="field">
             <label for="password">Password</label>
             <input type="password" name="password" id="password"/>
           </div>
-          <!-- <div class="field">
-            <label for="message">Message</label>
-            <textarea name="message" id="message" rows="2"></textarea>
-          </div> -->
           <ul class="actions">
             <li><a href="javascript:;" class="button submit" 
               onclick="_transferAmount(this.form)"

@@ -1,4 +1,5 @@
 .DS_STORE
 .sass-cache
 node_modules
-release-builds/sentinel-desktop-app-linux-x64
+release-builds
+electron-packager

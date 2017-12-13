@@ -507,3 +507,37 @@ function openInExternalBrowser(url) {
     shell.openExternal(url);
     console.log('Open is done');
 };
+
+function showMap () {
+  console.log('inside showMap');
+  $('#world-map-markers').vectorMap({
+    map: 'world_mill',
+    scaleColors: ['#C8EEFF', '#0071A4'],
+    normalizeFunction: 'polynomial',
+    hoverOpacity: 0.7,
+    hoverColor: false,
+    markerStyle: {
+      initial: {
+        fill: '#F8E23B',
+        stroke: '#383f47'
+      }
+    },
+    backgroundColor: '#383f47',
+    markers: [
+      {latLng: [37.7749, 122.4194], name: 'San Fransisco'},
+      {latLng: [41.90, 12.45], name: 'Vatican City'},
+      {latLng: [43.73, 7.41], name: 'Monaco'},
+      {latLng: [43.93, 12.46], name: 'San Marino'},
+      {latLng: [7.11, 171.06], name: 'Marshall Islands'},
+      {latLng: [3.2, 73.22], name: 'Maldives'},
+      {latLng: [12.05, -61.75], name: 'Grenada'},
+      {latLng: [13.16, -59.55], name: 'Barbados'},
+      {latLng: [17.11, -61.85], name: 'Antigua and Barbuda'},
+      {latLng: [14.01, -60.98], name: 'Saint Lucia'},
+      {latLng: [1.3, 103.8], name: 'Singapore'},
+      {latLng: [15.3, -61.38], name: 'Dominica'},
+      {latLng: [-20.2, 57.5], name: 'Mauritius'},
+      {latLng: [26.02, 50.55], name: 'Bahrain'}
+    ]
+  });
+}

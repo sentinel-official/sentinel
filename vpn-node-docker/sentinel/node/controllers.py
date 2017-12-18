@@ -65,13 +65,15 @@ def send_nodeinfo(node, info):
     return False
 
 
-def send_client_usage(node, used_bytes):
+def send_client_usage(node, received_bytes, sent_bytes, session_time):
     body = {
         'account_addr': node.account['addr'],
         'token': node.account['token'],
         'keystore': node.account['keystore'],
         'password': node.account['password'],
-        'used_bytes': used_bytes
+        'received_bytes': received_bytes,
+        'sent_bytes': sent_bytes,
+        'session_time': session_time
     }
     url = urljoin(MASTER_NODE_URL, 'node/add-usage')
     res = requests.post(url, json=body)

@@ -20,13 +20,15 @@ class AddVpnUsage(object):
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
         to_addr = get_client_address(account_addr)
-        used_bytes = int(req.body['used_bytes'])
-        amount = int(calculate_amount(used_bytes))
+        received_bytes = int(req.body['received_bytes'])
+        sent_bytes = int(req.body['sent_bytes'])
+        session_time = int(req.body['session_time'])
+        amount = int(round(calculate_amount(sent_bytes)))
         timestamp = int(time.time())
 
         error, tx_hash = eth_helper.add_vpn_usage(
-            account_addr, to_addr, used_bytes, amount,
-            timestamp, keystore, password)
+            account_addr, to_addr, received_bytes, sent_bytes, session_time,
+            amount, timestamp, keystore, password)
 
         if error is None:
             message = {

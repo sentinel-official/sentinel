@@ -5,16 +5,16 @@ from ..eth import contract_manager
 
 class ETHHelper(object):
     def transfer_amount(self, from_addr, to_addr, amount, unit, keystore,
-                        password, is_vpn_payment=False):
+                        password, session_id=None):
         eth_manager.add_keystore(from_addr, keystore)
         sleep(1.0)  # Need to check
-        transaction = {'from': from_addr, 'to': to_addr, 'value': amount}
         if unit == 'ETH':
+            transaction = {'from': from_addr, 'to': to_addr, 'value': amount}
             error, tx_hash = eth_manager.transfer_amount(
                 from_addr, password, transaction)
         else:
             error, tx_hash = contract_manager.transfer_amount(
-                from_addr, password, to_addr, amount, is_vpn_payment)
+                from_addr, to_addr, amount, password, session_id)
         eth_manager.remove_keystore(from_addr)
 
         return error, tx_hash
@@ -35,28 +35,38 @@ class ETHHelper(object):
         error, vpn_addrs = contract_manager.get_vpn_addrs(account_addr)
         if error is None:
             for addr in vpn_addrs:
-                error, _usage = contract_manager.get_vpn_usage(
+                error, sessions = contract_manager.get_vpn_sessions(
                     account_addr, addr)
                 if error is None:
-                    usage.append({
-                        'addr': addr,
-                        'used': _usage[0],
-                        'amount': _usage[1],
-                        'timestamp': _usage[2],
-                        'is_payed': _usage[3]
-                    })
+                    for index in range(0, sessions):
+                        error, _usage = contract_manager.get_vpn_usage(
+                            account_addr, addr, index)
+                        if error is None:
+                            usage.append({
+                                'session_id': index,
+                                'addr': addr,
+                                'received_bytes': _usage[0],
+                                'sent_bytes': _usage[1],
+                                'session_time': _usage[2],
+                                'amount': _usage[3],
+                                'timestamp': _usage[4],
+                                'is_payed': _usage[5]
+                            })
+                        else:
+                            return error, None
                 else:
                     return error, None
         else:
             return error, None
         return error, usage
 
-    def add_vpn_usage(self, account_addr, to_addr, used_bytes, amount,
-                      timestamp, keystore, password):
+    def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes, session_time,
+                      amount, timestamp, keystore, password):
         eth_manager.add_keystore(account_addr, keystore)
         sleep(1.0)  # Need to check
         error, tx_hash = contract_manager.add_vpn_usage(
-            account_addr, password, to_addr, used_bytes, amount, timestamp)
+            account_addr, to_addr, received_bytes, sent_bytes, session_time,
+            amount, timestamp, password)
         eth_manager.remove_keystore(account_addr)
 
         return error, tx_hash

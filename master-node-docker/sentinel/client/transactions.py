@@ -4,12 +4,13 @@ from ..db import db
 from ..helpers import eth_helper
 
 
-def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash):
+def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash, session_id):
     transaction = {
         'to_addr': to_addr,
         'amount': amount,
         'unit': unit,
-        'tx_hash': tx_hash
+        'tx_hash': tx_hash,
+        'session_id': session_id
     }
     client = db.clients.find_one({'account.addr': from_addr})
     if client is None:
@@ -54,13 +55,14 @@ class TransferAmount(object):
         unit = str(req.body['unit'])
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
-        is_vpn_payment = req.body['is_vpn_payment']
+        session_id = req.body['session_id']
 
         error, tx_hash = eth_helper.transfer_amount(
-            from_addr, to_addr, amount, unit, keystore, password, is_vpn_payment)
+            from_addr, to_addr, amount, unit, keystore, password, session_id)
 
         if error is None:
-            put_transaction_history(from_addr, to_addr, amount, unit, tx_hash)
+            put_transaction_history(
+                from_addr, to_addr, amount, unit, tx_hash, session_id)
 
             message = {
                 'success': True,

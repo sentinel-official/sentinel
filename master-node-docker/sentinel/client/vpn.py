@@ -1,6 +1,7 @@
 import json
 import falcon
 from ..db import db
+from ..config import DECIMALS
 from ..helpers import eth_helper
 
 
@@ -9,7 +10,7 @@ def put_connection(server_addr, client_addr):
     if connection is None:
         db.connections.insert_one(
             {'server_addr': server_addr, 'client_addr': client_addr})
-    db.connection.find_one_and_update(
+    db.connections.find_one_and_update(
         {'server_addr': server_addr},
         {'$set': {'client_addr': client_addr}})
 
@@ -22,13 +23,6 @@ def get_vpns_list():
 
 class GetVpnCredentials(object):
     def on_post(self, req, resp):
-        """
-        @api {post} /get-vpn-credentials Get VPN credentials
-        @apiName GetVpnCredentials
-        @apiGroup VPN
-        @apiParam {String} account_addr An account address.
-        @apiSuccess {String[]} vpn VPN information along with ovpn data.
-        """
         account_addr = req.body['account_addr']
 
         error, due_amount = eth_helper.get_due_amount(account_addr)
@@ -57,7 +51,7 @@ class GetVpnCredentials(object):
         else:
             message = {
                 'success': False,
-                'message': 'You have due amount: ' + str(due_amount) + ' SENTs.' +
+                'message': 'You have due amount: ' + str(due_amount / DECIMALS) + ' SENTs.' +
                            ' Please try after clearing due.'
             }
         resp.status = falcon.HTTP_200
@@ -68,14 +62,12 @@ class GetVpnUsage(object):
     def on_post(self, req, resp):
         account_addr = req.body['account_addr']
 
-        error, due_amount = eth_helper.get_due_amount(account_addr)
         error, usage = eth_helper.get_vpn_usage(account_addr)
 
         if error is None:
             message = {
                 'success': True,
-                'usage': usage,
-                'due_amount': due_amount
+                'usage': usage
             }
         else:
             message = {

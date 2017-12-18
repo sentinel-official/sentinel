@@ -19,10 +19,10 @@ class ContractManager(object):
     def get_balance(self, account_addr):
         try:
             balance = self.contract.call(
-                {'from': account_addr}).getBalance(account_addr)
+                {'from': account_addr}).balanceOf(account_addr)
         except Exception as err:
             return {'code': 201, 'error': str(err)}, None
-        return None, float(balance)
+        return None, balance
 
     def transfer_amount(self, account_addr, to_addr, amount,
                         password, session_id=None):

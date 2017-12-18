@@ -2,6 +2,7 @@ import falcon
 import json
 import time
 from ..db import db
+from ..config import DECIMALS
 from ..helpers import eth_helper
 
 
@@ -23,7 +24,7 @@ class AddVpnUsage(object):
         received_bytes = int(req.body['received_bytes'])
         sent_bytes = int(req.body['sent_bytes'])
         session_time = int(req.body['session_time'])
-        amount = int(round(calculate_amount(sent_bytes)))
+        amount = int(calculate_amount(sent_bytes) * DECIMALS)
         timestamp = int(time.time())
 
         error, tx_hash = eth_helper.add_vpn_usage(
@@ -34,7 +35,7 @@ class AddVpnUsage(object):
             message = {
                 'success': True,
                 'tx_hash': tx_hash,
-                'message': 'Added VPN usage data successfully.'
+                'message': 'VPN usage data will be added soon.'
             }
         else:
             message = {

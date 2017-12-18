@@ -30,11 +30,31 @@ class ETHHelper(object):
         return error, due_amount
 
     def get_vpn_usage(self, account_addr):
-        usage = []
+        usage = {
+            'due': 0,
+            'stats': {
+                'received_bytes': 0,
+                'sent_bytes': 0,
+                'duration': 0,
+                'amount': 0
+            },
+            'list': []
+        }
 
         error, vpn_addrs = contract_manager.get_vpn_addrs(account_addr)
         if error is None:
             for addr in vpn_addrs:
+                addr_usage = {
+                    'addr': addr,
+                    'due': 0,
+                    'sessions': [],
+                    'stats': {
+                        'received_bytes': 0,
+                        'sent_bytes': 0,
+                        'duration': 0,
+                        'amount': 0
+                    }
+                }
                 error, sessions = contract_manager.get_vpn_sessions(
                     account_addr, addr)
                 if error is None:
@@ -42,18 +62,29 @@ class ETHHelper(object):
                         error, _usage = contract_manager.get_vpn_usage(
                             account_addr, addr, index)
                         if error is None:
-                            usage.append({
-                                'session_id': index,
-                                'addr': addr,
+                            if _usage[5] is False:
+                                addr_usage['due'] += _usage[3]
+                            addr_usage['stats']['received_bytes'] += _usage[0]
+                            addr_usage['stats']['sent_bytes'] += _usage[1]
+                            addr_usage['stats']['duration'] += _usage[2]
+                            addr_usage['stats']['amount'] += _usage[3]
+                            addr_usage['sessions'].append({
+                                'id': index,
                                 'received_bytes': _usage[0],
                                 'sent_bytes': _usage[1],
-                                'session_time': _usage[2],
+                                'duration': _usage[2],
                                 'amount': _usage[3],
                                 'timestamp': _usage[4],
                                 'is_payed': _usage[5]
                             })
                         else:
                             return error, None
+                    usage['due'] += addr_usage['due']
+                    usage['stats']['received_bytes'] += addr_usage['stats']['received_bytes']
+                    usage['stats']['sent_bytes'] += addr_usage['stats']['sent_bytes']
+                    usage['stats']['duration'] += addr_usage['stats']['duration']
+                    usage['stats']['amount'] += addr_usage['stats']['amount']
+                    usage['list'].append(addr_usage)
                 else:
                     return error, None
         else:

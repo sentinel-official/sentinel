@@ -6,15 +6,6 @@ from ..eth import contract_manager
 
 class CreateNewAccount(object):
     def on_post(self, req, resp):
-        """
-        @api {post} /create-new-account Create new account
-        @apiName CreateNewAccount
-        @apiGroup Account
-        @apiParam {string} password Password for creating account.
-        @apiSuccess {String} account_addr Account address.
-        @apiSuccess {String} private_key Private key of the account.
-        @apiSuccess {String} keystore Keystore file data.
-        """
         password = str(req.body['password'])
 
         _, account_addr = eth_manager.create_account(password)
@@ -35,14 +26,6 @@ class CreateNewAccount(object):
 
 class GetBalance(object):
     def on_post(self, req, resp):
-        """
-        @api {post} /get-balance Get the balance of an account
-        @apiName GetBalance
-        @apiGroup Account
-        @apiParam {string} account_addr Account address.
-        @apiParam {string} unit Currency [ SENT or ETH ].
-        @apiSuccess {Number} balance Balance of the account address.
-        """
         account_addr = str(req.body['account_addr'])
         unit = str(req.body['unit'])
 

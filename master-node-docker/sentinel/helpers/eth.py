@@ -69,12 +69,12 @@ class ETHHelper(object):
         else:
             return error, None
 
-    def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes, session_time,
+    def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes, session_duration,
                       amount, timestamp, keystore, password):
         eth_manager.add_keystore(account_addr, keystore)
         sleep(1.0)  # Need to check
         error, tx_hash = contract_manager.add_vpn_usage(
-            account_addr, to_addr, received_bytes, sent_bytes, session_time,
+            account_addr, to_addr, received_bytes, sent_bytes, session_duration,
             amount, timestamp, password)
         eth_manager.remove_keystore(account_addr)
 

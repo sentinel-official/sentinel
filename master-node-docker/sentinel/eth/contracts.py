@@ -3,6 +3,7 @@ from ..config import CONTRACT_ABI
 from ..config import CONTRACT_ADDRESS
 from ..config import CONTRACT_NAME
 from ..config import COINBASE_PASSWORD
+from ..config import DECIMALS
 
 
 class ContractManager(object):
@@ -22,7 +23,7 @@ class ContractManager(object):
                 {'from': account_addr}).balanceOf(account_addr)
         except Exception as err:
             return {'code': 201, 'error': str(err)}, None
-        return None, balance
+        return None, balance / (DECIMALS * 1.0)
 
     def transfer_amount(self, account_addr, to_addr, amount,
                         password, session_id=None):
@@ -34,7 +35,7 @@ class ContractManager(object):
                     {'from': account_addr}).transfer(to_addr, amount)
             else:
                 tx_hash = self.contract.transact(
-                    {'from': account_addr}).payVpnSession(to_addr, amount, session_id)
+                    {'from': account_addr}).payVpnSession(amount, session_id)
             self.eth_manager.web3.personal.lockAccount(account_addr)
         except Exception as err:
             return {'code': 202, 'error': str(err)}, None
@@ -68,8 +69,6 @@ class ContractManager(object):
         try:
             self.eth_manager.web3.personal.unlockAccount(
                 account_addr, password)
-            print(to_addr, received_bytes, sent_bytes,
-                  session_duration, amount, timestamp)
             tx_hash = self.contract.transact(
                 {'from': account_addr}).addVpnUsage(
                     to_addr, received_bytes, sent_bytes, session_duration,

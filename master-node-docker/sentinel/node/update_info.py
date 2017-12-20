@@ -34,7 +34,7 @@ class UpdateNodeInfo(object):
         if node is None:
             message = {
                 'success': False,
-                'message': 'Node not registered.'
+                'message': 'Node is not registered.'
             }
         else:
             message = {

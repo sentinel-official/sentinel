@@ -31,7 +31,7 @@ class GetVpnCredentials(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occurred while checking due amount.'
+                'message': 'Error occurred while checking the due amount.'
             }
         elif due_amount == 0:
             node = db.nodes.find_one({'vpn.status': 'up'})
@@ -52,7 +52,7 @@ class GetVpnCredentials(object):
             message = {
                 'success': False,
                 'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs.' +
-                           ' Please try after clearing due.'
+                           ' Please try after clearing the due.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -73,7 +73,7 @@ class GetVpnUsage(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occured while fetching usage data.'
+                'message': 'Error occured while fetching the usage data.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

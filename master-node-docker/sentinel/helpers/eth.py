@@ -1,6 +1,7 @@
 from time import sleep
 from ..eth import eth_manager
 from ..eth import contract_manager
+from ..config import DECIMALS
 
 
 class ETHHelper(object):
@@ -48,18 +49,18 @@ class ETHHelper(object):
                     account_addr, index)
                 if error is None:
                     if _usage[6] is False:
-                        usage['due'] += _usage[4]
+                        usage['due'] += _usage[4] / (DECIMALS * 1.0)
                     usage['stats']['received_bytes'] += _usage[1]
                     usage['stats']['sent_bytes'] += _usage[2]
                     usage['stats']['duration'] += _usage[3]
-                    usage['stats']['amount'] += _usage[4]
+                    usage['stats']['amount'] += _usage[4] / (DECIMALS * 1.0)
                     usage['sessions'].append({
                         'id': index,
                         'account_addr': _usage[0],
                         'received_bytes': _usage[1],
                         'sent_bytes': _usage[2],
                         'duration': _usage[3],
-                        'amount': _usage[4],
+                        'amount': _usage[4] / (DECIMALS * 1.0),
                         'timestamp': _usage[5],
                         'is_payed': _usage[6]
                     })

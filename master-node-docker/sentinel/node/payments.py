@@ -46,7 +46,7 @@ class AddVpnUsage(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occurred while adding VPN usage data.'
+                'message': 'Error occurred while adding the VPN usage data.'
             }
 
         resp.status = falcon.HTTP_200

@@ -24,7 +24,7 @@ class RegisterNode(object):
         else:
             message = {
                 'success': False,
-                'message': 'Error occurred while registering node.'
+                'message': 'Error occurred while registering the node.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

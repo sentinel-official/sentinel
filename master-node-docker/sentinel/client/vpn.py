@@ -51,7 +51,7 @@ class GetVpnCredentials(object):
         else:
             message = {
                 'success': False,
-                'message': 'You have due amount: ' + str(due_amount / DECIMALS) + ' SENTs.' +
+                'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs.' +
                            ' Please try after clearing due.'
             }
         resp.status = falcon.HTTP_200

@@ -18,7 +18,8 @@ class CreateNewAccount(object):
             'account_addr': account_addr,
             'private_key': private_key,
             'keystore': json.dumps(keystore),
-            'message': 'Account created successfully.'
+            'message': 'Account created successfully.' +
+                       ' Please store the Private key and Keystore data safely.'
         }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

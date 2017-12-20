@@ -21,8 +21,8 @@ def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash, session_i
 
 def get_transaction_history(account_addr):
     transactions = db.transactions.find(
-        {'$or': [{'from_addr': account_addr}, {'to_addr': account_addr}]})
-    return transactions
+        {'$or': [{'from_addr': account_addr}, {'to_addr': account_addr}]}, {'_id': 0})
+    return list(transactions)
 
 
 class TransferAmount(object):

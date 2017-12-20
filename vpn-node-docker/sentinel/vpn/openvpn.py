@@ -6,8 +6,8 @@ class OpenVPN(object):
     def __init__(self, show_output=True):
         self.init_cmd = 'sh /root/sentinel/shell_scripts/init.sh'
         self.start_cmd = 'openvpn --config /etc/openvpn/server.conf \
-                          --status /etc/openvpn/openvpn-status.log 5 \
-                          --ping-exit 10'
+                          --status /etc/openvpn/openvpn-status.log 2.5 \
+                          --ping-exit 15'
         if show_output is False:
             self.init_cmd += ' >> /dev/null 2>&1'
             self.start_cmd += ' >> /dev/null 2>&1'

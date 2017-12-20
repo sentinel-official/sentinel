@@ -7,10 +7,13 @@ from ..helpers import eth_helper
 
 
 def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash, session_id):
+    amount = amount / ((10 ** 18) * 1.0) \
+        if unit == 'ETH' else amount / (DECIMALS * 1.0)
+
     transaction = {
         'from_addr': from_addr,
         'to_addr': to_addr,
-        'amount': str(amount),
+        'amount': amount,
         'unit': unit,
         'tx_hash': tx_hash,
         'session_id': session_id,
@@ -54,7 +57,7 @@ class TransferAmount(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occurred while initiating transaction.'
+                'message': 'Error occurred while initiating the transaction.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -84,7 +87,7 @@ class TranscationReceipt(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occurred while fetching transaction receipt.'
+                'message': 'Error occurred while fetching the transaction receipt.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

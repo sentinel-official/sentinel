@@ -38,58 +38,36 @@ class ETHHelper(object):
                 'duration': 0,
                 'amount': 0
             },
-            'list': []
+            'sessions': []
         }
 
-        error, vpn_addrs = contract_manager.get_vpn_addrs(account_addr)
+        error, sessions = contract_manager.get_vpn_sessions(account_addr)
         if error is None:
-            for addr in vpn_addrs:
-                addr_usage = {
-                    'addr': addr,
-                    'due': 0,
-                    'sessions': [],
-                    'stats': {
-                        'received_bytes': 0,
-                        'sent_bytes': 0,
-                        'duration': 0,
-                        'amount': 0
-                    }
-                }
-                error, sessions = contract_manager.get_vpn_sessions(
-                    account_addr, addr)
+            for index in range(0, sessions):
+                error, _usage = contract_manager.get_vpn_usage(
+                    account_addr, index)
                 if error is None:
-                    for index in range(0, sessions):
-                        error, _usage = contract_manager.get_vpn_usage(
-                            account_addr, addr, index)
-                        if error is None:
-                            if _usage[5] is False:
-                                addr_usage['due'] += _usage[3]
-                            addr_usage['stats']['received_bytes'] += _usage[0]
-                            addr_usage['stats']['sent_bytes'] += _usage[1]
-                            addr_usage['stats']['duration'] += _usage[2]
-                            addr_usage['stats']['amount'] += _usage[3]
-                            addr_usage['sessions'].append({
-                                'id': index,
-                                'received_bytes': _usage[0],
-                                'sent_bytes': _usage[1],
-                                'duration': _usage[2],
-                                'amount': _usage[3],
-                                'timestamp': _usage[4],
-                                'is_payed': _usage[5]
-                            })
-                        else:
-                            return error, None
-                    usage['due'] += addr_usage['due']
-                    usage['stats']['received_bytes'] += addr_usage['stats']['received_bytes']
-                    usage['stats']['sent_bytes'] += addr_usage['stats']['sent_bytes']
-                    usage['stats']['duration'] += addr_usage['stats']['duration']
-                    usage['stats']['amount'] += addr_usage['stats']['amount']
-                    usage['list'].append(addr_usage)
+                    if _usage[6] is False:
+                        usage['due'] += _usage[4]
+                    usage['stats']['received_bytes'] += _usage[1]
+                    usage['stats']['sent_bytes'] += _usage[2]
+                    usage['stats']['duration'] += _usage[3]
+                    usage['stats']['amount'] += _usage[4]
+                    usage['sessions'].append({
+                        'id': index,
+                        'account_addr': _usage[0],
+                        'received_bytes': _usage[1],
+                        'sent_bytes': _usage[2],
+                        'duration': _usage[3],
+                        'amount': _usage[4],
+                        'timestamp': _usage[5],
+                        'is_payed': _usage[6]
+                    })
                 else:
                     return error, None
+            return None, usage
         else:
             return error, None
-        return error, usage
 
     def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes, session_time,
                       amount, timestamp, keystore, password):

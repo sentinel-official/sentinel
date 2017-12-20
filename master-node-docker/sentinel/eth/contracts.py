@@ -47,40 +47,32 @@ class ContractManager(object):
             return {'code': 203, 'error': str(err)}, None
         return None, due
 
-    def get_vpn_sessions(self, account_addr, from_addr):
+    def get_vpn_sessions(self, account_addr):
         try:
             sessions = self.contract.call(
-                {'from': account_addr}).getVpnSessions(from_addr)
+                {'from': account_addr}).getVpnSessions()
         except Exception as err:
             return {'code': 204, 'error': str(err)}, None
         return None, sessions
 
-    def get_vpn_usage(self, account_addr, from_addr, index):
+    def get_vpn_usage(self, account_addr, index):
         try:
             usage = self.contract.call(
-                {'from': account_addr}).getVpnUsage(from_addr, index)
+                {'from': account_addr}).getVpnUsage(index)
         except Exception as err:
             return {'code': 205, 'error': str(err)}, None
         return None, usage
 
-    def get_vpn_addrs(self, account_addr):
-        try:
-            addrs = self.contract.call(
-                {'from': account_addr}).getVpnAddrs()
-        except Exception as err:
-            return {'code': 206, 'error': str(err)}, None
-        return None, addrs
-
-    def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes, session_time,
+    def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes, session_duration,
                       amount, timestamp, password):
         try:
             self.eth_manager.web3.personal.unlockAccount(
                 account_addr, password)
             print(to_addr, received_bytes, sent_bytes,
-                  session_time, amount, timestamp)
+                  session_duration, amount, timestamp)
             tx_hash = self.contract.transact(
                 {'from': account_addr}).addVpnUsage(
-                    to_addr, received_bytes, sent_bytes, session_time,
+                    to_addr, received_bytes, sent_bytes, session_duration,
                     amount, timestamp)
             self.eth_manager.web3.personal.lockAccount(account_addr)
         except Exception as err:

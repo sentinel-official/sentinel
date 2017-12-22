@@ -2,6 +2,7 @@ import json
 import falcon
 from ..eth import eth_manager
 from ..eth import contract_manager
+from ..config import DECIMALS
 from ..config import COINBASE_PASSWORD
 
 
@@ -10,18 +11,12 @@ COINBASE = eth_manager.web3.eth.coinbase
 
 class GetFreeAmount(object):
     def on_post(self, req, resp):
-        """
-        @api {post} /get-free-amount Get free amount to an account
-        @apiName GetFreeAmount
-        @apiGroup Development
-        @apiParam {String} account_addr An account address.
-        @apiParam {String} unit Currency unit [ SENT or ETH ].
-        @apiParam {Number} amount Value of the amount.
-        @apiSuccess {String} tx_hash Hash of the initiated transaction.
-        """
         account_addr = str(req.body['account_addr'])
         unit = str(req.body['unit'])
-        amount = int(req.body['amount'])
+        amount = float(req.body['amount'])
+
+        amount = int(amount * (10 ** 18)) \
+            if unit == 'ETH' else int(amount * DECIMALS)
 
         if unit == 'ETH':
             transaction = {
@@ -33,7 +28,7 @@ class GetFreeAmount(object):
                 COINBASE, COINBASE_PASSWORD, transaction)
         elif unit == 'SENT':
             error, tx_hash = contract_manager.transfer_amount(
-                COINBASE, COINBASE_PASSWORD, account_addr, amount, False)
+                COINBASE, account_addr, amount, COINBASE_PASSWORD, None)
 
         if error is None:
             message = {

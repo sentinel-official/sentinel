@@ -2,6 +2,7 @@ import falcon
 import json
 import time
 from ..db import db
+from ..config import DECIMALS
 from ..helpers import eth_helper
 
 
@@ -20,25 +21,33 @@ class AddVpnUsage(object):
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
         to_addr = get_client_address(account_addr)
-        used_bytes = int(req.body['used_bytes'])
-        amount = int(calculate_amount(used_bytes))
+        received_bytes = int(req.body['received_bytes'])
+        sent_bytes = int(req.body['sent_bytes'])
+        session_duration = int(req.body['session_duration'])
+        amount = int(calculate_amount(sent_bytes) * DECIMALS)
         timestamp = int(time.time())
 
+        print(account_addr, to_addr, received_bytes,
+              sent_bytes, session_duration, amount, timestamp)
+
         error, tx_hash = eth_helper.add_vpn_usage(
-            account_addr, to_addr, used_bytes, amount,
-            timestamp, keystore, password)
+            account_addr, to_addr, received_bytes, sent_bytes,
+            session_duration, amount, timestamp, keystore, password)
+
+        print(error, tx_hash)
 
         if error is None:
             message = {
                 'success': True,
                 'tx_hash': tx_hash,
-                'message': 'Added VPN usage data successfully.'
+                'message': 'VPN usage data will be added soon.'
             }
         else:
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occurred while adding VPN usage data.'
+                'message': 'Error occurred while adding the VPN usage data.'
             }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

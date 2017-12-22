@@ -52,6 +52,8 @@ class Node(object):
             web_url = 'http://ipinfo.io/json'
             response = json.load(urlopen(web_url))
             self.location = {
+                'city': response['city'],
+                'region': response['region'],
                 'latitude': response['loc'].split(',')[0],
                 'longitude': response['loc'].split(',')[1]
             }

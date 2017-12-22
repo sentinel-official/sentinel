@@ -75,7 +75,7 @@ class ETHManager(object):
             balance = self.web3.eth.getBalance(account_addr)
         except Exception as err:
             return {'code': 106, 'error': str(err)}, None
-        return None, balance
+        return None, balance / ((10 ** 18) * 1.0)
 
     def transfer_amount(self, account_addr, password, transaction):
         try:

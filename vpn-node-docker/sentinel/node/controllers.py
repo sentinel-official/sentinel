@@ -65,13 +65,15 @@ def send_nodeinfo(node, info):
     return False
 
 
-def send_client_usage(node, used_bytes):
+def send_client_usage(node, received_bytes, sent_bytes, session_duration):
     body = {
         'account_addr': node.account['addr'],
         'token': node.account['token'],
         'keystore': node.account['keystore'],
         'password': node.account['password'],
-        'used_bytes': used_bytes
+        'received_bytes': received_bytes,
+        'sent_bytes': sent_bytes,
+        'session_duration': session_duration
     }
     url = urljoin(MASTER_NODE_URL, 'node/add-usage')
     res = requests.post(url, json=body)
@@ -98,7 +100,7 @@ def get_amount(node, amount, unit):
     body = {
         'account_addr': node.account['addr'],
         'unit': unit,
-        'amount': amount * (10 ** 18) if unit == 'ETH' else amount
+        'amount': amount
     }
     url = urljoin(MASTER_NODE_URL, 'dev/transfer-amount')
     res = requests.post(url, json=body)

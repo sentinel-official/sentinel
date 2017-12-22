@@ -26,8 +26,10 @@ def process_output():
                     node, {'type': 'vpn', 'status': node.vpn['status']})
             elif 'client-instance exiting' in line:
                 openvpn.stop()
-                _, sent_bytes, _ = openvpn.get_client_usage()
-                send_client_usage(node, sent_bytes)
+                received_bytes, sent_bytes, connected_time = openvpn.get_client_usage()
+                sesstion_duration = int(time.time()) - connected_time
+                send_client_usage(node, received_bytes,
+                                  sent_bytes, sesstion_duration)
                 break
 
 

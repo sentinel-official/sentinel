@@ -1,66 +1,52 @@
 import json
+import time
 import falcon
 from ..db import db
+from ..config import DECIMALS
 from ..helpers import eth_helper
 
 
-def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash):
+def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash, session_id):
+    amount = amount / ((10 ** 18) * 1.0) \
+        if unit == 'ETH' else amount / (DECIMALS * 1.0)
+
     transaction = {
+        'from_addr': from_addr,
         'to_addr': to_addr,
         'amount': amount,
         'unit': unit,
-        'tx_hash': tx_hash
+        'tx_hash': tx_hash,
+        'session_id': session_id,
+        'timestamp': int(time.time())
     }
-    client = db.clients.find_one({'account.addr': from_addr})
-    if client is None:
-        db.clients.insert_one(
-            {'account': {'addr': from_addr}, 'transaction_history': []})
-    client = db.clients.find_one_and_update(
-        {'account.addr': from_addr},
-        {'$push': {'transaction_history': transaction}})
-
-    return (client is None) is False
+    db.transactions.insert_one(transaction)
 
 
 def get_transaction_history(account_addr):
-    client = db.clients.find_one({'account.addr': account_addr})
-    if client is None:
-        return []
-    history = db.clients.find_one(
-        {'account.addr': account_addr},
-        {'_id': 0, 'transaction_history': 1})
-
-    return history['transaction_history']
+    transactions = db.transactions.find(
+        {'$or': [{'from_addr': account_addr}, {'to_addr': account_addr}]}, {'_id': 0})
+    return list(transactions)
 
 
 class TransferAmount(object):
     def on_post(self, req, resp):
-        """
-        @api {post} /transfer-amount Transfer amount to another account
-        @apiName TransferAmount
-        @apiGroup Transactions
-        @apiParam {String} from_addr From address.
-        @apiParam {String} to_addr To address.
-        @apiParam {Number} amount Value of the amount.
-        @apiParam {Number} gas Gas units. Set it to 90000.
-        @apiParam {String} Currency unit [ SENT or ETH ].
-        @apiParam {String} password Password of the account.
-        @apiParam {String} keystore Keystore file data.
-        @apiSuccess {String} tx_hash Hash of the initiated transaction.
-        """
         from_addr = str(req.body['from_addr'])
         to_addr = str(req.body['to_addr'])
-        amount = int(req.body['amount'])
+        amount = float(req.body['amount'])
         unit = str(req.body['unit'])
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
-        is_vpn_payment = req.body['is_vpn_payment']
+        session_id = req.body['session_id']
+
+        amount = int(amount * (10 ** 18)) \
+            if unit == 'ETH' else int(amount * DECIMALS)
 
         error, tx_hash = eth_helper.transfer_amount(
-            from_addr, to_addr, amount, unit, keystore, password, is_vpn_payment)
+            from_addr, to_addr, amount, unit, keystore, password, session_id)
 
         if error is None:
-            put_transaction_history(from_addr, to_addr, amount, unit, tx_hash)
+            put_transaction_history(
+                from_addr, to_addr, amount, unit, tx_hash, session_id)
 
             message = {
                 'success': True,
@@ -71,7 +57,7 @@ class TransferAmount(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occurred while initiating transaction.'
+                'message': 'Error occurred while initiating the transaction.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -79,13 +65,6 @@ class TransferAmount(object):
 
 class TranscationReceipt(object):
     def on_post(self, req, resp):
-        """
-        @api {post} /transcation-receipt Transaction receipt
-        @apiName TranscationReceipt
-        @apiGroup Transactions
-        @apiParam {String} tx_hash Hash of the transaction.
-        @apiSuccess {Object} receipt Details of the transaction.
-        """
         tx_hash = str(req.body['tx_hash'])
 
         error, receipt = eth_helper.get_tx_receipt(tx_hash)
@@ -108,7 +87,7 @@ class TranscationReceipt(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occurred while fetching transaction receipt.'
+                'message': 'Error occurred while fetching the transaction receipt.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -116,13 +95,6 @@ class TranscationReceipt(object):
 
 class TransactionHistory(object):
     def on_post(self, req, resp):
-        """
-        @api {post} /transaction-history Transaction History
-        @apiName TransactionHistory
-        @apiGroup Transactions
-        @apiParam {String} account_addr An account address.
-        @apiSuccess {Object[]} history Transactions history of the account.
-        """
         account_addr = str(req.body['account_addr'])
 
         history = get_transaction_history(account_addr)

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { exec } = require('child_process');
 
-const B_URL = 'http://35.198.204.28:8000';
+const B_URL = 'http://185.181.8.90:8000/client';
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
@@ -69,6 +69,14 @@ function _showAccountFunctions(account_addr) {
       document.getElementById('vpn-usage-menu').style.display = 'none';
       document.getElementById('vpn-nav-section').style.display = 'none';
     }
+  }
+
+  function copyToClipboard(element) {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val($(element).text()).select();
+    document.execCommand("copy");
+    $temp.remove();
   }
 
   function _getAccount() {
@@ -143,13 +151,19 @@ function _showAccountFunctions(account_addr) {
     data['gas'] = parseInt(document.getElementById('gas').value);
     data['unit'] = 'SENT';//form.unit.value;
     data['password'] = document.getElementById('password').value;
+    data['is_vpn_payment'] = document.getElementById('is_vpn').value == 'true' ? true : false;
+
+    console.log(data);
 
     transferAmount(data, function (err, tx_hash) {
-      if (err) console.log(err);
-      else {
+      if (err) {
+        alert(err.message)
+        console.log(err);
+      } else {
         // document.getElementById('tx_hash').innerHTML = 'Transaction Hash: ' + tx_hash;
         // document.getElementById('tx_hash').style.display = '';
         document.getElementById('transfer-amount-submit').disabled = false;
+        alert('Your transaction is initiated.');
 
         _getTransactionHistory();
       }
@@ -168,6 +182,9 @@ function _showAccountFunctions(account_addr) {
       'account_addr': document.getElementById('account_addr').innerHTML,
       'unit': 'SENT'
     };
+
+
+
     if (data['account_addr'].length > 0) {
       setInterval(function () {
         getBalance(data, function (err, balance) {
@@ -288,7 +305,7 @@ function getAccount(cb) {
 }
 
 function createAccount(password, cb) {
-  fetch(B_URL + '/create-new-account', {
+  fetch(B_URL + '/account', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -326,7 +343,7 @@ function transferAmount(data, cb) {
     if (err) cb(err, null);
     else {
       data['keystore'] = keystore;
-      fetch(B_URL + '/send-amount', {
+      fetch(B_URL + '/transaction', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -348,7 +365,7 @@ function transferAmount(data, cb) {
 }
 
 function getBalance(data, cb) {
-  fetch(B_URL + '/get-balance', {
+  fetch(B_URL + '/account/balance', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -366,7 +383,7 @@ function getBalance(data, cb) {
 }
 
 function getTransactionReceipt(txHash, cb) {
-  fetch(B_URL + '/transcation-receipt', {
+  fetch(B_URL + '/transcation/receipt', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -386,7 +403,7 @@ function getTransactionReceipt(txHash, cb) {
 }
 
 function getTransactionHistory(account_addr, cb) {
-  fetch(B_URL + '/transaction-history', {
+  fetch(B_URL + '/transaction/history', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -409,7 +426,7 @@ function getOVPNAndSave(account_addr, cb) {
   if (fs.existsSync(OVPN_FILE)) {
     cb(null);
   } else {
-    fetch(B_URL + '/get-vpn-credentials', {
+    fetch(B_URL + '/vpn', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -462,6 +479,8 @@ function getVPNPIDs(cb) {
   });
 }
 
+var callVPNstats = null;
+
 function connectVPN(account_addr, cb) {
   var command = 'sudo openvpn ' + OVPN_FILE;
 
@@ -481,7 +500,12 @@ function connectVPN(account_addr, cb) {
           if (err) cb(err);
           else cb(null);
         });
+
       }, 1000);
+
+      callVPNstats = window.setInterval(function () {
+        showVPNUsageStats();
+      }, 10*1000);
     }
   });
 }
@@ -496,6 +520,8 @@ function disconnectVPN(cb) {
         else {
           cb(null);
         }
+
+        window.clearInterval(callVPNstats);
       });
     }
   });
@@ -508,36 +534,286 @@ function openInExternalBrowser(url) {
     console.log('Open is done');
 };
 
+function getVPNList() {
+  console.log('inside get vpn list');
+
+  fetch(B_URL + '/vpn/list', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    }
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success === true) {
+        var vpnList = response.list;
+      } else {
+        console.log('Error while fetching VPN list', response);
+      }
+    });
+  });
+}
+
+function showVPNUsageStats() {
+  console.log('inside get vpn usage');
+
+  fetch(B_URL + '/vpn/usage', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      'account_addr': document.getElementById('account_addr').innerHTML
+    })
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success === true) {
+        console.log('vpn stats', response.usage);
+
+        var vpnUsage = response.usage;
+
+        var transactionsHtml = '';
+
+        for (var i = 0; i < vpnUsage.length; i++) {
+          var usage = vpnUsage[i];
+
+          transactionsHtml += '<div class="row single-transaction-block">\
+          <div class="col-4">\
+            <b>Data Used: </b> ' + usage.used/1024 + 'MB <br>\
+            <b>Total Cost: </b> ' + usage.amount + 'SENTs <br>';
+
+          if (usage.is_payed) {
+            transactionsHtml += '<b>Status: </b> Paid';
+          } else {
+            transactionsHtml += '<button class="btn" onclick="payVPNDue(' + usage.amount + ', \'' + usage.addr + '\')">Pay Now</button>';
+          }
+
+          transactionsHtml += '</div>\
+          <div class="col-8">\
+            <b>VPN address: </b> ' + usage.addr + ' <br>\
+            <b>Date: </b> 2017-12-09 18:30 PM<br>\
+            <b>Session Duration: </b> 180 Minutes<br>\
+          </div>\
+        </div>';
+        }
+
+        document.getElementById('wallethistory').innerHTML = transactionsHtml;
+      } else {
+        console.log('Error while fetching VPN usage', response);
+      }
+    });
+  });
+};
+
+getVPNList();
+
+function payVPNDue (amount, vpnAddr) {
+  console.log(vpnAddr, amount);
+
+  var vpnPaymentItem = {
+    vpnAddress: vpnAddr,
+    amount: amount
+  };
+
+  localStorage.setItem('vpnPaymentItem', JSON.stringify(vpnPaymentItem));
+
+  sectionId = 'vpnusage';
+  $('#wallethistory').hide();
+
+  $('#vpn-usage-menu').click();
+
+  $('#' + sectionId).show();
+  $('#' + sectionId + ' section').show();
+
+  $('#toAddress').val(vpnAddr);
+  $('#amount').val(amount);
+  $('#is_vpn').val(true);
+}
+
 function showMap () {
   console.log('inside showMap');
-  $('#world-map-markers').vectorMap({
-    map: 'world_mill',
-    scaleColors: ['#C8EEFF', '#0071A4'],
-    normalizeFunction: 'polynomial',
-    hoverOpacity: 0.7,
-    hoverColor: false,
-    markerStyle: {
-      initial: {
-        fill: '#F8E23B',
-        stroke: '#383f47'
+  $.mapael.prototype.isRaphaelBBoxBugPresent = function() {return false;};
+
+  $("#world-map-markers").mapael({
+      map: {
+          name: "world_countries"
+          // Set default plots and areas style
+          , defaultPlot: {
+              attrs: {
+                  fill: "#004a9b"
+                  , opacity: 0.6
+              }
+              , attrsHover: {
+                  opacity: 1
+              }
+              , text: {
+                  attrs: {
+                      fill: "#505444"
+                  }
+                  , attrsHover: {
+                      fill: "#000"
+                  }
+              }
+          }
+          , defaultArea: {
+              attrs: {
+                  fill: "#f4f4e8"
+                  , stroke: "#ced8d0"
+              }
+              , attrsHover: {
+                  fill: "#a4e100"
+              }
+              , text: {
+                  attrs: {
+                      fill: "#505444"
+                  }
+                  , attrsHover: {
+                      fill: "#000"
+                  }
+              }
+          }
+      },
+
+      // Customize some areas of the map
+      areas: {
+          "department-56": {
+              text: {content: "Morbihan", attrs: {"font-size": 10}},
+              tooltip: {content: "<b>Morbihan</b> <br /> Bretagne"}
+          },
+          "department-21": {
+              attrs: {
+                  fill: "#488402"
+              }
+              , attrsHover: {
+                  fill: "#a4e100"
+              }
+          }
+      },
+
+      // Add some plots on the map
+      plots: {
+          // Image plot
+          'paris': {
+              type: "image",
+              url: "http://www.neveldo.fr/mapael/assets/img/marker.png",
+              width: 16,
+              height: 50,
+              latitude: 48.86,
+              longitude: 2.3444,
+              attrs: {
+                  opacity: 1
+              },
+              attrsHover: {
+                  transform: "s1.5"
+              },
+              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Paris <br /> Speed: 100MBPS"},
+          },
+          // Square plot
+          'Beijing': {
+              type: "square",
+              size: 20,
+              latitude: 39.9385449,
+              longitude: 116.1165808,
+              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Beijing <br /> Speed: 100MBPS"},
+              text: {content: ""}
+          },
+          'Delhi': {
+              type: "circle",
+              size: 30,
+              latitude: 28.6466758,
+              longitude: 76.8123788,
+              attrs: {
+                  opacity: 1
+              },
+              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Delhi <br /> Speed: 10MBPS"},
+              text: {
+                  content: "",
+                  position: "inner",
+                  attrs: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  },
+                  attrsHover: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  }
+              }
+          },
+          'SanFransico': {
+              type: "circle",
+              size: 30,
+              latitude: 37.7576792,
+              longitude: -122.5078121,
+              attrs: {
+                  opacity: 1
+              },
+              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> SanFransico <br /> Speed: 10MBPS"},
+              text: {
+                  content: "",
+                  position: "inner",
+                  attrs: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  },
+                  attrsHover: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  }
+              }
+          },
+          'Sidney': {
+              type: "circle",
+              size: 30,
+              latitude: -30.7468808,
+              longitude: 126.6969803,
+              attrs: {
+                  opacity: 1
+              },
+              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Sidney <br /> Speed: 10MBPS"},
+              text: {
+                  content: "",
+                  position: "inner",
+                  attrs: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  },
+                  attrsHover: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  }
+              }
+          },
+          'Singapore': {
+              type: "circle",
+              size: 30,
+              latitude: 1.3139961,
+              longitude: 103.7038177,
+              attrs: {
+                  opacity: 1
+              },
+              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Singapore <br /> Speed: 10MBPS"},
+              text: {
+                  content: "",
+                  position: "inner",
+                  attrs: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  },
+                  attrsHover: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  }
+              }
+          }
       }
-    },
-    backgroundColor: '#383f47',
-    markers: [
-      {latLng: [37.7749, 122.4194], name: 'San Fransisco'},
-      {latLng: [41.90, 12.45], name: 'Vatican City'},
-      {latLng: [43.73, 7.41], name: 'Monaco'},
-      {latLng: [43.93, 12.46], name: 'San Marino'},
-      {latLng: [7.11, 171.06], name: 'Marshall Islands'},
-      {latLng: [3.2, 73.22], name: 'Maldives'},
-      {latLng: [12.05, -61.75], name: 'Grenada'},
-      {latLng: [13.16, -59.55], name: 'Barbados'},
-      {latLng: [17.11, -61.85], name: 'Antigua and Barbuda'},
-      {latLng: [14.01, -60.98], name: 'Saint Lucia'},
-      {latLng: [1.3, 103.8], name: 'Singapore'},
-      {latLng: [15.3, -61.38], name: 'Dominica'},
-      {latLng: [-20.2, 57.5], name: 'Mauritius'},
-      {latLng: [26.02, 50.55], name: 'Bahrain'}
-    ]
   });
 }

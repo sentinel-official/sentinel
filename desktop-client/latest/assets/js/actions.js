@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { exec } = require('child_process');
 
-const B_URL = 'http://185.181.8.90:8000/client';
+const B_URL = 'http://35.198.204.28:8000/client';
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
@@ -580,7 +580,7 @@ function showVPNUsageStats() {
 
           transactionsHtml += '<div class="row single-transaction-block">\
           <div class="col-4">\
-            <b>Data Used: </b> ' + usage.used/1024 + 'MB <br>\
+            <b>Data Used: </b> ' + usage.used/(1024 * 1024) + 'MB <br>\
             <b>Total Cost: </b> ' + usage.amount + 'SENTs <br>';
 
           if (usage.is_payed) {
@@ -635,185 +635,105 @@ function showMap () {
   console.log('inside showMap');
   $.mapael.prototype.isRaphaelBBoxBugPresent = function() {return false;};
 
-  $("#world-map-markers").mapael({
-      map: {
-          name: "world_countries"
-          // Set default plots and areas style
-          , defaultPlot: {
+  fetch(B_URL + '/vpn/list', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    }
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success === true) {
+        var plots = {};
+        
+        response.list.forEach(function(server) {
+          console.log(server);
+          plots[server['location']['region']] = {
+              type: "circle",
+              size: 10,
+              latitude: server['location']['latitude'],
+              longitude: server['location']['longitude'],
               attrs: {
-                  fill: "#004a9b"
-                  , opacity: 0.6
-              }
-              , attrsHover: {
                   opacity: 1
-              }
-              , text: {
+              },
+              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span>" + server['location']['region'] + "<br /> Speed: "+ Number((server['net_speed']['download'] / (1024 * 1024)).toFixed(2)) + " MBPS"},
+              text: {
+                  content: "",
+                  position: "inner",
                   attrs: {
-                      fill: "#505444"
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  },
+                  attrsHover: {
+                      "font-size": 12
+                      , "font-weight": "bold"
+                      , fill: "#000"
+                  }
+              }
+          }
+        });
+        
+          $("#world-map-markers").mapael({
+            map: {
+              name: "world_countries"
+              // Set default plots and areas style
+              , defaultPlot: {
+                  attrs: {
+                      fill: "#004a9b"
+                      , opacity: 0.6
                   }
                   , attrsHover: {
-                      fill: "#000"
+                      opacity: 1
+                  }
+                  , text: {
+                      attrs: {
+                          fill: "#505444"
+                      }
+                      , attrsHover: {
+                          fill: "#000"
+                      }
                   }
               }
-          }
-          , defaultArea: {
-              attrs: {
-                  fill: "#f4f4e8"
-                  , stroke: "#ced8d0"
-              }
-              , attrsHover: {
-                  fill: "#a4e100"
-              }
-              , text: {
+              , defaultArea: {
                   attrs: {
-                      fill: "#505444"
+                      fill: "#f4f4e8"
+                      , stroke: "#ced8d0"
                   }
                   , attrsHover: {
-                      fill: "#000"
+                      fill: "#a4e100"
+                  }
+                  , text: {
+                      attrs: {
+                          fill: "#505444"
+                      }
+                      , attrsHover: {
+                          fill: "#000"
+                      }
                   }
               }
-          }
-      },
+          },
 
-      // Customize some areas of the map
-      areas: {
-          "department-56": {
-              text: {content: "Morbihan", attrs: {"font-size": 10}},
-              tooltip: {content: "<b>Morbihan</b> <br /> Bretagne"}
+          // Customize some areas of the map
+          areas: {
+              "department-56": {
+                  text: {content: "Morbihan", attrs: {"font-size": 10}},
+                  tooltip: {content: "<b>Morbihan</b> <br /> Bretagne"}
+              },
+              "department-21": {
+                  attrs: {
+                      fill: "#488402"
+                  }
+                  , attrsHover: {
+                      fill: "#a4e100"
+                  }
+              }
           },
-          "department-21": {
-              attrs: {
-                  fill: "#488402"
-              }
-              , attrsHover: {
-                  fill: "#a4e100"
-              }
-          }
-      },
 
-      // Add some plots on the map
-      plots: {
-          // Image plot
-          'paris': {
-              type: "image",
-              url: "http://www.neveldo.fr/mapael/assets/img/marker.png",
-              width: 16,
-              height: 50,
-              latitude: 48.86,
-              longitude: 2.3444,
-              attrs: {
-                  opacity: 1
-              },
-              attrsHover: {
-                  transform: "s1.5"
-              },
-              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Paris <br /> Speed: 100MBPS"},
-          },
-          // Square plot
-          'Beijing': {
-              type: "square",
-              size: 20,
-              latitude: 39.9385449,
-              longitude: 116.1165808,
-              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Beijing <br /> Speed: 100MBPS"},
-              text: {content: ""}
-          },
-          'Delhi': {
-              type: "circle",
-              size: 30,
-              latitude: 28.6466758,
-              longitude: 76.8123788,
-              attrs: {
-                  opacity: 1
-              },
-              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Delhi <br /> Speed: 10MBPS"},
-              text: {
-                  content: "",
-                  position: "inner",
-                  attrs: {
-                      "font-size": 12
-                      , "font-weight": "bold"
-                      , fill: "#000"
-                  },
-                  attrsHover: {
-                      "font-size": 12
-                      , "font-weight": "bold"
-                      , fill: "#000"
-                  }
-              }
-          },
-          'SanFransico': {
-              type: "circle",
-              size: 30,
-              latitude: 37.7576792,
-              longitude: -122.5078121,
-              attrs: {
-                  opacity: 1
-              },
-              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> SanFransico <br /> Speed: 10MBPS"},
-              text: {
-                  content: "",
-                  position: "inner",
-                  attrs: {
-                      "font-size": 12
-                      , "font-weight": "bold"
-                      , fill: "#000"
-                  },
-                  attrsHover: {
-                      "font-size": 12
-                      , "font-weight": "bold"
-                      , fill: "#000"
-                  }
-              }
-          },
-          'Sidney': {
-              type: "circle",
-              size: 30,
-              latitude: -30.7468808,
-              longitude: 126.6969803,
-              attrs: {
-                  opacity: 1
-              },
-              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Sidney <br /> Speed: 10MBPS"},
-              text: {
-                  content: "",
-                  position: "inner",
-                  attrs: {
-                      "font-size": 12
-                      , "font-weight": "bold"
-                      , fill: "#000"
-                  },
-                  attrsHover: {
-                      "font-size": 12
-                      , "font-weight": "bold"
-                      , fill: "#000"
-                  }
-              }
-          },
-          'Singapore': {
-              type: "circle",
-              size: 30,
-              latitude: 1.3139961,
-              longitude: 103.7038177,
-              attrs: {
-                  opacity: 1
-              },
-              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span> Singapore <br /> Speed: 10MBPS"},
-              text: {
-                  content: "",
-                  position: "inner",
-                  attrs: {
-                      "font-size": 12
-                      , "font-weight": "bold"
-                      , fill: "#000"
-                  },
-                  attrsHover: {
-                      "font-size": 12
-                      , "font-weight": "bold"
-                      , fill: "#000"
-                  }
-              }
-          }
+          // Add some plots on the map
+          plots: plots
+          });
       }
+    });
   });
 }

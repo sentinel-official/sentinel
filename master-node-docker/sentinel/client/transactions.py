@@ -30,6 +30,19 @@ def get_transaction_history(account_addr):
 
 class TransferAmount(object):
     def on_post(self, req, resp):
+        """
+        @api {post} /client/transaction Transfer amount from one account to another.
+        @apiName TransferAmount
+        @apiGroup Transactions
+        @apiParam {String} from_addr Sender account address.
+        @apiParam {String} to_addr Receiver account address.
+        @apiParam {Number} amount Amount that has to be transferred.
+        @apiParam {String} unit Unit either `SENT` or `ETH`.
+        @apiParam {String} keystore Keystore file data of the sender account.
+        @apiParam {String} password Password of the sender account.
+        @apiParam {Number} session_id Session ID of the VPN session if it's a VPN payment.
+        @apiSuccess {String} tx_hash Transaction hash of the transaction.
+        """
         from_addr = str(req.body['from_addr'])
         to_addr = str(req.body['to_addr'])
         amount = float(req.body['amount'])
@@ -65,6 +78,13 @@ class TransferAmount(object):
 
 class TranscationReceipt(object):
     def on_post(self, req, resp):
+        """
+        @api {post} /client/transcation/receipt Transaction receipt of the specific transaction.
+        @apiName TranscationReceipt
+        @apiGroup Transactions
+        @apiParam {String} tx_hash Transaction hash of the transaction.
+        @apiSuccess {Object} receipt Detailed transaction receipt.
+        """
         tx_hash = str(req.body['tx_hash'])
 
         error, receipt = eth_helper.get_tx_receipt(tx_hash)
@@ -95,6 +115,13 @@ class TranscationReceipt(object):
 
 class TransactionHistory(object):
     def on_post(self, req, resp):
+        """
+        @api {post} /client/transaction/history Transaction history of the specific account.
+        @apiName TransactionHistory
+        @apiGroup Transactions
+        @apiParam {String} account_addr Account address.
+        @apiSuccess {Object} history Detailed transaction history.
+        """
         account_addr = str(req.body['account_addr'])
 
         history = get_transaction_history(account_addr)

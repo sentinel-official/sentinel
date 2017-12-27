@@ -262,7 +262,7 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "vpn.account_addr",
+            "field": "vpn_addr",
             "description": "<p>Account address of the VPN server.</p>"
           }
         ]

@@ -86,7 +86,7 @@ class GetVpnUsage(object):
         @apiName GetVpnUsage
         @apiGroup VPN
         @apiParam {String} account_addr Account address.
-        @apiSuccess {[]} usage VPN usage details.
+        @apiSuccess {Object[]} usage VPN usage details.
         """
         account_addr = req.body['account_addr']
 
@@ -113,7 +113,7 @@ class GetVpnsList(object):
         @api {get} /client/vpn/list Get all unoccupied VPN servers list.
         @apiName GetVpnsList
         @apiGroup VPN
-        @apiSuccess {[]} list Details of all VPN servers.
+        @apiSuccess {Object[]} list Details of all VPN servers.
         """
         _list = get_vpns_list()
 

@@ -64,29 +64,30 @@ contract VPNService {
         }
     }
 
-  function getDueAmount(
-    )
+  function getDueAmountOf(
+    address _address)
       public constant returns(uint256) {
-        return users[msg.sender].dueAmount;
+        return users[_address].dueAmount;
     }
 
-  function getVpnSessions(
-    )
+  function getVpnSessionsOf(
+    address _address)
       public constant returns(uint256) {
-        return users[msg.sender].vpnUsage.length;
+        return users[_address].vpnUsage.length;
     }
 
-  function getVpnUsage(
+  function getVpnUsageOf(
+    address _address,
     uint256 _sessionId)
       public constant returns(address, uint256, uint256, uint256, uint256, uint256, bool) {
         return (
-          users[msg.sender].vpnUsage[_sessionId].addr,
-          users[msg.sender].vpnUsage[_sessionId].receivedBytes,
-          users[msg.sender].vpnUsage[_sessionId].sentBytes,
-          users[msg.sender].vpnUsage[_sessionId].sessionDuration,
-          users[msg.sender].vpnUsage[_sessionId].amount,
-          users[msg.sender].vpnUsage[_sessionId].timestamp,
-          users[msg.sender].vpnUsage[_sessionId].isPayed
+          users[_address].vpnUsage[_sessionId].addr,
+          users[_address].vpnUsage[_sessionId].receivedBytes,
+          users[_address].vpnUsage[_sessionId].sentBytes,
+          users[_address].vpnUsage[_sessionId].sessionDuration,
+          users[_address].vpnUsage[_sessionId].amount,
+          users[_address].vpnUsage[_sessionId].timestamp,
+          users[_address].vpnUsage[_sessionId].isPayed
         );
     }
 }

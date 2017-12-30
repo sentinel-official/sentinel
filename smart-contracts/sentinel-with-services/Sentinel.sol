@@ -1,7 +1,7 @@
 pragma solidity ^0.4.19;
 
-import "./Owned.sol";
-import "./ERC20Token.sol";
+import "../sentinel-coin/Owned.sol";
+import "../sentinel-coin/ERC20Token.sol";
 
 contract Sentinel is Owned, ERC20Token {
   mapping (string => address) private services;

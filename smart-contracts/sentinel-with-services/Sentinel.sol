@@ -4,20 +4,35 @@ import "./Owned.sol";
 import "./ERC20Token.sol";
 
 contract Sentinel is Owned, ERC20Token {
-    mapping (string => address) private services;
+  mapping (string => address) private services;
 
-    function Sentinel(string _name, string _symbol, uint8 _decimals, uint256 _totalSupply)
-        ERC20Token(_name, _symbol, _decimals, _totalSupply) public {}
+  function Sentinel(
+    string _name,
+    string _symbol,
+    uint8 _decimals,
+    uint256 _totalSupply)
+      ERC20Token(_name, _symbol, _decimals, _totalSupply) public {
+    }
 
-    function deployService(string _name, address _address) onlyOwner public {
+  function deployService(
+    string _name,
+    address _address)
+      onlyOwner public {
         services[_name] = _address;
     }
 
-    function getService(string _name) public constant returns(address) {
+  function getService(
+    string _name)
+      public constant returns(address) {
         return services[_name];
     }
 
-    function payService(string _name, address _from, address _to, uint256 _value) public {
+  function payService(
+    string _name,
+    address _from,
+    address _to,
+    uint256 _value)
+      public {
         require(msg.sender != 0x0);
         require(services[_name] != 0x0);
         require(msg.sender == services[_name]);

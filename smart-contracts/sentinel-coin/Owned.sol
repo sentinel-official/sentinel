@@ -17,6 +17,8 @@ contract Owned {
   function transferOwnership(
     address _owner)
       onlyOwner public {
+        require(_owner != 0x0);
+
         owner = _owner;
     }
 }

@@ -49,7 +49,7 @@ contract VPNService {
     }
 
   function payVpnSession(
-    address _contractAddress,
+    address _sentinelContractAddress,
     uint256 _amount,
     uint256 _sessionId)
       public {
@@ -58,7 +58,7 @@ contract VPNService {
         require(users[msg.sender].vpnUsage[_sessionId].isPayed == false);
 
         address _to = users[msg.sender].vpnUsage[_sessionId].addr;
-        Sentinel sentinel = Sentinel(_contractAddress);
+        Sentinel sentinel = Sentinel(_sentinelContractAddress);
         sentinel.payService('vpn', msg.sender, _to, _amount);
 
         users[msg.sender].dueAmount -= _amount;

@@ -23,13 +23,13 @@ contract ERC20Token {
   event Burn(address indexed from, uint256 value);
 
   function ERC20Token(
-    string _name,
-    string _symbol,
+    string _tokenName,
+    string _tokenSymbol,
     uint8 _decimals,
     uint256 _totalSupply)
       public {
-        name = _name;
-        symbol = _symbol;
+        name = _tokenName;
+        symbol = _tokenSymbol;
         decimals = _decimals;
         totalSupply = _totalSupply * 10 ** uint256(decimals);
         balanceOf[msg.sender] = totalSupply;

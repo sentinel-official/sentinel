@@ -12,7 +12,7 @@ from ..config import DECIMALS
 
 
 class ContractManager(object):
-    def __init__(self, sentinel, vpn_service, password):
+    def __init__(self, sentinel, vpn_service):
         self.sentinel = sentinel
         self.vpn_service = vpn_service
         self.eth_manager = eth_manager
@@ -87,5 +87,4 @@ class ContractManager(object):
 
 contract_manager = ContractManager(
     {'name': SENTINEL_NAME, 'abi': SENTINEL_ABI, 'address': SENTINEL_ADDRESS},
-    {'name': VPNSERVICE_NAME, 'abi': VPNSERVICE_ABI, 'address': VPNSERVICE_ADDRESS},
-    COINBASE_PASSWORD)
+    {'name': VPNSERVICE_NAME, 'abi': VPNSERVICE_ABI, 'address': VPNSERVICE_ADDRESS})

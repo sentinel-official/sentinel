@@ -1,12 +1,18 @@
 pragma solidity ^0.4.19;
 
-import "../sentinel-with-services/Sentinel.sol";
+interface Sentinel {
+  function payService(
+    bytes32 _serviceName,
+    address _from,
+    address _to,
+    uint256 _value)
+      public;
+}
 
 contract VPNService {
   mapping(address => User) private users;
 
   struct User {
-    uint256 balance;
     uint256 dueAmount;
     VpnUsage[] vpnUsage;
   }
@@ -14,28 +20,25 @@ contract VPNService {
   struct VpnUsage {
     address addr;
     uint256 receivedBytes;
-    uint256 sentBytes;
     uint256 sessionDuration;
     uint256 amount;
     uint256 timestamp;
     bool isPayed;
   }
 
-  VpnUsage _vpnUsageTemp;
+  VpnUsage _vpnUsageTemplate;
 
   function addVpnUsage(
     address _addr,
     uint256 _receivedBytes,
-    uint256 _sentBytes,
     uint256 _sessionDuration,
     uint256 _amount,
     uint256 _timestamp)
       public {
-        VpnUsage storage _vpnUsage = _vpnUsageTemp;
+        VpnUsage storage _vpnUsage = _vpnUsageTemplate;
 
         _vpnUsage.addr = msg.sender;
         _vpnUsage.receivedBytes = _receivedBytes;
-        _vpnUsage.sentBytes = _sentBytes;
         _vpnUsage.sessionDuration = _sessionDuration;
         _vpnUsage.amount = _amount;
         _vpnUsage.timestamp = _timestamp;
@@ -79,11 +82,10 @@ contract VPNService {
   function getVpnUsageOf(
     address _address,
     uint256 _sessionId)
-      public constant returns(address, uint256, uint256, uint256, uint256, uint256, bool) {
+      public constant returns(address, uint256, uint256, uint256, uint256, bool) {
         return (
           users[_address].vpnUsage[_sessionId].addr,
           users[_address].vpnUsage[_sessionId].receivedBytes,
-          users[_address].vpnUsage[_sessionId].sentBytes,
           users[_address].vpnUsage[_sessionId].sessionDuration,
           users[_address].vpnUsage[_sessionId].amount,
           users[_address].vpnUsage[_sessionId].timestamp,

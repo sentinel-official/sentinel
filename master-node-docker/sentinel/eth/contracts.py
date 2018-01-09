@@ -75,7 +75,7 @@ class ContractManager(object):
                 account_addr, password)
             tx_hash = self.contracts[1].transact(
                 {'from': account_addr}).addVpnUsage(
-                    to_addr, received_bytes, session_duration,
+                    to_addr, sent_bytes, session_duration,
                     amount, timestamp)
             self.eth_manager.web3.personal.lockAccount(account_addr)
         except Exception as err:

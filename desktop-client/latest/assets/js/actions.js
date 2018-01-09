@@ -148,11 +148,11 @@ function _showAccountFunctions(account_addr) {
     var data = {};
     data['from_addr'] = document.getElementById('account_addr').innerHTML;
     data['to_addr'] = document.getElementById('toAddress').value;
-    data['amount'] = parseInt(document.getElementById('amount').value);
+    data['amount'] = document.getElementById('amount').value;
     data['gas'] = parseInt(document.getElementById('gas').value);
     data['unit'] = 'SENT';//form.unit.value;
     data['password'] = document.getElementById('password').value;
-    data['is_vpn_payment'] = document.getElementById('is_vpn').value == 'true' ? true : false;
+    data['session_id'] = document.getElementById('session_id').value;
 
     console.log(data);
 
@@ -224,7 +224,7 @@ function _showAccountFunctions(account_addr) {
         transactionHistoryDiv.innerHTML = '';
 
         history.forEach(function (record, index) {
-          var to_address = record['to_address'];
+          var to_addr = record['to_addr'];
           var amount = record['amount'];
           var status = 'success';
           var unit = record['unit'] + 's';
@@ -252,7 +252,7 @@ function _showAccountFunctions(account_addr) {
             <div class="row"> \
                 <div class="col-6"> \
                   <strong>To</strong> \
-                  <span>' + to_address + '</span> \
+                  <span>' + to_addr + '</span> \
                 </div> \
             </div> \
             <div class="row"> \
@@ -269,7 +269,7 @@ function _showAccountFunctions(account_addr) {
           </div> \
         </li>';
 
-          console.log(transactionElement);
+          //console.log(transactionElement);
 
 
           // var p = document.createElement('p');
@@ -599,7 +599,7 @@ function showVPNUsageStats() {
       if (response.success === true) {
         console.log('vpn stats', response.usage);
 
-        var vpnUsage = response.usage;
+        var vpnUsage = response.usage.sessions;
 
         var transactionsHtml = '';
 
@@ -608,20 +608,20 @@ function showVPNUsageStats() {
 
           transactionsHtml += '<div class="row single-transaction-block">\
           <div class="col-4">\
-            <b>Data Used: </b> ' + usage.used/(1024 * 1024) + 'MB <br>\
+            <b>Data Used: </b> ' + (usage.received_bytes/(1024 * 1024)).toFixed(2) + 'MB <br>\
             <b>Total Cost: </b> ' + usage.amount + 'SENTs <br>';
 
           if (usage.is_payed) {
             transactionsHtml += '<b>Status: </b> Paid';
           } else {
-            transactionsHtml += '<button class="btn" onclick="payVPNDue(' + usage.amount + ', \'' + usage.addr + '\')">Pay Now</button>';
+            transactionsHtml += '<button class="btn" onclick="payVPNDue(' + usage.amount + ', \'' + usage.account_addr + '\', ' + usage.id + ')">Pay Now</button>';
           }
 
           transactionsHtml += '</div>\
           <div class="col-8">\
-            <b>VPN address: </b> ' + usage.addr + ' <br>\
-            <b>Date: </b> 2017-12-09 18:30 PM<br>\
-            <b>Session Duration: </b> 180 Minutes<br>\
+            <b>VPN address: </b> ' + usage.account_addr + ' <br>\
+            <b>Date: </b> ' + new Date(usage.timestamp) + '<br>\
+            <b>Session Duration: </b> ' + (usage.duration/60).toFixed(2) + ' Minutes<br>\
           </div>\
         </div>';
         }
@@ -636,12 +636,13 @@ function showVPNUsageStats() {
 
 getVPNList();
 
-function payVPNDue (amount, vpnAddr) {
+function payVPNDue (amount, vpnAddr, sessionId) {
   console.log(vpnAddr, amount);
 
   var vpnPaymentItem = {
     vpnAddress: vpnAddr,
-    amount: amount
+    amount: amount,
+    sessionId: sessionId
   };
 
   localStorage.setItem('vpnPaymentItem', JSON.stringify(vpnPaymentItem));
@@ -656,6 +657,7 @@ function payVPNDue (amount, vpnAddr) {
 
   $('#toAddress').val(vpnAddr);
   $('#amount').val(amount);
+  $('#session_id').val(sessionId);
   $('#is_vpn').val(true);
 }
 

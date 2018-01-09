@@ -49,13 +49,13 @@ class Node(object):
 
     def update_nodeinfo(self, info=None):
         if info['type'] == 'location':
-            web_url = 'http://ipinfo.io/json'
+            web_url = 'http://ip-api.com/json'
             response = json.load(urlopen(web_url))
             self.location = {
                 'city': response['city'],
-                'region': response['region'],
-                'latitude': response['loc'].split(',')[0],
-                'longitude': response['loc'].split(',')[1]
+                'country': response['country'],
+                'latitude': response['lat'],
+                'longitude': response['lon']
             }
         elif info['type'] == 'netspeed':
             self.speed_test.get_best_server()

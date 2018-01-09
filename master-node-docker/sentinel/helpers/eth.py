@@ -35,7 +35,6 @@ class ETHHelper(object):
             'due': 0,
             'stats': {
                 'received_bytes': 0,
-                'sent_bytes': 0,
                 'duration': 0,
                 'amount': 0
             },
@@ -48,21 +47,19 @@ class ETHHelper(object):
                 error, _usage = contract_manager.get_vpn_usage(
                     account_addr, index)
                 if error is None:
-                    if _usage[6] is False:
-                        usage['due'] += _usage[4] / (DECIMALS * 1.0)
+                    if _usage[5] is False:
+                        usage['due'] += _usage[3] / (DECIMALS * 1.0)
                     usage['stats']['received_bytes'] += _usage[1]
-                    usage['stats']['sent_bytes'] += _usage[2]
-                    usage['stats']['duration'] += _usage[3]
-                    usage['stats']['amount'] += _usage[4] / (DECIMALS * 1.0)
+                    usage['stats']['duration'] += _usage[2]
+                    usage['stats']['amount'] += _usage[3] / (DECIMALS * 1.0)
                     usage['sessions'].append({
                         'id': index,
                         'account_addr': _usage[0],
                         'received_bytes': _usage[1],
-                        'sent_bytes': _usage[2],
-                        'duration': _usage[3],
-                        'amount': _usage[4] / (DECIMALS * 1.0),
-                        'timestamp': _usage[5],
-                        'is_payed': _usage[6]
+                        'duration': _usage[2],
+                        'amount': _usage[3] / (DECIMALS * 1.0),
+                        'timestamp': _usage[4],
+                        'is_payed': _usage[5]
                     })
                 else:
                     return error, None

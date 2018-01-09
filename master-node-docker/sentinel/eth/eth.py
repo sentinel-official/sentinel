@@ -10,7 +10,7 @@ from ..utils import logger
 class ETHManager(object):
     def __init__(self, provider=None, data_dir=None, RPC_url=None):
         self.data_dir = path.join(path.expanduser(
-            '~'), '.ethereum', 'sentinel') if data_dir is None else data_dir
+            '~'), '.ethereum') if data_dir is None else data_dir
         self.provider = 'ipc' if provider is None \
             else provider
         self.ipc_path = path.join(self.data_dir, 'geth.ipc')

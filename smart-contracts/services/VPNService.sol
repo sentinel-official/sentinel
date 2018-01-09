@@ -54,7 +54,7 @@ contract VPNService {
     uint256 _sessionId)
       public {
         require(users[msg.sender].dueAmount >= _amount);
-        require(users[msg.sender].vpnUsage[_sessionId].amount >= _amount);
+        require(users[msg.sender].vpnUsage[_sessionId].amount == _amount);
         require(users[msg.sender].vpnUsage[_sessionId].isPayed == false);
 
         address _to = users[msg.sender].vpnUsage[_sessionId].addr;

@@ -43,14 +43,15 @@
 							<li style="font-weight:bold;color:antiquewhite;border-bottom:1px solid #ccc">
 								VPN Service
 							</li>
+							<li id="VPNSelectList"></li>
 							<li style="margin:5px">
 								<div class="vpn-connection connected">
 									<i class="fa fa-user" style="color:#09ff99"></i> Connected
 									<button class="" onclick="_disconnectVPN()">Disconnect</button>
 									<div>
-										<span>IP: 100.19.12.143</span><br/>
-										<span>Location: India</span><br/>
-										<span>Speed: 10Mbps</span>
+										<span id="connectedVPNIP"></span><br/>
+										<span id="connectedVPNLocation"></span><br/>
+										<span id="connectedVPNSpeed"></span>
 									</div>
 								</div>
 								<div class="vpn-connection disconnected">

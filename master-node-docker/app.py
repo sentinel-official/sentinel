@@ -51,7 +51,7 @@ app.add_route('/node/add-usage', AddVpnUsage())
 app.add_route('/node/deregister', DeRegisterNode())
 
 # DEV
-from sentinel.dev import GetFreeAmount
+#from sentinel.dev import GetFreeAmount
 
 
-app.add_route('/dev/transfer-amount', GetFreeAmount())
+#app.add_route('/dev/transfer-amount', GetFreeAmount())

@@ -102,7 +102,6 @@ function _showAccountFunctions(account_addr) {
   }
 
   function _connectVPN() {
-    alert('CONNECT VPN');
     var account_addr = document.getElementById('account_addr').innerHTML;
     var vpn_addr = document.getElementById('selectedVPN').value;
     //_toggleVPNButtons();
@@ -428,7 +427,6 @@ function getOVPNAndSave(account_addr, vpn_addr, cb) {
   if (fs.existsSync(OVPN_FILE)) {
     cb(null);
   } else {
-    alert(account_addr + vpn_addr)
     fetch(B_URL + '/vpn', {
       method: 'POST',
       headers: {
@@ -443,6 +441,9 @@ function getOVPNAndSave(account_addr, vpn_addr, cb) {
       response.json().then(function (response) {
         if (response.success === true) {
           var ovpn = response['node']['vpn']['ovpn'].join('');
+          document.getElementById('connectedVPNIP').innerHTML = 'IP: ' + response['node']['vpn']['ovpn'][3].split(' ')[1];
+          document.getElementById('connectedVPNLocation').innerHTML = 'Location: ' + response['node']['location']['city'];
+          document.getElementById('connectedVPNSpeed').innerHTML = 'Speed: ' + Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + 'MBPS';
           fs.writeFile(OVPN_FILE, ovpn, function (err) {
             if (err) cb(err);
             else cb(null);
@@ -496,7 +497,7 @@ function connectVPN(account_addr, vpn_addr, cb) {
       exec(command, function (err, stdout, stderr) {
         OVPNDelTimer = setTimeout(function () {
           fs.unlinkSync(OVPN_FILE);
-        }, 60 * 1000);
+        }, 5 * 1000);
       });
 
       setTimeout(function () {
@@ -576,7 +577,7 @@ function updateSelectVPNList(vpnList) {
   for (var i = 0; i < array.length; i++) {
       var option = document.createElement("option");
       option.value = array[i].account.addr;
-      option.text = array[i].location.region;
+      option.text = array[i].location.city;
       selectList.appendChild(option);
   }
 }
@@ -675,7 +676,7 @@ function showMap () {
         
         response.list.forEach(function(server) {
           console.log(server);
-          plots[server['location']['region']] = {
+          plots[server['location']['city']] = {
               type: "circle",
               size: 10,
               latitude: server['location']['latitude'],
@@ -683,7 +684,8 @@ function showMap () {
               attrs: {
                   opacity: 1
               },
-              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span>" + server['location']['region'] + "<br /> Speed: "+ Number((server['net_speed']['download'] / (1024 * 1024)).toFixed(2)) + " MBPS"},
+              tooltip: {content: "<span style=\"font-weight:bold;\">City :</span>" + server['location']['city'] + "<br /> Speed: "+
+               Number((server['net_speed']['download'] / (1024 * 1024)).toFixed(2)) + " MBPS"},
               text: {
                   content: "",
                   position: "inner",

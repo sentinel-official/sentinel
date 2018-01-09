@@ -102,10 +102,12 @@ function _showAccountFunctions(account_addr) {
   }
 
   function _connectVPN() {
+    alert('CONNECT VPN');
     var account_addr = document.getElementById('account_addr').innerHTML;
+    var vpn_addr = document.getElementById('selectedVPN').value;
     //_toggleVPNButtons();
 
-    connectVPN(account_addr, function (err, response) {
+    connectVPN(account_addr, vpn_addr, function (err, response) {
       if (err) {
           alert(err.message);
         console.log(err);
@@ -422,10 +424,11 @@ function getTransactionHistory(account_addr, cb) {
   });
 }
 
-function getOVPNAndSave(account_addr, cb) {
+function getOVPNAndSave(account_addr, vpn_addr, cb) {
   if (fs.existsSync(OVPN_FILE)) {
     cb(null);
   } else {
+    alert(account_addr + vpn_addr)
     fetch(B_URL + '/vpn', {
       method: 'POST',
       headers: {
@@ -433,12 +436,13 @@ function getOVPNAndSave(account_addr, cb) {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({
-        account_addr: account_addr
+        account_addr: account_addr,
+        vpn_addr: vpn_addr
       })
     }).then(function (response) {
       response.json().then(function (response) {
         if (response.success === true) {
-          var ovpn = response['ovpn'].join('');
+          var ovpn = response['node']['vpn']['ovpn'].join('');
           fs.writeFile(OVPN_FILE, ovpn, function (err) {
             if (err) cb(err);
             else cb(null);
@@ -481,10 +485,10 @@ function getVPNPIDs(cb) {
 
 var callVPNstats = null;
 
-function connectVPN(account_addr, cb) {
+function connectVPN(account_addr, vpn_addr, cb) {
   var command = 'sudo openvpn ' + OVPN_FILE;
 
-  getOVPNAndSave(account_addr, function (err) {
+  getOVPNAndSave(account_addr, vpn_addr, function (err) {
     if (err) cb(err);
     else {
       if (OVPNDelTimer) clearInterval(OVPNDelTimer);
@@ -547,11 +551,34 @@ function getVPNList() {
     response.json().then(function (response) {
       if (response.success === true) {
         var vpnList = response.list;
+        
+        updateSelectVPNList(vpnList);
       } else {
         console.log('Error while fetching VPN list', response);
       }
     });
   });
+}
+
+function updateSelectVPNList(vpnList) {
+
+  var myDiv = document.getElementById("VPNSelectList");
+
+  //Create array of options to be added
+  var array = vpnList;
+
+  //Create and append select list
+  var selectList = document.createElement("select");
+  selectList.id = "selectedVPN";
+  myDiv.appendChild(selectList);
+
+  //Create and append the options
+  for (var i = 0; i < array.length; i++) {
+      var option = document.createElement("option");
+      option.value = array[i].account.addr;
+      option.text = array[i].location.region;
+      selectList.appendChild(option);
+  }
 }
 
 function showVPNUsageStats() {

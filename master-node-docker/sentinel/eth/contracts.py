@@ -16,8 +16,6 @@ class ContractManager(object):
         self.sentinel = sentinel
         self.vpn_service = vpn_service
         self.eth_manager = eth_manager
-        self.coinbase = eth_manager.web3.eth.coinbase
-        self.password = password
         self.contracts = [
             self.eth_manager.web3.eth.contract(contract_name=sentinel['name'], abi=sentinel['abi'], address=sentinel['address']),
             self.eth_manager.web3.eth.contract(contract_name=vpn_service['name'], abi=vpn_service['abi'], address=vpn_service['address'])

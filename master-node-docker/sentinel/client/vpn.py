@@ -46,9 +46,9 @@ class GetVpnCredentials(object):
             vpn_addr_len = len(vpn_addr)
 
             if vpn_addr_len > 0:
-                node = db.nodes.find_one({'vpn.status': 'up', 'account.addr': vpn_addr})
+                node = db.nodes.find_one({'vpn.status': 'up', 'account.addr': vpn_addr}, {'_id': 0, 'token': 0})
             else:
-                node = db.nodes.find_one({'vpn.status': 'up'})
+                node = db.nodes.find_one({'vpn.status': 'up'}, {'_id': 0, 'token': 0})
 
             if node is None:
                 if vpn_addr_len > 0:
@@ -66,7 +66,7 @@ class GetVpnCredentials(object):
 
                 message = {
                     'success': True,
-                    'ovpn': node['vpn']['ovpn']
+                    'node': node
                 }
         else:
             message = {

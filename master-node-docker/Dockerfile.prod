@@ -2,7 +2,7 @@ FROM alpine:3.6
 
 ADD sentinel /root/sentinel
 
-ADD app.py genesis.json run.sh /root/
+ADD app.py run.sh /root/
 
 ENV SENT_ENV=PROD
 

@@ -49,7 +49,7 @@ class TransferAmount(object):
         unit = str(req.body['unit'])
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
-        session_id = req.body['session_id']
+        session_id = int(req.body['session_id'])
 
         amount = int(amount * (10 ** 18)) \
             if unit == 'ETH' else int(amount * DECIMALS)

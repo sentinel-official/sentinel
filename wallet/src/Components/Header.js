@@ -32,7 +32,7 @@ const Header = (props) => {
                     fontWeight: '600',
                     color: '#FAFAFA'
                   }}>
-                  <span>{props.local_address}</span>
+                  <span style={{fontSize: 10}}>{props.local_address}</span>
                     <CopyToClipboard text={props.local_address} >
                       <img 
                       src={'../src/Images/download.jpeg'} 

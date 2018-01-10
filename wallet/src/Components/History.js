@@ -1,39 +1,38 @@
 import React, { Component } from 'react';
 import style from 'material-ui/svg-icons/image/style';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { getTransactionHistory} from '../Actions/AccountActions';
+
 var shell = window.require('electron').shell;
 
 class History extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [{
-                from_addr: '0xd5adb4110eb07e49ef8c38881a3ffda229ca2648',
-                to_addr: '0xa774becc16cacdc6d687934eb37e43a532a6ddc54',
-                amount: '100',
-                unit: 'SENT',
-                tx_hash: '0x1b04f90342850bf7926d1fc659e1dd61294edc395e16642182b56bb34dca635d',
-                status: 'Success',
-                date: '01-01-2018 10:00 PM'
-            },
-            {
-                from_addr: '0xa774becc16cacdc6d687934eb37e43a532a6ddc5',
-                to_addr: '0xd5adb4110eb07e49ef8c38881a3ffda229ca2648',
-                amount: '100',
-                unit: 'ETH',
-                tx_hash: '0x8d5a00917bd3359c14ef9d01aecf492fbc2acaaf9150303cffd337f30f443569 ',
-                status: 'Success',
-                date: '01-01-2017 10:00 PM'
-            }
-            ],
-            account_addr: '0xd5adb4110eb07e49ef8c38881a3ffda229ca2648'
+            data: [],
+            
         }
+      }    
+
+      getHistory() {
+      let that = this;
+      getTransactionHistory(this.props.local_address, (err, history) => {
+        if(err) console.log(err);
+        else {
+          that.setState({
+            data: history
+          })
+        }
+      })
     }
+
     openInExternalBrowser(url) {
         shell.openExternal(url);
     };
 
     render() {
+      console.log(this.props, 'hello')
+        this.getHistory()
         let output;
         let that = this;
         let data = this.state.data;

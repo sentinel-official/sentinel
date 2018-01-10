@@ -9,7 +9,7 @@ class SendComponent extends Component {
     this.state = {
       keystore: '',
       to_address: '',
-      amount: '',
+      amount: 0,
       gas: '',
       data: '',
       priv_key: '',
@@ -21,17 +21,17 @@ class SendComponent extends Component {
   }
 
   componentDidMount() {
-    getAccount();
   }
 
   onClickSend = () => {
     let body = {
-      from_addr: this.state.local_addr,
+      from_addr: this.props.local_address,
       to_addr: this.state.to_address,
       amount: this.state.amount,
       unit: this.state.unit,
       keystore: this.state.keystore,
       password: this.state.password,
+      session_id: null
     }
     let that = this;
     transferAmount(body, function(err, tx_addr) {
@@ -47,7 +47,7 @@ class SendComponent extends Component {
 renderLink() {
     return (
       <div>
-        Your Transaction is Placed Successfully. Check Status <a style={{color: '#1d400'}} href={`https://etherscan.io/${this.state.tx_addr}`} target="_blank">Here</a>
+        Your Transaction is Placed Successfully. Check Status <a style={{color: '#1d400'}} href={`https://etherscan.io/tx/${this.state.tx_addr}`}>Here</a>
       </div>
     )
 }
@@ -76,7 +76,7 @@ renderLink() {
                 <span>Amount:</span>
               </Col>
               <Col xs={7}>
-            <TextField style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false} fullWidth={true} onChange={(event, amount) => this.setState({amount})} value={this.state.amount} />
+            <TextField type="number" style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false} fullWidth={true} onChange={(event, amount) => this.setState({amount})} value={this.state.amount} />
               </Col>
               <Col xs={3}>
                 <DropDownMenu
@@ -84,11 +84,11 @@ renderLink() {
                   onChange={this.handleChange.bind(this)}
                 >
                   <MenuItem
-                    value={this.state.unit}
+                    value="ETH"
                     primaryText="ETH"
                   />
                   <MenuItem 
-                    value={this.state.unit}
+                    value="SENT"
                     primaryText="SENT"
                   />
                 </DropDownMenu>
@@ -127,7 +127,7 @@ renderLink() {
           <div>
           <FlatButton onClick={this.onClickSend.bind(this)} label="Send" style={{backgroundColor: '#f05e09', marginLeft: 20}} labelStyle={{paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }} />
           </div>
-            {this.state.tx_addr !== 'null' ? this.renderLink() : ''}
+            {this.state.tx_addr == null ? '' : this.renderLink()}
             </div>
           <div>
         </div>

@@ -4,7 +4,7 @@ import { Toolbar, ToolbarGroup, ToolbarSeparator ,TextField, RaisedButton, Chip,
 import SendComponent from './SendComponent';
 import tab from 'material-ui/svg-icons/action/tab';
 import Header from './Header';
-import {getAccount, transferAmount} from '../Actions/AccountActions';
+import { getBalance, getAccount, transferAmount} from '../Actions/AccountActions';
 import History from './History';
 
 class Dashboard extends Component {
@@ -15,12 +15,15 @@ class Dashboard extends Component {
             password: '',
             activeTab: 'purple',
             color: 'purple',
-            local_address: ''
+            local_address: '',
+            balance: {},
+            isGetBalanceCalled: false
         }
         this.set = this.props.set;
     }
     componentWillMount() {
       let that = this;
+      
       getAccount( (err, account_addr) => {
         if(err) console.log(err)
         else {
@@ -31,6 +34,23 @@ class Dashboard extends Component {
       } );
     }
 
+    getUserBalance() {
+      console.log('called', this.props)
+      console.log(getBalance, 'get7ba')
+      let balanceEth = {
+        account_addr: this.state.local_address,
+        unit: 'ETH'
+      }
+      console.log(balanceEth, 'ethb')
+      let that = this;
+      getBalance( balanceEth , (err, balance) => {
+        if(err) console.log(err, 'got and error')
+        else {
+          that.setState({ balance })
+        }
+      } )
+
+    }
     handleChange = (value) => {
       this.setState({
         value: value,
@@ -39,12 +59,24 @@ class Dashboard extends Component {
     };
 
     render() {
+      let that = this;
+      if (!this.state.isGetBalanceCalled) {
+        console.log(this, that)
+        setInterval(function () {
+  
+          that.getUserBalance();
+        }, 5000);
+        
+        this.setState({isGetBalanceCalled: true});
+      }
+
+      console.log(this.state.balance, 'balnew')
         return (
             <MuiThemeProvider>
                 <div>
                   <div>
                   <div>
-                    <Header  local_address={this.state.local_address} />
+                    <Header balance={this.state.balance}  local_address={this.state.local_address} />
                     <div>
                     <Tabs
                           value={this.state.value}

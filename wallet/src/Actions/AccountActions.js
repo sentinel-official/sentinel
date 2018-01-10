@@ -69,3 +69,44 @@ function getKeystore(cb) {
     else cb(null, data);
   });
 }
+
+export function getAccount(cb) {
+  getKeystore(function (err, data) {
+    if (err) {
+      cb(err, null);
+    } else {
+      data = JSON.parse(data);
+      var account_addr = '0x' + data.address;
+      cb(null, account_addr);
+    }
+  });
+}
+
+
+export function transferAmount(data, cb) {
+  console.log(data, 'dtaatatatat')
+  getKeystore(function (err, keystore) {
+    if (err) cb(err, null);
+    else {
+      data['keystore'] = keystore;
+      fetch(B_URL + '/client/transaction', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(data)
+      }).then(function (response) {
+        response.json().then(function (response) {
+          if (response.success === true) {
+            var tx_hash = response['tx_hash'];
+            cb(null, tx_hash);
+          } else {
+            cb({ message: 'Error occurred while initiating transfer amount.' }, null);
+          }
+        })
+      });
+    }
+  });
+}

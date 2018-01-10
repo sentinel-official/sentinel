@@ -3,12 +3,11 @@ const path = require('path');
 const electron = require('electron');
 const { app, BrowserWindow } = electron;
 
-
 function windowManager() {
   this.window = null;
 
   this.createWindow = () => {
-    this.window = new BrowserWindow({title: "My App",resizable: false,width:480,height:672});
+    this.window = new BrowserWindow({title: "My App",resizable: false, width: 480, height: 672});
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',

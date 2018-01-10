@@ -12,7 +12,11 @@ class App extends Component {
         }
     }
     componentWillMount=()=>{
-        this.setState({scene:'home'})   
+        var that = this;
+        checkKeystore(function (err) {
+            if (err) that.setState({scene:'home'});
+            else that.setState({scene:'dashboard'});
+        })   
     }
 
     setComponent=(name)=>{

@@ -3,7 +3,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 const Header = (props) => {
- 
+  console.log('hello', props)
   return (
     <div style={{height: 70, backgroundColor: '#532d91'}}>
       <div>
@@ -50,14 +50,14 @@ const Header = (props) => {
                     fontWeight: '600',
                     color: '#FAFAFA'
                   }}>
-                  200 ETH
+                  <span>SENT: {props.balance.sents}</span>
                 </Col>
                 <Col style={{
                     fontSize: 14,
                     fontWeight: '600',
                     color: '#FAFAFA'
                   }}>
-                  2000 SENT
+                  <span>ETH: {props.balance.eths}</span>
                 </Col>
               </div>
             </Col>

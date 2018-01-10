@@ -2,20 +2,13 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { Toolbar, ToolbarGroup, TextField, RaisedButton, List, ListItem } from 'material-ui';
-import { checkKeystore } from '../Actions/AccountActions';
 
 class Home extends Component {
     constructor(props) {
         super(props);
         this.set = this.props.set;
     }
-    _goTo = () => {
-        var that = this;
-        checkKeystore(function (err) {
-            if (err) that.set('create');
-            else that.set('dashboard');
-        })
-    }
+
     render() {
         return (
             <MuiThemeProvider>
@@ -41,7 +34,7 @@ class Home extends Component {
                             style={{ marginLeft: '7%' }}
                             labelStyle={styles.yesButtonLabel}
                             buttonStyle={styles.yesButton}
-                            onClick={this._goTo.bind(this)}
+                            onClick={()=>{this.set('create')}}
                         />
                     </div>
                     <Grid >

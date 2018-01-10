@@ -123,7 +123,7 @@ export function getBalance(data, cb) {
   }).then(function (response) {
     response.json().then(function (response) {
       if (response.success === true) {
-        var balance = response['balance'];
+        var balance = response['balances'];
         cb(null, balance);
       } else cb({ message: 'Error occurred while getting balance.' }, null);
     });

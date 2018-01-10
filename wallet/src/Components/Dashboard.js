@@ -4,7 +4,8 @@ import { Toolbar, ToolbarGroup, ToolbarSeparator ,TextField, RaisedButton, Chip,
 import SendComponent from './SendComponent';
 import tab from 'material-ui/svg-icons/action/tab';
 import Header from './Header';
-import transferAmount from '../Actions/AccountActions';
+import {getAccount, transferAmount} from '../Actions/AccountActions';
+import History from './History';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -13,9 +14,21 @@ class Dashboard extends Component {
             value: 'send',
             password: '',
             activeTab: 'purple',
-            color: 'purple'
+            color: 'purple',
+            local_address: ''
         }
         this.set = this.props.set;
+    }
+    componentWillMount() {
+      let that = this;
+      getAccount( (err, account_addr) => {
+        if(err) console.log(err)
+        else {
+          that.setState({
+            local_address: account_addr
+          })
+        }
+      } );
     }
 
     handleChange = (value) => {
@@ -31,7 +44,7 @@ class Dashboard extends Component {
                 <div>
                   <div>
                   <div>
-                    <Header local_address="0xiuwebfiuwebiufbiewfadns" />
+                    <Header  local_address={this.state.local_address} />
                     <div>
                     <Tabs
                           value={this.state.value}
@@ -42,12 +55,10 @@ class Dashboard extends Component {
                           inkBarStyle={{backgroundColor: 'purple'}}
                           >
                           <Tab style={{fontSize: 20, fontWeight: 'bold', color: 'purple'}} label="HISTORY" value="history">
-                            <div>
-                              history
-                            </div>
+                            <History local_address={this.state.local_address} />
                           </Tab>
                           <Tab style={{fontSize: 20, fontWeight: 'bold', color: 'purple'}} label="SEND" value="send">
-                            <SendComponent />
+                            <SendComponent local_address={this.state.local_address} />
                           </Tab>
                           <Tab style={{fontSize: 20, fontWeight: 'bold', color: 'purple'}} label="RECEIVE" value="receive">
                             <div>

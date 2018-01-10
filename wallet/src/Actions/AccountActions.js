@@ -2,7 +2,7 @@ const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = require('child_process');
-const B_URL = 'http://35.198.204.28:8000';
+const B_URL = 'http://35.198.204.28:8001';
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 
@@ -108,5 +108,44 @@ export function transferAmount(data, cb) {
         })
       });
     }
+  });
+}
+
+
+export function getBalance(data, cb) {
+  fetch(B_URL + '/client/account/balance', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success === true) {
+        var balance = response['balance'];
+        cb(null, balance);
+      } else cb({ message: 'Error occurred while getting balance.' }, null);
+    });
+  });
+}
+
+export function getTransactionHistory(account_addr, cb) {
+  fetch(B_URL + '/client/transaction/history', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      account_addr: account_addr
+    })
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success === true) {
+        var history = response['history'];
+        cb(null, history);
+      } else cb({ message: 'Error occurred while getting transaction history.' }, null);
+    });
   });
 }

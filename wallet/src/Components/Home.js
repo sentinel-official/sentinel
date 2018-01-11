@@ -15,7 +15,7 @@ class Home extends Component {
                 <div>
                     <Toolbar style={{ backgroundColor: 'rgb(83, 45, 145)' }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/1.png'} style={styles.toolbarImage} />
+                            <img src={'../src/Images/logo.jpeg'} style={styles.toolbarImage} />
                             <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
                         </ToolbarGroup>
                     </Toolbar>
@@ -41,7 +41,7 @@ class Home extends Component {
                         <Row>
                             <Col xs={7} style={styles.bottomDivCol}>
                                 <div style={{ marginLeft: '10%' }}>
-                                    <h4 style={{ marginBottom: 10 }}>More About Sentinel</h4>
+                                    <h4 style={{ marginBottom: 10,fontSize:14 }}>More About Sentinel</h4>
                                     <List>
                                         <ListItem primaryText="ABOUT US"
                                             innerDivStyle={styles.bottomDivListItem}

@@ -16,7 +16,10 @@ class Dashboard extends Component {
             activeTab: 'purple',
             color: 'purple',
             local_address: '',
-            balance: {},
+            balance: {
+              sents:0,
+              eths:0
+            },
             isGetBalanceCalled: false
         }
         this.set = this.props.set;

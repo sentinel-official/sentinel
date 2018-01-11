@@ -35,13 +35,10 @@ class Dashboard extends Component {
     }
 
     getUserBalance() {
-      console.log('called', this.props)
-      console.log(getBalance, 'get7ba')
       let balanceEth = {
         account_addr: this.state.local_address,
         unit: 'ETH'
       }
-      console.log(balanceEth, 'ethb')
       let that = this;
       getBalance( balanceEth , (err, balance) => {
         if(err) console.log(err, 'got and error')
@@ -61,7 +58,6 @@ class Dashboard extends Component {
     render() {
       let that = this;
       if (!this.state.isGetBalanceCalled) {
-        console.log(this, that)
         setInterval(function () {
   
           that.getUserBalance();
@@ -70,7 +66,6 @@ class Dashboard extends Component {
         this.setState({isGetBalanceCalled: true});
       }
 
-      console.log(this.state.balance, 'balnew')
         return (
             <MuiThemeProvider>
                 <div>
@@ -84,22 +79,21 @@ class Dashboard extends Component {
                           tabItemContainerStyle={{
                             backgroundColor: '#FAFAFA'
                           }}
-                          inkBarStyle={{backgroundColor: 'purple'}}
+                          inkBarStyle={{backgroundColor: '#532d91'}}
                           >
-                          <Tab style={{fontSize: 20, fontWeight: 'bold', color: 'purple'}} label="HISTORY" value="history">
+                          <Tab style={{fontSize: 14, fontWeight: 'bold', color: '#532d91'}} label="HISTORY" value="history">
                             <History local_address={this.state.local_address} />
                           </Tab>
-                          <Tab style={{fontSize: 20, fontWeight: 'bold', color: 'purple'}} label="SEND" value="send">
+                          <Tab style={{fontSize: 14, fontWeight: 'bold', color: '#532d91'}} label="SEND" value="send">
                             <SendComponent local_address={this.state.local_address} />
                           </Tab>
-                          <Tab style={{fontSize: 20, fontWeight: 'bold', color: 'purple'}} label="RECEIVE" value="receive">
+                          <Tab style={{fontSize: 14, fontWeight: 'bold', color: '#532d91'}} label="RECEIVE" value="receive">
                             <div>
-                             rx
+                             <h3>Work In Progress</h3>
                             </div>
                           </Tab>
                         </Tabs>
                     </div>
-                    <hr style={{backgroundColor: '#6a1b9a', fontSize: 20, fontWeight: 'bold', color: '#6a1b9a'}} />
                 </div>
                   </div>
                 </div>

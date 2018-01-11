@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import style from 'material-ui/svg-icons/image/style';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import {getTransactionHistory} from '../Actions/AccountActions';
+import { getTransactionHistory} from '../Actions/AccountActions';
 import { setTimeout } from 'timers';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
-var shell = window
+let shell = window
   .require('electron')
   .shell;
 
@@ -13,18 +14,32 @@ class History extends Component {
     super(props);
     this.state = {
       data: [],
-      isGetHistoryCalled: false
+      isGetHistoryCalled: false,
+      isLoading: true
 
     }
   }
 
+  renderProgress() {
+    const { refresh } = styles;
+    return (
+        <RefreshIndicator
+          size={50}
+          left={200}
+          top={200}
+          loadingColor="#532d91"
+          status="loading"
+          style={refresh}
+        />
+    )
+  }
   getHistory() {
     let that = this;
     getTransactionHistory(this.props.local_address, (err, history) => {
       if (err) 
         console.log(err);
       else {
-        that.setState({data: history})
+        that.setState({data: history, isLoading: false})
       }
     })
   }
@@ -34,16 +49,14 @@ class History extends Component {
   };
 
   render() {
-    // console.log(this.props, 'hello')
+
     let output;
     let that = this;
-     this.getHistory();
     if (!this.state.isGetHistoryCalled) {
-      console.log(this, that)
       setInterval(function () {
 
         that.getHistory();
-      }, 1000);
+      }, 10000);
 
       this.setState({isGetHistoryCalled: true});
     }
@@ -57,7 +70,8 @@ class History extends Component {
             ? <div>
                 <div>
                   <span style={{
-                    color: 'red'
+                    color: 'red',
+                    fontWeight: 'bold'
                   }}>OUT
                   </span>
                   <span>{history.date}</span>
@@ -79,13 +93,17 @@ class History extends Component {
             : <div>
               <div>
                 <span style={{
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  color: '#532d91'
                 }}>IN
                 </span>
                 <span>{history.date}</span>
               </div>
               <div>
-                <span>From:
+                <span style={{
+                    fontWeight: 'bold'
+                  }}>
+                  From:
                 </span>
                 <a
                   onClick={() => {
@@ -102,7 +120,7 @@ class History extends Component {
                         <span>{history.unit}s</span>  |
                     <span style={{ fontWeight: 'bold' }}> Status : </span><span>{history.status}</span>  |
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
-                        <a onClick={
+                        <a style={styles.anchorStyle} onClick={
                             () => {
                                 this.openInExternalBrowser(`https://etherscan.io/tx/${history.tx_hash}`)
                             }}>{history.tx_hash}</a></pre>
@@ -113,7 +131,7 @@ class History extends Component {
       <div style={{
         margin: '5%'
       }}>
-        {output}
+        {this.state.isLoading === true ? this.renderProgress() : output}
       </div>
     )
   }
@@ -126,11 +144,24 @@ const styles = {
     fontWeight: '400',
     color: 'rgba(0, 0, 0, 0.66)'
   },
+  anchorStyle: {
+    width: 220,
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
+  },
   clipBoard: {
     height: 20,
     width: 20,
     cursor: 'pointer'
-  }
+  },
+  refresh: {
+    display: 'inline-block',
+    position: 'relative',
+    // justifyContent: 'center',
+    // alignItems: 'center'
+  },
 }
 
 export default History;

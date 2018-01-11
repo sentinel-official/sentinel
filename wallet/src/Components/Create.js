@@ -117,7 +117,7 @@ class Create extends Component {
                                     hintStyle={styles.textFieldCreateHint}
                                     type="password"
                                     underlineShow={false}
-                                    onChange={(password) => { this.setState({ password }) }}
+                                    onChange={(event,password) => { this.setState({ password:password }) }}
                                     style={styles.textFieldCreate}
                                 />
                             </Paper>

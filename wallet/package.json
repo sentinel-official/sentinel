@@ -1,11 +1,13 @@
 {
-  "name": "sentinel-desktop-client",
-  "version": "0.1.0",
+  "name": "sentinelwallet",
+  "description": "Sentinel Wallet Desktop App",
+  "productName": "Sentinel Wallet Desktop App",
+  "version": "1.0.0",
   "private": true,
   "main": "electron.js",
   "homepage": "./",
   "dependencies": {
-    "electron": "^1.7.10",
+    "electron-packager": "^10.1.1",
     "fs": "0.0.1-security",
     "fs-thenable": "^1.1.1",
     "material-ui": "^0.20.0",
@@ -20,6 +22,16 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . sentinel-wallet-app --overwrite --asar=true --platform=win32 --icon=public/icon256x256.ico --prune=true --out=release-builds --version-string.CompanyName=Sentinel --version-string.FileDescription=S --version-string.ProductName=\"Sentinel Wallet\"",
+    "package-linux": "electron-packager . sentinel-wallet-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds",
+    "create-installer-mac": "electron-installer-dmg ./release-builds/Sentinel\\ VPN\\ App\\ app-darwin-x64/Electron\\ tutorial\\ app.app sentinel-desktop-app --out=release-builds --overwrite --icon=assets/icons/mac/icon.icns",
+    "create-installer-win": "node installers/windows/createinstaller.js",
+    "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-desktop-app-linux-x64/ --arch amd64 --config debian.json"
+  },
+  "devDependencies": {
+    "electron": "1.7.10",
+    "electron-winstaller": "^2.6.3"
   }
 }

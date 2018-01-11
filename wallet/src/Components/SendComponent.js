@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { MuiThemeProvider, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { transferAmount, getAccount } from '../Actions/AccountActions';
+import { purple500 } from 'material-ui/styles/colors';
+
+
+let shell = window
+  .require('electron')
+  .shell;
 
 class SendComponent extends Component {
   constructor(props) {
@@ -9,19 +15,21 @@ class SendComponent extends Component {
     this.state = {
       keystore: '',
       to_address: '',
-      amount: 0,
+      amount: '',
       gas: '',
       data: '',
       priv_key: '',
       file: '',
       unit: 'ETH',
       tx_addr: null,
-      password: ''
+      password: '',
+      isDisabled: true
     };
   }
 
-  componentDidMount() {
-  }
+  openInExternalBrowser(url) {
+    shell.openExternal(url);
+  };
 
   onClickSend = () => {
     let body = {
@@ -34,52 +42,81 @@ class SendComponent extends Component {
       session_id: null
     }
     let that = this;
-    transferAmount(body, function(err, tx_addr) {
-        if (err) console.log(err, "Error");
-        else {
-            that.setState({
-              tx_addr: tx_addr
-            })
-        }
+    transferAmount(body, function (err, tx_addr) {
+      if (err) console.log(err, "Error");
+      else {
+        that.setState({
+          tx_addr: tx_addr,
+          to_address: '',
+          amount: '',
+          gas: '',
+          data: '',
+          unit: 'ETH',
+          password: '',
+        })
+      }
     });
-}
+  }
 
-renderLink() {
+  renderLink() {
     return (
       <div>
-        Your Transaction is Placed Successfully. Check Status <a style={{color: '#1d400'}} href={`https://etherscan.io/tx/${this.state.tx_addr}`}>Here</a>
+        Your Transaction is Placed Successfully. Check Status <a onClick={() => {
+          this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`)
+        }} style={{ color: '#1d400' }}>Here</a>
       </div>
     )
-}
+  }
 
-  handleChange = (event, index, unit) => this.setState({unit});
+  handleChange = (event, index, unit) => this.setState({ unit });
   render() {
-    console.log(this.state)
     return (
       <MuiThemeProvider>
         <div style={{
           minHeight: 450,
           backgroundColor: '#c3deea',
           margin: 15
-          }}>
+        }}>
           <Grid>
-            <Row style={{marginBottom: 15, paddingTop: 20}}>
-              <Col xs={2}>
+            <Row style={{ marginBottom: 15, paddingTop: 20 }}>
+              <Col xs={3}>
                 <span>To:</span>
               </Col>
               <Col xs={9}>
-            <TextField style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, to_address) => this.setState({to_address})} value={this.state.to_address} />
+                <TextField style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, to_address) => this.setState({ to_address: to_address, isDisabled: false })} value={this.state.to_address} />
               </Col>
             </Row>
-            <Row style={{marginBottom: 15}}>
-              <Col xs={2}>
+            <Row style={{ marginBottom: 15 }}>
+              <Col xs={3}>
                 <span>Amount:</span>
               </Col>
-              <Col xs={7}>
-            <TextField type="number" style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false} fullWidth={true} onChange={(event, amount) => this.setState({amount})} value={this.state.amount} />
+              <Col xs={5}>
+                <TextField type="number" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, amount) => this.setState({ amount })} value={this.state.amount} />
               </Col>
-              <Col xs={3}>
+              <Col xs={4}>
                 <DropDownMenu
+                  autoWidth={true}
+                  iconStyle={{
+                    top: -6
+                  }}
+                  labelStyle={{
+                    height: 30,
+                    lineHeight: '30px',
+                    fontWeight: '600',
+                    color: purple500
+                  }}
+                  // selectedMenuItemStyle={{
+                  //   lineHeight: '30px',
+                  //   fontWeight: '700',
+                  //   color: purple500,
+                  //   paddingRight: -4,
+                  //   height: 50
+                  // }}
+                  style={{
+                    backgroundColor: '#FAFAFA',
+                    height: 30,
+                    width: '90%'
+                  }}
                   value={this.state.unit}
                   onChange={this.handleChange.bind(this)}
                 >
@@ -87,49 +124,44 @@ renderLink() {
                     value="ETH"
                     primaryText="ETH"
                   />
-                  <MenuItem 
+                  <MenuItem
                     value="SENT"
                     primaryText="SENT"
                   />
                 </DropDownMenu>
               </Col>
             </Row>
-            <Row style={{marginBottom: 15}}>
-              <Col xs={2}>
+            <Row style={{ marginBottom: 15 }}>
+              <Col xs={3}>
                 <span>Gas</span>
               </Col>
               <Col xs={9}>
-            <TextField type="number" style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, gas) => this.setState({gas})} value={this.state.gas} />
+                <TextField type="number" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, gas) => this.setState({ gas })} value={this.state.gas} />
               </Col>
             </Row>
-            <Row style={{marginBottom: 15}}>
-              <Col xs={2}>
+            <Row style={{ marginBottom: 15 }}>
+              <Col xs={3}>
                 <span>Data: </span>
               </Col>
               <Col xs={9}>
-            <TextField multiLine={true} rowsMax={3} rows={2} style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, data) => this.setState({data})} value={this.state.data} />
+                <TextField multiLine={true} rowsMax={3} rows={2} style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
             </Row>
-            <Row style={{marginBottom: 15}}>
-              <Col xs={2}>
+            <Row style={{ marginBottom: 15 }}>
+              <Col xs={3}>
                 <span>Password: </span>
               </Col>
               <Col xs={9}>
-            <TextField type="password" style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, password) => this.setState({password})} value={this.state.password} />
+                <TextField type="password" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, password) => this.setState({ password })} value={this.state.password} />
               </Col>
             </Row>
-            {/* <Row style={{marginBottom: 15, marginLeft: 15, marginRight: 15}}>
-              <Col xs={12}>
-            <TextField placeholder="Enter Private Key To Sign The Transaction" style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, keystore) => this.setState({keystore})} value={this.state.keystore} />
-              </Col>
-            </Row> */}
           </Grid>
           <div>
-          <FlatButton onClick={this.onClickSend.bind(this)} label="Send" style={{backgroundColor: '#f05e09', marginLeft: 20}} labelStyle={{paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }} />
+            <FlatButton disabled={this.state.to_address === '' ? true : false } onClick={this.onClickSend.bind(this)} label="Send" style={this.state.isDisabled === true ? { backgroundColor: '#bdbdbd', marginLeft: 20 }:{ backgroundColor: '#f05e09', marginLeft: 20 }} labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }} />
           </div>
-            {this.state.tx_addr == null ? '' : this.renderLink()}
-            </div>
-          <div>
+          {this.state.tx_addr == null ? '' : this.renderLink()}
+        </div>
+        <div>
         </div>
       </MuiThemeProvider>
     );

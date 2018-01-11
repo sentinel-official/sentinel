@@ -15,12 +15,13 @@ class Home extends Component {
                 <div>
                     <Toolbar style={{ backgroundColor: 'rgb(83, 45, 145)' }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/1.png'} style={styles.toolbarImage} />
+                            <img src={'../src/Images/3.png'} style={styles.toolbarImage} />
                             <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
                         </ToolbarGroup>
                     </Toolbar>
                     <div style={styles.middleDiv} >
                         <Grid style={styles.middleDivGrid}>
+                            <br/>
                             <Row>
                                 <Col>
                                     <h1>Be as private as you wish, on internet!</h1>
@@ -34,14 +35,14 @@ class Home extends Component {
                             style={{ marginLeft: '7%' }}
                             labelStyle={styles.yesButtonLabel}
                             buttonStyle={styles.yesButton}
-                            onClick={()=>{this.set('create')}}
+                            onClick={() => { this.set('create') }}
                         />
                     </div>
                     <Grid >
                         <Row>
                             <Col xs={7} style={styles.bottomDivCol}>
-                                <div style={{ marginLeft: '10%' }}>
-                                    <h4 style={{ marginBottom: 10 }}>More About Sentinel</h4>
+                                <div style={{ marginLeft: '10%', padding: '2%' }}>
+                                    <h4 style={styles.moreAboutText}>More About Sentinel</h4>
                                     <List>
                                         <ListItem primaryText="ABOUT US"
                                             innerDivStyle={styles.bottomDivListItem}
@@ -73,8 +74,8 @@ class Home extends Component {
 
 const styles = {
     toolbarImage: {
-        width: 90,
-        height: 90,
+        width: 80,
+        height: 100,
         paddingTop: '8%'
     },
     toolbarTitle: {
@@ -113,6 +114,12 @@ const styles = {
         color: 'white',
         height: 196
     },
+    moreAboutText: {
+        marginBottom: 10,
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginTop: '5%'
+    },
     bottomDivListItem: {
         padding: '5px 5px 5px 16px',
         fontSize: 12
@@ -120,7 +127,9 @@ const styles = {
     bottomDivBuilt: {
         color: 'rgb(83, 45, 145)',
         fontWeight: 'bold',
-        marginBottom: 0
+        marginBottom: 0,
+        marginTop: '15%',
+        fontSize: 18
     },
     underLine: {
         textDecoration: 'underline',

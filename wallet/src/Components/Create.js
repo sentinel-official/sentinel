@@ -23,7 +23,8 @@ class Create extends Component {
             keystore_addr: '',
             checked: false,
             openSnack: false,
-            snackMessage: ''
+            snackMessage: '',
+            isLoading: null
         }
         this.set = this.props.set;
     }
@@ -44,8 +45,8 @@ class Create extends Component {
         return (
             <RefreshIndicator
                 size={50}
-                left={200}
-                top={200}
+                left={30}
+                top={15}
                 loadingColor="#532d91"
                 status="loading"
                 style={refresh}
@@ -54,6 +55,7 @@ class Create extends Component {
     }
 
     _createAccount = () => {
+      this.setState({isLoading: true})
         var password = this.state.password;
         var that = this;
         createAccount(password, function (err, account) {
@@ -62,7 +64,8 @@ class Create extends Component {
                 that.setState({
                     account_addr: account.account_addr,
                     private_key: account.private_key,
-                    keystore_addr: account.keystore_addr
+                    keystore_addr: account.keystore_addr,
+                    isLoading: false
                 })
             }
         });
@@ -124,6 +127,7 @@ class Create extends Component {
                                 onClick={this._createAccount}
                                 buttonStyle={styles.buttonCreate}
                                 style={styles.createStyle} />
+                                {this.state.isLoading === true ? this.renderProgress(): ''}
                             <p style={{ fontSize: 12, marginLeft: '3%' }}>(Or)</p>
                             <Paper zDepth={2} style={styles.bluePaper}>
                                 <div style={{ padding: '7%' }}>
@@ -140,15 +144,6 @@ class Create extends Component {
                                             {this.state.file}
                                         </Chip>
                                     }
-                                    {/* <Paper zDepth={2} style={{ height: 35, width: '100%', marginTop: '3%' }}>
-                                    <TextField
-                                        hintText="Enter keystore password"
-                                        hintStyle={{ fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}
-                                        type="password"
-                                        underlineShow={false}
-                                        style={{ width: '85%', paddingLeft: '5%', height: 40 }}
-                                    />
-                                </Paper> */}
                                     <RaisedButton
                                         label="Restore"
                                         labelStyle={{ color: 'white', textTransform: 'none' }}

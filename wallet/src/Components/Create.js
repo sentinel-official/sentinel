@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { Toolbar, ToolbarGroup, TextField, RaisedButton, Chip, Dialog, FlatButton, Checkbox, Paper } from 'material-ui';
+import {
+    Toolbar, ToolbarGroup, TextField, RaisedButton, Chip, Dialog, FlatButton, Checkbox, Paper, Snackbar
+} from 'material-ui';
 import Dashboard from './Dashboard';
 import { createAccount, uploadKeystore } from '../Actions/AccountActions';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -18,7 +20,9 @@ class Create extends Component {
             account_addr: '',
             private_key: '',
             keystore_addr: '',
-            checked: false
+            checked: false,
+            openSnack: false,
+            snackMessage: ''
         }
         this.set = this.props.set;
     }
@@ -48,6 +52,12 @@ class Create extends Component {
             }
         });
     }
+
+    snackRequestClose = () => {
+        this.setState({
+            openSnack: false,
+        });
+    };
 
     _store = () => {
         var keystore = this.state.keystore;
@@ -148,7 +158,11 @@ class Create extends Component {
                                 <p style={styles.detailVal}>{this.state.account_addr}</p>
                                 <p style={styles.detailHeadBold}>Private Key:</p><p
                                     style={styles.detailVal}>{this.state.private_key}
-                                    <CopyToClipboard text={this.state.private_key}>
+                                    <CopyToClipboard text={this.state.private_key}
+                                        onCopy={() => that.setState({
+                                            snackMessage: 'Copied to Clipboard Successfully',
+                                            openSnack: true
+                                        })}>
                                         <img src={'../src/Images/download.jpeg'}
                                             style={styles.clipBoard} />
                                     </CopyToClipboard></p>
@@ -174,10 +188,17 @@ class Create extends Component {
                                 labelStyle={styles.yesButtonLabel}
                                 buttonStyle={styles.yesButton}
                                 disabled={this.state.checked ? false : true}
-                                onClick={()=>{this.set('dashboard')}}
+                                onClick={() => { this.set('dashboard') }}
                             />
                         </div>
                     }
+                    <Snackbar
+                        open={this.state.openSnack}
+                        message={this.state.snackMessage}
+                        autoHideDuration={2000}
+                        onRequestClose={this.snackRequestClose}
+                        style={{ marginBottom: '2%' }}
+                    />
                 </div>
             </MuiThemeProvider>
         );
@@ -227,7 +248,7 @@ const styles = {
         width: '85%',
         paddingLeft: '5%',
         height: 40,
-        lineHeight:'18px'
+        lineHeight: '18px'
     },
     buttonLabel: {
         color: 'white',
@@ -271,14 +292,14 @@ const styles = {
         wordBreak: 'break-all',
         marginTop: 0
     },
-    clipBoard:{
-        height: 20, 
-        width: 20, 
+    clipBoard: {
+        height: 20,
+        width: 20,
         cursor: 'pointer'
     },
-    checkboxLabel:{
-        color: 'rgb(240, 94, 9)', 
-        fontSize: 12, 
+    checkboxLabel: {
+        color: 'rgb(240, 94, 9)',
+        fontSize: 12,
         fontWeight: 800
     }
 }

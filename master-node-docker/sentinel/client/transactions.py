@@ -11,11 +11,11 @@ def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash, session_i
         if unit == 'ETH' else amount / (DECIMALS * 1.0)
 
     transaction = {
-        'from_addr': from_addr,
-        'to_addr': to_addr,
+        'from_addr': from_addr.lower(),
+        'to_addr': to_addr.lower(),
         'amount': amount,
         'unit': unit,
-        'tx_hash': tx_hash,
+        'tx_hash': tx_hash.lower(),
         'session_id': session_id,
         'timestamp': int(time.time())
     }
@@ -23,6 +23,7 @@ def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash, session_i
 
 
 def get_transaction_history(account_addr):
+    account_addr = account_addr.lower()
     transactions = db.transactions.find(
         {'$or': [{'from_addr': account_addr}, {'to_addr': account_addr}]}, {'_id': 0})
     return list(transactions)

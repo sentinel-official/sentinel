@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import style from 'material-ui/svg-icons/image/style';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getTransactionHistory} from '../Actions/AccountActions';
+import { getTransactionHistory } from '../Actions/AccountActions';
 import { setTimeout } from 'timers';
+import { Snackbar } from 'material-ui';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 let shell = window
@@ -15,37 +16,43 @@ class History extends Component {
     this.state = {
       data: [],
       isGetHistoryCalled: false,
-      isLoading: true
-
+      isLoading: true,
+      openSnack: false,
+      snackMessage: ''
     }
   }
 
   renderProgress() {
     const { refresh } = styles;
     return (
-        <RefreshIndicator
-          size={50}
-          left={200}
-          top={200}
-          loadingColor="#532d91"
-          status="loading"
-          style={refresh}
-        />
+      <RefreshIndicator
+        size={50}
+        left={200}
+        top={200}
+        loadingColor="#532d91"
+        status="loading"
+        style={refresh}
+      />
     )
   }
   getHistory() {
     let that = this;
     getTransactionHistory(this.props.local_address, (err, history) => {
-      if (err) 
+      if (err)
         console.log(err);
       else {
-        that.setState({data: history, isLoading: false})
+        that.setState({ data: history, isLoading: false })
       }
     })
   }
 
   openInExternalBrowser(url) {
     shell.openExternal(url);
+  };
+  snackRequestClose = () => {
+    this.setState({
+      openSnack: false,
+    });
   };
 
   render() {
@@ -58,7 +65,7 @@ class History extends Component {
         that.getHistory();
       }, 10000);
 
-      this.setState({isGetHistoryCalled: true});
+      this.setState({ isGetHistoryCalled: true });
     }
 
     let data = this.state.data;
@@ -66,30 +73,34 @@ class History extends Component {
     output = data.map((history) => {
       return (
         <div style={styles.wholeDiv}>
-          {history.from_addr == that.state.account_addr
+          {history.from_addr == that.props.local_address
             ? <div>
-                <div>
-                  <span style={{
-                    color: 'red',
-                    fontWeight: 'bold'
-                  }}>OUT
+              <div>
+                <span style={{
+                  color: 'red',
+                  fontWeight: 'bold'
+                }}>OUT
                   </span>
-                  <span>{history.date}</span>
-                </div>
-                <div>
-                  <span style={{
-                    fontWeight: 'bold'
-                  }}>To :
+                <span>{history.date}</span>
+              </div>
+              <div>
+                <span style={{
+                  fontWeight: 'bold'
+                }}>To :
                   </span>
-                  <a
-                    onClick={() => {
+                <a
+                  onClick={() => {
                     this.openInExternalBrowser(`https://etherscan.io/address/${history.to_addr}`)
                   }}>{history.to_addr}</a>
-                  <CopyToClipboard text={history.to_addrs}>
-                    <img src={'../src/Images/download.jpeg'} style={styles.clipBoard}/>
-                  </CopyToClipboard>
-                </div>
+                <CopyToClipboard text={history.to_addrs}
+                  onCopy={() => that.setState({
+                    snackMessage: 'Copied to Clipboard Successfully',
+                    openSnack: true
+                  })} >
+                  <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
+                </CopyToClipboard>
               </div>
+            </div>
             : <div>
               <div>
                 <span style={{
@@ -101,37 +112,50 @@ class History extends Component {
               </div>
               <div>
                 <span style={{
-                    fontWeight: 'bold'
-                  }}>
+                  fontWeight: 'bold'
+                }}>
                   From:
                 </span>
                 <a
                   onClick={() => {
-                  this.openInExternalBrowser(`https://etherscan.io/address/${history.from_addr}`)
-                }}>{history.from_addr}</a>
-                <CopyToClipboard text={history.from_addr}>
-                  <img src={'../src/Images/download.jpeg'} style={styles.clipBoard}/>
+                    this.openInExternalBrowser(`https://etherscan.io/address/${history.from_addr}`)
+                  }}>{history.from_addr}</a>
+                <CopyToClipboard text={history.from_addr}
+                  onCopy={() => that.setState({
+                    snackMessage: 'Copied to Clipboard Successfully',
+                    openSnack: true
+                  })} >
+                  <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
                 </CopyToClipboard>
               </div>
             </div>
-}
-          <pre style={{ marginTop: 0, fontFamily: 'Poppins' }}>
-                        <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{history.amount} </span>
-                        <span>{history.unit}s</span>  |
+          }
+          <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
+            <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{history.amount} </span>
+            <span>{history.unit}s</span>  |
                     <span style={{ fontWeight: 'bold' }}> Status : </span><span>{history.status}</span>  |
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
-                        <a style={styles.anchorStyle} onClick={
-                            () => {
-                                this.openInExternalBrowser(`https://etherscan.io/tx/${history.tx_hash}`)
-                            }}>{history.tx_hash}</a></pre>
-                </div>
+            <a style={styles.anchorStyle} onClick={
+              () => {
+                this.openInExternalBrowser(`https://etherscan.io/tx/${history.tx_hash}`)
+              }}>{history.tx_hash}</a></pre>
+        </div>
       )
     })
     return (
       <div style={{
         margin: '5%'
       }}>
-        {this.state.isLoading === true ? this.renderProgress() : output}
+        {this.state.isLoading === true ? this.renderProgress() :
+          <div style={{ height: 480, overflowY: 'auto', overflowX: 'hidden' }}>{output}</div>
+        }
+        <Snackbar
+          open={this.state.openSnack}
+          message={this.state.snackMessage}
+          autoHideDuration={2000}
+          onRequestClose={this.snackRequestClose}
+          style={{marginBottom:'2%'}}
+        />
       </div>
     )
   }
@@ -146,10 +170,9 @@ const styles = {
   },
   anchorStyle: {
     width: 220,
-    position: 'absolute',
+    position: 'relative',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
-    overflow: 'hidden'
   },
   clipBoard: {
     height: 20,

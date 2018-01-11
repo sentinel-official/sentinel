@@ -6,6 +6,7 @@ import tab from 'material-ui/svg-icons/action/tab';
 import Header from './Header';
 import { getBalance, getAccount, transferAmount} from '../Actions/AccountActions';
 import History from './History';
+import ReceiveComponent from './ReceiveComponent';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -92,7 +93,7 @@ class Dashboard extends Component {
                           </Tab>
                           <Tab style={{fontSize: 14, fontWeight: 'bold', color: '#532d91'}} label="RECEIVE" value="receive">
                             <div>
-                             <h3>Work In Progress</h3>
+                             <ReceiveComponent local_address={this.state.local_address} />
                             </div>
                           </Tab>
                         </Tabs>

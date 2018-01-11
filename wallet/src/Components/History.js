@@ -66,7 +66,7 @@ class History extends Component {
     output = data.map((history) => {
       return (
         <div style={styles.wholeDiv}>
-          {history.from_addr == that.state.account_addr
+          {history.from_addr == that.props.local_address
             ? <div>
                 <div>
                   <span style={{

@@ -29,6 +29,7 @@ class SendComponent extends Component {
 
   openInExternalBrowser(url) {
     shell.openExternal(url);
+    this.setState({ tx_addr: null })
   };
 
   onClickSend = () => {
@@ -68,6 +69,10 @@ class SendComponent extends Component {
     )
   }
 
+  clearTaxAdd = () => {
+
+  }
+
   handleChange = (event, index, unit) => this.setState({ unit });
   render() {
     return (
@@ -83,7 +88,12 @@ class SendComponent extends Component {
                 <span>To:</span>
               </Col>
               <Col xs={9}>
-                <TextField style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, to_address) => this.setState({ to_address: to_address, isDisabled: false })} value={this.state.to_address} />
+                <TextField
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
+                  underlineShow={false} fullWidth={true}
+                  onChange={(event, to_address) => this.setState({ to_address: to_address, isDisabled: false })}
+                  value={this.state.to_address}
+                />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
@@ -157,7 +167,14 @@ class SendComponent extends Component {
             </Row>
           </Grid>
           <div>
-            <FlatButton disabled={this.state.to_address === '' ? true : false } onClick={this.onClickSend.bind(this)} label="Send" style={this.state.isDisabled === true ? { backgroundColor: '#bdbdbd', marginLeft: 20 }:{ backgroundColor: '#f05e09', marginLeft: 20 }} labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }} />
+            <FlatButton disabled={this.state.to_address === '' ? true : false} onClick={this.onClickSend.bind(this)} label="Send"
+              style={
+                this.state.isDisabled === true ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
+                  :
+                  { backgroundColor: '#f05e09', marginLeft: 20 }
+              }
+              labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }}
+            />
           </div>
           {this.state.tx_addr == null ? '' : this.renderLink()}
         </div>

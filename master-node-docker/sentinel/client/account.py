@@ -41,21 +41,19 @@ class GetBalance(object):
         @apiName GetBalance
         @apiGroup Account
         @apiParam {String} account_addr Address of the account.
-        @apiParam {String} unit Unit either `SENT` or `ETH`.
-        @apiSuccess {Number} balance Account balance in specified units.
+        @apiSuccess {Object} balances Account balances.
         """
         account_addr = str(req.body['account_addr'])
-        unit = str(req.body['unit'])
+        balances = {}
 
-        if unit == 'ETH':
-            error, balance = eth_manager.get_balance(account_addr)
-        elif unit == 'SENT':
-            error, balance = contract_manager.get_balance(account_addr)
+        error, balances['eths'] = eth_manager.get_balance(account_addr)
+        if error is None:
+            error, balances['sents'] = contract_manager.get_balance(account_addr)
 
         if error is None:
             message = {
                 'success': True,
-                'balance': balance
+                'balances': balances
             }
         else:
             message = {

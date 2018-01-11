@@ -15,7 +15,7 @@ class SendComponent extends Component {
     this.state = {
       keystore: '',
       to_address: '',
-      amount: 0,
+      amount: '',
       gas: '',
       data: '',
       priv_key: '',
@@ -41,27 +41,33 @@ class SendComponent extends Component {
       session_id: null
     }
     let that = this;
-    transferAmount(body, function(err, tx_addr) {
-        if (err) console.log(err, "Error");
-        else {
-            that.setState({
-              tx_addr: tx_addr
-            })
-        }
+    transferAmount(body, function (err, tx_addr) {
+      if (err) console.log(err, "Error");
+      else {
+        that.setState({
+          tx_addr: tx_addr,
+          to_address: '',
+          amount: '',
+          gas: '',
+          data: '',
+          unit: 'ETH',
+          password: ''
+        })
+      }
     });
-}
+  }
 
-renderLink() {
+  renderLink() {
     return (
       <div>
         Your Transaction is Placed Successfully. Check Status <a onClick={() => {
           this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`)
-        }} style={{color: '#1d400'}}>Here</a>
+        }} style={{ color: '#1d400' }}>Here</a>
       </div>
     )
-}
+  }
 
-  handleChange = (event, index, unit) => this.setState({unit});
+  handleChange = (event, index, unit) => this.setState({ unit });
   render() {
     return (
       <MuiThemeProvider>
@@ -69,22 +75,22 @@ renderLink() {
           minHeight: 450,
           backgroundColor: '#c3deea',
           margin: 15
-          }}>
+        }}>
           <Grid>
-            <Row style={{marginBottom: 15, paddingTop: 20}}>
+            <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
                 <span>To:</span>
               </Col>
               <Col xs={9}>
-            <TextField style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, to_address) => this.setState({to_address})} value={this.state.to_address} />
+                <TextField style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, to_address) => this.setState({ to_address })} value={this.state.to_address} />
               </Col>
             </Row>
-            <Row style={{marginBottom: 15}}>
+            <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
                 <span>Amount:</span>
               </Col>
               <Col xs={5}>
-            <TextField type="number" style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false} fullWidth={true} onChange={(event, amount) => this.setState({amount})} value={this.state.amount} />
+                <TextField type="number" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, amount) => this.setState({ amount })} value={this.state.amount} />
               </Col>
               <Col xs={4}>
                 <DropDownMenu
@@ -117,44 +123,44 @@ renderLink() {
                     value="ETH"
                     primaryText="ETH"
                   />
-                  <MenuItem 
+                  <MenuItem
                     value="SENT"
                     primaryText="SENT"
                   />
                 </DropDownMenu>
               </Col>
             </Row>
-            <Row style={{marginBottom: 15}}>
+            <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
                 <span>Gas</span>
               </Col>
               <Col xs={9}>
-            <TextField type="number" style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, gas) => this.setState({gas})} value={this.state.gas} />
+                <TextField type="number" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, gas) => this.setState({ gas })} value={this.state.gas} />
               </Col>
             </Row>
-            <Row style={{marginBottom: 15}}>
+            <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
                 <span>Data: </span>
               </Col>
               <Col xs={9}>
-            <TextField multiLine={true} rowsMax={3} rows={2} style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, data) => this.setState({data})} value={this.state.data} />
+                <TextField multiLine={true} rowsMax={3} rows={2} style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
             </Row>
-            <Row style={{marginBottom: 15}}>
+            <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
                 <span>Password: </span>
               </Col>
               <Col xs={9}>
-            <TextField type="password" style={{backgroundColor: '#FAFAFA', height: 30}} underlineShow={false}  fullWidth={true} onChange={(event, password) => this.setState({password})} value={this.state.password} />
+                <TextField type="password" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, password) => this.setState({ password })} value={this.state.password} />
               </Col>
             </Row>
           </Grid>
           <div>
-          <FlatButton onClick={this.onClickSend.bind(this)} label="Send" style={{backgroundColor: '#f05e09', marginLeft: 20}} labelStyle={{paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }} />
+            <FlatButton onClick={this.onClickSend.bind(this)} label="Send" style={{ backgroundColor: '#f05e09', marginLeft: 20 }} labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }} />
           </div>
-            {this.state.tx_addr == null ? '' : this.renderLink()}
-            </div>
-          <div>
+          {this.state.tx_addr == null ? '' : this.renderLink()}
+        </div>
+        <div>
         </div>
       </MuiThemeProvider>
     );

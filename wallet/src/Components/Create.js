@@ -103,7 +103,7 @@ class Create extends Component {
                 <div>
                     <Toolbar style={{ backgroundColor: 'rgb(83, 45, 145)' }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/2.png'} style={{ height: 50, width: 50 }} />
+                            <img src={'../src/Images/5.png'} style={{ height: 56, width: 56 }} />
                             <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
                         </ToolbarGroup>
                     </Toolbar>

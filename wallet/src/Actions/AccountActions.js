@@ -2,7 +2,7 @@ const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = require('child_process');
-const B_URL = 'https://test.sentinel.army';
+const B_URL = 'https://api.sentinel.army';
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 

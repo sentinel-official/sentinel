@@ -24,7 +24,7 @@ class Header extends Component {
             <Row style={{paddingTop: 10}}>
               <Col xs={2}>
                 <div>
-                  <img src={'../src/Images/5.png'} style={{ width: 70, height: 70 }} />
+                  <img src={'../src/Images/5.png'} style={{ width: 70, height: 70,marginTop:-10 }} />
                 </div>
               </Col>
               <Col xs={7} style={{
@@ -62,16 +62,18 @@ class Header extends Component {
               <Col xs={3}>
                 <div>
                   <Col style={{
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: '600',
-                    color: '#FAFAFA'
+                    color: '#FAFAFA',
+                    marginTop:'3%'
                   }}>
                     <span>SENT: {this.props.balance.sents}</span>
                   </Col>
                   <Col style={{
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: '600',
-                    color: '#FAFAFA'
+                    color: '#FAFAFA',
+                    marginTop:'5%'
                   }}>
                     <span>ETH: {this.props.balance.eths}</span>
                   </Col>
@@ -97,7 +99,8 @@ const styles = {
   clipBoard: {
     height: 20,
     width: 20,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    marginLeft:'2%'
   }
 }
 export default Header;

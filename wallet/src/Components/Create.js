@@ -178,7 +178,6 @@ class Create extends Component {
                             />
                         </div>
                     }
-                    <Footer />
                 </div>
             </MuiThemeProvider>
         );

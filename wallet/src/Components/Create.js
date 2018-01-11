@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { Toolbar, ToolbarGroup, TextField, RaisedButton, Chip, Dialog, FlatButton, Checkbox, Paper } from 'material-ui';
+import {
+    Toolbar, ToolbarGroup, TextField, RaisedButton,
+    Chip, Dialog, FlatButton, Checkbox, Paper, Snackbar, RefreshIndicator
+} from 'material-ui';
 import Dashboard from './Dashboard';
 import { createAccount, uploadKeystore } from '../Actions/AccountActions';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -18,7 +21,10 @@ class Create extends Component {
             account_addr: '',
             private_key: '',
             keystore_addr: '',
-            checked: false
+            checked: false,
+            openSnack: false,
+            snackMessage: '',
+            isLoading: null
         }
         this.set = this.props.set;
     }
@@ -34,7 +40,22 @@ class Create extends Component {
         this.setState({ file: input.files[0].name })
     }
 
+    renderProgress() {
+        const { refresh } = styles;
+        return (
+            <RefreshIndicator
+                size={50}
+                left={30}
+                top={15}
+                loadingColor="#532d91"
+                status="loading"
+                style={refresh}
+            />
+        )
+    }
+
     _createAccount = () => {
+      this.setState({isLoading: true})
         var password = this.state.password;
         var that = this;
         createAccount(password, function (err, account) {
@@ -43,11 +64,18 @@ class Create extends Component {
                 that.setState({
                     account_addr: account.account_addr,
                     private_key: account.private_key,
-                    keystore_addr: account.keystore_addr
+                    keystore_addr: account.keystore_addr,
+                    isLoading: false
                 })
             }
         });
     }
+
+    snackRequestClose = () => {
+        this.setState({
+            openSnack: false,
+        });
+    };
 
     _store = () => {
         var keystore = this.state.keystore;
@@ -75,7 +103,7 @@ class Create extends Component {
                 <div>
                     <Toolbar style={{ backgroundColor: 'rgb(83, 45, 145)' }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/2.png'} style={{ height: 50, width: 50 }} />
+                            <img src={'../src/Images/5.png'} style={{ height: 56, width: 56 }} />
                             <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
                         </ToolbarGroup>
                     </Toolbar>
@@ -99,6 +127,7 @@ class Create extends Component {
                                 onClick={this._createAccount}
                                 buttonStyle={styles.buttonCreate}
                                 style={styles.createStyle} />
+                                {this.state.isLoading === true ? this.renderProgress(): ''}
                             <p style={{ fontSize: 12, marginLeft: '3%' }}>(Or)</p>
                             <Paper zDepth={2} style={styles.bluePaper}>
                                 <div style={{ padding: '7%' }}>
@@ -115,15 +144,6 @@ class Create extends Component {
                                             {this.state.file}
                                         </Chip>
                                     }
-                                    {/* <Paper zDepth={2} style={{ height: 35, width: '100%', marginTop: '3%' }}>
-                                    <TextField
-                                        hintText="Enter keystore password"
-                                        hintStyle={{ fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}
-                                        type="password"
-                                        underlineShow={false}
-                                        style={{ width: '85%', paddingLeft: '5%', height: 40 }}
-                                    />
-                                </Paper> */}
                                     <RaisedButton
                                         label="Restore"
                                         labelStyle={{ color: 'white', textTransform: 'none' }}
@@ -148,7 +168,11 @@ class Create extends Component {
                                 <p style={styles.detailVal}>{this.state.account_addr}</p>
                                 <p style={styles.detailHeadBold}>Private Key:</p><p
                                     style={styles.detailVal}>{this.state.private_key}
-                                    <CopyToClipboard text={this.state.private_key}>
+                                    <CopyToClipboard text={this.state.private_key}
+                                        onCopy={() => this.setState({
+                                            snackMessage: 'Copied to Clipboard Successfully',
+                                            openSnack: true
+                                        })}>
                                         <img src={'../src/Images/download.jpeg'}
                                             style={styles.clipBoard} />
                                     </CopyToClipboard></p>
@@ -172,13 +196,19 @@ class Create extends Component {
                             <RaisedButton
                                 label="Go to Dashboard"
                                 labelStyle={styles.yesButtonLabel}
-                                buttonStyle={styles.yesButton}
+                                buttonStyle={this.state.checked ? styles.yesButton : styles.disabledButton}
                                 disabled={this.state.checked ? false : true}
-                                onClick={()=>{this.set('dashboard')}}
+                                onClick={() => { this.set('dashboard') }}
                             />
                         </div>
                     }
-                    <Footer />
+                    <Snackbar
+                        open={this.state.openSnack}
+                        message={this.state.snackMessage}
+                        autoHideDuration={2000}
+                        onRequestClose={this.snackRequestClose}
+                        style={{ marginBottom: '2%' }}
+                    />
                 </div>
             </MuiThemeProvider>
         );
@@ -201,6 +231,11 @@ const styles = {
     },
     yesButton: {
         backgroundColor: 'rgb(240, 94, 9)',
+        height: '30px',
+        lineHeight: '30px'
+    },
+    disabledButton: {
+        backgroundColor: '#bdbdbd',
         height: '30px',
         lineHeight: '30px'
     },
@@ -228,7 +263,7 @@ const styles = {
         width: '85%',
         paddingLeft: '5%',
         height: 40,
-        lineHeight:'18px'
+        lineHeight: '18px'
     },
     buttonLabel: {
         color: 'white',
@@ -272,16 +307,22 @@ const styles = {
         wordBreak: 'break-all',
         marginTop: 0
     },
-    clipBoard:{
-        height: 20, 
-        width: 20, 
+    clipBoard: {
+        height: 20,
+        width: 20,
         cursor: 'pointer'
     },
-    checkboxLabel:{
-        color: 'rgb(240, 94, 9)', 
-        fontSize: 12, 
+    checkboxLabel: {
+        color: 'rgb(240, 94, 9)',
+        fontSize: 12,
         fontWeight: 800
-    }
+    },
+    refresh: {
+        display: 'inline-block',
+        position: 'relative',
+        // justifyContent: 'center',
+        // alignItems: 'center'
+    },
 }
 
 export default Create;

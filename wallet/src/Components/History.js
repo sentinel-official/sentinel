@@ -69,79 +69,83 @@ class History extends Component {
     }
 
     let data = this.state.data;
-
-    output = data.map((history) => {
-      return (
-        <div style={styles.wholeDiv}>
-          {history.from_addr == that.props.local_address
-            ? <div>
-              <div>
-                <span style={{
-                  color: 'red',
-                  fontWeight: 'bold'
-                }}>OUT
+    if (data.length == 0) {
+      output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '45%' }}>No Transactions yet</div>
+    }
+    else {
+      output = data.map((history) => {
+        return (
+          <div style={styles.wholeDiv}>
+            {history.from_addr == that.props.local_address
+              ? <div>
+                <div>
+                  <span style={{
+                    color: 'red',
+                    fontWeight: 'bold'
+                  }}>OUT
                   </span>
-                <span>{history.date}</span>
-              </div>
-              <div>
-                <span style={{
-                  fontWeight: 'bold'
-                }}>To :
+                  <span style={{ marginLeft:5 }}>{new Date(history.timestamp * 1000).toGMTString()}</span>
+                </div>
+                <div>
+                  <span style={{
+                    fontWeight: 'bold'
+                  }}>To:
                   </span>
-                <a
-                  onClick={() => {
-                    this.openInExternalBrowser(`https://etherscan.io/address/${history.to_addr}`)
-                  }}>{history.to_addr}</a>
-                <CopyToClipboard text={history.to_addrs}
-                  onCopy={() => that.setState({
-                    snackMessage: 'Copied to Clipboard Successfully',
-                    openSnack: true
-                  })} >
-                  <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
-                </CopyToClipboard>
+                  <a style={{ cursor: 'pointer', marginLeft: 5 }}
+                    onClick={() => {
+                      this.openInExternalBrowser(`https://etherscan.io/address/${history.to_addr}`)
+                    }}>{history.to_addr}</a>
+                  <CopyToClipboard text={history.to_addrs}
+                    onCopy={() => that.setState({
+                      snackMessage: 'Copied to Clipboard Successfully',
+                      openSnack: true
+                    })} >
+                    <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
+                  </CopyToClipboard>
+                </div>
               </div>
-            </div>
-            : <div>
-              <div>
-                <span style={{
-                  fontWeight: 'bold',
-                  color: '#532d91'
-                }}>IN
+              : <div>
+                <div>
+                  <span style={{
+                    fontWeight: 'bold',
+                    color: '#532d91'
+                  }}>IN
                 </span>
-                <span>{history.date}</span>
-              </div>
-              <div>
-                <span style={{
-                  fontWeight: 'bold'
-                }}>
-                  From:
+                  <span style={{ marginLeft: 5 }}>{new Date(history.timestamp * 1000).toGMTString()}</span>
+                </div>
+                <div>
+                  <span style={{
+                    fontWeight: 'bold'
+                  }}>
+                    From:
                 </span>
-                <a
-                  onClick={() => {
-                    this.openInExternalBrowser(`https://etherscan.io/address/${history.from_addr}`)
-                  }}>{history.from_addr}</a>
-                <CopyToClipboard text={history.from_addr}
-                  onCopy={() => that.setState({
-                    snackMessage: 'Copied to Clipboard Successfully',
-                    openSnack: true
-                  })} >
-                  <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
-                </CopyToClipboard>
+                  <a style={{ cursor: 'pointer', marginLeft: 5 }}
+                    onClick={() => {
+                      this.openInExternalBrowser(`https://etherscan.io/address/${history.from_addr}`)
+                    }}>{history.from_addr}</a>
+                  <CopyToClipboard text={history.from_addr}
+                    onCopy={() => that.setState({
+                      snackMessage: 'Copied to Clipboard Successfully',
+                      openSnack: true
+                    })} >
+                    <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
+                  </CopyToClipboard>
+                </div>
               </div>
-            </div>
-          }
-          <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
-            <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{history.amount} </span>
-            <span>{history.unit}s</span>  |
-                    <span style={{ fontWeight: 'bold' }}> Status : </span><span>{history.status}</span>  |
+            }
+            <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
+              <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{history.amount} </span>
+              <span>{history.unit}s</span>  |
+                    <span style={{ fontWeight: 'bold' }}> Status : </span><span>Success</span>  |
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
-            <a style={styles.anchorStyle} onClick={
-              () => {
-                this.openInExternalBrowser(`https://etherscan.io/tx/${history.tx_hash}`)
-              }}>{history.tx_hash}</a></pre>
-        </div>
-      )
-    })
+              <a style={styles.anchorStyle} onClick={
+                () => {
+                  this.openInExternalBrowser(`https://etherscan.io/tx/${history.tx_hash}`)
+                }}>{history.tx_hash}</a></pre>
+          </div>
+        )
+      })
+    }
     return (
       <div style={{
         margin: '5%'
@@ -154,7 +158,7 @@ class History extends Component {
           message={this.state.snackMessage}
           autoHideDuration={2000}
           onRequestClose={this.snackRequestClose}
-          style={{marginBottom:'2%'}}
+          style={{ marginBottom: '2%' }}
         />
       </div>
     )
@@ -173,6 +177,7 @@ const styles = {
     position: 'relative',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
+    cursor: 'pointer',
   },
   clipBoard: {
     height: 20,

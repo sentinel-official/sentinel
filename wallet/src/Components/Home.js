@@ -21,7 +21,7 @@ class Home extends Component {
                     </Toolbar>
                     <div style={styles.middleDiv} >
                         <Grid style={styles.middleDivGrid}>
-                            <br/>
+                            <br />
                             <Row>
                                 <Col>
                                     <h1>Be as private as you wish, on internet!</h1>
@@ -43,7 +43,11 @@ class Home extends Component {
                             <Col xs={7} style={styles.bottomDivCol}>
                                 <div style={{ marginLeft: '10%', padding: '2%' }}>
                                     <h4 style={styles.moreAboutText}>More About Sentinel</h4>
-                                    <List>
+                                    <p style={{fontSize:12}}>
+                                        Peer to peer erc based privacy application suite with multi chain
+                                        for gas-free services and anonymous erc token transactions
+                                        </p>
+                                    {/* <List>
                                         <ListItem primaryText="ABOUT US"
                                             innerDivStyle={styles.bottomDivListItem}
                                             style={{ color: 'white' }} />
@@ -56,7 +60,7 @@ class Home extends Component {
                                         <ListItem primaryText="PRIVACY POLICY"
                                             innerDivStyle={styles.bottomDivListItem}
                                             style={{ color: 'white' }} />
-                                    </List>
+                                    </List> */}
                                 </div>
                             </Col>
                             <Col xsOffset={1} xs={3}>
@@ -118,7 +122,7 @@ const styles = {
         marginBottom: 10,
         fontSize: 14,
         fontWeight: 'bold',
-        marginTop: '5%'
+        marginTop: '15%'
     },
     bottomDivListItem: {
         padding: '5px 5px 5px 16px',

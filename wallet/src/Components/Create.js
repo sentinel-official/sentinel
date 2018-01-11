@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import {
-    Toolbar, ToolbarGroup, TextField, RaisedButton, Chip, Dialog, FlatButton, Checkbox, Paper, Snackbar
+    Toolbar, ToolbarGroup, TextField, RaisedButton,
+    Chip, Dialog, FlatButton, Checkbox, Paper, Snackbar, RefreshIndicator
 } from 'material-ui';
 import Dashboard from './Dashboard';
 import { createAccount, uploadKeystore } from '../Actions/AccountActions';
@@ -36,6 +37,20 @@ class Create extends Component {
         };
         reader.readAsText(input.files[0]);
         this.setState({ file: input.files[0].name })
+    }
+
+    renderProgress() {
+        const { refresh } = styles;
+        return (
+            <RefreshIndicator
+                size={50}
+                left={200}
+                top={200}
+                loadingColor="#532d91"
+                status="loading"
+                style={refresh}
+            />
+        )
     }
 
     _createAccount = () => {
@@ -159,7 +174,7 @@ class Create extends Component {
                                 <p style={styles.detailHeadBold}>Private Key:</p><p
                                     style={styles.detailVal}>{this.state.private_key}
                                     <CopyToClipboard text={this.state.private_key}
-                                        onCopy={() => that.setState({
+                                        onCopy={() => this.setState({
                                             snackMessage: 'Copied to Clipboard Successfully',
                                             openSnack: true
                                         })}>
@@ -186,7 +201,7 @@ class Create extends Component {
                             <RaisedButton
                                 label="Go to Dashboard"
                                 labelStyle={styles.yesButtonLabel}
-                                buttonStyle={styles.yesButton}
+                                buttonStyle={this.state.checked ? styles.yesButton : styles.disabledButton}
                                 disabled={this.state.checked ? false : true}
                                 onClick={() => { this.set('dashboard') }}
                             />
@@ -221,6 +236,11 @@ const styles = {
     },
     yesButton: {
         backgroundColor: 'rgb(240, 94, 9)',
+        height: '30px',
+        lineHeight: '30px'
+    },
+    disabledButton: {
+        backgroundColor: '#bdbdbd',
         height: '30px',
         lineHeight: '30px'
     },
@@ -301,7 +321,13 @@ const styles = {
         color: 'rgb(240, 94, 9)',
         fontSize: 12,
         fontWeight: 800
-    }
+    },
+    refresh: {
+        display: 'inline-block',
+        position: 'relative',
+        // justifyContent: 'center',
+        // alignItems: 'center'
+    },
 }
 
 export default Create;

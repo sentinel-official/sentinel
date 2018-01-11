@@ -14,16 +14,16 @@ function getInstallerConfig () {
   const outPath = path.join(rootPath, 'release-builds')
 
   return Promise.resolve({
-    appDirectory: path.join(outPath, 'sentinel-wallet-app-win32-x64/'),
+    appDirectory: path.join(outPath, 'sentinel-wallet-win32-x64/'),
     authors: 'Sentinel',
     version: "1.0.0",
     noMsi: true,
     name: "sentinelwallet",
-    description: "Sentinel Wallet Desktop App",
-    title: "Sentinel Wallet Desktop App",
+    description: "Sentinel Wallet",
+    title: "Sentinel Wallet",
     outputDirectory: path.join(outPath, 'windows-installer'),
-    exe: 'sentinel-wallet-app.exe',
-    setupExe: 'SentinelWalletAppInstaller.exe',
+    exe: 'sentinel-wallet.exe',
+    setupExe: 'SentinelWalletInstaller.exe',
     setupIcon: path.join(rootPath, 'public', 'icon256x256.ico')
   })
 }

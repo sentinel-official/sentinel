@@ -21,7 +21,7 @@ class Header extends Component {
       <div style={{ height: 70, backgroundColor: '#532d91' }}>
         <div>
           <Grid>
-            <Row>
+            <Row style={{paddingTop: 10}}>
               <Col xs={2}>
                 <div>
                   <img src={'../src/Images/5.png'} style={{ width: 70, height: 70 }} />
@@ -37,7 +37,7 @@ class Header extends Component {
                       fontSize: 14,
                       fontWeight: '600',
                       color: '#FAFAFA'
-                    }}>SENTINEL - DASHBOARD</span>
+                    }}>SENTINEL - Basic Wallet</span>
                   </Col>
                   <Col>
                     <span style={{

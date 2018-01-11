@@ -26,12 +26,12 @@ class Home extends Component {
                                 <Col>
                                     <h1>Be as private as you wish, on internet!</h1>
                                 </Col>
-                                <p style={styles.middleDivText}>Add a little bit of body text;Add a little bit of body text; </p>
+                                <p style={styles.middleDivText}>Save your ass on the internet.</p>
                                 <br /><br /><br />
                             </Row>
                         </Grid>
                         <RaisedButton
-                            label="Yes I need this"
+                            label="Create Wallet"
                             style={{ marginLeft: '7%' }}
                             labelStyle={styles.yesButtonLabel}
                             buttonStyle={styles.yesButton}

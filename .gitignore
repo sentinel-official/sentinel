@@ -3,3 +3,5 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+wallet/release-builds/
+package-lock.json*

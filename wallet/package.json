@@ -23,12 +23,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+    "package-mac": "electron-packager . sentinel-wallet-app --overwrite --asar=true --platform=darwin --arch=x64 --icon=public/icon256x256.ico --prune=true --out=release-builds",
     "package-win": "electron-packager . sentinel-wallet-app --overwrite --asar=true --platform=win32 --icon=public/icon256x256.ico --prune=true --out=release-builds --version-string.CompanyName=Sentinel --version-string.FileDescription=S --version-string.ProductName=\"Sentinel Wallet\"",
     "package-linux": "electron-packager . sentinel-wallet-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds",
-    "create-installer-mac": "electron-installer-dmg ./release-builds/Sentinel\\ VPN\\ App\\ app-darwin-x64/Electron\\ tutorial\\ app.app sentinel-desktop-app --out=release-builds --overwrite --icon=assets/icons/mac/icon.icns",
+    "create-installer-mac": "electron-installer-dmg ./release-builds/sentinel-wallet-app-darwin-x64/Sentinel\\ wallet\\ app.app sentinel-desktop-app --out=release-builds --overwrite --icon=assets/icons/mac/icon.icns",
     "create-installer-win": "node installers/windows/createinstaller.js",
-    "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-desktop-app-linux-x64/ --arch amd64 --config debian.json"
+    "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-wallet-app-linux-x64/ --arch amd64 --config debian.json"
   },
   "devDependencies": {
     "electron": "1.7.10",

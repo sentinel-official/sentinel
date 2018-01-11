@@ -84,7 +84,6 @@ export function getAccount(cb) {
 
 
 export function transferAmount(data, cb) {
-  console.log(data, 'dtaatatatat')
   getKeystore(function (err, keystore) {
     if (err) cb(err, null);
     else {

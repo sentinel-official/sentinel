@@ -24,7 +24,7 @@ class Header extends Component {
             <Row>
               <Col xs={2}>
                 <div>
-                  <img src={'../src/Images/2.png'} />
+                  <img src={'../src/Images/5.png'} style={{ width: 70, height: 70 }} />
                 </div>
               </Col>
               <Col xs={7} style={{
@@ -41,22 +41,21 @@ class Header extends Component {
                   </Col>
                   <Col>
                     <span style={{
-                      fontSize: 14,
+                      fontSize: 9,
                       fontWeight: '600',
                       color: '#FAFAFA'
                     }}>
-                      <span style={{ fontSize: 10 }}>{this.props.local_address}</span>
-                      <CopyToClipboard text={this.props.local_address}
-                        onCopy={() => this.setState({
-                          snackMessage: 'Copied to Clipboard Successfully',
-                          openSnack: true
-                        })} >
-                        <img
-                          src={'../src/Images/download.jpeg'}
-                          style={styles.clipBoard}
-                        />
-                      </CopyToClipboard>
-                    </span>
+                      {this.props.local_address}</span>
+                    <CopyToClipboard text={this.props.local_address}
+                      onCopy={() => this.setState({
+                        snackMessage: 'Copied to Clipboard Successfully',
+                        openSnack: true
+                      })} >
+                      <img
+                        src={'../src/Images/download.jpeg'}
+                        style={styles.clipBoard}
+                      />
+                    </CopyToClipboard>
                   </Col>
                 </div>
               </Col>
@@ -82,7 +81,7 @@ class Header extends Component {
                   message={this.state.snackMessage}
                   autoHideDuration={2000}
                   onRequestClose={this.snackRequestClose}
-                  style={{ marginBottom: '2%' }}
+                  style={{ marginBottom: '2%',width:'80%' }}
                 />
               </Col>
             </Row>

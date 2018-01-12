@@ -1,0 +1,11 @@
+{
+  "dest": "release-builds/",
+  "icon": "public/icon256x256.ico",
+  "categories": [
+    "Utility"
+  ],
+  "lintianOverrides": [
+    "changelog-file-missing-in-native-package"
+  ],
+  "depends": ["openvpn", "libgconf2-4", "gksu"]
+}

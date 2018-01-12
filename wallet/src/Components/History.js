@@ -95,7 +95,7 @@ class History extends Component {
                     onClick={() => {
                       this.openInExternalBrowser(`https://etherscan.io/address/${history.to_addr}`)
                     }}>{history.to_addr}</a>
-                  <CopyToClipboard text={history.to_addrs}
+                  <CopyToClipboard text={history.to_addr}
                     onCopy={() => that.setState({
                       snackMessage: 'Copied to Clipboard Successfully',
                       openSnack: true

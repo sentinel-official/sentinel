@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MuiThemeProvider, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
+import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { transferAmount, getAccount } from '../Actions/AccountActions';
 import { purple500 } from 'material-ui/styles/colors';
@@ -24,7 +24,9 @@ class SendComponent extends Component {
       tx_addr: null,
       password: '',
       isDisabled: true,
-      sending: null
+      sending: null,
+      openSnack: false,
+      snackMessage: ''
     };
   }
 
@@ -53,13 +55,14 @@ class SendComponent extends Component {
       else {
         that.setState({
           tx_addr: tx_addr,
+          openSnack: true,
           to_address: '',
           amount: '',
           gas: '',
           data: '',
           unit: 'ETH',
           password: '',
-          sending: false
+          sending: false,
         })
       }
     });
@@ -74,6 +77,18 @@ class SendComponent extends Component {
       </div>
     )
   }
+  
+  openSnackBar = () => this.setState({
+      snackMessage: 'Your Transaction is Placed Successfully.',
+      openSnack: true
+    })
+  
+
+  snackRequestClose = () => {
+    this.setState({
+      openSnack: false,
+    });
+  };
 
   clearTaxAdd = () => {
 
@@ -81,6 +96,7 @@ class SendComponent extends Component {
 
   handleChange = (event, index, unit) => this.setState({ unit });
   render() {
+    
     return (
       <MuiThemeProvider>
         <div style={{
@@ -97,7 +113,7 @@ class SendComponent extends Component {
                 <TextField
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
-                  onChange={(event, to_address) => this.setState({ to_address: to_address, isDisabled: false })}
+                  onChange={(event, to_address) => this.setState({ to_address: to_address})}
                   value={this.state.to_address}
                 />
               </Col>
@@ -121,13 +137,6 @@ class SendComponent extends Component {
                     fontWeight: '600',
                     color: purple500
                   }}
-                  // selectedMenuItemStyle={{
-                  //   lineHeight: '30px',
-                  //   fontWeight: '700',
-                  //   color: purple500,
-                  //   paddingRight: -4,
-                  //   height: 50
-                  // }}
                   style={{
                     backgroundColor: '#FAFAFA',
                     height: 30,
@@ -173,16 +182,27 @@ class SendComponent extends Component {
             </Row>
           </Grid>
           <div>
-            <FlatButton disabled={this.state.to_address === '' ? true : false} onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
+          <Snackbar
+                  open={this.state.openSnack}
+                  // message={this.state.snackMessage}
+                  autoHideDuration={10000}
+                  onRequestClose={this.snackRequestClose}
+                  style={{ marginBottom: '2%',width:'80%' }}
+                  action="Transaction Placed. Check Status"
+                  onActionClick={() => {this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`)}}                  
+                />
+          </div>
+          <div>
+            <FlatButton disabled={this.state.to_address == '' ? true : false} onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
               style={
-                this.state.isDisabled === true ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
+                this.state.to_address === '' ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
                   :
                   { backgroundColor: '#f05e09', marginLeft: 20 }
               }
               labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }}
             />
           </div>
-          {this.state.tx_addr == null ? '' : this.renderLink()}
+          {/* {this.state.tx_addr == null ? '' :  this.openSnackBar() } */}
         </div>
         <div>
         </div>

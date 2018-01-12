@@ -1,12 +1,19 @@
 const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
-const { exec } = require('child_process');
-const B_URL = 'https://api.sentinelgroup.io';
+const { exec } = window.require('child_process');
+const B_URL = 'https://test.sentinelgroup.io';
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
+const OVPN_FILE = SENT_DIR + '/client.ovpn';
+var OVPNDelTimer = null;
+var CONNECTED = false;
+var IPGENERATED = '';
+var LOCATION = '';
+var SPEED = '';
 
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
+if (fs.existsSync(OVPN_FILE)) fs.unlinkSync(OVPN_FILE);
 
 function getUserHome() {
   return remote.process.env[(remote.process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -146,5 +153,139 @@ export function getTransactionHistory(account_addr, cb) {
         cb(null, history);
       } else cb({ message: 'Error occurred while getting transaction history.' }, null);
     });
+  });
+}
+
+export const getVPNList = (cb) => {
+  fetch(B_URL + '/client/vpn/list', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success === true) {
+        cb(null, response.list);
+      } else {
+        cb({ message: 'Error occurred while getting vpn list.' }, null);
+      }
+    });
+  });
+}
+
+export function connectVPN(account_addr, vpn_addr, cb) {
+  var command = 'sudo openvpn ' + OVPN_FILE;
+
+  getOVPNAndSave(account_addr, vpn_addr, function (err) {
+    if (err) cb(err);
+    else {
+      if (OVPNDelTimer) clearInterval(OVPNDelTimer);
+
+      exec(command, function (err, stdout, stderr) {
+        OVPNDelTimer = setTimeout(function () {
+          fs.unlinkSync(OVPN_FILE);
+        }, 5 * 1000);
+      });
+
+      setTimeout(function () {
+        getVPNPIDs(function (err, pids) {
+          if (err) cb(err);
+          else {
+            CONNECTED = true;
+            IPGENERATED = '';
+            LOCATION = '';
+            SPEED = '';
+            cb(null);
+          }
+        });
+
+      }, 1000);
+    }
+  });
+}
+
+function getOVPNAndSave(account_addr, vpn_addr, cb) {
+  if (fs.existsSync(OVPN_FILE)) {
+    cb(null);
+  } else {
+    fetch(B_URL + '/client/vpn', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        account_addr: account_addr,
+        vpn_addr: vpn_addr
+      })
+    }).then(function (response) {
+      response.json().then(function (response) {
+        if (response.success === true) {
+          var ovpn = response['node']['vpn']['ovpn'].join('');
+          IPGENERATED = response['node']['vpn']['ovpn'][3].split(' ')[1];
+          LOCATION = response['node']['location']['city'];
+          SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + 'MBPS';
+          fs.writeFile(OVPN_FILE, ovpn, function (err) {
+            if (err) cb(err);
+            else cb(null);
+          });
+        } else {
+          cb({ message: response.message || 'Error occurred while getting OVPN file, may be empty VPN resources.' }, null);
+        }
+      });
+    });
+  }
+}
+
+function getVPNPIDs(cb) {
+  exec('pidof openvpn', function (err, stdout, stderr) {
+    if (err) cb(err);
+    else if (stdout) {
+      var pids = stdout.trim();
+      cb(null, pids);
+    }
+  });
+}
+
+export function disconnectVPN(cb) {
+  getVPNPIDs(function (err, pids) {
+    if (err) cb(err);
+    else {
+      var command = 'kill -2 ' + pids;
+      exec(command, function (err, stdout, stderr) {
+        if (err) cb(err);
+        else {
+          CONNECTED = false;
+          cb(null);
+        }
+      });
+    }
+  });
+}
+
+export function getVPNdetails(cb) {
+  var data = {
+    ip: IPGENERATED,
+    location: LOCATION,
+    speed: SPEED
+  }
+  if (CONNECTED) {
+    cb(true, data);
+  }
+  else {
+    cb(false, data);
+  }
+}
+
+export function isVPNConnected(cb) {
+  getVPNPIDs(function (err, pids) {
+    if (err) {
+      cb(err, null)
+    } else if (pids) {
+      cb(null, true)
+    } else {
+      cb(null, false)
+    }
   });
 }

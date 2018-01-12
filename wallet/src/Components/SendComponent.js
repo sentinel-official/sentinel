@@ -23,7 +23,8 @@ class SendComponent extends Component {
       unit: 'ETH',
       tx_addr: null,
       password: '',
-      isDisabled: true
+      isDisabled: true,
+      sending: null
     };
   }
 
@@ -33,6 +34,9 @@ class SendComponent extends Component {
   };
 
   onClickSend = () => {
+    this.setState({
+      sending: true
+    })
     let body = {
       from_addr: this.props.local_address,
       to_addr: this.state.to_address,
@@ -40,7 +44,8 @@ class SendComponent extends Component {
       unit: this.state.unit,
       keystore: this.state.keystore,
       password: this.state.password,
-      session_id: null
+      session_id: null,
+
     }
     let that = this;
     transferAmount(body, function (err, tx_addr) {
@@ -54,6 +59,7 @@ class SendComponent extends Component {
           data: '',
           unit: 'ETH',
           password: '',
+          sending: false
         })
       }
     });
@@ -167,7 +173,7 @@ class SendComponent extends Component {
             </Row>
           </Grid>
           <div>
-            <FlatButton disabled={this.state.to_address === '' ? true : false} onClick={this.onClickSend.bind(this)} label="Send"
+            <FlatButton disabled={this.state.to_address === '' ? true : false} onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
               style={
                 this.state.isDisabled === true ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
                   :

@@ -1,6 +1,6 @@
 # Sentinel POC Beta
 
-## [Download Latest Sentinel Desktop App](https://storage.googleapis.com/sentinel-packages/SentinelWalletInstaller.exe) (For Windows 64-bit Arch).
+### Download [Windows Client](https://storage.googleapis.com/sentinel-packages/SentinelWalletInstaller.exe) [Linux Client](https://storage.googleapis.com/sentinel-packages/sentinelwallet_1.0.0_amd64.deb)
 
 ## Building Sentinel Docker Image
 

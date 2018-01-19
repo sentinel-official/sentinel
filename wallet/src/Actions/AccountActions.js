@@ -193,9 +193,6 @@ export function connectVPN(account_addr, vpn_addr, cb) {
           if (err) cb(err);
           else {
             CONNECTED = true;
-            IPGENERATED = '';
-            LOCATION = '';
-            SPEED = '';
             cb(null);
           }
         });
@@ -238,12 +235,15 @@ function getOVPNAndSave(account_addr, vpn_addr, cb) {
   }
 }
 
-function getVPNPIDs(cb) {
+export function getVPNPIDs(cb) {
   exec('pidof openvpn', function (err, stdout, stderr) {
     if (err) cb(err);
     else if (stdout) {
       var pids = stdout.trim();
       cb(null, pids);
+    }
+    else{
+      cb(true,null);
     }
   });
 }

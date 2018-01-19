@@ -28,16 +28,12 @@ class App extends Component {
         switch (scene) {
             case 'create':
                 return <Create set={this.setComponent} />
-                break;
             case 'dashboard':
                 return <Dashboard set={this.setComponent} />
-                break;
             case 'home':
                 return <Home set={this.setComponent} />
-                break;
             default:
                 return <Home set={this.setComponent} />
-                break;
         }
     }
 }

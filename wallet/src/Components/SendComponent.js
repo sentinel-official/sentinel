@@ -169,7 +169,7 @@ class SendComponent extends Component {
                 <span>Data: </span>
               </Col>
               <Col xs={9}>
-                <TextField multiLine={true} rowsMax={3} rows={2} style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, data) => this.setState({ data })} value={this.state.data} />
+                <TextField  style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>

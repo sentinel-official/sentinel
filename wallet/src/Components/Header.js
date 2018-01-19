@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle } from 'material-ui';
-import { getVPNList, connectVPN, disconnectVPN,isVPNConnected } from '../Actions/AccountActions';
+import { getVPNList, connectVPN, disconnectVPN, isVPNConnected } from '../Actions/AccountActions';
+import VPNComponent from './VPNComponent';
 
 class Header extends Component {
   constructor(props) {
@@ -21,11 +22,11 @@ class Header extends Component {
     let that = this;
     isVPNConnected(function (err, data) {
       if (err) console.log('Error', err);
-      else if(data){
-        that.setState({ status:true });
+      else if (data) {
+        that.setState({ status: true });
       }
-      else{
-        that.setState({ status:false });
+      else {
+        that.setState({ status: false });
       }
     })
   }
@@ -45,14 +46,20 @@ class Header extends Component {
     connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
       if (err) {
         console.log(err, "Error");
+
         that.setState({ showPopUp: false, status: false, openSnack: true, snackMessage: err.message })
       }
       else {
         console.log("Connected", res);
         that.props.onChange();
+        //that.returnVPN();
         that.setState({ showPopUp: false, status: true, openSnack: true, snackMessage: "Connected VPN" })
       }
     })
+  }
+
+  returnVPN = () => {
+    return <VPNComponent isConnected={true} />
   }
 
   _disconnectVPN = () => {
@@ -71,7 +78,13 @@ class Header extends Component {
 
   handleToggle = (event, toggle) => {
     if (toggle) {
-      this.setState({ showPopUp: true })
+      let that = this;
+      getVPNList(function (err, data) {
+        if (err) console.log('Error', err);
+        else {
+          that.setState({ vpnList: data, showPopUp: true });
+        }
+      })
     }
     else {
       this._disconnectVPN();
@@ -132,7 +145,6 @@ class Header extends Component {
                       display: 'block',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      width: 120,
                       marginTop: '5%'
                     }}>
                     {this.props.local_address}</span>
@@ -181,13 +193,14 @@ class Header extends Component {
                   <FlatButton
                     label="VPN"
                     labelStyle={{ color: 'white', textTransform: 'none' }}
-                    style={{ height: '18px', lineHeight: '18px', margin: '-35%' }}
+                    style={{ height: '18px', lineHeight: '18px' }}
                     onClick={() => { this.setState({ showPopUp: true }) }} />
                 </Col>
                 <Col>
                   <Toggle
                     toggled={this.state.status}
                     onToggle={this.handleToggle}
+                    style={{ marginTop: '5%', marginLeft: '15%' }}
                   />
                 </Col>
               </Col>
@@ -233,7 +246,7 @@ const styles = {
     height: 12,
     width: 12,
     cursor: 'pointer',
-    marginLeft: -12
+    marginTop: '10%'
   }
 }
 export default Header;

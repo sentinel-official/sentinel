@@ -70,7 +70,7 @@ class History extends Component {
 
     let data = this.state.data;
     if (data.length == 0) {
-      output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '45%' }}>No Transactions yet</div>
+      output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Transactions yet</div>
     }
     else {
       output = data.map((history) => {

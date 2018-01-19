@@ -19,6 +19,7 @@ class VPNComponent extends Component {
     }
 
     render() {
+      console.log(this.state, 'consoled')
         return (
             <idiv>
                 {this.state.status == true ?

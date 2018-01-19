@@ -157,7 +157,7 @@ class Create extends Component {
                             </Paper>
                         </div>
                         :
-                        <div style={{ marginLeft: '7%', marginRight: '7%' }}>
+                        <div style={{ marginLeft: '5%', marginRight: '5%' }}>
                             <h3 style={styles.headingCreate}>Be Careful</h3>
                             <hr width="50%" align="left" size="3" noshade style={{ backgroundColor: 'rgb(83, 45, 145)' }} />
                             <p style={styles.copyHeading}>
@@ -247,7 +247,7 @@ const styles = {
         color: 'rgb(83, 45, 145)',
         fontSize: 14,
         marginBottom: 0,
-        marginTop: '7%'
+        marginTop: '2%'
     },
     textBoxPaper: {
         height: 35,
@@ -295,11 +295,11 @@ const styles = {
     detailsDiv: {
         color: 'rgba(0, 0, 0, 0.66)',
         fontSize: 12,
-        marginBottom: '5%',
-        marginTop: '5%'
+        marginBottom: '2%',
+        marginTop: '2%'
     },
     detailHeadBold: {
-        marginTop: '7%',
+        marginTop: '2%',
         fontWeight: 'bold'
     },
     detailVal: {

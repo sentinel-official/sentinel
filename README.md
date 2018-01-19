@@ -1,5 +1,10 @@
 # Sentinel POC Beta
 
+### Latest Download Links For Sentinel Desktop Clients:
+- [  Mac OS  ](https://storage.googleapis.com/sentinel-packages/sentinel-wallet-1.0.0.dmg)
+- [  Windows Client  ](https://storage.googleapis.com/sentinel-packages/SentinelWalletInstaller.exe)
+- [  Linux Client  ](https://storage.googleapis.com/sentinel-packages/sentinelwallet_v1.0.0_amd64.deb) 
+
 ## Building Sentinel Docker Image
 
 `$ git clone https://github.com/sentinel-official/sentinel-py.git`

@@ -28,7 +28,8 @@
     "react-mapbox-gl": "^3.4.1",
     "react-qr-svg": "^2.1.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17"
+    "react-scripts": "1.0.17",
+    "react-simple-maps": "^0.10.1"
   },
   "scripts": {
     "start": "react-scripts start",

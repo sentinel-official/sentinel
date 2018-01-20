@@ -246,7 +246,8 @@ const styles = {
     height: 12,
     width: 12,
     cursor: 'pointer',
-    marginTop: '10%'
+    marginTop: '12%',
+    marginLeft:-10
   }
 }
 export default Header;

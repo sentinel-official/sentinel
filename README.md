@@ -1,14 +1,14 @@
 # Sentinel Security Group
-## Dev Notes, Installation Guides & Download URLs
 
-# Sentinel Wallet
+
+## Sentinel Wallet - Download URLs
 
 ### Latest Download Links For Sentinel Alpha (v0.0.1) Desktop Clients:
 - [  Mac OS v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1.dmg)
 - [  Windows Client v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1_Installer.exe)
 - [  Linux Client v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1_amd64.deb)
 
-# Sentinel 
+## Sentinel VPN Node - Setup Guide
 
 ### 1. Building Sentinel Docker Image
 

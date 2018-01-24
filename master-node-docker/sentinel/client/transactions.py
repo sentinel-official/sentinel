@@ -50,13 +50,15 @@ class TransferAmount(object):
         unit = str(req.body['unit'])
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
-        session_id = int(req.body['session_id'])
+        session_id = int(req.body['session_id']) if 'session_id' in req.body else None
+        gas_price = int(req.body['gas_price']) if 'gas_price' in req.body else None
+        gas_units = int(req.body['gas_units']) if 'gas_units' in req.body else None
 
         amount = int(amount * (10 ** 18)) \
             if unit == 'ETH' else int(amount * DECIMALS)
 
         error, tx_hash = eth_helper.transfer_amount(
-            from_addr, to_addr, amount, unit, keystore, password, session_id)
+            from_addr, to_addr, amount, unit, keystore, password, gas_price, gas_units, session_id)
 
         if error is None:
             put_transaction_history(
@@ -83,7 +85,7 @@ class CalculateGasUnits(object):
         to_addr = str(req.body['to_addr'])
         amount = float(req.body['amount'])
         unit = str(req.body['unit'])
-        session_id = int(req.body['session_id'])
+        session_id = int(req.body['session_id']) if 'session_id' in req.body else None
 
         amount = int(amount * (10 ** 18)) \
             if unit == 'ETH' else int(amount * DECIMALS)

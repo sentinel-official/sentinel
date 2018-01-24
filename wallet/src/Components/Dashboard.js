@@ -41,7 +41,7 @@ class Dashboard extends Component {
 
   getUserEthBalance() {
     let that = this;
-    getEthBalance('0x69bF86e1B1fC27888d1bf9df3a902bD7Fb7C79f5', (err, ethBalance) => {
+    getEthBalance(this.state.local_address, (err, ethBalance) => {
       if (err) console.log(err, 'got an error')
       else {
         that.setState({ ethBalance })
@@ -51,7 +51,7 @@ class Dashboard extends Component {
 
   getUserSentBalance() {
     let that = this;
-    getSentBalance('0x69bF86e1B1fC27888d1bf9df3a902bD7Fb7C79f5', (err, sentBalance) => {
+    getSentBalance(this.state.local_address, (err, sentBalance) => {
       if (err) console.log(err, 'got an error')
       else {
         that.setState({ sentBalance })

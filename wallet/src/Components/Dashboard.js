@@ -4,7 +4,7 @@ import { Toolbar, ToolbarGroup, ToolbarSeparator, TextField, RaisedButton, Chip,
 import SendComponent from './SendComponent';
 import tab from 'material-ui/svg-icons/action/tab';
 import Header from './Header';
-import { getBalance, getAccount, transferAmount, getVPNdetails } from '../Actions/AccountActions';
+import { getEthBalance, getSentBalance, getAccount, transferAmount, getVPNdetails } from '../Actions/AccountActions';
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
@@ -18,10 +18,8 @@ class Dashboard extends Component {
       activeTab: 'purple',
       color: 'purple',
       local_address: '',
-      balance: {
-        sents: 'Loading',
-        eths: 'Loading'
-      },
+      ethBalance: 'Loading',
+      sentBalance: 'Loading',
       isGetBalanceCalled: false,
       vpnData: null,
       status: false
@@ -41,16 +39,22 @@ class Dashboard extends Component {
     });
   }
 
-  getUserBalance() {
-    let balanceEth = {
-      account_addr: this.state.local_address,
-      unit: 'ETH'
-    }
+  getUserEthBalance() {
     let that = this;
-    getBalance(balanceEth, (err, balance) => {
-      if (err) console.log(err, 'got and error')
+    getEthBalance('0x69bF86e1B1fC27888d1bf9df3a902bD7Fb7C79f5', (err, ethBalance) => {
+      if (err) console.log(err, 'got an error')
       else {
-        that.setState({ balance })
+        that.setState({ ethBalance })
+      }
+    })
+  }
+
+  getUserSentBalance() {
+    let that = this;
+    getSentBalance('0x69bF86e1B1fC27888d1bf9df3a902bD7Fb7C79f5', (err, sentBalance) => {
+      if (err) console.log(err, 'got an error')
+      else {
+        that.setState({ sentBalance })
       }
     })
   }
@@ -74,10 +78,15 @@ class Dashboard extends Component {
     if (!this.state.isGetBalanceCalled) {
       setInterval(function () {
 
-        that.getUserBalance();
+        that.getUserEthBalance();
+        that.getUserSentBalance();
       }, 5000);
 
       this.setState({ isGetBalanceCalled: true });
+    }
+    let userBalance = {
+      eths: this.state.ethBalance,
+      sents: this.state.sentBalance
     }
 
     return (
@@ -85,7 +94,7 @@ class Dashboard extends Component {
         <div>
           <div>
             <div>
-              <Header balance={this.state.balance} onChange={this.getVPNapi} local_address={this.state.local_address} />
+              <Header balance={userBalance} onChange={this.getVPNapi} local_address={this.state.local_address} />
               <div>
                 <Tabs
                   value={this.state.value}

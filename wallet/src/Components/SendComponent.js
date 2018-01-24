@@ -23,9 +23,9 @@ class SendComponent extends Component {
       unit: 'ETH',
       tx_addr: null,
       password: '',
-      isDisabled: true,
       sending: null,
       openSnack: false,
+      snackOpen: false,
       snackMessage: ''
     };
   }
@@ -51,7 +51,20 @@ class SendComponent extends Component {
     }
     let that = this;
     transferAmount(body, function (err, tx_addr) {
-      if (err) console.log(err, "Error");
+      if (err) that.setState(
+        {
+          snackOpen: true,
+          snackMessage: 'Problem faced in Transaction',
+          tx_addr: tx_addr,
+          to_address: '',
+          amount: '',
+          gas: '',
+          data: '',
+          unit: 'ETH',
+          password: '',
+          sending: false,
+          isDisabled: false
+        });
       else {
         that.setState({
           tx_addr: tx_addr,
@@ -63,6 +76,7 @@ class SendComponent extends Component {
           unit: 'ETH',
           password: '',
           sending: false,
+          isDisabled: false
         })
       }
     });
@@ -77,16 +91,17 @@ class SendComponent extends Component {
       </div>
     )
   }
-  
+
   openSnackBar = () => this.setState({
-      snackMessage: 'Your Transaction is Placed Successfully.',
-      openSnack: true
-    })
-  
+    snackMessage: 'Your Transaction is Placed Successfully.',
+    openSnack: true
+  })
+
 
   snackRequestClose = () => {
     this.setState({
       openSnack: false,
+      snackOpen: false
     });
   };
 
@@ -96,7 +111,7 @@ class SendComponent extends Component {
 
   handleChange = (event, index, unit) => this.setState({ unit });
   render() {
-    
+
     return (
       <MuiThemeProvider>
         <div style={{
@@ -113,7 +128,7 @@ class SendComponent extends Component {
                 <TextField
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
-                  onChange={(event, to_address) => this.setState({ to_address: to_address})}
+                  onChange={(event, to_address) => this.setState({ to_address: to_address })}
                   value={this.state.to_address}
                 />
               </Col>
@@ -169,7 +184,7 @@ class SendComponent extends Component {
                 <span>Data: </span>
               </Col>
               <Col xs={9}>
-                <TextField  style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, data) => this.setState({ data })} value={this.state.data} />
+                <TextField style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
@@ -182,20 +197,27 @@ class SendComponent extends Component {
             </Row>
           </Grid>
           <div>
-          <Snackbar
-                  open={this.state.openSnack}
-                  // message={this.state.snackMessage}
-                  autoHideDuration={10000}
-                  onRequestClose={this.snackRequestClose}
-                  style={{ marginBottom: '2%',width:'80%' }}
-                  action="Transaction Placed. Check Status"
-                  onActionClick={() => {this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`)}}                  
-                />
+            <Snackbar
+              open={this.state.openSnack}
+              // message={this.state.snackMessage}
+              autoHideDuration={10000}
+              onRequestClose={this.snackRequestClose}
+              style={{ marginBottom: '2%', width: '80%' }}
+              action="Transaction Placed. Check Status"
+              onActionClick={() => { this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`) }}
+            />
+            <Snackbar
+              open={this.state.snackOpen}
+              message={this.state.snackMessage}
+              autoHideDuration={10000}
+              onRequestClose={this.snackRequestClose}
+            />
           </div>
           <div>
-            <FlatButton disabled={this.state.to_address == '' ? true : false} onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
+            <FlatButton disabled={this.state.to_address == '' || this.state.sending ? true : false}
+              onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
               style={
-                this.state.to_address === '' ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
+                this.state.to_address === '' || this.state.sending ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
                   :
                   { backgroundColor: '#f05e09', marginLeft: 20 }
               }

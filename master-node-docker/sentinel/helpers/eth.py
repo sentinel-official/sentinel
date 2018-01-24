@@ -78,5 +78,16 @@ class ETHHelper(object):
 
         return error, tx_hash
 
+    def gas_units(self, from_addr, to_addr, amount, unit, session_id):
+        if unit == 'ETH':
+            transaction = {'from': from_addr, 'to': to_addr, 'value': amount}
+            error, gas_units = eth_manager.gas_units(
+                from_addr, transaction)
+        else:
+            error, gas_units = contract_manager.gas_units(
+                from_addr, to_addr, amount, session_id)
+
+        return error, gas_units
+
 
 eth_helper = ETHHelper()

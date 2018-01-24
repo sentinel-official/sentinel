@@ -77,6 +77,35 @@ class TransferAmount(object):
         resp.body = json.dumps(message)
 
 
+class CalculateGasUnits(object):
+    def on_post(self, req, resp):
+        from_addr = str(req.body['from_addr'])
+        to_addr = str(req.body['to_addr'])
+        amount = float(req.body['amount'])
+        unit = str(req.body['unit'])
+        session_id = int(req.body['session_id'])
+
+        amount = int(amount * (10 ** 18)) \
+            if unit == 'ETH' else int(amount * DECIMALS)
+
+        error, gas_units = eth_helper.gas_units(
+            from_addr, to_addr, amount, unit, session_id)
+
+        if error is None:
+            message = {
+                'success': True,
+                'gas_units': gas_units
+            }
+        else:
+            message = {
+                'success': False,
+                'error': error,
+                'message': 'Error occurred while calculating gas units.'
+            }
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
 class TranscationReceipt(object):
     def on_post(self, req, resp):
         """

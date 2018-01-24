@@ -82,6 +82,18 @@ class ContractManager(object):
             return {'code': 207, 'error': str(err)}, None
         return None, tx_hash
 
+    def gas_units(self, from_addr, to_addr, amount, session_id):
+        try:
+            if session_id is None:
+                gas_units = self.contracts[0].estimateGas(
+                    {'from': account_addr}).transfer(to_addr, amount)
+            else:
+                gas_units = self.contracts[1].estimateGas(
+                    {'from': account_addr}).payVpnSession(sentinel['address'], amount, session_id)
+        except Exception as err:
+            return {'code': 208, 'error': str(err)}, None
+        return None, gas_units
+
 
 contract_manager = ContractManager(
     {'name': SENTINEL_NAME, 'abi': SENTINEL_ABI, 'address': SENTINEL_ADDRESS},

@@ -2,7 +2,9 @@ const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
-const B_URL = 'http://35.198.244.134:8000';
+const B_URL = 'http://35.198.220.210:8000';
+const ETH_BALANCE_URL = 'https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=balance&tag=latest&address=';
+const SENT_BALANCE_URL = 'https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=tokenbalance&tag=latest&contractaddress=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037&address=';
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
@@ -118,18 +120,34 @@ export function transferAmount(data, cb) {
 }
 
 
-export function getBalance(data, cb) {
-  fetch(B_URL + '/client/account/balance', {
-    method: 'POST',
+export function getEthBalance(data, cb) {
+  fetch(ETH_BALANCE_URL + data, {
+    method: 'GET',
     headers: {
       'Accept': 'application/json',
       'Content-type': 'application/json',
-    },
-    body: JSON.stringify(data)
+    }
   }).then(function (response) {
     response.json().then(function (response) {
-      if (response.success === true) {
-        var balance = response['balances'];
+      if (response.status == '1') {
+        var balance = response['result'] / (10 ** 18);
+        cb(null, balance);
+      } else cb({ message: 'Error occurred while getting balance.' }, null);
+    });
+  });
+}
+
+export function getSentBalance(data, cb) {
+  fetch(SENT_BALANCE_URL + data, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    }
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.status == '1') {
+        var balance = response['result'] / (10 ** 8);
         cb(null, balance);
       } else cb({ message: 'Error occurred while getting balance.' }, null);
     });
@@ -242,8 +260,8 @@ export function getVPNPIDs(cb) {
       var pids = stdout.trim();
       cb(null, pids);
     }
-    else{
-      cb(true,null);
+    else {
+      cb(true, null);
     }
   });
 }

@@ -94,6 +94,14 @@ class ETHManager(object):
             return {'code': 108, 'error': str(err)}, None
         return None, receipt
 
+    def gas_units(self, account_addr, transaction):
+        try:
+            account_addr = transaction['from']
+            units = self.web3.eth.estimateGas(transaction)
+        except Exception as err:
+            return {'code': 109, 'error': str(err)}, None
+        return None, units
+
 
 eth_manager = ETHManager()
 logger.info(eth_manager.web3.isConnected())

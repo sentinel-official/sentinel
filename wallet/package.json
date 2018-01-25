@@ -29,7 +29,9 @@
     "react-qr-svg": "^2.1.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
-    "react-simple-maps": "^0.10.1"
+    "react-simple-maps": "^0.10.1",
+    "react-tooltip": "^3.4.0",
+    "zfill": "0.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

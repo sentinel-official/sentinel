@@ -9,7 +9,7 @@ function windowManager() {
   this.window = null;
 
   this.createWindow = () => {
-    this.window = new BrowserWindow({ title: "My App", resizable: false, width: 1000, height: 672, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel Wallet", resizable: false, width: 1000, height: 672, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -61,14 +61,6 @@ app.on('ready', function () {
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
 
-    ]
-  },
-  {
-    label: i18n.__('View'), submenu: [
-
-      {
-        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      }
     ]
   }
   ]

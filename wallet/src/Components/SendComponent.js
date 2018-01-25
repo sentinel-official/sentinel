@@ -3,6 +3,7 @@ import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextFie
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { transferAmount, getAccount } from '../Actions/AccountActions';
 import { purple500 } from 'material-ui/styles/colors';
+import ReactTooltip from 'react-tooltip';
 
 
 let shell = window
@@ -119,10 +120,10 @@ class SendComponent extends Component {
           backgroundColor: '#c3deea',
           margin: 15
         }}>
-          <Grid>
+          <Grid> 
             <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
-                <span>To:</span>
+                <span data-tip data-for="toField">To?</span>
               </Col>
               <Col xs={9}>
                 <TextField
@@ -135,10 +136,13 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span>Amount:</span>
+                <span data-tip data-for="amountField">Amount?</span>
               </Col>
               <Col xs={5}>
-                <TextField type="number" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, amount) => this.setState({ amount })} value={this.state.amount} />
+                <TextField type="number"
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
+                  fullWidth={true}
+                  onChange={(event, amount) => this.setState({ amount })} value={this.state.amount} />
               </Col>
               <Col xs={4}>
                 <DropDownMenu
@@ -173,30 +177,58 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span>Gas</span>
+                <span data-tip data-for="gasField" >Gas?</span>
               </Col>
               <Col xs={9}>
-                <TextField type="number" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, gas) => this.setState({ gas })} value={this.state.gas} />
+                <TextField
+                  type="number"
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
+                  underlineShow={false} fullWidth={true}
+                  onChange={(event, gas) => this.setState({ gas })} value={this.state.gas} />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span>Data: </span>
+                <span data-tip data-for="messageField">Message/Note? </span>
               </Col>
               <Col xs={9}>
-                <TextField style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, data) => this.setState({ data })} value={this.state.data} />
+                <TextField
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
+                  underlineShow={false} fullWidth={true}
+                  onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span>Password: </span>
+                <span data-tip data-for="passwordField">Password? </span>
               </Col>
               <Col xs={9}>
-                <TextField type="password" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, password) => this.setState({ password })} value={this.state.password} />
+                <TextField
+                  type="password"
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
+                  underlineShow={false} fullWidth={true}
+                  onChange={(event, password) => this.setState({ password })} value={this.state.password} />
               </Col>
             </Row>
           </Grid>
           <div>
+            <ReactTooltip id="toField" place="bottom">
+              <span>Sentinel Wallet ID that you want to send Sentinel Tokens to</span>
+            </ReactTooltip>
+            <ReactTooltip id="amountField" place="bottom">
+              <span>Total Ethereum/Sentinel Tokens<br />
+                that you want to send to. <br />
+                Yes, this wallet can<br /> hold Ethereum too.</span>
+            </ReactTooltip>
+            <ReactTooltip id="gasField" place="bottom">
+              <span>Total Ethereum Tokens that you want to send as Gas</span>
+            </ReactTooltip>
+            <ReactTooltip id="messageField" place="bottom">
+              <span>A message that you might want to add as a transaction note</span>
+            </ReactTooltip>
+            <ReactTooltip id="passwordField" place="bottom">
+              <span>Your Sentinel AUID Password</span>
+            </ReactTooltip>
             <Snackbar
               open={this.state.openSnack}
               // message={this.state.snackMessage}

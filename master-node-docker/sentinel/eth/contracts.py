@@ -30,16 +30,14 @@ class ContractManager(object):
         return None, balance / (DECIMALS * 1.0)
 
     def transfer_amount(self, account_addr, to_addr, amount,
-                        password, session_id=None):
+                        tx_object, password, session_id=None):
         try:
             self.eth_manager.web3.personal.unlockAccount(
                 account_addr, password)
             if session_id is None:
-                tx_hash = self.contracts[0].transact(
-                    {'from': account_addr}).transfer(to_addr, amount)
+                tx_hash = self.contracts[0].transact(tx_object).transfer(to_addr, amount)
             else:
-                tx_hash = self.contracts[1].transact(
-                    {'from': account_addr}).payVpnSession(sentinel['address'], amount, session_id)
+                tx_hash = self.contracts[1].transact(tx_object).payVpnSession(sentinel['address'], amount, session_id)
             self.eth_manager.web3.personal.lockAccount(account_addr)
         except Exception as err:
             return {'code': 202, 'error': str(err)}, None
@@ -81,6 +79,18 @@ class ContractManager(object):
         except Exception as err:
             return {'code': 207, 'error': str(err)}, None
         return None, tx_hash
+
+    def gas_units(self, from_addr, to_addr, amount, session_id):
+        try:
+            if session_id is None:
+                gas_units = self.contracts[0].estimateGas(
+                    {'from': account_addr}).transfer(to_addr, amount)
+            else:
+                gas_units = self.contracts[1].estimateGas(
+                    {'from': account_addr}).payVpnSession(sentinel['address'], amount, session_id)
+        except Exception as err:
+            return {'code': 208, 'error': str(err)}, None
+        return None, gas_units
 
 
 contract_manager = ContractManager(

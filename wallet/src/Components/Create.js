@@ -9,6 +9,7 @@ import Dashboard from './Dashboard';
 import { createAccount, uploadKeystore } from '../Actions/AccountActions';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Footer from './Footer';
+import ReactTooltip from 'react-tooltip';
 
 class Create extends Component {
     constructor(props) {
@@ -55,7 +56,7 @@ class Create extends Component {
     }
 
     _createAccount = () => {
-      this.setState({isLoading: true})
+        this.setState({ isLoading: true })
         var password = this.state.password;
         var that = this;
         createAccount(password, function (err, account) {
@@ -109,7 +110,12 @@ class Create extends Component {
                     </Toolbar>
                     {this.state.private_key == '' ?
                         <div style={styles.createDiv}>
-                            <h3 style={styles.headingCreate}>Create your AUID</h3>
+                            <h3 style={styles.headingCreate} data-tip data-for="createID">Create your Anonymous User ID</h3>
+                            <ReactTooltip id="createID" place="bottom">
+                                <span>
+                                    Enter a password and create your own Sentinel Anonymous User ID (AUID)
+                                </span>
+                            </ReactTooltip>
                             <hr width="50%" align="left" size="3" noshade style={{ backgroundColor: 'rgb(83, 45, 145)' }} />
                             <Paper zDepth={2} style={styles.textBoxPaper}>
                                 <TextField
@@ -117,7 +123,7 @@ class Create extends Component {
                                     hintStyle={styles.textFieldCreateHint}
                                     type="password"
                                     underlineShow={false}
-                                    onChange={(event,password) => { this.setState({ password:password }) }}
+                                    onChange={(event, password) => { this.setState({ password: password }) }}
                                     style={styles.textFieldCreate}
                                 />
                             </Paper>
@@ -127,7 +133,7 @@ class Create extends Component {
                                 onClick={this._createAccount}
                                 buttonStyle={styles.buttonCreate}
                                 style={styles.createStyle} />
-                                {this.state.isLoading === true ? this.renderProgress(): ''}
+                            {this.state.isLoading === true ? this.renderProgress() : ''}
                             <p style={{ fontSize: 12, marginLeft: '3%' }}>(Or)</p>
                             <Paper zDepth={2} style={styles.bluePaper}>
                                 <div style={{ padding: '7%' }}>
@@ -145,7 +151,7 @@ class Create extends Component {
                                         </Chip>
                                     }
                                     <RaisedButton
-                                        label="Restore"
+                                        label="Restore Keystore File"
                                         labelStyle={{ color: 'white', textTransform: 'none' }}
                                         disabled={this.state.file === '' ? true : false}
                                         onClick={this._store.bind(this)}

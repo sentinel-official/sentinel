@@ -66,7 +66,6 @@ class History extends Component {
     let that = this;
     getSentTransactionHistory('0x' + zfill(this.props.local_address.substring(2), 64), (err, history) => {
       if (err) {
-        console.log("Err")
         that.setState({ isLoading: false })
       }
       else {

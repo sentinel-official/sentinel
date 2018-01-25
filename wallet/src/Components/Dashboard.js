@@ -7,7 +7,7 @@ import Header from './Header';
 import { getEthBalance, getSentBalance, getAccount, transferAmount, getVPNdetails } from '../Actions/AccountActions';
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
-import VPNComponent from './VPNComponent';
+//import VPNComponent from './VPNComponent';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -21,7 +21,6 @@ class Dashboard extends Component {
       ethBalance: 'Loading',
       sentBalance: 'Loading',
       isGetBalanceCalled: false,
-      vpnData: null,
       status: false
     }
     this.set = this.props.set;
@@ -59,12 +58,12 @@ class Dashboard extends Component {
     })
   }
 
-  getVPNapi = () => {
-    var that = this;
-    getVPNdetails(function (status, data) {
-      that.setState({ status: status, vpnData: data });
-    })
-  }
+  // getVPNapi = () => {
+  //   var that = this;
+  //   getVPNdetails(function (status, data) {
+  //     that.setState({ status: status, vpnData: data });
+  //   })
+  // }
 
   handleChange = (value) => {
     this.setState({
@@ -94,7 +93,7 @@ class Dashboard extends Component {
         <div>
           <div>
             <div>
-              <Header balance={userBalance} onChange={this.getVPNapi} local_address={this.state.local_address} />
+              <Header balance={userBalance} local_address={this.state.local_address} />
               <div>
                 <Tabs
                   value={this.state.value}
@@ -115,13 +114,13 @@ class Dashboard extends Component {
                       <ReceiveComponent local_address={this.state.local_address} />
                     </div>
                   </Tab>
-                  <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="VPN List" value="vpn">
+                  {/* <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="VPN List" value="vpn">
                     <VPNComponent
                       local_address={this.state.local_address}
                       status={this.state.status}
                       vpnData={this.state.vpnData}
                     />
-                  </Tab>
+                  </Tab> */}
                 </Tabs>
               </div>
             </div>

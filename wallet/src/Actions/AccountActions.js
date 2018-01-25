@@ -3,8 +3,16 @@ const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
 const B_URL = 'http://35.198.220.210:8000';
-const ETH_BALANCE_URL = 'https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=balance&tag=latest&address=';
-const SENT_BALANCE_URL = 'https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=tokenbalance&tag=latest&contractaddress=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037&address=';
+const ETH_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
+&module=account&action=balance&tag=latest&address=`;
+const SENT_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
+&module=account&action=tokenbalance&tag=latest&contractaddress=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037&address=`;
+const ETH_TRANSC_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
+&module=account&action=txlist&startblock=0&endblock=latest&address=`;
+const SENT_TRANSC_URL1 = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
+&module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037
+&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=`;
+const SENT_TRANSC_URL2 = `&topic1_2_opr=or&topic2=`;
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
@@ -154,20 +162,34 @@ export function getSentBalance(data, cb) {
   });
 }
 
-export function getTransactionHistory(account_addr, cb) {
-  fetch(B_URL + '/client/transaction/history', {
-    method: 'POST',
+export function getEthTransactionHistory(account_addr, page, cb) {
+  fetch(ETH_TRANSC_URL + account_addr + '&page=' + page + "&offset=10&sort=desc", {
+    method: 'GET',
     headers: {
       'Accept': 'application/json',
       'Content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      account_addr: account_addr
-    })
+    }
   }).then(function (response) {
     response.json().then(function (response) {
-      if (response.success === true) {
-        var history = response['history'];
+      if (response.status == '1') {
+        var history = response['result'];
+        cb(null, history);
+      } else cb({ message: 'Error occurred while getting transaction history.' }, null);
+    });
+  });
+}
+
+export function getSentTransactionHistory(account_addr, cb) {
+  fetch(SENT_TRANSC_URL1 + account_addr + SENT_TRANSC_URL2+account_addr, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    }
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.status == '1') {
+        var history = response['result'];
         cb(null, history);
       } else cb({ message: 'Error occurred while getting transaction history.' }, null);
     });

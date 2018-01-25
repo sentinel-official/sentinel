@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import style from 'material-ui/svg-icons/image/style';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getTransactionHistory } from '../Actions/AccountActions';
+import { getEthTransactionHistory, getSentTransactionHistory } from '../Actions/AccountActions';
 import { setTimeout } from 'timers';
-import { Snackbar } from 'material-ui';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
+import _ from 'lodash';
+import { RaisedButton, IconButton, Snackbar } from 'material-ui';
+import Refresh from 'material-ui/svg-icons/navigation/refresh';
+import EtherTransaction from './EtherTransaction';
+import SentTransaction from './SentTransaction';
+let zfill=require('zfill');
 
 let shell = window
   .require('electron')
@@ -14,12 +19,19 @@ class History extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      ethData: [],
+      sentData: [],
       isGetHistoryCalled: false,
       isLoading: true,
-      openSnack: false,
-      snackMessage: ''
+      ethActive: true,
+      pageNumber: 1,
+      nextDisabled: false
     }
+  }
+
+  componentWillMount() {
+    this.getEthHistory(this.state.pageNumber);
+    this.getSentHistory();
   }
 
   renderProgress() {
@@ -27,169 +39,113 @@ class History extends Component {
     return (
       <RefreshIndicator
         size={50}
-        left={200}
-        top={200}
-        loadingColor="#532d91"
+        left={350}
+        top={150}
+        loadingolor="#532d91"
         status="loading"
         style={refresh}
       />
     )
   }
-  getHistory() {
+
+  getEthHistory(page) {
+    this.setState({ isLoading: true });
     let that = this;
-    getTransactionHistory(this.props.local_address, (err, history) => {
-      if (err)
-        console.log(err);
+    getEthTransactionHistory(this.props.local_address, page, (err, history) => {
+      if (err) {
+        that.setState({ isLoading: false, nextDisabled: true })
+      }
       else {
-        that.setState({ data: history, isLoading: false })
+        that.setState({ ethData: _.sortBy(history, o => o.timeStamp).reverse(), pageNumber: page, isLoading: false })
       }
     })
   }
 
-  openInExternalBrowser(url) {
-    shell.openExternal(url);
-  };
-  snackRequestClose = () => {
-    this.setState({
-      openSnack: false,
-    });
-  };
+  getSentHistory() {
+    this.setState({ isLoading: true });
+    let that = this;
+    getSentTransactionHistory('0x' + zfill(this.props.local_address.substring(2), 64), (err, history) => {
+      if (err) {
+        console.log("Err")
+        that.setState({ isLoading: false })
+      }
+      else {
+        console.log("Hi..")
+        that.setState({ sentData: _.sortBy(history, o => o.timeStamp).reverse(), isLoading: false })
+      }
+    })
+  }
+
+  handleRefresh(){
+    if(this.state.ethActive)
+      this.getEthHistory(1);
+    else
+      this.getSentHistory();
+  }
 
   render() {
-
-    let output;
-    let that = this;
-    if (!this.state.isGetHistoryCalled) {
-      setInterval(function () {
-
-        that.getHistory();
-      }, 10000);
-
-      this.setState({ isGetHistoryCalled: true });
-    }
-
-    let data = this.state.data;
-    if (data.length == 0) {
-      output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Transactions yet</div>
-    }
-    else {
-      output = data.map((history) => {
-        return (
-          <div style={styles.wholeDiv}>
-            {history.from_addr == that.props.local_address
-              ? <div>
-                <div>
-                  <span style={{
-                    color: 'red',
-                    fontWeight: 'bold'
-                  }}>OUT
-                  </span>
-                  <span style={{ marginLeft:5 }}>{new Date(history.timestamp * 1000).toGMTString()}</span>
-                </div>
-                <div>
-                  <span style={{
-                    fontWeight: 'bold'
-                  }}>To:
-                  </span>
-                  <a style={{ cursor: 'pointer', marginLeft: 5 }}
-                    onClick={() => {
-                      this.openInExternalBrowser(`https://etherscan.io/address/${history.to_addr}`)
-                    }}>{history.to_addr}</a>
-                  <CopyToClipboard text={history.to_addr}
-                    onCopy={() => that.setState({
-                      snackMessage: 'Copied to Clipboard Successfully',
-                      openSnack: true
-                    })} >
-                    <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
-                  </CopyToClipboard>
-                </div>
-              </div>
-              : <div>
-                <div>
-                  <span style={{
-                    fontWeight: 'bold',
-                    color: '#532d91'
-                  }}>IN
-                </span>
-                  <span style={{ marginLeft: 5 }}>{new Date(history.timestamp * 1000).toGMTString()}</span>
-                </div>
-                <div>
-                  <span style={{
-                    fontWeight: 'bold'
-                  }}>
-                    From:
-                </span>
-                  <a style={{ cursor: 'pointer', marginLeft: 5 }}
-                    onClick={() => {
-                      this.openInExternalBrowser(`https://etherscan.io/address/${history.from_addr}`)
-                    }}>{history.from_addr}</a>
-                  <CopyToClipboard text={history.from_addr}
-                    onCopy={() => that.setState({
-                      snackMessage: 'Copied to Clipboard Successfully',
-                      openSnack: true
-                    })} >
-                    <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
-                  </CopyToClipboard>
-                </div>
-              </div>
-            }
-            <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
-              <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{history.amount} </span>
-              <span>{history.unit}s</span>  |
-                    <span style={{ fontWeight: 'bold' }}> Status : </span><span>Success</span>  |
-                    <span style={{ fontWeight: 'bold' }}> Tx : </span>
-              <a style={styles.anchorStyle} onClick={
-                () => {
-                  this.openInExternalBrowser(`https://etherscan.io/tx/${history.tx_hash}`)
-                }}>{history.tx_hash}</a></pre>
-          </div>
-        )
-      })
-    }
+    let ethOutput = <EtherTransaction data={this.state.ethData} local_address={this.props.local_address} />
+    let sentOutput = <SentTransaction data={this.state.sentData} local_address={this.props.local_address} />
     return (
-      <div style={{
-        margin: '5%'
-      }}>
+      <div style={{ margin: '1% 3%' }}>
+        {this.state.ethActive ?
+          <span style={styles.transactionsHeading}>Eth Transactions</span> :
+          <span style={styles.transactionsHeading}>Sent Transactions</span>}
+        <span style={{ marginLeft: '60%' }}>
+          <IconButton>
+            <Refresh onClick={this.handleRefresh.bind(this)} />
+          </IconButton>
+          <RaisedButton
+            label="ETH"
+            buttonStyle={this.state.ethActive ? { backgroundColor: 'grey' } : {}}
+            onClick={() => { this.setState({ ethActive: true }) }}
+          />
+          <RaisedButton
+            label="SENT"
+            buttonStyle={this.state.ethActive ? {} : { backgroundColor: 'grey' }}
+            onClick={() => { this.setState({ ethActive: false }) }}
+          />
+        </span>
         {this.state.isLoading === true ? this.renderProgress() :
-          <div style={{ height: 480, overflowY: 'auto', overflowX: 'hidden' }}>{output}</div>
+          <div >
+            {this.state.ethActive ?
+              <div>
+                {ethOutput}
+                <div style={{ float: 'right' }}>
+                  <RaisedButton
+                    label="Back"
+                    onClick={() => { this.getEthHistory(this.state.pageNumber - 1) }}
+                    disabled={this.state.pageNumber == 1 ? true : false}
+                  />
+                  <RaisedButton
+                    label="Next"
+                    disabled={this.state.nextDisabled}
+                    onClick={() => { this.getEthHistory(this.state.pageNumber + 1) }}
+                  />
+                </div>
+              </div>
+              :
+              <div>
+                {sentOutput}
+              </div>}
+          </div>
         }
-        <Snackbar
-          open={this.state.openSnack}
-          message={this.state.snackMessage}
-          autoHideDuration={2000}
-          onRequestClose={this.snackRequestClose}
-          style={{ marginBottom: '2%' }}
-        />
       </div>
     )
   }
 }
 
 const styles = {
-  wholeDiv: {
-    fontSize: 14,
-    marginBottom: '5%',
-    fontWeight: '400',
-    color: 'rgba(0, 0, 0, 0.66)'
-  },
-  anchorStyle: {
-    width: 220,
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    cursor: 'pointer',
-  },
-  clipBoard: {
-    height: 20,
-    width: 20,
-    cursor: 'pointer'
-  },
   refresh: {
     display: 'inline-block',
     position: 'relative',
     // justifyContent: 'center',
     // alignItems: 'center'
   },
+  transactionsHeading: {
+    fontSize: 16,
+    fontWeight: 600
+  }
 }
 
 export default History;

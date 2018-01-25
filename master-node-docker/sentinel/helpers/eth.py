@@ -6,16 +6,25 @@ from ..config import DECIMALS
 
 class ETHHelper(object):
     def transfer_amount(self, from_addr, to_addr, amount, unit, keystore,
-                        password, session_id=None):
+                        password, gas_price, gas_units session_id=None):
         eth_manager.add_keystore(from_addr, keystore)
         sleep(1.0)  # Need to check
         if unit == 'ETH':
             transaction = {'from': from_addr, 'to': to_addr, 'value': amount}
+            if gas_price:
+                transaction['gasPrice'] = gas_price
+            if gas_units:
+                transaction['gas'] = gas_units
             error, tx_hash = eth_manager.transfer_amount(
                 from_addr, password, transaction)
         else:
+            tx_object = {'from': from_addr}
+            if gas_price:
+                tx_object['gasPrice'] = gas_price
+            if gas_units:
+                tx_object['gas']: gas_units
             error, tx_hash = contract_manager.transfer_amount(
-                from_addr, to_addr, amount, password, session_id)
+                from_addr, to_addr, amount, tx_object, password, session_id)
         eth_manager.remove_keystore(from_addr)
 
         return error, tx_hash
@@ -77,6 +86,17 @@ class ETHHelper(object):
         eth_manager.remove_keystore(account_addr)
 
         return error, tx_hash
+
+    def gas_units(self, from_addr, to_addr, amount, unit, session_id):
+        if unit == 'ETH':
+            transaction = {'from': from_addr, 'to': to_addr, 'value': amount}
+            error, gas_units = eth_manager.gas_units(
+                from_addr, transaction)
+        else:
+            error, gas_units = contract_manager.gas_units(
+                from_addr, to_addr, amount, session_id)
+
+        return error, gas_units
 
 
 eth_helper = ETHHelper()

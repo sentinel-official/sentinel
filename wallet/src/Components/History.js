@@ -9,7 +9,7 @@ import { RaisedButton, IconButton, Snackbar } from 'material-ui';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import EtherTransaction from './EtherTransaction';
 import SentTransaction from './SentTransaction';
-let zfill=require('zfill');
+let zfill = require('zfill');
 
 let shell = window
   .require('electron')
@@ -25,13 +25,9 @@ class History extends Component {
       isLoading: true,
       ethActive: true,
       pageNumber: 1,
-      nextDisabled: false
+      nextDisabled: false,
+      isInitial: true
     }
-  }
-
-  componentWillMount() {
-    this.getEthHistory(this.state.pageNumber);
-    this.getSentHistory();
   }
 
   renderProgress() {
@@ -69,20 +65,24 @@ class History extends Component {
         that.setState({ isLoading: false })
       }
       else {
-        console.log("Hi..")
         that.setState({ sentData: _.sortBy(history, o => o.timeStamp).reverse(), isLoading: false })
       }
     })
   }
 
-  handleRefresh(){
-    if(this.state.ethActive)
+  handleRefresh() {
+    if (this.state.ethActive)
       this.getEthHistory(1);
     else
       this.getSentHistory();
   }
 
   render() {
+    if (this.state.isInitial && this.props.local_address !== "") {
+      this.getEthHistory(this.state.pageNumber);
+      this.getSentHistory();
+      this.setState({ isInitial: false });
+    }
     let ethOutput = <EtherTransaction data={this.state.ethData} local_address={this.props.local_address} />
     let sentOutput = <SentTransaction data={this.state.sentData} local_address={this.props.local_address} />
     return (

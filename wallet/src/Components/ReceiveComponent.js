@@ -32,7 +32,7 @@ class ReceiveComponent extends Component {
           <Row>
             <Col>
               <div style={{
-                marginLeft: 100,
+                marginLeft: 350,
                 marginTop: 20,
                 marginBottom: 30,
               }}>
@@ -49,7 +49,7 @@ class ReceiveComponent extends Component {
           <Row>
             <Col>
               <div style={{
-                marginLeft: 50
+                marginLeft: 280
               }}>
                 <label style={{
                   color: '#532d91',

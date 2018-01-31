@@ -127,24 +127,11 @@ class Header extends Component {
                 justifyContent: 'center'
               }}>
                 <div>
-                  <span style={{
-                    fontSize: 14,
-                    fontWeight: '600',
-                    color: '#FAFAFA'
-                  }}>SENTINEL - Basic Wallet</span>
+                  <span style={styles.basicWallet}>SENTINEL - Basic Wallet</span>
                 </div>
                 <Row>
                   <Col xs={8}><span
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '600',
-                      color: '#FAFAFA',
-                      whiteSpace: 'nowrap',
-                      display: 'block',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      marginTop: '5%'
-                    }}>
+                    style={styles.walletAddress}>
                     {this.props.local_address}</span>
                   </Col>
                   <Col xs={4}>
@@ -163,20 +150,10 @@ class Header extends Component {
               </Col>
               <Col xs={3}>
                 <div>
-                  <Col style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                    color: '#FAFAFA',
-                    marginTop: '3%'
-                  }}>
+                  <Col style={styles.sentBalance}>
                     <span>SENT: {this.props.balance.sents}</span>
                   </Col>
-                  <Col style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                    color: '#FAFAFA',
-                    marginTop: '5%'
-                  }}>
+                  <Col style={styles.ethBalance}>
                     <span>ETH: {this.props.balance.eths}</span>
                   </Col>
                 </div>
@@ -244,8 +221,35 @@ const styles = {
     height: 12,
     width: 12,
     cursor: 'pointer',
-    marginTop: '12%',
-    marginLeft:'-50%'
+    marginTop: '7.5%',
+    marginLeft: '-52%'
+  },
+  walletAddress: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FAFAFA',
+    whiteSpace: 'nowrap',
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    marginTop: '3%'
+  },
+  basicWallet: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FAFAFA'
+  },
+  ethBalance: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FAFAFA',
+    marginTop: '3%'
+  },
+  sentBalance: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FAFAFA',
+    marginTop: '3%'
   }
 }
 export default Header;

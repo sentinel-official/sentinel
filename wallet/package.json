@@ -1,15 +1,14 @@
 {
-  "name": "sentinelwallet",
-  "description": "Sentinel Wallet",
-  "productName": "Sentinel Wallet",
-  "version": "1.0.0",
+  "name": "Sentinel",
+  "description": "Sentinel Desktop Wallet",
+  "productName": "Sentinel Desktop Wallet",
+  "version": "0.0.2",
   "private": true,
   "main": "electron.js",
   "homepage": "./",
   "dependencies": {
     "d3": "^4.12.2",
     "d3-world-maps": "0.0.3",
-    "electron-packager": "^10.1.1",
     "fs": "0.0.1-security",
     "fs-thenable": "^1.1.1",
     "google-map-react": "^0.28.0",
@@ -46,6 +45,7 @@
     "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-wallet-linux-x64/ --arch amd64 --config debian.json"
   },
   "devDependencies": {
+    "electron-packager": "^10.1.1",
     "electron": "1.7.10",
     "electron-installer-debian": "^0.7.1",
     "electron-winstaller": "^2.6.3"

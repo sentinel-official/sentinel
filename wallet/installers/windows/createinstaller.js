@@ -16,9 +16,9 @@ function getInstallerConfig () {
   return Promise.resolve({
     appDirectory: path.join(outPath, 'sentinel-wallet-win32-x64/'),
     authors: 'Sentinel',
-    version: "1.0.0",
+    version: "0.0.2",
     noMsi: true,
-    name: "sentinelwallet",
+    name: "sentinel",
     description: "Sentinel Wallet",
     title: "Sentinel Wallet",
     outputDirectory: path.join(outPath, 'windows-installer'),

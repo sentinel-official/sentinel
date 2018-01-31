@@ -120,10 +120,11 @@ class SendComponent extends Component {
           backgroundColor: '#c3deea',
           margin: 15
         }}>
-          <Grid> 
+          <Grid>
             <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
-                <span data-tip data-for="toField">To?</span>
+                <span>To</span>
+                <span data-tip data-for="toField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
@@ -136,7 +137,8 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span data-tip data-for="amountField">Amount?</span>
+                <span>Amount</span>
+                <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={5}>
                 <TextField type="number"
@@ -177,7 +179,8 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span data-tip data-for="gasField" >Gas?</span>
+                <span>Gas</span>
+                <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
@@ -189,7 +192,8 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span data-tip data-for="messageField">Message/Note? </span>
+                <span>Message/Note</span>
+                <span data-tip data-for="messageField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
@@ -200,7 +204,8 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span data-tip data-for="passwordField">Password? </span>
+                <span >Password</span>
+                <span data-tip data-for="passwordField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
@@ -266,3 +271,15 @@ class SendComponent extends Component {
 }
 
 export default SendComponent;
+
+const styles = {
+  questionMark: {
+    marginLeft: 3,
+    fontSize: 12,
+    borderRadius: '50%',
+    backgroundColor: '#4d9bb9',
+    paddingLeft: 5,
+    paddingRight: 5,
+    color: 'white'
+  }
+}

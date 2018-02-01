@@ -6,7 +6,7 @@ from ..config import DECIMALS
 
 class ETHHelper(object):
     def transfer_amount(self, from_addr, to_addr, amount, unit, keystore,
-                        password, gas_price, gas_units session_id=None):
+                        password, gas_price, gas_units, session_id=None):
         eth_manager.add_keystore(from_addr, keystore)
         sleep(1.0)  # Need to check
         if unit == 'ETH':
@@ -22,7 +22,7 @@ class ETHHelper(object):
             if gas_price:
                 tx_object['gasPrice'] = gas_price
             if gas_units:
-                tx_object['gas']: gas_units
+                tx_object['gas']=gas_units
             error, tx_hash = contract_manager.transfer_amount(
                 from_addr, to_addr, amount, tx_object, password, session_id)
         eth_manager.remove_keystore(from_addr)

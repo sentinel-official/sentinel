@@ -93,7 +93,7 @@ class GetVpnCredentials(object):
             else:
                 #put_connection(node['account']['addr'], account_addr)
                 secretToken = uuid4().hex
-                node_addr = node['vpn']['ovpn'][3].split(' ')[1],
+                node_addr = node['ip'],
                 message = {
                     'success': True,
                     'ip': node_addr,

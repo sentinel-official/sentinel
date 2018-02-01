@@ -3,7 +3,7 @@ from urlparse import urljoin
 import requests
 from ..config import MASTER_NODE_URL
 from ..config import ACCOUNT_DATA_PATH
-
+import getip
 
 def register_node(node):
     body = {
@@ -11,6 +11,7 @@ def register_node(node):
             'addr': node.account['addr']
         },
         'location': node.location,
+        'ip':getip.get(),
         'net_speed': node.net_speed
     }
     url = urljoin(MASTER_NODE_URL, 'node/register')
@@ -44,7 +45,7 @@ def create_account(password):
             'token': None
         }
         data = json.dumps(data)
-        data_file = open(ACCOUNT_DATA_PATH, 'w')
+        data_file = open(ACCOUNT_DATA_PATH, 'w+')
         data_file.writelines(data)
         data_file.close()
         return True

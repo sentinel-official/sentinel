@@ -1,9 +1,10 @@
 import json
 import falcon
 
+
 class GetMasterToken(object):
-    def on_post(self,req,res):
-         """
+    def on_post(self, req, res):
+        """
         @api {post} /master/sendToken Get Token of client from Master.
         @apiName GetMasterToken
         @apiGroup VPN
@@ -13,11 +14,9 @@ class GetMasterToken(object):
         """
         account_addr = str(req.body['account_addr'])
         token = str(req.body['token'])
-        rs=redis.Redis()
-        rs.set(account_addr,token)
+        rs = redis.Redis()
+        rs.set(account_addr, token)
         rs.shutdown()
-        message={
-            success:True
-        }
+        message = {success: True}
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

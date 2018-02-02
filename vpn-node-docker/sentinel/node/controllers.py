@@ -1,8 +1,11 @@
 import json
 from urlparse import urljoin
 import requests
+from ..config import LOCAL_SERVER_URL
 from ..config import MASTER_NODE_URL
 from ..config import ACCOUNT_DATA_PATH
+import getip
+import socket
 
 
 def register_node(node):
@@ -11,31 +14,27 @@ def register_node(node):
             'addr': node.account['addr']
         },
         'location': node.location,
+        'ip': socket.gethostbyname(socket.gethostname()),
         'net_speed': node.net_speed
     }
-    url = urljoin(MASTER_NODE_URL, 'node/register')
+    url = urljoin(LOCAL_SERVER_URL, 'node/register')
     res = requests.post(url, json=body)
-
-    if res.status_code == 200 and res.ok:
-        res_body = res.json()
-        info = {
-            'type': 'account',
-            'token': res_body['token']
-        }
+    res=res.json()
+    if res['success'] == True:
+        res_body = res
+        info = {'type': 'account', 'token': res_body['token']}
         node.update_nodeinfo(info)
         return True
     return False
 
 
 def create_account(password):
-    body = {
-        'password': password
-    }
-    url = urljoin(MASTER_NODE_URL, 'node/account')
+    body = {'password': password}
+    url = urljoin(LOCAL_SERVER_URL, 'node/account')
     res = requests.post(url, json=body)
-
-    if res.status_code == 200 and res.ok:
-        res_body = res.json()
+    res = res.json()
+    if res['success'] == True:
+        res_body = res
         data = {
             'addr': res_body['account_addr'],
             'keystore': res_body['keystore'],
@@ -44,7 +43,7 @@ def create_account(password):
             'token': None
         }
         data = json.dumps(data)
-        data_file = open(ACCOUNT_DATA_PATH, 'w')
+        data_file = open(ACCOUNT_DATA_PATH, 'w+')
         data_file.writelines(data)
         data_file.close()
         return True
@@ -57,10 +56,12 @@ def send_nodeinfo(node, info):
         'token': node.account['token'],
         'info': info
     }
-    url = urljoin(MASTER_NODE_URL, 'node/update-nodeinfo')
+    url = urljoin(LOCAL_SERVER_URL, 'node/update-nodeinfo')
     res = requests.post(url, json=body)
-
-    if res.status_code == 200 and res.ok:
+    print("Res..")
+    print(res)
+    res=res.json()
+    if res['success'] == True:
         return True
     return False
 
@@ -75,10 +76,10 @@ def send_client_usage(node, received_bytes, sent_bytes, session_duration):
         'sent_bytes': sent_bytes,
         'session_duration': session_duration
     }
-    url = urljoin(MASTER_NODE_URL, 'node/add-usage')
+    url = urljoin(LOCAL_SERVER_URL, 'node/add-usage')
     res = requests.post(url, json=body)
-
-    if res.status_code == 200 and res.ok:
+    res=res.json()
+    if res['success'] == True:
         return True
     return False
 
@@ -88,10 +89,10 @@ def deregister_node(node):
         'account_addr': node.account['addr'],
         'token': node.account['token']
     }
-    url = urljoin(MASTER_NODE_URL, 'node/deregister')
+    url = urljoin(LOCAL_SERVER_URL, 'node/deregister')
     res = requests.post(url, json=body)
-
-    if res.status_code == 200 and res.ok:
+    res=res.json()
+    if res['success'] == True:
         return True
     return False
 

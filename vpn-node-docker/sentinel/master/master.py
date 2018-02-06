@@ -1,6 +1,6 @@
 import json
 import falcon
-
+import redis
 
 class GetMasterToken(object):
     def on_post(self, req, res):
@@ -16,7 +16,6 @@ class GetMasterToken(object):
         token = str(req.body['token'])
         rs = redis.Redis()
         rs.set(account_addr, token)
-        rs.shutdown()
-        message = {success: True}
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+        message = {'success': True}
+        res.status = falcon.HTTP_200
+        res.body = json.dumps(message)

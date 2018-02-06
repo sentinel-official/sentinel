@@ -21,8 +21,7 @@ def register_node(node):
     res = requests.post(url, json=body)
     res=res.json()
     if res['success'] == True:
-        res_body = res
-        info = {'type': 'account', 'token': res_body['token']}
+        info = {'type': 'account', 'token': res['token']}
         node.update_nodeinfo(info)
         return True
     return False
@@ -34,12 +33,11 @@ def create_account(password):
     res = requests.post(url, json=body)
     res = res.json()
     if res['success'] == True:
-        res_body = res
         data = {
-            'addr': res_body['account_addr'],
-            'keystore': res_body['keystore'],
+            'addr': res['account_addr'],
+            'keystore': res['keystore'],
             'password': password,
-            'private_key': res_body['private_key'],
+            'private_key': res['private_key'],
             'token': None
         }
         data = json.dumps(data)
@@ -62,6 +60,13 @@ def send_nodeinfo(node, info):
     print(res)
     res=res.json()
     if res['success'] == True:
+        body={
+            'location':node.location,
+            'net_speed':node.net_speed,
+            'vpn':node.vpn
+        }
+        url = urljoin(LOCAL_SERVER_URL, 'vpn/getCurrentNode')
+        resp = requests.post(url, json=body)
         return True
     return False
 

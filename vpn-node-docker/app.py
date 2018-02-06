@@ -38,7 +38,6 @@ if __name__ == "__main__":
         node = Node(resume=True)
     elif 'PASSWORD' in environ:
         create_account(environ['PASSWORD'])
-        print("Hai....")
         node = Node(resume=True)
     else:
         print ('ERROR: {} not found.'.format(ACCOUNT_DATA_PATH))
@@ -58,6 +57,6 @@ if __name__ == "__main__":
         #send_nodeinfo(node, {'type': 'vpn', 'ovpn': node.vpn['ovpn']})
         openvpn.start()
         node.update_vpninfo({'type': 'status', 'status': 'up'})
-        #send_nodeinfo(node, {'type': 'vpn', 'status': node.vpn['status']})
+        send_nodeinfo(node, {'type': 'vpn', 'status': node.vpn['status']})
         process_output()
         time.sleep(2)

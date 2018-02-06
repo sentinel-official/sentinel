@@ -1,6 +1,7 @@
 import json
 import falcon
 from uuid import uuid4
+import requests
 from ..db import db
 from ..config import DECIMALS
 from ..helpers import eth_helper
@@ -48,7 +49,8 @@ class GetVpnCredentials(object):
         account_addr = str(req.body['account_addr'])
         vpn_addr = str(req.body['vpn_addr'])
 
-        error, due_amount = eth_helper.get_due_amount(account_addr)
+        #error, due_amount = eth_helper.get_due_amount(account_addr)
+        error,due_amount=None,0
 
         if error is not None:
             message = {
@@ -93,7 +95,7 @@ class GetVpnCredentials(object):
             else:
                 #put_connection(node['account']['addr'], account_addr)
                 secretToken = uuid4().hex
-                node_addr = node['ip'],
+                node_addr = str(node['ip'])
                 message = {
                     'success': True,
                     'ip': node_addr,

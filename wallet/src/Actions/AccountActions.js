@@ -180,7 +180,7 @@ export function getEthTransactionHistory(account_addr, page, cb) {
 }
 
 export function getSentTransactionHistory(account_addr, cb) {
-  fetch(SENT_TRANSC_URL1 + account_addr + SENT_TRANSC_URL2+account_addr, {
+  fetch(SENT_TRANSC_URL1 + account_addr + SENT_TRANSC_URL2 + account_addr, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -216,37 +216,55 @@ export const getVPNList = (cb) => {
 
 export function connectVPN(account_addr, vpn_addr, cb) {
   var command = 'sudo openvpn ' + OVPN_FILE;
-
-  getOVPNAndSave(account_addr, vpn_addr, function (err) {
-    if (err) cb(err);
-    else {
-      if (OVPNDelTimer) clearInterval(OVPNDelTimer);
-
-      exec(command, function (err, stdout, stderr) {
-        OVPNDelTimer = setTimeout(function () {
-          fs.unlinkSync(OVPN_FILE);
-        }, 5 * 1000);
-      });
-
-      setTimeout(function () {
-        getVPNPIDs(function (err, pids) {
+  fetch(B_URL + '/client/vpn', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      account_addr: account_addr,
+      vpn_addr: vpn_addr
+    })
+  }).then(function (response) {
+    response.json().then(function (res) {
+      if (res.success === true) {
+        getOVPNAndSave(account_addr, res['ip'], res['port'], res['token'], function (err) {
           if (err) cb(err);
           else {
-            CONNECTED = true;
-            cb(null);
+            if (OVPNDelTimer) clearInterval(OVPNDelTimer);
+
+            exec(command, function (err, stdout, stderr) {
+              OVPNDelTimer = setTimeout(function () {
+                fs.unlinkSync(OVPN_FILE);
+              }, 5 * 1000);
+            });
+
+            setTimeout(function () {
+              getVPNPIDs(function (err, pids) {
+                if (err) cb(err);
+                else {
+                  CONNECTED = true;
+                  cb(null);
+                }
+              });
+
+            }, 1000);
           }
         });
-
-      }, 1000);
-    }
-  });
+      }
+      else {
+        cb({ message: response.message || 'Error occurred while connecting vpn.' }, null);
+      }
+    })
+  })
 }
 
-function getOVPNAndSave(account_addr, vpn_addr, cb) {
+function getOVPNAndSave(account_addr, vpn_ip, vpn_port, nonce, cb) {
   if (fs.existsSync(OVPN_FILE)) {
     cb(null);
   } else {
-    fetch(B_URL + '/client/vpn', {
+    fetch('http:' + vpn_ip + ':' + vpn_port + '/client/generateOVPN', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -254,7 +272,7 @@ function getOVPNAndSave(account_addr, vpn_addr, cb) {
       },
       body: JSON.stringify({
         account_addr: account_addr,
-        vpn_addr: vpn_addr
+        token: nonce
       })
     }).then(function (response) {
       response.json().then(function (response) {

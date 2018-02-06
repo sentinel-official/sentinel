@@ -8,12 +8,10 @@ from urlparse import urljoin
 class UpdateNodeInfo(object):
     def on_post(self, req, resp):
         body = req.body
-        url = urljoin(MASTER_NODE_URL, 'node/register')
+        url = urljoin(MASTER_NODE_URL, 'node/update-nodeinfo')
         res = requests.post(url, json=body)
         res = res.json()
         if res['success']:
-            print("Hfkfdsksdkf")
-            print(res)
             message = {
                 'success': True,
                 'message': 'Node info updated successfully.'

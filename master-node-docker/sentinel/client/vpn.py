@@ -7,22 +7,6 @@ from ..config import DECIMALS
 from ..helpers import eth_helper
 
 
-def put_connection(server_addr, client_addr):
-    connection = db.connections.find_one({'server_addr': server_addr})
-    if connection is None:
-        db.connections.insert_one({
-            'server_addr': server_addr,
-            'client_addr': client_addr
-        })
-    db.connections.find_one_and_update({
-        'server_addr': server_addr
-    }, {
-        '$set': {
-            'client_addr': client_addr
-        }
-    })
-
-
 def get_vpns_list():
     _list = db.nodes.find({
         'vpn.status': 'up'
@@ -34,6 +18,28 @@ def get_vpns_list():
         'net_speed.download': 1
     })
     return list(_list)
+
+
+class PutClientConnection(object):
+    def on_post(self, req, resp):
+        server_addr = str(req.body['vpn_addr'])
+        client_addr = str(req.body['account_addr'])
+        connection = db.connections.find_one({'server_addr': server_addr})
+        if connection is None:
+            db.connections.insert_one({
+                'server_addr': server_addr,
+                'client_addr': client_addr
+            })
+        db.connections.find_one_and_update({
+            'server_addr': server_addr
+        }, {
+            '$set': {
+                'client_addr': client_addr
+            }
+        })
+        message = {'success': True}
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
 
 
 class GetVpnCredentials(object):
@@ -50,7 +56,7 @@ class GetVpnCredentials(object):
         vpn_addr = str(req.body['vpn_addr'])
 
         #error, due_amount = eth_helper.get_due_amount(account_addr)
-        error,due_amount=None,0
+        error, due_amount = None, 0
 
         if error is not None:
             message = {
@@ -103,7 +109,7 @@ class GetVpnCredentials(object):
                     'token': secretToken
                 }
                 body = {'account_addr': account_addr, 'token': secretToken}
-                url="http://"+node_addr+":3000/master/sendToken"
+                url = "http://" + node_addr + ":3000/master/sendToken"
                 res = requests.post(url, json=body)
         else:
             message = {

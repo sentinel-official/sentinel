@@ -11,17 +11,15 @@ class AddVpnUsage(object):
         res = requests.post(url, json=body)
         res=res.json()
         if res['success']:
-            res_body=res
             message = {
                 'success': True,
-                'tx_hash': res_body['tx_hash'],
+                'tx_hash': res['tx_hash'],
                 'message': 'VPN usage data will be added soon.'
             }
         else:
-            res_body=res.json()
             message = {
                 'success': False,
-                'error': res_body['error'],
+                'error': res['error'],
                 'message': 'Error occurred while adding the VPN usage data.'
             }
 

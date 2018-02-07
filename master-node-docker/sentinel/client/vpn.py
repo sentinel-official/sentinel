@@ -55,8 +55,8 @@ class GetVpnCredentials(object):
         account_addr = str(req.body['account_addr'])
         vpn_addr = str(req.body['vpn_addr'])
 
-        #error, due_amount = eth_helper.get_due_amount(account_addr)
-        error, due_amount = None, 0
+        error, due_amount = eth_helper.get_due_amount(account_addr)
+        #error, due_amount = None, 0
 
         if error is not None:
             message = {

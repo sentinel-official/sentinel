@@ -2,7 +2,7 @@ const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
-const B_URL = 'http://35.198.220.210:8000';
+const B_URL = 'http://35.198.246.114:8000';
 const ETH_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
 &module=account&action=balance&tag=latest&address=`;
 const SENT_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
@@ -229,7 +229,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
   }).then(function (response) {
     response.json().then(function (res) {
       if (res.success === true) {
-        getOVPNAndSave(account_addr, res['ip'], res['port'], res['token'], function (err) {
+        getOVPNAndSave(account_addr, res['ip'], res['port'],vpn_addr, res['token'], function (err) {
           if (err) cb(err);
           else {
             if (OVPNDelTimer) clearInterval(OVPNDelTimer);
@@ -254,13 +254,13 @@ export function connectVPN(account_addr, vpn_addr, cb) {
         });
       }
       else {
-        cb({ message: response.message || 'Error occurred while connecting vpn.' }, null);
+        cb({ message: res.message || 'Error occurred while connecting vpn.' }, null);
       }
     })
   })
 }
 
-function getOVPNAndSave(account_addr, vpn_ip, vpn_port, nonce, cb) {
+function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
   if (fs.existsSync(OVPN_FILE)) {
     cb(null);
   } else {
@@ -272,6 +272,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, nonce, cb) {
       },
       body: JSON.stringify({
         account_addr: account_addr,
+        vpn_addr:vpn_addr,
         token: nonce
       })
     }).then(function (response) {

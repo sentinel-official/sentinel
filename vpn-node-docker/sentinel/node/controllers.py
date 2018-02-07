@@ -14,7 +14,7 @@ def register_node(node):
             'addr': node.account['addr']
         },
         'location': node.location,
-        'ip': socket.gethostbyname(socket.gethostname()),
+        'ip': getip.get(),
         'net_speed': node.net_speed
     }
     url = urljoin(LOCAL_SERVER_URL, 'node/register')

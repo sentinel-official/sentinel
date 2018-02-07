@@ -29,7 +29,7 @@ class GenerateOVPN(object):
         if token == stored_token:
             message = {'success': True, 'node': self.node}
             body = {'account_addr': account_addr, 'vpn_addr': vpn_addr}
-            url = urljoin(MASTER_NODE_URL, 'vpn/put-connection')
+            url = urljoin(MASTER_NODE_URL, 'client/vpn/put-connection')
             resp = requests.post(url, json=body)
         else:
             message = {'success': False}

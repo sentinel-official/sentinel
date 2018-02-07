@@ -9,3 +9,4 @@ from .transactions import TransactionHistory
 from .vpn import GetVpnCredentials
 from .vpn import GetVpnsList
 from .vpn import GetVpnUsage
+from .vpn import PutClientConnection

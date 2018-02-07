@@ -99,11 +99,11 @@ class GetVpnCredentials(object):
                 message = {
                     'success': True,
                     'ip': node_addr,
-                    'port': 8000,
+                    'port': 3000,
                     'token': secretToken
                 }
                 body = {'account_addr': account_addr, 'token': secretToken}
-                url="http://"+node_addr+":8000/master/sendToken"
+                url="http://"+node_addr+":3000/master/sendToken"
                 res = requests.post(url, json=body)
         else:
             message = {

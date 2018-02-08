@@ -27,7 +27,9 @@ class SendComponent extends Component {
       sending: null,
       openSnack: false,
       snackOpen: false,
-      snackMessage: ''
+      snackMessage: '',
+      isInitial: true,
+      session_id: null
     };
   }
 
@@ -35,6 +37,15 @@ class SendComponent extends Component {
     shell.openExternal(url);
     this.setState({ tx_addr: null })
   };
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      to_address: nextProps.to_addr,
+      amount: nextProps.amount,
+      unit: nextProps.unit,
+      session_id: nextProps.session_id
+    })
+  }
 
   onClickSend = () => {
     this.setState({
@@ -47,20 +58,22 @@ class SendComponent extends Component {
       unit: this.state.unit,
       keystore: this.state.keystore,
       password: this.state.password,
-      session_id: null,
+      session_id: this.state.session_id,
 
     }
     let that = this;
     transferAmount(body, function (err, tx_addr) {
+      that.props.clearSend();
       if (err) that.setState(
         {
           snackOpen: true,
-          snackMessage: 'Problem faced in Transaction',
+          snackMessage: err.message,
           tx_addr: tx_addr,
           to_address: '',
           amount: '',
           gas: '',
           data: '',
+          session_id: null,
           unit: 'ETH',
           password: '',
           sending: false,
@@ -73,6 +86,7 @@ class SendComponent extends Component {
           to_address: '',
           amount: '',
           gas: '',
+          session_id: null,
           data: '',
           unit: 'ETH',
           password: '',
@@ -106,45 +120,47 @@ class SendComponent extends Component {
     });
   };
 
-  clearTaxAdd = () => {
-
-  }
-
   handleChange = (event, index, unit) => this.setState({ unit });
   render() {
-
     return (
       <MuiThemeProvider>
         <div style={{
           minHeight: 450,
           backgroundColor: '#c3deea',
-          margin: 15
+          margin: 15,
+          padding: '5%'
         }}>
-          <Grid> 
+          <Grid>
             <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
-                <span data-tip data-for="toField">To?</span>
+                <span>To</span>
+                <span data-tip data-for="toField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
+                  hintText="Ex:0x6b6df9e25f7bf233435c1a52a7da4c4a64f5769e"
+                  hintStyle={{bottom:0,paddingLeft:'2%'}}
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
                   onChange={(event, to_address) => this.setState({ to_address: to_address })}
                   value={this.state.to_address}
+                  inputStyle={{ padding: 10 }}
                 />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span data-tip data-for="amountField">Amount?</span>
+                <span>Amount</span>
+                <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
               </Col>
-              <Col xs={5}>
+              <Col xs={6}>
                 <TextField type="number"
                   style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
                   fullWidth={true}
+                  inputStyle={{ padding: 10 }}
                   onChange={(event, amount) => this.setState({ amount })} value={this.state.amount} />
               </Col>
-              <Col xs={4}>
+              <Col xs={3}>
                 <DropDownMenu
                   autoWidth={true}
                   iconStyle={{
@@ -159,7 +175,7 @@ class SendComponent extends Component {
                   style={{
                     backgroundColor: '#FAFAFA',
                     height: 30,
-                    width: '90%'
+                    width: '100%'
                   }}
                   value={this.state.unit}
                   onChange={this.handleChange.bind(this)}
@@ -175,9 +191,10 @@ class SendComponent extends Component {
                 </DropDownMenu>
               </Col>
             </Row>
-            <Row style={{ marginBottom: 15 }}>
+            {/* <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span data-tip data-for="gasField" >Gas?</span>
+                <span>Gas</span>
+                <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
@@ -186,30 +203,47 @@ class SendComponent extends Component {
                   underlineShow={false} fullWidth={true}
                   onChange={(event, gas) => this.setState({ gas })} value={this.state.gas} />
               </Col>
-            </Row>
+            </Row> */}
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span data-tip data-for="messageField">Message/Note? </span>
+                <span>Message/Note</span>
+                <span data-tip data-for="messageField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
+                  inputStyle={{ padding: 10 }}
                   onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span data-tip data-for="passwordField">Password? </span>
+                <span >Password</span>
+                <span data-tip data-for="passwordField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
                   type="password"
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
+                  inputStyle={{ padding: 10 }}
                   onChange={(event, password) => this.setState({ password })} value={this.state.password} />
               </Col>
             </Row>
+            {this.state.session_id !== null ?
+              <Row style={{ marginBottom: 15 }}>
+                <Col xs={3}>
+                  <span >Session ID:</span>
+                </Col>
+                <Col xs={9}>
+                  <span>{this.state.session_id}</span>
+                </Col>
+              </Row>
+              :
+              <span></span>
+            }
+
           </Grid>
           <div>
             <ReactTooltip id="toField" place="bottom">
@@ -265,4 +299,15 @@ class SendComponent extends Component {
   }
 }
 
+const styles = {
+  questionMark: {
+    marginLeft: 3,
+    fontSize: 12,
+    borderRadius: '50%',
+    backgroundColor: '#4d9bb9',
+    paddingLeft: 5,
+    paddingRight: 5,
+    color: 'white'
+  }
+}
 export default SendComponent;

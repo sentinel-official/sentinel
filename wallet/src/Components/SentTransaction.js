@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
+import ReactTooltip from 'react-tooltip';
 let zfill = require('zfill');
 
 let shell = window
@@ -62,7 +63,9 @@ class SentTransaction extends Component {
                                             snackMessage: 'Copied to Clipboard Successfully',
                                             openSnack: true
                                         })} >
-                                        <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
+                                        <img src={'../src/Images/download.jpeg'}
+                                            data-tip data-for="copyImage"
+                                            style={styles.clipBoard} />
                                     </CopyToClipboard>
                                     <span style={{
                                         fontWeight: 'bold'
@@ -98,7 +101,9 @@ class SentTransaction extends Component {
                                             snackMessage: 'Copied to Clipboard Successfully',
                                             openSnack: true
                                         })} >
-                                        <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
+                                        <img src={'../src/Images/download.jpeg'}
+                                            data-tip data-for="copyImage"
+                                            style={styles.clipBoard} />
                                     </CopyToClipboard>
                                     <span style={{
                                         fontWeight: 'bold'
@@ -111,6 +116,9 @@ class SentTransaction extends Component {
                                 </div>
                             </div>
                         }
+                        <ReactTooltip id="copyImage" place="bottom">
+                            <span>Copy</span>
+                        </ReactTooltip>
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
                             <span style={{ fontWeight: 'bold' }}>Amount : </span>
                             <span>{(parseInt(history.data) / (10 ** 8)).toFixed(3)} </span>

@@ -39,9 +39,9 @@ class Home extends Component {
                         />
                     </div>
                     <Grid >
-                        <Row>
+                        <Row style={{marginLeft:-20}}>
                             <Col xs={7} style={styles.bottomDivCol}>
-                                <div style={{ marginLeft: '10%', padding: '2%' }}>
+                                <div style={{ marginLeft: '5%', padding: '2%' }}>
                                     <h4 style={styles.moreAboutText}>More About Sentinel</h4>
                                     <p style={{fontSize:12}}>
                                         Peer to peer erc based privacy application suite with multi chain
@@ -122,7 +122,7 @@ const styles = {
         marginBottom: 10,
         fontSize: 14,
         fontWeight: 'bold',
-        marginTop: '15%'
+        marginTop: '8%'
     },
     bottomDivListItem: {
         padding: '5px 5px 5px 16px',

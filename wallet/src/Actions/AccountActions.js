@@ -115,11 +115,12 @@ export function transferAmount(data, cb) {
         body: JSON.stringify(data)
       }).then(function (response) {
         response.json().then(function (response) {
+          console.log("Response...",response)
           if (response.success === true) {
             var tx_hash = response['tx_hash'];
             cb(null, tx_hash);
           } else {
-            cb({ message: 'Error occurred while initiating transfer amount.' }, null);
+            cb({ message: response.message || 'Error occurred while initiating transfer amount.' }, null);
           }
         })
       });
@@ -196,6 +197,26 @@ export function getSentTransactionHistory(account_addr, cb) {
   });
 }
 
+export function getVpnHistory(account_addr, cb) {
+  fetch(B_URL + '/client/vpn/usage', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      account_addr: account_addr,
+    })
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success === true) {
+        var history = response['usage'];
+        cb(null, history);
+      } else cb({ message: response.message || 'Error occurred while getting vpn history.' }, null);
+    });
+  });
+}
+
 export const getVPNList = (cb) => {
   fetch(B_URL + '/client/vpn/list', {
     method: 'GET',
@@ -214,6 +235,7 @@ export const getVPNList = (cb) => {
   });
 }
 
+
 export function connectVPN(account_addr, vpn_addr, cb) {
   var command = 'sudo openvpn ' + OVPN_FILE;
   fetch(B_URL + '/client/vpn', {
@@ -229,7 +251,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
   }).then(function (response) {
     response.json().then(function (res) {
       if (res.success === true) {
-        getOVPNAndSave(account_addr, res['ip'], res['port'],vpn_addr, res['token'], function (err) {
+        getOVPNAndSave(account_addr, res['ip'], res['port'], vpn_addr, res['token'], function (err) {
           if (err) cb(err);
           else {
             if (OVPNDelTimer) clearInterval(OVPNDelTimer);
@@ -272,7 +294,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
       },
       body: JSON.stringify({
         account_addr: account_addr,
-        vpn_addr:vpn_addr,
+        vpn_addr: vpn_addr,
         token: nonce
       })
     }).then(function (response) {

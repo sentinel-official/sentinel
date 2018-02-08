@@ -9,13 +9,10 @@ from urlparse import urljoin
 class CreateNewAccount(object):
     def on_post(self, req, resp):
         body = req.body
-        print("Body...")
-        print(body)
         url = urljoin(MASTER_NODE_URL, 'node/account')
         res = requests.post(url, json=body)
-        res=res.json()
+        res = res.json()
         if res['success']:
-            print("Hello")
             res_body = res
             message = {
                 'success':
@@ -31,9 +28,6 @@ class CreateNewAccount(object):
                 ' Please store the Private key and Keystore data safely.'
             }
         else:
-            message={
-                'success':False,
-                'message':'Error occured'
-            }
+            message = {'success': False, 'message': 'Error occured'}
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

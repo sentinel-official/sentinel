@@ -125,7 +125,7 @@ class VPNComponent extends Component {
                                     key={i}
                                     marker={marker}
                                     style={{
-                                        default: { stroke: "#455A64" },
+                                        default: { stroke: "#0cef0c" },
                                         hover: { stroke: "#FF5722" },
                                         pressed: { stroke: "#FF5722" },
                                     }}

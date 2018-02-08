@@ -1,5 +1,5 @@
 {
-  "name": "sentinelwallet",
+  "name": "Sentinel",
   "description": "Sentinel Wallet",
   "productName": "Sentinel Wallet",
   "version": "1.0.0",
@@ -15,6 +15,7 @@
     "google-map-react": "^0.28.0",
     "google-maps": "^3.2.1",
     "jquery": "^3.2.1",
+    "keythereum": "^1.0.2",
     "mapbox-gl": "^0.43.0",
     "material-ui": "^0.20.0",
     "react": "^16.2.0",

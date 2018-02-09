@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { transferAmount, getAccount } from '../Actions/AccountActions';
+import { transferAmount, getAccount, isOnline, transferAmountMaster, getTransactionStatus } from '../Actions/AccountActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
 
@@ -28,7 +28,9 @@ class SendComponent extends Component {
       openSnack: false,
       snackOpen: false,
       snackMessage: '',
+      isDisabled: true,
       isInitial: true,
+      transactionStatus:'',
       session_id: null
     };
   }
@@ -39,18 +41,57 @@ class SendComponent extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      to_address: nextProps.to_addr,
-      amount: nextProps.amount,
-      unit: nextProps.unit,
-      session_id: nextProps.session_id
-    })
+    if (nextProps.isPropReceive === true) {
+      this.setState({
+        to_address: nextProps.to_addr,
+        amount: nextProps.amount,
+        unit: nextProps.unit,
+        session_id: nextProps.session_id
+      })
+      this.props.propReceiveChange()
+      if (this.state.to !== '') {
+        this.setState({ isDisabled: false })
+      }
+      else {
+        this.setState({ isDisabled: false })
+      }
+    }
   }
 
-  onClickSend = () => {
-    this.setState({
-      sending: true
-    })
+  sendToMaster = () => {
+    let body = {
+      from_addr: this.props.local_address,  
+      to_addr: this.state.to_address,
+      amount: this.state.amount,
+      unit: this.state.unit,
+      keystore: this.state.keystore,
+      password: this.state.password,
+      session_id: null
+    }
+    let that = this;
+    transferAmountMaster(body, function (err, tx_addr) {
+      if (err) that.setState(
+        {
+          snackOpen: true,
+          snackMessage: err.message,
+          tx_addr: tx_addr,
+          to_address: '',
+          amount: '',
+          gas: '',
+          data: '',
+          session_id: null,
+          unit: 'ETH',
+          password: '',
+          sending: false,
+          isDisabled: true
+        });
+      else {
+        that.sendToTest();
+      }
+    });
+  }
+
+  sendToTest = () => {
     let body = {
       from_addr: this.props.local_address,
       to_addr: this.state.to_address,
@@ -59,7 +100,6 @@ class SendComponent extends Component {
       keystore: this.state.keystore,
       password: this.state.password,
       session_id: this.state.session_id,
-
     }
     let that = this;
     transferAmount(body, function (err, tx_addr) {
@@ -77,7 +117,7 @@ class SendComponent extends Component {
           unit: 'ETH',
           password: '',
           sending: false,
-          isDisabled: false
+          isDisabled: true
         });
       else {
         that.setState({
@@ -91,10 +131,36 @@ class SendComponent extends Component {
           unit: 'ETH',
           password: '',
           sending: false,
-          isDisabled: false
+          isDisabled: true
         })
       }
     });
+  }
+
+  onClickSend = () => {
+    if (this.state.amount === '') {
+      this.setState({ sending: false, snackOpen: true, snackMessage: 'Amount field is Empty' })
+    }
+    else if (this.state.password === '') {
+      this.setState({ sending: false, snackOpen: true, snackMessage: 'Password field is Empty' })
+    }
+    else {
+      if (isOnline()) {
+        this.setState({
+          sending: true,
+          isDisabled: true
+        })
+        if (this.state.session_id === null) {
+          this.sendToTest()
+        }
+        else {
+          this.sendToMaster()
+        }
+      }
+      else {
+        this.setState({ snackOpen: true, snackMessage: 'Check your Internet Connection' })
+      }
+    }
   }
 
   renderLink() {
@@ -139,10 +205,10 @@ class SendComponent extends Component {
               <Col xs={9}>
                 <TextField
                   hintText="Ex:0x6b6df9e25f7bf233435c1a52a7da4c4a64f5769e"
-                  hintStyle={{bottom:0,paddingLeft:'2%'}}
+                  hintStyle={{ bottom: 0, paddingLeft: '2%' }}
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
-                  onChange={(event, to_address) => this.setState({ to_address: to_address })}
+                  onChange={(event, to_address) => this.setState({ to_address: to_address, isDisabled: false })}
                   value={this.state.to_address}
                   inputStyle={{ padding: 10 }}
                 />
@@ -268,7 +334,7 @@ class SendComponent extends Component {
               // message={this.state.snackMessage}
               autoHideDuration={10000}
               onRequestClose={this.snackRequestClose}
-              style={{ marginBottom: '2%', width: '80%' }}
+              style={{ marginBottom: '2%' }}
               action="Transaction Placed. Check Status"
               onActionClick={() => { this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`) }}
             />
@@ -280,10 +346,10 @@ class SendComponent extends Component {
             />
           </div>
           <div>
-            <FlatButton disabled={this.state.to_address == '' || this.state.sending ? true : false}
+            <FlatButton disabled={this.state.to_address == '' || this.state.sending || this.state.isDisabled ? true : false}
               onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
               style={
-                this.state.to_address === '' || this.state.sending ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
+                this.state.to_address === '' || this.state.sending || this.state.isDisabled ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
                   :
                   { backgroundColor: '#f05e09', marginLeft: 20 }
               }

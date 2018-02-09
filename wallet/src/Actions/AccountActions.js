@@ -3,6 +3,7 @@ const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
 const B_URL = 'http://35.198.246.114:8000';
+const MASTER_URL = 'http://35.198.204.28:8000'
 const ETH_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
 &module=account&action=balance&tag=latest&address=`;
 const SENT_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
@@ -12,6 +13,8 @@ const ETH_TRANSC_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQD
 const SENT_TRANSC_URL1 = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
 &module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037
 &topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=`;
+const TRANSC_STATUS = `https://api.etherscan.io/api?&apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&
+module=transaction&action=gettxreceiptstatus&txhash=`;
 const SENT_TRANSC_URL2 = `&topic1_2_opr=or&topic2=`;
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
@@ -99,6 +102,52 @@ export function getAccount(cb) {
   });
 }
 
+export function transferAmountMaster(data, cb) {
+  getKeystore(function (err, keystore) {
+    if (err) cb(err, null);
+    else {
+      data['keystore'] = keystore;
+      fetch(MASTER_URL + '/client/transaction', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(data)
+      }).then(function (response) {
+        response.json().then(function (response) {
+          console.log("Response...", response)
+          if (response.success === true) {
+            var tx_hash = response['tx_hash'];
+            cb(null, tx_hash);
+          } else {
+            cb({ message: response.message || 'Error occurred while initiating transfer amount.' }, null);
+          }
+        })
+      });
+    }
+  });
+}
+
+export function getTransactionStatus(tx_addr, cb) {
+  fetch(TRANSC_STATUS + tx_addr, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    }
+  }).then(function (response) {
+    response.json().then(function (response) {
+      console.log("Response...", response)
+      if (response.status === "1") {
+        var status = response['result']["status"];
+        cb(null, status);
+      } else cb({ message: 'Error occurred while getting balance.' }, null);
+    })
+  });
+}
 
 export function transferAmount(data, cb) {
   getKeystore(function (err, keystore) {
@@ -115,7 +164,7 @@ export function transferAmount(data, cb) {
         body: JSON.stringify(data)
       }).then(function (response) {
         response.json().then(function (response) {
-          console.log("Response...",response)
+          console.log("Response...", response)
           if (response.success === true) {
             var tx_hash = response['tx_hash'];
             cb(null, tx_hash);
@@ -138,7 +187,7 @@ export function getEthBalance(data, cb) {
     }
   }).then(function (response) {
     response.json().then(function (response) {
-      if (response.status == '1') {
+      if (response.status === '1') {
         var balance = response['result'] / (10 ** 18);
         cb(null, balance);
       } else cb({ message: 'Error occurred while getting balance.' }, null);
@@ -327,6 +376,15 @@ export function getVPNPIDs(cb) {
       cb(true, null);
     }
   });
+}
+
+export const isOnline = function () {
+  if (window.navigator.onLine) {
+    return true
+  }
+  else {
+    return false
+  }
 }
 
 export function disconnectVPN(cb) {

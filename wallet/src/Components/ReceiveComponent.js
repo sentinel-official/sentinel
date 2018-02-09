@@ -82,7 +82,7 @@ class ReceiveComponent extends Component {
           message={this.state.snackMessage}
           autoHideDuration={2000}
           onRequestClose={this.snackRequestClose}
-          style={{ marginBottom: '2%', width: '80%' }}
+          style={{ marginBottom: '2%'}}
         />
       </div>
     )

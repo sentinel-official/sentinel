@@ -6,7 +6,7 @@ import {
     Chip, Dialog, FlatButton, Checkbox, Paper, Snackbar, RefreshIndicator
 } from 'material-ui';
 import Dashboard from './Dashboard';
-import { createAccount, uploadKeystore } from '../Actions/AccountActions';
+import { createAccount, uploadKeystore, isOnline } from '../Actions/AccountActions';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Footer from './Footer';
 import ReactTooltip from 'react-tooltip';
@@ -40,7 +40,8 @@ class Create extends Component {
             this.setState({ keystore: text })
         };
         reader.readAsText(input.files[0]);
-        this.setState({ file: input.files[0].name })
+        this.setState({ file: input.files[0].name });
+        document.getElementById('filepicker').value = ""
     }
 
     renderProgress() {
@@ -61,17 +62,22 @@ class Create extends Component {
         this.setState({ isLoading: true })
         var password = this.state.password;
         var that = this;
-        createAccount(password, function (err, account) {
-            if (err) console.log(err, "Error");
-            else {
-                that.setState({
-                    account_addr: account.account_addr,
-                    private_key: account.private_key,
-                    keystore_addr: account.keystore_addr,
-                    isLoading: false
-                })
-            }
-        });
+        if (isOnline()) {
+            createAccount(password, function (err, account) {
+                if (err) console.log(err, "Error");
+                else {
+                    that.setState({
+                        account_addr: account.account_addr,
+                        private_key: account.private_key,
+                        keystore_addr: account.keystore_addr,
+                        isLoading: false
+                    })
+                }
+            });
+        }
+        else {
+            this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+        }
     }
 
     snackRequestClose = () => {
@@ -95,7 +101,6 @@ class Create extends Component {
     _store = () => {
         var keystore = this.state.keystore;
         var password = this.state.keystorePassword;
-        console.log("Keystore...", keystore, password)
         var that = this;
         this.getPrivateKey(keystore, password, function (err, private_key) {
             if (err) {
@@ -172,7 +177,9 @@ class Create extends Component {
                                     {this.state.file === '' ?
                                         <div></div>
                                         :
-                                        <Chip onRequestDelete={() => { this.setState({ file: '' }) }} style={{ margin: '2%' }} >
+                                        <Chip onRequestDelete={() => {
+                                            this.setState({ file: '', keystore: '', keystorePassword: '' })
+                                        }} style={{ margin: '2%' }} >
                                             {this.state.file}
                                         </Chip>
                                     }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import style from 'material-ui/svg-icons/image/style';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getEthTransactionHistory, getSentTransactionHistory } from '../Actions/AccountActions';
+import { getEthTransactionHistory, getSentTransactionHistory, isOnline } from '../Actions/AccountActions';
 import { setTimeout } from 'timers';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import _ from 'lodash';
@@ -24,6 +24,8 @@ class History extends Component {
       isGetHistoryCalled: false,
       isLoading: true,
       ethActive: true,
+      openSnack: false,
+      snackMessage: '',
       pageNumber: 1,
       nextDisabled: false,
       isInitial: true
@@ -35,7 +37,7 @@ class History extends Component {
     return (
       <RefreshIndicator
         size={50}
-        left={350}
+        left={420}
         top={150}
         loadingolor="#532d91"
         status="loading"
@@ -70,11 +72,22 @@ class History extends Component {
     })
   }
 
+  snackRequestClose = () => {
+    this.setState({
+      openSnack: false
+    });
+  };
+
   handleRefresh() {
-    if (this.state.ethActive)
-      this.getEthHistory(1);
-    else
-      this.getSentHistory();
+    if (isOnline()) {
+      if (this.state.ethActive)
+        this.getEthHistory(1);
+      else
+        this.getSentHistory();
+    }
+    else {
+      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+    }
   }
 
   render() {
@@ -129,6 +142,13 @@ class History extends Component {
               </div>}
           </div>
         }
+        <Snackbar
+          open={this.state.openSnack}
+          message={this.state.snackMessage}
+          autoHideDuration={2000}
+          onRequestClose={this.snackRequestClose}
+          style={{ marginBottom: '2%' }}
+        />
       </div>
     )
   }

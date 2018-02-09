@@ -3,6 +3,7 @@ import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextFie
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { transferAmount, getAccount } from '../Actions/AccountActions';
 import { purple500 } from 'material-ui/styles/colors';
+import ReactTooltip from 'react-tooltip';
 
 
 let shell = window
@@ -23,9 +24,9 @@ class SendComponent extends Component {
       unit: 'ETH',
       tx_addr: null,
       password: '',
-      isDisabled: true,
       sending: null,
       openSnack: false,
+      snackOpen: false,
       snackMessage: ''
     };
   }
@@ -51,7 +52,20 @@ class SendComponent extends Component {
     }
     let that = this;
     transferAmount(body, function (err, tx_addr) {
-      if (err) console.log(err, "Error");
+      if (err) that.setState(
+        {
+          snackOpen: true,
+          snackMessage: 'Problem faced in Transaction',
+          tx_addr: tx_addr,
+          to_address: '',
+          amount: '',
+          gas: '',
+          data: '',
+          unit: 'ETH',
+          password: '',
+          sending: false,
+          isDisabled: false
+        });
       else {
         that.setState({
           tx_addr: tx_addr,
@@ -63,6 +77,7 @@ class SendComponent extends Component {
           unit: 'ETH',
           password: '',
           sending: false,
+          isDisabled: false
         })
       }
     });
@@ -77,16 +92,17 @@ class SendComponent extends Component {
       </div>
     )
   }
-  
+
   openSnackBar = () => this.setState({
-      snackMessage: 'Your Transaction is Placed Successfully.',
-      openSnack: true
-    })
-  
+    snackMessage: 'Your Transaction is Placed Successfully.',
+    openSnack: true
+  })
+
 
   snackRequestClose = () => {
     this.setState({
       openSnack: false,
+      snackOpen: false
     });
   };
 
@@ -96,7 +112,7 @@ class SendComponent extends Component {
 
   handleChange = (event, index, unit) => this.setState({ unit });
   render() {
-    
+
     return (
       <MuiThemeProvider>
         <div style={{
@@ -107,23 +123,28 @@ class SendComponent extends Component {
           <Grid>
             <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
-                <span>To:</span>
+                <span>To</span>
+                <span data-tip data-for="toField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
                 <TextField
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
-                  onChange={(event, to_address) => this.setState({ to_address: to_address})}
+                  onChange={(event, to_address) => this.setState({ to_address: to_address })}
                   value={this.state.to_address}
                 />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span>Amount:</span>
+                <span>Amount</span>
+                <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={5}>
-                <TextField type="number" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, amount) => this.setState({ amount })} value={this.state.amount} />
+                <TextField type="number"
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
+                  fullWidth={true}
+                  onChange={(event, amount) => this.setState({ amount })} value={this.state.amount} />
               </Col>
               <Col xs={4}>
                 <DropDownMenu
@@ -159,43 +180,81 @@ class SendComponent extends Component {
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
                 <span>Gas</span>
+                <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
-                <TextField type="number" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, gas) => this.setState({ gas })} value={this.state.gas} />
+                <TextField
+                  type="number"
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
+                  underlineShow={false} fullWidth={true}
+                  onChange={(event, gas) => this.setState({ gas })} value={this.state.gas} />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span>Data: </span>
+                <span>Message/Note</span>
+                <span data-tip data-for="messageField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
-                <TextField multiLine={true} rowsMax={3} rows={2} style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, data) => this.setState({ data })} value={this.state.data} />
+                <TextField
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
+                  underlineShow={false} fullWidth={true}
+                  onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
             </Row>
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
-                <span>Password: </span>
+                <span >Password</span>
+                <span data-tip data-for="passwordField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
-                <TextField type="password" style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false} fullWidth={true} onChange={(event, password) => this.setState({ password })} value={this.state.password} />
+                <TextField
+                  type="password"
+                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
+                  underlineShow={false} fullWidth={true}
+                  onChange={(event, password) => this.setState({ password })} value={this.state.password} />
               </Col>
             </Row>
           </Grid>
           <div>
-          <Snackbar
-                  open={this.state.openSnack}
-                  // message={this.state.snackMessage}
-                  autoHideDuration={10000}
-                  onRequestClose={this.snackRequestClose}
-                  style={{ marginBottom: '2%',width:'80%' }}
-                  action="Transaction Placed. Check Status"
-                  onActionClick={() => {this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`)}}                  
-                />
+            <ReactTooltip id="toField" place="bottom">
+              <span>Sentinel Wallet ID that you want to send Sentinel Tokens to</span>
+            </ReactTooltip>
+            <ReactTooltip id="amountField" place="bottom">
+              <span>Total Ethereum/Sentinel Tokens<br />
+                that you want to send to. <br />
+                Yes, this wallet can<br /> hold Ethereum too.</span>
+            </ReactTooltip>
+            <ReactTooltip id="gasField" place="bottom">
+              <span>Total Ethereum Tokens that you want to send as Gas</span>
+            </ReactTooltip>
+            <ReactTooltip id="messageField" place="bottom">
+              <span>A message that you might want to add as a transaction note</span>
+            </ReactTooltip>
+            <ReactTooltip id="passwordField" place="bottom">
+              <span>Your Sentinel AUID Password</span>
+            </ReactTooltip>
+            <Snackbar
+              open={this.state.openSnack}
+              // message={this.state.snackMessage}
+              autoHideDuration={10000}
+              onRequestClose={this.snackRequestClose}
+              style={{ marginBottom: '2%', width: '80%' }}
+              action="Transaction Placed. Check Status"
+              onActionClick={() => { this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`) }}
+            />
+            <Snackbar
+              open={this.state.snackOpen}
+              message={this.state.snackMessage}
+              autoHideDuration={10000}
+              onRequestClose={this.snackRequestClose}
+            />
           </div>
           <div>
-            <FlatButton disabled={this.state.to_address == '' ? true : false} onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
+            <FlatButton disabled={this.state.to_address == '' || this.state.sending ? true : false}
+              onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
               style={
-                this.state.to_address === '' ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
+                this.state.to_address === '' || this.state.sending ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
                   :
                   { backgroundColor: '#f05e09', marginLeft: 20 }
               }
@@ -212,3 +271,15 @@ class SendComponent extends Component {
 }
 
 export default SendComponent;
+
+const styles = {
+  questionMark: {
+    marginLeft: 3,
+    fontSize: 12,
+    borderRadius: '50%',
+    backgroundColor: '#4d9bb9',
+    paddingLeft: 5,
+    paddingRight: 5,
+    color: 'white'
+  }
+}

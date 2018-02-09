@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle } from 'material-ui';
-import { getVPNList, connectVPN, disconnectVPN, isVPNConnected } from '../Actions/AccountActions';
+import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline } from '../Actions/AccountActions';
 import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
 
@@ -22,7 +22,7 @@ class Header extends Component {
   componentWillMount = () => {
     let that = this;
     isVPNConnected(function (err, data) {
-      if (err) console.log('Error', err);
+      if (err) { }
       else if (data) {
         that.setState({ status: true });
       }
@@ -44,16 +44,21 @@ class Header extends Component {
 
   _connectVPN = () => {
     let that = this;
-    connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
-      if (err) {
-        that.setState({ showPopUp: false, status: false, openSnack: true, snackMessage: err.message })
-      }
-      else {
-        that.props.onChange();
-        //that.returnVPN();
-        that.setState({ showPopUp: false, status: true, openSnack: true, snackMessage: "Connected VPN" })
-      }
-    })
+    if (isOnline()) {
+      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
+        if (err) {
+          that.setState({ showPopUp: false, status: false, openSnack: true, snackMessage: err.message })
+        }
+        else {
+          that.props.onChange();
+          //that.returnVPN();
+          that.setState({ showPopUp: false, status: true, openSnack: true, snackMessage: "Connected VPN" })
+        }
+      })
+    }
+    else {
+      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+    }
   }
 
   returnVPN = () => {
@@ -74,17 +79,22 @@ class Header extends Component {
   }
 
   handleToggle = (event, toggle) => {
-    if (toggle) {
-      let that = this;
-      getVPNList(function (err, data) {
-        if (err) console.log('Error', err);
-        else {
-          that.setState({ vpnList: data, showPopUp: true });
-        }
-      })
+    if (isOnline()) {
+      if (toggle) {
+        let that = this;
+        getVPNList(function (err, data) {
+          if (err) console.log('Error', err);
+          else {
+            that.setState({ vpnList: data, showPopUp: true });
+          }
+        })
+      }
+      else {
+        this._disconnectVPN();
+      }
     }
     else {
-      this._disconnectVPN();
+      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
     }
   };
 
@@ -174,7 +184,7 @@ class Header extends Component {
                     label="VPN"
                     labelStyle={{ color: 'white', textTransform: 'none' }}
                     style={{ height: '18px', lineHeight: '18px' }}
-                    onClick={() => { this.setState({ showPopUp: true }) }} />
+                    onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
                 </Col>
                 <Col>
                   <Toggle
@@ -189,7 +199,7 @@ class Header extends Component {
                 message={this.state.snackMessage}
                 autoHideDuration={2000}
                 onRequestClose={this.snackRequestClose}
-                style={{ marginBottom: '2%', width: '80%' }}
+                style={{ marginBottom: '2%' }}
               />
               <Dialog
                 title="VPN List"

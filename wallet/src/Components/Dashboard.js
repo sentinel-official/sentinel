@@ -25,6 +25,7 @@ class Dashboard extends Component {
       vpnData: null,
       status: false,
       to_addr: '',
+      isPropReceive: false,
       amount: '',
       unit: 'ETH',
       sessionId: null
@@ -85,18 +86,25 @@ class Dashboard extends Component {
         sessionId: null,
         unit: 'ETH',
         value: value,
-        color: 'orange'
+        color: 'orange',
+        isPropReceive: true
       })
 
     }
   };
 
+  propReceiveChange = () => {
+    this.setState({ isPropReceive:false })
+  }
+
   clearSend = () => {
+    console.log("Clear...")
     this.setState({
       to_addr: '',
       amount: '',
       sessionId: null,
-      unit: 'ETH'
+      unit: 'ETH',
+      isPropReceive: true
     })
   }
   vpnPayment = (sessionData) => {
@@ -105,7 +113,8 @@ class Dashboard extends Component {
       amount: sessionData.amount,
       unit: 'SENT',
       value: 'send',
-      sessionId: sessionData.id
+      sessionId: sessionData.id,
+      isPropReceive: true
     })
   }
 
@@ -150,6 +159,8 @@ class Dashboard extends Component {
                       to_addr={this.state.to_addr}
                       unit={this.state.unit}
                       session_id={this.state.sessionId}
+                      isPropReceive={this.state.isPropReceive}
+                      propReceiveChange={this.propReceiveChange.bind(this)}
                       clearSend={this.clearSend.bind(this)}
                     />
                   </Tab>
@@ -166,7 +177,7 @@ class Dashboard extends Component {
                     />
                   </Tab>
                   <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="VPN History" value="vpn_history">
-                    <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment} />
+                    <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} />
                   </Tab>
                 </Tabs>
               </div>

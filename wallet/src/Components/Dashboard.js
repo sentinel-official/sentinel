@@ -98,7 +98,6 @@ class Dashboard extends Component {
   }
 
   clearSend = () => {
-    console.log("Clear...")
     this.setState({
       to_addr: '',
       amount: '',

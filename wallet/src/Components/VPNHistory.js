@@ -6,6 +6,7 @@ import { RaisedButton, Card, CardHeader, CardText, CardActions, IconButton, Snac
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Done from 'material-ui/svg-icons/action/done';
 import ReactTooltip from 'react-tooltip';
+import _ from 'lodash';
 
 class VPNHistory extends Component {
     constructor(props) {
@@ -53,50 +54,57 @@ class VPNHistory extends Component {
         }
         let vpnUsage = this.state.vpnUsage;
         let that = this;
-        if (vpnUsage && vpnUsage.sessions.length !== 0) {
-            sessionOutput = vpnUsage.sessions.map((sessionData) => {
-                return (
-                    <Card>
-                        <CardText>
-                            <span style={{ fontWeight: 600 }}>Session ID: </span>{sessionData.id}
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>VPN address: </span>{sessionData.account_addr}
-                            <CopyToClipboard text={sessionData.account_addr}
-                                onCopy={() => that.setState({
-                                    snackMessage: 'Copied to Clipboard Successfully',
-                                    openSnack: true
-                                })} >
-                                <img src={'../src/Images/download.jpeg'}
-                                    data-tip data-for="copyImage"
-                                    style={styles.clipBoard} />
-                            </CopyToClipboard>
-                            <ReactTooltip id="copyImage" place="bottom">
-                                <span>Copy</span>
-                            </ReactTooltip>
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Amount: </span>{sessionData.amount} SENTS<br />
-                            <span style={{ fontWeight: 600 }}>Duration: </span>{sessionData.duration} secs
+        if (vpnUsage) {
+            if (vpnUsage.sessions.length !== 0) {
+                var sessions = _.sortBy(vpnUsage.sessions, o => o.timeStamp).reverse()
+                sessionOutput = sessions.map((sessionData) => {
+                    return (
+                        <Card>
+                            <CardText>
+                                <span style={{ fontWeight: 600 }}>Session ID: </span>{sessionData.id}
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>VPN address: </span>{sessionData.account_addr}
+                                <CopyToClipboard text={sessionData.account_addr}
+                                    onCopy={() => that.setState({
+                                        snackMessage: 'Copied to Clipboard Successfully',
+                                        openSnack: true
+                                    })} >
+                                    <img src={'../src/Images/download.jpeg'}
+                                        data-tip data-for="copyImage"
+                                        style={styles.clipBoard} />
+                                </CopyToClipboard>
+                                <ReactTooltip id="copyImage" place="bottom">
+                                    <span>Copy</span>
+                                </ReactTooltip>
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Amount: </span>{sessionData.amount} SENTS<br />
+                                <span style={{ fontWeight: 600 }}>Duration: </span>{sessionData.duration} secs
                             <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Bytes: </span>{sessionData.received_bytes}
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
-                        </CardText>
-                        {
-                            sessionData.is_payed ?
-                                <span>
-                                    <Done style={{ float: 'right', marginTop: '-7%' }} data-tip data-for="payed" color="green" />
-                                    <ReactTooltip id="payed" place="bottom">
-                                        <span>Payed</span>
-                                    </ReactTooltip>
-                                </span> :
-                                <CardActions>
-                                    <RaisedButton
-                                        label="Pay Now"
-                                        labelStyle={{ textTransform: 'none' }}
-                                        onClick={() => { this.payDue(sessionData) }}
-                                        primary={true}
-                                    />
-                                </CardActions>
-                        }
-                    </Card >
-                )
-            })
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
+                            </CardText>
+                            {
+                                sessionData.is_payed ?
+                                    <span>
+                                        <Done style={{ float: 'right', marginTop: '-7%', marginRight: '1%' }}
+                                            data-tip data-for="payed" color="green" />
+                                        <ReactTooltip id="payed" place="bottom">
+                                            <span>Payed</span>
+                                        </ReactTooltip>
+                                    </span> :
+                                    <CardActions>
+                                        <RaisedButton
+                                            label="Pay Now"
+                                            labelStyle={{ textTransform: 'none' }}
+                                            onClick={() => { this.payDue(sessionData) }}
+                                            primary={true}
+                                        />
+                                    </CardActions>
+                            }
+                        </Card >
+                    )
+                })
+            }
+            else {
+                sessionOutput = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Previous Sessions</div>
+            }
         }
         else {
             sessionOutput = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Previous Sessions</div>
@@ -116,7 +124,7 @@ class VPNHistory extends Component {
                             <span style={{ fontWeight: 600 }}>Total received Bytes : </span>{vpnUsage.stats['received_bytes']}
                             <hr />
                             <h4 style={{ fontWeight: 600 }}>Sessions</h4>
-                            <div style={{ overflow: 'auto' }}>{sessionOutput}</div>
+                            <div style={{ overflow: 'auto', height: 300 }}>{sessionOutput}</div>
                         </div>
 
                         :

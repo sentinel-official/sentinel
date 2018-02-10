@@ -2,7 +2,8 @@ const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
-const B_URL = 'http://35.198.220.210:8000';
+const B_URL = 'http://35.198.246.114:8000';
+const MASTER_URL = 'http://35.198.204.28:8000'
 const ETH_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
 &module=account&action=balance&tag=latest&address=`;
 const SENT_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
@@ -12,6 +13,8 @@ const ETH_TRANSC_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQD
 const SENT_TRANSC_URL1 = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
 &module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037
 &topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=`;
+const TRANSC_STATUS = `https://api.etherscan.io/api?&apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&
+module=transaction&action=gettxreceiptstatus&txhash=`;
 const SENT_TRANSC_URL2 = `&topic1_2_opr=or&topic2=`;
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
@@ -99,6 +102,52 @@ export function getAccount(cb) {
   });
 }
 
+export function transferAmountMaster(data, cb) {
+  getKeystore(function (err, keystore) {
+    if (err) cb(err, null);
+    else {
+      data['keystore'] = keystore;
+      fetch(MASTER_URL + '/client/transaction', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(data)
+      }).then(function (response) {
+        response.json().then(function (response) {
+          console.log("Response...", response)
+          if (response.success === true) {
+            var tx_hash = response['tx_hash'];
+            cb(null, tx_hash);
+          } else {
+            cb({ message: response.message || 'Error occurred while initiating transfer amount.' }, null);
+          }
+        })
+      });
+    }
+  });
+}
+
+export function getTransactionStatus(tx_addr, cb) {
+  fetch(TRANSC_STATUS + tx_addr, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    }
+  }).then(function (response) {
+    response.json().then(function (response) {
+      console.log("Response...", response)
+      if (response.status === "1") {
+        var status = response['result']["status"];
+        cb(null, status);
+      } else cb({ message: 'Error occurred while getting balance.' }, null);
+    })
+  });
+}
 
 export function transferAmount(data, cb) {
   getKeystore(function (err, keystore) {
@@ -114,14 +163,19 @@ export function transferAmount(data, cb) {
         },
         body: JSON.stringify(data)
       }).then(function (response) {
-        response.json().then(function (response) {
-          if (response.success === true) {
-            var tx_hash = response['tx_hash'];
-            cb(null, tx_hash);
-          } else {
-            cb({ message: 'Error occurred while initiating transfer amount.' }, null);
-          }
-        })
+        if (response.status === 200) {
+          response.json().then(function (response) {
+            if (response.success === true) {
+              var tx_hash = response['tx_hash'];
+              cb(null, tx_hash);
+            } else {
+              cb({ message: response.message || 'Error occurred while initiating transfer amount.' }, null);
+            }
+          })
+        }
+        else {
+          cb({ message: 'Error occurred while initiating transfer amount.' }, null);
+        }
       });
     }
   });
@@ -137,7 +191,7 @@ export function getEthBalance(data, cb) {
     }
   }).then(function (response) {
     response.json().then(function (response) {
-      if (response.status == '1') {
+      if (response.status === '1') {
         var balance = response['result'] / (10 ** 18);
         cb(null, balance);
       } else cb({ message: 'Error occurred while getting balance.' }, null);
@@ -180,7 +234,7 @@ export function getEthTransactionHistory(account_addr, page, cb) {
 }
 
 export function getSentTransactionHistory(account_addr, cb) {
-  fetch(SENT_TRANSC_URL1 + account_addr + SENT_TRANSC_URL2+account_addr, {
+  fetch(SENT_TRANSC_URL1 + account_addr + SENT_TRANSC_URL2 + account_addr, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -192,6 +246,26 @@ export function getSentTransactionHistory(account_addr, cb) {
         var history = response['result'];
         cb(null, history);
       } else cb({ message: 'Error occurred while getting transaction history.' }, null);
+    });
+  });
+}
+
+export function getVpnHistory(account_addr, cb) {
+  fetch(B_URL + '/client/vpn/usage', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      account_addr: account_addr,
+    })
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success === true) {
+        var history = response['usage'];
+        cb(null, history);
+      } else cb({ message: response.message || 'Error occurred while getting vpn history.' }, null);
     });
   });
 }
@@ -214,39 +288,58 @@ export const getVPNList = (cb) => {
   });
 }
 
+
 export function connectVPN(account_addr, vpn_addr, cb) {
   var command = 'sudo openvpn ' + OVPN_FILE;
-
-  getOVPNAndSave(account_addr, vpn_addr, function (err) {
-    if (err) cb(err);
-    else {
-      if (OVPNDelTimer) clearInterval(OVPNDelTimer);
-
-      exec(command, function (err, stdout, stderr) {
-        OVPNDelTimer = setTimeout(function () {
-          fs.unlinkSync(OVPN_FILE);
-        }, 5 * 1000);
-      });
-
-      setTimeout(function () {
-        getVPNPIDs(function (err, pids) {
+  fetch(B_URL + '/client/vpn', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      account_addr: account_addr,
+      vpn_addr: vpn_addr
+    })
+  }).then(function (response) {
+    response.json().then(function (res) {
+      if (res.success === true) {
+        getOVPNAndSave(account_addr, res['ip'], res['port'], vpn_addr, res['token'], function (err) {
           if (err) cb(err);
           else {
-            CONNECTED = true;
-            cb(null);
+            if (OVPNDelTimer) clearInterval(OVPNDelTimer);
+
+            exec(command, function (err, stdout, stderr) {
+              OVPNDelTimer = setTimeout(function () {
+                fs.unlinkSync(OVPN_FILE);
+              }, 5 * 1000);
+            });
+
+            setTimeout(function () {
+              getVPNPIDs(function (err, pids) {
+                if (err) cb(err);
+                else {
+                  CONNECTED = true;
+                  cb(null);
+                }
+              });
+
+            }, 1000);
           }
         });
-
-      }, 1000);
-    }
-  });
+      }
+      else {
+        cb({ message: res.message || 'Error occurred while connecting vpn.' }, null);
+      }
+    })
+  })
 }
 
-function getOVPNAndSave(account_addr, vpn_addr, cb) {
+function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
   if (fs.existsSync(OVPN_FILE)) {
     cb(null);
   } else {
-    fetch(B_URL + '/client/vpn', {
+    fetch('http:' + vpn_ip + ':' + vpn_port + '/client/generateOVPN', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -254,7 +347,8 @@ function getOVPNAndSave(account_addr, vpn_addr, cb) {
       },
       body: JSON.stringify({
         account_addr: account_addr,
-        vpn_addr: vpn_addr
+        vpn_addr: vpn_addr,
+        token: nonce
       })
     }).then(function (response) {
       response.json().then(function (response) {
@@ -286,6 +380,15 @@ export function getVPNPIDs(cb) {
       cb(true, null);
     }
   });
+}
+
+export const isOnline = function () {
+  if (window.navigator.onLine) {
+    return true
+  }
+  else {
+    return false
+  }
 }
 
 export function disconnectVPN(cb) {

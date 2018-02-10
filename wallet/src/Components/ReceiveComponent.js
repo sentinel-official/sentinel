@@ -3,6 +3,7 @@ import { QRCode } from 'react-qr-svg';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
+import ReactTooltip from 'react-tooltip';
 
 let qrcode;
 class ReceiveComponent extends Component {
@@ -32,8 +33,8 @@ class ReceiveComponent extends Component {
           <Row>
             <Col>
               <div style={{
-                marginLeft: 350,
-                marginTop: 20,
+                marginLeft: 370,
+                marginTop: 70,
                 marginBottom: 30,
               }}>
                 <QRCode
@@ -49,7 +50,7 @@ class ReceiveComponent extends Component {
           <Row>
             <Col>
               <div style={{
-                marginLeft: 280
+                marginLeft: 290
               }}>
                 <label style={{
                   color: '#532d91',
@@ -61,6 +62,7 @@ class ReceiveComponent extends Component {
                   })} >
                     <img
                       src={'../src/Images/download.jpeg'}
+                      data-tip data-for="copyImage"
                       style={{
                         height: 20,
                         width: 20,
@@ -68,6 +70,9 @@ class ReceiveComponent extends Component {
                       }}
                     />
                   </CopyToClipboard></label>
+                <ReactTooltip id="copyImage" place="bottom">
+                  <span>Copy</span>
+                </ReactTooltip>
               </div>
             </Col>
           </Row>
@@ -77,7 +82,7 @@ class ReceiveComponent extends Component {
           message={this.state.snackMessage}
           autoHideDuration={2000}
           onRequestClose={this.snackRequestClose}
-          style={{ marginBottom: '2%', width: '80%' }}
+          style={{ marginBottom: '2%'}}
         />
       </div>
     )

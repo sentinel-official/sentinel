@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
+import ReactTooltip from 'react-tooltip';
 
 let shell = window
     .require('electron')
@@ -60,7 +61,9 @@ class EtherTransaction extends Component {
                                             snackMessage: 'Copied to Clipboard Successfully',
                                             openSnack: true
                                         })} >
-                                        <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
+                                        <img src={'../src/Images/download.jpeg'}
+                                            data-tip data-for="copyImage"
+                                            style={styles.clipBoard} />
                                     </CopyToClipboard>
                                     <span style={{
                                         fontWeight: 'bold'
@@ -96,7 +99,9 @@ class EtherTransaction extends Component {
                                             snackMessage: 'Copied to Clipboard Successfully',
                                             openSnack: true
                                         })} >
-                                        <img src={'../src/Images/download.jpeg'} style={styles.clipBoard} />
+                                        <img src={'../src/Images/download.jpeg'}
+                                            data-tip data-for="copyImage"
+                                            style={styles.clipBoard} />
                                     </CopyToClipboard>
                                     <span style={{
                                         fontWeight: 'bold'
@@ -109,6 +114,9 @@ class EtherTransaction extends Component {
                                 </div>
                             </div>
                         }
+                        <ReactTooltip id="copyImage" place="bottom">
+                            <span>Copy</span>
+                        </ReactTooltip>
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
                             <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
                             <span>ETHs</span>  |
@@ -157,9 +165,9 @@ const styles = {
         cursor: 'pointer'
     },
     outputDiv: {
-        height: 400, 
-        overflowY: 'auto', 
-        marginTop: '2%', 
+        height: 400,
+        overflowY: 'auto',
+        marginTop: '2%',
         overflowX: 'hidden'
     }
 }

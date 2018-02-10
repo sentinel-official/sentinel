@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle } from 'material-ui';
-import { getVPNList, connectVPN, disconnectVPN, isVPNConnected } from '../Actions/AccountActions';
-// import VPNComponent from './VPNComponent';
+import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline } from '../Actions/AccountActions';
+import VPNComponent from './VPNComponent';
+import ReactTooltip from 'react-tooltip';
 
 class Header extends Component {
   constructor(props) {
@@ -12,82 +13,90 @@ class Header extends Component {
       openSnack: false,
       snackMessage: '',
       showPopUp: false,
+      vpnList: [],
+      selectedVPN: null,
       status: false
     }
   }
 
   componentWillMount = () => {
-    // let that = this;
-    // isVPNConnected(function (err, data) {
-    //   if (err) console.log('Error', err);
-    //   else if (data) {
-    //     that.setState({ status: true });
-    //   }
-    //   else {
-    //     that.setState({ status: false });
-    //   }
-    // })
+    let that = this;
+    isVPNConnected(function (err, data) {
+      if (err) { }
+      else if (data) {
+        that.setState({ status: true });
+      }
+      else {
+        that.setState({ status: false });
+      }
+    })
   }
 
   componentDidMount = () => {
-    // let that = this;
-    // getVPNList(function (err, data) {
-    //   if (err) console.log('Error', err);
-    //   else {
-    //     that.setState({ vpnList: data });
-    //   }
-    // })
+    let that = this;
+    getVPNList(function (err, data) {
+      if (err) console.log('Error', err);
+      else {
+        that.setState({ vpnList: data });
+      }
+    })
   }
 
-  // _connectVPN = () => {
-  //   let that = this;
-  //   connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
-  //     if (err) {
-  //       console.log(err, "Error");
+  _connectVPN = () => {
+    let that = this;
+    if (isOnline()) {
+      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
+        if (err) {
+          that.setState({ showPopUp: false, status: false, openSnack: true, snackMessage: err.message })
+        }
+        else {
+          that.props.onChange();
+          //that.returnVPN();
+          that.setState({ showPopUp: false, status: true, openSnack: true, snackMessage: "Connected VPN" })
+        }
+      })
+    }
+    else {
+      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+    }
+  }
 
-  //       that.setState({ showPopUp: false, status: false, openSnack: true, snackMessage: err.message })
-  //     }
-  //     else {
-  //       console.log("Connected", res);
-  //       that.props.onChange();
-  //       //that.returnVPN();
-  //       that.setState({ showPopUp: false, status: true, openSnack: true, snackMessage: "Connected VPN" })
-  //     }
-  //   })
-  // }
+  returnVPN = () => {
+    return <VPNComponent isConnected={true} />
+  }
 
-  // returnVPN = () => {
-  //   return <VPNComponent isConnected={true} />
-  // }
+  _disconnectVPN = () => {
+    var that = this;
+    disconnectVPN(function (err) {
+      if (err) {
+        console.log(err);
+        // _toggleVPNButtons();
+      } else {
+        that.props.onChange();
+        that.setState({ status: false, openSnack: true, snackMessage: "Disconnected VPN" })
+      }
+    });
+  }
 
-  // _disconnectVPN = () => {
-  //   var that = this;
-  //   disconnectVPN(function (err) {
-  //     if (err) {
-  //       console.log(err);
-  //       // _toggleVPNButtons();
-  //     } else {
-  //       console.log('Disconnected');
-  //       that.props.onChange();
-  //       that.setState({ status: false, openSnack: true, snackMessage: "Disconnected VPN" })
-  //     }
-  //   });
-  // }
-
-  // handleToggle = (event, toggle) => {
-  //   if (toggle) {
-  //     let that = this;
-  //     getVPNList(function (err, data) {
-  //       if (err) console.log('Error', err);
-  //       else {
-  //         that.setState({ vpnList: data, showPopUp: true });
-  //       }
-  //     })
-  //   }
-  //   else {
-  //     this._disconnectVPN();
-  //   }
-  // };
+  handleToggle = (event, toggle) => {
+    if (isOnline()) {
+      if (toggle) {
+        let that = this;
+        getVPNList(function (err, data) {
+          if (err) console.log('Error', err);
+          else {
+            that.setState({ vpnList: data, showPopUp: true });
+          }
+        })
+      }
+      else {
+        this._disconnectVPN();
+      }
+    }
+    else {
+      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+    }
+  };
 
   handleClose = () => {
     this.setState({ showPopUp: false });
@@ -99,19 +108,19 @@ class Header extends Component {
     });
   };
   render() {
-    // const actions = [
-    //   <FlatButton
-    //     label="Cancel"
-    //     primary={true}
-    //     onClick={this.handleClose}
-    //   />,
-    //   <FlatButton
-    //     label="Connect"
-    //     primary={true}
-    //     disabled={this.state.selectedVPN == null ? true : false}
-    //     onClick={this._connectVPN.bind(this)}
-    //   />,
-    // ];
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Connect"
+        primary={true}
+        disabled={this.state.selectedVPN == null ? true : false}
+        onClick={this._connectVPN.bind(this)}
+      />,
+    ];
     return (
       <div style={{ height: 70, backgroundColor: '#532d91' }}>
         <div>
@@ -122,7 +131,7 @@ class Header extends Component {
                   <img src={'../src/Images/5.png'} style={{ width: 70, height: 70, marginTop: -10 }} />
                 </div>
               </Col>
-              <Col xs={7} style={{
+              <Col xs={5} style={{
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
@@ -142,9 +151,13 @@ class Header extends Component {
                       })} >
                       <img
                         src={'../src/Images/download.jpeg'}
+                        data-tip data-for="copyImage"
                         style={styles.clipBoard}
                       />
                     </CopyToClipboard>
+                    <ReactTooltip id="copyImage" place="bottom">
+                      <span>Copy</span>
+                    </ReactTooltip>
                   </Col>
                 </Row>
               </Col>
@@ -154,22 +167,24 @@ class Header extends Component {
                     <span>SENT: {this.props.balance.sents}</span>
                   </Col>
                   <Col style={styles.ethBalance}>
-                    <span>ETH: {this.props.balance.eths}</span>
+                    <span>ETH: {this.props.balance.eths === 'Loading'
+                      ? this.props.balance.eths :
+                      parseFloat(this.props.balance.eths).toFixed(8)
+                    }</span>
                   </Col>
                 </div>
               </Col>
-              {/* <Col xs={2}>
+              <Col xs={2}>
                 <Col style={{
                   fontSize: 12,
                   fontWeight: '600',
-                  color: '#FAFAFA',
-                  marginTop: '5%'
+                  color: '#FAFAFA'
                 }}>
                   <FlatButton
                     label="VPN"
                     labelStyle={{ color: 'white', textTransform: 'none' }}
                     style={{ height: '18px', lineHeight: '18px' }}
-                    onClick={() => { this.setState({ showPopUp: true }) }} />
+                    onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
                 </Col>
                 <Col>
                   <Toggle
@@ -178,15 +193,15 @@ class Header extends Component {
                     style={{ marginTop: '5%', marginLeft: '15%' }}
                   />
                 </Col>
-              </Col> */}
+              </Col>
               <Snackbar
                 open={this.state.openSnack}
                 message={this.state.snackMessage}
                 autoHideDuration={2000}
                 onRequestClose={this.snackRequestClose}
-                style={{ marginBottom: '2%', width: '80%' }}
+                style={{ marginBottom: '2%' }}
               />
-              {/* <Dialog
+              <Dialog
                 title="VPN List"
                 titleStyle={{ fontSize: 14 }}
                 actions={actions}
@@ -198,7 +213,6 @@ class Header extends Component {
                   value={this.state.selectedVPN}
                   autoWidth={true}
                   onChange={(event, index, value) => {
-                    console.log("Value:", value);
                     this.setState({ selectedVPN: value })
                   }}
                 >
@@ -206,7 +220,7 @@ class Header extends Component {
                     <MenuItem value={vpn.account.addr} primaryText={vpn.location.city} />
                   )}
                 </SelectField>
-              </Dialog> */}
+              </Dialog>
             </Row>
           </Grid>
         </div>
@@ -221,8 +235,8 @@ const styles = {
     height: 12,
     width: 12,
     cursor: 'pointer',
-    marginTop: '7.5%',
-    marginLeft: '-52%'
+    marginTop: '5%',
+    marginLeft: -12
   },
   walletAddress: {
     fontSize: 12,
@@ -248,8 +262,7 @@ const styles = {
   sentBalance: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FAFAFA',
-    marginTop: '3%'
+    color: '#FAFAFA'
   }
 }
 export default Header;

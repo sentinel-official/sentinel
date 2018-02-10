@@ -7,6 +7,7 @@ from ..config import VPNSERVICE_ABI
 from ..config import VPNSERVICE_ADDRESS
 from ..config import VPNSERVICE_NAME
 
+from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PASSWORD
 from ..config import DECIMALS
 
@@ -32,13 +33,19 @@ class ContractManager(object):
     def transfer_amount(self, account_addr, to_addr, amount,
                         tx_object, password, session_id=None):
         try:
-            self.eth_manager.web3.personal.unlockAccount(
-                account_addr, password)
+            print(account_addr, to_addr, amount, tx_object, password, session_id)
+	    if password is not None:
+		self.eth_manager.web3.personal.unlockAccount(account_addr, password)
+	    else:
+	        self.eth_manager.web3.personal.unlockAccount(COINBASE_ADDRESS, COINBASE_PASSWORD)
             if session_id is None:
                 tx_hash = self.contracts[0].transact(tx_object).transfer(to_addr, amount)
             else:
-                tx_hash = self.contracts[1].transact(tx_object).payVpnSession(sentinel['address'], amount, session_id)
-            self.eth_manager.web3.personal.lockAccount(account_addr)
+                tx_hash = self.contracts[1].transact(tx_object).payVpnSession(account_addr, amount, session_id)
+	    if password is not None:
+	        self.eth_manager.web3.personal.lockAccount(account_addr)
+	    else:
+	        self.eth_manager.web3.personal.lockAccount(COINBASE_ADDRESS)
         except Exception as err:
             return {'code': 202, 'error': str(err)}, None
         return None, tx_hash
@@ -69,8 +76,7 @@ class ContractManager(object):
     def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes, session_duration,
                       amount, timestamp, password):
         try:
-            self.eth_manager.web3.personal.unlockAccount(
-                account_addr, password)
+            self.eth_manager.web3.personal.unlockAccount(account_addr, password)
             tx_hash = self.contracts[1].transact(
                 {'from': account_addr}).addVpnUsage(
                     to_addr, sent_bytes, session_duration,
@@ -87,7 +93,7 @@ class ContractManager(object):
                     {'from': account_addr}).transfer(to_addr, amount)
             else:
                 gas_units = self.contracts[1].estimateGas(
-                    {'from': account_addr}).payVpnSession(sentinel['address'], amount, session_id)
+                    {'from': account_addr}).payVpnSession(account_addr, amount, session_id)
         except Exception as err:
             return {'code': 208, 'error': str(err)}, None
         return None, gas_units

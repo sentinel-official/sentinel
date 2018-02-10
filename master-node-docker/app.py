@@ -10,6 +10,7 @@ from sentinel.client import TransactionHistory
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnsList
 from sentinel.client import GetVpnUsage
+from sentinel.client import PutClientConnection
 
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateNodeInfo
@@ -43,6 +44,7 @@ app.add_route('/client/transaction/history', TransactionHistory())
 app.add_route('/client/vpn', GetVpnCredentials())
 app.add_route('/client/vpn/list', GetVpnsList())
 app.add_route('/client/vpn/usage', GetVpnUsage())
+app.add_route('/client/vpn/put-connection',PutClientConnection())
 
 # Nodes
 app.add_route('/node', Up())

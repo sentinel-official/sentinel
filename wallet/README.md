@@ -6,4 +6,4 @@
 
 ### VPN Client
 ### VPN Nodes List
-### VPN History [Coming soon ...]
+### VPN History

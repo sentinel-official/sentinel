@@ -335,7 +335,8 @@ class SendComponent extends Component {
               autoHideDuration={10000}
               onRequestClose={this.snackRequestClose}
               style={{ marginBottom: '2%' }}
-              action="Transaction Placed. Check Status"
+              message="Transaction Placed"
+              action="Check Status"
               onActionClick={() => { this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`) }}
             />
             <Snackbar

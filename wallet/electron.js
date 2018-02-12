@@ -59,7 +59,10 @@ app.on('ready', function () {
       { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
-      { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' }
+      { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
+      {
+        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      }
     ]
   }
   ]

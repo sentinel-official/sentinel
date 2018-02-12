@@ -8,6 +8,7 @@ import { getEthBalance, getSentBalance, getAccount, transferAmount, getVPNdetail
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
+import VPNHistory from './VPNHistory';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -22,7 +23,12 @@ class Dashboard extends Component {
       sentBalance: 'Loading',
       isGetBalanceCalled: false,
       vpnData: null,
-      status: false
+      status: false,
+      to_addr: '',
+      isPropReceive: false,
+      amount: '',
+      unit: 'ETH',
+      sessionId: null
     }
     this.set = this.props.set;
   }
@@ -67,11 +73,49 @@ class Dashboard extends Component {
   }
 
   handleChange = (value) => {
-    this.setState({
-      value: value,
-      color: 'orange'
-    });
+    if (value === 'send') {
+      this.setState({
+        value: value,
+        color: 'orange'
+      });
+    }
+    else {
+      this.setState({
+        to_addr: '',
+        amount: '',
+        sessionId: null,
+        unit: 'ETH',
+        value: value,
+        color: 'orange',
+        isPropReceive: true
+      })
+
+    }
   };
+
+  propReceiveChange = () => {
+    this.setState({ isPropReceive:false })
+  }
+
+  clearSend = () => {
+    this.setState({
+      to_addr: '',
+      amount: '',
+      sessionId: null,
+      unit: 'ETH',
+      isPropReceive: true
+    })
+  }
+  vpnPayment = (sessionData) => {
+    this.setState({
+      to_addr: sessionData.account_addr,
+      amount: sessionData.amount,
+      unit: 'SENT',
+      value: 'send',
+      sessionId: sessionData.id,
+      isPropReceive: true
+    })
+  }
 
   render() {
     let that = this;
@@ -108,7 +152,16 @@ class Dashboard extends Component {
                     <History local_address={this.state.local_address} />
                   </Tab>
                   <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="SEND" value="send">
-                    <SendComponent local_address={this.state.local_address} />
+                    <SendComponent
+                      local_address={this.state.local_address}
+                      amount={this.state.amount}
+                      to_addr={this.state.to_addr}
+                      unit={this.state.unit}
+                      session_id={this.state.sessionId}
+                      isPropReceive={this.state.isPropReceive}
+                      propReceiveChange={this.propReceiveChange.bind(this)}
+                      clearSend={this.clearSend.bind(this)}
+                    />
                   </Tab>
                   <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="RECEIVE" value="receive">
                     <div>
@@ -121,6 +174,9 @@ class Dashboard extends Component {
                       status={this.state.status}
                       vpnData={this.state.vpnData}
                     />
+                  </Tab>
+                  <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="VPN History" value="vpn_history">
+                    <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} />
                   </Tab>
                 </Tabs>
               </div>

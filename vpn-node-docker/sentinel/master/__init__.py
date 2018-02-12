@@ -1,3 +1,3 @@
 from __future__ import absolute_import
 
-from .mongo import db
+from .master import GetMasterToken

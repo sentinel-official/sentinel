@@ -6,16 +6,18 @@ import {
     Chip, Dialog, FlatButton, Checkbox, Paper, Snackbar, RefreshIndicator
 } from 'material-ui';
 import Dashboard from './Dashboard';
-import { createAccount, uploadKeystore } from '../Actions/AccountActions';
+import { createAccount, uploadKeystore, isOnline } from '../Actions/AccountActions';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Footer from './Footer';
 import ReactTooltip from 'react-tooltip';
+let keythereum = require('keythereum');
 
 class Create extends Component {
     constructor(props) {
         super(props);
         this.state = {
             password: '',
+            keystorePassword: '',
             keystore: '',
             file: '',
             openDialog: false,
@@ -38,7 +40,8 @@ class Create extends Component {
             this.setState({ keystore: text })
         };
         reader.readAsText(input.files[0]);
-        this.setState({ file: input.files[0].name })
+        this.setState({ file: input.files[0].name });
+        document.getElementById('filepicker').value = ""
     }
 
     renderProgress() {
@@ -59,17 +62,22 @@ class Create extends Component {
         this.setState({ isLoading: true })
         var password = this.state.password;
         var that = this;
-        createAccount(password, function (err, account) {
-            if (err) console.log(err, "Error");
-            else {
-                that.setState({
-                    account_addr: account.account_addr,
-                    private_key: account.private_key,
-                    keystore_addr: account.keystore_addr,
-                    isLoading: false
-                })
-            }
-        });
+        if (isOnline()) {
+            createAccount(password, function (err, account) {
+                if (err) console.log(err, "Error");
+                else {
+                    that.setState({
+                        account_addr: account.account_addr,
+                        private_key: account.private_key,
+                        keystore_addr: account.keystore_addr,
+                        isLoading: false
+                    })
+                }
+            });
+        }
+        else {
+            this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+        }
     }
 
     snackRequestClose = () => {
@@ -78,13 +86,33 @@ class Create extends Component {
         });
     };
 
+    getPrivateKey = (keystore, password, cb) => {
+        keystore = JSON.parse(keystore)
+        try {
+            keythereum.recover(password, keystore, function (privateKey) {
+                cb(null, privateKey);
+            });
+        }
+        catch (err) {
+            cb({ message: 'Keystore and Password does not match' }, null);
+        }
+    }
+
     _store = () => {
         var keystore = this.state.keystore;
+        var password = this.state.keystorePassword;
         var that = this;
-        uploadKeystore(keystore, function (err) {
-            if (err) console.log(err);
+        this.getPrivateKey(keystore, password, function (err, private_key) {
+            if (err) {
+                that.setState({ openSnack: true, snackMessage: err.message })
+            }
             else {
-                that.set('dashboard');
+                uploadKeystore(keystore, function (err) {
+                    if (err) console.log(err);
+                    else {
+                        that.set('dashboard');
+                    }
+                })
             }
         })
     }
@@ -108,14 +136,17 @@ class Create extends Component {
                             <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
                         </ToolbarGroup>
                     </Toolbar>
-                    {this.state.private_key == '' ?
+                    {this.state.private_key === '' ?
                         <div style={styles.createDiv}>
-                            <h3 style={styles.headingCreate} data-tip data-for="createID">Create your Anonymous User ID</h3>
-                            <ReactTooltip id="createID" place="bottom">
-                                <span>
-                                    Enter a password and create your own Sentinel Anonymous User ID (AUID)
+                            <div style={{ marginTop: '2%' }}>
+                                <span style={styles.headingCreate}>Create your Anonymous User ID</span>
+                                <span data-tip data-for="createID" style={styles.questionMark}>?</span>
+                                <ReactTooltip id="createID" place="bottom">
+                                    <span>
+                                        Enter a password and create your own Sentinel Anonymous User ID (AUID)
                                 </span>
-                            </ReactTooltip>
+                                </ReactTooltip>
+                            </div>
                             <hr width="50%" align="left" size="3" noshade style={{ backgroundColor: 'rgb(83, 45, 145)' }} />
                             <Paper zDepth={2} style={styles.textBoxPaper}>
                                 <TextField
@@ -136,27 +167,40 @@ class Create extends Component {
                             {this.state.isLoading === true ? this.renderProgress() : ''}
                             <p style={{ fontSize: 12, marginLeft: '3%' }}>(Or)</p>
                             <Paper zDepth={2} style={styles.bluePaper}>
-                                <div style={{ padding: '7%' }}>
+                                <div style={{ padding: '5%' }}>
                                     <RaisedButton
                                         label="Select keystore file"
                                         labelStyle={styles.buttonLabel}
                                         onClick={() => { document.getElementById('filepicker').click() }}
-                                        buttonStyle={styles.buttonRaisedKeystore}
+                                        buttonStyle={this.state.file === '' ? styles.buttonCreate : styles.buttonRaisedKeystore}
                                         disabled={this.state.file === '' ? false : true} />
-                                    {this.state.file == '' ?
+                                    {this.state.file === '' ?
                                         <div></div>
                                         :
-                                        <Chip onRequestDelete={() => { this.setState({ file: '' }) }} style={{ margin: '5%' }} >
+                                        <Chip onRequestDelete={() => {
+                                            this.setState({ file: '', keystore: '', keystorePassword: '' })
+                                        }} style={{ margin: '2%' }} >
                                             {this.state.file}
                                         </Chip>
                                     }
+                                    <Paper zDepth={2} style={styles.keyTextBoxPaper}>
+                                        <TextField
+                                            hintText="Enter Keystore Password"
+                                            hintStyle={{ fontSize: 12 }}
+                                            type="password"
+                                            underlineShow={false}
+                                            onChange={(event, password) => { this.setState({ keystorePassword: password }) }}
+                                            style={styles.textFieldCreate}
+                                        />
+                                    </Paper>
                                     <RaisedButton
                                         label="Restore Keystore File"
                                         labelStyle={{ color: 'white', textTransform: 'none' }}
-                                        disabled={this.state.file === '' ? true : false}
+                                        disabled={this.state.file === '' || this.state.keystorePassword === '' ? true : false}
                                         onClick={this._store.bind(this)}
-                                        buttonStyle={styles.buttonCreate}
-                                        style={{ marginTop: '5%' }} />
+                                        buttonStyle={this.state.file === '' || this.state.keystorePassword === '' ?
+                                            styles.buttonRaisedKeystore : styles.buttonCreate}
+                                        style={{ marginTop: '3%' }} />
                                     <input type="file" style={{ display: 'none' }} id="filepicker"
                                         onChange={this.onChange.bind(this)} />
                                 </div>
@@ -180,8 +224,12 @@ class Create extends Component {
                                             openSnack: true
                                         })}>
                                         <img src={'../src/Images/download.jpeg'}
+                                            data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard></p>
+                                <ReactTooltip id="copyImage" place="bottom">
+                                    <span>Copy</span>
+                                </ReactTooltip>
                                 <p style={styles.detailHeadBold}>Your keystore file is stored at:</p>
                                 <p style={styles.detailVal}>{this.state.keystore_addr}</p>
                             </div>
@@ -259,7 +307,12 @@ const styles = {
         height: 35,
         width: '100%',
         backgroundColor: 'rgba(229, 229, 229, 0.66)',
-        marginTop: '5%'
+        marginTop: '3%'
+    },
+    keyTextBoxPaper: {
+        height: 35,
+        width: '80%',
+        marginTop: '3%'
     },
     textFieldCreateHint: {
         fontSize: 12,
@@ -278,7 +331,8 @@ const styles = {
     buttonRaisedKeystore: {
         backgroundColor: 'rgba(128, 128, 128, 0.66)',
         height: '30px',
-        lineHeight: '30px'
+        lineHeight: '30px',
+        cursor: 'not-allowed'
     },
     buttonCreate: {
         backgroundColor: 'rgba(83, 45, 145, 0.71)',
@@ -291,7 +345,7 @@ const styles = {
     },
     bluePaper: {
         backgroundColor: 'rgba(181, 216, 232, 0.32)',
-        marginTop: '7%'
+        marginTop: '5%'
     },
     copyHeading: {
         color: 'rgb(240, 94, 9)',
@@ -329,6 +383,15 @@ const styles = {
         // justifyContent: 'center',
         // alignItems: 'center'
     },
+    questionMark: {
+        marginLeft: 3,
+        fontSize: 12,
+        borderRadius: '50%',
+        backgroundColor: '#4d9bb9',
+        paddingLeft: 5,
+        paddingRight: 5,
+        color: 'white'
+    }
 }
 
 export default Create;

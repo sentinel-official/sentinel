@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import style from 'material-ui/svg-icons/image/style';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getEthTransactionHistory, getSentTransactionHistory } from '../Actions/AccountActions';
+import { getEthTransactionHistory, getSentTransactionHistory, isOnline } from '../Actions/AccountActions';
 import { setTimeout } from 'timers';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import _ from 'lodash';
@@ -9,7 +9,7 @@ import { RaisedButton, IconButton, Snackbar } from 'material-ui';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import EtherTransaction from './EtherTransaction';
 import SentTransaction from './SentTransaction';
-let zfill=require('zfill');
+let zfill = require('zfill');
 
 let shell = window
   .require('electron')
@@ -24,14 +24,12 @@ class History extends Component {
       isGetHistoryCalled: false,
       isLoading: true,
       ethActive: true,
+      openSnack: false,
+      snackMessage: '',
       pageNumber: 1,
-      nextDisabled: false
+      nextDisabled: false,
+      isInitial: true
     }
-  }
-
-  componentWillMount() {
-    this.getEthHistory(this.state.pageNumber);
-    this.getSentHistory();
   }
 
   renderProgress() {
@@ -39,7 +37,7 @@ class History extends Component {
     return (
       <RefreshIndicator
         size={50}
-        left={350}
+        left={420}
         top={150}
         loadingolor="#532d91"
         status="loading"
@@ -66,24 +64,38 @@ class History extends Component {
     let that = this;
     getSentTransactionHistory('0x' + zfill(this.props.local_address.substring(2), 64), (err, history) => {
       if (err) {
-        console.log("Err")
         that.setState({ isLoading: false })
       }
       else {
-        console.log("Hi..")
         that.setState({ sentData: _.sortBy(history, o => o.timeStamp).reverse(), isLoading: false })
       }
     })
   }
 
-  handleRefresh(){
-    if(this.state.ethActive)
-      this.getEthHistory(1);
-    else
-      this.getSentHistory();
+  snackRequestClose = () => {
+    this.setState({
+      openSnack: false
+    });
+  };
+
+  handleRefresh() {
+    if (isOnline()) {
+      if (this.state.ethActive)
+        this.getEthHistory(1);
+      else
+        this.getSentHistory();
+    }
+    else {
+      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+    }
   }
 
   render() {
+    if (this.state.isInitial && this.props.local_address !== "") {
+      this.getEthHistory(this.state.pageNumber);
+      this.getSentHistory();
+      this.setState({ isInitial: false });
+    }
     let ethOutput = <EtherTransaction data={this.state.ethData} local_address={this.props.local_address} />
     let sentOutput = <SentTransaction data={this.state.sentData} local_address={this.props.local_address} />
     return (
@@ -130,6 +142,13 @@ class History extends Component {
               </div>}
           </div>
         }
+        <Snackbar
+          open={this.state.openSnack}
+          message={this.state.snackMessage}
+          autoHideDuration={2000}
+          onRequestClose={this.snackRequestClose}
+          style={{ marginBottom: '2%' }}
+        />
       </div>
     )
   }

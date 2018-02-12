@@ -1,6 +1,7 @@
 {
   "dest": "release-builds/",
-  "icon": "public/icon256x256.ico",
+  "icon": "public/icon256x256.png",
+  "bin": "public/launch_wallet",
   "categories": [
     "Utility"
   ],

@@ -1,7 +1,8 @@
 {
-  "name": "Sentinel",
+  "name": "sentinel-wallet",
   "description": "Sentinel Wallet",
   "productName": "Sentinel Wallet",
+  "author":"Dev Team <devteam@sentinelgroup.io>",
   "version": "1.0.0",
   "private": true,
   "main": "electron.js",
@@ -41,7 +42,7 @@
     "eject": "react-scripts eject",
     "package-mac": "electron-packager . sentinel-wallet --overwrite --asar=true --platform=darwin --arch=x64 --icon=public/icon256x256.ico --prune=true --out=release-builds",
     "package-win": "electron-packager . sentinel-wallet --overwrite --asar=true --platform=win32 --icon=public/icon256x256.ico --prune=true --out=release-builds --version-string.CompanyName=Sentinel --version-string.FileDescription=S --version-string.ProductName=\"Sentinel Wallet\"",
-    "package-linux": "electron-packager . sentinel-wallet --overwrite --asar=true --platform=linux --arch=x64 --icon=public/icon256x256.ico --prune=true --out=release-builds",
+    "package-linux": "electron-packager . sentinel-wallet --overwrite --asar=true --platform=linux --arch=x64 --icon=public/icon256x256.png --prune=true --out=release-builds",
     "create-installer-mac": "electron-installer-dmg ./release-builds/sentinel-wallet-darwin-x64/sentinel-wallet.app sentinel-wallet --out=release-builds --overwrite --icon=public/icon256x256.icns",
     "create-installer-win": "node installers/windows/createinstaller.js",
     "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-wallet-linux-x64/ --arch amd64 --config debian.json"

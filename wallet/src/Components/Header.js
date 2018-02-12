@@ -117,7 +117,7 @@ class Header extends Component {
       <FlatButton
         label="Connect"
         primary={true}
-        disabled={this.state.selectedVPN == null ? true : false}
+        disabled={this.state.selectedVPN == null || this.state.vpnList.length === 0 ? true : false}
         onClick={this._connectVPN.bind(this)}
       />,
     ];
@@ -208,18 +208,22 @@ class Header extends Component {
                 modal={true}
                 open={this.state.showPopUp}
               >
-                <SelectField
-                  hintText="Select VPN"
-                  value={this.state.selectedVPN}
-                  autoWidth={true}
-                  onChange={(event, index, value) => {
-                    this.setState({ selectedVPN: value })
-                  }}
-                >
-                  {this.state.vpnList.map((vpn) =>
-                    <MenuItem value={vpn.account.addr} primaryText={vpn.location.city} />
-                  )}
-                </SelectField>
+                {this.state.vpnList.length !== 0 ?
+                  <SelectField
+                    hintText="Select VPN"
+                    value={this.state.selectedVPN}
+                    autoWidth={true}
+                    onChange={(event, index, value) => {
+                      this.setState({ selectedVPN: value })
+                    }}
+                  >
+                    {this.state.vpnList.map((vpn) =>
+                      <MenuItem value={vpn.account.addr} primaryText={vpn.location.city} />
+                    )}
+                  </SelectField>
+                  :
+                  <span>No VPNs Found</span>
+                }
               </Dialog>
             </Row>
           </Grid>

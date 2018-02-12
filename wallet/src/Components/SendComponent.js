@@ -30,7 +30,7 @@ class SendComponent extends Component {
       snackMessage: '',
       isDisabled: true,
       isInitial: true,
-      transactionStatus:'',
+      transactionStatus: '',
       session_id: null
     };
   }
@@ -60,7 +60,7 @@ class SendComponent extends Component {
 
   sendToMaster = () => {
     let body = {
-      from_addr: this.props.local_address,  
+      from_addr: this.props.local_address,
       to_addr: this.state.to_address,
       amount: this.state.amount,
       unit: this.state.unit,
@@ -86,7 +86,25 @@ class SendComponent extends Component {
           isDisabled: true
         });
       else {
-        that.sendToTest();
+        if (that.state.session_id === null) {
+          that.props.clearSend();
+          that.setState({
+            tx_addr: tx_addr,
+            openSnack: true,
+            to_address: '',
+            amount: '',
+            gas: '',
+            session_id: null,
+            data: '',
+            unit: 'ETH',
+            password: '',
+            sending: false,
+            isDisabled: true
+          })
+        }
+        else {
+          that.sendToTest();
+        }
       }
     });
   }
@@ -151,7 +169,8 @@ class SendComponent extends Component {
           isDisabled: true
         })
         if (this.state.session_id === null) {
-          this.sendToTest()
+          // this.sendToTest() //For direct transaction in test network
+          this.sendToMaster() //For direct transaction in main network
         }
         else {
           this.sendToMaster()
@@ -199,7 +218,8 @@ class SendComponent extends Component {
           <Grid>
             <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
-                <span>To</span>
+                <span>To</span>t
+
                 <span data-tip data-for="toField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>

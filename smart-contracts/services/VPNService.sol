@@ -1,16 +1,31 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.18;
 
-interface Sentinel {
-  function payService(
-    bytes32 _serviceName,
-    address _from,
-    address _to,
-    uint256 _value)
-      public;
+contract Owned {
+  address public owner;
+
+  function Owned(
+    )
+      public {
+        owner = msg.sender;
+    }
+
+  modifier onlyOwner {
+    require(msg.sender == owner);
+    _;
+  }
+
+  function transferOwnership(
+    address _owner)
+      onlyOwner public {
+        require(_owner != 0x0);
+
+        owner = _owner;
+    }
 }
 
-contract VPNService {
+contract VPNService is Owned {
   mapping(address => User) private users;
+  mapping(address => bool) public authorizedUsers;
 
   struct User {
     uint256 dueAmount;
@@ -27,6 +42,14 @@ contract VPNService {
   }
 
   VpnUsage _vpnUsageTemplate;
+  
+  function addAuthorizedUser(address _addr) onlyOwner public {
+    authorizedUsers[_addr] = true;
+  }
+
+  function removeAuthorizedUser(address _addr) onlyOwner public {
+    authorizedUsers[_addr] = false;
+  }
 
   function addVpnUsage(
     address _addr,
@@ -49,21 +72,18 @@ contract VPNService {
     }
 
   function payVpnSession(
-    address _sentinelContractAddress,
+    address _from,
     uint256 _amount,
     uint256 _sessionId)
       public {
-        require(users[msg.sender].dueAmount >= _amount);
-        require(users[msg.sender].vpnUsage[_sessionId].amount == _amount);
-        require(users[msg.sender].vpnUsage[_sessionId].isPayed == false);
+        require(authorizedUsers[msg.sender] == true);
+        require(users[_from].dueAmount >= _amount);
+        require(users[_from].vpnUsage[_sessionId].amount == _amount);
+        require(users[_from].vpnUsage[_sessionId].isPayed == false);
 
-        address _to = users[msg.sender].vpnUsage[_sessionId].addr;
-        Sentinel sentinel = Sentinel(_sentinelContractAddress);
-        sentinel.payService('vpn', msg.sender, _to, _amount);
-
-        users[msg.sender].dueAmount -= _amount;
-        if ((users[msg.sender].vpnUsage[_sessionId].amount - _amount) == 0) {
-          users[msg.sender].vpnUsage[_sessionId].isPayed = true;
+        users[_from].dueAmount -= _amount;
+        if ((users[_from].vpnUsage[_sessionId].amount - _amount) == 0) {
+          users[_from].vpnUsage[_sessionId].isPayed = true;
         }
     }
 

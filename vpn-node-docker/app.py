@@ -54,7 +54,7 @@ if __name__ == "__main__":
     while True:
         keys.generate()
         node.update_vpninfo({'type': 'ovpn', 'ovpn': keys.ovpn()})
-        send_nodeinfo(node, {'type': 'vpn', 'ovpn': node.vpn['ovpn']})
+        #send_nodeinfo(node, {'type': 'vpn', 'ovpn': node.vpn['ovpn']})
         openvpn.start()
         node.update_vpninfo({'type': 'status', 'status': 'up'})
         send_nodeinfo(node, {'type': 'vpn', 'status': node.vpn['status']})

@@ -1,14 +1,24 @@
 from time import sleep
 from ..eth import eth_manager
 from ..eth import contract_manager
+from ..config import COINBASE_ADDRESS
 from ..config import DECIMALS
 
 
 class ETHHelper(object):
-    def transfer_amount(self, from_addr, to_addr, amount, unit, keystore,
-                        password, gas_price, gas_units session_id=None):
-        eth_manager.add_keystore(from_addr, keystore)
-        sleep(1.0)  # Need to check
+    def transfer_amount(self,
+                        from_addr,
+                        to_addr,
+                        amount,
+                        unit,
+                        keystore,
+                        password,
+                        gas_price,
+                        gas_units,
+                        session_id=None):
+        if session_id is None:
+            eth_manager.add_keystore(from_addr, keystore)
+            sleep(1.0)
         if unit == 'ETH':
             transaction = {'from': from_addr, 'to': to_addr, 'value': amount}
             if gas_price:
@@ -22,10 +32,14 @@ class ETHHelper(object):
             if gas_price:
                 tx_object['gasPrice'] = gas_price
             if gas_units:
-                tx_object['gas']: gas_units
-            error, tx_hash = contract_manager.transfer_amount(
-                from_addr, to_addr, amount, tx_object, password, session_id)
-        eth_manager.remove_keystore(from_addr)
+                tx_object['gas'] = gas_units
+            if session_id is None:
+                error, tx_hash = contract_manager.transfer_amount(
+                    from_addr, to_addr, amount, tx_object, password, None)
+            else:
+                tx_object['from'] = COINBASE_ADDRESS
+                error, tx_hash = contract_manager.transfer_amount(
+                    from_addr, to_addr, amount, tx_object, None, session_id)
 
         return error, tx_hash
 
@@ -51,6 +65,7 @@ class ETHHelper(object):
         }
 
         error, sessions = contract_manager.get_vpn_sessions(account_addr)
+        print(sessions)
         if error is None:
             for index in range(0, sessions):
                 error, _usage = contract_manager.get_vpn_usage(
@@ -62,13 +77,20 @@ class ETHHelper(object):
                     usage['stats']['duration'] += _usage[2]
                     usage['stats']['amount'] += _usage[3] / (DECIMALS * 1.0)
                     usage['sessions'].append({
-                        'id': index,
-                        'account_addr': _usage[0],
-                        'received_bytes': _usage[1],
-                        'duration': _usage[2],
-                        'amount': _usage[3] / (DECIMALS * 1.0),
-                        'timestamp': _usage[4],
-                        'is_payed': _usage[5]
+                        'id':
+                        index,
+                        'account_addr':
+                        _usage[0],
+                        'received_bytes':
+                        _usage[1],
+                        'duration':
+                        _usage[2],
+                        'amount':
+                        _usage[3] / (DECIMALS * 1.0),
+                        'timestamp':
+                        _usage[4],
+                        'is_payed':
+                        _usage[5]
                     })
                 else:
                     return error, None
@@ -76,13 +98,13 @@ class ETHHelper(object):
         else:
             return error, None
 
-    def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes, session_duration,
-                      amount, timestamp, keystore, password):
+    def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes,
+                      session_duration, amount, timestamp, keystore, password):
         eth_manager.add_keystore(account_addr, keystore)
         sleep(1.0)  # Need to check
         error, tx_hash = contract_manager.add_vpn_usage(
-            account_addr, to_addr, received_bytes, sent_bytes, session_duration,
-            amount, timestamp, password)
+            account_addr, to_addr, received_bytes, sent_bytes,
+            session_duration, amount, timestamp, password)
         eth_manager.remove_keystore(account_addr)
 
         return error, tx_hash
@@ -90,8 +112,7 @@ class ETHHelper(object):
     def gas_units(self, from_addr, to_addr, amount, unit, session_id):
         if unit == 'ETH':
             transaction = {'from': from_addr, 'to': to_addr, 'value': amount}
-            error, gas_units = eth_manager.gas_units(
-                from_addr, transaction)
+            error, gas_units = eth_manager.gas_units(from_addr, transaction)
         else:
             error, gas_units = contract_manager.gas_units(
                 from_addr, to_addr, amount, session_id)

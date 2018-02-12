@@ -218,8 +218,7 @@ class SendComponent extends Component {
           <Grid>
             <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
-                <span>To</span>t
-
+                <span>To</span>
                 <span data-tip data-for="toField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>

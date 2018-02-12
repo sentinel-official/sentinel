@@ -2,7 +2,6 @@ import pprint
 import logging
 from chalk import log
 
-
 pp = pprint.PrettyPrinter(indent=4)
 
 logger = logging.getLogger('log')

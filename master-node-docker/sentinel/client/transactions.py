@@ -1,12 +1,14 @@
 import json
 import time
 import falcon
+from ethereum.tools import keys
 from ..db import db
 from ..config import DECIMALS
 from ..helpers import eth_helper
 
 
-def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash, session_id):
+def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash,
+                            session_id):
     amount = amount / ((10 ** 18) * 1.0) \
         if unit == 'ETH' else amount / (DECIMALS * 1.0)
 
@@ -24,8 +26,15 @@ def put_transaction_history(from_addr, to_addr, amount, unit, tx_hash, session_i
 
 def get_transaction_history(account_addr):
     account_addr = account_addr.lower()
-    transactions = db.transactions.find(
-        {'$or': [{'from_addr': account_addr}, {'to_addr': account_addr}]}, {'_id': 0})
+    transactions = db.transactions.find({
+        '$or': [{
+            'from_addr': account_addr
+        }, {
+            'to_addr': account_addr
+        }]
+    }, {
+        '_id': 0
+    })
     return list(transactions)
 
 
@@ -50,29 +59,54 @@ class TransferAmount(object):
         unit = str(req.body['unit'])
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
-        session_id = int(req.body['session_id']) if 'session_id' in req.body else None
-        gas_price = int(req.body['gas_price']) if 'gas_price' in req.body else None
-        gas_units = int(req.body['gas_units']) if 'gas_units' in req.body else None
+        session_id = int(
+            req.body['session_id']) if 'session_id' in req.body else None
+        gas_price = int(
+            req.body['gas_price']) if 'gas_price' in req.body else None
+        gas_units = int(
+            req.body['gas_units']) if 'gas_units' in req.body else None
 
-        amount = int(amount * (10 ** 18)) \
-            if unit == 'ETH' else int(amount * DECIMALS)
+        keystore_json = json.loads(keystore)
 
-        error, tx_hash = eth_helper.transfer_amount(
-            from_addr, to_addr, amount, unit, keystore, password, gas_price, gas_units, session_id)
+        if (from_addr[2:].lower() == keystore_json['address'].lower()):
+            try:
+                key_bytes = keys.decode_keystore_json(keystore_json, password)
 
-        if error is None:
-            put_transaction_history(
-                from_addr, to_addr, amount, unit, tx_hash, session_id)
+                amount = int(amount * (10 ** 18)) \
+                    if unit == 'ETH' else int(amount * DECIMALS)
+                error, tx_hash = eth_helper.transfer_amount(
+                    from_addr, to_addr, amount, unit, keystore, password,
+                    gas_price, gas_units, session_id)
 
-            message = {
-                'success': True,
-                'tx_hash': tx_hash,
-                'message': 'Transaction initiated successfully.'
-            }
+                if error is None:
+                    put_transaction_history(from_addr, to_addr, amount, unit,
+                                            tx_hash, session_id)
+
+                    message = {
+                        'success': True,
+                        'tx_hash': tx_hash,
+                        'message': 'Transaction initiated successfully.'
+                    }
+                else:
+                    message = {
+                        'success':
+                        False,
+                        'error':
+                        error,
+                        'message':
+                        'Error occurred while initiating the transaction.'
+                    }
+            except Exception as err:
+                message = {
+                    'success': False,
+                    'error': str(err),
+                    'message':
+                    'Error occurred while initiating the transaction.'
+                }
         else:
             message = {
                 'success': False,
-                'error': error,
+                'error': 'Keystore address and Your address does not match',
                 'message': 'Error occurred while initiating the transaction.'
             }
         resp.status = falcon.HTTP_200
@@ -85,19 +119,17 @@ class CalculateGasUnits(object):
         to_addr = str(req.body['to_addr'])
         amount = float(req.body['amount'])
         unit = str(req.body['unit'])
-        session_id = int(req.body['session_id']) if 'session_id' in req.body else None
+        session_id = int(
+            req.body['session_id']) if 'session_id' in req.body else None
 
         amount = int(amount * (10 ** 18)) \
             if unit == 'ETH' else int(amount * DECIMALS)
 
-        error, gas_units = eth_helper.gas_units(
-            from_addr, to_addr, amount, unit, session_id)
+        error, gas_units = eth_helper.gas_units(from_addr, to_addr, amount,
+                                                unit, session_id)
 
         if error is None:
-            message = {
-                'success': True,
-                'gas_units': gas_units
-            }
+            message = {'success': True, 'gas_units': gas_units}
         else:
             message = {
                 'success': False,
@@ -139,7 +171,8 @@ class TranscationReceipt(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Error occurred while fetching the transaction receipt.'
+                'message':
+                'Error occurred while fetching the transaction receipt.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -158,9 +191,6 @@ class TransactionHistory(object):
 
         history = get_transaction_history(account_addr)
 
-        message = {
-            'success': True,
-            'history': history
-        }
+        message = {'success': True, 'history': history}
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

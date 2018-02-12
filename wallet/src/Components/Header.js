@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle } from 'material-ui';
-import { getVPNList, connectVPN, disconnectVPN, isVPNConnected } from '../Actions/AccountActions';
+import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline } from '../Actions/AccountActions';
 import VPNComponent from './VPNComponent';
+import ReactTooltip from 'react-tooltip';
 
 class Header extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class Header extends Component {
   componentWillMount = () => {
     let that = this;
     isVPNConnected(function (err, data) {
-      if (err) console.log('Error', err);
+      if (err) { }
       else if (data) {
         that.setState({ status: true });
       }
@@ -43,19 +44,21 @@ class Header extends Component {
 
   _connectVPN = () => {
     let that = this;
-    connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
-      if (err) {
-        console.log(err, "Error");
-
-        that.setState({ showPopUp: false, status: false, openSnack: true, snackMessage: err.message })
-      }
-      else {
-        console.log("Connected", res);
-        that.props.onChange();
-        //that.returnVPN();
-        that.setState({ showPopUp: false, status: true, openSnack: true, snackMessage: "Connected VPN" })
-      }
-    })
+    if (isOnline()) {
+      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
+        if (err) {
+          that.setState({ showPopUp: false, status: false, openSnack: true, snackMessage: err.message })
+        }
+        else {
+          that.props.onChange();
+          //that.returnVPN();
+          that.setState({ showPopUp: false, status: true, openSnack: true, snackMessage: "Connected VPN" })
+        }
+      })
+    }
+    else {
+      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+    }
   }
 
   returnVPN = () => {
@@ -69,7 +72,6 @@ class Header extends Component {
         console.log(err);
         // _toggleVPNButtons();
       } else {
-        console.log('Disconnected');
         that.props.onChange();
         that.setState({ status: false, openSnack: true, snackMessage: "Disconnected VPN" })
       }
@@ -77,17 +79,22 @@ class Header extends Component {
   }
 
   handleToggle = (event, toggle) => {
-    if (toggle) {
-      let that = this;
-      getVPNList(function (err, data) {
-        if (err) console.log('Error', err);
-        else {
-          that.setState({ vpnList: data, showPopUp: true });
-        }
-      })
+    if (isOnline()) {
+      if (toggle) {
+        let that = this;
+        getVPNList(function (err, data) {
+          if (err) console.log('Error', err);
+          else {
+            that.setState({ vpnList: data, showPopUp: true });
+          }
+        })
+      }
+      else {
+        this._disconnectVPN();
+      }
     }
     else {
-      this._disconnectVPN();
+      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
     }
   };
 
@@ -129,24 +136,11 @@ class Header extends Component {
                 justifyContent: 'center'
               }}>
                 <div>
-                  <span style={{
-                    fontSize: 14,
-                    fontWeight: '600',
-                    color: '#FAFAFA'
-                  }}>SENTINEL - Basic Wallet</span>
+                  <span style={styles.basicWallet}>SENTINEL - Basic Wallet</span>
                 </div>
                 <Row>
                   <Col xs={8}><span
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '600',
-                      color: '#FAFAFA',
-                      whiteSpace: 'nowrap',
-                      display: 'block',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      marginTop: '5%'
-                    }}>
+                    style={styles.walletAddress}>
                     {this.props.local_address}</span>
                   </Col>
                   <Col xs={4}>
@@ -157,29 +151,26 @@ class Header extends Component {
                       })} >
                       <img
                         src={'../src/Images/download.jpeg'}
+                        data-tip data-for="copyImage"
                         style={styles.clipBoard}
                       />
                     </CopyToClipboard>
+                    <ReactTooltip id="copyImage" place="bottom">
+                      <span>Copy</span>
+                    </ReactTooltip>
                   </Col>
                 </Row>
               </Col>
               <Col xs={3}>
                 <div>
-                  <Col style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                    color: '#FAFAFA',
-                    marginTop: '3%'
-                  }}>
+                  <Col style={styles.sentBalance}>
                     <span>SENT: {this.props.balance.sents}</span>
                   </Col>
-                  <Col style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                    color: '#FAFAFA',
-                    marginTop: '5%'
-                  }}>
-                    <span>ETH: {this.props.balance.eths}</span>
+                  <Col style={styles.ethBalance}>
+                    <span>ETH: {this.props.balance.eths === 'Loading'
+                      ? this.props.balance.eths :
+                      parseFloat(this.props.balance.eths).toFixed(8)
+                    }</span>
                   </Col>
                 </div>
               </Col>
@@ -187,14 +178,13 @@ class Header extends Component {
                 <Col style={{
                   fontSize: 12,
                   fontWeight: '600',
-                  color: '#FAFAFA',
-                  marginTop: '5%'
+                  color: '#FAFAFA'
                 }}>
                   <FlatButton
                     label="VPN"
                     labelStyle={{ color: 'white', textTransform: 'none' }}
                     style={{ height: '18px', lineHeight: '18px' }}
-                    onClick={() => { this.setState({ showPopUp: true }) }} />
+                    onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
                 </Col>
                 <Col>
                   <Toggle
@@ -209,7 +199,7 @@ class Header extends Component {
                 message={this.state.snackMessage}
                 autoHideDuration={2000}
                 onRequestClose={this.snackRequestClose}
-                style={{ marginBottom: '2%', width: '80%' }}
+                style={{ marginBottom: '2%' }}
               />
               <Dialog
                 title="VPN List"
@@ -223,7 +213,6 @@ class Header extends Component {
                   value={this.state.selectedVPN}
                   autoWidth={true}
                   onChange={(event, index, value) => {
-                    console.log("Value:", value);
                     this.setState({ selectedVPN: value })
                   }}
                 >
@@ -246,8 +235,34 @@ const styles = {
     height: 12,
     width: 12,
     cursor: 'pointer',
-    marginTop: '12%',
-    marginLeft:-10
+    marginTop: '5%',
+    marginLeft: -12
+  },
+  walletAddress: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FAFAFA',
+    whiteSpace: 'nowrap',
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    marginTop: '3%'
+  },
+  basicWallet: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FAFAFA'
+  },
+  ethBalance: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FAFAFA',
+    marginTop: '3%'
+  },
+  sentBalance: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FAFAFA'
   }
 }
 export default Header;

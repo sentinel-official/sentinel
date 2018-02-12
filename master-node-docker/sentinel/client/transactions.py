@@ -60,7 +60,7 @@ class TransferAmount(object):
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
         session_id = int(
-            req.body['session_id']) if 'session_id' in req.body else None
+            req.body['session_id']) if req.body['session_id'] else None
         gas_price = int(
             req.body['gas_price']) if 'gas_price' in req.body else None
         gas_units = int(

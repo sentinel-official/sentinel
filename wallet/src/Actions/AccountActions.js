@@ -116,15 +116,23 @@ export function transferAmountMaster(data, cb) {
         },
         body: JSON.stringify(data)
       }).then(function (response) {
-        response.json().then(function (response) {
-          console.log("Response...", response)
-          if (response.success === true) {
-            var tx_hash = response['tx_hash'];
-            cb(null, tx_hash);
-          } else {
-            cb({ message: response.message || 'Error occurred while initiating transfer amount.' }, null);
-          }
-        })
+        if (response.status === 200) {
+          response.json().then(function (response) {
+            console.log("Response...", response)
+            if (response.success === true) {
+              var tx_hash = response['tx_hash'];
+              cb(null, tx_hash);
+            } else {
+              cb({
+                message: JSON.parse(response.error.error.split("'").join('"').split('u"').join('"')).message
+                  || 'Error occurred while initiating transfer amount.'
+              }, null);
+            }
+          })
+        }
+        else {
+          cb({ message: response.message || 'Internal Server Error' }, null);
+        }
       });
     }
   });
@@ -165,16 +173,17 @@ export function transferAmount(data, cb) {
       }).then(function (response) {
         if (response.status === 200) {
           response.json().then(function (response) {
+            console.log("Res Tran...", response)
             if (response.success === true) {
               var tx_hash = response['tx_hash'];
               cb(null, tx_hash);
             } else {
-              cb({ message: response.message || 'Error occurred while initiating transfer amount.' }, null);
+              cb({ message: response.error || 'Error occurred while initiating transfer amount.' }, null);
             }
           })
         }
         else {
-          cb({ message: 'Error occurred while initiating transfer amount.' }, null);
+          cb({ message: response.message || 'Internal Server Error' }, null);
         }
       });
     }

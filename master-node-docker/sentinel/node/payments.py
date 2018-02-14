@@ -12,7 +12,7 @@ def get_client_address(account_addr):
 
 
 def calculate_amount(used_bytes):
-    return used_bytes / (1024.0 * 1024.0)
+    return (used_bytes / (1024.0 * 1024.0 * 1024.0)) * 100.0
 
 
 class AddVpnUsage(object):
@@ -27,27 +27,34 @@ class AddVpnUsage(object):
         amount = int(calculate_amount(sent_bytes) * DECIMALS)
         timestamp = int(time.time())
 
-        print(account_addr, to_addr, received_bytes,
-              sent_bytes, session_duration, amount, timestamp)
+        print(account_addr, to_addr, received_bytes, sent_bytes,
+              session_duration, amount, timestamp)
 
-        error, tx_hash = eth_helper.add_vpn_usage(
-            account_addr, to_addr, received_bytes, sent_bytes,
-            session_duration, amount, timestamp, keystore, password)
-
-        print(error, tx_hash)
-
-        if error is None:
-            message = {
-                'success': True,
-                'tx_hash': tx_hash,
-                'message': 'VPN usage data will be added soon.'
-            }
-        else:
+        if sent_bytes < (10 * 1024 * 1024):
             message = {
                 'success': False,
-                'error': error,
-                'message': 'Error occurred while adding the VPN usage data.'
+                'message': 'Usage is less than 10 MB. So data is not added'
             }
+        else:
+            error, tx_hash = eth_helper.add_vpn_usage(
+                account_addr, to_addr, received_bytes, sent_bytes,
+                session_duration, amount, timestamp, keystore, password)
+
+            print(error, tx_hash)
+
+            if error is None:
+                message = {
+                    'success': True,
+                    'tx_hash': tx_hash,
+                    'message': 'VPN usage data will be added soon.'
+                }
+            else:
+                message = {
+                    'success': False,
+                    'error': error,
+                    'message':
+                    'Error occurred while adding the VPN usage data.'
+                }
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

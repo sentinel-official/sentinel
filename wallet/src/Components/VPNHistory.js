@@ -86,7 +86,7 @@ class VPNHistory extends Component {
                                         <Done style={{ float: 'right', marginTop: '-7%', marginRight: '1%' }}
                                             data-tip data-for="payed" color="green" />
                                         <ReactTooltip id="payed" place="bottom">
-                                            <span>Payed</span>
+                                            <span>Paid</span>
                                         </ReactTooltip>
                                     </span> :
                                     <CardActions>

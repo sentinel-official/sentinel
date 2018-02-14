@@ -3,7 +3,7 @@ const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
 const B_URL = 'http://35.198.246.114:8000';
-const MASTER_URL = 'http://35.198.204.28:8000'
+const MASTER_URL = 'https://api.sentinelgroup.io';
 const ETH_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
 &module=account&action=balance&tag=latest&address=`;
 const SENT_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM

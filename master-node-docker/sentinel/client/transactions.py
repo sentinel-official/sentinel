@@ -72,8 +72,8 @@ class TransferAmount(object):
             try:
                 key_bytes = keys.decode_keystore_json(keystore_json, password)
 
-                amount = int(amount * (10 ** 18)) \
-                    if unit == 'ETH' else int(amount * DECIMALS)
+                amount = int(round(amount * (10 ** 18))) \
+                    if unit == 'ETH' else int(round(amount * DECIMALS))
                 error, tx_hash = eth_helper.transfer_amount(
                     from_addr, to_addr, amount, unit, keystore, password,
                     gas_price, gas_units, session_id)

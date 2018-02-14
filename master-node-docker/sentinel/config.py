@@ -8,4 +8,5 @@ VPNSERVICE_NAME = 'Vpn_service'
 COINBASE_ADDRESS = '0xedbbd263d2522e5ff518fc4dcd485c3af8527a0c'
 COINBASE_PASSWORD = 'sent123'
 CONV_UNITS = 1e-06
-DECIMALS = 10 ** 8
+DECIMALS = 10 ** 
+SENT_BALANCE='https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=tokenbalance&tag=latest&contractaddress=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037&address='

@@ -4,6 +4,7 @@ from uuid import uuid4
 import requests
 from ..db import db
 from ..config import DECIMALS
+from ..config import SENT_BALANCE
 from ..helpers import eth_helper
 
 
@@ -55,69 +56,88 @@ class GetVpnCredentials(object):
         account_addr = str(req.body['account_addr'])
         vpn_addr = str(req.body['vpn_addr'])
 
-        error, due_amount = eth_helper.get_due_amount(account_addr)
-        #error, due_amount = None, 0
-
-        if error is not None:
-            message = {
-                'success': False,
-                'error': error,
-                'message': 'Error occurred while checking the due amount.'
-            }
-        elif due_amount == 0:
-            vpn_addr_len = len(vpn_addr)
-
-            if vpn_addr_len > 0:
-                node = db.nodes.find_one({
-                    'vpn.status': 'up',
-                    'account.addr': vpn_addr
-                }, {
-                    '_id': 0,
-                    'token': 0
-                })
-            else:
-                node = db.nodes.find_one({
-                    'vpn.status': 'up'
-                }, {
-                    '_id': 0,
-                    'token': 0
-                })
-
-            if node is None:
-                if vpn_addr_len > 0:
+        url = SENT_BALANCE + account_addr
+        res = requests.get(url)
+        res = res.json()
+        if res['status'] == '1':
+            if int(res['result']) >= (100 * (10**8)):
+                error, due_amount = eth_helper.get_due_amount(account_addr)
+                #error, due_amount = None, 0
+                if error is not None:
                     message = {
-                        'success':
-                        False,
+                        'success': False,
+                        'error': error,
                         'message':
-                        'VPN server is already occupied. Please try after sometime.'
+                        'Error occurred while checking the due amount.'
                     }
+                elif due_amount == 0:
+                    vpn_addr_len = len(vpn_addr)
+
+                    if vpn_addr_len > 0:
+                        node = db.nodes.find_one({
+                            'vpn.status': 'up',
+                            'account.addr': vpn_addr
+                        }, {
+                            '_id': 0,
+                            'token': 0
+                        })
+                    else:
+                        node = db.nodes.find_one({
+                            'vpn.status': 'up'
+                        }, {
+                            '_id': 0,
+                            'token': 0
+                        })
+
+                    if node is None:
+                        if vpn_addr_len > 0:
+                            message = {
+                                'success':
+                                False,
+                                'message':
+                                'VPN server is already occupied. Please try after sometime.'
+                            }
+                        else:
+                            message = {
+                                'success':
+                                False,
+                                'message':
+                                'All VPN servers are occupied. Please try after sometime.'
+                            }
+                    else:
+                        #put_connection(node['account']['addr'], account_addr)
+                        secretToken = uuid4().hex
+                        node_addr = str(node['ip'])
+                        message = {
+                            'success': True,
+                            'ip': node_addr,
+                            'port': 3000,
+                            'token': secretToken
+                        }
+                        body = {
+                            'account_addr': account_addr,
+                            'token': secretToken
+                        }
+                        url = "http://" + node_addr + ":3000/master/sendToken"
+                        res = requests.post(url, json=body)
                 else:
                     message = {
                         'success':
                         False,
                         'message':
-                        'All VPN servers are occupied. Please try after sometime.'
+                        'You have due amount: ' + str(due_amount /
+                                                      (DECIMALS * 1.0)) +
+                        ' SENTs.' + ' Please try after clearing the due.'
                     }
             else:
-                #put_connection(node['account']['addr'], account_addr)
-                secretToken = uuid4().hex
-                node_addr = str(node['ip'])
                 message = {
-                    'success': True,
-                    'ip': node_addr,
-                    'port': 3000,
-                    'token': secretToken
+                    'success': False,
+                    'message': 'Your balance is less than 100 sents'
                 }
-                body = {'account_addr': account_addr, 'token': secretToken}
-                url = "http://" + node_addr + ":3000/master/sendToken"
-                res = requests.post(url, json=body)
         else:
             message = {
-                'success':
-                False,
-                'message':
-                'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) +
-                ' SENTs.' + ' Please try after clearing the due.'
+                'success': False,
+                'message': 'Error while checking your balance'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

@@ -15,7 +15,9 @@ const SENT_TRANSC_URL1 = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQC
 &topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=`;
 const TRANSC_STATUS = `https://api.etherscan.io/api?&apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&
 module=transaction&action=gettxreceiptstatus&txhash=`;
+const GAS_API = ` https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=proxy&action=eth_gasPrice`
 const SENT_TRANSC_URL2 = `&topic1_2_opr=or&topic2=`;
+const ETHER_API = `https://api.myetherapi.com/eth`;
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
@@ -29,7 +31,7 @@ if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
 if (fs.existsSync(OVPN_FILE)) fs.unlinkSync(OVPN_FILE);
 
 function getUserHome() {
-  return remote.process.env[(remote.process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+  return remote.process.env[(remote.process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
 export const createAccount = (password, cb) => {
@@ -102,6 +104,68 @@ export function getAccount(cb) {
   });
 }
 
+export function getGasPrice(cb) {
+  fetch(GAS_API, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    }
+  }).then(function (response) {
+    if (response.status === 200) {
+      response.json().then(function (res) {
+        var result = res['result'];
+        var gasPrice = parseFloat(parseInt(result) / (10 ** 18)).toFixed(8)
+        cb(null, gasPrice);
+      })
+    }
+    else {
+      cb({ message: 'Server Error' }, null)
+    }
+  })
+}
+
+export function getGasCost(from, to, amount, data, id, cb) {
+  var data = {
+    "method": "eth_estimateGas",
+    "params": [{
+      "from": from,
+      "to": to,
+      "value": amount,
+      "data": data
+    }],
+    "id": id,
+    "jsonrpc": "2.0"
+  }
+  fetch(ETHER_API, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  }).then(function (response) {
+    if (response.status === 200) {
+      response.json().then(function (response) {
+        console.log("Cost:",response)
+        var gasCost = parseFloat(parseInt(response['result']), 16)
+        getGasPrice(function (err, gasPrice) {
+          if (err) {
+            cb({ message: err.message }, null)
+          }
+          else {
+            var gasLimit = parseFloat(gasCost * gasPrice).toFixed(8)
+            cb(null, gasLimit)
+          }
+        })
+      })
+    }
+    else {
+      cb({ message: 'Server Error' }, null)
+    }
+  })
+}
+
 export function transferAmountMaster(data, cb) {
   getKeystore(function (err, keystore) {
     if (err) cb(err, null);
@@ -123,10 +187,15 @@ export function transferAmountMaster(data, cb) {
               var tx_hash = response['tx_hash'];
               cb(null, tx_hash);
             } else {
-              cb({
-                message: JSON.parse(response.error.error.split("'").join('"').split('u"').join('"')).message
-                  || 'Error occurred while initiating transfer amount.'
-              }, null);
+              if (response.error.error === '10 seconds') {
+                cb({ message: 'Please Try Again' }, null)
+              }
+              else {
+                cb({
+                  message: JSON.parse(response.error.error.split("'").join('"').split('u"').join('"')).message
+                    || 'Error occurred while initiating transfer amount.'
+                }, null);
+              }
             }
           })
         }
@@ -178,7 +247,7 @@ export function transferAmount(data, cb) {
               var tx_hash = response['tx_hash'];
               cb(null, tx_hash);
             } else {
-              cb({ message: response.error || 'Error occurred while initiating transfer amount.' }, null);
+              cb({ message: response.error || response.message || 'Error occurred while initiating transfer amount.' }, null);
             }
           })
         }
@@ -189,7 +258,6 @@ export function transferAmount(data, cb) {
     }
   });
 }
-
 
 export function getEthBalance(data, cb) {
   fetch(ETH_BALANCE_URL + data, {
@@ -217,7 +285,7 @@ export function getSentBalance(data, cb) {
     }
   }).then(function (response) {
     response.json().then(function (response) {
-      if (response.status == '1') {
+      if (response.status === '1') {
         var balance = response['result'] / (10 ** 8);
         cb(null, balance);
       } else cb({ message: 'Error occurred while getting balance.' }, null);
@@ -234,7 +302,7 @@ export function getEthTransactionHistory(account_addr, page, cb) {
     }
   }).then(function (response) {
     response.json().then(function (response) {
-      if (response.status == '1') {
+      if (response.status === '1') {
         var history = response['result'];
         cb(null, history);
       } else cb({ message: 'Error occurred while getting transaction history.' }, null);
@@ -251,7 +319,7 @@ export function getSentTransactionHistory(account_addr, cb) {
     }
   }).then(function (response) {
     response.json().then(function (response) {
-      if (response.status == '1') {
+      if (response.status === '1') {
         var history = response['result'];
         cb(null, history);
       } else cb({ message: 'Error occurred while getting transaction history.' }, null);

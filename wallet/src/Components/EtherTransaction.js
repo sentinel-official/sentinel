@@ -30,14 +30,14 @@ class EtherTransaction extends Component {
         let that = this;
         let data = this.props.data;
         let address = this.props.local_address;
-        if (data.length == 0) {
+        if (data.length === 0) {
             output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Transactions yet</div>
         }
         else {
             output = data.map((history) => {
                 return (
                     <div style={styles.wholeDiv}>
-                        {(history.from).toLowerCase() == address.toLowerCase()
+                        {(history.from).toLowerCase() === address.toLowerCase()
                             ? <div>
                                 <div>
                                     <span style={{
@@ -62,6 +62,7 @@ class EtherTransaction extends Component {
                                             openSnack: true
                                         })} >
                                         <img src={'../src/Images/download.jpeg'}
+                                            alt="copy"
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard>
@@ -100,6 +101,7 @@ class EtherTransaction extends Component {
                                             openSnack: true
                                         })} >
                                         <img src={'../src/Images/download.jpeg'}
+                                            alt="copy"
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard>
@@ -120,7 +122,7 @@ class EtherTransaction extends Component {
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
                             <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
                             <span>ETHs</span>  |
-                    <span style={{ fontWeight: 'bold' }}> Status : </span><span>{history.isError == '0' ? 'Success' : 'Error'}</span>  |
+                    <span style={{ fontWeight: 'bold' }}> Status : </span><span>{history.isError === '0' ? 'Success' : 'Error'}</span>  |
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {

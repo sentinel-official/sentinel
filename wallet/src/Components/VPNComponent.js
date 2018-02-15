@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getVPNList } from '../Actions/AccountActions';
 import ZoomIn from 'material-ui/svg-icons/content/add';
 import ZoomOut from 'material-ui/svg-icons/content/remove';
-import { IconButton, FontIcon } from "material-ui";
+import { IconButton} from "material-ui";
 import {
     ComposableMap,
     ZoomableGroup,
@@ -40,7 +40,6 @@ class VPNComponent extends Component {
         console.log("Marker data: ", marker)
     }
     componentWillMount = () => {
-        let that = this;
         getVPNList(function (err, data) {
             if (err) console.log('Error', err);
             else {
@@ -66,7 +65,7 @@ class VPNComponent extends Component {
                     <ZoomOut />
                 </IconButton>
                 <div style={styles.vpnDetails}>
-                    {this.props.status == true ?
+                    {this.props.status === true ?
                         <div style={{ fontSize: 14 }}>
                             <p>IP: {this.props.vpnData.ip}</p>
                             <p>Location: {this.props.vpnData.location}</p>

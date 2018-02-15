@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { Toolbar, ToolbarGroup, ToolbarSeparator, TextField, RaisedButton, Chip, Tabs, Tab } from 'material-ui';
+import { Tabs, Tab } from 'material-ui';
 import SendComponent from './SendComponent';
-import tab from 'material-ui/svg-icons/action/tab';
 import Header from './Header';
-import { getEthBalance, getSentBalance, getAccount, transferAmount, getVPNdetails } from '../Actions/AccountActions';
+import { getEthBalance, getSentBalance, getAccount, getVPNdetails} from '../Actions/AccountActions';
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
@@ -25,6 +24,7 @@ class Dashboard extends Component {
       vpnData: null,
       status: false,
       to_addr: '',
+      sending: false,
       isPropReceive: false,
       amount: '',
       unit: 'ETH',
@@ -86,6 +86,7 @@ class Dashboard extends Component {
         sessionId: null,
         unit: 'ETH',
         value: value,
+        sending: false,
         color: 'orange',
         isPropReceive: true
       })
@@ -94,7 +95,7 @@ class Dashboard extends Component {
   };
 
   propReceiveChange = () => {
-    this.setState({ isPropReceive:false })
+    this.setState({ isPropReceive: false })
   }
 
   clearSend = () => {
@@ -158,6 +159,7 @@ class Dashboard extends Component {
                       to_addr={this.state.to_addr}
                       unit={this.state.unit}
                       session_id={this.state.sessionId}
+                      sending={this.state.sending}
                       isPropReceive={this.state.isPropReceive}
                       propReceiveChange={this.propReceiveChange.bind(this)}
                       clearSend={this.clearSend.bind(this)}

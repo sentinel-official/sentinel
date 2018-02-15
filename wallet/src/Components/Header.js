@@ -43,16 +43,17 @@ class Header extends Component {
   }
 
   _connectVPN = () => {
+    this.setState({ showPopUp: false })
     let that = this;
     if (isOnline()) {
       connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
         if (err) {
-          that.setState({ showPopUp: false, status: false, openSnack: true, snackMessage: err.message })
+          that.setState({ status: false, openSnack: true, snackMessage: err.message })
         }
         else {
           that.props.onChange();
           //that.returnVPN();
-          that.setState({ showPopUp: false, status: true, openSnack: true, snackMessage: "Connected VPN" })
+          that.setState({ status: true, openSnack: true, snackMessage: "Connected VPN" })
         }
       })
     }
@@ -73,7 +74,7 @@ class Header extends Component {
         // _toggleVPNButtons();
       } else {
         that.props.onChange();
-        that.setState({ status: false, openSnack: true, snackMessage: "Disconnected VPN" })
+        that.setState({ selectedVPN: null, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
       }
     });
   }
@@ -128,7 +129,7 @@ class Header extends Component {
             <Row style={{ paddingTop: 10 }}>
               <Col xs={2}>
                 <div>
-                  <img src={'../src/Images/5.png'} style={{ width: 70, height: 70, marginTop: -10 }} />
+                  <img src={'../src/Images/5.png'} alt="logo" style={{ width: 70, height: 70, marginTop: -10 }} />
                 </div>
               </Col>
               <Col xs={5} style={{
@@ -151,6 +152,7 @@ class Header extends Component {
                       })} >
                       <img
                         src={'../src/Images/download.jpeg'}
+                        alt="copy"
                         data-tip data-for="copyImage"
                         style={styles.clipBoard}
                       />

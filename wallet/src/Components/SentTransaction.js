@@ -32,14 +32,14 @@ class SentTransaction extends Component {
         let data = this.props.data;
         let address = this.props.local_address;
         let zfillAddress = '0x' + zfill(address.substring(2), 64);
-        if (data.length == 0) {
+        if (data.length === 0) {
             output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Transactions yet</div>
         }
         else {
             output = data.map((history) => {
                 return (
                     <div style={styles.wholeDiv}>
-                        {(history.topics[1]).toLowerCase() == zfillAddress.toLowerCase()
+                        {(history.topics[1]).toLowerCase() === zfillAddress.toLowerCase()
                             ? <div>
                                 <div>
                                     <span style={{
@@ -64,6 +64,7 @@ class SentTransaction extends Component {
                                             openSnack: true
                                         })} >
                                         <img src={'../src/Images/download.jpeg'}
+                                            alt="copy"
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard>
@@ -102,6 +103,7 @@ class SentTransaction extends Component {
                                             openSnack: true
                                         })} >
                                         <img src={'../src/Images/download.jpeg'}
+                                            alt="copy"
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard>

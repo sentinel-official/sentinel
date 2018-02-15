@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { transferAmount, getAccount, isOnline, transferAmountMaster, getTransactionStatus } from '../Actions/AccountActions';
+import { transferAmount, isOnline, transferAmountMaster, getGasPrice, getGasCost } from '../Actions/AccountActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
 
@@ -17,14 +17,14 @@ class SendComponent extends Component {
       keystore: '',
       to_address: '',
       amount: '',
-      gas: '',
+      gas: 0,
       data: '',
       priv_key: '',
       file: '',
       unit: 'ETH',
       tx_addr: null,
       password: '',
-      sending: null,
+      sending: false,
       openSnack: false,
       snackOpen: false,
       snackMessage: '',
@@ -33,6 +33,21 @@ class SendComponent extends Component {
       transactionStatus: '',
       session_id: null
     };
+  }
+
+  componentWillMount = () => {
+    this.getGas()
+  }
+
+  getGas = () => {
+    var that = this;
+    getGasPrice(function (error, gasPrice) {
+      if (error) console.log(error.message)
+      else {
+        var gas = parseFloat(gasPrice * 21000).toFixed(9);
+        that.setState({ gas: gas });
+      }
+    })
   }
 
   openInExternalBrowser(url) {
@@ -46,14 +61,16 @@ class SendComponent extends Component {
         to_address: nextProps.to_addr,
         amount: nextProps.amount,
         unit: nextProps.unit,
-        session_id: nextProps.session_id
+        session_id: nextProps.session_id,
+        sending: nextProps.sending,
+        password: ''
       })
       this.props.propReceiveChange()
-      if (this.state.to !== '') {
+      if (nextProps.to_addr !== '') {
         this.setState({ isDisabled: false })
       }
       else {
-        this.setState({ isDisabled: false })
+        this.setState({ isDisabled: true })
       }
     }
   }
@@ -77,7 +94,6 @@ class SendComponent extends Component {
           tx_addr: tx_addr,
           to_address: '',
           amount: '',
-          gas: '',
           data: '',
           session_id: null,
           unit: 'ETH',
@@ -93,7 +109,6 @@ class SendComponent extends Component {
             openSnack: true,
             to_address: '',
             amount: '',
-            gas: '',
             session_id: null,
             data: '',
             unit: 'ETH',
@@ -129,7 +144,6 @@ class SendComponent extends Component {
           tx_addr: tx_addr,
           to_address: '',
           amount: '',
-          gas: '',
           data: '',
           session_id: null,
           unit: 'ETH',
@@ -143,7 +157,6 @@ class SendComponent extends Component {
           openSnack: true,
           to_address: '',
           amount: '',
-          gas: '',
           session_id: null,
           data: '',
           unit: 'ETH',
@@ -197,6 +210,39 @@ class SendComponent extends Component {
     openSnack: true
   })
 
+  amountChange = (event, amount) => {
+    this.setState({ amount:amount })
+    let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
+    if (trueAddress !== null) {
+      this.getGasLimit()
+    }
+  }
+
+  addressChange = (event, to_addr) => {
+    this.setState({ to_address: to_addr })
+    let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
+    if (trueAddress !== null) {
+      this.setState({ isDisabled: false })
+      if (this.state.amount !== '') {
+        this.getGasLimit()
+      }
+    }
+  }
+
+  getGasLimit = () => {
+    var from = this.props.local_address;
+    var to = this.state.to_address;
+    var amount = '0x' + (parseFloat(parseFloat(this.state.amount) * (10 ** 18)).toString(16));
+    var data = '0x00';
+    var id = Math.random().toString(36).substring(5)
+    let that = this;
+    getGasCost(from, to, amount, data, id, function (err, gasLimit) {
+      if (err) console.log(err)
+      else {
+        that.setState({ gas: gasLimit })
+      }
+    })
+  }
 
   snackRequestClose = () => {
     this.setState({
@@ -227,7 +273,7 @@ class SendComponent extends Component {
                   hintStyle={{ bottom: 0, paddingLeft: '2%' }}
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
-                  onChange={(event, to_address) => this.setState({ to_address: to_address, isDisabled: false })}
+                  onChange={this.addressChange.bind(this)}
                   value={this.state.to_address}
                   inputStyle={{ padding: 10 }}
                 />
@@ -239,11 +285,12 @@ class SendComponent extends Component {
                 <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={6}>
-                <TextField type="number"
+                <TextField
+                  type="number"
                   style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
                   fullWidth={true}
                   inputStyle={{ padding: 10 }}
-                  onChange={(event, amount) => this.setState({ amount })} value={this.state.amount} />
+                  onChange={this.amountChange.bind(this)} value={this.state.amount} />
               </Col>
               <Col xs={3}>
                 <DropDownMenu
@@ -276,7 +323,7 @@ class SendComponent extends Component {
                 </DropDownMenu>
               </Col>
             </Row>
-            {/* <Row style={{ marginBottom: 15 }}>
+            <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
                 <span>Gas</span>
                 <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
@@ -284,12 +331,16 @@ class SendComponent extends Component {
               <Col xs={9}>
                 <TextField
                   type="number"
-                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
+                  style={{ backgroundColor: '#FAFAFA', height: 30,width:'90%' }}
                   underlineShow={false} fullWidth={true}
-                  onChange={(event, gas) => this.setState({ gas })} value={this.state.gas} />
+                  inputStyle={{ padding: 10, color: '#666' }}
+                  onChange={(event, gas) => this.setState({ gas })}
+                  value={this.state.gas}
+                />
+                <span style={{backgroundColor:'white',padding:3.5,paddingRight:23}}>ETHS</span>
               </Col>
-            </Row> */}
-            <Row style={{ marginBottom: 15 }}>
+            </Row>
+            {/* <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
                 <span>Message/Note</span>
                 <span data-tip data-for="messageField" style={styles.questionMark}>?</span>
@@ -301,7 +352,7 @@ class SendComponent extends Component {
                   inputStyle={{ padding: 10 }}
                   onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
-            </Row>
+            </Row> */}
             <Row style={{ marginBottom: 15 }}>
               <Col xs={3}>
                 <span >Password</span>
@@ -316,19 +367,6 @@ class SendComponent extends Component {
                   onChange={(event, password) => this.setState({ password })} value={this.state.password} />
               </Col>
             </Row>
-            {this.state.session_id !== null ?
-              <Row style={{ marginBottom: 15 }}>
-                <Col xs={3}>
-                  <span >Session ID:</span>
-                </Col>
-                <Col xs={9}>
-                  <span>{this.state.session_id}</span>
-                </Col>
-              </Row>
-              :
-              <span></span>
-            }
-
           </Grid>
           <div>
             <ReactTooltip id="toField" place="bottom">
@@ -366,7 +404,7 @@ class SendComponent extends Component {
             />
           </div>
           <div>
-            <FlatButton disabled={this.state.to_address == '' || this.state.sending || this.state.isDisabled ? true : false}
+            <FlatButton disabled={this.state.to_address === '' || this.state.sending || this.state.isDisabled ? true : false}
               onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
               style={
                 this.state.to_address === '' || this.state.sending || this.state.isDisabled ? { backgroundColor: '#bdbdbd', marginLeft: 20 }

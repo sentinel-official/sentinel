@@ -33,6 +33,7 @@ class AddVpnUsage(object):
         if sent_bytes < (10 * 1024 * 1024):
             message = {
                 'success': False,
+                'error':'Usage is less than 10 MB. So data is not added',
                 'message': 'Usage is less than 10 MB. So data is not added'
             }
         else:

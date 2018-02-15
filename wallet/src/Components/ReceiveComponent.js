@@ -5,7 +5,6 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
 
-let qrcode;
 class ReceiveComponent extends Component {
 
   constructor(props) {

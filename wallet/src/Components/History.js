@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import style from 'material-ui/svg-icons/image/style';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { getEthTransactionHistory, getSentTransactionHistory, isOnline } from '../Actions/AccountActions';
-import { setTimeout } from 'timers';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import _ from 'lodash';
 import { RaisedButton, IconButton, Snackbar } from 'material-ui';
@@ -10,10 +7,6 @@ import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import EtherTransaction from './EtherTransaction';
 import SentTransaction from './SentTransaction';
 let zfill = require('zfill');
-
-let shell = window
-  .require('electron')
-  .shell;
 
 class History extends Component {
   constructor(props) {
@@ -47,7 +40,7 @@ class History extends Component {
   }
 
   getEthHistory(page) {
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: true,nextDisabled:false });
     let that = this;
     getEthTransactionHistory(this.props.local_address, page, (err, history) => {
       if (err) {
@@ -127,7 +120,7 @@ class History extends Component {
                   <RaisedButton
                     label="Back"
                     onClick={() => { this.getEthHistory(this.state.pageNumber - 1) }}
-                    disabled={this.state.pageNumber == 1 ? true : false}
+                    disabled={this.state.pageNumber === 1 ? true : false}
                   />
                   <RaisedButton
                     label="Next"

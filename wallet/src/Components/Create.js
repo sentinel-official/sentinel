@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 import {
     Toolbar, ToolbarGroup, TextField, RaisedButton,
-    Chip, Dialog, FlatButton, Checkbox, Paper, Snackbar, RefreshIndicator
+    Chip, Checkbox, Paper, Snackbar, RefreshIndicator
 } from 'material-ui';
-import Dashboard from './Dashboard';
 import { createAccount, uploadKeystore, isOnline } from '../Actions/AccountActions';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import Footer from './Footer';
 import ReactTooltip from 'react-tooltip';
 let keythereum = require('keythereum');
 
@@ -117,22 +114,12 @@ class Create extends Component {
         })
     }
     render() {
-        const actions = [
-            <RaisedButton
-                label="Go to Dashboard"
-                primary={true}
-                disabled={!this.state.checked}
-                onClick={() => { this.set('dashboard') }}
-                labelStyle={{ textTransform: 'capitalize' }}
-
-            />,
-        ];
         return (
             <MuiThemeProvider>
                 <div>
                     <Toolbar style={{ backgroundColor: 'rgb(83, 45, 145)' }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/5.png'} style={{ height: 56, width: 56 }} />
+                            <img src={'../src/Images/5.png'} alt="Logo" style={{ height: 56, width: 56 }} />
                             <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
                         </ToolbarGroup>
                     </Toolbar>
@@ -224,6 +211,7 @@ class Create extends Component {
                                             openSnack: true
                                         })}>
                                         <img src={'../src/Images/download.jpeg'}
+                                            alt="Copy"
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard></p>

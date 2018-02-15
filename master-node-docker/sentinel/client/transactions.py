@@ -88,11 +88,12 @@ class TransferAmount(object):
                         'message': 'Transaction initiated successfully.'
                     }
                 else:
+                    print(error)
                     message = {
                         'success':
                         False,
                         'error':
-                        error,
+                        json.loads((error['error'].replace("'",'"')).replace('u"','"'))['message'],
                         'message':
                         'Error occurred while initiating the transaction.'
                     }

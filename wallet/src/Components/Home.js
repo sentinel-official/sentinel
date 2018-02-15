@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { Toolbar, ToolbarGroup, TextField, RaisedButton, List, ListItem } from 'material-ui';
+import { Toolbar, ToolbarGroup, RaisedButton } from 'material-ui';
 
 class Home extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class Home extends Component {
                 <div>
                     <Toolbar style={{ backgroundColor: 'rgb(83, 45, 145)' }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/3.png'} style={styles.toolbarImage} />
+                            <img src={'../src/Images/3.png'} alt="Logo" style={styles.toolbarImage} />
                             <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
                         </ToolbarGroup>
                     </Toolbar>
@@ -24,7 +24,7 @@ class Home extends Component {
                             <br />
                             <Row>
                                 <Col>
-                                    <h1>Be as private as you wish, on internet!</h1>
+                                    <h2>VPN backed by blockChain security and anonmity.</h2>
                                 </Col>
                                 <p style={styles.middleDivText}>Save your ass on the internet.</p>
                                 <br /><br /><br />
@@ -32,18 +32,18 @@ class Home extends Component {
                         </Grid>
                         <RaisedButton
                             label="Create Wallet"
-                            style={{ marginLeft: '7%' }}
+                            style={{ marginLeft: '7%',backgroundColor:'transparent' }}
                             labelStyle={styles.yesButtonLabel}
                             buttonStyle={styles.yesButton}
                             onClick={() => { this.set('create') }}
                         />
                     </div>
                     <Grid >
-                        <Row style={{marginLeft:-20}}>
+                        <Row style={{ marginLeft: -20 }}>
                             <Col xs={7} style={styles.bottomDivCol}>
                                 <div style={{ marginLeft: '5%', padding: '2%' }}>
                                     <h4 style={styles.moreAboutText}>More About Sentinel</h4>
-                                    <p style={{fontSize:12}}>
+                                    <p style={{ fontSize: 12 }}>
                                         Peer to peer erc based privacy application suite with multi chain
                                         for gas-free services and anonymous erc token transactions
                                         </p>
@@ -89,7 +89,7 @@ const styles = {
         fontWeight: '600'
     },
     middleDiv: {
-        backgroundImage: "url('../src/Images/hack1.jpg')",
+        backgroundImage: "url('../src/Images/back.png')",
         backgroundSize: 'cover',
         height: 420
     },
@@ -98,20 +98,20 @@ const styles = {
         color: 'white'
     },
     middleDivText: {
-        marginTop: 0,
-        fontSize: 14
+        marginTop: 20,
+        fontSize: 16
     },
     yesButtonLabel: {
-        textTransform: 'none',
         color: 'white',
         paddingRight: 25,
         paddingLeft: 25,
         fontWeight: '600'
     },
     yesButton: {
-        backgroundColor: 'rgb(240, 94, 9)',
-        height: '30px',
-        lineHeight: '30px'
+        backgroundColor: '#12a5df',
+        borderRadius:'10px'
+        // height: '30px',
+        // lineHeight: '30px'
     },
     bottomDivCol: {
         backgroundColor: 'rgb(83, 45, 145)',

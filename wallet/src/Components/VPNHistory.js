@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { MuiThemeProvider, FlatButton } from 'material-ui';
+import { MuiThemeProvider} from 'material-ui';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { getVpnHistory, isOnline } from '../Actions/AccountActions';
-import { RaisedButton, Card, CardHeader, CardText, CardActions, IconButton, Snackbar } from 'material-ui';
+import { RaisedButton, Card, CardText, CardActions, IconButton, Snackbar } from 'material-ui';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Done from 'material-ui/svg-icons/action/done';
 import ReactTooltip from 'react-tooltip';
@@ -69,6 +69,7 @@ class VPNHistory extends Component {
                                         openSnack: true
                                     })} >
                                     <img src={'../src/Images/download.jpeg'}
+                                        alt="copy"
                                         data-tip data-for="copyImage"
                                         style={styles.clipBoard} />
                                 </CopyToClipboard>
@@ -121,7 +122,7 @@ class VPNHistory extends Component {
                         <div>
                             <span style={{ fontWeight: 600 }}>Total Due : </span>{vpnUsage.due} SENTS<br />
                             <span style={{ fontWeight: 600 }} >Total Duration : </span>{vpnUsage.stats['duration']} secs<br />
-                            <span style={{ fontWeight: 600 }}>Total received Bytes : </span>{vpnUsage.stats['received_bytes']}
+                            <span style={{ fontWeight: 600 }}>Total Received Bytes : </span>{vpnUsage.stats['received_bytes']}
                             <hr />
                             <h4 style={{ fontWeight: 600 }}>Sessions</h4>
                             <div style={{ overflow: 'auto', height: 300 }}>{sessionOutput}</div>

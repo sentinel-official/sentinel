@@ -129,7 +129,7 @@ class Header extends Component {
             <Row style={{ paddingTop: 10 }}>
               <Col xs={2}>
                 <div>
-                  <img src={'../src/Images/5.png'} alt="logo" style={{ width: 70, height: 70, marginTop: -10 }} />
+                  <img src={'../src/Images/3.png'} alt="logo" style={{ width: 70, height: 70, marginTop: -10 }} />
                 </div>
               </Col>
               <Col xs={5} style={{

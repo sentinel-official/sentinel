@@ -26,7 +26,7 @@ class Home extends Component {
                                 <Col>
                                     <h2>VPN backed by blockChain security and anonmity.</h2>
                                 </Col>
-                                <p style={styles.middleDivText}>Save your ass on the internet.</p>
+                                <p style={styles.middleDivText}></p>
                                 <br /><br /><br />
                             </Row>
                         </Grid>

@@ -3,7 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Tabs, Tab } from 'material-ui';
 import SendComponent from './SendComponent';
 import Header from './Header';
-import { getEthBalance, getSentBalance, getAccount, getVPNdetails} from '../Actions/AccountActions';
+import { getEthBalance, getSentBalance, getAccount, getVPNdetails } from '../Actions/AccountActions';
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
@@ -73,25 +73,29 @@ class Dashboard extends Component {
   }
 
   handleChange = (value) => {
-    if (value === 'send') {
-      this.setState({
-        value: value,
-        color: 'orange'
-      });
-    }
-    else {
-      this.setState({
-        to_addr: '',
-        amount: '',
-        sessionId: null,
-        unit: 'ETH',
-        value: value,
-        sending: false,
-        color: 'orange',
-        isPropReceive: true
-      })
+    // if (value === 'send') {
+    //   this.setState({
+    //     value: value,
+    //     color: 'orange'
+    //   });
+    // }
+    // else {
+    //   this.setState({
+    //     to_addr: '',
+    //     amount: '',
+    //     sessionId: null,
+    //     unit: 'ETH',
+    //     value: value,
+    //     sending: false,
+    //     color: 'orange',
+    //     isPropReceive: true
+    //   })
 
-    }
+    // }
+    this.setState({
+      value: value,
+      color: 'orange'
+    });
   };
 
   propReceiveChange = () => {

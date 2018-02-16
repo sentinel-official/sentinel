@@ -17,7 +17,7 @@ class SendComponent extends Component {
       keystore: '',
       to_address: '',
       amount: '',
-      gas: 0,
+      gas: 21000,
       data: '',
       priv_key: '',
       file: '',
@@ -36,7 +36,7 @@ class SendComponent extends Component {
   }
 
   componentWillMount = () => {
-    this.getGas()
+    //this.getGas()
   }
 
   getGas = () => {
@@ -213,9 +213,9 @@ class SendComponent extends Component {
   amountChange = (event, amount) => {
     this.setState({ amount:amount })
     let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
-    if (trueAddress !== null) {
-      this.getGasLimit()
-    }
+    // if (trueAddress !== null) {
+    //   this.getGasLimit()
+    // }
   }
 
   addressChange = (event, to_addr) => {
@@ -223,9 +223,9 @@ class SendComponent extends Component {
     let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
     if (trueAddress !== null) {
       this.setState({ isDisabled: false })
-      if (this.state.amount !== '') {
-        this.getGasLimit()
-      }
+      // if (this.state.amount !== '') {
+      //   this.getGasLimit()
+      // }
     }
   }
 
@@ -331,13 +331,13 @@ class SendComponent extends Component {
               <Col xs={9}>
                 <TextField
                   type="number"
-                  style={{ backgroundColor: '#FAFAFA', height: 30,width:'90%' }}
+                  style={{ backgroundColor: '#FAFAFA', height: 30,width:'100%' }}
                   underlineShow={false} fullWidth={true}
                   inputStyle={{ padding: 10, color: '#666' }}
                   onChange={(event, gas) => this.setState({ gas })}
                   value={this.state.gas}
                 />
-                <span style={{backgroundColor:'white',padding:3.5,paddingRight:23}}>ETHS</span>
+                {/* <span style={{backgroundColor:'white',padding:3.5,paddingRight:23}}>ETHS</span> */}
               </Col>
             </Row>
             {/* <Row style={{ marginBottom: 15 }}>

@@ -147,7 +147,7 @@ export function getGasCost(from, to, amount, data, id, cb) {
   }).then(function (response) {
     if (response.status === 200) {
       response.json().then(function (response) {
-        console.log("Cost:",response)
+        console.log("Cost:", response)
         var gasCost = parseFloat(parseInt(response['result']), 16)
         getGasPrice(function (err, gasPrice) {
           if (err) {
@@ -355,6 +355,8 @@ export const getVPNList = (cb) => {
       'Content-type': 'application/json',
     },
   }).then(function (response) {
+    console.log('respons..',response)
+    if(response.status===200){
     response.json().then(function (response) {
       if (response.success === true) {
         cb(null, response.list);
@@ -362,6 +364,10 @@ export const getVPNList = (cb) => {
         cb({ message: 'Error occurred while getting vpn list.' }, null);
       }
     });
+  }
+  else{
+    cb({ message: 'Server Error.Please Try Again' }, null);
+  }
   });
 }
 
@@ -406,7 +412,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
         });
       }
       else {
-        cb({ message: res.message || 'Error occurred while connecting vpn.' }, null);
+        cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' });
       }
     })
   })
@@ -428,20 +434,25 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
         token: nonce
       })
     }).then(function (response) {
-      response.json().then(function (response) {
-        if (response.success === true) {
-          var ovpn = response['node']['vpn']['ovpn'].join('');
-          IPGENERATED = response['node']['vpn']['ovpn'][3].split(' ')[1];
-          LOCATION = response['node']['location']['city'];
-          SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + 'MBPS';
-          fs.writeFile(OVPN_FILE, ovpn, function (err) {
-            if (err) cb(err);
-            else cb(null);
-          });
-        } else {
-          cb({ message: response.message || 'Error occurred while getting OVPN file, may be empty VPN resources.' }, null);
-        }
-      });
+      if (response.status === 200) {
+        response.json().then(function (response) {
+          if (response.success === true) {
+            var ovpn = response['node']['vpn']['ovpn'].join('');
+            IPGENERATED = response['node']['vpn']['ovpn'][3].split(' ')[1];
+            LOCATION = response['node']['location']['city'];
+            SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + 'MBPS';
+            fs.writeFile(OVPN_FILE, ovpn, function (err) {
+              if (err) cb(err);
+              else cb(null);
+            });
+          } else {
+            cb({ message: response.message || 'Error occurred while getting OVPN file, may be empty VPN resources.' });
+          }
+        });
+      }
+      else {
+        cb({ message: 'Server Error' })
+      }
     });
   }
 }
@@ -474,7 +485,7 @@ export function disconnectVPN(cb) {
     else {
       var command = 'kill -2 ' + pids;
       exec(command, function (err, stdout, stderr) {
-        if (err) cb(err);
+        if (err) cb({ message: err || 'Disconnecting failed' });
         else {
           CONNECTED = false;
           cb(null);

@@ -1,45 +1,22 @@
 from time import sleep
 from ..eth import eth_manager
 from ..eth import contract_manager
+from ..config import COINBASE_PRIVATE_KEY
 from ..config import COINBASE_ADDRESS
 from ..config import DECIMALS
 
 
 class ETHHelper(object):
-    def transfer_amount(self,
-                        from_addr,
-                        to_addr,
-                        amount,
-                        unit,
-                        keystore,
-                        password,
-                        gas_price,
-                        gas_units,
-                        session_id=None):
+    def transfer_amount(self, from_addr, to_addr, amount, unit,
+                        keystore, password, gas_price, gas_units, session_id=None):
         if session_id is None:
-            eth_manager.add_keystore(from_addr, keystore)
-            sleep(1.0)
-        if unit == 'ETH':
-            transaction = {'from': from_addr, 'to': to_addr, 'value': amount}
-            if gas_price:
-                transaction['gasPrice'] = gas_price
-            if gas_units:
-                transaction['gas'] = gas_units
-            error, tx_hash = eth_manager.transfer_amount(
-                from_addr, password, transaction)
+            _, private_key = eth_manager.get_privatekey(keystore, password)
         else:
-            tx_object = {'from': from_addr}
-            if gas_price:
-                tx_object['gasPrice'] = gas_price
-            if gas_units:
-                tx_object['gas'] = gas_units
-            if session_id is None:
-                error, tx_hash = contract_manager.transfer_amount(
-                    from_addr, to_addr, amount, tx_object, password, None)
-            else:
-                tx_object['from'] = COINBASE_ADDRESS
-                error, tx_hash = contract_manager.transfer_amount(
-                    from_addr, to_addr, amount, tx_object, None, session_id)
+            private_key = COINBASE_PRIVATE_KEY
+        if unit == 'ETH':
+            error, tx_hash = eth_manager.transfer_amount(from_addr, to_addr, amount, private_key)
+        else:
+            error, tx_hash = contract_manager.transfer_amount(from_addr, to_addr, amount, private_key, session_id)
 
         return error, tx_hash
 
@@ -77,20 +54,13 @@ class ETHHelper(object):
                     usage['stats']['duration'] += _usage[2]
                     usage['stats']['amount'] += _usage[3] / (DECIMALS * 1.0)
                     usage['sessions'].append({
-                        'id':
-                        index,
-                        'account_addr':
-                        _usage[0],
-                        'received_bytes':
-                        _usage[1],
-                        'duration':
-                        _usage[2],
-                        'amount':
-                        _usage[3] / (DECIMALS * 1.0),
-                        'timestamp':
-                        _usage[4],
-                        'is_payed':
-                        _usage[5]
+                        'id': index,
+                        'account_addr': _usage[0],
+                        'received_bytes': _usage[1],
+                        'duration': _usage[2],
+                        'amount': _usage[3] / (DECIMALS * 1.0),
+                        'timestamp': _usage[4],
+                        'is_payed': _usage[5]
                     })
                 else:
                     return error, None
@@ -100,12 +70,10 @@ class ETHHelper(object):
 
     def add_vpn_usage(self, account_addr, to_addr, received_bytes, sent_bytes,
                       session_duration, amount, timestamp, keystore, password):
-        eth_manager.add_keystore(account_addr, keystore)
-        sleep(1.0)  # Need to check
+        _, private_key = eth_manager.get_privatekey(keystore, password)
         error, tx_hash = contract_manager.add_vpn_usage(
             account_addr, to_addr, received_bytes, sent_bytes,
-            session_duration, amount, timestamp, password)
-        eth_manager.remove_keystore(account_addr)
+            session_duration, amount, timestamp, private_key)
 
         return error, tx_hash
 

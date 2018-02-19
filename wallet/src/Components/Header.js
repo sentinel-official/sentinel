@@ -12,6 +12,8 @@ class Header extends Component {
     this.state = {
       openSnack: false,
       snackMessage: '',
+      statusSnack: false,
+      statusMessage: '',
       showPopUp: false,
       vpnList: [],
       selectedVPN: null,
@@ -43,17 +45,17 @@ class Header extends Component {
   }
 
   _connectVPN = () => {
-    this.setState({ showPopUp: false })
+    this.setState({ showPopUp: false, statusSnack: true, statusMessage: 'Connecting...' })
     let that = this;
     if (isOnline()) {
-      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, res) {
+      connectVPN(this.props.local_address, this.state.selectedVPN, function (err) {
         if (err) {
-          that.setState({ status: false, openSnack: true, snackMessage: err.message })
+          that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
         }
         else {
           that.props.onChange();
           //that.returnVPN();
-          that.setState({ status: true, openSnack: true, snackMessage: "Connected VPN" })
+          that.setState({ status: true, statusSnack: false, openSnack: true, snackMessage: "Connected VPN" })
         }
       })
     }
@@ -67,14 +69,16 @@ class Header extends Component {
   }
 
   _disconnectVPN = () => {
+    this.setState({ statusSnack: true, statusMessage: 'Disconnecting...' })
     var that = this;
     disconnectVPN(function (err) {
       if (err) {
         console.log(err);
+        that.setState({ status: true, statusSnack: false, openSnack: true, snackMessage: err.message })
         // _toggleVPNButtons();
       } else {
         that.props.onChange();
-        that.setState({ selectedVPN: null, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
+        that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
       }
     });
   }
@@ -201,6 +205,11 @@ class Header extends Component {
                 message={this.state.snackMessage}
                 autoHideDuration={2000}
                 onRequestClose={this.snackRequestClose}
+                style={{ marginBottom: '2%' }}
+              />
+              <Snackbar
+                open={this.state.statusSnack}
+                message={this.state.statusMessage}
                 style={{ marginBottom: '2%' }}
               />
               <Dialog

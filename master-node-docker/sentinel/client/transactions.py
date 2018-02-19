@@ -75,7 +75,7 @@ class TransferAmount(object):
                 amount = int(round(amount * (10 ** 18))) \
                     if unit == 'ETH' else int(round(amount * DECIMALS))
                 error, tx_hash = eth_helper.transfer_amount(
-                    from_addr, to_addr, amount, unit, keystore, password,
+                    from_addr, to_addr, amount, unit, keystore_json, password,
                     gas_price, gas_units, session_id)
 
                 if error is None:

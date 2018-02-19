@@ -39,7 +39,7 @@ class AddVpnUsage(object):
         else:
             error, tx_hash = eth_helper.add_vpn_usage(
                 account_addr, to_addr, received_bytes, sent_bytes,
-                session_duration, amount, timestamp, keystore, password)
+                session_duration, amount, timestamp, json.loads(keystore), password)
 
             print(error, tx_hash)
 

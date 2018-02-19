@@ -1,7 +1,11 @@
 import json
 import time
+import rlp
+from ethereum import utils
+from ethereum.transactions import Transaction
+from eth_keyfile import create_keyfile_json
 from glob import glob
-from os import path, unlink
+from os import path, unlink,urandom
 from ethereum.tools import keys
 from web3 import Web3, IPCProvider, HTTPProvider
 from ..utils import logger
@@ -19,56 +23,22 @@ class ETHManager(object):
 
     def create_account(self, password):
         try:
-            account_addr = self.web3.personal.newAccount(password)
+            password = password.encode()
+            private_key = utils.sha3(urandom(4096))
+            raw_address = utils.privtoaddr(private_key)
+            account_addr = utils.checksum_encode(raw_address)
+            keystore_data = create_keyfile_json(private_key, password)
         except Exception as err:
-            return {'code': 101, 'error': str(err)}, None
-        return None, account_addr
+            return {'code': 101, 'error': str(err)}, None, None, None
+        return None, account_addr, private_key.hex(), keystore_data
 
-    def get_keystore_path(self, account_addr):
-        files = glob(path.join(self.data_dir, 'keystore',
-                               '*{}'.format(account_addr[2:]).lower()))
-        files_len = len(files)
-        if files_len == 0:
-            file_path = path.join(self.data_dir, 'keystore',
-                                  account_addr[2:].lower())
-        else:
-            file_path = files[0]
-        return file_path
-
-    def get_keystore(self, account_addr):
+    def get_privatekey(self, keystore_data, password):
         try:
-            file_path = self.get_keystore_path(account_addr)
-            keystore = json.load(open(file_path, 'r'))
-        except Exception as err:
-            return {'code': 102, 'error': str(err)}, None
-        return None, keystore
-
-    def get_privatekey(self, account_addr, password):
-        try:
-            _, keystore = self.get_keystore(account_addr)
-            key_bytes = keys.decode_keystore_json(keystore, password)
+            key_bytes = keys.decode_keystore_json(keystore_data, password)
             key_hex = self.web3.toHex(key_bytes)
         except Exception as err:
             return {'code': 103, 'error': str(err)}, None
         return None, key_hex
-
-    def add_keystore(self, account_addr, keystore):
-        try:
-            file_path = self.get_keystore_path(account_addr)
-            keystore_file = open(file_path, 'w')
-            keystore_file.writelines(keystore)
-            keystore_file.close()
-        except Exception as err:
-            return {'code': 104, 'error': str(err)}
-        return None
-
-    def remove_keystore(self, account_addr):
-        try:
-            file_path = self.get_keystore_path(account_addr)
-            unlink(file_path)
-        except Exception as err:
-            return {'code': 105, 'error': str(err)}
-        return None
 
     def get_balance(self, account_addr):
         try:
@@ -77,12 +47,17 @@ class ETHManager(object):
             return {'code': 106, 'error': str(err)}, None
         return None, balance / ((10 ** 18) * 1.0)
 
-    def transfer_amount(self, account_addr, password, transaction):
+    def transfer_amount(self, from_addr, to_addr, value, private_key):
         try:
-            account_addr = transaction['from']
-            self.web3.personal.unlockAccount(account_addr, password)
-            tx_hash = self.web3.eth.sendTransaction(transaction)
-            self.web3.personal.lockAccount(account_addr)
+            tx = Transaction(nonce=self.web3.eth.getTransactionCount(from_addr),
+                             gasprice=self.web3.eth.gasPrice,
+                             startgas=100000,
+                             to=to_addr,
+                             value=value,
+                             data='')
+            tx.sign(private_key)
+            raw_tx = self.web3.toHex(rlp.encode(tx))
+            tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
         except Exception as err:
             return {'code': 107, 'error': str(err)}, None
         return None, tx_hash
@@ -103,5 +78,5 @@ class ETHManager(object):
         return None, units
 
 
-eth_manager = ETHManager()
+eth_manager = ETHManager(provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
 logger.info(eth_manager.web3.isConnected())

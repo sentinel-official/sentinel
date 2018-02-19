@@ -17,10 +17,7 @@ class CreateNewAccount(object):
         """
         password = str(req.body['password'])
 
-        _, account_addr = eth_manager.create_account(password)
-        _, private_key = eth_manager.get_privatekey(account_addr, password)
-        _, keystore = eth_manager.get_keystore(account_addr)
-        eth_manager.remove_keystore(account_addr)
+        _, account_addr, private_key, keystore = eth_manager.create_account(password)
 
         message = {
             'success': True,

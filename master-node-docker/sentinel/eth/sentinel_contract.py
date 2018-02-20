@@ -21,8 +21,8 @@ class SentinelManger(object):
                 'to': SENTINEL_ADDRESS,
                 'data': mainnet.web3.toHex(mainnet.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='balanceOf', args=[account_addr])))
             }
-            balance = mainnet.web3.toDecimal(
-                mainnet.web3.eth.call(caller_object))
+            balance = mainnet.web3.toInt(
+                hexstr=mainnet.web3.eth.call(caller_object))
             balance = balance / (DECIMALS * 1.0)
         except Exception as err:
             return {'code': 201, 'error': str(err)}, None

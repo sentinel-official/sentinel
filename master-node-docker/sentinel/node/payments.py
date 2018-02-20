@@ -21,7 +21,6 @@ class AddVpnUsage(object):
         keystore = str(req.body['keystore'])
         password = str(req.body['password'])
         to_addr = get_client_address(account_addr)
-        received_bytes = int(req.body['received_bytes'])
         sent_bytes = int(req.body['sent_bytes'])
         session_duration = int(req.body['session_duration'])
         amount = int(calculate_amount(sent_bytes) * DECIMALS)
@@ -35,8 +34,7 @@ class AddVpnUsage(object):
             }
         else:
             error, tx_hash = eth_helper.add_vpn_usage(
-                account_addr, to_addr, received_bytes, sent_bytes,
-                session_duration, amount, timestamp, json.loads(keystore), password)
+                account_addr, to_addr, sent_bytes, session_duration, amount, timestamp, json.loads(keystore), password)
 
             if error is None:
                 message = {
@@ -48,8 +46,7 @@ class AddVpnUsage(object):
                 message = {
                     'success': False,
                     'error': error,
-                    'message':
-                    'Error occurred while adding the VPN usage data.'
+                    'message': 'Error occurred while adding the VPN usage data.'
                 }
 
         resp.status = falcon.HTTP_200

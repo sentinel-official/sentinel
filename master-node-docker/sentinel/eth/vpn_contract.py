@@ -37,7 +37,8 @@ class VpnServiceManager(object):
                 'to': VPNSERVICE_ADDRESS,
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='getDueAmountOf', args=[account_addr])))
             }
-            due = rinkeby.web3.toDecimal(rinkeby.web3.eth.call(caller_object))
+            due = rinkeby.web3.toInt(
+                hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 202, 'error': str(err)}, None
         return None, due
@@ -49,8 +50,8 @@ class VpnServiceManager(object):
                 'to': VPNSERVICE_ADDRESS,
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='getVpnSessionsOf', args=[account_addr])))
             }
-            sessions = rinkeby.web3.toDecimal(
-                rinkeby.web3.eth.call(caller_object))
+            sessions = rinkeby.web3.toInt(
+                hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 203, 'error': str(err)}, None
         return None, sessions
@@ -62,8 +63,12 @@ class VpnServiceManager(object):
                 'to': VPNSERVICE_ADDRESS,
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='getVpnUsageOf', args=[account_addr, index])))
             }
-            usage = rinkeby.web3.toDecimal(
-                rinkeby.web3.eth.call(caller_object))
+            usage = rinkeby.web3.eth.call(caller_object)[2:]
+            usage = [usage[i:i+64] for i in range(0, len(usage), 64)]
+            usage[0] = rinkeby.web3.toChecksumAddress(usage[0])
+            usage[1:] = [rinkeby.web3.toInt(hexstr=usage[i])
+                         for i in range(1, len(usage))]
+            usage[-1] = usage[-1] != 0
         except Exception as err:
             return {'code': 204, 'error': str(err)}, None
         return None, usage

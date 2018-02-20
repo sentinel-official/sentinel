@@ -27,21 +27,16 @@ class AddVpnUsage(object):
         amount = int(calculate_amount(sent_bytes) * DECIMALS)
         timestamp = int(time.time())
 
-        print(account_addr, to_addr, received_bytes, sent_bytes,
-              session_duration, amount, timestamp)
-
         if sent_bytes < (10 * 1024 * 1024):
             message = {
                 'success': False,
-                'error':'Usage is less than 10 MB. So data is not added',
+                'error': 'Usage is less than 10 MB. So data is not added',
                 'message': 'Usage is less than 10 MB. So data is not added'
             }
         else:
             error, tx_hash = eth_helper.add_vpn_usage(
                 account_addr, to_addr, received_bytes, sent_bytes,
                 session_duration, amount, timestamp, json.loads(keystore), password)
-
-            print(error, tx_hash)
 
             if error is None:
                 message = {

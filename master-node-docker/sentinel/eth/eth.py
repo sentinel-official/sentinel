@@ -36,12 +36,21 @@ class ETHManager(object):
             return {'code': 102, 'error': str(err)}, None
         return None, key_hex
 
+    def get_address(self, private_key):
+        try:
+            private_key = self.web3.toBytes(private_key)
+            raw_address = utils.privtoaddr(private_key)
+            account_addr = utils.checksum_encode(raw_address)
+        except Exception as err:
+            return {'code': 103, 'error': str(err)}, None
+        return None, account_addr
+
     def get_balance(self, account_addr):
         try:
             balance = self.web3.eth.getBalance(account_addr)
             balance = balance / ((10 ** 18) * 1.0)
         except Exception as err:
-            return {'code': 103, 'error': str(err)}, None
+            return {'code': 104, 'error': str(err)}, None
         return None, balance
 
     def transfer_amount(self, from_addr, to_addr, amount, private_key):
@@ -56,14 +65,14 @@ class ETHManager(object):
             raw_tx = self.web3.toHex(rlp.encode(tx))
             tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
         except Exception as err:
-            return {'code': 104, 'error': str(err)}, None
+            return {'code': 105, 'error': str(err)}, None
         return None, tx_hash
 
     def get_tx_receipt(self, tx_hash):
         try:
             receipt = self.web3.eth.getTransactionReceipt(tx_hash)
         except Exception as err:
-            return {'code': 105, 'error': str(err)}, None
+            return {'code': 106, 'error': str(err)}, None
         return None, receipt
 
 

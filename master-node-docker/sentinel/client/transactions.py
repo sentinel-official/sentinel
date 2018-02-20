@@ -24,12 +24,12 @@ class TransferAmount(object):
         to_addr = str(req.body['to_addr'])
         amount = float(req.body['amount'])
         unit = str(req.body['unit'])
-        keystore = str(req.body['keystore'])
-        password = str(req.body['password'])
+        keystore = json.loads(
+            str(req.body['keystore'])) if 'keystore' in req.body else None
+        password = str(req.body['password']
+                       ) if 'password' in req.body else None
         private_key = str(req.body['private_key']
                           ) if 'private_key' in req.body else None
-
-        keystore = json.loads(keystore)
 
         if (from_addr[2:].lower() == keystore['address'].lower()):
             try:

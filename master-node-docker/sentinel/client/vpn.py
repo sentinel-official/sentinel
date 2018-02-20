@@ -1,7 +1,7 @@
 import json
 import falcon
-from uuid import uuid4
 import requests
+from uuid import uuid4
 from ..db import db
 from ..config import DECIMALS
 from ..config import SENT_BALANCE
@@ -9,9 +9,7 @@ from ..helpers import eth_helper
 
 
 def get_vpns_list():
-    _list = db.nodes.find({
-        'vpn.status': 'up'
-    }, {
+    _list = db.nodes.find({'vpn.status': 'up'}, {
         '_id': 0,
         'account.addr': 1,
         'location': 1,
@@ -27,17 +25,10 @@ class PutClientConnection(object):
         client_addr = str(req.body['account_addr'])
         connection = db.connections.find_one({'server_addr': server_addr})
         if connection is None:
-            db.connections.insert_one({
-                'server_addr': server_addr,
-                'client_addr': client_addr
-            })
-        db.connections.find_one_and_update({
-            'server_addr': server_addr
-        }, {
-            '$set': {
-                'client_addr': client_addr
-            }
-        })
+            db.connections.insert_one(
+                {'server_addr': server_addr, 'client_addr': client_addr})
+        db.connections.find_one_and_update({'server_addr': server_addr}, {
+                                           '$set': {'client_addr': client_addr}})
         message = {'success': True}
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -62,50 +53,34 @@ class GetVpnCredentials(object):
         if res['status'] == '1':
             if int(res['result']) >= (100 * (10**8)):
                 error, due_amount = eth_helper.get_due_amount(account_addr)
-                #error, due_amount = None, 0
                 if error is not None:
                     message = {
                         'success': False,
                         'error': error,
-                        'message':
-                        'Error occurred while checking the due amount.'
+                        'message': 'Error occurred while checking the due amount.'
                     }
                 elif due_amount == 0:
                     vpn_addr_len = len(vpn_addr)
 
                     if vpn_addr_len > 0:
-                        node = db.nodes.find_one({
-                            'vpn.status': 'up',
-                            'account.addr': vpn_addr
-                        }, {
-                            '_id': 0,
-                            'token': 0
-                        })
+                        node = db.nodes.find_one({'vpn.status': 'up', 'account.addr': vpn_addr}, {
+                                                 '_id': 0, 'token': 0})
                     else:
-                        node = db.nodes.find_one({
-                            'vpn.status': 'up'
-                        }, {
-                            '_id': 0,
-                            'token': 0
-                        })
+                        node = db.nodes.find_one({'vpn.status': 'up'}, {
+                                                 '_id': 0, 'token': 0})
 
                     if node is None:
                         if vpn_addr_len > 0:
                             message = {
-                                'success':
-                                False,
-                                'message':
-                                'VPN server is already occupied. Please try after sometime.'
+                                'success': False,
+                                'message': 'VPN server is already occupied. Please try after sometime.'
                             }
                         else:
                             message = {
-                                'success':
-                                False,
-                                'message':
-                                'All VPN servers are occupied. Please try after sometime.'
+                                'success': False,
+                                'message': 'All VPN servers are occupied. Please try after sometime.'
                             }
                     else:
-                        #put_connection(node['account']['addr'], account_addr)
                         secretToken = uuid4().hex
                         node_addr = str(node['ip'])
                         message = {
@@ -122,12 +97,8 @@ class GetVpnCredentials(object):
                         res = requests.post(url, json=body)
                 else:
                     message = {
-                        'success':
-                        False,
-                        'message':
-                        'You have due amount: ' + str(due_amount /
-                                                      (DECIMALS * 1.0)) +
-                        ' SENTs.' + ' Please try after clearing the due.'
+                        'success': False,
+                        'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs.' + ' Please try after clearing the due.'
                     }
             else:
                 message = {
@@ -139,6 +110,41 @@ class GetVpnCredentials(object):
                 'success': False,
                 'message': 'Error while checking your balance'
             }
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
+class PayVpnUsage(object):
+    def on_post(self, req, resp):
+        from_addr = str(req.body['from_addr'])
+        to_addr = str(req.body['to_addr'])
+        amount = float(req.body['amount'])
+        session_id = int(req.body['session_id'])
+        keystore = str(req.body['keystore'])
+        password = str(req.body['password'])
+        private_key = str(req.body['private_key']
+                          ) if 'private_key' in req.body else None
+
+        keystore = json.loads(keystore)
+
+        errors, tx_hashes = eth_helper.pay_vpn_session(
+            from_addr, to_addr, amount, session_id, keystore, password, private_key)
+
+        if len(errors) > 0:
+            message = {
+                'success': False,
+                'errors': errors,
+                'tx_hashes': tx_hashes,
+                'message': 'Error occurred while paying VPN usage.'
+            }
+        else:
+            message = {
+                'success': True,
+                'errors': errors,
+                'tx_hashes': tx_hashes,
+                'message': 'VPN payment is completed successfully.'
+            }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -164,6 +170,7 @@ class GetVpnUsage(object):
                 'error': error,
                 'message': 'Error occured while fetching the usage data.'
             }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 

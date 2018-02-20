@@ -1,14 +1,10 @@
-import json
-import time
 import rlp
 from ethereum import utils
+from ethereum.tools import keys
 from ethereum.transactions import Transaction
 from eth_keyfile import create_keyfile_json
-from glob import glob
-from os import path, unlink,urandom
-from ethereum.tools import keys
+from os import path, unlink, urandom
 from web3 import Web3, IPCProvider, HTTPProvider
-from ..utils import logger
 
 
 class ETHManager(object):
@@ -37,46 +33,43 @@ class ETHManager(object):
             key_bytes = keys.decode_keystore_json(keystore_data, password)
             key_hex = self.web3.toHex(key_bytes)
         except Exception as err:
-            return {'code': 103, 'error': str(err)}, None
+            return {'code': 102, 'error': str(err)}, None
         return None, key_hex
 
     def get_balance(self, account_addr):
         try:
             balance = self.web3.eth.getBalance(account_addr)
+            balance = balance / ((10 ** 18) * 1.0)
         except Exception as err:
-            return {'code': 106, 'error': str(err)}, None
-        return None, balance / ((10 ** 18) * 1.0)
+            return {'code': 103, 'error': str(err)}, None
+        return None, balance
 
-    def transfer_amount(self, from_addr, to_addr, value, private_key):
+    def transfer_amount(self, from_addr, to_addr, amount, private_key):
         try:
             tx = Transaction(nonce=self.web3.eth.getTransactionCount(from_addr),
                              gasprice=self.web3.eth.gasPrice,
                              startgas=100000,
                              to=to_addr,
-                             value=value,
+                             value=amount,
                              data='')
             tx.sign(private_key)
             raw_tx = self.web3.toHex(rlp.encode(tx))
             tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
         except Exception as err:
-            return {'code': 107, 'error': str(err)}, None
+            return {'code': 104, 'error': str(err)}, None
         return None, tx_hash
 
     def get_tx_receipt(self, tx_hash):
         try:
             receipt = self.web3.eth.getTransactionReceipt(tx_hash)
         except Exception as err:
-            return {'code': 108, 'error': str(err)}, None
+            return {'code': 105, 'error': str(err)}, None
         return None, receipt
 
-    def gas_units(self, account_addr, transaction):
-        try:
-            account_addr = transaction['from']
-            units = self.web3.eth.estimateGas(transaction)
-        except Exception as err:
-            return {'code': 109, 'error': str(err)}, None
-        return None, units
 
-
-eth_manager = ETHManager(provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
-logger.info(eth_manager.web3.isConnected())
+eth_manager = ETHManager(
+    provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
+mainnet = ETHManager(
+    provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
+rinkeby = ETHManager(
+    provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')

@@ -1,7 +1,7 @@
 import json
 import falcon
 from ..eth import eth_manager
-from ..eth import contract_manager
+from ..eth import sentinel_manager
 
 
 class CreateNewAccount(object):
@@ -17,15 +17,15 @@ class CreateNewAccount(object):
         """
         password = str(req.body['password'])
 
-        _, account_addr, private_key, keystore = eth_manager.create_account(password)
+        _, account_addr, private_key, keystore = eth_manager.create_account(
+            password)
 
         message = {
             'success': True,
             'account_addr': account_addr,
             'private_key': private_key,
             'keystore': json.dumps(keystore),
-            'message': 'Account created successfully.' +
-                       ' Please store the Private key and Keystore data safely.'
+            'message': 'Account created successfully.' + ' Please store the Private key and Keystore data safely.'
         }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -45,7 +45,8 @@ class GetBalance(object):
 
         error, balances['eths'] = eth_manager.get_balance(account_addr)
         if error is None:
-            error, balances['sents'] = contract_manager.get_balance(account_addr)
+            error, balances['sents'] = sentinel_manager.get_balance(
+                account_addr)
 
         if error is None:
             message = {

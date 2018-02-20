@@ -6,9 +6,17 @@ from ..config import DECIMALS
 
 
 class ETHHelper(object):
+    def get_account_addr(self, private_key):
+        error, account_addr = eth_manager.get_address(private_key)
+        account_addr = account_addr[2:]
+
+        return error, account_addr
+
     def transfer_amount(self, from_addr, to_addr, amount, unit, keystore, password, private_key=None):
         if private_key is None:
-            _, private_key = eth_manager.get_privatekey(keystore, password)
+            error, private_key = eth_manager.get_privatekey(keystore, password)
+            if error:
+                return error, None
         if unit == 'ETH':
             error, tx_hash = eth_manager.transfer_amount(
                 from_addr, to_addr, amount, private_key)

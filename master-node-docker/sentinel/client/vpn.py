@@ -121,6 +121,8 @@ class PayVpnUsage(object):
         session_id = int(req.body['session_id'])
         tx_data = str(req.body['tx_data'])
 
+        amount = int(amount * (DECIMALS * 1.0))
+
         errors, tx_hashes = eth_helper.pay_vpn_session(
             from_addr, amount, session_id, tx_data)
 

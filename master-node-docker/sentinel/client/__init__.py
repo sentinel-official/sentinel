@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from .account import CreateNewAccount
 from .account import GetBalance
 from .transactions import TransferAmount
+from .transactions import RawTransaction
 from .vpn import PayVpnUsage
 from .vpn import GetVpnCredentials
 from .vpn import GetVpnsList

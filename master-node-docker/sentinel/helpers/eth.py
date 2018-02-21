@@ -83,9 +83,9 @@ class ETHHelper(object):
             if error is None:
                 tx_hashes.append(tx_hash)
             else:
-                errors.append(str(error))
+                errors.append(error)
         else:
-            errors.append(str(error))
+            errors.append(error)
 
         return errors, tx_hashes
 

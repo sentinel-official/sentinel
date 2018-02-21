@@ -117,18 +117,12 @@ class GetVpnCredentials(object):
 class PayVpnUsage(object):
     def on_post(self, req, resp):
         from_addr = str(req.body['from_addr'])
-        to_addr = str(req.body['to_addr'])
         amount = float(req.body['amount'])
         session_id = int(req.body['session_id'])
-        keystore = str(req.body['keystore'])
-        password = str(req.body['password'])
-        private_key = str(req.body['private_key']
-                          ) if 'private_key' in req.body else None
-
-        keystore = json.loads(keystore)
+        tx_data = str(req.body['tx_data'])
 
         errors, tx_hashes = eth_helper.pay_vpn_session(
-            from_addr, to_addr, amount, session_id, keystore, password, private_key)
+            from_addr, amount, session_id, tx_data)
 
         if len(errors) > 0:
             message = {

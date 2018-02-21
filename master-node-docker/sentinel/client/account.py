@@ -17,16 +17,23 @@ class CreateNewAccount(object):
         """
         password = str(req.body['password'])
 
-        _, account_addr, private_key, keystore = eth_manager.create_account(
+        error, account_addr, private_key, keystore = eth_manager.create_account(
             password)
 
-        message = {
-            'success': True,
-            'account_addr': account_addr,
-            'private_key': private_key,
-            'keystore': json.dumps(keystore),
-            'message': 'Account created successfully.' + ' Please store the Private key and Keystore data safely.'
-        }
+        if error is None:
+            message = {
+                'success': False,
+                'error': error,
+                'message': 'Error occurred while create wallet. Please try again.'
+            }
+        else:
+            message = {
+                'success': True,
+                'account_addr': account_addr,
+                'private_key': private_key,
+                'keystore': json.dumps(keystore),
+                'message': 'Account created successfully. Please store the Private key and Keystore data safely.'
+            }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 

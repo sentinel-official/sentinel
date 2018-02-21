@@ -12,6 +12,11 @@ class ETHHelper(object):
 
         return error, account_addr
 
+    def raw_transaction(self, tx_data):
+        error, tx_hash = eth_manager.send_raw_transaction(tx_data)
+
+        return error, tx_hash
+
     def transfer_amount(self, from_addr, to_addr, amount, unit, keystore, password, private_key=None):
         if private_key is None:
             error, private_key = eth_manager.get_privatekey(keystore, password)
@@ -68,10 +73,9 @@ class ETHHelper(object):
         else:
             return error, None
 
-    def pay_vpn_session(self, from_addr, to_addr, amount, session_id, keystore, password, private_key=None):
+    def pay_vpn_session(self, from_addr, amount, session_id, tx_data):
         errors, tx_hashes = [], []
-        error, tx_hash = self.transfer_amount(
-            from_addr, to_addr, amount, 'SENT', keystore, password, private_key)
+        error, tx_hash = self.raw_transaction(tx_data)
         if error is None:
             tx_hashes.append(tx_hash)
             error, tx_hash = vpn_service_manager.pay_vpn_session(

@@ -3,6 +3,7 @@ import falcon
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
+from sentinel.client import RawTransaction
 from sentinel.client import TransferAmount
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnsList
@@ -35,7 +36,7 @@ app.add_route('/', Up())
 app.add_route('/client', Up())
 app.add_route('/client/account', CreateNewAccount())
 app.add_route('/client/account/balance', GetBalance())
-app.add_route('/client/transaction', TransferAmount())
+app.add_route('/client/raw-transaction', RawTransaction())
 app.add_route('/client/vpn', GetVpnCredentials())
 app.add_route('/client/vpn/list', GetVpnsList())
 app.add_route('/client/vpn/usage', GetVpnUsage())

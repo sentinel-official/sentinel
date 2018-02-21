@@ -28,20 +28,5 @@ class SentinelManger(object):
             return {'code': 201, 'error': str(err)}, None
         return None, balance
 
-    def transfer_amount(self, from_addr, to_addr, amount, private_key):
-        try:
-            tx = Transaction(nonce=mainnet.web3.eth.getTransactionCount(from_addr),
-                             gasprice=mainnet.web3.eth.gasPrice,
-                             startgas=1000000,
-                             to=SENTINEL_ADDRESS,
-                             value=0,
-                             data=mainnet.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='transfer', args=[to_addr, amount])))
-            tx.sign(private_key)
-            raw_tx = mainnet.web3.toHex(rlp.encode(tx))
-            tx_hash = mainnet.web3.eth.sendRawTransaction(raw_tx)
-        except Exception as err:
-            return {'code': 202, 'error': str(err)}, None
-        return None, tx_hash
-
 
 sentinel_manager = SentinelManger()

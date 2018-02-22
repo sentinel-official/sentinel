@@ -5,10 +5,10 @@ if os.environ['SENT_ENV']=='PROD':
     SENTINEL_ADDRESS = '0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037'
     SENTINEL_NAME = 'Sentinel'
     VPNSERVICE_ABI = [{"constant":false,"inputs":[{"name":"_addr","type":"address"}],"name":"addAuthorizedUser","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"authorizedUsers","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_address","type":"address"}],"name":"getDueAmountOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_address","type":"address"},{"name":"_sessionId","type":"uint256"}],"name":"getVpnUsageOf","outputs":[{"name":"","type":"address"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_address","type":"address"}],"name":"getVpnSessionsOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"}],"name":"removeAuthorizedUser","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_receivedBytes","type":"uint256"},{"name":"_sessionDuration","type":"uint256"},{"name":"_amount","type":"uint256"},{"name":"_timestamp","type":"uint256"}],"name":"addVpnUsage","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_sessionId","type":"uint256"}],"name":"payVpnSession","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_owner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]
-    VPNSERVICE_ADDRESS = '0x64f52D3083BC10988a2266D708DE15c518b15018'
+    VPNSERVICE_ADDRESS = '0xEe94e1452bbd3a9870aF6a7642cb47721Ac41b8A'
     VPNSERVICE_NAME = 'Vpn_service'
-    COINBASE_ADDRESS = '0x620270aca76892494ced827585291ba64a7c172f'
-    COINBASE_PRIVATE_KEY = '0xeb7472dbcd6d08a31883e968de84a81fb2a4052203a80a886d651e8afc5b4c48'
+    COINBASE_ADDRESS = '0x25bC7a081E03A777b2016d92eCF89d10AAb98780'
+    COINBASE_PRIVATE_KEY = ''
     DECIMALS = 10 ** 8
     SENT_BALANCE = 'https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=tokenbalance&tag=latest&contractaddress=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037&address='
 else:
@@ -20,6 +20,6 @@ else:
     VPNSERVICE_ADDRESS = '0x11cb41B3b9387CCfa9cbF71525fa658107D2E3FD'
     VPNSERVICE_NAME = 'Vpn_test_service'
     COINBASE_ADDRESS = '0x145523EB2ddAaA85334717fBb3A6B73988Fc1427'
-    COINBASE_PRIVATE_KEY = '0x2ddfe44960b27bc35fd6c2000eaa1a250a21bad0e417811051c018fffd49c997'
+    COINBASE_PRIVATE_KEY = ''
     DECIMALS = 10 ** 8
-    SENT_BALANCE = 'https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=tokenbalance&tag=latest&contractaddress=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037&address='    
+    SENT_BALANCE = 'https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=tokenbalance&tag=latest&contractaddress=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037&address='

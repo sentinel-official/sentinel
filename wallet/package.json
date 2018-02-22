@@ -50,7 +50,7 @@
     "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-wallet-linux-x64/ --arch amd64 --config debian.json"
   },
   "devDependencies": {
-    "electron": "1.7.11",
+    "electron": "^1.7.11",
     "electron-installer-debian": "^0.7.1",
     "electron-winstaller": "^2.6.3"
   }

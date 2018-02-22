@@ -17,6 +17,6 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/re
     pip3 install --no-cache-dir ipython && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
 
-EXPOSE 8000 8545 30303 30303/udp
+EXPOSE 8333
 
 CMD ["sh", "/root/run.sh"]

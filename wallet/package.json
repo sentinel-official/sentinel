@@ -2,7 +2,7 @@
   "name": "sentinel-wallet",
   "description": "Sentinel Wallet",
   "productName": "Sentinel Wallet",
-  "author":"Dev Team <devteam@sentinelgroup.io>",
+  "author": "Dev Team <devteam@sentinelgroup.io>",
   "version": "0.0.2",
   "private": true,
   "main": "electron.js",
@@ -11,6 +11,7 @@
     "d3": "^4.12.2",
     "d3-world-maps": "0.0.3",
     "electron-packager": "^10.1.1",
+    "ethereumjs-tx": "^1.3.3",
     "fs": "0.0.1-security",
     "fs-thenable": "^1.1.1",
     "google-map-react": "^0.28.0",
@@ -33,6 +34,7 @@
     "react-scripts": "1.0.17",
     "react-simple-maps": "^0.10.1",
     "react-tooltip": "^3.4.0",
+    "web3": "git+https://github.com/ethereum/web3.js.git",
     "zfill": "0.0.2"
   },
   "scripts": {
@@ -48,7 +50,7 @@
     "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-wallet-linux-x64/ --arch amd64 --config debian.json"
   },
   "devDependencies": {
-    "electron": "1.7.11",
+    "electron": "^1.7.11",
     "electron-installer-debian": "^0.7.1",
     "electron-winstaller": "^2.6.3"
   }

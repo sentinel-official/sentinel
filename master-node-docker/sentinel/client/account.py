@@ -22,18 +22,19 @@ class CreateNewAccount(object):
 
         if error is None:
             message = {
-                'success': False,
-                'error': error,
-                'message': 'Error occurred while create wallet. Please try again.'
-            }
-        else:
-            message = {
                 'success': True,
                 'account_addr': account_addr,
                 'private_key': private_key,
                 'keystore': json.dumps(keystore),
                 'message': 'Account created successfully. Please store the Private key and Keystore data safely.'
             }
+        else:
+            message = {
+                'success': False,
+                'error': error,
+                'message': 'Error occurred while create wallet. Please try again.'
+            }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 

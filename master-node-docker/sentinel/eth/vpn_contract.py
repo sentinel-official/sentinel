@@ -73,15 +73,15 @@ class VpnServiceManager(object):
             return {'code': 204, 'error': str(err)}, None
         return None, usage
 
-    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, private_key):
+    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp):
         try:
-            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(from_addr),
+            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS),
                              gasprice=rinkeby.web3.eth.gasPrice,
                              startgas=1000000,
                              to=VPNSERVICE_ADDRESS,
                              value=0,
-                             data=rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='addVpnUsage', args=[to_addr, sent_bytes, session_duration, amount, timestamp])))
-            tx.sign(private_key)
+                             data=rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='addVpnUsage', args=[from_addr, to_addr, sent_bytes, session_duration, amount, timestamp])))
+            tx.sign(COINBASE_PRIVATE_KEY)
             raw_tx = rinkeby.web3.toHex(rlp.encode(tx))
             tx_hash = rinkeby.web3.eth.sendRawTransaction(raw_tx)
         except Exception as err:

@@ -89,11 +89,9 @@ class ETHHelper(object):
 
         return errors, tx_hashes
 
-    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, keystore, password, private_key=None):
-        if private_key is None:
-            _, private_key = eth_manager.get_privatekey(keystore, password)
+    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp):
         error, tx_hash = vpn_service_manager.add_vpn_usage(
-            from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, private_key)
+            from_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
 
         return error, tx_hash
 

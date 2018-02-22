@@ -2,8 +2,7 @@ const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
-const B_URL = 'http://35.198.246.114:8000';
-const MASTER_URL = 'https://api.sentinelgroup.io';
+const B_URL = 'https://api.sentinelgroup.io';
 const ETH_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
 &module=account&action=balance&tag=latest&address=`;
 const SENT_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
@@ -85,7 +84,7 @@ export const checkKeystore = (cb) => {
   });
 }
 
-function getKeystore(cb) {
+export function getKeystore(cb) {
   fs.readFile(KEYSTORE_FILE, 'utf8', function (err, data) {
     if (err) cb(err, null);
     else cb(null, data);
@@ -166,43 +165,31 @@ export function getGasCost(from, to, amount, data, id, cb) {
   })
 }
 
-export function transferAmountMaster(data, cb) {
-  getKeystore(function (err, keystore) {
-    if (err) cb(err, null);
+export function transferAmount(data, cb) {
+  fetch(B_URL + '/client/raw-transaction', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify({
+      tx_data: data
+    })
+  }).then(function (response) {
+    if (response.status === 200) {
+      response.json().then(function (response) {
+        console.log("Response...", response)
+        if (response.success === true) {
+          var tx_hash = response['tx_hash'];
+          cb(null, tx_hash);
+        } else {
+          cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+        }
+      })
+    }
     else {
-      data['keystore'] = keystore;
-      fetch(MASTER_URL + '/client/transaction', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: JSON.stringify(data)
-      }).then(function (response) {
-        if (response.status === 200) {
-          response.json().then(function (response) {
-            console.log("Response...", response)
-            if (response.success === true) {
-              var tx_hash = response['tx_hash'];
-              cb(null, tx_hash);
-            } else {
-              if (response.error.error === '10 seconds') {
-                cb({ message: 'Please Try Again' }, null)
-              }
-              else {
-                cb({
-                  message: JSON.parse(response.error.error.split("'").join('"').split('u"').join('"')).message
-                    || 'Error occurred while initiating transfer amount.'
-                }, null);
-              }
-            }
-          })
-        }
-        else {
-          cb({ message: response.message || 'Internal Server Error' }, null);
-        }
-      });
+      cb({ message: response.message || 'Internal Server Error' }, null);
     }
   });
 }
@@ -226,35 +213,33 @@ export function getTransactionStatus(tx_addr, cb) {
   });
 }
 
-export function transferAmount(data, cb) {
-  getKeystore(function (err, keystore) {
-    if (err) cb(err, null);
+export function payVPNUsage(data, cb) {
+  fetch(B_URL + '/client/vpn/pay', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify(data)
+  }).then(function (response) {
+    if (response.status === 200) {
+      response.json().then(function (response) {
+        console.log("Res Tran...", response)
+        if (response.success === true) {
+          var tx_hash = response['tx_hashes'][0];
+          cb(null, tx_hash);
+        } else {
+          cb({
+            message: JSON.parse(response.errors[0].split("'").join('"')).error
+              || 'Error occurred while initiating transfer amount.'
+          }, null);
+        }
+
+      })
+    }
     else {
-      data['keystore'] = keystore;
-      fetch(B_URL + '/client/transaction', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: JSON.stringify(data)
-      }).then(function (response) {
-        if (response.status === 200) {
-          response.json().then(function (response) {
-            console.log("Res Tran...", response)
-            if (response.success === true) {
-              var tx_hash = response['tx_hash'];
-              cb(null, tx_hash);
-            } else {
-              cb({ message: response.error || response.message || 'Error occurred while initiating transfer amount.' }, null);
-            }
-          })
-        }
-        else {
-          cb({ message: response.message || 'Internal Server Error' }, null);
-        }
-      });
+      cb({ message: response.message || 'Internal Server Error' }, null);
     }
   });
 }
@@ -355,19 +340,18 @@ export const getVPNList = (cb) => {
       'Content-type': 'application/json',
     },
   }).then(function (response) {
-    console.log('respons..',response)
-    if(response.status===200){
-    response.json().then(function (response) {
-      if (response.success === true) {
-        cb(null, response.list);
-      } else {
-        cb({ message: 'Error occurred while getting vpn list.' }, null);
-      }
-    });
-  }
-  else{
-    cb({ message: 'Server Error.Please Try Again' }, null);
-  }
+    if (response.status === 200) {
+      response.json().then(function (response) {
+        if (response.success === true) {
+          cb(null, response.list);
+        } else {
+          cb({ message: 'Error occurred while getting vpn list.' }, null);
+        }
+      });
+    }
+    else {
+      cb({ message: 'Server Error.Please Try Again' }, null);
+    }
   });
 }
 

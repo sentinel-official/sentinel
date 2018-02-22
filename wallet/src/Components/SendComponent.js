@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { transferAmount, isOnline, transferAmountMaster, getGasPrice, getGasCost } from '../Actions/AccountActions';
+import { transferAmount, isOnline, payVPNUsage, getGasPrice, getGasCost } from '../Actions/AccountActions';
+import { getPrivateKey, ethTransaction, tokenTransaction } from '../Actions/TransferActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
 
@@ -75,100 +76,95 @@ class SendComponent extends Component {
     }
   }
 
-  sendToMaster = () => {
-    let body = {
-      from_addr: this.props.local_address,
-      to_addr: this.state.to_address,
-      amount: this.state.amount,
-      unit: this.state.unit,
-      keystore: this.state.keystore,
-      password: this.state.password,
-      session_id: null
-    }
-    let that = this;
-    transferAmountMaster(body, function (err, tx_addr) {
-      if (err) that.setState(
-        {
-          snackOpen: true,
-          snackMessage: err.message,
-          tx_addr: tx_addr,
-          to_address: '',
-          amount: '',
-          data: '',
-          session_id: null,
-          unit: 'ETH',
-          password: '',
-          sending: false,
-          isDisabled: true
-        });
-      else {
-        if (that.state.session_id === null) {
-          that.props.clearSend();
-          that.setState({
-            tx_addr: tx_addr,
-            openSnack: true,
+  payVPN = (privateKey) => {
+    let self = this;
+    let from_addr = this.props.local_address;
+    let to_addr = this.state.to_address;
+    let amount = this.state.amount;
+    tokenTransaction(from_addr, to_addr, amount, privateKey, function (data) {
+      let body = {
+        from_addr: self.props.local_address,
+        amount: self.state.amount,
+        session_id: self.state.session_id,
+        tx_data: data
+      }
+      payVPNUsage(body, function (err, tx_addr) {
+        self.props.clearSend();
+        if (err){
+          self.setState({
+            snackOpen: true,
+            snackMessage: err.message,
             to_address: '',
             amount: '',
             session_id: null,
-            data: '',
             unit: 'ETH',
             password: '',
             sending: false,
             isDisabled: true
-          })
+          });
         }
         else {
-          that.sendToTest();
+          self.clearFields(tx_addr)
         }
+      });
+    })
+  }
+
+  rawTransaction(privateKey) {
+    let self = this;
+    let from_addr = this.props.local_address;
+    let to_addr = this.state.to_address;
+    let amount = this.state.amount;
+    if (this.state.unit === 'ETH') {
+      ethTransaction(from_addr, to_addr, amount, privateKey, function (data) {
+        self.mainTransaction(data)
+      })
+    }
+    else {
+      tokenTransaction(from_addr, to_addr, amount, privateKey, function (data) {
+        self.mainTransaction(data)
+      })
+    }
+  }
+
+  mainTransaction(tx_data) {
+    console.log("Main")
+    let self = this;
+    transferAmount(tx_data, function (err, tx_addr) {
+      if (err) self.errorAlert(err);
+      else {
+        self.props.clearSend();
+        self.clearFields(tx_addr)
       }
     });
   }
 
-  sendToTest = () => {
-    let body = {
-      from_addr: this.props.local_address,
-      to_addr: this.state.to_address,
-      amount: this.state.amount,
-      unit: this.state.unit,
-      keystore: this.state.keystore,
-      password: this.state.password,
-      session_id: this.state.session_id,
-    }
-    let that = this;
-    transferAmount(body, function (err, tx_addr) {
-      that.props.clearSend();
-      if (err) that.setState(
-        {
-          snackOpen: true,
-          snackMessage: err.message,
-          tx_addr: tx_addr,
-          to_address: '',
-          amount: '',
-          data: '',
-          session_id: null,
-          unit: 'ETH',
-          password: '',
-          sending: false,
-          isDisabled: true
-        });
-      else {
-        that.setState({
-          tx_addr: tx_addr,
-          openSnack: true,
-          to_address: '',
-          amount: '',
-          session_id: null,
-          data: '',
-          unit: 'ETH',
-          password: '',
-          sending: false,
-          isDisabled: true
-        })
-      }
-    });
+  errorAlert(err) {
+    this.setState(
+      {
+        snackOpen: true,
+        snackMessage: err.message,
+        sending: false,
+        isDisabled:false
+      });
+  }
+
+  clearFields(tx_addr) {
+    this.setState({
+      tx_addr: tx_addr,
+      openSnack: true,
+      to_address: '',
+      amount: '',
+      session_id: null,
+      unit: 'ETH',
+      password: '',
+      sending: false,
+      isDisabled: true
+    })
   }
 
   onClickSend = () => {
+    var self = this;
     if (this.state.amount === '') {
       this.setState({ sending: false, snackOpen: true, snackMessage: 'Amount field is Empty' })
     }
@@ -178,16 +174,25 @@ class SendComponent extends Component {
     else {
       if (isOnline()) {
         this.setState({
-          sending: true,
-          isDisabled: true
-        })
-        if (this.state.session_id === null) {
-          // this.sendToTest() //For direct transaction in test network
-          this.sendToMaster() //For direct transaction in main network
-        }
-        else {
-          this.sendToMaster()
-        }
+          isDisabled: true,
+          sending: true
+        });
+        setTimeout(function () {
+          getPrivateKey(self.state.password, function (err, privateKey) {
+            //console.log("Get..", self.state.isDisabled, err, privateKey)
+            if (err) {
+              self.errorAlert(err)
+            }
+            else {
+              if (self.state.session_id === null) {
+                self.rawTransaction(privateKey)
+              }
+              else {
+                self.payVPN(privateKey)
+              }
+            }
+          })
+        }, 500);
       }
       else {
         this.setState({ snackOpen: true, snackMessage: 'Check your Internet Connection' })
@@ -211,7 +216,7 @@ class SendComponent extends Component {
   })
 
   amountChange = (event, amount) => {
-    this.setState({ amount:amount })
+    this.setState({ amount: amount })
     let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
     // if (trueAddress !== null) {
     //   this.getGasLimit()
@@ -331,7 +336,7 @@ class SendComponent extends Component {
               <Col xs={9}>
                 <TextField
                   type="number"
-                  style={{ backgroundColor: '#FAFAFA', height: 30,width:'100%' }}
+                  style={{ backgroundColor: '#FAFAFA', height: 30, width: '100%' }}
                   underlineShow={false} fullWidth={true}
                   inputStyle={{ padding: 10, color: '#666' }}
                   onChange={(event, gas) => this.setState({ gas })}
@@ -370,7 +375,7 @@ class SendComponent extends Component {
           </Grid>
           <div>
             <ReactTooltip id="toField" place="bottom">
-              <span>Sentinel Wallet ID that you want to send Sentinel Tokens to</span>
+              <span>Wallet Address that you want to send Sentinel Tokens to</span>
             </ReactTooltip>
             <ReactTooltip id="amountField" place="bottom">
               <span>Total Ethereum/Sentinel Tokens<br />
@@ -405,9 +410,11 @@ class SendComponent extends Component {
           </div>
           <div>
             <FlatButton disabled={this.state.to_address === '' || this.state.sending || this.state.isDisabled ? true : false}
-              onClick={this.onClickSend.bind(this)} label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
+              onClick={this.onClickSend.bind(this)}
+              label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
               style={
-                this.state.to_address === '' || this.state.sending || this.state.isDisabled ? { backgroundColor: '#bdbdbd', marginLeft: 20 }
+                this.state.to_address === '' || this.state.sending === true || this.state.isDisabled === true ?
+                  { backgroundColor: '#bdbdbd', marginLeft: 20 }
                   :
                   { backgroundColor: '#f05e09', marginLeft: 20 }
               }

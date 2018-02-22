@@ -17,10 +17,8 @@ def calculate_amount(used_bytes):
 
 class AddVpnUsage(object):
     def on_post(self, req, resp):
-        account_addr = str(req.body['account_addr'])
-        keystore = str(req.body['keystore'])
-        password = str(req.body['password'])
-        to_addr = get_client_address(account_addr)
+        from_addr = str(req.body['from_addr'])
+        to_addr = get_client_address(from_addr)
         sent_bytes = int(req.body['sent_bytes'])
         session_duration = int(req.body['session_duration'])
         amount = int(calculate_amount(sent_bytes) * DECIMALS)
@@ -34,7 +32,7 @@ class AddVpnUsage(object):
             }
         else:
             error, tx_hash = eth_helper.add_vpn_usage(
-                account_addr, to_addr, sent_bytes, session_duration, amount, timestamp, json.loads(keystore), password)
+                from_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
 
             if error is None:
                 message = {

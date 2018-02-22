@@ -8,13 +8,15 @@ ENV SENT_ENV=PROD
 
 RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
     echo '@community http://nl.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories && \
-    apk add --no-cache geth@community ca-certificates gcc gmp-dev libffi-dev make mongodb musl-dev openssl-dev python-dev wget && \
+    apk add --no-cache geth@community ca-certificates gcc gmp-dev libffi-dev make mongodb musl-dev openssl-dev python3 python3-dev wget && \
+    apk add --no-cache nano && \
     mkdir -p /data/db && \
     wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
-    python /tmp/get-pip.py && \
-    pip install --no-cache-dir bitcoin ethereum==2.1.5 falcon gunicorn pprint pymongo uuid web3==3.16.5 && \
+    python3 /tmp/get-pip.py && \
+    pip3 install --no-cache-dir bitcoin ethereum falcon gunicorn pprint eth_keyfile pymongo uuid web3==3.16.5 && \
+    pip3 install --no-cache-dir ipython && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
 
 EXPOSE 8000 30303 30303/udp
 
-ENTRYPOINT ["sh", "/root/run.sh"]
+CMD ["sh", "/root/run.sh"]

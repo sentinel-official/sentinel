@@ -73,7 +73,7 @@ def send_nodeinfo(node, info):
 
 def send_client_usage(node, received_bytes, sent_bytes, session_duration):
     body = {
-        'account_addr': node.account['addr'],
+        'from_addr': node.account['addr'],
         'token': node.account['token'],
         'keystore': node.account['keystore'],
         'password': node.account['password'],

@@ -86,9 +86,8 @@ class Create extends Component {
     getPrivateKey = (keystore, password, cb) => {
         keystore = JSON.parse(keystore)
         try {
-            keythereum.recover(password, keystore, function (privateKey) {
-                cb(null, privateKey);
-            });
+            var privateKey=keythereum.recover(password, keystore);
+            cb(null, privateKey);
         }
         catch (err) {
             cb({ message: 'Keystore and Password does not match' }, null);

@@ -52,23 +52,25 @@ contract VPNService is Owned {
   }
 
   function addVpnUsage(
-    address _addr,
+    address _from,
+    address _to,
     uint256 _receivedBytes,
     uint256 _sessionDuration,
     uint256 _amount,
     uint256 _timestamp)
       public {
+        require(authorizedUsers[msg.sender] == true);
         VpnUsage storage _vpnUsage = _vpnUsageTemplate;
 
-        _vpnUsage.addr = msg.sender;
+        _vpnUsage.addr = _from;
         _vpnUsage.receivedBytes = _receivedBytes;
         _vpnUsage.sessionDuration = _sessionDuration;
         _vpnUsage.amount = _amount;
         _vpnUsage.timestamp = _timestamp;
         _vpnUsage.isPayed = false;
 
-        users[_addr].vpnUsage.push(_vpnUsage);
-        users[_addr].dueAmount += _amount;
+        users[_to].vpnUsage.push(_vpnUsage);
+        users[_to].dueAmount += _amount;
     }
 
   function payVpnSession(

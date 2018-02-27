@@ -1,25 +1,22 @@
+import { clearInterval, setTimeout } from 'timers';
 const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
-const B_URL = 'https://api.sentinelgroup.io';
-const ETH_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
-&module=account&action=balance&tag=latest&address=`;
-const SENT_BALANCE_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
-&module=account&action=tokenbalance&tag=latest&contractaddress=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037&address=`;
-const ETH_TRANSC_URL = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
-&module=account&action=txlist&startblock=0&endblock=latest&address=`;
-const SENT_TRANSC_URL1 = `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
-&module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037
-&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=`;
-const TRANSC_STATUS = `https://api.etherscan.io/api?&apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&
-module=transaction&action=gettxreceiptstatus&txhash=`;
-const GAS_API = ` https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=proxy&action=eth_gasPrice`
+const config = require('../config');
+const B_URL = config.masterUrl;;
+const ETH_BALANCE_URL = config.ethBalanceUrl;
+const SENT_BALANCE_URL = config.sentBalanceUrl;
+const ETH_TRANSC_URL = config.ethTransUrl;
+const SENT_TRANSC_URL1 = config.sentTransUrl1;
+const TRANSC_STATUS = config.transcStatus;
+const GAS_API = config.gasApi;
 const SENT_TRANSC_URL2 = `&topic1_2_opr=or&topic2=`;
 const ETHER_API = `https://api.myetherapi.com/eth`;
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
+var getVPN = null;
 var OVPNDelTimer = null;
 var CONNECTED = false;
 var IPGENERATED = '';
@@ -357,49 +354,84 @@ export const getVPNList = (cb) => {
 
 
 export function connectVPN(account_addr, vpn_addr, cb) {
-  var command = 'sudo openvpn ' + OVPN_FILE;
-  fetch(B_URL + '/client/vpn', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      account_addr: account_addr,
-      vpn_addr: vpn_addr
-    })
-  }).then(function (response) {
-    response.json().then(function (res) {
-      if (res.success === true) {
-        getOVPNAndSave(account_addr, res['ip'], res['port'], vpn_addr, res['token'], function (err) {
-          if (err) cb(err);
-          else {
-            if (OVPNDelTimer) clearInterval(OVPNDelTimer);
+  if (remote.process.platform === 'darwin') {
+    exec("if which openvpn > /dev/null;then echo 'true' ; else echo 'false'; fi",
+      function (err, stdout, stderr) {
+        console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
+        if (stdout.trim().toString() == 'false') {
+          cb({ message: 'false' }, true)
+        }
+        else {
+          nextStep();
+        }
+      })
+  }
+  else {
+    nextStep();
+  }
+  function nextStep() {
+    var command;
+    if (remote.process.platform === 'darwin') {
+      var ovpncommand = 'openvpn ' + OVPN_FILE;
+      command = `/usr/bin/osascript -e 'do shell script "${ovpncommand}" with administrator privileges'`
+    }
+    else {
+      command = 'sudo openvpn ' + OVPN_FILE;
+    }
+    fetch(B_URL + '/client/vpn', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        account_addr: account_addr,
+        vpn_addr: vpn_addr
+      })
+    }).then(function (response) {
+      response.json().then(function (res) {
+        if (res.success === true) {
+          getOVPNAndSave(account_addr, res['ip'], res['port'], vpn_addr, res['token'], function (err) {
+            if (err) cb(err, false);
+            else {
+              if (OVPNDelTimer) clearInterval(OVPNDelTimer);
 
-            exec(command, function (err, stdout, stderr) {
-              OVPNDelTimer = setTimeout(function () {
-                fs.unlinkSync(OVPN_FILE);
-              }, 5 * 1000);
-            });
-
-            setTimeout(function () {
-              getVPNPIDs(function (err, pids) {
-                if (err) cb(err);
-                else {
-                  CONNECTED = true;
-                  cb(null);
-                }
+              exec(command, function (err, stdout, stderr) {
+                console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
+                OVPNDelTimer = setTimeout(function () {
+                  fs.unlinkSync(OVPN_FILE);
+                }, 5 * 1000);
               });
+              var count = 0;
 
-            }, 1000);
-          }
-        });
-      }
-      else {
-        cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' });
-      }
+              function checkVPNConnection() {
+                getVPNPIDs(function (err, pids) {
+                  if (err) cb({ message: err }, false);
+                  else {
+                    console.log("PIDS:", pids)
+                    CONNECTED = true;
+                    cb(null, false);
+                    count = 10;
+                  }
+
+                  count++;
+
+                  if (count < 10) {
+                    setTimeout(function () { checkVPNConnection(); }, 5000);
+                  }
+                });
+              }
+
+              checkVPNConnection();
+            }
+          });
+        }
+        else {
+          cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false);
+        }
+      })
     })
-  })
+  }
 }
 
 function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
@@ -421,14 +453,19 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
       if (response.status === 200) {
         response.json().then(function (response) {
           if (response.success === true) {
-            var ovpn = response['node']['vpn']['ovpn'].join('');
-            IPGENERATED = response['node']['vpn']['ovpn'][3].split(' ')[1];
-            LOCATION = response['node']['location']['city'];
-            SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + 'MBPS';
-            fs.writeFile(OVPN_FILE, ovpn, function (err) {
-              if (err) cb(err);
-              else cb(null);
-            });
+            if (response['node'] === null) {
+              cb({ message: 'Something wrong. Please Try Later' })
+            }
+            else {
+              var ovpn = response['node']['vpn']['ovpn'].join('');
+              IPGENERATED = response['node']['vpn']['ovpn'][3].split(' ')[1];
+              LOCATION = response['node']['location']['city'];
+              SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + 'MBPS';
+              fs.writeFile(OVPN_FILE, ovpn, function (err) {
+                if (err) cb(err);
+                else cb(null);
+              });
+            }
           } else {
             cb({ message: response.message || 'Error occurred while getting OVPN file, may be empty VPN resources.' });
           }
@@ -468,8 +505,12 @@ export function disconnectVPN(cb) {
     if (err) cb(err);
     else {
       var command = 'kill -2 ' + pids;
+      if (remote.process.platform === 'darwin') {
+        command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
+      }
       exec(command, function (err, stdout, stderr) {
-        if (err) cb({ message: err || 'Disconnecting failed' });
+        console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
+        if (err) cb({ message: err.toString() || 'Disconnecting failed' });
         else {
           CONNECTED = false;
           cb(null);

@@ -5,6 +5,7 @@ import { transferAmount, isOnline, payVPNUsage, getGasPrice, getGasCost } from '
 import { getPrivateKey, ethTransaction, tokenTransaction } from '../Actions/TransferActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
+var config=require('../config');
 
 
 let shell = window
@@ -204,7 +205,7 @@ class SendComponent extends Component {
     return (
       <div>
         Your Transaction is Placed Successfully. Check Status <a onClick={() => {
-          this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`)
+          this.openInExternalBrowser(`${config.statusUrl}/tx/${this.state.tx_addr}`)
         }} style={{ color: '#1d400' }}>Here</a>
       </div>
     )

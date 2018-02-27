@@ -6,6 +6,10 @@ import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline } from 
 import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
 
+let shell = window
+  .require('electron')
+  .shell;
+
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -17,8 +21,13 @@ class Header extends Component {
       showPopUp: false,
       vpnList: [],
       selectedVPN: null,
-      status: false
+      status: false,
+      showInstruct: false
     }
+  }
+
+  openInExternalBrowser(url) {
+    shell.openExternal(url);
   }
 
   componentWillMount = () => {
@@ -48,9 +57,13 @@ class Header extends Component {
     this.setState({ showPopUp: false, statusSnack: true, statusMessage: 'Connecting...' })
     let that = this;
     if (isOnline()) {
-      connectVPN(this.props.local_address, this.state.selectedVPN, function (err) {
-        if (err) {
-          that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
+      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isInstalled) {
+        if (isInstalled) {
+          that.setState({ status: false, showInstruct: true, statusSnack: false })
+        }
+        else if (err) {
+          if (err.message !== true)
+            that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
         }
         else {
           that.props.onChange();
@@ -107,6 +120,10 @@ class Header extends Component {
     this.setState({ showPopUp: false });
   };
 
+  closeInstruction = () => {
+    this.setState({ showInstruct: false });
+  }
+
   snackRequestClose = () => {
     this.setState({
       openSnack: false
@@ -126,6 +143,13 @@ class Header extends Component {
         onClick={this._connectVPN.bind(this)}
       />,
     ];
+    const instrucActions = [
+      <FlatButton
+        label="Close"
+        primary={true}
+        onClick={this.closeInstruction}
+      />
+    ]
     return (
       <div style={{ height: 70, backgroundColor: '#532d91' }}>
         <div>
@@ -161,9 +185,6 @@ class Header extends Component {
                         style={styles.clipBoard}
                       />
                     </CopyToClipboard>
-                    <ReactTooltip id="copyImage" place="bottom">
-                      <span>Copy</span>
-                    </ReactTooltip>
                   </Col>
                 </Row>
               </Col>
@@ -236,6 +257,38 @@ class Header extends Component {
                   <span>No VPNs Found</span>
                 }
               </Dialog>
+              <Dialog
+                title="Install Dependencies"
+                titleStyle={{ fontSize: 14 }}
+                actions={instrucActions}
+                modal={true}
+                open={this.state.showInstruct}
+              >
+                This device does not have OpenVPN installed. Please install it by running below command: <br />
+                <code>brew install openvpn</code>
+                <CopyToClipboard text='brew install openvpn'
+                  onCopy={() => this.setState({
+                    snackMessage: 'Copied to Clipboard Successfully',
+                    openSnack: true
+                  })} >
+                  <img
+                    src={'../src/Images/download.jpeg'}
+                    alt="copy"
+                    data-tip data-for="copyImage"
+                    style={styles.clipBoardDialog}
+                  />
+                </CopyToClipboard>
+                <br />
+                If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
+                    for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
+                  }}
+                >this page</a>
+                <ReactTooltip id="copyImage" place="bottom">
+                  <span>Copy</span>
+                </ReactTooltip>
+              </Dialog>
             </Row>
           </Grid>
         </div>
@@ -252,6 +305,12 @@ const styles = {
     cursor: 'pointer',
     marginTop: '5%',
     marginLeft: -12
+  },
+  clipBoardDialog: {
+    height: 14,
+    width: 14,
+    cursor: 'pointer',
+    marginLeft: 5
   },
   walletAddress: {
     fontSize: 12,

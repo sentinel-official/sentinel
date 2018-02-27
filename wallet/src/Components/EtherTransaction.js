@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
+var config = require('../config');
 
 let shell = window
     .require('electron')
@@ -54,7 +55,7 @@ class EtherTransaction extends Component {
                   </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            this.openInExternalBrowser(`https://etherscan.io/address/${history.to}`)
+                                            this.openInExternalBrowser(`${config.statusUrl}/address/${history.to}`)
                                         }}>{history.to}</a>
                                     <CopyToClipboard text={history.to}
                                         onCopy={() => that.setState({
@@ -93,7 +94,7 @@ class EtherTransaction extends Component {
                 </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            this.openInExternalBrowser(`https://etherscan.io/address/${history.from}`)
+                                            this.openInExternalBrowser(`${config.statusUrl}/address/${history.from}`)
                                         }}>{history.from}</a>
                                     <CopyToClipboard text={history.from}
                                         onCopy={() => that.setState({
@@ -126,7 +127,7 @@ class EtherTransaction extends Component {
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
-                                    this.openInExternalBrowser(`https://etherscan.io/tx/${history.hash}`)
+                                    this.openInExternalBrowser(`${config.statusUrl}/tx/${history.hash}`)
                                 }}>{history.hash}</a></pre>
                     </div>
                 )

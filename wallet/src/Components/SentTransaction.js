@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
+var config=require('../config');
 let zfill = require('zfill');
 
 let shell = window
@@ -56,7 +57,7 @@ class SentTransaction extends Component {
                   </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            this.openInExternalBrowser(`https://etherscan.io/address/0x${history.topics[2].substring(26)}`)
+                                            this.openInExternalBrowser(`${config.statusUrl}/address/0x${history.topics[2].substring(26)}`)
                                         }}>{`0x${history.topics[2].substring(26)}`}</a>
                                     <CopyToClipboard text={`0x${history.topics[2].substring(26)}`}
                                         onCopy={() => that.setState({
@@ -95,7 +96,7 @@ class SentTransaction extends Component {
                 </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            this.openInExternalBrowser(`https://etherscan.io/address/0x${history.topics[1].substring(26)}`)
+                                            this.openInExternalBrowser(`${config.statusUrl}/address/0x${history.topics[1].substring(26)}`)
                                         }}>{`0x${history.topics[1].substring(26)}`}</a>
                                     <CopyToClipboard text={`0x${history.topics[1].substring(26)}`}
                                         onCopy={() => that.setState({
@@ -129,7 +130,7 @@ class SentTransaction extends Component {
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
-                                    this.openInExternalBrowser(`https://etherscan.io/tx/${history.transactionHash}`)
+                                    this.openInExternalBrowser(`${config.statusUrl}/tx/${history.transactionHash}`)
                                 }}>{history.transactionHash}</a></pre>
                     </div>
                 )

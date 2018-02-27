@@ -1,4 +1,4 @@
-import { clearInterval, setTimeout } from 'timers';
+// import { clearInterval, setTimeout } from 'timers';
 const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -397,13 +397,24 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               if (OVPNDelTimer) clearInterval(OVPNDelTimer);
 
               exec(command, function (err, stdout, stderr) {
-                console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
                 OVPNDelTimer = setTimeout(function () {
                   fs.unlinkSync(OVPN_FILE);
                 }, 5 * 1000);
               });
               var count = 0;
+              if (remote.process.platform === 'darwin') checkVPNConnection();
+              else {
+                setTimeout(function () {
+                  getVPNPIDs(function (err, pids) {
+                    if (err) cb({ message: err }, false);
+                    else {
+                      CONNECTED = true;
+                      cb(null);
+                    }
+                  });
 
+                }, 1000);
+              }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
                   if (err) cb({ message: err }, false);
@@ -421,8 +432,6 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                   }
                 });
               }
-
-              checkVPNConnection();
             }
           });
         }

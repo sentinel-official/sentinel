@@ -3,7 +3,12 @@ const path = require('path');
 const electron = require('electron');
 const { app, BrowserWindow, Menu } = electron;
 var i18n = new (require('./translations/i18n'));
+const remote = electron.remote;
 var { exec } = require('child_process');
+var sudo = require('sudo-prompt');
+var disconnect = {
+  name: 'DisconnectOpenVPN'
+};
 
 function windowManager() {
   this.window = null;
@@ -23,14 +28,21 @@ function windowManager() {
 }
 
 function stopVPN() {
-  exec('pidof openvpn', (err, stdout, stderr) => {
-    if (stdout) {
-      let pids = stdout.trim();
-      let command = 'kill -2 ' + pids;
-      exec(command, (err, stdout, stderr) => {
+  if (process.platform === 'win32') {
+    sudo.exec('taskkill /IM openvpn.exe /f', disconnect,
+      function (error, stdout, stderr) {
       });
-    }
-  });
+  }
+  else {
+    exec('pidof openvpn', (err, stdout, stderr) => {
+      if (stdout) {
+        let pids = stdout.trim();
+        let command = 'kill -2 ' + pids;
+        exec(command, (err, stdout, stderr) => {
+        });
+      }
+    });
+  }
 }
 
 const template = [{

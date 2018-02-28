@@ -400,7 +400,7 @@ class SendComponent extends Component {
               style={{ marginBottom: '2%' }}
               message="Transaction Placed"
               action="Check Status"
-              onActionClick={() => { this.openInExternalBrowser(`https://etherscan.io/tx/${this.state.tx_addr}`) }}
+              onActionClick={() => { this.openInExternalBrowser(`https://${config.statusUrl}/tx/${this.state.tx_addr}`) }}
             />
             <Snackbar
               open={this.state.snackOpen}

@@ -22,6 +22,17 @@ var CONNECTED = false;
 var IPGENERATED = '';
 var LOCATION = '';
 var SPEED = '';
+var sudo = remote.require('sudo-prompt');
+var connect = {
+  name: 'ConnectOpenVPN'
+};
+var disconnect = {
+  name: 'DisconnectOpenVPN'
+};
+
+exec('dir', (err, stdout, stderr) => {
+  console.log("dir:", stdout)
+})
 
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
 if (fs.existsSync(OVPN_FILE)) fs.unlinkSync(OVPN_FILE);
@@ -374,8 +385,9 @@ export function connectVPN(account_addr, vpn_addr, cb) {
     if (remote.process.platform === 'darwin') {
       var ovpncommand = 'openvpn ' + OVPN_FILE;
       command = `/usr/bin/osascript -e 'do shell script "${ovpncommand}" with administrator privileges'`
-    }
-    else {
+    } else if (remote.process.platform === 'win32') {
+      command = 'resources\\extras\\bin\\openvpn.exe ' + OVPN_FILE;
+    } else {
       command = 'sudo openvpn ' + OVPN_FILE;
     }
     fetch(B_URL + '/client/vpn', {
@@ -395,21 +407,46 @@ export function connectVPN(account_addr, vpn_addr, cb) {
             if (err) cb(err, false);
             else {
               if (OVPNDelTimer) clearInterval(OVPNDelTimer);
-
-              exec(command, function (err, stdout, stderr) {
-                OVPNDelTimer = setTimeout(function () {
-                  fs.unlinkSync(OVPN_FILE);
-                }, 5 * 1000);
-              });
+              if (remote.process.platform === 'win32') {
+                sudo.exec(command, connect,
+                  function (error, stdout, stderr) {
+                    console.log('Err...', error, 'Stdout..', stdout, 'Stderr..', stderr)
+                    OVPNDelTimer = setTimeout(function () {
+                      fs.unlinkSync(OVPN_FILE);
+                    }, 5 * 1000);
+                  }
+                );
+              }
+              else {
+                exec(command, function (err, stdout, stderr) {
+                  OVPNDelTimer = setTimeout(function () {
+                    fs.unlinkSync(OVPN_FILE);
+                  }, 5 * 1000);
+                });
+              }
               var count = 0;
               if (remote.process.platform === 'darwin') checkVPNConnection();
+              else if (remote.process.platform === 'win32') {
+                setTimeout(function () {
+                  exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
+                    if (stdout.toString() === '') {
+                      cb({ message: 'Something went wrong.Please Try Again' }, false)
+                    }
+                    else {
+                      CONNECTED = true;
+                      cb(null, false);
+                    }
+                  })
+                }, 20000);
+
+              }
               else {
                 setTimeout(function () {
                   getVPNPIDs(function (err, pids) {
                     if (err) cb({ message: err }, false);
                     else {
                       CONNECTED = true;
-                      cb(null);
+                      cb(null, false);
                     }
                   });
 
@@ -462,6 +499,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
       if (response.status === 200) {
         response.json().then(function (response) {
           if (response.success === true) {
+            console.log("vpn respon..",response)
             if (response['node'] === null) {
               cb({ message: 'Something wrong. Please Try Later' })
             }
@@ -510,23 +548,35 @@ export const isOnline = function () {
 }
 
 export function disconnectVPN(cb) {
-  getVPNPIDs(function (err, pids) {
-    if (err) cb(err);
-    else {
-      var command = 'kill -2 ' + pids;
-      if (remote.process.platform === 'darwin') {
-        command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
-      }
-      exec(command, function (err, stdout, stderr) {
-        console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
-        if (err) cb({ message: err.toString() || 'Disconnecting failed' });
+  if (remote.process.platform === 'win32') {
+    sudo.exec('taskkill /IM openvpn.exe /f', disconnect,
+      function (error, stdout, stderr) {
+        if (error) cb({ message: error.toString() || 'Disconnecting failed' });
         else {
           CONNECTED = false;
           cb(null);
         }
       });
-    }
-  });
+  }
+  else {
+    getVPNPIDs(function (err, pids) {
+      if (err) cb(err);
+      else {
+        var command = 'kill -2 ' + pids;
+        if (remote.process.platform === 'darwin') {
+          command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
+        }
+        exec(command, function (err, stdout, stderr) {
+          console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
+          if (err) cb({ message: err.toString() || 'Disconnecting failed' });
+          else {
+            CONNECTED = false;
+            cb(null);
+          }
+        });
+      }
+    });
+  }
 }
 
 export function getVPNdetails(cb) {

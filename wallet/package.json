@@ -11,7 +11,7 @@
     "d3": "^4.12.2",
     "d3-world-maps": "0.0.3",
     "electron-installer-dmg": "^0.2.1",
-    "electron-packager": "^10.1.1",
+    "electron-packager": "^10.1.2",
     "ethereumjs-tx": "^1.3.3",
     "fs": "0.0.1-security",
     "fs-thenable": "^1.1.1",
@@ -32,10 +32,11 @@
     "react-mapbox-gl": "^3.4.1",
     "react-qr-svg": "^2.1.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17",
+    "react-scripts": "^1.0.17",
     "react-simple-maps": "^0.10.1",
     "react-tooltip": "^3.4.0",
-    "web3": "git+https://github.com/ethereum/web3.js.git",
+    "sudo-prompt": "^8.1.0",
+    "web3": "0.20.5",
     "zfill": "0.0.2"
   },
   "scripts": {
@@ -52,7 +53,6 @@
   },
   "devDependencies": {
     "electron": "^1.7.11",
-    "electron-installer-debian": "^0.7.1",
     "electron-winstaller": "^2.6.3"
   }
 }

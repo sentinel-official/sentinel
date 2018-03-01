@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { transferAmount, isOnline, payVPNUsage, getGasPrice, getGasCost } from '../Actions/AccountActions';
-import { getPrivateKey, ethTransaction, tokenTransaction } from '../Actions/TransferActions';
+import { transferAmount, isOnline, payVPNUsage, getGasPrice } from '../Actions/AccountActions';
+import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost } from '../Actions/TransferActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
-var config=require('../config');
+var config = require('../config');
 
 
 let shell = window
@@ -67,6 +67,7 @@ class SendComponent extends Component {
         sending: nextProps.sending,
         password: ''
       })
+      this.getGasLimit(nextProps.amount,nextProps.to_addr,nextProps.unit);
       this.props.propReceiveChange()
       if (nextProps.to_addr !== '') {
         this.setState({ isDisabled: false })
@@ -81,8 +82,9 @@ class SendComponent extends Component {
     let self = this;
     let from_addr = this.props.local_address;
     let to_addr = this.state.to_address;
+    let gas = this.state.gas;
     let amount = this.state.amount;
-    tokenTransaction(from_addr, to_addr, amount, privateKey, function (data) {
+    tokenTransaction(from_addr, to_addr, amount, gas, privateKey, function (data) {
       let body = {
         from_addr: self.props.local_address,
         amount: self.state.amount,
@@ -91,7 +93,7 @@ class SendComponent extends Component {
       }
       payVPNUsage(body, function (err, tx_addr) {
         self.props.clearSend();
-        if (err){
+        if (err) {
           self.setState({
             snackOpen: true,
             snackMessage: err.message,
@@ -115,14 +117,15 @@ class SendComponent extends Component {
     let self = this;
     let from_addr = this.props.local_address;
     let to_addr = this.state.to_address;
+    let gas = this.state.gas;
     let amount = this.state.amount;
     if (this.state.unit === 'ETH') {
-      ethTransaction(from_addr, to_addr, amount, privateKey, function (data) {
+      ethTransaction(from_addr, to_addr, amount, gas, privateKey, function (data) {
         self.mainTransaction(data)
       })
     }
     else {
-      tokenTransaction(from_addr, to_addr, amount, privateKey, function (data) {
+      tokenTransaction(from_addr, to_addr, amount, gas, privateKey, function (data) {
         self.mainTransaction(data)
       })
     }
@@ -146,7 +149,7 @@ class SendComponent extends Component {
         snackOpen: true,
         snackMessage: err.message,
         sending: false,
-        isDisabled:false
+        isDisabled: false
       });
   }
 
@@ -219,9 +222,9 @@ class SendComponent extends Component {
   amountChange = (event, amount) => {
     this.setState({ amount: amount })
     let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
-    // if (trueAddress !== null) {
-    //   this.getGasLimit()
-    // }
+    if (trueAddress !== null) {
+      this.getGasLimit(amount, this.state.to_address, this.state.unit)
+    }
   }
 
   addressChange = (event, to_addr) => {
@@ -229,24 +232,19 @@ class SendComponent extends Component {
     let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
     if (trueAddress !== null) {
       this.setState({ isDisabled: false })
-      // if (this.state.amount !== '') {
-      //   this.getGasLimit()
-      // }
+      if (this.state.amount !== '') {
+        this.getGasLimit(this.state.amount, to_addr, this.state.unit)
+      }
     }
   }
 
-  getGasLimit = () => {
+  getGasLimit = (amount, to, unit) => {
     var from = this.props.local_address;
-    var to = this.state.to_address;
-    var amount = '0x' + (parseFloat(parseFloat(this.state.amount) * (10 ** 18)).toString(16));
-    var data = '0x00';
-    var id = Math.random().toString(36).substring(5)
+    if (unit === 'ETH') amount = amount * Math.pow(10, 18)
+    else amount = amount * Math.pow(10, 8)
     let that = this;
-    getGasCost(from, to, amount, data, id, function (err, gasLimit) {
-      if (err) console.log(err)
-      else {
-        that.setState({ gas: gasLimit })
-      }
+    getGasCost(from, to, amount, unit, function (gasLimit) {
+      that.setState({ gas: gasLimit })
     })
   }
 
@@ -257,7 +255,13 @@ class SendComponent extends Component {
     });
   };
 
-  handleChange = (event, index, unit) => this.setState({ unit });
+  handleChange = (event, index, unit) => {
+    this.setState({ unit });
+    let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
+    if (trueAddress !== null && this.state.amount !== '') {
+      this.getGasLimit(this.state.amount, this.state.to_address, unit)
+    }
+  };
   render() {
     return (
       <MuiThemeProvider>

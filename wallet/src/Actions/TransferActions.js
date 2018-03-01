@@ -9,13 +9,34 @@ const SENTINEL_ABI = [{ "constant": true, "inputs": [], "name": "name", "outputs
 const SENTINEL_ADDRESS = config.sentinelAddress;
 const contract = web3.eth.contract(SENTINEL_ABI).at(SENTINEL_ADDRESS);
 
-export function tokenTransaction(from_addr, to_addr, amount, privateKey, cb) {
+export function getGasCost(from_addr, to_addr, amount, unit, cb) {
+    var gasCost;
+    console.log(from_addr, to_addr, amount);
+    if (unit === 'ETH') {
+        try {
+            gasCost = web3.eth.estimateGas({ to: to_addr, value: amount })
+        } catch (err) {
+            gasCost = 21000
+        }
+        cb(gasCost)
+    }
+    else {
+        try {
+            gasCost = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
+        } catch (err) {
+            gasCost = 38119
+        }
+        cb(gasCost)
+    }
+}
+
+export function tokenTransaction(from_addr, to_addr, amount, gas, privateKey, cb) {
     amount = amount * Math.pow(10, 8);
     var data = contract.transfer.getData(to_addr, amount, { from: from_addr });
     var txParams = {
         nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
         gasPrice: web3.toHex(web3.eth.gasPrice.c[0]),
-        gasLimit: web3.toHex(config.gasLimit),
+        gasLimit: gas,
         from: from_addr,
         to: SENTINEL_ADDRESS,
         value: '0x00',
@@ -27,11 +48,11 @@ export function tokenTransaction(from_addr, to_addr, amount, privateKey, cb) {
     cb(serializedTx);
 }
 
-export function ethTransaction(from_addr, to_addr, amount, privateKey, cb) {
+export function ethTransaction(from_addr, to_addr, amount, gas, privateKey, cb) {
     var txParams = {
         nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
         gasPrice: web3.toHex(web3.eth.gasPrice.c[0]),
-        gasLimit: web3.toHex(config.gasLimit),
+        gasLimit: gas,
         from: from_addr,
         to: to_addr,
         value: web3.toHex(web3.toWei(amount, 'ether')),

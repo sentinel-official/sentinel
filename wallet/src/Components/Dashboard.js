@@ -114,7 +114,7 @@ class Dashboard extends Component {
   vpnPayment = (sessionData) => {
     this.setState({
       to_addr: sessionData.account_addr,
-      amount: sessionData.amount,
+      amount: parseFloat(sessionData.amount/(10**8)),
       unit: 'SENT',
       value: 'send',
       sessionId: sessionData.id,

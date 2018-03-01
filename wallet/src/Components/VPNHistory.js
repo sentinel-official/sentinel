@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MuiThemeProvider} from 'material-ui';
+import { MuiThemeProvider } from 'material-ui';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { getVpnHistory, isOnline } from '../Actions/AccountActions';
 import { RaisedButton, Card, CardText, CardActions, IconButton, Snackbar } from 'material-ui';
@@ -76,9 +76,9 @@ class VPNHistory extends Component {
                                 <ReactTooltip id="copyImage" place="bottom">
                                     <span>Copy</span>
                                 </ReactTooltip>
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Amount: </span>{sessionData.amount} SENTS<br />
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Amount: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS<br />
                                 <span style={{ fontWeight: 600 }}>Duration: </span>{sessionData.duration} secs
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Bytes: </span>{sessionData.received_bytes}
+                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Bytes: </span>{parseInt(sessionData.received_bytes)/(1024*1024)} MB
                                 <span style={{ fontWeight: 600, marginLeft: 10 }}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>
                             {
@@ -120,9 +120,9 @@ class VPNHistory extends Component {
                     </div>
                     {vpnUsage ?
                         <div>
-                            <span style={{ fontWeight: 600 }}>Total Due : </span>{vpnUsage.due} SENTS<br />
+                            <span style={{ fontWeight: 600 }}>Total Due : </span>{parseInt(vpnUsage.due)/(10**8)} SENTS<br />
                             <span style={{ fontWeight: 600 }} >Total Duration : </span>{vpnUsage.stats['duration']} secs<br />
-                            <span style={{ fontWeight: 600 }}>Total Received Bytes : </span>{vpnUsage.stats['received_bytes']}
+                            <span style={{ fontWeight: 600 }}>Total Received Bytes : </span>{parseInt(vpnUsage.stats['received_bytes'])/(1024*1024)} MB
                             <hr />
                             <h4 style={{ fontWeight: 600 }}>Sessions</h4>
                             <div style={{ overflow: 'auto', height: 300 }}>{sessionOutput}</div>

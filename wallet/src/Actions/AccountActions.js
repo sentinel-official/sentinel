@@ -365,18 +365,38 @@ export const getVPNList = (cb) => {
 
 
 export function connectVPN(account_addr, vpn_addr, cb) {
+  console.log(remote.process.platform);
   if (remote.process.platform === 'darwin') {
     exec("if which openvpn > /dev/null;then echo 'true' ; else echo 'false'; fi",
       function (err, stdout, stderr) {
         console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
         if (stdout.trim().toString() == 'false') {
-          cb({ message: 'false' }, true)
-        }
-        else {
+          cb({ message: 'false' }, true,false)
+         } else {
           nextStep();
         }
       })
   }
+  else if(remote.process.platform === 'win32'){
+    console.log("In Windows");
+    exec('cd c:\\Program Files && dir openvpn.exe /s /p | findstr "openvpn"',function(err, stdout, stderr){
+      console.log("In Program files",stdout);
+     if(stdout.toString()===''){
+       exec('cd c:\\Program Files (x86) && dir openvpn.exe /s /p | findstr "openvpn"',function(error, stdout1, stderr1){
+       console.log("In program files(x86)",stdout1);
+        if(stdout.toString()===''){
+          console.log("File not found Install");
+         cb({ message: 'false' }, false,true);
+       }
+       else{
+        nextStep();
+       }
+   })
+       } else{
+        nextStep();
+       }
+     })
+   }
   else {
     nextStep();
   }
@@ -404,7 +424,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
       response.json().then(function (res) {
         if (res.success === true) {
           getOVPNAndSave(account_addr, res['ip'], res['port'], vpn_addr, res['token'], function (err) {
-            if (err) cb(err, false);
+            if (err) cb(err, false,false);
             else {
               if (OVPNDelTimer) clearInterval(OVPNDelTimer);
               if (remote.process.platform === 'win32') {
@@ -430,11 +450,11 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                 setTimeout(function () {
                   exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
                     if (stdout.toString() === '') {
-                      cb({ message: 'Something went wrong.Please Try Again' }, false)
+                      cb({ message: 'Something went wrong.Please Try Again' }, false,false)
                     }
                     else {
                       CONNECTED = true;
-                      cb(null, false);
+                      cb(null, false,false);
                     }
                   })
                 }, 20000);
@@ -443,10 +463,10 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               else {
                 setTimeout(function () {
                   getVPNPIDs(function (err, pids) {
-                    if (err) cb({ message: err }, false);
+                    if (err) cb({ message: err }, false,false);
                     else {
                       CONNECTED = true;
-                      cb(null, false);
+                      cb(null, false,false);
                     }
                   });
 
@@ -454,11 +474,11 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
-                  if (err) cb({ message: err }, false);
+                  if (err) cb({ message: err }, false,false);
                   else {
                     console.log("PIDS:", pids)
                     CONNECTED = true;
-                    cb(null, false);
+                    cb(null, false,false);
                     count = 10;
                   }
 
@@ -473,7 +493,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
           });
         }
         else {
-          cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false);
+          cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false,false);
         }
       })
     })

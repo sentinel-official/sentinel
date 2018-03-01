@@ -22,7 +22,8 @@ class Header extends Component {
       vpnList: [],
       selectedVPN: null,
       status: false,
-      showInstruct: false
+      showInstruct: false,
+      isMac:false
     }
   }
 
@@ -57,18 +58,21 @@ class Header extends Component {
     this.setState({ showPopUp: false, statusSnack: true, statusMessage: 'Connecting...' })
     let that = this;
     if (isOnline()) {
-      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isInstalled) {
-        if (isInstalled) {
-          that.setState({ status: false, showInstruct: true, statusSnack: false })
+      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isMacError,isWinError) {
+        if (isMacError) {
+          that.setState({ status: false, showInstruct: true, statusSnack: false, isMac:true })
+        }
+        else if(isWinError){
+          that.setState({ status: false, showInstruct: true, statusSnack: false, isMac:false })
         }
         else if (err) {
           if (err.message !== true)
-            that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
+            that.setState({ status: false, statusSnack: false, showInstruct: false,openSnack: true, snackMessage: err.message })
         }
         else {
           that.props.onChange();
           //that.returnVPN();
-          that.setState({ status: true, statusSnack: false, openSnack: true, snackMessage: "Connected VPN" })
+          that.setState({ status: true, statusSnack: false, showInstruct: false,openSnack: true, snackMessage: "Connected VPN" })
         }
       })
     }
@@ -263,7 +267,7 @@ class Header extends Component {
                 actions={instrucActions}
                 modal={true}
                 open={this.state.showInstruct}
-              >
+              >{this.state.isMac ?<span>
                 This device does not have OpenVPN installed. Please install it by running below command: <br />
                 <code>brew install openvpn</code>
                 <CopyToClipboard text='brew install openvpn'
@@ -285,10 +289,16 @@ class Header extends Component {
                     for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
                   }}
                 >this page</a>
-                <ReactTooltip id="copyImage" place="bottom">
+                </span>
+                :
+                <span>
+                  OpenVPN Not Installed
+                </span>
+                }
+              </Dialog>
+              <ReactTooltip id="copyImage" place="bottom">
                   <span>Copy</span>
                 </ReactTooltip>
-              </Dialog>
             </Row>
           </Grid>
         </div>

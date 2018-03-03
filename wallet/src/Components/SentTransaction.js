@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
-var config=require('../config');
+var config = require('../config');
 let zfill = require('zfill');
 
 let shell = window
@@ -119,19 +119,31 @@ class SentTransaction extends Component {
                                 </div>
                             </div>
                         }
-                        <ReactTooltip id="copyImage" place="bottom">
-                            <span>Copy</span>
-                        </ReactTooltip>
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
                             <span style={{ fontWeight: 'bold' }}>Amount : </span>
                             <span>{(parseInt(history.data) / (10 ** 8)).toFixed(3)} </span>
                             <span>SENTs</span>  |
-                    <span style={{ fontWeight: 'bold' }}> Status : Success</span> |
-                    <span style={{ fontWeight: 'bold' }}> Tx : </span>
+                            <span style={{ fontWeight: 'bold' }}> Status : Success</span> |
+                            <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
                                     this.openInExternalBrowser(`${config.statusUrl}/tx/${history.transactionHash}`)
-                                }}>{history.transactionHash}</a></pre>
+                                }}>{history.transactionHash}
+                            </a>
+                            <CopyToClipboard text={history.transactionHash}
+                                onCopy={() => that.setState({
+                                    snackMessage: 'Copied to Clipboard Successfully',
+                                    openSnack: true
+                                })} >
+                                <img src={'../src/Images/download.jpeg'}
+                                    alt="copy"
+                                    data-tip data-for="copyImage"
+                                    style={styles.clipBoard} />
+                            </CopyToClipboard>
+                        </pre>
+                        <ReactTooltip id="copyImage" place="bottom">
+                            <span>Copy</span>
+                        </ReactTooltip>
                     </div>
                 )
             })

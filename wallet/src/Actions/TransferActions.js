@@ -15,7 +15,9 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
     if (unit === 'ETH') {
         try {
             gasCost = web3.eth.estimateGas({ to: to_addr, value: amount })
+            console.log("Gas...",gasCost)
         } catch (err) {
+            console.log("Error...",err)
             gasCost = 21000
         }
         cb(gasCost)
@@ -23,7 +25,9 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
     else {
         try {
             gasCost = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
+            console.log("Gas...",gasCost)
         } catch (err) {
+            console.log("Error...",err)
             gasCost = 38119
         }
         cb(gasCost)

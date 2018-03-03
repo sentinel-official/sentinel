@@ -292,7 +292,21 @@ class Header extends Component {
                 </span>
                 :
                 <span>
-                  OpenVPN Not Installed
+                  OpenVPN Not Installed.
+                  Install here https://openvpn.net/index.php/open-source/downloads.html.
+                  <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
+                  onCopy={() => this.setState({
+                    snackMessage: 'Copied to Clipboard Successfully',
+                    openSnack: true
+                  })} >
+                  <img
+                    src={'../src/Images/download.jpeg'}
+                    alt="copy"
+                    data-tip data-for="copyImage"
+                    style={styles.clipBoardDialog}
+                  />
+                </CopyToClipboard>
+
                 </span>
                 }
               </Dialog>

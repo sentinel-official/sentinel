@@ -413,14 +413,10 @@ export function connectVPN(account_addr, vpn_addr, cb) {
       })
   }
   else if (remote.process.platform === 'win32') {
-    console.log("In Windows");
     exec('cd c:\\Program Files && dir openvpn.exe /s /p | findstr "openvpn"', function (err, stdout, stderr) {
-      console.log("In Program files", stdout);
       if (stdout.toString() === '') {
         exec('cd c:\\Program Files (x86) && dir openvpn.exe /s /p | findstr "openvpn"', function (error, stdout1, stderr1) {
-          console.log("In program files(x86)", stdout1);
           if (stdout.toString() === '') {
-            console.log("File not found Install");
             cb({ message: 'false' }, false, true);
           }
           else {

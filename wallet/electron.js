@@ -20,8 +20,12 @@ function windowManager() {
       protocol: 'file:',
       slashes: true
     }));
+    this.window.on('close',(e)=>{
+        e.preventDefault();
+        stopVPN();
+        this.window.hide();
+    });
     this.window.on('closed', () => {
-      stopVPN();
       this.window = null;
     });
   }
@@ -29,8 +33,10 @@ function windowManager() {
 
 function stopVPN() {
   if (process.platform === 'win32') {
+    console.log("on close");
     sudo.exec('taskkill /IM openvpn.exe /f', disconnect,
       function (error, stdout, stderr) {
+        console.log("In exec");
       });
   }
   else {

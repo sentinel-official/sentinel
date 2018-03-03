@@ -117,9 +117,6 @@ class EtherTransaction extends Component {
                                 </div>
                             </div>
                         }
-                        <ReactTooltip id="copyImage" place="bottom">
-                            <span>Copy</span>
-                        </ReactTooltip>
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
                             <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
                             <span>ETHs</span>  |
@@ -128,7 +125,21 @@ class EtherTransaction extends Component {
                             <a style={styles.anchorStyle} onClick={
                                 () => {
                                     this.openInExternalBrowser(`${config.statusUrl}/tx/${history.hash}`)
-                                }}>{history.hash}</a></pre>
+                                }}>{history.hash}</a>
+                            <CopyToClipboard text={history.transactionHash}
+                                onCopy={() => that.setState({
+                                    snackMessage: 'Copied to Clipboard Successfully',
+                                    openSnack: true
+                                })} >
+                                <img src={'../src/Images/download.jpeg'}
+                                    alt="copy"
+                                    data-tip data-for="copyImage"
+                                    style={styles.clipBoard} />
+                            </CopyToClipboard>
+                            <ReactTooltip id="copyImage" place="bottom">
+                                <span>Copy</span>
+                            </ReactTooltip>
+                        </pre>
                     </div>
                 )
             })

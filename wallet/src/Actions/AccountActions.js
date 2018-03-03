@@ -30,9 +30,9 @@ var disconnect = {
   name: 'DisconnectOpenVPN'
 };
 
-exec('dir', (err, stdout, stderr) => {
-  console.log("dir:", stdout)
-})
+// exec('dir', (err, stdout, stderr) => {
+//   console.log("dir:", stdout)
+// })
 
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
 if (fs.existsSync(OVPN_FILE)) fs.unlinkSync(OVPN_FILE);
@@ -251,6 +251,34 @@ export function payVPNUsage(data, cb) {
           }
         }
 
+      })
+    }
+    else {
+      cb({ message: response.message || 'Internal Server Error' }, null);
+    }
+  });
+}
+
+export function reportPayment(data,cb) {
+  fetch(B_URL + '/client/vpn/report', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify(data)
+  }).then(function (response) {
+    if (response.status === 200) {
+      response.json().then(function (response) {
+        console.log("Res Tran...", response)
+        if (response.success === true) {
+          var tx_hash = response['tx_hash'];
+          cb(null, tx_hash);
+        }
+        else {
+          cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Transaction Failed' }, null);
+        }
       })
     }
     else {

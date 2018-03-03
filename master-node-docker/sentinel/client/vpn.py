@@ -6,7 +6,7 @@ from ..db import db
 from ..config import DECIMALS
 from ..config import SENT_BALANCE
 from ..helpers import eth_helper
-
+from ..eth import vpn_service_manager
 
 def get_vpns_list():
     _list = db.nodes.find({'vpn.status': 'up'}, {
@@ -139,6 +139,32 @@ class PayVpnUsage(object):
                 'errors': errors,
                 'tx_hashes': tx_hashes,
                 'message': 'VPN payment is completed successfully.'
+            }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
+class ReportPayment(object):
+    def on_post(self, req, resp):
+        from_addr = str(req.body['from_addr'])
+        amount = int(req.body['amount'])
+        session_id = int(req.body['session_id'])
+
+        error, tx_hash = vpn_service_manager.pay_vpn_session(
+                from_addr, amount, session_id)
+
+        if error is None:
+            message = {
+                'success': True,
+                'tx_hash': tx_hash,
+                'message': 'Payment Done Successfully'
+            }
+        else:
+            message = {
+                'success': False,
+                'error': error,
+                'message': 'Vpn payment not successful'
             }
 
         resp.status = falcon.HTTP_200

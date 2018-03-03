@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider } from 'material-ui';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getVpnHistory, isOnline } from '../Actions/AccountActions';
-import { RaisedButton, Card, CardText, CardActions, IconButton, Snackbar } from 'material-ui';
+import { getVpnHistory, isOnline, getSentTransactionHistory, reportPayment } from '../Actions/AccountActions';
+import { RaisedButton, Card, CardText, CardActions, IconButton, Snackbar, TextField } from 'material-ui';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Done from 'material-ui/svg-icons/action/done';
+import Send from 'material-ui/svg-icons/content/send';
 import ReactTooltip from 'react-tooltip';
 import _ from 'lodash';
+let zfill = require('zfill');
 
 class VPNHistory extends Component {
     constructor(props) {
@@ -15,7 +17,9 @@ class VPNHistory extends Component {
             isInitial: true,
             vpnUsage: null,
             openSnack: false,
-            snackMessage: ''
+            snackMessage: '',
+            isReport: false,
+            txHash: ''
         }
     }
 
@@ -24,6 +28,10 @@ class VPNHistory extends Component {
             openSnack: false,
         });
     };
+
+    showText = (divID) => {
+        document.getElementById(divID).style.display = 'inline';
+    }
 
     getVpnHistory() {
         let that = this;
@@ -44,6 +52,50 @@ class VPNHistory extends Component {
 
     payDue(sessionDetails) {
         this.props.payVPN(sessionDetails);
+    }
+
+    compareTransaction(sessionData) {
+        var txId = this.state.txHash;
+        let that = this;
+        getSentTransactionHistory('0x' + zfill(this.props.local_address.substring(2), 64), (err, history) => {
+            if (err) {
+                that.setState({ openSnack: true, snackMessage: 'Problem faced in reporting. Try again later' })
+            }
+            else {
+                var data = _.sortBy(history, o => o.timeStamp).reverse()
+                var transactionDetails = data.find(o => o.transactionHash === txId)
+                if (transactionDetails === undefined) {
+                    that.setState({ openSnack: true, snackMessage: 'No transaction found with that transaction Id' })
+                } else {
+                    console.log('Transaction..', transactionDetails);
+                    console.log('Session Data..', sessionData)
+                    var transacToAddr = '0x' + transactionDetails.topics[2].substring(26);
+                    var transacFrom = '0x' + transactionDetails.topics[1].substring(26);
+                    console.log("Trans..", transacFrom, transacToAddr);
+                    if (transacFrom.toLowerCase() === that.props.local_address.toLowerCase() &&
+                        transacToAddr.toLowerCase() === sessionData.account_addr.toLowerCase() &&
+                        parseInt(transactionDetails.data) === parseInt(sessionData.amount) &&
+                        parseInt(transactionDetails.timeStamp) >= sessionData.timestamp
+                    ) {
+                        let body = {
+                            from_addr: that.props.local_address,
+                            amount: sessionData.amount,
+                            session_id: sessionData.id
+                        }
+                        reportPayment(body, function (err, tx_addr) {
+                            if (err) {
+                                that.setState({ openSnack: true, snackMessage: 'Problem faced in reporting. Try again later' })
+                            }
+                            else {
+                                that.setState({ openSnack: true, snackMessage: 'Reported Successfully' })
+                            }
+                        })
+                    } else {
+                        that.setState({ openSnack: true, snackMessage: 'Not a valid transaction hash' })
+                    }
+                }
+            }
+        })
     }
 
     render() {
@@ -78,7 +130,7 @@ class VPNHistory extends Component {
                                 </ReactTooltip>
                                 <span style={{ fontWeight: 600, marginLeft: 10 }}>Amount: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS<br />
                                 <span style={{ fontWeight: 600 }}>Duration: </span>{sessionData.duration} secs
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Bytes: </span>{parseInt(sessionData.received_bytes)/(1024*1024)} MB
+                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Bytes: </span>{parseInt(sessionData.received_bytes) / (1024 * 1024)} MB
                                 <span style={{ fontWeight: 600, marginLeft: 10 }}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>
                             {
@@ -90,14 +142,41 @@ class VPNHistory extends Component {
                                             <span>Paid</span>
                                         </ReactTooltip>
                                     </span> :
-                                    <CardActions>
-                                        <RaisedButton
-                                            label="Pay Now"
-                                            labelStyle={{ textTransform: 'none' }}
-                                            onClick={() => { this.payDue(sessionData) }}
-                                            primary={true}
-                                        />
-                                    </CardActions>
+                                    <span>
+                                        <CardActions>
+                                            <RaisedButton
+                                                label="Pay Now"
+                                                labelStyle={{ textTransform: 'none' }}
+                                                onClick={() => { this.payDue(sessionData) }}
+                                                primary={true}
+                                            />
+                                            <RaisedButton
+                                                label="Report"
+                                                labelStyle={{ textTransform: 'none' }}
+                                                onClick={() => { this.showText(sessionData.id) }}
+                                            />
+                                        </CardActions>
+                                        <div style={{ display: 'none' }} id={sessionData.id}>
+                                            <TextField
+                                                hintText="Enter txhash of transaction"
+                                                hintStyle={{ bottom: 5, paddingLeft: '2%' }}
+                                                style={{ backgroundColor: '#FAFAFA', height: 36, width: '80%', margin: 10 }}
+                                                onChange={(event, txHash) => this.setState({ txHash })}
+                                                value={this.state.txHash}
+                                                underlineShow={false}
+                                                inputStyle={{ padding: '2%' }}
+                                            />
+                                            <span>
+                                                <IconButton
+                                                    style={{ padding: 0, backgroundColor: '#00bcd4', height: 36, width: 36 }}
+                                                    iconStyle={{ height: 20, color: 'white' }}
+                                                    onClick={() => { this.compareTransaction(sessionData) }}
+                                                >
+                                                    <Send />
+                                                </IconButton>
+                                            </span>
+                                        </div>
+                                    </span>
                             }
                         </Card >
                     )
@@ -120,9 +199,9 @@ class VPNHistory extends Component {
                     </div>
                     {vpnUsage ?
                         <div>
-                            <span style={{ fontWeight: 600 }}>Total Due : </span>{parseInt(vpnUsage.due)/(10**8)} SENTS<br />
+                            <span style={{ fontWeight: 600 }}>Total Due : </span>{parseInt(vpnUsage.due) / (10 ** 8)} SENTS<br />
                             <span style={{ fontWeight: 600 }} >Total Duration : </span>{vpnUsage.stats['duration']} secs<br />
-                            <span style={{ fontWeight: 600 }}>Total Received Bytes : </span>{parseInt(vpnUsage.stats['received_bytes'])/(1024*1024)} MB
+                            <span style={{ fontWeight: 600 }}>Total Received Bytes : </span>{parseInt(vpnUsage.stats['received_bytes']) / (1024 * 1024)} MB
                             <hr />
                             <h4 style={{ fontWeight: 600 }}>Sessions</h4>
                             <div style={{ overflow: 'auto', height: 300 }}>{sessionOutput}</div>

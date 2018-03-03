@@ -24,11 +24,11 @@ class AddVpnUsage(object):
         amount = int(calculate_amount(sent_bytes) * DECIMALS)
         timestamp = int(time.time())
 
-        if sent_bytes < (10 * 1024 * 1024):
+        if sent_bytes < (100 * 1024 * 1024):
             message = {
                 'success': False,
-                'error': 'Usage is less than 10 MB. So data is not added',
-                'message': 'Usage is less than 10 MB. So data is not added'
+                'error': 'Usage is less than 100 MB. So data is not added',
+                'message': 'Usage is less than 100 MB. So data is not added'
             }
         else:
             error, tx_hash = eth_helper.add_vpn_usage(

@@ -38,16 +38,16 @@ if __name__ == "__main__":
         if line_len > 0:
             print(line)
             if 'Peer Connection Initiated with' in line:
-                client_name = line.split(' ')[6][1:-1]
+                client_name = line.split()[6][1:-1]
                 _ = db.clients.find_one_and_update(
                     {'name': client_name}, {'$set': {'isConnected': 1}})
             elif 'client-instance exiting' in line:
-                client_name = line.split(' ')[5].split('/')[0]
+                client_name = line.split()[5].split('/')[0]
                 _ = db.clients.find_one_and_update(
                     {'name': client_name}, {'$set': {'isConnected': 0}})
                 client_details = db.clients.find_one({'name': client_name})
                 received_bytes, sent_bytes, connected_time = openvpn.get_client_usage(
                     client_name)
                 sesstion_duration = int(time.time()) - connected_time
-                send_client_usage(node, client_details.account_addr,
+                send_client_usage(node, client_details['account_addr'],
                                   received_bytes, sent_bytes, sesstion_duration)

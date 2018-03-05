@@ -4,24 +4,24 @@ import requests
 from ..config import LOCAL_SERVER_URL
 from ..config import MASTER_NODE_URL
 from ..config import ACCOUNT_DATA_PATH
+from ..db import db
 import getip
 import socket
 
 
 def register_node(node):
-    body = {
-        'account': {
-            'addr': node.account['addr']
-        },
-        'location': node.location,
-        'ip': getip.get(),
-        'net_speed': node.net_speed
-    }
+    body = {'account': {'addr': node.account['addr']},
+            'location': node.location,
+            'ip': getip.get(),
+            'net_speed': node.net_speed}
     url = urljoin(LOCAL_SERVER_URL, 'node/register')
     res = requests.post(url, json=body)
-    res=res.json()
+    res = res.json()
     if res['success'] == True:
-        info = {'type': 'account', 'token': res['token']}
+        info = {
+            'type': 'account',
+            'token': res['token']
+        }
         node.update_nodeinfo(info)
         return True
     return False
@@ -56,24 +56,28 @@ def send_nodeinfo(node, info):
     }
     url = urljoin(LOCAL_SERVER_URL, 'node/update-nodeinfo')
     res = requests.post(url, json=body)
-    print("Res..")
-    print(res)
-    res=res.json()
+    res = res.json()
     if res['success'] == True:
-        body={
-            'location':node.location,
-            'net_speed':node.net_speed,
-            'vpn':node.vpn
-        }
-        url = urljoin(LOCAL_SERVER_URL, 'vpn/getCurrentNode')
-        resp = requests.post(url, json=body)
+        result = db.nodes.find_one({'address': node.account['addr']})
+        if result is None:
+            _ = db.nodes.insert_one({
+                'address': node.account['addr'],
+                'location': node.location,
+                'net_speed': node.net_speed
+            })
+        else:
+            _ = db.nodes.find_one_and_update(
+                {'address': node.account['addr']},
+                {'$set': {'location': node.location,
+                          'net_speed': node.net_speed}})
         return True
     return False
 
 
-def send_client_usage(node, received_bytes, sent_bytes, session_duration):
+def send_client_usage(node, to_addr, received_bytes, sent_bytes, session_duration):
     body = {
         'from_addr': node.account['addr'],
+        'to_addr': to_addr,
         'token': node.account['token'],
         'keystore': node.account['keystore'],
         'password': node.account['password'],
@@ -83,7 +87,7 @@ def send_client_usage(node, received_bytes, sent_bytes, session_duration):
     }
     url = urljoin(LOCAL_SERVER_URL, 'node/add-usage')
     res = requests.post(url, json=body)
-    res=res.json()
+    res = res.json()
     if res['success'] == True:
         return True
     return False
@@ -96,7 +100,7 @@ def deregister_node(node):
     }
     url = urljoin(LOCAL_SERVER_URL, 'node/deregister')
     res = requests.post(url, json=body)
-    res=res.json()
+    res = res.json()
     if res['success'] == True:
         return True
     return False

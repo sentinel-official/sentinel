@@ -6,6 +6,7 @@ cd /root;
 
 if [ "$SENT_ENV" != "DEV" ]; then
   PORT=8000
+fi
 
 nohup mongod >> /dev/null &
 gunicorn --reload -b 0.0.0.0:$PORT app:app;

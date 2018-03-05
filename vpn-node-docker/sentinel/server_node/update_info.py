@@ -17,6 +17,9 @@ class UpdateNodeInfo(object):
                 'message': 'Node info updated successfully.'
             }
         else:
-            message = {'success': False, 'message': 'Node is not registered.'}
+            message = {
+                'success': False,
+                'message': 'Node is not registered.'
+            }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

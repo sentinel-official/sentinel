@@ -27,6 +27,6 @@ class GetCurrentNode(object):
             'location': self.location,
             'net_speed': self.net_speed
         }
-        self.node.get_node(node)
+        #self.node.get_node(node)
         res.status = falcon.HTTP_200
         res.body = json.dumps({'success': True})

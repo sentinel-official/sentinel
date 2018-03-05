@@ -6,11 +6,6 @@ from ..config import DECIMALS
 from ..helpers import eth_helper
 
 
-def get_client_address(account_addr):
-    connection = db.connections.find_one({'server_addr': account_addr})
-    return connection['client_addr']
-
-
 def calculate_amount(used_bytes):
     return (used_bytes / (1024.0 * 1024.0 * 1024.0)) * 100.0
 
@@ -18,7 +13,7 @@ def calculate_amount(used_bytes):
 class AddVpnUsage(object):
     def on_post(self, req, resp):
         from_addr = str(req.body['from_addr'])
-        to_addr = get_client_address(from_addr)
+        to_addr = str(req.body['to_addr'])
         sent_bytes = int(req.body['sent_bytes'])
         session_duration = int(req.body['session_duration'])
         amount = int(calculate_amount(sent_bytes) * DECIMALS)

@@ -67,34 +67,40 @@ class GetVpnCredentials(object):
                                 'message': 'All VPN servers are occupied. Please try after sometime.'
                             }
                     else:
-                        secret_token = uuid4().hex
-                        node_addr = str(node['ip'])
-                        message = {
-                            'success': True,
-                            'ip': node_addr,
-                            'port': 3000,
-                            'token': secret_token
-                        }
-                        body = {
-                            'account_addr': account_addr,
-                            'token': secret_token
-                        }
-                        url = "http://" + node_addr + ":3000/master/sendToken"
-                        res = requests.post(url, json=body)
+                        try:
+                            secret_token = uuid4().hex
+                            node_addr = str(node['ip'])
+                            body = {
+                                'account_addr': account_addr,
+                                'token': secret_token
+                            }
+                            url = "http://" + node_addr + ":3000/master/sendToken"
+                            res = requests.post(url, json=body, timeout=5)
+                            message = {
+                                'success': True,
+                                'ip': node_addr,
+                                'port': 3000,
+                                'token': secret_token
+                            }
+                        except Exception as err:
+                            message = {
+                                'success': False,
+                                'message': 'Connection timed out while connecting to VPN server.'
+                            }
                 else:
                     message = {
                         'success': False,
-                        'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs.' + ' Please try after clearing the due.'
+                        'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
                     }
             else:
                 message = {
                     'success': False,
-                    'message': 'Your balance is less than 100 sents'
+                    'message': 'Your balance is less than 100 SENTs.'
                 }
         else:
             message = {
                 'success': False,
-                'message': 'Error while checking your balance'
+                'message': 'Error while checking your balance.'
             }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

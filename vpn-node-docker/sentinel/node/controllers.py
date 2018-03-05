@@ -4,6 +4,7 @@ import requests
 from ..config import LOCAL_SERVER_URL
 from ..config import MASTER_NODE_URL
 from ..config import ACCOUNT_DATA_PATH
+from ..db import db
 import getip
 import socket
 
@@ -60,20 +61,27 @@ def send_nodeinfo(node, info):
     print(res)
     res=res.json()
     if res['success'] == True:
-        body={
-            'location':node.location,
-            'net_speed':node.net_speed,
-            'vpn':node.vpn
-        }
-        url = urljoin(LOCAL_SERVER_URL, 'vpn/getCurrentNode')
-        resp = requests.post(url, json=body)
+        node = db.nodes.find_one({'address': node.account['addr']})
+        if node is None:
+            result=db.nodes.insert_one({
+                'address':node.account['addr'],
+                'location':node.location,
+                'net_speed':node.net_speed
+            })
+        else:
+            result=db.nodes.update_one({
+                'address':node.account['addr'],
+                'location':node.location,
+                'net_speed':node.net_speed
+            })
         return True
     return False
 
 
-def send_client_usage(node, received_bytes, sent_bytes, session_duration):
+def send_client_usage(node, to_addr,received_bytes, sent_bytes, session_duration):
     body = {
         'from_addr': node.account['addr'],
+        'to_addr':to_addr,
         'token': node.account['token'],
         'keystore': node.account['keystore'],
         'password': node.account['password'],

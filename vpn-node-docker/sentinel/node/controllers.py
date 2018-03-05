@@ -58,19 +58,18 @@ def send_nodeinfo(node, info):
     res = requests.post(url, json=body)
     res = res.json()
     if res['success'] == True:
-        node = db.nodes.find_one({'address': node.account['addr']})
-        if node is None:
+        result = db.nodes.find_one({'address': node.account['addr']})
+        if result is None:
             _ = db.nodes.insert_one({
                 'address': node.account['addr'],
                 'location': node.location,
                 'net_speed': node.net_speed
             })
         else:
-            _ = db.nodes.update_one({
-                'address': node.account['addr'],
-                'location': node.location,
-                'net_speed': node.net_speed
-            })
+            _ = db.nodes.find_one_and_update(
+                {'address': node.account['addr']},
+                {'$set': {'location': node.location,
+                          'net_speed': node.net_speed}})
         return True
     return False
 

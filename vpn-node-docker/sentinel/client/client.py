@@ -5,12 +5,11 @@ import os
 import requests
 from ..config import MASTER_NODE_URL
 from urlparse import urljoin
+from ..db import db
+from ..vpn import Keys
 
 
 class GenerateOVPN(object):
-    def __init__(self):
-        self.node = None
-
     def on_post(self, req, res):
         """
         @api {post} /master/sendToken Generate OVPN for Client .
@@ -23,18 +22,37 @@ class GenerateOVPN(object):
         account_addr = str(req.body['account_addr'])
         vpn_addr = str(req.body['vpn_addr'])
         token = str(req.body['token'])
+
         os.system("nohup redis-server >> /dev/null &")
         rs = redis.Redis()
         stored_token = rs.get(account_addr)
+        count = str(db.clients.count() + 1)
         if token == stored_token:
-            message = {'success': True, 'node': self.node}
-            body = {'account_addr': account_addr, 'vpn_addr': vpn_addr}
-            url = urljoin(MASTER_NODE_URL, 'client/vpn/put-connection')
-            resp = requests.post(url, json=body)
+            result = db.clients.insert_one(
+                {'name': 'client' + count, 'account_addr': account_addr, 'isConnected': 0})
+            if result.inserted_id:
+                data = db.nodes.find_one({'address': vpn_addr})
+                keys = Keys(count=count)
+                keys.generate()
+                message = {
+                    'success': True,
+                    'node': {
+                        'location': data['location'],
+                        'net_speed': data['net_speed'],
+                        'vpn': {
+                            'ovpn': keys.ovpn()
+                        }
+                    }
+                }
+            else:
+                message = {
+                    'success': False,
+                    'message': 'Error occurred, please try again later.'
+                }
         else:
-            message = {'success': False}
+            message = {
+                'success': False,
+                'message': 'Wrong token.'
+            }
         res.status = falcon.HTTP_200
         res.body = json.dumps(message)
-
-    def get_node(self, node):
-        self.node = node

@@ -33,12 +33,12 @@ class OpenVPN(object):
             self.vpn_proc, self.pid = None, None
         return kill_proc.returncode
 
-    def get_client_usage(self):
+    def get_client_usage(self, client_name):
         status_log = open('/etc/openvpn/openvpn-status.log', 'r').readlines()
         received_bytes, sent_bytes, connected_time = None, None, None
         for line in status_log:
             line = line.strip()
-            if 'client' in line:
+            if client_name in line:
                 line_arr = line.split(',')
                 line_arr_len = len(line_arr)
                 if line_arr_len == 5:
@@ -53,9 +53,9 @@ class OpenVPN(object):
 
 
 class Keys(object):
-    def __init__(self, show_output=True):
-        self.gen_cmd = 'sh /root/sentinel/shell_scripts/gen_keys.sh'
-        self.ovpn_path = '/etc/openvpn/client.ovpn'
+    def __init__(self, count, show_output=True):
+        self.gen_cmd = 'sh /root/sentinel/shell_scripts/gen_keys.sh ' + count
+        self.ovpn_path = '/etc/openvpn/client' + count + '.ovpn'
         if show_output is False:
             self.gen_cmd += ' >> /dev/null 2>&1'
 

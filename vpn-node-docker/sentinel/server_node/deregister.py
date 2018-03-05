@@ -10,7 +10,7 @@ class DeRegisterNode(object):
         body = req.body
         url = urljoin(MASTER_NODE_URL, 'node/deregister')
         res = requests.post(url, json=body)
-        res=res.json()
+        res = res.json()
         if res['success']:
             message = {
                 'success': True,

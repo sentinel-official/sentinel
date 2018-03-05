@@ -8,6 +8,7 @@ from ..config import SENT_BALANCE
 from ..helpers import eth_helper
 from ..eth import vpn_service_manager
 
+
 def get_vpns_list():
     _list = db.nodes.find({'vpn.status': 'up'}, {
         '_id': 0,
@@ -17,21 +18,6 @@ def get_vpns_list():
         'net_speed.download': 1
     })
     return list(_list)
-
-
-class PutClientConnection(object):
-    def on_post(self, req, resp):
-        server_addr = str(req.body['vpn_addr'])
-        client_addr = str(req.body['account_addr'])
-        connection = db.connections.find_one({'server_addr': server_addr})
-        if connection is None:
-            db.connections.insert_one(
-                {'server_addr': server_addr, 'client_addr': client_addr})
-        db.connections.find_one_and_update({'server_addr': server_addr}, {
-                                           '$set': {'client_addr': client_addr}})
-        message = {'success': True}
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
 
 
 class GetVpnCredentials(object):
@@ -51,7 +37,7 @@ class GetVpnCredentials(object):
         res = requests.get(url)
         res = res.json()
         if res['status'] == '1':
-            if int(res['result']) >= (100 * (10**8)):
+            if int(res['result']) >= (100 * (10 ** 8)):
                 error, due_amount = eth_helper.get_due_amount(account_addr)
                 if error is not None:
                     message = {
@@ -81,17 +67,17 @@ class GetVpnCredentials(object):
                                 'message': 'All VPN servers are occupied. Please try after sometime.'
                             }
                     else:
-                        secretToken = uuid4().hex
+                        secret_token = uuid4().hex
                         node_addr = str(node['ip'])
                         message = {
                             'success': True,
                             'ip': node_addr,
                             'port': 3000,
-                            'token': secretToken
+                            'token': secret_token
                         }
                         body = {
                             'account_addr': account_addr,
-                            'token': secretToken
+                            'token': secret_token
                         }
                         url = "http://" + node_addr + ":3000/master/sendToken"
                         res = requests.post(url, json=body)
@@ -152,7 +138,7 @@ class ReportPayment(object):
         session_id = int(req.body['session_id'])
 
         error, tx_hash = vpn_service_manager.pay_vpn_session(
-                from_addr, amount, session_id)
+            from_addr, amount, session_id)
 
         if error is None:
             message = {

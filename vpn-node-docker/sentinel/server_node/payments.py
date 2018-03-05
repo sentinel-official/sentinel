@@ -4,12 +4,13 @@ import requests
 from ..config import MASTER_NODE_URL
 from urlparse import urljoin
 
+
 class AddVpnUsage(object):
     def on_post(self, req, resp):
-        body=req.body
+        body = req.body
         url = urljoin(MASTER_NODE_URL, 'node/add-usage')
         res = requests.post(url, json=body)
-        res=res.json()
+        res = res.json()
         if res['success']:
             message = {
                 'success': True,

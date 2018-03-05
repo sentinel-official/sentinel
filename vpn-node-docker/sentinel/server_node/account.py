@@ -15,19 +15,16 @@ class CreateNewAccount(object):
         if res['success']:
             res_body = res
             message = {
-                'success':
-                True,
-                'account_addr':
-                res_body['account_addr'],
-                'private_key':
-                res_body['private_key'],
-                'keystore':
-                res_body['keystore'],
-                'message':
-                'Account created successfully.' +
-                ' Please store the Private key and Keystore data safely.'
+                'success': True,
+                'account_addr': res_body['account_addr'],
+                'private_key': res_body['private_key'],
+                'keystore': res_body['keystore'],
+                'message': 'Account created successfully. Please store the Private key and Keystore data safely.'
             }
         else:
-            message = {'success': False, 'message': 'Error occured'}
+            message = {
+                'success': False,
+                'message': 'Error occured'
+            }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

@@ -7,7 +7,6 @@ from sentinel.client import RawTransaction
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnsList
 from sentinel.client import GetVpnUsage
-from sentinel.client import PutClientConnection
 from sentinel.client import PayVpnUsage
 from sentinel.client import ReportPayment
 
@@ -41,8 +40,7 @@ app.add_route('/client/vpn', GetVpnCredentials())
 app.add_route('/client/vpn/list', GetVpnsList())
 app.add_route('/client/vpn/usage', GetVpnUsage())
 app.add_route('/client/vpn/pay', PayVpnUsage())
-app.add_route('/client/vpn/report',ReportPayment())
-app.add_route('/client/vpn/put-connection', PutClientConnection())
+app.add_route('/client/vpn/report', ReportPayment())
 
 # Nodes
 app.add_route('/node', Up())

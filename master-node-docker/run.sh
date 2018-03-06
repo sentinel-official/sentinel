@@ -9,5 +9,5 @@ if [ "$SENT_ENV" != "DEV" ]; then
 fi
 
 nohup mongod >> /dev/null &
-gunicorn --reload -b 0.0.0.0:$PORT app:app;
+gunicorn --reload -b 0.0.0.0:$PORT --log-level DEBUG app:app;
 

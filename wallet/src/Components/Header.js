@@ -89,14 +89,8 @@ class Header extends Component {
     this.setState({ statusSnack: true, statusMessage: 'Disconnecting...' })
     var that = this;
     disconnectVPN(function (err) {
-      if (err) {
-        console.log(err);
-        that.setState({ status: true, statusSnack: false, openSnack: true, snackMessage: err.message })
-        // _toggleVPNButtons();
-      } else {
         that.props.onChange();
         that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
-      }
     });
   }
 

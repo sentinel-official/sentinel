@@ -20,13 +20,18 @@ function windowManager() {
       protocol: 'file:',
       slashes: true
     }));
-    this.window.on('close',(e)=>{
+    this.window.on('close', (e) => {
+      if (process.platform === 'win32') {
         e.preventDefault();
         stopVPN();
         this.window.hide();
+      }
     });
     this.window.on('closed', () => {
-      this.window = null;
+      if (process.platform !== 'win32') {
+        stopVPN();
+        this.window = null;
+      }
     });
   }
 }

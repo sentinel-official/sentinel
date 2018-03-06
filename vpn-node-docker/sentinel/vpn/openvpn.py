@@ -33,6 +33,12 @@ class OpenVPN(object):
             self.vpn_proc, self.pid = None, None
         return kill_proc.returncode
 
+    def revoke(self, client_name):
+        cmd = 'cd /usr/share/easy-rsa && echo yes | ./easyrsa revoke' + client_name +' && ./easyrsa gen-crl'
+        revoke_proc = subprocess.Popen(cmd, shell=True)
+        revoke_proc.wait()
+        return revoke_proc.returncode
+
     def get_client_usage(self, client_name):
         status_log = open('/etc/openvpn/openvpn-status.log', 'r').readlines()
         received_bytes, sent_bytes, connected_time = None, None, None

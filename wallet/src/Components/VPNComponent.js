@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getVPNList } from '../Actions/AccountActions';
 import ZoomIn from 'material-ui/svg-icons/content/add';
 import ZoomOut from 'material-ui/svg-icons/content/remove';
-import { IconButton} from "material-ui";
+import { IconButton } from "material-ui";
 import {
     ComposableMap,
     ZoomableGroup,
@@ -12,14 +12,15 @@ import {
     Marker,
 } from 'react-simple-maps';
 
-const markers = []
+var markers = []
 
 
 class VPNComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            zoom: 1
+            zoom: 1,
+            isGetVPNCalled: false
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -40,9 +41,14 @@ class VPNComponent extends Component {
         console.log("Marker data: ", marker)
     }
     componentWillMount = () => {
+        this.getVPNs()
+    }
+
+    getVPNs() {
         getVPNList(function (err, data) {
             if (err) console.log('Error', err);
             else {
+                markers=[]
                 data.map((vpn, i) => {
                     var vpnServer = {
                         name: vpn.location.city,
@@ -55,6 +61,14 @@ class VPNComponent extends Component {
     }
 
     render() {
+        let that = this;
+        if (!this.state.isGetVPNCalled) {
+            setInterval(function () {
+                that.getVPNs()
+            }, 60000);
+
+            this.setState({isGetVPNCalled: true });
+        }
         return (
             <div>
                 <IconButton onClick={this.handleZoomIn} style={{ position: 'absolute' }} tooltip="Zoom In">

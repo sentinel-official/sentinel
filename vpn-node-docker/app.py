@@ -8,10 +8,8 @@ from sentinel.node import create_account
 from sentinel.node import register_node
 from sentinel.node import send_nodeinfo
 from sentinel.node import send_client_usage
-from sentinel.node import get_amount
 
 from sentinel.vpn import OpenVPN
-from sentinel.vpn import Keys
 
 from sentinel.db import db
 
@@ -47,6 +45,7 @@ if __name__ == "__main__":
                 client_name = line.split()[5].split('/')[0]
                 print('*' * 128)
                 if 'client' in client_name:
+                    openvpn.revoke(client_name)
                     _ = db.clients.find_one_and_update(
                         {'name': client_name}, {'$set': {'isConnected': 0}})
                     client_details = db.clients.find_one({'name': client_name})

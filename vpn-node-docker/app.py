@@ -8,10 +8,8 @@ from sentinel.node import create_account
 from sentinel.node import register_node
 from sentinel.node import send_nodeinfo
 from sentinel.node import send_client_usage
-from sentinel.node import get_amount
 
 from sentinel.vpn import OpenVPN
-from sentinel.vpn import Keys
 
 from sentinel.db import db
 
@@ -39,15 +37,20 @@ if __name__ == "__main__":
             print(line)
             if 'Peer Connection Initiated with' in line:
                 client_name = line.split()[6][1:-1]
-                _ = db.clients.find_one_and_update(
-                    {'name': client_name}, {'$set': {'isConnected': 1}})
+                print('*' * 128)
+                if 'client' in client_name:
+                    _ = db.clients.find_one_and_update(
+                        {'name': client_name}, {'$set': {'isConnected': 1}})
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
-                _ = db.clients.find_one_and_update(
-                    {'name': client_name}, {'$set': {'isConnected': 0}})
-                client_details = db.clients.find_one({'name': client_name})
-                received_bytes, sent_bytes, connected_time = openvpn.get_client_usage(
-                    client_name)
-                sesstion_duration = int(time.time()) - connected_time
-                send_client_usage(node, client_details['account_addr'],
-                                  received_bytes, sent_bytes, sesstion_duration)
+                print('*' * 128)
+                if 'client' in client_name:
+                    openvpn.revoke(client_name)
+                    _ = db.clients.find_one_and_update(
+                        {'name': client_name}, {'$set': {'isConnected': 0}})
+                    client_details = db.clients.find_one({'name': client_name})
+                    received_bytes, sent_bytes, connected_time = openvpn.get_client_usage(
+                        client_name)
+                    sesstion_duration = int(time.time()) - connected_time
+                    send_client_usage(node, client_details['account_addr'],
+                                      received_bytes, sent_bytes, sesstion_duration)

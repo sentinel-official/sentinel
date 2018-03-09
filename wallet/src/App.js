@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Home from './Components/Home';
 import Create from './Components/Create';
 import Dashboard from './Components/Dashboard';
+import Authenticate from './Components/Authenticate';
 import {checkKeystore} from './Actions/AccountActions';
 
 class App extends Component {
@@ -15,7 +16,7 @@ class App extends Component {
         var that = this;
         checkKeystore(function (err) {
             if (err) that.setState({scene:'home'});
-            else that.setState({scene:'dashboard'});
+            else that.setState({scene:'authenticate'});
         })   
     }
 
@@ -28,6 +29,8 @@ class App extends Component {
         switch (scene) {
             case 'create':
                 return <Create set={this.setComponent} />
+            case 'authenticate':
+                return <Authenticate set={this.setComponent} />
             case 'dashboard':
                 return <Dashboard set={this.setComponent} />
             case 'home':

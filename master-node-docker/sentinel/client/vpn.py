@@ -7,6 +7,7 @@ from ..config import DECIMALS
 from ..config import SENT_BALANCE
 from ..helpers import eth_helper
 from ..eth import vpn_service_manager
+from ..logs import logger
 
 
 def get_vpns_list():
@@ -45,6 +46,10 @@ class GetVpnCredentials(object):
                         'error': error,
                         'message': 'Error occurred while checking the due amount.'
                     }
+                    try:
+                        raise Exception(error)
+                    except Exception as err:
+                        logger.send_log(message,resp)
                 elif due_amount == 0:
                     vpn_addr_len = len(vpn_addr)
 
@@ -61,11 +66,15 @@ class GetVpnCredentials(object):
                                 'success': False,
                                 'message': 'VPN server is already occupied. Please try after sometime.'
                             }
+                            resp.status = falcon.HTTP_200
+                            resp.body = json.dumps(message)
                         else:
                             message = {
                                 'success': False,
                                 'message': 'All VPN servers are occupied. Please try after sometime.'
                             }
+                            resp.status = falcon.HTTP_200
+                            resp.body = json.dumps(message)
                     else:
                         try:
                             secret_token = uuid4().hex
@@ -82,28 +91,35 @@ class GetVpnCredentials(object):
                                 'port': 3000,
                                 'token': secret_token
                             }
+                            resp.status = falcon.HTTP_200
+                            resp.body = json.dumps(message)
                         except Exception as err:
                             message = {
                                 'success': False,
                                 'message': 'Connection timed out while connecting to VPN server.'
                             }
+                            logger.send_log(message,resp)
                 else:
                     message = {
                         'success': False,
                         'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
                     }
+                    resp.status = falcon.HTTP_200
+                    resp.body = json.dumps(message)
             else:
                 message = {
                     'success': False,
                     'message': 'Your balance is less than 100 SENTs.'
                 }
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(message)
         else:
             message = {
                 'success': False,
                 'message': 'Error while checking your balance.'
             }
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message)
 
 
 class PayVpnUsage(object):
@@ -125,6 +141,10 @@ class PayVpnUsage(object):
                 'tx_hashes': tx_hashes,
                 'message': 'Error occurred while paying VPN usage.'
             }
+            try:
+                raise Exception(errors)
+            except Exception as err:
+                logger.send_log(message,resp)
         else:
             message = {
                 'success': True,
@@ -132,9 +152,8 @@ class PayVpnUsage(object):
                 'tx_hashes': tx_hashes,
                 'message': 'VPN payment is completed successfully.'
             }
-
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message) 
 
 
 class ReportPayment(object):
@@ -152,15 +171,19 @@ class ReportPayment(object):
                 'tx_hash': tx_hash,
                 'message': 'Payment Done Successfully'
             }
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message)
+
         else:
             message = {
                 'success': False,
                 'error': error,
                 'message': 'Vpn payment not successful'
             }
-
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            try:
+                raise Exception(error)
+            except Exception as err:
+                logger.send_log(message,resp)
 
 
 class GetVpnUsage(object):
@@ -178,15 +201,18 @@ class GetVpnUsage(object):
 
         if error is None:
             message = {'success': True, 'usage': usage}
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message)
         else:
             message = {
                 'success': False,
                 'error': error,
                 'message': 'Error occured while fetching the usage data.'
             }
-
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            try:
+                raise Exception(error)
+            except Exception as err:
+                logger.send_log(message,resp)
 
 
 class GetVpnsList(object):

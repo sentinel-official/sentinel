@@ -2,7 +2,7 @@ import json
 import falcon
 from ..eth import eth_manager
 from ..eth import sentinel_manager
-
+from ..logs import logger
 
 class CreateNewAccount(object):
     def on_post(self, req, resp):
@@ -28,15 +28,19 @@ class CreateNewAccount(object):
                 'keystore': json.dumps(keystore),
                 'message': 'Account created successfully. Please store the Private key and Keystore data safely.'
             }
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message)
+            
         else:
             message = {
                 'success': False,
                 'error': error,
                 'message': 'Error occurred while create wallet. Please try again.'
             }
-
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            try:
+                raise Exception(error)
+            except Exception as err:
+                logger.send_log(message,resp)
 
 
 class GetBalance(object):
@@ -61,10 +65,15 @@ class GetBalance(object):
                 'success': True,
                 'balances': balances
             }
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message)
+
         else:
             message = {
                 'success': False,
                 'error': error
             }
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            try:
+                raise Exception(error)
+            except Exception as err:
+                logger.send_log(message,resp)

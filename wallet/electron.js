@@ -20,13 +20,18 @@ function windowManager() {
       protocol: 'file:',
       slashes: true
     }));
-    this.window.on('close',(e)=>{
+    this.window.on('close', (e) => {
+      if (process.platform === 'win32') {
         e.preventDefault();
         stopVPN();
         this.window.hide();
+      }
     });
     this.window.on('closed', () => {
-      this.window = null;
+      if (process.platform !== 'win32') {
+        stopVPN();
+        this.window = null;
+      }
     });
   }
 }
@@ -78,9 +83,9 @@ app.on('ready', function () {
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
-      {
-        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      }
+      // {
+      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      // }
     ]
   }
   ]

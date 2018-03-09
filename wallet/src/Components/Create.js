@@ -7,6 +7,7 @@ import {
 import { createAccount, uploadKeystore, isOnline } from '../Actions/AccountActions';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
+import { setTimeout } from 'timers';
 let keythereum = require('keythereum');
 
 class Create extends Component {
@@ -24,7 +25,10 @@ class Create extends Component {
             checked: false,
             openSnack: false,
             snackMessage: '',
-            isLoading: null
+            isLoading: null,
+            isRestoredisabled: true,
+            snackOpen: false,
+            openSnackMessage: ''
         }
         this.set = this.props.set;
     }
@@ -37,7 +41,7 @@ class Create extends Component {
             this.setState({ keystore: text })
         };
         reader.readAsText(input.files[0]);
-        this.setState({ file: input.files[0].name });
+        this.setState({ file: input.files[0].name, isRestoredisabled: false });
         document.getElementById('filepicker').value = ""
     }
 
@@ -86,7 +90,7 @@ class Create extends Component {
     getPrivateKey = (keystore, password, cb) => {
         keystore = JSON.parse(keystore)
         try {
-            var privateKey=keythereum.recover(password, keystore);
+            var privateKey = keythereum.recover(password, keystore);
             cb(null, privateKey);
         }
         catch (err) {
@@ -95,22 +99,25 @@ class Create extends Component {
     }
 
     _store = () => {
+        this.setState({ isRestoredisabled: true, snackOpen: true, openSnackMessage: 'Checking credentials...' })
         var keystore = this.state.keystore;
         var password = this.state.keystorePassword;
         var that = this;
-        this.getPrivateKey(keystore, password, function (err, private_key) {
-            if (err) {
-                that.setState({ openSnack: true, snackMessage: err.message })
-            }
-            else {
-                uploadKeystore(keystore, function (err) {
-                    if (err) console.log(err);
-                    else {
-                        that.set('dashboard');
-                    }
-                })
-            }
-        })
+        setTimeout(function () {
+            that.getPrivateKey(keystore, password, function (err, private_key) {
+                if (err) {
+                    that.setState({ snackOpen: false, openSnack: true, snackMessage: err.message })
+                }
+                else {
+                    uploadKeystore(keystore, function (err) {
+                        if (err) console.log(err);
+                        else {
+                            that.set('dashboard');
+                        }
+                    })
+                }
+            })
+        }, 500)
     }
     render() {
         return (
@@ -175,16 +182,18 @@ class Create extends Component {
                                             hintStyle={{ fontSize: 12 }}
                                             type="password"
                                             underlineShow={false}
-                                            onChange={(event, password) => { this.setState({ keystorePassword: password }) }}
+                                            onChange={(event, password) => { this.setState({ keystorePassword: password, isRestoredisabled: false }) }}
                                             style={styles.textFieldCreate}
                                         />
                                     </Paper>
                                     <RaisedButton
                                         label="Restore Keystore File"
                                         labelStyle={{ color: 'white', textTransform: 'none' }}
-                                        disabled={this.state.file === '' || this.state.keystorePassword === '' ? true : false}
+                                        disabled={this.state.file === '' || this.state.keystorePassword === '' ||
+                                            this.state.isRestoredisabled ? true : false}
                                         onClick={this._store.bind(this)}
-                                        buttonStyle={this.state.file === '' || this.state.keystorePassword === '' ?
+                                        buttonStyle={this.state.file === '' || this.state.keystorePassword === '' ||
+                                            this.state.isRestoredisabled ?
                                             styles.buttonRaisedKeystore : styles.buttonCreate}
                                         style={{ marginTop: '3%' }} />
                                     <input type="file" style={{ display: 'none' }} id="filepicker"
@@ -248,6 +257,11 @@ class Create extends Component {
                         message={this.state.snackMessage}
                         autoHideDuration={2000}
                         onRequestClose={this.snackRequestClose}
+                        style={{ marginBottom: '2%' }}
+                    />
+                    <Snackbar
+                        open={this.state.snackOpen}
+                        message={this.state.openSnackMessage}
                         style={{ marginBottom: '2%' }}
                     />
                 </div>

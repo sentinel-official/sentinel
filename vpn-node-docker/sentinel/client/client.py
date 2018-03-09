@@ -7,6 +7,7 @@ from ..config import MASTER_NODE_URL
 from urlparse import urljoin
 from ..db import db
 from ..vpn import Keys
+from ..logs import logger
 
 
 class GenerateOVPN(object):
@@ -44,15 +45,23 @@ class GenerateOVPN(object):
                         }
                     }
                 }
+                res.status = falcon.HTTP_200
+                res.body = json.dumps(message)
             else:
                 message = {
                     'success': False,
                     'message': 'Error occurred, please try again later.'
                 }
+                try:
+                    raise Exception('Client Insertion Error in Database')
+                except Exception as err:
+                    logger.send_log(message,resp)
         else:
             message = {
                 'success': False,
                 'message': 'Wrong token.'
             }
-        res.status = falcon.HTTP_200
-        res.body = json.dumps(message)
+            try:
+                raise Exception('Session Token Mismatch')
+            except Exception as err:
+                logger.send_log(message,resp)

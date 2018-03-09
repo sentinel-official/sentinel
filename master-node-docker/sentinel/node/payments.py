@@ -4,6 +4,7 @@ import time
 from ..db import db
 from ..config import DECIMALS
 from ..helpers import eth_helper
+from ..logs import logger
 
 
 def calculate_amount(used_bytes):
@@ -25,6 +26,9 @@ class AddVpnUsage(object):
                 'error': 'Usage is less than 100 MB. So data is not added',
                 'message': 'Usage is less than 100 MB. So data is not added'
             }
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message)
+            
         else:
             error, tx_hash = eth_helper.add_vpn_usage(
                 from_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
@@ -35,12 +39,16 @@ class AddVpnUsage(object):
                     'tx_hash': tx_hash,
                     'message': 'VPN usage data will be added soon.'
                 }
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(message)
             else:
                 message = {
                     'success': False,
                     'error': error,
                     'message': 'Error occurred while adding the VPN usage data.'
                 }
+                try:
+                    raise Exception(error)
+                except Exception as err:
+                    logger.send_log(message,resp)
 
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)

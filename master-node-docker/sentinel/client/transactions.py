@@ -3,7 +3,7 @@ import falcon
 from ethereum.tools import keys
 from ..config import DECIMALS
 from ..helpers import eth_helper
-
+from ..logs import logger
 
 class RawTransaction(object):
     def on_post(self, req, resp):
@@ -16,11 +16,16 @@ class RawTransaction(object):
                 'tx_hash': tx_hash,
                 'message': 'Transaction initiated successfully.'
             }
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message)
+
         else:
             message = {
                 'success': False,
                 'error': error,
                 'message': 'Error occurred while initiating the transaction.'
             }
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            try:
+                raise Exception(error)
+            except Exception as err:
+                logger.send_log(message,resp)

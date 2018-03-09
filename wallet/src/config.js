@@ -1,4 +1,4 @@
-const environ = 'PROD' // set TEST for test environ, PROD for main environ
+const environ = 'TEST' // set TEST for test environ, PROD for main environ
 var config;
 if (environ === 'PROD') {
     config = {

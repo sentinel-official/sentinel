@@ -34,7 +34,7 @@ class OpenVPN(object):
         return kill_proc.returncode
 
     def revoke(self, client_name):
-        cmd = 'cd /usr/share/easy-rsa && echo yes | ./easyrsa revoke' + client_name +' && ./easyrsa gen-crl'
+        cmd = 'cd /usr/share/easy-rsa && echo yes | ./easyrsa revoke ' + client_name +' && ./easyrsa gen-crl'
         revoke_proc = subprocess.Popen(cmd, shell=True)
         revoke_proc.wait()
         return revoke_proc.returncode

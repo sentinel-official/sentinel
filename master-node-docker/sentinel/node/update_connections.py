@@ -3,7 +3,7 @@ import falcon
 from ..db import db
 
 
-class UpdateClientUsage(object):
+class UpdateConnections(object):
     def on_post(self, req, resp):
         token = str(req.body['token'])
         account_addr = str(req.body['account_addr'])
@@ -16,23 +16,19 @@ class UpdateClientUsage(object):
         if node is not None:
             for info in connections:
                 connection = db.connections.find_one({
-                    'account_addr': info['account_addr'],
-                    'client_addr': info['client_addr'],
+                    'account_addr': account_addr,
                     'session_name': info['session_name']
                 })
                 if connection is None:
                     _ = db.connections.insert_one(info)
                 else:
                     _ = db.connections.find_one_and_update({
-                        'account_addr': info['account_addr'],
-                        'client_addr': info['client_addr'],
+                        'account_addr': account_addr,
                         'session_name': info['session_name']
                     }, {
                         '$set': {
-                            'is_connected': info['is_connected'],
                             'usage': info['usage'],
-                            'start_time': info['start_time'],
-                            'end_time': info['end_time']
+                            'end_time': info['end_time'] if 'end_time' in info else None
                         }
                     })
             message = {

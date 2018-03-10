@@ -90,6 +90,20 @@ def send_client_usage(node, to_addr, received_bytes, sent_bytes, session_duratio
     return False
 
 
+def send_connections_info(token, account_addr, connections):
+    body = {
+        'token': token,
+        'account_addr': account_addr,
+        'connections': connections
+    }
+    url = urljoin(LOCAL_SERVER_URL, 'node/update-connections')
+    res = requests.post(url, json=body)
+    res = res.json()
+    if res['success'] == True:
+        return True
+    return False
+
+
 def deregister_node(node):
     body = {
         'account_addr': node.account['addr'],

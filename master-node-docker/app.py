@@ -15,7 +15,7 @@ from sentinel.node import RegisterNode
 from sentinel.node import UpdateNodeInfo
 from sentinel.node import DeRegisterNode
 from sentinel.node import AddVpnUsage
-from sentinel.node import UpdateClientUsage
+from sentinel.node import UpdateConnections
 
 from sentinel.utils import JSONTranslator
 
@@ -52,4 +52,4 @@ app.add_route('/node/register', RegisterNode())
 app.add_route('/node/update-nodeinfo', UpdateNodeInfo())
 app.add_route('/node/add-usage', AddVpnUsage())
 app.add_route('/node/deregister', DeRegisterNode())
-app.add_route('/node/update-usage', UpdateClientUsage())
+app.add_route('/node/update-connections', UpdateConnections())

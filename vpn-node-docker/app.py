@@ -39,18 +39,16 @@ if __name__ == "__main__":
                 client_name = line.split()[6][1:-1]
                 print('*' * 128)
                 if 'client' in client_name:
-                    _ = db.clients.find_one_and_update(
-                        {'name': client_name}, {'$set': {'isConnected': 1}})
+                    connections = openvpn.get_connections(client_name=client_name)
+                    result = db.clients.find_one({'name': client_name}, {'_id': 0, 'account_addr': 1})
+                    connections[0]['client_addr'] = result['account_addr']
+                    connections[0]['start_time'] = int(time.time())
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
                 print('*' * 128)
                 if 'client' in client_name:
                     openvpn.revoke(client_name)
-                    _ = db.clients.find_one_and_update(
-                        {'name': client_name}, {'$set': {'isConnected': 0}})
-                    client_details = db.clients.find_one({'name': client_name})
-                    received_bytes, sent_bytes, connected_time = openvpn.get_client_usage(
-                        client_name)
-                    sesstion_duration = int(time.time()) - connected_time
-                    send_client_usage(node, client_details['account_addr'],
-                                      received_bytes, sent_bytes, sesstion_duration)
+                    connections = openvpn.get_connections(client_name=client_name)
+                    result = db.clients.find_one({'name': client_name}, {'_id': 0, 'account_addr': 1})
+                    connections[0]['end_time'] = int(time.time())
+                    

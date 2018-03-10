@@ -2,7 +2,7 @@ import json
 from uuid import uuid4
 import falcon
 from ..db import db
-
+from ..logs import logger
 
 class RegisterNode(object):
     def on_post(self, req, resp):
@@ -27,10 +27,14 @@ class RegisterNode(object):
                     'token': token,
                     'message': 'Node registered successfully.'
                 }
+                resp.status = falcon.HTTP_200
+                resp.body = json.dumps(message)
         else:
             message = {
                 'success': False,
                 'message': 'Error occurred while registering the node.'
             }
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            try:
+                raise Exception('Error occurred while registering the node.')
+            except Exception as err:
+                logger.send_log(message,resp)

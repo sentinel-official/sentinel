@@ -3,6 +3,7 @@ import falcon
 from ..db import db
 from ..logs import logger
 
+
 class UpdateNodeInfo(object):
     def on_post(self, req, resp):
         token = req.body['token']
@@ -59,7 +60,7 @@ class UpdateNodeInfo(object):
             try:
                 raise Exception('Node is not registered.')
             except Exception as err:
-                logger.send_log(message,resp)
+                logger.send_log(message, resp)
         else:
             message = {
                 'success': True,

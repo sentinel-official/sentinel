@@ -9,6 +9,7 @@ from sentinel.client import GetVpnsList
 from sentinel.client import GetVpnUsage
 from sentinel.client import PayVpnUsage
 from sentinel.client import ReportPayment
+from sentinel.client import GetVpnCurrentUsage
 
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateNodeInfo
@@ -38,6 +39,7 @@ app.add_route('/client/account', CreateNewAccount())
 app.add_route('/client/account/balance', GetBalance())
 app.add_route('/client/raw-transaction', RawTransaction())
 app.add_route('/client/vpn', GetVpnCredentials())
+app.add_route('/client/vpn/current', GetVpnCurrentUsage())
 app.add_route('/client/vpn/list', GetVpnsList())
 app.add_route('/client/vpn/usage', GetVpnUsage())
 app.add_route('/client/vpn/pay', PayVpnUsage())

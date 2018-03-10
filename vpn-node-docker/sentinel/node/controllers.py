@@ -79,9 +79,6 @@ def send_client_usage(node, to_addr, received_bytes, sent_bytes, session_duratio
         'from_addr': node.account['addr'],
         'to_addr': to_addr,
         'token': node.account['token'],
-        'keystore': node.account['keystore'],
-        'password': node.account['password'],
-        'received_bytes': received_bytes,
         'sent_bytes': sent_bytes,
         'session_duration': session_duration
     }

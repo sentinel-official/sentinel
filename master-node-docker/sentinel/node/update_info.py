@@ -11,25 +11,45 @@ class UpdateNodeInfo(object):
 
         if info['type'] == 'location':
             location = info['location']
-            node = db.nodes.find_one_and_update(
-                {'account.addr': account_addr, 'token': token},
-                {'$set': {'location': location}})
+            node = db.nodes.find_one_and_update({
+                'account.addr': account_addr,
+                'token': token
+            }, {
+                '$set': {
+                    'location': location
+                }
+            })
         elif info['type'] == 'net_speed':
             net_speed = info['net_speed']
-            node = db.nodes.find_one_and_update(
-                {'account.addr': account_addr, 'token': token},
-                {'$set': {'net_speed': net_speed}})
+            node = db.nodes.find_one_and_update({
+                'account.addr': account_addr,
+                'token': token
+            }, {
+                '$set': {
+                    'net_speed': net_speed
+                }
+            })
         elif info['type'] == 'vpn':
             if 'ovpn' in info:
                 ovpn = info['ovpn']
-                node = db.nodes.find_one_and_update(
-                    {'account.addr': account_addr, 'token': token},
-                    {'$set': {'vpn.ovpn': ovpn}})
+                node = db.nodes.find_one_and_update({
+                    'account.addr': account_addr,
+                    'token': token
+                }, {
+                    '$set': {
+                        'vpn.ovpn': ovpn
+                    }
+                })
             elif 'status' in info:
                 status = info['status']
-                node = db.nodes.find_one_and_update(
-                    {'account.addr': account_addr, 'token': token},
-                    {'$set': {'vpn.status': status}})
+                node = db.nodes.find_one_and_update({
+                    'account.addr': account_addr,
+                    'token': token
+                }, {
+                    '$set': {
+                        'vpn.status': status
+                    }
+                })
 
         if node is None:
             message = {

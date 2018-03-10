@@ -4,4 +4,4 @@ from .deregister import DeRegisterNode
 from .register import RegisterNode
 from .update_info import UpdateNodeInfo
 from .payments import AddVpnUsage
-from .update_usage import UpdateClientUsage
+from .update_connections import UpdateConnections

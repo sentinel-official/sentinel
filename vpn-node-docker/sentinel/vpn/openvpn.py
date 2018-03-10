@@ -39,29 +39,30 @@ class OpenVPN(object):
         revoke_proc.wait()
         return revoke_proc.returncode
 
-    def get_client_usage(self, client_name):
+    def get_connections(self, client_name=None):
+        connections = []
         status_log = open('/etc/openvpn/openvpn-status.log', 'r').readlines()
-        received_bytes, sent_bytes, connected_time = None, None, None
         for line in status_log:
             line = line.strip()
-            if client_name in line:
-                line_arr = line.split(',')
-                line_arr_len = len(line_arr)
-                if line_arr_len == 5:
-                    received_bytes = line_arr[2]
-                    sent_bytes = line_arr[3]
-                    connected_time = datetime.strptime(
-                        line_arr[4], '%a %b %d %H:%M:%S %Y')
-                    connected_time = (connected_time -
-                                      datetime(1970, 1, 1)).total_seconds()
-                    break
-        return received_bytes, sent_bytes, int(connected_time)
+            line_arr = line.split(',')
+            if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
+                connection = {
+                    'session_name': line_arr[0],
+                    'usage': {
+                        'up': line_arr[2],
+                        'down': line_arr[3]
+                    }
+                }
+                connections.append(connection)
+            elif 'ROUTING TABLE' in line:
+                break
+        return connections
 
 
 class Keys(object):
-    def __init__(self, count, show_output=True):
-        self.gen_cmd = 'sh /root/sentinel/shell_scripts/gen_keys.sh ' + count
-        self.ovpn_path = '/etc/openvpn/client' + count + '.ovpn'
+    def __init__(self, name, show_output=True):
+        self.gen_cmd = 'sh /root/sentinel/shell_scripts/gen_keys.sh ' + name
+        self.ovpn_path = '/etc/openvpn/client' + name + '.ovpn'
         if show_output is False:
             self.gen_cmd += ' >> /dev/null 2>&1'
 

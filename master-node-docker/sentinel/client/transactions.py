@@ -5,6 +5,7 @@ from ..config import DECIMALS
 from ..helpers import eth_helper
 from ..logs import logger
 
+
 class RawTransaction(object):
     def on_post(self, req, resp):
         tx_data = str(req.body['tx_data'])
@@ -27,5 +28,5 @@ class RawTransaction(object):
             }
             try:
                 raise Exception(error)
-            except Exception as err:
-                logger.send_log(message,resp)
+            except Exception as _:
+                logger.send_log(message, resp)

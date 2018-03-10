@@ -8,8 +8,10 @@ class DeRegisterNode(object):
         account_addr = req.body['account_addr']
         token = req.body['token']
 
-        node = db.nodes.find_one_and_delete(
-            {'account.addr': account_addr, 'token': token})
+        node = db.nodes.find_one_and_delete({
+            'account.addr': account_addr,
+            'token': token
+        })
 
         if node is None:
             message = {

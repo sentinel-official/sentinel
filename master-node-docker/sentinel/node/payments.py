@@ -28,7 +28,7 @@ class AddVpnUsage(object):
             }
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(message)
-            
+
         else:
             error, tx_hash = eth_helper.add_vpn_usage(
                 from_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
@@ -49,6 +49,5 @@ class AddVpnUsage(object):
                 }
                 try:
                     raise Exception(error)
-                except Exception as err:
-                    logger.send_log(message,resp)
-
+                except Exception as _:
+                    logger.send_log(message, resp)

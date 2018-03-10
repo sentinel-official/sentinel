@@ -3,7 +3,7 @@ from ethereum import utils
 from ethereum.tools import keys
 from ethereum.transactions import Transaction
 from eth_keyfile import create_keyfile_json
-from os import path, unlink, urandom,environ
+from os import path, unlink, urandom, environ
 from web3 import Web3, IPCProvider, HTTPProvider
 
 
@@ -67,7 +67,8 @@ class ETHManager(object):
             return {'code': 107, 'error': str(err)}, None
         return None, receipt
 
-if environ['SENT_ENV']=='PROD':
+
+if environ['SENT_ENV'] == 'PROD':
     eth_manager = ETHManager(
         provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
     mainnet = ETHManager(

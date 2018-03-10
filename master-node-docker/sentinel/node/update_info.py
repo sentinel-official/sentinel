@@ -59,7 +59,7 @@ class UpdateNodeInfo(object):
             }
             try:
                 raise Exception('Node is not registered.')
-            except Exception as err:
+            except Exception as _:
                 logger.send_log(message, resp)
         else:
             message = {

@@ -12,3 +12,4 @@ class JSONTranslator(object):
                 'message': 'Malformed JSON',
                 'errors': ['JSON was incorrect or not encoded as UTF-8.']
             }
+            print(message)

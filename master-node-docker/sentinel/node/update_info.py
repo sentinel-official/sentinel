@@ -1,7 +1,7 @@
 import json
 import falcon
 from ..db import db
-
+from ..logs import logger
 
 class UpdateNodeInfo(object):
     def on_post(self, req, resp):
@@ -56,10 +56,14 @@ class UpdateNodeInfo(object):
                 'success': False,
                 'message': 'Node is not registered.'
             }
+            try:
+                raise Exception('Node is not registered.')
+            except Exception as err:
+                logger.send_log(message,resp)
         else:
             message = {
                 'success': True,
                 'message': 'Node info updated successfully.'
             }
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+            resp.status = falcon.HTTP_200
+            resp.body = json.dumps(message)

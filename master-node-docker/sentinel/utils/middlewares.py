@@ -8,8 +8,7 @@ class JSONTranslator(object):
         try:
             req.body = json.loads(body.decode('utf-8'))
         except ValueError:
-            message = {
+            _ = {
                 'message': 'Malformed JSON',
                 'errors': ['JSON was incorrect or not encoded as UTF-8.']
             }
-            print(message)

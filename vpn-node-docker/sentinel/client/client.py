@@ -48,7 +48,8 @@ class GenerateOVPN(object):
                         'vpn': {
                             'ovpn': keys.ovpn()
                         }
-                    }
+                    },
+                    'session_name': 'client' + name
                 }
                 res.status = falcon.HTTP_200
                 res.body = json.dumps(message)

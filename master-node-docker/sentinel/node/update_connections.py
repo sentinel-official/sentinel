@@ -1,6 +1,13 @@
 import json
+import time
 import falcon
 from ..db import db
+from ..config import DECIMALS
+from ..helpers import eth_helper
+
+
+def calculate_amount(used_bytes):
+    return (used_bytes / (1024.0 * 1024.0 * 1024.0)) * 100.0
 
 
 class UpdateConnections(object):
@@ -14,7 +21,9 @@ class UpdateConnections(object):
             'token': token
         })
         if node is not None:
+            tx_hashes = []
             for info in connections:
+                info['account_addr'] = account_addr
                 connection = db.connections.find_one({
                     'account_addr': account_addr,
                     'session_name': info['session_name']
@@ -31,9 +40,29 @@ class UpdateConnections(object):
                             'end_time': info['end_time'] if 'end_time' in info else None
                         }
                     })
+                    if 'end_time' in info and info['end_time'] is not None:
+                        from_addr = account_addr
+                        to_addr = str(connection['client_addr'])
+                        sent_bytes = int(info['usage']['down'])
+                        session_duration = int(
+                            int(info['end_time']) - int(connection['start_time']))
+                        amount = int(calculate_amount(sent_bytes) * DECIMALS)
+                        timestamp = int(time.time())
+
+                        print(from_addr, to_addr, sent_bytes,
+                              session_duration, amount, timestamp)
+
+                        if sent_bytes >= (100 * 1024 * 1024):
+                            error, tx_hash = eth_helper.add_vpn_usage(
+                                from_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
+                            if error:
+                                tx_hashes.append(error)
+                            else:
+                                tx_hashes.append(tx_hash)
             message = {
                 'success': True,
-                'message': 'Connection details updated successfully.'
+                'message': 'Connection details updated successfully.',
+                'tx_hashes': tx_hashes
             }
         else:
             message = {

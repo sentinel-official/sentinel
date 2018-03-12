@@ -11,7 +11,9 @@ from ..logs import logger
 
 
 def get_vpns_list():
-    _list = db.nodes.find({'vpn.status': 'up'}, {
+    _list = db.nodes.find({
+        'vpn.status': 'up'
+    }, {
         '_id': 0,
         'account.addr': 1,
         'location': 1,
@@ -19,6 +21,18 @@ def get_vpns_list():
         'net_speed.download': 1
     })
     return list(_list)
+
+
+def get_current_vpn_usage(account_addr, session_name):
+    result = db.connections.find_one({
+        'client_addr': account_addr,
+        'session_name': session_name
+    }, {
+        '_id': 0,
+        'usage': 1
+    })
+
+    return {} if result is None else result['usage']
 
 
 class GetVpnCredentials(object):
@@ -48,17 +62,24 @@ class GetVpnCredentials(object):
                     }
                     try:
                         raise Exception(error)
-                    except Exception as err:
-                        logger.send_log(message,resp)
+                    except Exception as _:
+                        logger.send_log(message, resp)
                 elif due_amount == 0:
                     vpn_addr_len = len(vpn_addr)
 
                     if vpn_addr_len > 0:
-                        node = db.nodes.find_one({'vpn.status': 'up', 'account.addr': vpn_addr}, {
-                                                 '_id': 0, 'token': 0})
+                        node = db.nodes.find_one({
+                            'vpn.status': 'up',
+                            'account.addr': vpn_addr
+                        }, {
+                            '_id': 0, 'token': 0
+                        })
                     else:
-                        node = db.nodes.find_one({'vpn.status': 'up'}, {
-                                                 '_id': 0, 'token': 0})
+                        node = db.nodes.find_one({
+                            'vpn.status': 'up'
+                        }, {
+                            '_id': 0, 'token': 0
+                        })
 
                     if node is None:
                         if vpn_addr_len > 0:
@@ -93,12 +114,12 @@ class GetVpnCredentials(object):
                             }
                             resp.status = falcon.HTTP_200
                             resp.body = json.dumps(message)
-                        except Exception as err:
+                        except Exception as _:
                             message = {
                                 'success': False,
                                 'message': 'Connection timed out while connecting to VPN server.'
                             }
-                            logger.send_log(message,resp)
+                            logger.send_log(message, resp)
                 else:
                     message = {
                         'success': False,
@@ -143,8 +164,8 @@ class PayVpnUsage(object):
             }
             try:
                 raise Exception(errors)
-            except Exception as err:
-                logger.send_log(message,resp)
+            except Exception as _:
+                logger.send_log(message, resp)
         else:
             message = {
                 'success': True,
@@ -153,7 +174,7 @@ class PayVpnUsage(object):
                 'message': 'VPN payment is completed successfully.'
             }
             resp.status = falcon.HTTP_200
-            resp.body = json.dumps(message) 
+            resp.body = json.dumps(message)
 
 
 class ReportPayment(object):
@@ -182,8 +203,8 @@ class ReportPayment(object):
             }
             try:
                 raise Exception(error)
-            except Exception as err:
-                logger.send_log(message,resp)
+            except Exception as _:
+                logger.send_log(message, resp)
 
 
 class GetVpnUsage(object):
@@ -200,7 +221,10 @@ class GetVpnUsage(object):
         error, usage = eth_helper.get_vpn_usage(account_addr)
 
         if error is None:
-            message = {'success': True, 'usage': usage}
+            message = {
+                'success': True,
+                'usage': usage
+            }
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(message)
         else:
@@ -211,8 +235,8 @@ class GetVpnUsage(object):
             }
             try:
                 raise Exception(error)
-            except Exception as err:
-                logger.send_log(message,resp)
+            except Exception as _:
+                logger.send_log(message, resp)
 
 
 class GetVpnsList(object):
@@ -225,6 +249,31 @@ class GetVpnsList(object):
         """
         _list = get_vpns_list()
 
-        message = {'success': True, 'list': _list}
+        message = {
+            'success': True,
+            'list': _list
+        }
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
+class GetVpnCurrentUsage(object):
+    def on_post(self, req, resp):
+        """
+        @api {post} /client/vpn/current Get current VPN usage.
+        @apiName GetVpnCurrentUsage
+        @apiGroup VPN
+        @apiSuccess Object usage Current VPN usage.
+        """
+        account_addr = str(req.body['account_addr'])
+        session_name = str(req.body['session_name'])
+
+        usage = get_current_vpn_usage(account_addr, session_name)
+
+        message = {
+            'success': True,
+            'usage': usage
+        }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

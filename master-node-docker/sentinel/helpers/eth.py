@@ -17,20 +17,6 @@ class ETHHelper(object):
 
         return error, tx_hash
 
-    def transfer_amount(self, from_addr, to_addr, amount, unit, keystore, password, private_key=None):
-        if private_key is None:
-            error, private_key = eth_manager.get_privatekey(keystore, password)
-            if error:
-                return error, None
-        if unit == 'ETH':
-            error, tx_hash = eth_manager.transfer_amount(
-                from_addr, to_addr, amount, private_key)
-        else:
-            error, tx_hash = sentinel_manager.transfer_amount(
-                from_addr, to_addr, amount, private_key)
-
-        return error, tx_hash
-
     def get_due_amount(self, account_addr):
         error, due_amount = vpn_service_manager.get_due_amount(account_addr)
 

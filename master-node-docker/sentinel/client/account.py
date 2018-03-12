@@ -4,6 +4,7 @@ from ..eth import eth_manager
 from ..eth import sentinel_manager
 from ..logs import logger
 
+
 class CreateNewAccount(object):
     def on_post(self, req, resp):
         """
@@ -30,7 +31,7 @@ class CreateNewAccount(object):
             }
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(message)
-            
+
         else:
             message = {
                 'success': False,
@@ -39,8 +40,8 @@ class CreateNewAccount(object):
             }
             try:
                 raise Exception(error)
-            except Exception as err:
-                logger.send_log(message,resp)
+            except Exception as _:
+                logger.send_log(message, resp)
 
 
 class GetBalance(object):
@@ -75,5 +76,5 @@ class GetBalance(object):
             }
             try:
                 raise Exception(error)
-            except Exception as err:
-                logger.send_log(message,resp)
+            except Exception as _:
+                logger.send_log(message, resp)

@@ -2,16 +2,30 @@ from __future__ import print_function
 
 import time
 from os import path, environ
+from thread import start_new_thread
 from sentinel.config import ACCOUNT_DATA_PATH
 from sentinel.node import Node
 from sentinel.node import create_account
 from sentinel.node import register_node
 from sentinel.node import send_nodeinfo
 from sentinel.node import send_client_usage
+from sentinel.node import send_connections_info
 
 from sentinel.vpn import OpenVPN
 
 from sentinel.db import db
+
+
+def send():
+    while True:
+        vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
+        if vpn_status_file is True:
+            connections = openvpn.get_connections()
+            connections_len = len(connections)
+            if connections_len > 0:
+                send_connections_info(
+                    node.account['addr'], node.account['token'], connections)
+        time.sleep(5)
 
 
 if __name__ == "__main__":
@@ -21,15 +35,22 @@ if __name__ == "__main__":
         create_account(environ['PASSWORD'])
         node = Node(resume=True)
     else:
-        print ('ERROR: {} not found.'.format(ACCOUNT_DATA_PATH))
+        print('ERROR: {} not found.'.format(ACCOUNT_DATA_PATH))
         exit(1)
 
     openvpn = OpenVPN()
     if node.account['token'] is None:
         register_node(node)
     openvpn.start()
-    node.update_vpninfo({'type': 'status', 'status': 'up'})
-    send_nodeinfo(node, {'type': 'vpn', 'status': node.vpn['status']})
+    node.update_vpninfo({
+        'type': 'status',
+        'status': 'up'
+    })
+    send_nodeinfo(node, {
+        'type': 'vpn',
+        'status': node.vpn['status']
+    })
+    start_new_thread(send, ())
     while True:
         line = openvpn.vpn_proc.stdout.readline().strip()
         line_len = len(line)
@@ -39,18 +60,36 @@ if __name__ == "__main__":
                 client_name = line.split()[6][1:-1]
                 print('*' * 128)
                 if 'client' in client_name:
-                    _ = db.clients.find_one_and_update(
-                        {'name': client_name}, {'$set': {'isConnected': 1}})
+                    result = db.clients.find_one({
+                        'name': client_name
+                    }, {
+                        '_id': 0,
+                        'account_addr': 1
+                    })
+                    connections = [{
+                        'session_name': client_name,
+                        'usage': {
+                            'up': 0,
+                            'down': 0
+                        },
+                        'client_addr': result['account_addr'],
+                        'start_time': int(time.time())
+                    }]
+                    send_connections_info(
+                        node.account['addr'], node.account['token'], connections)
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
                 print('*' * 128)
                 if 'client' in client_name:
                     openvpn.revoke(client_name)
-                    _ = db.clients.find_one_and_update(
-                        {'name': client_name}, {'$set': {'isConnected': 0}})
-                    client_details = db.clients.find_one({'name': client_name})
-                    received_bytes, sent_bytes, connected_time = openvpn.get_client_usage(
-                        client_name)
-                    sesstion_duration = int(time.time()) - connected_time
-                    send_client_usage(node, client_details['account_addr'],
-                                      received_bytes, sent_bytes, sesstion_duration)
+                    connections = openvpn.get_connections(
+                        client_name=client_name)
+                    result = db.clients.find_one({
+                        'name': client_name
+                    }, {
+                        '_id': 0,
+                        'account_addr': 1
+                    })
+                    connections[0]['end_time'] = int(time.time())
+                    send_connections_info(
+                        node.account['addr'], node.account['token'], connections)

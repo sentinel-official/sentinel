@@ -11,6 +11,7 @@ import {
     Markers,
     Marker,
 } from 'react-simple-maps';
+import { sendError } from '../helpers/ErrorLog';
 
 var markers = []
 
@@ -46,7 +47,7 @@ class VPNComponent extends Component {
 
     getVPNs() {
         getVPNList(function (err, data) {
-            if (err) console.log('Error', err);
+            if (err) sendError(err);
             else {
                 markers=[]
                 data.map((vpn, i) => {

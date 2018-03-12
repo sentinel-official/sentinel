@@ -8,6 +8,7 @@ import { createAccount, uploadKeystore, isOnline } from '../Actions/AccountActio
 import CopyToClipboard from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import { setTimeout } from 'timers';
+import { sendError } from '../helpers/ErrorLog';
 let keythereum = require('keythereum');
 
 class Create extends Component {
@@ -65,7 +66,7 @@ class Create extends Component {
         var that = this;
         if (isOnline()) {
             createAccount(password, function (err, account) {
-                if (err) console.log(err, "Error");
+                if (err) sendError(err);
                 else {
                     that.setState({
                         account_addr: account.account_addr,
@@ -94,6 +95,7 @@ class Create extends Component {
             cb(null, privateKey);
         }
         catch (err) {
+            sendError(err);
             cb({ message: 'Keystore and Password does not match' }, null);
         }
     }
@@ -110,7 +112,7 @@ class Create extends Component {
                 }
                 else {
                     uploadKeystore(keystore, function (err) {
-                        if (err) console.log(err);
+                        if (err) sendError(err);
                         else {
                             that.set('dashboard');
                         }

@@ -8,6 +8,7 @@ import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
 import VPNHistory from './VPNHistory';
+import { sendError } from '../helpers/ErrorLog';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -48,7 +49,7 @@ class Dashboard extends Component {
   getUserEthBalance() {
     let that = this;
     getEthBalance(this.state.local_address, (err, ethBalance) => {
-      if (err) console.log(err, 'got an error')
+      if (err) sendError(err);
       else {
         that.setState({ ethBalance })
       }

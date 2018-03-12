@@ -7,3 +7,4 @@ from .controllers import send_nodeinfo
 from .controllers import send_client_usage
 from .controllers import deregister_node
 from .controllers import get_amount
+from .controllers import send_connections_info

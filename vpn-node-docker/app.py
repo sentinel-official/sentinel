@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import time
 from os import path, environ
+from thread import start_new_thread
 from sentinel.config import ACCOUNT_DATA_PATH
 from sentinel.node import Node
 from sentinel.node import create_account
@@ -13,6 +14,18 @@ from sentinel.node import send_connections_info
 from sentinel.vpn import OpenVPN
 
 from sentinel.db import db
+
+
+def send():
+    while True:
+        vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
+        if vpn_status_file is True:
+            connections = openvpn.get_connections()
+            connections_len = len(connections)
+            if connections_len > 0:
+                send_connections_info(
+                    node.account['addr'], node.account['token'], connections)
+        time.sleep(5)
 
 
 if __name__ == "__main__":
@@ -37,6 +50,7 @@ if __name__ == "__main__":
         'type': 'vpn',
         'status': node.vpn['status']
     })
+    start_new_thread(send, ())
     while True:
         line = openvpn.vpn_proc.stdout.readline().strip()
         line_len = len(line)
@@ -46,16 +60,21 @@ if __name__ == "__main__":
                 client_name = line.split()[6][1:-1]
                 print('*' * 128)
                 if 'client' in client_name:
-                    connections = openvpn.get_connections(
-                        client_name=client_name)
                     result = db.clients.find_one({
                         'name': client_name
                     }, {
                         '_id': 0,
                         'account_addr': 1
                     })
-                    connections[0]['client_addr'] = result['account_addr']
-                    connections[0]['start_time'] = int(time.time())
+                    connections = [{
+                        'session_name': client_name,
+                        'usage': {
+                            'up': 0,
+                            'down': 0
+                        },
+                        'client_addr': result['account_addr'],
+                        'start_time': int(time.time())
+                    }]
                     send_connections_info(
                         node.account['addr'], node.account['token'], connections)
             elif 'client-instance exiting' in line:

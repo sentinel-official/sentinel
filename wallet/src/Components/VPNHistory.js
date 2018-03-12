@@ -8,6 +8,7 @@ import Done from 'material-ui/svg-icons/action/done';
 import Send from 'material-ui/svg-icons/content/send';
 import ReactTooltip from 'react-tooltip';
 import _ from 'lodash';
+import { sendError } from '../helpers/ErrorLog';
 let zfill = require('zfill');
 
 class VPNHistory extends Component {
@@ -38,7 +39,7 @@ class VPNHistory extends Component {
         if (isOnline()) {
             getVpnHistory(this.props.local_address, (err, history) => {
                 if (err) {
-                    console.log('Error')
+                    sendError(err)
                 }
                 else {
                     that.setState({ vpnUsage: history })

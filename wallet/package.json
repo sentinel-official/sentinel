@@ -22,6 +22,8 @@
     "keythereum": "^1.0.2",
     "mapbox-gl": "^0.43.0",
     "material-ui": "^0.20.0",
+    "raven": "^2.4.2",
+    "raven-js": "^3.23.1",
     "react": "^16.2.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-copy-to-clipboard": "^5.0.1",

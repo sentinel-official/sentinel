@@ -75,9 +75,9 @@ if environ['SENT_ENV'] == 'PROD':
         provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
 else:
     eth_manager = ETHManager(
-        provider='rpc', RPC_url='https://ropsten.infura.io/aiAxnxbpJ4aG0zed1aMy')
+        provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
     mainnet = ETHManager(
-        provider='rpc', RPC_url='https://ropsten.infura.io/aiAxnxbpJ4aG0zed1aMy')
+        provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
 
 rinkeby = ETHManager(
     provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')

@@ -21,6 +21,7 @@ const OVPN_FILE = SENT_DIR + '/client.ovpn';
 var getVPN = null;
 var OVPNDelTimer = null;
 var CONNECTED = false;
+var SESSION_NAME = '';
 var IPGENERATED = '';
 var LOCATION = '';
 var SPEED = '';
@@ -261,7 +262,33 @@ export function payVPNUsage(data, cb) {
   });
 }
 
-export function reportPayment(data,cb) {
+export function getVPNUsageData(account_addr, cb) {
+  console.log('SESSION_NAME:', SESSION_NAME);
+  fetch(B_URL + '/client/vpn/current', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      account_addr: account_addr,
+      session_name: SESSION_NAME
+    })
+  }).then(function (response) {
+    response.json().then(function (response) {
+      console.log("Response..",response)
+      if(response.success===true){
+        var usage=response['usage'];
+        cb(null,usage)
+      }
+      else{
+        cb({ message: response.message || 'No data got' }, null);
+      }
+    })
+  })
+}
+
+export function reportPayment(data, cb) {
   fetch(B_URL + '/client/vpn/report', {
     method: 'POST',
     headers: {
@@ -558,9 +585,10 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
             }
             else {
               var ovpn = response['node']['vpn']['ovpn'].join('');
+              SESSION_NAME = response['session_name'];
               IPGENERATED = response['node']['vpn']['ovpn'][3].split(' ')[1];
               LOCATION = response['node']['location']['city'];
-              SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + 'MBPS';
+              SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + ' Mbps';
               fs.writeFile(OVPN_FILE, ovpn, function (err) {
                 if (err) cb(err);
                 else cb(null);

@@ -1,3 +1,4 @@
+import time
 import json
 import falcon
 import redis
@@ -27,13 +28,17 @@ class GenerateOVPN(object):
         os.system("nohup redis-server >> /dev/null &")
         rs = redis.Redis()
         stored_token = rs.get(account_addr)
-        count = str(db.clients.count() + 1)
+        name = str(int(time.time()))
         if token == stored_token:
-            result = db.clients.insert_one(
-                {'name': 'client' + count, 'account_addr': account_addr, 'isConnected': 0})
+            result = db.clients.insert_one({
+                'name': 'client' + name,
+                'account_addr': account_addr
+            })
             if result.inserted_id:
-                data = db.nodes.find_one({'address': vpn_addr})
-                keys = Keys(count=count)
+                data = db.nodes.find_one({
+                    'address': vpn_addr
+                })
+                keys = Keys(name=name)
                 keys.generate()
                 message = {
                     'success': True,
@@ -43,7 +48,8 @@ class GenerateOVPN(object):
                         'vpn': {
                             'ovpn': keys.ovpn()
                         }
-                    }
+                    },
+                    'session_name': 'client' + name
                 }
                 res.status = falcon.HTTP_200
                 res.body = json.dumps(message)
@@ -54,8 +60,8 @@ class GenerateOVPN(object):
                 }
                 try:
                     raise Exception('Client Insertion Error in Database')
-                except Exception as err:
-                    logger.send_log(message,resp)
+                except Exception as _:
+                    logger.send_log(message, res)
         else:
             message = {
                 'success': False,
@@ -63,5 +69,5 @@ class GenerateOVPN(object):
             }
             try:
                 raise Exception('Session Token Mismatch')
-            except Exception as err:
-                logger.send_log(message,resp)
+            except Exception as _:
+                logger.send_log(message, res)

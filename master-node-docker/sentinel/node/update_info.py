@@ -3,6 +3,7 @@ import falcon
 from ..db import db
 from ..logs import logger
 
+
 class UpdateNodeInfo(object):
     def on_post(self, req, resp):
         token = req.body['token']
@@ -11,25 +12,45 @@ class UpdateNodeInfo(object):
 
         if info['type'] == 'location':
             location = info['location']
-            node = db.nodes.find_one_and_update(
-                {'account.addr': account_addr, 'token': token},
-                {'$set': {'location': location}})
+            node = db.nodes.find_one_and_update({
+                'account.addr': account_addr,
+                'token': token
+            }, {
+                '$set': {
+                    'location': location
+                }
+            })
         elif info['type'] == 'net_speed':
             net_speed = info['net_speed']
-            node = db.nodes.find_one_and_update(
-                {'account.addr': account_addr, 'token': token},
-                {'$set': {'net_speed': net_speed}})
+            node = db.nodes.find_one_and_update({
+                'account.addr': account_addr,
+                'token': token
+            }, {
+                '$set': {
+                    'net_speed': net_speed
+                }
+            })
         elif info['type'] == 'vpn':
             if 'ovpn' in info:
                 ovpn = info['ovpn']
-                node = db.nodes.find_one_and_update(
-                    {'account.addr': account_addr, 'token': token},
-                    {'$set': {'vpn.ovpn': ovpn}})
+                node = db.nodes.find_one_and_update({
+                    'account.addr': account_addr,
+                    'token': token
+                }, {
+                    '$set': {
+                        'vpn.ovpn': ovpn
+                    }
+                })
             elif 'status' in info:
                 status = info['status']
-                node = db.nodes.find_one_and_update(
-                    {'account.addr': account_addr, 'token': token},
-                    {'$set': {'vpn.status': status}})
+                node = db.nodes.find_one_and_update({
+                    'account.addr': account_addr,
+                    'token': token
+                }, {
+                    '$set': {
+                        'vpn.status': status
+                    }
+                })
 
         if node is None:
             message = {
@@ -38,8 +59,8 @@ class UpdateNodeInfo(object):
             }
             try:
                 raise Exception('Node is not registered.')
-            except Exception as err:
-                logger.send_log(message,resp)
+            except Exception as _:
+                logger.send_log(message, resp)
         else:
             message = {
                 'success': True,

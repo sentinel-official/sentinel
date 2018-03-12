@@ -1,3 +1,5 @@
+import { sendError } from '../helpers/ErrorLog';
+
 // import { clearInterval, setTimeout } from 'timers';
 const fs = window.require('fs');
 const electron = window.require('electron');

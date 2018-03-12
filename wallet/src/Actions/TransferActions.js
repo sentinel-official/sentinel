@@ -34,12 +34,12 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
     }
 }
 
-export function tokenTransaction(from_addr, to_addr, amount, gas, privateKey, cb) {
+export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     amount = amount * Math.pow(10, 8);
     var data = contract.transfer.getData(to_addr, amount, { from: from_addr });
     var txParams = {
         nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-        gasPrice: web3.toHex(web3.eth.gasPrice.c[0]),
+        gasPrice: gas_price,
         gasLimit: gas,
         from: from_addr,
         to: SENTINEL_ADDRESS,
@@ -52,10 +52,10 @@ export function tokenTransaction(from_addr, to_addr, amount, gas, privateKey, cb
     cb(serializedTx);
 }
 
-export function ethTransaction(from_addr, to_addr, amount, gas, privateKey, cb) {
+export function ethTransaction(from_addr, to_addr, amount ,gas_price , gas, privateKey, cb) {
     var txParams = {
         nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-        gasPrice: web3.toHex(web3.eth.gasPrice.c[0]),
+        gasPrice: gas_price,
         gasLimit: gas,
         from: from_addr,
         to: to_addr,

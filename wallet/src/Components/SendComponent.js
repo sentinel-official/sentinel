@@ -5,6 +5,8 @@ import { transferAmount, isOnline, payVPNUsage, getGasPrice } from '../Actions/A
 import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost } from '../Actions/TransferActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
+import Slider from 'material-ui/Slider';
+import { sendError } from '../helpers/ErrorLog';
 var config = require('../config');
 
 
@@ -33,7 +35,8 @@ class SendComponent extends Component {
       isDisabled: true,
       isInitial: true,
       transactionStatus: '',
-      session_id: null
+      session_id: null,
+      sliderValue:0
     };
   }
 
@@ -44,12 +47,16 @@ class SendComponent extends Component {
   getGas = () => {
     var that = this;
     getGasPrice(function (error, gasPrice) {
-      if (error) console.log(error.message)
+      if (error) sendError(error)
       else {
         var gas = parseFloat(gasPrice * 21000).toFixed(9);
         that.setState({ gas: gas });
       }
     })
+  }
+
+  handleSlider=(event,value)=>{
+    this.setState({sliderValue:value})
   }
 
   openInExternalBrowser(url) {
@@ -84,7 +91,8 @@ class SendComponent extends Component {
     let to_addr = this.state.to_address;
     let gas = this.state.gas;
     let amount = this.state.amount;
-    tokenTransaction(from_addr, to_addr, amount, gas, privateKey, function (data) {
+    let gas_price = this.state.sliderValue * (10**9);
+    tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
       let body = {
         from_addr: self.props.local_address,
         amount: self.state.amount,
@@ -119,13 +127,14 @@ class SendComponent extends Component {
     let to_addr = this.state.to_address;
     let gas = this.state.gas;
     let amount = this.state.amount;
+    let gas_price = this.state.sliderValue * (10**9)
     if (this.state.unit === 'ETH') {
-      ethTransaction(from_addr, to_addr, amount, gas, privateKey, function (data) {
+      ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
         self.mainTransaction(data)
       })
     }
     else {
-      tokenTransaction(from_addr, to_addr, amount, gas, privateKey, function (data) {
+      tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
         self.mainTransaction(data)
       })
     }
@@ -185,6 +194,7 @@ class SendComponent extends Component {
           getPrivateKey(self.state.password, function (err, privateKey) {
             //console.log("Get..", self.state.isDisabled, err, privateKey)
             if (err) {
+              sendError(err)
               self.errorAlert(err)
             }
             else {
@@ -226,7 +236,7 @@ class SendComponent extends Component {
       this.getGasLimit(amount, this.state.to_address, this.state.unit)
     }
   }
-
+   
   addressChange = (event, to_addr) => {
     this.setState({ to_address: to_addr })
     let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
@@ -375,6 +385,24 @@ class SendComponent extends Component {
                   underlineShow={false} fullWidth={true}
                   inputStyle={{ padding: 10 }}
                   onChange={(event, password) => this.setState({ password })} value={this.state.password} />
+              </Col>
+            </Row>
+            <Row style={{ marginBottom: 15 }}>
+              <Col xs={3}>
+              <span>Gas Price</span>
+              </Col>
+              <Col xs={3}>
+              <div>
+              <span>{this.state.sliderValue} Gwei</span>
+        <Slider
+          min={1}
+          max={99}
+          step={1}
+          value={this.state.sliderValue}
+          onChange={this.handleSlider}
+          sliderStyle={{color:'#532d91'}}
+        />
+      </div>
               </Col>
             </Row>
           </Grid>

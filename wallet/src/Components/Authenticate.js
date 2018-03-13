@@ -72,10 +72,12 @@ class Authenticate extends Component {
                         open={this.state.showPopUp}
                     >
                         <TextField
+                            autoFocus={true}
                             hintText="Enter Keystore Password"
                             hintStyle={{ fontSize: 14 }}
                             type="password"
                             onChange={(event, password) => { this.setState({ password: password }) }}
+                            onKeyPress={(ev) => { if (ev.key === 'Enter') this.submitPassword() }}
                             value={this.state.password}
                             style={styles.textFieldCreate}
                         />

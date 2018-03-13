@@ -36,7 +36,7 @@ class SendComponent extends Component {
       isInitial: true,
       transactionStatus: '',
       session_id: null,
-      sliderValue:0
+      sliderValue: 20
     };
   }
 
@@ -55,8 +55,8 @@ class SendComponent extends Component {
     })
   }
 
-  handleSlider=(event,value)=>{
-    this.setState({sliderValue:value})
+  handleSlider = (event, value) => {
+    this.setState({ sliderValue: value })
   }
 
   openInExternalBrowser(url) {
@@ -74,7 +74,7 @@ class SendComponent extends Component {
         sending: nextProps.sending,
         password: ''
       })
-      this.getGasLimit(nextProps.amount,nextProps.to_addr,nextProps.unit);
+      this.getGasLimit(nextProps.amount, nextProps.to_addr, nextProps.unit);
       this.props.propReceiveChange()
       if (nextProps.to_addr !== '') {
         this.setState({ isDisabled: false })
@@ -91,7 +91,7 @@ class SendComponent extends Component {
     let to_addr = this.state.to_address;
     let gas = this.state.gas;
     let amount = this.state.amount;
-    let gas_price = this.state.sliderValue * (10**9);
+    let gas_price = this.state.sliderValue * (10 ** 9);
     tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
       let body = {
         from_addr: self.props.local_address,
@@ -127,7 +127,7 @@ class SendComponent extends Component {
     let to_addr = this.state.to_address;
     let gas = this.state.gas;
     let amount = this.state.amount;
-    let gas_price = this.state.sliderValue * (10**9)
+    let gas_price = this.state.sliderValue * (10 ** 9)
     if (this.state.unit === 'ETH') {
       ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
         self.mainTransaction(data)
@@ -236,7 +236,7 @@ class SendComponent extends Component {
       this.getGasLimit(amount, this.state.to_address, this.state.unit)
     }
   }
-   
+
   addressChange = (event, to_addr) => {
     this.setState({ to_address: to_addr })
     let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
@@ -299,7 +299,7 @@ class SendComponent extends Component {
                 />
               </Col>
             </Row>
-            <Row style={{ marginBottom: 15 }}>
+            <Row style={{ marginBottom: 15, height: 30 }}>
               <Col xs={3}>
                 <span>Amount</span>
                 <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
@@ -343,9 +343,9 @@ class SendComponent extends Component {
                 </DropDownMenu>
               </Col>
             </Row>
-            <Row style={{ marginBottom: 15 }}>
+            <Row style={{ marginBottom: 15, height: 30 }}>
               <Col xs={3}>
-                <span>Gas</span>
+                <span>Gas Limit</span>
                 <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
@@ -357,7 +357,6 @@ class SendComponent extends Component {
                   onChange={(event, gas) => this.setState({ gas })}
                   value={this.state.gas}
                 />
-                {/* <span style={{backgroundColor:'white',padding:3.5,paddingRight:23}}>ETHS</span> */}
               </Col>
             </Row>
             {/* <Row style={{ marginBottom: 15 }}>
@@ -373,7 +372,7 @@ class SendComponent extends Component {
                   onChange={(event, data) => this.setState({ data })} value={this.state.data} />
               </Col>
             </Row> */}
-            <Row style={{ marginBottom: 15 }}>
+            <Row style={{ marginBottom: 15, height: 30 }}>
               <Col xs={3}>
                 <span >Password</span>
                 <span data-tip data-for="passwordField" style={styles.questionMark}>?</span>
@@ -387,22 +386,23 @@ class SendComponent extends Component {
                   onChange={(event, password) => this.setState({ password })} value={this.state.password} />
               </Col>
             </Row>
-            <Row style={{ marginBottom: 15 }}>
+            <Row style={{ marginBottom: 15, height: 30 }}>
               <Col xs={3}>
-              <span>Gas Price</span>
+                <span>Gas Price</span>
+                <span data-tip data-for="gasPrice" style={styles.questionMark}>?</span>
               </Col>
-              <Col xs={3}>
-              <div>
-              <span>{this.state.sliderValue} Gwei</span>
-        <Slider
-          min={1}
-          max={99}
-          step={1}
-          value={this.state.sliderValue}
-          onChange={this.handleSlider}
-          sliderStyle={{color:'#532d91'}}
-        />
-      </div>
+              <Col xs={4}>
+                <Slider
+                  min={1}
+                  max={99}
+                  step={1}
+                  value={this.state.sliderValue}
+                  onChange={this.handleSlider}
+                  sliderStyle={{ color: '#532d91', marginBottom: 0, marginTop: 2, height: 'auto', width: '80%' }}
+                />
+              </Col>
+              <Col xs={2} style={{ marginLeft: -50 }}>
+                <span >{this.state.sliderValue} Gwei</span>
               </Col>
             </Row>
           </Grid>
@@ -416,7 +416,10 @@ class SendComponent extends Component {
                 Yes, this wallet can<br /> hold Ethereum too.</span>
             </ReactTooltip>
             <ReactTooltip id="gasField" place="bottom">
-              <span>Total Ethereum Tokens that you want to send as Gas</span>
+              <span>21000 is the default gas limit</span>
+            </ReactTooltip>
+            <ReactTooltip id="gasPrice" place="bottom">
+              <span>Amount you pay per unit of gas</span>
             </ReactTooltip>
             <ReactTooltip id="messageField" place="bottom">
               <span>A message that you might want to add as a transaction note</span>
@@ -458,7 +461,7 @@ class SendComponent extends Component {
         </div>
         <div>
         </div>
-      </MuiThemeProvider>
+      </MuiThemeProvider >
     );
   }
 }

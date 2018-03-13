@@ -16,7 +16,7 @@ from sentinel.vpn import OpenVPN
 from sentinel.db import db
 
 
-def send():
+def tasks():
     while True:
         vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
         if vpn_status_file is True:
@@ -25,6 +25,10 @@ def send():
             if connections_len > 0:
                 send_connections_info(
                     node.account['addr'], node.account['token'], connections)
+
+        send_nodeinfo(node, {
+            'type': 'alive'
+        })
         time.sleep(5)
 
 
@@ -42,15 +46,10 @@ if __name__ == "__main__":
     if node.account['token'] is None:
         register_node(node)
     openvpn.start()
-    node.update_vpninfo({
-        'type': 'status',
-        'status': 'up'
-    })
     send_nodeinfo(node, {
-        'type': 'vpn',
-        'status': node.vpn['status']
+        'type': 'vpn'
     })
-    start_new_thread(send, ())
+    start_new_thread(tasks, ())
     while True:
         line = openvpn.vpn_proc.stdout.readline().strip()
         line_len = len(line)

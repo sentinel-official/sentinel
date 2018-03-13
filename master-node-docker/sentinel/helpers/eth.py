@@ -52,6 +52,11 @@ class ETHHelper(object):
 
         return error, due_amount
 
+    def get_vpn_sessions(self, account_addr):
+        error, sessions = vpn_service_manager.get_vpn_sessions(account_addr)
+
+        return error, sessions
+
     def get_vpn_usage(self, account_addr):
         usage = {
             'due': 0,

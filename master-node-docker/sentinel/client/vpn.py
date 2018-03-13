@@ -4,7 +4,6 @@ import requests
 from uuid import uuid4
 from ..db import db
 from ..config import DECIMALS
-from ..config import SENT_BALANCE
 from ..helpers import eth_helper
 from ..eth import vpn_service_manager
 from ..logs import logger
@@ -15,7 +14,7 @@ def get_vpns_list():
         'vpn.status': 'up'
     }, {
         '_id': 0,
-        'account.addr': 1,
+        'account_addr': 1,
         'location': 1,
         'net_speed.upload': 1,
         'net_speed.download': 1
@@ -49,6 +48,7 @@ class GetVpnCredentials(object):
         vpn_addr = str(req.body['vpn_addr'])
 
         balances = eth_helper.get_balances(account_addr)
+        error, sessions = eth_helper.get_vpn_sessions(account_addr)
 
         if balances['rinkeby']['sents'] >= (100 * (10 ** 8)):
             error, due_amount = eth_helper.get_due_amount(account_addr)
@@ -68,7 +68,7 @@ class GetVpnCredentials(object):
                 if vpn_addr_len > 0:
                     node = db.nodes.find_one({
                         'vpn.status': 'up',
-                        'account.addr': vpn_addr
+                        'account_addr': vpn_addr
                     }, {
                         '_id': 0,
                         'token': 0

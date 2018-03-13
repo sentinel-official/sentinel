@@ -7,18 +7,18 @@ from ..logs import logger
 
 class RegisterNode(object):
     def on_post(self, req, resp):
-        account = req.body['account']
+        account_addr = req.body['account_addr']
         ip = req.body['ip']
         location = req.body['location']
         net_speed = req.body['net_speed']
         token = uuid4().hex
 
         node = db.nodes.find_one({
-            'account.addr': account['addr']
+            'account_addr': account_addr
         })
         if node is None:
             result = db.nodes.insert_one({
-                'account': account,
+                'account_addr': account_addr,
                 'token': token,
                 'location': location,
                 'ip': ip,

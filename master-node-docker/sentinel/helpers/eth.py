@@ -1,19 +1,49 @@
-from ..eth import eth_manager
-from ..eth import sentinel_manager
+from ..eth import mainnet
+from ..eth import rinkeby
+from ..eth import sentinel_main
+from ..eth import sentinel_test
 from ..eth import vpn_service_manager
 
 from ..config import DECIMALS
 
 
 class ETHHelper(object):
+    def create_account(self, password):
+        error, account_addr, private_key, keystore = mainnet.create_account(
+            password)
+
+        return error, account_addr, private_key, keystore
+
+    def get_balances(self, account_addr):
+        balances = {
+            'main': {
+                'eths': None,
+                'sents': None
+            },
+            'rinkeby': {
+                'eths': None,
+                'sents': None
+            }
+        }
+        _, balances['main']['eths'] = mainnet.get_balance(account_addr)
+        _, balances['main']['sents'] = sentinel_main.get_balance(account_addr)
+        _, balances['rinkeby']['eths'] = rinkeby.get_balance(account_addr)
+        _, balances['rinkeby']['sents'] = sentinel_test.get_balance(
+            account_addr)
+
+        return balances
+
     def get_account_addr(self, private_key):
-        error, account_addr = eth_manager.get_address(private_key)
+        error, account_addr = mainnet.get_address(private_key)
         account_addr = account_addr[2:]
 
         return error, account_addr
 
-    def raw_transaction(self, tx_data):
-        error, tx_hash = eth_manager.send_raw_transaction(tx_data)
+    def raw_transaction(self, net, tx_data):
+        if net == 'main':
+            error, tx_hash = mainnet.send_raw_transaction(tx_data)
+        elif net == 'rinkeby':
+            error, tx_hash = rinkeby.send_raw_transaction(tx_data)
 
         return error, tx_hash
 
@@ -59,9 +89,9 @@ class ETHHelper(object):
         else:
             return error, None
 
-    def pay_vpn_session(self, from_addr, amount, session_id, tx_data):
+    def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data):
         errors, tx_hashes = [], []
-        error, tx_hash = self.raw_transaction(tx_data)
+        error, tx_hash = self.raw_transaction(net, tx_data)
         if error is None:
             tx_hashes.append(tx_hash)
             error, tx_hash = vpn_service_manager.pay_vpn_session(

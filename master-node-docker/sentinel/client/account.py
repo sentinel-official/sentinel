@@ -1,7 +1,6 @@
 import json
 import falcon
-from ..eth import eth_manager
-from ..eth import sentinel_manager
+from ..helpers import eth_helper
 from ..logs import logger
 
 
@@ -18,7 +17,7 @@ class CreateNewAccount(object):
         """
         password = str(req.body['password'])
 
-        error, account_addr, private_key, keystore = eth_manager.create_account(
+        error, account_addr, private_key, keystore = eth_helper.create_account(
             password)
 
         if error is None:
@@ -54,27 +53,11 @@ class GetBalance(object):
         @apiSuccess {Object} balances Account balances.
         """
         account_addr = str(req.body['account_addr'])
-        balances = {}
 
-        error, balances['eths'] = eth_manager.get_balance(account_addr)
-        if error is None:
-            error, balances['sents'] = sentinel_manager.get_balance(
-                account_addr)
-
-        if error is None:
-            message = {
-                'success': True,
-                'balances': balances
-            }
-            resp.status = falcon.HTTP_200
-            resp.body = json.dumps(message)
-
-        else:
-            message = {
-                'success': False,
-                'error': error
-            }
-            try:
-                raise Exception(error)
-            except Exception as _:
-                logger.send_log(message, resp)
+        balances = eth_helper.get_balances(account_addr)
+        message = {
+            'success': True,
+            'balances': balances
+        }
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)

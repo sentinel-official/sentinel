@@ -48,7 +48,6 @@ class ETHManager(object):
     def get_balance(self, account_addr):
         try:
             balance = self.web3.eth.getBalance(account_addr)
-            balance = balance / ((10 ** 18) * 1.0)
         except Exception as err:
             return {'code': 104, 'error': str(err)}, None
         return None, balance
@@ -68,16 +67,5 @@ class ETHManager(object):
         return None, receipt
 
 
-if environ['SENT_ENV'] == 'PROD':
-    eth_manager = ETHManager(
-        provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
-    mainnet = ETHManager(
-        provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
-else:
-    eth_manager = ETHManager(
-        provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
-    mainnet = ETHManager(
-        provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
-
-rinkeby = ETHManager(
-    provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
+mainnet = ETHManager(provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
+rinkeby = ETHManager(provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')

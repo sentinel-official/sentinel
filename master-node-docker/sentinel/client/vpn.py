@@ -48,99 +48,84 @@ class GetVpnCredentials(object):
         account_addr = str(req.body['account_addr'])
         vpn_addr = str(req.body['vpn_addr'])
 
-        url = SENT_BALANCE + account_addr
-        res = requests.get(url)
-        res = res.json()
-        if res['status'] == '1':
-            if int(res['result']) >= (100 * (10 ** 8)):
-                error, due_amount = eth_helper.get_due_amount(account_addr)
-                if error is not None:
-                    message = {
-                        'success': False,
-                        'error': error,
-                        'message': 'Error occurred while checking the due amount.'
-                    }
-                    try:
-                        raise Exception(error)
-                    except Exception as _:
-                        logger.send_log(message, resp)
-                elif due_amount == 0:
-                    vpn_addr_len = len(vpn_addr)
+        balances = eth_helper.get_balances(account_addr)
 
-                    if vpn_addr_len > 0:
-                        node = db.nodes.find_one({
-                            'vpn.status': 'up',
-                            'account.addr': vpn_addr
-                        }, {
-                            '_id': 0, 'token': 0
-                        })
-                    else:
-                        node = db.nodes.find_one({
-                            'vpn.status': 'up'
-                        }, {
-                            '_id': 0, 'token': 0
-                        })
+        if balances['rinkeby']['sents'] >= (100 * (10 ** 8)):
+            error, due_amount = eth_helper.get_due_amount(account_addr)
+            if error is not None:
+                message = {
+                    'success': False,
+                    'error': error,
+                    'message': 'Error occurred while checking the due amount.'
+                }
+                try:
+                    raise Exception(error)
+                except Exception as _:
+                    logger.send_log(message, resp)
+            elif due_amount == 0:
+                vpn_addr_len = len(vpn_addr)
 
-                    if node is None:
-                        if vpn_addr_len > 0:
-                            message = {
-                                'success': False,
-                                'message': 'VPN server is already occupied. Please try after sometime.'
-                            }
-                            resp.status = falcon.HTTP_200
-                            resp.body = json.dumps(message)
-                        else:
-                            message = {
-                                'success': False,
-                                'message': 'All VPN servers are occupied. Please try after sometime.'
-                            }
-                            resp.status = falcon.HTTP_200
-                            resp.body = json.dumps(message)
-                    else:
-                        try:
-                            secret_token = uuid4().hex
-                            node_addr = str(node['ip'])
-                            body = {
-                                'account_addr': account_addr,
-                                'token': secret_token
-                            }
-                            url = "http://" + node_addr + ":3000/master/sendToken"
-                            res = requests.post(url, json=body, timeout=5)
-                            message = {
-                                'success': True,
-                                'ip': node_addr,
-                                'port': 3000,
-                                'token': secret_token
-                            }
-                            resp.status = falcon.HTTP_200
-                            resp.body = json.dumps(message)
-                        except Exception as _:
-                            message = {
-                                'success': False,
-                                'message': 'Connection timed out while connecting to VPN server.'
-                            }
-                            logger.send_log(message, resp)
+                if vpn_addr_len > 0:
+                    node = db.nodes.find_one({
+                        'vpn.status': 'up',
+                        'account.addr': vpn_addr
+                    }, {
+                        '_id': 0,
+                        'token': 0
+                    })
                 else:
-                    message = {
-                        'success': False,
-                        'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
-                    }
-                    resp.status = falcon.HTTP_200
-                    resp.body = json.dumps(message)
+                    node = db.nodes.find_one({
+                        'vpn.status': 'up'
+                    }, {
+                        '_id': 0,
+                        'token': 0
+                    })
+
+                if node is None:
+                    if vpn_addr_len > 0:
+                        message = {
+                            'success': False,
+                            'message': 'VPN server is already occupied. Please try after sometime.'
+                        }
+                    else:
+                        message = {
+                            'success': False,
+                            'message': 'All VPN servers are occupied. Please try after sometime.'
+                        }
+                else:
+                    try:
+                        token = uuid4().hex
+                        ip, port = str(node['ip']), 3000
+                        body = {
+                            'account_addr': account_addr,
+                            'token': token
+                        }
+                        url = 'http://{}:{}/master/sendToken'.format(ip, port)
+                        _ = requests.post(url, json=body, timeout=10)
+                        message = {
+                            'success': True,
+                            'ip': ip,
+                            'port': port,
+                            'token': token
+                        }
+                    except Exception as _:
+                        message = {
+                            'success': False,
+                            'message': 'Connection timed out while connecting to VPN server.'
+                        }
+                        logger.send_log(message, resp)
             else:
                 message = {
                     'success': False,
-                    'message': 'Your balance is less than 100 SENTs.'
+                    'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
                 }
-                resp.status = falcon.HTTP_200
-                resp.body = json.dumps(message)
         else:
             message = {
                 'success': False,
-                'message': 'Error while checking your balance.'
+                'message': 'Your balance is less than 100 SENTs.'
             }
-            resp.status = falcon.HTTP_200
-            resp.body = json.dumps(message)
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
 
 
 class PayVpnUsage(object):
@@ -149,11 +134,12 @@ class PayVpnUsage(object):
         amount = float(req.body['amount'])
         session_id = int(req.body['session_id'])
         tx_data = str(req.body['tx_data'])
+        net = str(req.body['net'])
 
         amount = int(amount * (DECIMALS * 1.0))
 
         errors, tx_hashes = eth_helper.pay_vpn_session(
-            from_addr, amount, session_id, tx_data)
+            from_addr, amount, session_id, net, tx_data)
 
         if len(errors) > 0:
             message = {

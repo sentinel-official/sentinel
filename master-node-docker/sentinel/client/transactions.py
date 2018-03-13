@@ -9,7 +9,8 @@ from ..logs import logger
 class RawTransaction(object):
     def on_post(self, req, resp):
         tx_data = str(req.body['tx_data'])
-        error, tx_hash = eth_helper.raw_transaction(tx_data)
+        net = str(req.body['net'])
+        error, tx_hash = eth_helper.raw_transaction(net, tx_data)
 
         if error is None:
             message = {

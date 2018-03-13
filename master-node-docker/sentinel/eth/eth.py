@@ -67,5 +67,7 @@ class ETHManager(object):
         return None, receipt
 
 
-mainnet = ETHManager(provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
-rinkeby = ETHManager(provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
+mainnet = ETHManager(
+    provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
+rinkeby = ETHManager(
+    provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')

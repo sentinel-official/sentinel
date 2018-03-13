@@ -16,6 +16,7 @@ from sentinel.node import UpdateNodeInfo
 from sentinel.node import DeRegisterNode
 from sentinel.node import AddVpnUsage
 from sentinel.node import UpdateConnections
+from sentinel.node import UpdateNodesStatus
 
 from sentinel.utils import JSONTranslator
 
@@ -53,3 +54,7 @@ app.add_route('/node/update-nodeinfo', UpdateNodeInfo())
 app.add_route('/node/add-usage', AddVpnUsage())
 app.add_route('/node/deregister', DeRegisterNode())
 app.add_route('/node/update-connections', UpdateConnections())
+
+
+update_nodes_status = UpdateNodesStatus(max_secs=120)
+update_nodes_status.start()

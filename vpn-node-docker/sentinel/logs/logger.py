@@ -1,6 +1,6 @@
-from raven import Client
-import falcon
 import json
+import falcon
+from raven import Client
 
 
 class Logger(object):

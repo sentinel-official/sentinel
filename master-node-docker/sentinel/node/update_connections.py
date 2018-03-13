@@ -17,7 +17,7 @@ class UpdateConnections(object):
         connections = req.body['connections']
 
         node = db.nodes.find_one({
-            'account.addr': account_addr,
+            'account_addr': account_addr,
             'token': token
         })
         if node is not None:

@@ -28,7 +28,7 @@ class GenerateOVPN(object):
         os.system("nohup redis-server >> /dev/null &")
         rs = redis.Redis()
         stored_token = rs.get(account_addr)
-        name = str(int(time.time()))
+        name = str(int(time.time() * (10 ** 6)))
         if token == stored_token:
             result = db.clients.insert_one({
                 'name': 'client' + name,

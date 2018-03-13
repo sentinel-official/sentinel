@@ -26,6 +26,7 @@ cd $ERSA_DIR && rm -rf pki && \
 echo \r | ./easyrsa build-ca nopass && \
 ./easyrsa build-server-full server nopass && \
 ./easyrsa gen-dh && \
+./easyrsa gen-crl && \
 openvpn --genkey --secret pki/ta.key && \
 
 rm -rf $KEYS && mkdir $KEYS && cd pki && \

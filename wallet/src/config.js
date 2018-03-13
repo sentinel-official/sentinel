@@ -24,22 +24,22 @@ if (environ === 'PROD') {
 else {
     config = {
         masterUrl: 'http://api.sentinelgroup.io:8333',
-        infuraUrl: 'https://ropsten.infura.io/aiAxnxbpJ4aG0zed1aMy',
-        sentinelAddress: '0x29317B796510afC25794E511e7B10659Ca18048B',
+        infuraUrl: 'https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy',
+        sentinelAddress: '0x7991241Af080593CB15cf783Fce16b77C96241bb',
         gasLimit: 2500000,
-        ethBalanceUrl: `https://api-ropsten.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
+        ethBalanceUrl: `https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
         &module=account&action=balance&tag=latest&address=`,
-        sentBalanceUrl: `https://api-ropsten.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
-        &module=account&action=tokenbalance&tag=latest&contractaddress=0x29317B796510afC25794E511e7B10659Ca18048B&address=`,
-        ethTransUrl: `https://api-ropsten.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
+        sentBalanceUrl: `https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
+        &module=account&action=tokenbalance&tag=latest&contractaddress=0x7991241Af080593CB15cf783Fce16b77C96241bb&address=`,
+        ethTransUrl: `https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
         &module=account&action=txlist&startblock=0&endblock=latest&address=`,
-        sentTransUrl1: `https://api-ropsten.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
-        &module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0x29317B796510afC25794E511e7B10659Ca18048B
+        sentTransUrl1: `https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM
+        &module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0x7991241Af080593CB15cf783Fce16b77C96241bb
         &topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=`,
-        transcStatus: `https://api-ropsten.etherscan.io/api?&apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&
+        transcStatus: `https://api-rinkeby.etherscan.io/api?&apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&
         module=transaction&action=gettxreceiptstatus&txhash=`,
-        gasApi: `https://api-ropsten.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=proxy&action=eth_gasPrice`,
-        statusUrl: `https://ropsten.etherscan.io`
+        gasApi: `https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=proxy&action=eth_gasPrice`,
+        statusUrl: `https://rinkeby.etherscan.io`
     }
 }
 module.exports = config;

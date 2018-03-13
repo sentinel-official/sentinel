@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getVPNList } from '../Actions/AccountActions';
+import { getVPNList, getVPNUsageData } from '../Actions/AccountActions';
 import ZoomIn from 'material-ui/svg-icons/content/add';
 import ZoomOut from 'material-ui/svg-icons/content/remove';
 import { IconButton } from "material-ui";
@@ -21,7 +21,9 @@ class VPNComponent extends Component {
         super(props);
         this.state = {
             zoom: 1,
-            isGetVPNCalled: false
+            isGetVPNCalled: false,
+            isUsageCalled: false,
+            usage: null
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -49,7 +51,7 @@ class VPNComponent extends Component {
         getVPNList(function (err, data) {
             if (err) sendError(err);
             else {
-                markers=[]
+                markers = []
                 data.map((vpn, i) => {
                     var vpnServer = {
                         name: vpn.location.city,
@@ -61,6 +63,18 @@ class VPNComponent extends Component {
         })
     }
 
+    getUsage() {
+        let self = this;
+        getVPNUsageData(this.props.local_address, function (err, usage) {
+            if (err) {
+                console.log('Err', err);
+            }
+            else {
+                self.setState({ usage: usage })
+            }
+        })
+    }
+
     render() {
         let that = this;
         if (!this.state.isGetVPNCalled) {
@@ -68,7 +82,14 @@ class VPNComponent extends Component {
                 that.getVPNs()
             }, 60000);
 
-            this.setState({isGetVPNCalled: true });
+            this.setState({ isGetVPNCalled: true });
+        }
+        if (!this.state.isUsageCalled && this.props.status) {
+            setInterval(function () {
+                that.getUsage()
+            }, 5000);
+
+            this.setState({ isUsageCalled: true });
         }
         return (
             <div>
@@ -85,6 +106,8 @@ class VPNComponent extends Component {
                             <p>IP: {this.props.vpnData.ip}</p>
                             <p>Location: {this.props.vpnData.location}</p>
                             <p>Speed: {this.props.vpnData.speed}</p>
+                            <p>Download Usage: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.down) / (1024 * 1024)).toFixed(2)} MB</p>
+                            <p>Upload Usage: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.up) / (1024 * 1024)).toFixed(2)} MB</p>
                         </div>
                         :
                         <div>No VPN Connected</div>

@@ -1,7 +1,7 @@
 import json
+
 import falcon
-from ethereum.tools import keys
-from ..config import DECIMALS
+
 from ..helpers import eth_helper
 from ..logs import logger
 

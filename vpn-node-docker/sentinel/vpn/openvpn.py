@@ -1,5 +1,4 @@
 import subprocess
-from datetime import datetime
 
 
 class OpenVPN(object):
@@ -35,7 +34,7 @@ class OpenVPN(object):
 
     def revoke(self, client_name):
         cmd = 'cd /usr/share/easy-rsa && echo yes | ./easyrsa revoke ' + \
-            client_name + ' && ./easyrsa gen-crl'
+              client_name + ' && ./easyrsa gen-crl'
         revoke_proc = subprocess.Popen(cmd, shell=True)
         revoke_proc.wait()
         return revoke_proc.returncode

@@ -1,5 +1,6 @@
-import pprint
 import logging
+import pprint
+
 from chalk import log
 
 pp = pprint.PrettyPrinter(indent=4)

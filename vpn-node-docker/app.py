@@ -3,17 +3,15 @@ from __future__ import print_function
 import time
 from os import path, environ
 from thread import start_new_thread
+
 from sentinel.config import ACCOUNT_DATA_PATH
+from sentinel.db import db
 from sentinel.node import Node
 from sentinel.node import create_account
 from sentinel.node import register_node
-from sentinel.node import send_nodeinfo
-from sentinel.node import send_client_usage
 from sentinel.node import send_connections_info
-
+from sentinel.node import send_nodeinfo
 from sentinel.vpn import OpenVPN
-
-from sentinel.db import db
 
 
 def tasks():

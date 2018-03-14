@@ -1,7 +1,8 @@
-import falcon
 import json
 import time
-from ..db import db
+
+import falcon
+
 from ..config import DECIMALS
 from ..helpers import eth_helper
 from ..logs import logger

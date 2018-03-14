@@ -1,8 +1,10 @@
-import falcon
 import json
-import requests
-from ..config import MASTER_NODE_URL
 from urlparse import urljoin
+
+import falcon
+import requests
+
+from ..config import MASTER_NODE_URL
 
 
 class AddVpnUsage(object):

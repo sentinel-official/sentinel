@@ -1,5 +1,4 @@
 import json
-from .utils import pp
 
 
 class JSONTranslator(object):

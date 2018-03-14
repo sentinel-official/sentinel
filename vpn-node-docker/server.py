@@ -1,14 +1,14 @@
 import json
+
 import falcon
 
-from sentinel.server_node import RegisterNode
-from sentinel.server_node import UpdateNodeInfo
-from sentinel.server_node import DeRegisterNode
+from sentinel.client import GenerateOVPN
+from sentinel.master import GetMasterToken
 from sentinel.server_node import AddVpnUsage
 from sentinel.server_node import CreateNewAccount
-
-from sentinel.master import GetMasterToken
-from sentinel.client import GenerateOVPN
+from sentinel.server_node import DeRegisterNode
+from sentinel.server_node import RegisterNode
+from sentinel.server_node import UpdateNodeInfo
 from sentinel.utils import JSONTranslator
 
 

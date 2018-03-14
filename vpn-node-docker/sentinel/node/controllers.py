@@ -1,11 +1,13 @@
 import json
+from urlparse import urljoin
+
 import getip
 import requests
-from urlparse import urljoin
-from ..db import db
+
+from ..config import ACCOUNT_DATA_PATH
 from ..config import LOCAL_SERVER_URL
 from ..config import MASTER_NODE_URL
-from ..config import ACCOUNT_DATA_PATH
+from ..db import db
 
 
 def register_node(node):

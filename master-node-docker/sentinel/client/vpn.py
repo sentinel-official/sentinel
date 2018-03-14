@@ -1,11 +1,13 @@
 import json
+from uuid import uuid4
+
 import falcon
 import requests
-from uuid import uuid4
-from ..db import db
+
 from ..config import DECIMALS
-from ..helpers import eth_helper
+from ..db import db
 from ..eth import vpn_service_manager
+from ..helpers import eth_helper
 from ..logs import logger
 
 
@@ -117,7 +119,8 @@ class GetVpnCredentials(object):
             else:
                 message = {
                     'success': False,
-                    'message': 'You have due amount: ' + str(due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
+                    'message': 'You have due amount: ' + str(
+                        due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
                 }
         else:
             message = {

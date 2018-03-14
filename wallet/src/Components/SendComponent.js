@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { transferAmount, isOnline, payVPNUsage, getGasPrice } from '../Actions/AccountActions';
+import { transferAmount, isOnline, payVPNUsage } from '../Actions/AccountActions';
 import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost } from '../Actions/TransferActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
@@ -9,7 +9,7 @@ import Slider from 'material-ui/Slider';
 import { sendError } from '../helpers/ErrorLog';
 var config = require('../config');
 
-
+let statusUrl;
 let shell = window
   .require('electron')
   .shell;
@@ -44,17 +44,6 @@ class SendComponent extends Component {
     //this.getGas()
   }
 
-  getGas = () => {
-    var that = this;
-    getGasPrice(function (error, gasPrice) {
-      if (error) sendError(error)
-      else {
-        var gas = parseFloat(gasPrice * 21000).toFixed(9);
-        that.setState({ gas: gas });
-      }
-    })
-  }
-
   handleSlider = (event, value) => {
     this.setState({ sliderValue: value })
   }
@@ -63,6 +52,12 @@ class SendComponent extends Component {
     shell.openExternal(url);
     this.setState({ tx_addr: null })
   };
+
+  getStatusUrl() {
+    if (localStorage.getItem('config') === 'TEST')
+      return config.test.statusUrl
+    else return config.main.statusUrl
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.isPropReceive === true) {
@@ -93,11 +88,16 @@ class SendComponent extends Component {
     let amount = this.state.amount;
     let gas_price = this.state.sliderValue * (10 ** 9);
     tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
+      let network;
+      if (self.props.isTest)
+        network = 'rinkeby'
+      else network = 'main'
       let body = {
         from_addr: self.props.local_address,
         amount: self.state.amount,
         session_id: self.state.session_id,
-        tx_data: data
+        tx_data: data,
+        net: network
       }
       payVPNUsage(body, function (err, tx_addr) {
         self.props.clearSend();
@@ -143,7 +143,11 @@ class SendComponent extends Component {
   mainTransaction(tx_data) {
     console.log("Main")
     let self = this;
-    transferAmount(tx_data, function (err, tx_addr) {
+    let net;
+    if (this.props.isTest)
+      net = 'rinkeby'
+    else net = 'main'
+    transferAmount(net, tx_data, function (err, tx_addr) {
       if (err) self.errorAlert(err);
       else {
         self.props.clearSend();
@@ -218,7 +222,8 @@ class SendComponent extends Component {
     return (
       <div>
         Your Transaction is Placed Successfully. Check Status <a onClick={() => {
-          this.openInExternalBrowser(`${config.statusUrl}/tx/${this.state.tx_addr}`)
+          statusUrl = this.getStatusUrl();
+          this.openInExternalBrowser(`${statusUrl}/tx/${this.state.tx_addr}`)
         }} style={{ color: '#1d400' }}>Here</a>
       </div>
     )
@@ -276,9 +281,8 @@ class SendComponent extends Component {
     return (
       <MuiThemeProvider>
         <div style={{
-          minHeight: 450,
+          minHeight: 485,
           backgroundColor: '#c3deea',
-          margin: 15,
           padding: '5%'
         }}>
           <Grid>
@@ -435,7 +439,10 @@ class SendComponent extends Component {
               style={{ marginBottom: '2%' }}
               message="Transaction Placed"
               action="Check Status"
-              onActionClick={() => { this.openInExternalBrowser(`${config.statusUrl}/tx/${this.state.tx_addr}`) }}
+              onActionClick={() => {
+                statusUrl = this.getStatusUrl()
+                this.openInExternalBrowser(`${statusUrl}/tx/${this.state.tx_addr}`)
+              }}
             />
             <Snackbar
               open={this.state.snackOpen}

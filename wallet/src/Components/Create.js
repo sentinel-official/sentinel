@@ -125,10 +125,10 @@ class Create extends Component {
         return (
             <MuiThemeProvider>
                 <div>
-                    <Toolbar style={{ backgroundColor: 'rgb(83, 45, 145)' }}>
+                    <Toolbar style={{ backgroundColor: '#2f3245' }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/5.png'} alt="Logo" style={{ height: 56, width: 56 }} />
-                            <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
+                            <img src={'../src/Images/logo.svg'} alt="Logo" style={{ height: 56, width: 56 }} />
+                            <p style={styles.toolbarTitle}></p>
                         </ToolbarGroup>
                     </Toolbar>
                     {this.state.private_key === '' ?

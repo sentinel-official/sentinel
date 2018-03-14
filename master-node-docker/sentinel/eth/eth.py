@@ -1,9 +1,8 @@
-import rlp
+from os import path, urandom
+
+from eth_keyfile import create_keyfile_json
 from ethereum import utils
 from ethereum.tools import keys
-from ethereum.transactions import Transaction
-from eth_keyfile import create_keyfile_json
-from os import path, unlink, urandom, environ
 from web3 import Web3, IPCProvider, HTTPProvider
 
 

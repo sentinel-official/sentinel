@@ -1,14 +1,13 @@
-import time
 import json
+import os
+import time
+
 import falcon
 import redis
-import os
-import requests
-from ..config import MASTER_NODE_URL
-from urlparse import urljoin
+
 from ..db import db
-from ..vpn import Keys
 from ..logs import logger
+from ..vpn import Keys
 
 
 class GenerateOVPN(object):

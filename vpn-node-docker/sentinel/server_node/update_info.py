@@ -1,8 +1,10 @@
 import json
+from urlparse import urljoin
+
 import falcon
 import requests
+
 from ..config import MASTER_NODE_URL
-from urlparse import urljoin
 
 
 class UpdateNodeInfo(object):

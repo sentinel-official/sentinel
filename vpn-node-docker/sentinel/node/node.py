@@ -1,6 +1,8 @@
 import json
 from urllib2 import urlopen
+
 from speedtest_cli import Speedtest
+
 from ..config import ACCOUNT_DATA_PATH
 
 

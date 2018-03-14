@@ -1,16 +1,12 @@
-import rlp
-from ethereum.transactions import Transaction
-
 from .eth import mainnet
 from .eth import rinkeby
+from ..config import DECIMALS
 from ..config import SENTINEL_ABI
 from ..config import SENTINEL_ADDRESS
 from ..config import SENTINEL_NAME
 from ..config import SENTINEL_TEST_ABI
 from ..config import SENTINEL_TEST_ADDRESS
 from ..config import SENTINEL_TEST_NAME
-
-from ..config import DECIMALS
 
 
 class SentinelManger(object):
@@ -25,7 +21,8 @@ class SentinelManger(object):
             caller_object = {
                 'from': account_addr,
                 'to': self.address,
-                'data': self.net.web3.toHex(self.net.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='balanceOf', args=[account_addr])))
+                'data': self.net.web3.toHex(
+                    self.net.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='balanceOf', args=[account_addr])))
             }
             balance = self.net.web3.toInt(
                 hexstr=self.net.web3.eth.call(caller_object))

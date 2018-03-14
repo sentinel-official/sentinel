@@ -40,7 +40,7 @@ class History extends Component {
   }
 
   getEthHistory(page) {
-    this.setState({ isLoading: true,nextDisabled:false });
+    this.setState({ isLoading: true, nextDisabled: false });
     let that = this;
     getEthTransactionHistory(this.props.local_address, page, (err, history) => {
       if (err) {
@@ -89,8 +89,8 @@ class History extends Component {
       this.getSentHistory();
       this.setState({ isInitial: false });
     }
-    let ethOutput = <EtherTransaction data={this.state.ethData} local_address={this.props.local_address} />
-    let sentOutput = <SentTransaction data={this.state.sentData} local_address={this.props.local_address} />
+    let ethOutput = <EtherTransaction data={this.state.ethData} isTest={this.props.isTest} local_address={this.props.local_address} />
+    let sentOutput = <SentTransaction data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address} />
     return (
       <div style={{ margin: '1% 3%' }}>
         {this.state.ethActive ?

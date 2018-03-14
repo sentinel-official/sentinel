@@ -29,6 +29,7 @@ class Dashboard extends Component {
       isPropReceive: false,
       amount: '',
       unit: 'ETH',
+      isTest: false,
       sessionId: null
     }
     this.set = this.props.set;
@@ -112,15 +113,23 @@ class Dashboard extends Component {
       isPropReceive: true
     })
   }
+
   vpnPayment = (sessionData) => {
     this.setState({
       to_addr: sessionData.account_addr,
-      amount: parseFloat(sessionData.amount/(10**8)),
+      amount: parseFloat(sessionData.amount / (10 ** 8)),
       unit: 'SENT',
       value: 'send',
       sessionId: sessionData.id,
       isPropReceive: true
     })
+  }
+
+  onTestChange = (value) => {
+    if (value === false && (this.state.value === 'vpn' || this.state.value === 'vpn_history'))
+      this.setState({ isTest: value, value: 'send' })
+    else
+      this.setState({ isTest: value })
   }
 
   render() {
@@ -142,53 +151,62 @@ class Dashboard extends Component {
     return (
       <MuiThemeProvider>
         <div>
+          <Header balance={userBalance} onChange={this.getVPNapi} ontestChange={this.onTestChange} local_address={this.state.local_address} />
           <div>
-            <div>
-              <Header balance={userBalance} onChange={this.getVPNapi} local_address={this.state.local_address} />
-              <div>
-                <Tabs
-                  value={this.state.value}
-                  onChange={this.handleChange}
-                  tabItemContainerStyle={{
-                    backgroundColor: '#FAFAFA'
-                  }}
-                  inkBarStyle={{ backgroundColor: '#532d91' }}
-                >
-                  <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="HISTORY" value="history">
-                    <History local_address={this.state.local_address} />
-                  </Tab>
-                  <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="SEND" value="send">
-                    <SendComponent
-                      local_address={this.state.local_address}
-                      amount={this.state.amount}
-                      to_addr={this.state.to_addr}
-                      unit={this.state.unit}
-                      session_id={this.state.sessionId}
-                      sending={this.state.sending}
-                      isPropReceive={this.state.isPropReceive}
-                      propReceiveChange={this.propReceiveChange.bind(this)}
-                      clearSend={this.clearSend.bind(this)}
-                    />
-                  </Tab>
-                  <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="RECEIVE" value="receive">
-                    <div>
-                      <ReceiveComponent local_address={this.state.local_address} />
-                    </div>
-                  </Tab>
-                  <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="VPN List" value="vpn">
-                    <VPNComponent
-                      local_address={this.state.local_address}
-                      status={this.state.status}
-                      vpnData={this.state.vpnData}
-                    />
-                  </Tab>
-                  <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#532d91' }} label="VPN History" value="vpn_history">
-                    <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} />
-                  </Tab>
-                </Tabs>
-              </div>
-            </div>
+            <Tabs
+              value={this.state.value}
+              onChange={this.handleChange}
+              tabItemContainerStyle={{
+                backgroundColor: '#FAFAFA'
+              }}
+              inkBarStyle={{ backgroundColor: '#2f3245', height: 3 }}
+            >
+              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label="HISTORY" value="history">
+                <History local_address={this.state.local_address} isTest={this.state.isTest} />
+              </Tab>
+              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label="SEND" value="send">
+                <SendComponent
+                  local_address={this.state.local_address}
+                  amount={this.state.amount}
+                  to_addr={this.state.to_addr}
+                  unit={this.state.unit}
+                  session_id={this.state.sessionId}
+                  sending={this.state.sending}
+                  isTest={this.state.isTest}
+                  isPropReceive={this.state.isPropReceive}
+                  propReceiveChange={this.propReceiveChange.bind(this)}
+                  clearSend={this.clearSend.bind(this)}
+                />
+              </Tab>
+              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label="RECEIVE" value="receive">
+                <div>
+                  <ReceiveComponent local_address={this.state.local_address} />
+                </div>
+              </Tab>
+              <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :
+                { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label="VPN List" value="vpn" disabled={!this.state.isTest}>
+                <VPNComponent
+                  local_address={this.state.local_address}
+                  status={this.state.status}
+                  vpnData={this.state.vpnData}
+                  isTest={this.state.isTest}
+                />
+              </Tab>
+              <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :
+                { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label="VPN History" value="vpn_history" disabled={!this.state.isTest}>
+                <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} />
+              </Tab>
+            </Tabs>
           </div>
+          {this.state.isTest ?
+            <div style={{ backgroundColor: '#31b0d5', position: 'absolute', bottom: 0, width: '100%' }}>
+              <h4 style={{
+                textAlign: 'center', fontSize: 14, fontWeight: 'bold', padding: 14, margin: 0, color: 'white'
+              }}>TEST MODE ACTIVATED</h4>
+            </div>
+            :
+            <div></div>
+          }
         </div>
       </MuiThemeProvider>
     );

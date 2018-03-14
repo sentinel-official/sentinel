@@ -13,10 +13,9 @@ class Home extends Component {
         return (
             <MuiThemeProvider>
                 <div>
-                    <Toolbar style={{ backgroundColor: 'rgb(83, 45, 145)' }}>
+                    <Toolbar style={{ backgroundColor: '#2f3245', height: 70 }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/3.png'} alt="Logo" style={styles.toolbarImage} />
-                            <p style={styles.toolbarTitle}>SENTINEL-ANON PLATFORM</p>
+                            <img src={'../src/Images/logo.svg'} alt="Logo" style={styles.toolbarImage} />
                         </ToolbarGroup>
                     </Toolbar>
                     <div style={styles.middleDiv} >
@@ -24,15 +23,15 @@ class Home extends Component {
                             <br />
                             <Row>
                                 <Col>
-                                    <h2>VPN backed by blockChain security and anonymity.</h2>
+                                    <h2>Anonymous VPN backed by blockchain security</h2>
                                 </Col>
-                                <p style={styles.middleDivText}></p>
-                                <br /><br /><br />
+                                <p style={styles.middleDivText}>Open-source wallet and secure service platform</p>
+                                <br /><br />
                             </Row>
                         </Grid>
                         <RaisedButton
-                            label="Create Wallet"
-                            style={{ marginLeft: '7%',backgroundColor:'transparent' }}
+                            label="Create / Restore Wallet"
+                            style={{ marginLeft: '7%', backgroundColor: 'transparent',height:'45px' }}
                             labelStyle={styles.yesButtonLabel}
                             buttonStyle={styles.yesButton}
                             onClick={() => { this.set('create') }}
@@ -41,32 +40,18 @@ class Home extends Component {
                     <Grid >
                         <Row style={{ marginLeft: -20 }}>
                             <Col xs={7} style={styles.bottomDivCol}>
-                                <div style={{ marginLeft: '5%', padding: '2%' }}>
-                                    <h4 style={styles.moreAboutText}>More About Sentinel</h4>
-                                    <p style={{ fontSize: 12 }}>
+                                <div style={{ marginLeft: '5%', padding: '7%' }}>
+                                    <h4 style={styles.moreAboutText}>Sentinel Anonymity Platform</h4>
+                                    <p style={{ fontSize: 14 }}>
                                         Peer to peer erc based privacy application suite with multi chain
                                         for gas-free services and anonymous erc token transactions
                                         </p>
-                                    {/* <List>
-                                        <ListItem primaryText="ABOUT US"
-                                            innerDivStyle={styles.bottomDivListItem}
-                                            style={{ color: 'white' }} />
-                                        <ListItem primaryText="SERVICES"
-                                            innerDivStyle={styles.bottomDivListItem}
-                                            style={{ color: 'white' }} />
-                                        <ListItem primaryText="WHITE PAPER"
-                                            innerDivStyle={styles.bottomDivListItem}
-                                            style={{ color: 'white' }} />
-                                        <ListItem primaryText="PRIVACY POLICY"
-                                            innerDivStyle={styles.bottomDivListItem}
-                                            style={{ color: 'white' }} />
-                                    </List> */}
                                 </div>
                             </Col>
-                            <Col xsOffset={1} xs={3}>
-                                <h4 style={styles.bottomDivBuilt}>Built with care for user privacy</h4>
-                                <pre style={{ marginTop: 0 }}><h2 style={styles.underLine}>    </h2></pre>
-                                <p style={styles.copyRight}>@Sentinel</p>
+                            <Col xs={4} style={{ marginLeft: '5%' }}>
+                                <h4 style={styles.bottomDivBuilt}>Beta Version 0.1.2 with testnet option</h4>
+                                <hr align="left" style={styles.underLine} />
+                                <p style={styles.copyRight}>SentinelGroup.io</p>
                             </Col>
                         </Row>
                     </Grid>
@@ -78,9 +63,8 @@ class Home extends Component {
 
 const styles = {
     toolbarImage: {
-        width: 80,
-        height: 100,
-        paddingTop: '8%'
+        width: 50,
+        height: 50,
     },
     toolbarTitle: {
         color: 'white',
@@ -89,9 +73,9 @@ const styles = {
         fontWeight: '600'
     },
     middleDiv: {
-        backgroundImage: "url('../src/Images/back.png')",
+        backgroundImage: "url('../src/Images/BG.png')",
         backgroundSize: 'cover',
-        height: 420
+        height: 400
     },
     middleDivGrid: {
         padding: '7%',
@@ -99,51 +83,54 @@ const styles = {
     },
     middleDivText: {
         marginTop: 20,
-        fontSize: 16
+        fontSize: '1.2rem'
     },
     yesButtonLabel: {
         color: 'white',
         paddingRight: 25,
         paddingLeft: 25,
-        fontWeight: '600'
+        fontWeight: '600',
+        fontSize: 16,
+        height:45
     },
     yesButton: {
-        backgroundColor: '#12a5df',
-        borderRadius:'10px'
-        // height: '30px',
-        // lineHeight: '30px'
+        backgroundColor: '#2f3245',
+        borderRadius: '10px',
+        height: '45px',
+        lineHeight: '45px'
     },
     bottomDivCol: {
-        backgroundColor: 'rgb(83, 45, 145)',
+        backgroundColor: '#2f3245',
         color: 'white',
-        height: 196
+        height: 210
     },
     moreAboutText: {
-        marginBottom: 10,
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginTop: '8%'
+        marginBottom: 30,
+        fontSize: 16,
+        fontWeight: 'bold'
     },
     bottomDivListItem: {
         padding: '5px 5px 5px 16px',
         fontSize: 12
     },
     bottomDivBuilt: {
-        color: 'rgb(83, 45, 145)',
-        fontWeight: 'bold',
-        marginBottom: 0,
-        marginTop: '15%',
-        fontSize: 18
+        color: '#2f3245',
+        marginBottom: 30,
+        marginTop: '10%',
+        fontSize: 16
     },
     underLine: {
-        textDecoration: 'underline',
-        color: 'rgb(83, 45, 145)',
-        marginTop: 0
+        height: 3,
+        borderWidth: 0,
+        color: '#3a3e53',
+        backgroundColor: '#3a3e53',
+        width: '50%'
     },
     copyRight: {
-        fontWeight: '100',
-        fontSize: 10,
-        color: 'grey'
+        fontWeight: 'lighter',
+        fontSize: 14,
+        color: 'rgba(47, 50, 69, 0.68)',
+        marginTop: 25
     }
 }
 

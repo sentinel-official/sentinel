@@ -5,6 +5,7 @@ import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle } from 'mat
 import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline } from '../Actions/AccountActions';
 import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
+import CopyIcon from 'material-ui/svg-icons/content/content-copy';
 
 let shell = window
   .require('electron')
@@ -23,7 +24,8 @@ class Header extends Component {
       selectedVPN: null,
       status: false,
       showInstruct: false,
-      isMac:false
+      isMac: false,
+      isTest: false
     }
   }
 
@@ -33,6 +35,7 @@ class Header extends Component {
 
   componentWillMount = () => {
     let that = this;
+    localStorage.setItem('config', 'MAIN')
     isVPNConnected(function (err, data) {
       if (err) { }
       else if (data) {
@@ -58,21 +61,21 @@ class Header extends Component {
     this.setState({ showPopUp: false, statusSnack: true, statusMessage: 'Connecting...' })
     let that = this;
     if (isOnline()) {
-      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isMacError,isWinError) {
+      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isMacError, isWinError) {
         if (isMacError) {
-          that.setState({ status: false, showInstruct: true, statusSnack: false, isMac:true })
+          that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: true })
         }
-        else if(isWinError){
-          that.setState({ status: false, showInstruct: true, statusSnack: false, isMac:false })
+        else if (isWinError) {
+          that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: false })
         }
         else if (err) {
           if (err.message !== true)
-            that.setState({ status: false, statusSnack: false, showInstruct: false,openSnack: true, snackMessage: err.message })
+            that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
         }
         else {
           that.props.onChange();
           //that.returnVPN();
-          that.setState({ status: true, statusSnack: false, showInstruct: false,openSnack: true, snackMessage: "Connected VPN" })
+          that.setState({ status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: "Connected VPN" })
         }
       })
     }
@@ -89,34 +92,52 @@ class Header extends Component {
     this.setState({ statusSnack: true, statusMessage: 'Disconnecting...' })
     var that = this;
     disconnectVPN(function (err) {
-        that.props.onChange();
-        that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
+      that.props.onChange();
+      that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
     });
   }
 
   handleToggle = (event, toggle) => {
-    if (isOnline()) {
-      if (toggle) {
-        let that = this;
-        getVPNList(function (err, data) {
-          if (err) console.log('Error', err);
-          else {
-            that.setState({ vpnList: data, showPopUp: true });
-          }
-        })
+    if (this.state.isTest) {
+      if (isOnline()) {
+        if (toggle) {
+          let that = this;
+          getVPNList(function (err, data) {
+            if (err) console.log('Error', err);
+            else {
+              that.setState({ vpnList: data, showPopUp: true });
+            }
+          })
+        }
+        else {
+          this._disconnectVPN();
+        }
       }
       else {
-        this._disconnectVPN();
+        this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
       }
-    }
-    else {
-      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
     }
   };
 
   handleClose = () => {
     this.setState({ showPopUp: false });
   };
+
+  testChange = (event, toggle) => {
+    let self = this;
+    if (toggle) {
+      this.setState({ isTest: true })
+      localStorage.setItem('config', 'TEST')
+      this.props.ontestChange(true);
+    }
+    else {
+      if (this.state.status)
+        this._disconnectVPN();
+      this.setState({ isTest: false })
+      localStorage.setItem('config', 'MAIN')
+      this.props.ontestChange(false);
+    }
+  }
 
   closeInstruction = () => {
     this.setState({ showInstruct: false });
@@ -149,13 +170,13 @@ class Header extends Component {
       />
     ]
     return (
-      <div style={{ height: 70, backgroundColor: '#532d91' }}>
+      <div style={{ height: 70, backgroundColor: '#2f3245' }}>
         <div>
           <Grid>
             <Row style={{ paddingTop: 10 }}>
-              <Col xs={2}>
+              <Col xs={1}>
                 <div>
-                  <img src={'../src/Images/3.png'} alt="logo" style={{ width: 70, height: 70, marginTop: -10 }} />
+                  <img src={'../src/Images/logo.svg'} alt="logo" style={{ width: 50, height: 50, marginLeft: 10 }} />
                 </div>
               </Col>
               <Col xs={5} style={{
@@ -163,7 +184,7 @@ class Header extends Component {
                 justifyContent: 'center'
               }}>
                 <div>
-                  <span style={styles.basicWallet}>SENTINEL - Basic Wallet</span>
+                  <span style={styles.basicWallet}>SENTINEL-Wallet</span>
                 </div>
                 <Row>
                   <Col xs={8}><span
@@ -176,9 +197,13 @@ class Header extends Component {
                         snackMessage: 'Copied to Clipboard Successfully',
                         openSnack: true
                       })} >
-                      <img
-                        src={'../src/Images/download.jpeg'}
+                      {/* <img
+                        src={'../src/Images/download.png'}
                         alt="copy"
+                        data-tip data-for="copyImage"
+                        style={styles.clipBoard}
+                      /> */}
+                      <CopyIcon
                         data-tip data-for="copyImage"
                         style={styles.clipBoard}
                       />
@@ -189,151 +214,177 @@ class Header extends Component {
               <Col xs={3}>
                 <div>
                   <Col style={styles.sentBalance}>
-                    <span>SENT: {this.props.balance.sents}</span>
+                    <span>{this.state.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
+                    <span style={{ color: '#c3deef' }}>{this.props.balance.sents}</span>
                   </Col>
-                  <Col style={styles.ethBalance}>
-                    <span>ETH: {this.props.balance.eths === 'Loading'
-                      ? this.props.balance.eths :
-                      parseFloat(this.props.balance.eths).toFixed(8)
-                    }</span>
-                  </Col>
+                    <Col style={styles.ethBalance}>
+                      <span>{this.state.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
+                      <span style={{ color: '#c3deef' }}>{this.props.balance.eths === 'Loading'
+                        ? this.props.balance.eths :
+                        parseFloat(this.props.balance.eths).toFixed(8)
+                      }</span>
+                    </Col>
                 </div>
               </Col>
-              <Col xs={2}>
-                <Col style={{
-                  fontSize: 12,
-                  fontWeight: '600',
-                  color: '#FAFAFA'
-                }}>
-                  <FlatButton
-                    label="VPN"
-                    labelStyle={{ color: 'white', textTransform: 'none' }}
-                    style={{ height: '18px', lineHeight: '18px' }}
-                    onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
+                <Col xs={1}>
+                  <Col style={{
+                    fontSize: 12,
+                    fontWeight: '600',
+                  }}>
+                    <FlatButton
+                      label="TESTNET"
+                      labelStyle={{ color: '#FAFAFA', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
+                      style={{ height: '18px', lineHeight: '18px' }}
+                      disabled={true}
+                    />
+                  </Col>
+                  <Col>
+                    <Toggle
+                      toggled={this.state.isTest}
+                      onToggle={this.testChange}
+                      style={{ marginTop: 8, marginLeft: 20 }}
+                    />
+                  </Col>
                 </Col>
-                <Col>
-                  <Toggle
-                    toggled={this.state.status}
-                    onToggle={this.handleToggle}
-                    style={{ marginTop: '5%', marginLeft: '15%' }}
-                  />
+                <Col xs={1} style={{ paddingLeft: 50 }}>
+                  <Col style={{
+                    fontSize: 12,
+                    fontWeight: '600',
+                  }}>
+                    <FlatButton
+                      label="VPN"
+                      labelStyle={this.state.isTest ? { color: '#fafafa', textTransform: 'none', fontWeight: 600, fontSize: 14 } :
+                        { color: '#4b4e5d', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
+                      style={{ height: '18px', lineHeight: '18px' }}
+                      disabled={!this.state.isTest}
+                      onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
+                  </Col>
+                  <Col>
+                    <Toggle
+                      thumbStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                      trackStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                      toggled={this.state.status}
+                      onToggle={this.handleToggle}
+                      style={{ marginTop: 8, marginLeft: 20 }}
+                    />
+                  </Col>
                 </Col>
-              </Col>
-              <Snackbar
-                open={this.state.openSnack}
-                message={this.state.snackMessage}
-                autoHideDuration={2000}
-                onRequestClose={this.snackRequestClose}
-                style={{ marginBottom: '2%' }}
-              />
-              <Snackbar
-                open={this.state.statusSnack}
-                message={this.state.statusMessage}
-                style={{ marginBottom: '2%' }}
-              />
-              <Dialog
-                title="VPN List"
-                titleStyle={{ fontSize: 14 }}
-                actions={actions}
-                modal={true}
-                open={this.state.showPopUp}
-              >
-                {this.state.vpnList.length !== 0 ?
-                  <SelectField
-                    hintText="Select VPN"
-                    value={this.state.selectedVPN}
-                    autoWidth={true}
-                    onChange={(event, index, value) => {
-                      this.setState({ selectedVPN: value })
-                    }}
-                  >
-                    {this.state.vpnList.map((vpn) =>
-                      <MenuItem value={vpn.account.addr} primaryText={vpn.location.city} />
-                    )}
-                  </SelectField>
-                  :
-                  <span>No VPNs Found</span>
-                }
-              </Dialog>
-              <Dialog
-                title="Install Dependencies"
-                titleStyle={{ fontSize: 14 }}
-                actions={instrucActions}
-                modal={true}
-                open={this.state.showInstruct}
-              >{this.state.isMac ?<span>
-                This device does not have OpenVPN installed. Please install it by running below command: <br />
-                <code>brew install openvpn</code>
-                <CopyToClipboard text='brew install openvpn'
-                  onCopy={() => this.setState({
-                    snackMessage: 'Copied to Clipboard Successfully',
-                    openSnack: true
-                  })} >
-                  <img
-                    src={'../src/Images/download.jpeg'}
-                    alt="copy"
-                    data-tip data-for="copyImage"
-                    style={styles.clipBoardDialog}
-                  />
-                </CopyToClipboard>
-                <br />
-                If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
+                <Snackbar
+                  open={this.state.openSnack}
+                  message={this.state.snackMessage}
+                  autoHideDuration={2000}
+                  onRequestClose={this.snackRequestClose}
+                  style={{ marginBottom: '2%' }}
+                />
+                <Snackbar
+                  open={this.state.statusSnack}
+                  message={this.state.statusMessage}
+                  style={{ marginBottom: '2%' }}
+                />
+                <Dialog
+                  title="VPN List"
+                  titleStyle={{ fontSize: 14 }}
+                  actions={actions}
+                  modal={true}
+                  open={this.state.showPopUp}
+                >
+                  {this.state.vpnList.length !== 0 ?
+                    <SelectField
+                      hintText="Select VPN"
+                      value={this.state.selectedVPN}
+                      autoWidth={true}
+                      onChange={(event, index, value) => {
+                        this.setState({ selectedVPN: value })
+                      }}
+                    >
+                      {this.state.vpnList.map((vpn) =>
+                        <MenuItem value={vpn.account_addr} primaryText={vpn.location.city} />
+                      )}
+                    </SelectField>
+                    :
+                    <span>No VPNs Found</span>
+                  }
+                </Dialog>
+                <Dialog
+                  title="Install Dependencies"
+                  titleStyle={{ fontSize: 14 }}
+                  actions={instrucActions}
+                  modal={true}
+                  open={this.state.showInstruct}
+                >{this.state.isMac ? <span>
+                  This device does not have OpenVPN installed. Please install it by running below command: <br />
+                  <code>brew install openvpn</code>
+                  <CopyToClipboard text='brew install openvpn'
+                    onCopy={() => this.setState({
+                      snackMessage: 'Copied to Clipboard Successfully',
+                      openSnack: true
+                    })} >
+                    <img
+                      src={'../src/Images/download.jpeg'}
+                      alt="copy"
+                      data-tip data-for="copyImage"
+                      style={styles.clipBoardDialog}
+                    />
+                  </CopyToClipboard>
+                  <br />
+                  If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
                     for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
-                  }}
-                >this page</a>
+                    }}
+                  >this page</a>
                 </span>
-                :
-                <span>
-                  OpenVPN Not Installed.
+                  :
+                  <span>
+                    OpenVPN Not Installed.
                   Install here https://openvpn.net/index.php/open-source/downloads.html.
                   <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
-                  onCopy={() => this.setState({
-                    snackMessage: 'Copied to Clipboard Successfully',
-                    openSnack: true
-                  })} >
-                  <img
-                    src={'../src/Images/download.jpeg'}
-                    alt="copy"
-                    data-tip data-for="copyImage"
-                    style={styles.clipBoardDialog}
-                  />
-                </CopyToClipboard>
+                      onCopy={() => this.setState({
+                        snackMessage: 'Copied to Clipboard Successfully',
+                        openSnack: true
+                      })} >
+                      <img
+                        src={'../src/Images/download.jpeg'}
+                        alt="copy"
+                        data-tip data-for="copyImage"
+                        style={styles.clipBoardDialog}
+                      />
+                    </CopyToClipboard>
 
-                </span>
-                }
-              </Dialog>
-              <ReactTooltip id="copyImage" place="bottom">
+                  </span>
+                  }
+                </Dialog>
+                <ReactTooltip id="copyImage" place="bottom">
                   <span>Copy</span>
                 </ReactTooltip>
             </Row>
           </Grid>
         </div>
-      </div >
-    )
+        </div >
+        )
   }
 }
 
 
 const styles = {
-  clipBoard: {
-    height: 12,
-    width: 12,
+          clipBoard: {
+          height: 18,
+    width: 15,
+    color: '#5ca1e8',
     cursor: 'pointer',
     marginTop: '5%',
     marginLeft: -12
   },
   clipBoardDialog: {
-    height: 14,
+          height: 14,
     width: 14,
     cursor: 'pointer',
     marginLeft: 5
   },
   walletAddress: {
-    fontSize: 12,
+          fontSize: 12,
     fontWeight: '600',
-    color: '#FAFAFA',
+    color: '#c3deef',
     whiteSpace: 'nowrap',
     display: 'block',
     overflow: 'hidden',
@@ -341,18 +392,18 @@ const styles = {
     marginTop: '3%'
   },
   basicWallet: {
-    fontSize: 14,
+          fontSize: 14,
     fontWeight: '600',
     color: '#FAFAFA'
   },
   ethBalance: {
-    fontSize: 14,
+          fontSize: 14,
     fontWeight: '600',
     color: '#FAFAFA',
     marginTop: '3%'
   },
   sentBalance: {
-    fontSize: 14,
+          fontSize: 14,
     fontWeight: '600',
     color: '#FAFAFA'
   }

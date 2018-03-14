@@ -100,7 +100,7 @@ class VPNComponent extends Component {
                     tooltip="Zoom Out">
                     <ZoomOut />
                 </IconButton>
-                <div style={styles.vpnDetails}>
+                <div style={this.props.isTest ? styles.testVpnDetails : styles.vpnDetails}>
                     {this.props.status === true ?
                         <div style={{ fontSize: 14 }}>
                             <p>IP: {this.props.vpnData.ip}</p>
@@ -116,9 +116,10 @@ class VPNComponent extends Component {
                 <hr />
                 <ComposableMap
                     projectionConfig={{ scale: 200 }}
-                    style={{
+                    style={this.props.isTest ? {
                         width: "100%",
-                    }}
+                        height: 400
+                    } : { width: "100%" }}
                 >
                     <ZoomableGroup zoom={this.state.zoom}>
                         <Geographies geography="../src/Components/world-50m.json">
@@ -215,6 +216,15 @@ const styles = {
         position: "absolute",
         bottom: 0,
         right: 10,
+        backgroundColor: '#3e4f5a',
+        padding: '2%',
+        color: 'white'
+    },
+    testVpnDetails: {
+        position: "absolute",
+        bottom: 0,
+        right: 10,
+        marginBottom: 45,
         backgroundColor: '#3e4f5a',
         padding: '2%',
         color: 'white'

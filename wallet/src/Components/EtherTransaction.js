@@ -8,6 +8,8 @@ let shell = window
     .require('electron')
     .shell;
 
+let statusUrl;
+
 class EtherTransaction extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +21,12 @@ class EtherTransaction extends Component {
 
     openInExternalBrowser(url) {
         shell.openExternal(url);
+    }
+
+    getStatusUrl() {
+        if (localStorage.getItem('config') === 'TEST')
+            return config.test.statusUrl
+        else return config.main.statusUrl
     }
 
     snackRequestClose = () => {
@@ -55,7 +63,8 @@ class EtherTransaction extends Component {
                   </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            this.openInExternalBrowser(`${config.statusUrl}/address/${history.to}`)
+                                            statusUrl = this.getStatusUrl();
+                                            this.openInExternalBrowser(`${statusUrl}/address/${history.to}`)
                                         }}>{history.to}</a>
                                     <CopyToClipboard text={history.to}
                                         onCopy={() => that.setState({
@@ -94,7 +103,8 @@ class EtherTransaction extends Component {
                 </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            this.openInExternalBrowser(`${config.statusUrl}/address/${history.from}`)
+                                            statusUrl = this.getStatusUrl();
+                                            this.openInExternalBrowser(`${statusUrl}/address/${history.from}`)
                                         }}>{history.from}</a>
                                     <CopyToClipboard text={history.from}
                                         onCopy={() => that.setState({
@@ -124,7 +134,8 @@ class EtherTransaction extends Component {
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
-                                    this.openInExternalBrowser(`${config.statusUrl}/tx/${history.hash}`)
+                                    statusUrl = this.getStatusUrl();
+                                    this.openInExternalBrowser(`${statusUrl}/tx/${history.hash}`)
                                 }}>{history.hash}</a>
                             <CopyToClipboard text={history.transactionHash}
                                 onCopy={() => that.setState({
@@ -145,7 +156,7 @@ class EtherTransaction extends Component {
             })
         }
         return (
-            <div style={styles.outputDiv}>
+            <div style={this.props.isTest ? styles.testOutputDiv : styles.outputDiv}>
                 {output}
                 <Snackbar
                     open={this.state.openSnack}
@@ -180,6 +191,12 @@ const styles = {
     },
     outputDiv: {
         height: 400,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    testOutputDiv: {
+        height: 370,
         overflowY: 'auto',
         marginTop: '2%',
         overflowX: 'hidden'

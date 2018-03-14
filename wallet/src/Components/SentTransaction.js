@@ -8,6 +8,7 @@ let zfill = require('zfill');
 let shell = window
     .require('electron')
     .shell;
+let statusUrl;
 
 class SentTransaction extends Component {
     constructor(props) {
@@ -20,6 +21,12 @@ class SentTransaction extends Component {
 
     openInExternalBrowser(url) {
         shell.openExternal(url);
+    }
+
+    getStatusUrl() {
+        if (localStorage.getItem('config') === 'TEST')
+            return config.test.statusUrl
+        else return config.main.statusUrl
     }
 
     snackRequestClose = () => {
@@ -57,7 +64,8 @@ class SentTransaction extends Component {
                   </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            this.openInExternalBrowser(`${config.statusUrl}/address/0x${history.topics[2].substring(26)}`)
+                                            statusUrl=this.getStatusUrl();
+                                            this.openInExternalBrowser(`${statusUrl}/address/0x${history.topics[2].substring(26)}`)
                                         }}>{`0x${history.topics[2].substring(26)}`}</a>
                                     <CopyToClipboard text={`0x${history.topics[2].substring(26)}`}
                                         onCopy={() => that.setState({
@@ -96,7 +104,8 @@ class SentTransaction extends Component {
                 </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            this.openInExternalBrowser(`${config.statusUrl}/address/0x${history.topics[1].substring(26)}`)
+                                            statusUrl=this.getStatusUrl();
+                                            this.openInExternalBrowser(`${statusUrl}/address/0x${history.topics[1].substring(26)}`)
                                         }}>{`0x${history.topics[1].substring(26)}`}</a>
                                     <CopyToClipboard text={`0x${history.topics[1].substring(26)}`}
                                         onCopy={() => that.setState({
@@ -127,7 +136,8 @@ class SentTransaction extends Component {
                             <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
-                                    this.openInExternalBrowser(`${config.statusUrl}/tx/${history.transactionHash}`)
+                                    statusUrl=this.getStatusUrl();
+                                    this.openInExternalBrowser(`${statusUrl}/tx/${history.transactionHash}`)
                                 }}>{history.transactionHash}
                             </a>
                             <CopyToClipboard text={history.transactionHash}
@@ -149,7 +159,7 @@ class SentTransaction extends Component {
             })
         }
         return (
-            <div style={styles.outputDiv}>
+            <div style={this.props.isTest ? styles.testOutputDiv :styles.outputDiv}>
                 {output}
                 <Snackbar
                     open={this.state.openSnack}
@@ -184,6 +194,12 @@ const styles = {
     },
     outputDiv: {
         height: 430,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    testOutputDiv: {
+        height: 400,
         overflowY: 'auto',
         marginTop: '2%',
         overflowX: 'hidden'

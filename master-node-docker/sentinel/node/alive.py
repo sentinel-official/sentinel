@@ -1,3 +1,4 @@
+# coding=utf-8
 import time
 from _thread import start_new_thread
 
@@ -12,7 +13,7 @@ class UpdateNodesStatus(object):
 
     def update_thread(self):
         while True:
-            if self.stop_thread == True:
+            if self.stop_thread:
                 break
             min_time = int(time.time()) - self.max_secs
             _ = db.nodes.update_many({

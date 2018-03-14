@@ -1,3 +1,4 @@
+# coding=utf-8
 false, true = False, True
 SENTINEL_ABI = [
     {"constant": true, "inputs": [], "name": "name", "outputs": [{"name": "", "type": "string"}], "payable": false,

@@ -1,3 +1,4 @@
+# coding=utf-8
 import rlp
 from ethereum.transactions import Transaction
 

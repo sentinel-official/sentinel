@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 import time
 
@@ -12,6 +13,8 @@ class UpdateNodeInfo(object):
         token = req.body['token']
         account_addr = req.body['account_addr']
         info = req.body['info']
+
+        node = None
 
         if info['type'] == 'location':
             location = info['location']

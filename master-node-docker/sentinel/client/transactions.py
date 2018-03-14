@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 
 import falcon
@@ -8,6 +9,14 @@ from ..logs import logger
 
 class RawTransaction(object):
     def on_post(self, req, resp):
+        """
+        @api {post} /client/raw-transaction Send raw transaction to specific chain.
+        @apiName RawTransaction
+        @apiGroup Transactions
+        @apiParam {String} tx_data Hex code of the transaction.
+        @apiParam {String} net Ethereum chain name {main | rinkeby}.
+        @apiSuccess {String} tx_hash Transaction hash.
+        """
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net'])
         error, tx_hash = eth_helper.raw_transaction(net, tx_data)

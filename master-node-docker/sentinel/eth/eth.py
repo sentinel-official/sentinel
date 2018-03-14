@@ -1,3 +1,4 @@
+# coding=utf-8
 from os import path, urandom
 
 from eth_keyfile import create_keyfile_json
@@ -7,14 +8,14 @@ from web3 import Web3, IPCProvider, HTTPProvider
 
 
 class ETHManager(object):
-    def __init__(self, provider=None, data_dir=None, RPC_url=None):
+    def __init__(self, provider=None, data_dir=None, rpc_url=None):
         self.data_dir = path.join(path.expanduser(
             '~'), '.ethereum') if data_dir is None else data_dir
         self.provider = 'ipc' if provider is None \
             else provider
         self.ipc_path = path.join(self.data_dir, 'geth.ipc')
         self.web3 = Web3(IPCProvider(self.ipc_path)) if self.provider == 'ipc' \
-            else Web3(HTTPProvider(RPC_url))
+            else Web3(HTTPProvider(rpc_url))
 
     def create_account(self, password):
         try:
@@ -67,6 +68,6 @@ class ETHManager(object):
 
 
 mainnet = ETHManager(
-    provider='rpc', RPC_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
+    provider='rpc', rpc_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
 rinkeby = ETHManager(
-    provider='rpc', RPC_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
+    provider='rpc', rpc_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')

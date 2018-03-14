@@ -1,5 +1,6 @@
 import time
 from _thread import start_new_thread
+
 from ..db import db
 
 
@@ -14,7 +15,7 @@ class UpdateNodesStatus(object):
             if self.stop_thread == True:
                 break
             min_time = int(time.time()) - self.max_secs
-            _ = db.nodes.updateMany({
+            _ = db.nodes.update_many({
                 'vpn.last_ping': {
                     '$lt': min_time
                 }

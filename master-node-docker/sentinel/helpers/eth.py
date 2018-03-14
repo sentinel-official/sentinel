@@ -4,8 +4,6 @@ from ..eth import sentinel_main
 from ..eth import sentinel_test
 from ..eth import vpn_service_manager
 
-from ..config import DECIMALS
-
 
 class ETHHelper(object):
     def create_account(self, password):

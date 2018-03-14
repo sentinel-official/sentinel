@@ -1,9 +1,10 @@
 import json
+from urlparse import urljoin
+
 import falcon
 import requests
+
 from ..config import MASTER_NODE_URL
-from ..config import ACCOUNT_DATA_PATH
-from urlparse import urljoin
 
 
 class CreateNewAccount(object):

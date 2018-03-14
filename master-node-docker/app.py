@@ -1,23 +1,22 @@
 import json
+
 import falcon
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
-from sentinel.client import RawTransaction
 from sentinel.client import GetVpnCredentials
-from sentinel.client import GetVpnsList
-from sentinel.client import GetVpnUsage
-from sentinel.client import PayVpnUsage
-from sentinel.client import ReportPayment
 from sentinel.client import GetVpnCurrentUsage
-
-from sentinel.node import RegisterNode
-from sentinel.node import UpdateNodeInfo
-from sentinel.node import DeRegisterNode
+from sentinel.client import GetVpnUsage
+from sentinel.client import GetVpnsList
+from sentinel.client import PayVpnUsage
+from sentinel.client import RawTransaction
+from sentinel.client import ReportPayment
 from sentinel.node import AddVpnUsage
+from sentinel.node import DeRegisterNode
+from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
+from sentinel.node import UpdateNodeInfo
 from sentinel.node import UpdateNodesStatus
-
 from sentinel.utils import JSONTranslator
 
 
@@ -54,7 +53,6 @@ app.add_route('/node/update-nodeinfo', UpdateNodeInfo())
 app.add_route('/node/add-usage', AddVpnUsage())
 app.add_route('/node/deregister', DeRegisterNode())
 app.add_route('/node/update-connections', UpdateConnections())
-
 
 update_nodes_status = UpdateNodesStatus(max_secs=120)
 update_nodes_status.start()

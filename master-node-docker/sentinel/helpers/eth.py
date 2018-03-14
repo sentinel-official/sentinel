@@ -1,3 +1,4 @@
+# coding=utf-8
 from ..eth import mainnet
 from ..eth import rinkeby
 from ..eth import sentinel_main
@@ -38,6 +39,7 @@ class ETHHelper(object):
         return error, account_addr
 
     def raw_transaction(self, net, tx_data):
+        error, tx_hash = None, None
         if net == 'main':
             error, tx_hash = mainnet.send_raw_transaction(tx_data)
         elif net == 'rinkeby':

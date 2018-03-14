@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 from uuid import uuid4
 
@@ -44,7 +45,9 @@ class GetVpnCredentials(object):
         @apiGroup VPN
         @apiParam {String} account_addr Account address.
         @apiParam {String} vpn_addr Account address of the VPN server.
-        @apiSuccess {String[]} ovpn Ovpn file data of the VPN server.
+        @apiSuccess {String} ip IP address of the VPN server.
+        @apiSuccess {String} port Port number of the VPN server.
+        @apiSuccess {String} token Unique token for validation.
         """
         account_addr = str(req.body['account_addr'])
         vpn_addr = str(req.body['vpn_addr'])
@@ -133,6 +136,18 @@ class GetVpnCredentials(object):
 
 class PayVpnUsage(object):
     def on_post(self, req, resp):
+        """
+        @api {post} /client/vpn/pay VPN usage payment.
+        @apiName PayVpnUsage
+        @apiGroup VPN
+        @apiParam {String} from_addr Account address.
+        @apiParam {Number} amount Amount to be payed to VPN server.
+        @apiParam {Number} session_id Session ID of the VPN connection.
+        @apiParam {String} tx_data Hex code of the transaction.
+        @apiParam {String} net Ethereum chain name {main | rinkeby}.
+        @apiSuccess {String[]} errors Errors if any.
+        @apiSuccess {String[]} tx_hashes Transaction hashes.
+        """
         from_addr = str(req.body['from_addr'])
         amount = float(req.body['amount'])
         session_id = int(req.body['session_id'])
@@ -252,7 +267,9 @@ class GetVpnCurrentUsage(object):
         @api {post} /client/vpn/current Get current VPN usage.
         @apiName GetVpnCurrentUsage
         @apiGroup VPN
-        @apiSuccess Object usage Current VPN usage.
+        @apiParam {String} account_addr Account address.
+        @apiParam {String} session_name Session name of the VPN connection.
+        @apiSuccess {Object} usage Current VPN usage.
         """
         account_addr = str(req.body['account_addr'])
         session_name = str(req.body['session_name'])

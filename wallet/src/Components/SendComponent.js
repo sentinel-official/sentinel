@@ -36,6 +36,7 @@ class SendComponent extends Component {
       isInitial: true,
       transactionStatus: '',
       session_id: null,
+      textDisabled: false,
       sliderValue: 20
     };
   }
@@ -69,6 +70,8 @@ class SendComponent extends Component {
         sending: nextProps.sending,
         password: ''
       })
+      if (nextProps.session_id === -1)
+        this.setState({ textDisabled: true })
       this.getGasLimit(nextProps.amount, nextProps.to_addr, nextProps.unit);
       this.props.propReceiveChange()
       if (nextProps.to_addr !== '') {
@@ -89,15 +92,26 @@ class SendComponent extends Component {
     let gas_price = this.state.sliderValue * (10 ** 9);
     tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
       let network;
+      let sessionId;
+      let paymentType;
       if (self.props.isTest)
         network = 'rinkeby'
       else network = 'main'
+      if (self.state.session_id === -1) {
+        sessionId = null;
+        paymentType = 'init';
+      }
+      else {
+        paymentType = 'normal';
+        sessionId = self.state.session_id;
+      }
       let body = {
         from_addr: self.props.local_address,
         amount: self.state.amount,
-        session_id: self.state.session_id,
+        session_id: sessionId,
         tx_data: data,
-        net: network
+        net: network,
+        payment_type: paymentType
       }
       payVPNUsage(body, function (err, tx_addr) {
         self.props.clearSend();
@@ -111,7 +125,8 @@ class SendComponent extends Component {
             unit: 'ETH',
             password: '',
             sending: false,
-            isDisabled: true
+            isDisabled: true,
+            textDisabled: false
           });
         }
         else {
@@ -176,7 +191,8 @@ class SendComponent extends Component {
       unit: 'ETH',
       password: '',
       sending: false,
-      isDisabled: true
+      isDisabled: true,
+      textDisabled: false
     })
   }
 
@@ -281,7 +297,7 @@ class SendComponent extends Component {
     return (
       <MuiThemeProvider>
         <div style={{
-          minHeight: 485,
+          minHeight: 530,
           backgroundColor: '#c3deea',
           padding: '5%'
         }}>
@@ -313,6 +329,7 @@ class SendComponent extends Component {
                   type="number"
                   style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
                   fullWidth={true}
+                  disabled={this.state.textDisabled}
                   inputStyle={{ padding: 10 }}
                   onChange={this.amountChange.bind(this)} value={this.state.amount} />
               </Col>
@@ -326,7 +343,7 @@ class SendComponent extends Component {
                     height: 30,
                     lineHeight: '30px',
                     fontWeight: '600',
-                    color: purple500
+                    color: '#2f3245'
                   }}
                   style={{
                     backgroundColor: '#FAFAFA',
@@ -459,7 +476,7 @@ class SendComponent extends Component {
                 this.state.to_address === '' || this.state.sending === true || this.state.isDisabled === true ?
                   { backgroundColor: '#bdbdbd', marginLeft: 20 }
                   :
-                  { backgroundColor: '#f05e09', marginLeft: 20 }
+                  { backgroundColor: '#2f3245', marginLeft: 20 }
               }
               labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }}
             />

@@ -4,7 +4,7 @@ const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
 const config = require('../config');
-const B_URL = 'http://api.sentinelgroup.io:8333';
+const B_URL = 'https://api.sentinelgroup.io';
 var ETH_BALANCE_URL;
 var SENT_BALANCE_URL;
 var ETH_TRANSC_URL;
@@ -202,7 +202,6 @@ export function payVPNUsage(data, cb) {
 }
 
 export function getVPNUsageData(account_addr, cb) {
-  console.log('SESSION_NAME:', SESSION_NAME);
   fetch(B_URL + '/client/vpn/current', {
     method: 'POST',
     headers: {
@@ -215,7 +214,6 @@ export function getVPNUsageData(account_addr, cb) {
     })
   }).then(function (response) {
     response.json().then(function (response) {
-      console.log("Response..", response)
       if (response.success === true) {
         var usage = response['usage'];
         cb(null, usage)
@@ -401,7 +399,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
       if (stdout.toString() === '') {
         exec('cd c:\\Program Files (x86) && dir openvpn.exe /s /p | findstr "openvpn"', function (error, stdout1, stderr1) {
           if (stdout.toString() === '') {
-            cb({ message: 'false' }, false, true);
+            cb({ message: 'false' }, false, true, false);
           }
           else {
             nextStep();
@@ -439,7 +437,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
       response.json().then(function (res) {
         if (res.success === true) {
           getOVPNAndSave(account_addr, res['ip'], res['port'], vpn_addr, res['token'], function (err) {
-            if (err) cb(err, false, false);
+            if (err) cb(err, false, false, false);
             else {
               if (OVPNDelTimer) clearInterval(OVPNDelTimer);
               if (remote.process.platform === 'win32') {
@@ -465,11 +463,11 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                 setTimeout(function () {
                   exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
                     if (stdout.toString() === '') {
-                      cb({ message: 'Something went wrong.Please Try Again' }, false, false)
+                      cb({ message: 'Something went wrong.Please Try Again' }, false, false, false)
                     }
                     else {
                       CONNECTED = true;
-                      cb(null, false, false);
+                      cb(null, false, false, false);
                     }
                   })
                 }, 20000);
@@ -478,10 +476,10 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               else {
                 setTimeout(function () {
                   getVPNPIDs(function (err, pids) {
-                    if (err) cb({ message: err }, false, false);
+                    if (err) cb({ message: err }, false, false, false);
                     else {
                       CONNECTED = true;
-                      cb(null, false, false);
+                      cb(null, false, false, false);
                     }
                   });
 
@@ -489,11 +487,11 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
-                  if (err) cb({ message: err }, false, false);
+                  if (err) cb({ message: err }, false, false, false);
                   else {
                     console.log("PIDS:", pids)
                     CONNECTED = true;
-                    cb(null, false, false);
+                    cb(null, false, false, false);
                     count = 10;
                   }
 
@@ -508,7 +506,10 @@ export function connectVPN(account_addr, vpn_addr, cb) {
           });
         }
         else {
-          cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false, false);
+          if (res.account_addr)
+            cb({ message: res.message || 'Initial Payment is not done' }, false, false, res.account_addr);
+          else
+            cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false, false, false);
         }
       })
     })

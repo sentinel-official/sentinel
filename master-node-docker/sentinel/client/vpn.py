@@ -53,7 +53,6 @@ class GetVpnCredentials(object):
         vpn_addr = str(req.body['vpn_addr'])
 
         balances = eth_helper.get_balances(account_addr)
-        error, sessions = eth_helper.get_vpn_sessions(account_addr)
 
         if balances['rinkeby']['sents'] >= (100 * (10 ** 8)):
             error, due_amount = eth_helper.get_due_amount(account_addr)
@@ -98,27 +97,42 @@ class GetVpnCredentials(object):
                             'message': 'All VPN servers are occupied. Please try after sometime.'
                         }
                 else:
-                    try:
-                        token = uuid4().hex
-                        ip, port = str(node['ip']), 3000
-                        body = {
-                            'account_addr': account_addr,
-                            'token': token
-                        }
-                        url = 'http://{}:{}/master/sendToken'.format(ip, port)
-                        _ = requests.post(url, json=body, timeout=10)
-                        message = {
-                            'success': True,
-                            'ip': ip,
-                            'port': port,
-                            'token': token
-                        }
-                    except Exception as _:
+                    error, is_payed = eth_helper.get_initial_payment(
+                        account_addr)
+                    if error is not None:
                         message = {
                             'success': False,
-                            'message': 'Connection timed out while connecting to VPN server.'
+                            'message': 'Error occurred while cheking initial payment status.'
                         }
-                        logger.send_log(message, resp)
+                    elif is_payed:
+                        try:
+                            token = uuid4().hex
+                            ip, port = str(node['ip']), 3000
+                            body = {
+                                'account_addr': account_addr,
+                                'token': token
+                            }
+                            url = 'http://{}:{}/master/sendToken'.format(
+                                ip, port)
+                            _ = requests.post(url, json=body, timeout=10)
+                            message = {
+                                'success': True,
+                                'ip': ip,
+                                'port': port,
+                                'token': token
+                            }
+                        except Exception as _:
+                            message = {
+                                'success': False,
+                                'message': 'Connection timed out while connecting to VPN server.'
+                            }
+                            logger.send_log(message, resp)
+                    else:
+                        message = {
+                            'success': False,
+                            'account_addr': account_addr,
+                            'message': 'Initial payment status is empty.'
+                        }
             else:
                 message = {
                     'success': False,
@@ -148,16 +162,18 @@ class PayVpnUsage(object):
         @apiSuccess {String[]} errors Errors if any.
         @apiSuccess {String[]} tx_hashes Transaction hashes.
         """
-        from_addr = str(req.body['from_addr'])
-        amount = float(req.body['amount'])
-        session_id = int(req.body['session_id'])
+        payment_type = str(req.body['payment_type'])  # normal OR init
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net'])
+        from_addr = str(req.body['from_addr'])
+        amount = float(req.body['amount']) if 'amount' in req.body else None
+        session_id = int(req.body['session_id']
+                         ) if 'session_id' in req.body else None
 
         amount = int(amount * (DECIMALS * 1.0))
 
         errors, tx_hashes = eth_helper.pay_vpn_session(
-            from_addr, amount, session_id, net, tx_data)
+            from_addr, amount, session_id, net, tx_data, payment_type)
 
         if len(errors) > 0:
             message = {
@@ -194,7 +210,7 @@ class ReportPayment(object):
             message = {
                 'success': True,
                 'tx_hash': tx_hash,
-                'message': 'Payment Done Successfully'
+                'message': 'Payment Done Successfully.'
             }
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(message)
@@ -203,7 +219,7 @@ class ReportPayment(object):
             message = {
                 'success': False,
                 'error': error,
-                'message': 'Vpn payment not successful'
+                'message': 'Vpn payment not successful.'
             }
             try:
                 raise Exception(error)

@@ -57,6 +57,11 @@ class ETHHelper(object):
 
         return error, sessions
 
+    def get_initial_payment(self, account_addr):
+        error, is_payed = vpn_service_manager.get_initial_payment(account_addr)
+
+        return error, is_payed
+
     def get_vpn_usage(self, account_addr):
         usage = {
             'due': 0,
@@ -94,13 +99,17 @@ class ETHHelper(object):
         else:
             return error, None
 
-    def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data):
+    def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data, payment_type):
         errors, tx_hashes = [], []
         error, tx_hash = self.raw_transaction(net, tx_data)
         if error is None:
             tx_hashes.append(tx_hash)
-            error, tx_hash = vpn_service_manager.pay_vpn_session(
-                from_addr, amount, session_id)
+            if payment_type == 'normal':
+                error, tx_hash = vpn_service_manager.pay_vpn_session(
+                    from_addr, amount, session_id)
+            elif payment_type == 'init':
+                error, tx_hash = vpn_service_manager.set_initial_payment(
+                    from_addr)
             if error is None:
                 tx_hashes.append(tx_hash)
             else:

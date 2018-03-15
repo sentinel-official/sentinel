@@ -25,7 +25,9 @@ class Header extends Component {
       status: false,
       showInstruct: false,
       isMac: false,
-      isTest: false
+      isTest: false,
+      showPay: false,
+      payAccount: ''
     }
   }
 
@@ -61,12 +63,15 @@ class Header extends Component {
     this.setState({ showPopUp: false, statusSnack: true, statusMessage: 'Connecting...' })
     let that = this;
     if (isOnline()) {
-      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isMacError, isWinError) {
+      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isMacError, isWinError, account) {
         if (isMacError) {
           that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: true })
         }
         else if (isWinError) {
           that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: false })
+        }
+        else if (account) {
+          that.setState({ status: false, showPay: true, statusSnack: false, isMac: false, payAccount: account })
         }
         else if (err) {
           if (err.message !== true)
@@ -82,6 +87,16 @@ class Header extends Component {
     else {
       this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
     }
+  }
+
+  payVPN = () => {
+    let data = {
+      account_addr: this.state.payAccount,
+      amount: 10000000000,
+      id: -1
+    }
+    this.props.vpnPayment(data);
+    this.setState({ showPay: false })
   }
 
   returnVPN = () => {
@@ -120,7 +135,7 @@ class Header extends Component {
   };
 
   handleClose = () => {
-    this.setState({ showPopUp: false });
+    this.setState({ showPopUp: false, showPay: false });
   };
 
   testChange = (event, toggle) => {
@@ -168,9 +183,21 @@ class Header extends Component {
         primary={true}
         onClick={this.closeInstruction}
       />
-    ]
+    ];
+    const paymentActions = [
+      <FlatButton
+        label="Close"
+        primary={true}
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Pay"
+        primary={true}
+        onClick={this.payVPN.bind(this)}
+      />,
+    ];
     return (
-      <div style={{ height: 70, backgroundColor: '#2f3245' }}>
+      <div style={{ height: 70, background: 'linear-gradient(to right,#2f3245 72%,#3d425c 28%)' }}>
         <div>
           <Grid>
             <Row style={{ paddingTop: 10 }}>
@@ -217,104 +244,128 @@ class Header extends Component {
                     <span>{this.state.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
                     <span style={{ color: '#c3deef' }}>{this.props.balance.sents}</span>
                   </Col>
-                    <Col style={styles.ethBalance}>
-                      <span>{this.state.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
-                      <span style={{ color: '#c3deef' }}>{this.props.balance.eths === 'Loading'
-                        ? this.props.balance.eths :
-                        parseFloat(this.props.balance.eths).toFixed(8)
-                      }</span>
-                    </Col>
+                  <Col style={styles.ethBalance}>
+                    <span>{this.state.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
+                    <span style={{ color: '#c3deef' }}>{this.props.balance.eths === 'Loading'
+                      ? this.props.balance.eths :
+                      parseFloat(this.props.balance.eths).toFixed(8)
+                    }</span>
+                  </Col>
                 </div>
               </Col>
-                <Col xs={1}>
-                  <Col style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                  }}>
-                    <FlatButton
-                      label="TESTNET"
-                      labelStyle={{ color: '#FAFAFA', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
-                      style={{ height: '18px', lineHeight: '18px' }}
-                      disabled={true}
-                    />
-                  </Col>
-                  <Col>
-                    <Toggle
-                      toggled={this.state.isTest}
-                      onToggle={this.testChange}
-                      style={{ marginTop: 8, marginLeft: 20 }}
-                    />
-                  </Col>
+              <Col xs={1}>
+                <Col style={{
+                  fontSize: 12,
+                  fontWeight: '600',
+                }}>
+                  <FlatButton
+                    label="TESTNET"
+                    labelStyle={{ color: '#FAFAFA', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
+                    style={{ height: '18px', lineHeight: '18px' }}
+                    disabled={true}
+                  />
                 </Col>
-                <Col xs={1} style={{ paddingLeft: 50 }}>
-                  <Col style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                  }}>
-                    <FlatButton
-                      label="VPN"
-                      labelStyle={this.state.isTest ? { color: '#fafafa', textTransform: 'none', fontWeight: 600, fontSize: 14 } :
-                        { color: '#4b4e5d', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
-                      style={{ height: '18px', lineHeight: '18px' }}
-                      disabled={!this.state.isTest}
-                      onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
-                  </Col>
-                  <Col>
-                    <Toggle
-                      thumbStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
-                      trackStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
-                      toggled={this.state.status}
-                      onToggle={this.handleToggle}
-                      style={{ marginTop: 8, marginLeft: 20 }}
-                    />
-                  </Col>
+                <Col>
+                  <Toggle
+                    toggled={this.state.isTest}
+                    onToggle={this.testChange}
+                    style={{ marginTop: 8, marginLeft: 20 }}
+                  />
                 </Col>
-                <Snackbar
-                  open={this.state.openSnack}
-                  message={this.state.snackMessage}
-                  autoHideDuration={2000}
-                  onRequestClose={this.snackRequestClose}
-                  style={{ marginBottom: '2%' }}
-                />
-                <Snackbar
-                  open={this.state.statusSnack}
-                  message={this.state.statusMessage}
-                  style={{ marginBottom: '2%' }}
-                />
-                <Dialog
-                  title="VPN List"
-                  titleStyle={{ fontSize: 14 }}
-                  actions={actions}
-                  modal={true}
-                  open={this.state.showPopUp}
-                >
-                  {this.state.vpnList.length !== 0 ?
-                    <SelectField
-                      hintText="Select VPN"
-                      value={this.state.selectedVPN}
-                      autoWidth={true}
-                      onChange={(event, index, value) => {
-                        this.setState({ selectedVPN: value })
-                      }}
-                    >
-                      {this.state.vpnList.map((vpn) =>
-                        <MenuItem value={vpn.account_addr} primaryText={vpn.location.city} />
-                      )}
-                    </SelectField>
-                    :
-                    <span>No VPNs Found</span>
-                  }
-                </Dialog>
-                <Dialog
-                  title="Install Dependencies"
-                  titleStyle={{ fontSize: 14 }}
-                  actions={instrucActions}
-                  modal={true}
-                  open={this.state.showInstruct}
-                >{this.state.isMac ? <span>
-                  This device does not have OpenVPN installed. Please install it by running below command: <br />
-                  <code>brew install openvpn</code>
-                  <CopyToClipboard text='brew install openvpn'
+              </Col>
+              <Col xs={1} style={{ paddingLeft: 50 }}>
+                <Col style={{
+                  fontSize: 12,
+                  fontWeight: '600',
+                }}>
+                  <FlatButton
+                    label="VPN"
+                    labelStyle={this.state.isTest ? { color: '#fafafa', textTransform: 'none', fontWeight: 600, fontSize: 14 } :
+                      { color: '#4b4e5d', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
+                    style={{ height: '18px', lineHeight: '18px' }}
+                    disabled={!this.state.isTest}
+                    onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
+                </Col>
+                <Col>
+                  <Toggle
+                    thumbStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                    trackStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                    toggled={this.state.status}
+                    onToggle={this.handleToggle}
+                    style={{ marginTop: 8, marginLeft: 20 }}
+                  />
+                </Col>
+              </Col>
+              <Snackbar
+                open={this.state.openSnack}
+                message={this.state.snackMessage}
+                autoHideDuration={2000}
+                onRequestClose={this.snackRequestClose}
+                style={{ marginBottom: '2%' }}
+              />
+              <Snackbar
+                open={this.state.statusSnack}
+                message={this.state.statusMessage}
+                style={{ marginBottom: '2%' }}
+              />
+              <Dialog
+                title="VPN List"
+                titleStyle={{ fontSize: 14 }}
+                actions={actions}
+                modal={true}
+                open={this.state.showPopUp}
+              >
+                {this.state.vpnList.length !== 0 ?
+                  <SelectField
+                    hintText="Select VPN"
+                    value={this.state.selectedVPN}
+                    autoWidth={true}
+                    onChange={(event, index, value) => {
+                      this.setState({ selectedVPN: value })
+                    }}
+                  >
+                    {this.state.vpnList.map((vpn) =>
+                      <MenuItem value={vpn.account_addr} primaryText={vpn.location.city} />
+                    )}
+                  </SelectField>
+                  :
+                  <span>No VPNs Found</span>
+                }
+              </Dialog>
+              <Dialog
+                title="Install Dependencies"
+                titleStyle={{ fontSize: 14 }}
+                actions={instrucActions}
+                modal={true}
+                open={this.state.showInstruct}
+              >{this.state.isMac ? <span>
+                This device does not have OpenVPN installed. Please install it by running below command: <br />
+                <code>brew install openvpn</code>
+                <CopyToClipboard text='brew install openvpn'
+                  onCopy={() => this.setState({
+                    snackMessage: 'Copied to Clipboard Successfully',
+                    openSnack: true
+                  })} >
+                  <img
+                    src={'../src/Images/download.jpeg'}
+                    alt="copy"
+                    data-tip data-for="copyImage"
+                    style={styles.clipBoardDialog}
+                  />
+                </CopyToClipboard>
+                <br />
+                If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
+                    for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
+                  }}
+                >this page</a>
+              </span>
+                :
+                <span>
+                  OpenVPN Not Installed.
+                  Install here https://openvpn.net/index.php/open-source/downloads.html.
+                  <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
                     onCopy={() => this.setState({
                       snackMessage: 'Copied to Clipboard Successfully',
                       openSnack: true
@@ -326,49 +377,36 @@ class Header extends Component {
                       style={styles.clipBoardDialog}
                     />
                   </CopyToClipboard>
-                  <br />
-                  If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
-                    for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
-                    }}
-                  >this page</a>
-                </span>
-                  :
-                  <span>
-                    OpenVPN Not Installed.
-                  Install here https://openvpn.net/index.php/open-source/downloads.html.
-                  <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
-                      onCopy={() => this.setState({
-                        snackMessage: 'Copied to Clipboard Successfully',
-                        openSnack: true
-                      })} >
-                      <img
-                        src={'../src/Images/download.jpeg'}
-                        alt="copy"
-                        data-tip data-for="copyImage"
-                        style={styles.clipBoardDialog}
-                      />
-                    </CopyToClipboard>
 
-                  </span>
-                  }
-                </Dialog>
-                <ReactTooltip id="copyImage" place="bottom">
-                  <span>Copy</span>
-                </ReactTooltip>
+                </span>
+                }
+              </Dialog>
+              <Dialog
+                title="Initial Payment Reminder"
+                titleStyle={{ fontSize: 14 }}
+                actions={paymentActions}
+                modal={true}
+                open={this.state.showPay}
+              >
+                <span>
+                  Inorder to use VPN, you need to pay 100 sents for the first time. Please pay and then try to connect to the vpn.
+                </span>
+              </Dialog>
+              <ReactTooltip id="copyImage" place="bottom">
+                <span>Copy</span>
+              </ReactTooltip>
             </Row>
           </Grid>
         </div>
-        </div >
-        )
+      </div >
+    )
   }
 }
 
 
 const styles = {
-          clipBoard: {
-          height: 18,
+  clipBoard: {
+    height: 18,
     width: 15,
     color: '#5ca1e8',
     cursor: 'pointer',
@@ -376,13 +414,13 @@ const styles = {
     marginLeft: -12
   },
   clipBoardDialog: {
-          height: 14,
+    height: 14,
     width: 14,
     cursor: 'pointer',
     marginLeft: 5
   },
   walletAddress: {
-          fontSize: 12,
+    fontSize: 12,
     fontWeight: '600',
     color: '#c3deef',
     whiteSpace: 'nowrap',
@@ -392,18 +430,18 @@ const styles = {
     marginTop: '3%'
   },
   basicWallet: {
-          fontSize: 14,
+    fontSize: 14,
     fontWeight: '600',
     color: '#FAFAFA'
   },
   ethBalance: {
-          fontSize: 14,
+    fontSize: 14,
     fontWeight: '600',
     color: '#FAFAFA',
     marginTop: '3%'
   },
   sentBalance: {
-          fontSize: 14,
+    fontSize: 14,
     fontWeight: '600',
     color: '#FAFAFA'
   }

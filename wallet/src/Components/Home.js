@@ -31,7 +31,7 @@ class Home extends Component {
                         </Grid>
                         <RaisedButton
                             label="Create / Restore Wallet"
-                            style={{ marginLeft: '7%', backgroundColor: 'transparent',height:'45px' }}
+                            style={{ marginLeft: '7%', backgroundColor: 'transparent',height:'42px' }}
                             labelStyle={styles.yesButtonLabel}
                             buttonStyle={styles.yesButton}
                             onClick={() => { this.set('create') }}
@@ -91,13 +91,13 @@ const styles = {
         paddingLeft: 25,
         fontWeight: '600',
         fontSize: 16,
-        height:45
+        height:42
     },
     yesButton: {
         backgroundColor: '#2f3245',
         borderRadius: '10px',
-        height: '45px',
-        lineHeight: '45px'
+        height: '42px',
+        lineHeight: '42px'
     },
     bottomDivCol: {
         backgroundColor: '#2f3245',

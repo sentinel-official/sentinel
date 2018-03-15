@@ -125,9 +125,9 @@ class Create extends Component {
         return (
             <MuiThemeProvider>
                 <div>
-                    <Toolbar style={{ backgroundColor: '#2f3245' }}>
+                    <Toolbar style={{ backgroundColor: '#2f3245', height: 70 }}>
                         <ToolbarGroup>
-                            <img src={'../src/Images/logo.svg'} alt="Logo" style={{ height: 56, width: 56 }} />
+                            <img src={'../src/Images/logo.svg'} alt="Logo" style={{ height: 50, width: 50 }} />
                             <p style={styles.toolbarTitle}></p>
                         </ToolbarGroup>
                     </Toolbar>
@@ -287,7 +287,7 @@ const styles = {
         fontWeight: '600'
     },
     yesButton: {
-        backgroundColor: 'rgb(240, 94, 9)',
+        backgroundColor: '#2f3245',
         height: '30px',
         lineHeight: '30px'
     },
@@ -301,7 +301,7 @@ const styles = {
         marginRight: '7%'
     },
     headingCreate: {
-        color: 'rgb(83, 45, 145)',
+        color: '#2f3245',
         fontSize: 14,
         marginBottom: 0,
         marginTop: '2%'
@@ -319,7 +319,7 @@ const styles = {
     },
     textFieldCreateHint: {
         fontSize: 12,
-        color: 'rgba(0, 0, 0, 0.66)'
+        color: '#2f3245'
     },
     textFieldCreate: {
         width: '85%',
@@ -377,7 +377,7 @@ const styles = {
     },
     checkboxLabel: {
         color: 'rgb(240, 94, 9)',
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: 800
     },
     refresh: {

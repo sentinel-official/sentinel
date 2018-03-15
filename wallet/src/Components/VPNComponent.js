@@ -12,10 +12,11 @@ import {
     Marker,
 } from 'react-simple-maps';
 import { sendError } from '../helpers/ErrorLog';
+import clear from 'material-ui/svg-icons/content/clear';
 
 var markers = []
 
-
+var UsageInterval = null;
 class VPNComponent extends Component {
     constructor(props) {
         super(props);
@@ -84,12 +85,16 @@ class VPNComponent extends Component {
 
             this.setState({ isGetVPNCalled: true });
         }
-        if (!this.state.isUsageCalled && this.props.status) {
-            setInterval(function () {
+        if (!UsageInterval && this.props.status) {
+            UsageInterval = setInterval(function () {
                 that.getUsage()
             }, 5000);
-
-            this.setState({ isUsageCalled: true });
+        }
+        if (!this.props.status) {
+            if (UsageInterval) {
+                clearInterval(UsageInterval);
+                UsageInterval=null;
+            }
         }
         return (
             <div>
@@ -100,7 +105,7 @@ class VPNComponent extends Component {
                     tooltip="Zoom Out">
                     <ZoomOut />
                 </IconButton>
-                <div style={this.props.isTest ? styles.testVpnDetails : styles.vpnDetails}>
+                <div style={styles.vpnDetails}>
                     {this.props.status === true ?
                         <div style={{ fontSize: 14 }}>
                             <p>IP: {this.props.vpnData.ip}</p>

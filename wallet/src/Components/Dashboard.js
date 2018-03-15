@@ -151,7 +151,13 @@ class Dashboard extends Component {
     return (
       <MuiThemeProvider>
         <div>
-          <Header balance={userBalance} onChange={this.getVPNapi} ontestChange={this.onTestChange} local_address={this.state.local_address} />
+          <Header
+            balance={userBalance}
+            onChange={this.getVPNapi}
+            ontestChange={this.onTestChange}
+            local_address={this.state.local_address}
+            vpnPayment={this.vpnPayment}
+          />
           <div>
             <Tabs
               value={this.state.value}

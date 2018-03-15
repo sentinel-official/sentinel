@@ -1,20 +1,16 @@
 import { sendError } from '../helpers/ErrorLog';
-
-// import { clearInterval, setTimeout } from 'timers';
 const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
 const config = require('../config');
-const B_URL = config.masterUrl;;
-const ETH_BALANCE_URL = config.ethBalanceUrl;
-const SENT_BALANCE_URL = config.sentBalanceUrl;
-const ETH_TRANSC_URL = config.ethTransUrl;
-const SENT_TRANSC_URL1 = config.sentTransUrl1;
-const TRANSC_STATUS = config.transcStatus;
-const GAS_API = config.gasApi;
+const B_URL = 'http://api.sentinelgroup.io:8333';
+var ETH_BALANCE_URL;
+var SENT_BALANCE_URL;
+var ETH_TRANSC_URL;
+var SENT_TRANSC_URL1;
+var TRANSC_STATUS;
 const SENT_TRANSC_URL2 = `&topic1_2_opr=or&topic2=`;
-const ETHER_API = `https://api.myetherapi.com/eth`;
 const SENT_DIR = getUserHome() + '/.sentinel';
 const KEYSTORE_FILE = SENT_DIR + '/keystore';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
@@ -114,69 +110,7 @@ export function getAccount(cb) {
   });
 }
 
-export function getGasPrice(cb) {
-  fetch(GAS_API, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-type': 'application/json',
-    }
-  }).then(function (response) {
-    if (response.status === 200) {
-      response.json().then(function (res) {
-        var result = res['result'];
-        var gasPrice = parseFloat(parseInt(result) / (10 ** 18)).toFixed(8)
-        cb(null, gasPrice);
-      })
-    }
-    else {
-      cb({ message: 'Server Error' }, null)
-    }
-  })
-}
-
-export function getGasCost(from, to, amount, data, id, cb) {
-  var data = {
-    "method": "eth_estimateGas",
-    "params": [{
-      "from": from,
-      "to": to,
-      "value": amount,
-      "data": data
-    }],
-    "id": id,
-    "jsonrpc": "2.0"
-  }
-  fetch(ETHER_API, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  }).then(function (response) {
-    if (response.status === 200) {
-      response.json().then(function (response) {
-        console.log("Cost:", response)
-        var gasCost = parseFloat(parseInt(response['result']), 16)
-        getGasPrice(function (err, gasPrice) {
-          if (err) {
-            cb({ message: err.message }, null)
-          }
-          else {
-            var gasLimit = parseFloat(gasCost * gasPrice).toFixed(8)
-            cb(null, gasLimit)
-          }
-        })
-      })
-    }
-    else {
-      cb({ message: 'Server Error' }, null)
-    }
-  })
-}
-
-export function transferAmount(data, cb) {
+export function transferAmount(net, data, cb) {
   fetch(B_URL + '/client/raw-transaction', {
     method: 'POST',
     headers: {
@@ -185,7 +119,8 @@ export function transferAmount(data, cb) {
       'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({
-      tx_data: data
+      tx_data: data,
+      net: net
     })
   }).then(function (response) {
     if (response.status === 200) {
@@ -206,6 +141,10 @@ export function transferAmount(data, cb) {
 }
 
 export function getTransactionStatus(tx_addr, cb) {
+  if (localStorage.getItem('config') === 'TEST')
+    TRANSC_STATUS = config.test.transcStatus
+  else
+    TRANSC_STATUS = config.main.transcStatus
   fetch(TRANSC_STATUS + tx_addr, {
     method: 'GET',
     headers: {
@@ -276,12 +215,12 @@ export function getVPNUsageData(account_addr, cb) {
     })
   }).then(function (response) {
     response.json().then(function (response) {
-      console.log("Response..",response)
-      if(response.success===true){
-        var usage=response['usage'];
-        cb(null,usage)
+      console.log("Response..", response)
+      if (response.success === true) {
+        var usage = response['usage'];
+        cb(null, usage)
       }
-      else{
+      else {
         cb({ message: response.message || 'No data got' }, null);
       }
     })
@@ -317,6 +256,10 @@ export function reportPayment(data, cb) {
 }
 
 export function getEthBalance(data, cb) {
+  if (localStorage.getItem('config') === 'TEST')
+    ETH_BALANCE_URL = config.test.ethBalanceUrl;
+  else
+    ETH_BALANCE_URL = config.main.ethBalanceUrl;
   fetch(ETH_BALANCE_URL + data, {
     method: 'GET',
     headers: {
@@ -334,6 +277,10 @@ export function getEthBalance(data, cb) {
 }
 
 export function getSentBalance(data, cb) {
+  if (localStorage.getItem('config') === 'TEST')
+    SENT_BALANCE_URL = config.test.sentBalanceUrl
+  else
+    SENT_BALANCE_URL = config.main.sentBalanceUrl
   fetch(SENT_BALANCE_URL + data, {
     method: 'GET',
     headers: {
@@ -351,6 +298,10 @@ export function getSentBalance(data, cb) {
 }
 
 export function getEthTransactionHistory(account_addr, page, cb) {
+  if (localStorage.getItem('config') === 'TEST')
+    ETH_TRANSC_URL = config.test.ethTransUrl
+  else
+    ETH_TRANSC_URL = config.main.ethTransUrl
   fetch(ETH_TRANSC_URL + account_addr + '&page=' + page + "&offset=10&sort=desc", {
     method: 'GET',
     headers: {
@@ -368,6 +319,10 @@ export function getEthTransactionHistory(account_addr, page, cb) {
 }
 
 export function getSentTransactionHistory(account_addr, cb) {
+  if (localStorage.getItem('config') === 'TEST')
+    SENT_TRANSC_URL1 = config.test.sentTransUrl1
+  else
+    SENT_TRANSC_URL1 = config.main.sentTransUrl1
   fetch(SENT_TRANSC_URL1 + account_addr + SENT_TRANSC_URL2 + account_addr, {
     method: 'GET',
     headers: {

@@ -32,7 +32,7 @@ class VpnServiceManager(object):
             return {'code': 201, 'error': str(err)}, None
         return None, tx_hash
 
-    def set_initial_payment(self, account_addr, value=True):
+    def set_initial_payment(self, account_addr, is_payed=True):
         try:
             tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS),
                              gasprice=rinkeby.web3.eth.gasPrice,
@@ -40,7 +40,7 @@ class VpnServiceManager(object):
                              to=VPNSERVICE_ADDRESS,
                              value=0,
                              data=rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='setInitialPaymentOf',
-                                                                                      args=[account_addr, value])))
+                                                                                      args=[account_addr, is_payed])))
             tx.sign(COINBASE_PRIVATE_KEY)
             raw_tx = rinkeby.web3.toHex(rlp.encode(tx))
             tx_hash = rinkeby.web3.eth.sendRawTransaction(raw_tx)

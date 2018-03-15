@@ -54,7 +54,7 @@ class GetVpnCredentials(object):
 
         balances = eth_helper.get_balances(account_addr)
 
-        if balances['rinkeby']['sents'] >= (100 * (10 ** 8)):
+        if balances['rinkeby']['sents'] >= 100:
             error, due_amount = eth_helper.get_due_amount(account_addr)
             if error is not None:
                 message = {
@@ -130,7 +130,7 @@ class GetVpnCredentials(object):
                     else:
                         message = {
                             'success': False,
-                            'account_addr': account_addr,
+                            'account_addr': vpn_addr,
                             'message': 'Initial payment status is empty.'
                         }
             else:
@@ -166,9 +166,9 @@ class PayVpnUsage(object):
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net'])
         from_addr = str(req.body['from_addr'])
-        amount = float(req.body['amount']) if 'amount' in req.body else None
+        amount = float(req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
         session_id = int(req.body['session_id']
-                         ) if 'session_id' in req.body else None
+                         ) if 'session_id' in req.body and req.body['session_id'] is not None else None
 
         amount = int(amount * (DECIMALS * 1.0))
 

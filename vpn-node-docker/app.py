@@ -16,17 +16,20 @@ from sentinel.vpn import OpenVPN
 
 def tasks():
     while True:
-        vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
-        if vpn_status_file is True:
-            connections = openvpn.get_connections()
-            connections_len = len(connections)
-            if connections_len > 0:
-                send_connections_info(
-                    node.account['addr'], node.account['token'], connections)
+        try:
+            vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
+            if vpn_status_file is True:
+                connections = openvpn.get_connections()
+                connections_len = len(connections)
+                if connections_len > 0:
+                    send_connections_info(
+                        node.account['addr'], node.account['token'], connections)
 
-        send_nodeinfo(node, {
-            'type': 'alive'
-        })
+            send_nodeinfo(node, {
+                'type': 'alive'
+            })
+        except Exception as err:
+            print(str(err))
         time.sleep(5)
 
 

@@ -11,5 +11,12 @@ if [ "$SENT_ENV" != "DEV" ]; then
 fi
 
 nohup mongod >> /dev/null &
-gunicorn --reload -b 0.0.0.0:${PORT} --log-level DEBUG app:app;
+gunicorn -b 0.0.0.0:${PORT} \
+         --reload \
+         --log-level DEBUG \
+         --workers 5 \
+         --worker-class gevent \
+         --threads 10 \
+         --access-logfile /root/access.log \
+         app:app;
 

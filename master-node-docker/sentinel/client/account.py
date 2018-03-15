@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 
 import falcon
@@ -48,7 +49,7 @@ class CreateNewAccount(object):
 class GetBalance(object):
     def on_post(self, req, resp):
         """
-        @api {post} /client/account/balance Get account balance.
+        @api {post} /client/account/balance Get account balances.
         @apiName GetBalance
         @apiGroup Account
         @apiParam {String} account_addr Address of the account.

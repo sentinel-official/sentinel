@@ -1,3 +1,4 @@
+# coding=utf-8
 from .eth import mainnet
 from .eth import rinkeby
 from ..config import DECIMALS

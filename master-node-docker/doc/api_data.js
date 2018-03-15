@@ -46,13 +46,13 @@ define({ "api": [
       }
     },
     "version": "0.0.0",
-    "filename": "sentinel/client/account.py",
+    "filename": "./sentinel/client/account.py",
     "groupTitle": "Account"
   },
   {
     "type": "post",
     "url": "/client/account/balance",
-    "title": "Get account balance.",
+    "title": "Get account balances.",
     "name": "GetBalance",
     "group": "Account",
     "parameter": {
@@ -64,13 +64,6 @@ define({ "api": [
             "optional": false,
             "field": "account_addr",
             "description": "<p>Address of the account.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "unit",
-            "description": "<p>Unit either <code>SENT</code> or <code>ETH</code>.</p>"
           }
         ]
       }
@@ -80,23 +73,23 @@ define({ "api": [
         "Success 200": [
           {
             "group": "Success 200",
-            "type": "Number",
+            "type": "Object",
             "optional": false,
-            "field": "balance",
-            "description": "<p>Account balance in specified units.</p>"
+            "field": "balances",
+            "description": "<p>Account balances.</p>"
           }
         ]
       }
     },
     "version": "0.0.0",
-    "filename": "sentinel/client/account.py",
+    "filename": "./sentinel/client/account.py",
     "groupTitle": "Account"
   },
   {
     "type": "post",
-    "url": "/client/transaction/history",
-    "title": "Transaction history of the specific account.",
-    "name": "TransactionHistory",
+    "url": "/client/raw-transaction",
+    "title": "Send raw transaction to specific chain.",
+    "name": "RawTransaction",
     "group": "Transactions",
     "parameter": {
       "fields": {
@@ -105,122 +98,15 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "account_addr",
-            "description": "<p>Account address.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "history",
-            "description": "<p>Detailed transaction history.</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "sentinel/client/transactions.py",
-    "groupTitle": "Transactions"
-  },
-  {
-    "type": "post",
-    "url": "/client/transcation/receipt",
-    "title": "Transaction receipt of the specific transaction.",
-    "name": "TranscationReceipt",
-    "group": "Transactions",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "tx_hash",
-            "description": "<p>Transaction hash of the transaction.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "receipt",
-            "description": "<p>Detailed transaction receipt.</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "sentinel/client/transactions.py",
-    "groupTitle": "Transactions"
-  },
-  {
-    "type": "post",
-    "url": "/client/transaction",
-    "title": "Transfer amount from one account to another.",
-    "name": "TransferAmount",
-    "group": "Transactions",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "from_addr",
-            "description": "<p>Sender account address.</p>"
+            "field": "tx_data",
+            "description": "<p>Hex code of the transaction.</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "to_addr",
-            "description": "<p>Receiver account address.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "amount",
-            "description": "<p>Amount that has to be transferred.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "unit",
-            "description": "<p>Unit either <code>SENT</code> or <code>ETH</code>.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "keystore",
-            "description": "<p>Keystore file data of the sender account.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "password",
-            "description": "<p>Password of the sender account.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "session_id",
-            "description": "<p>Session ID of the VPN session if it's a VPN payment.</p>"
+            "field": "net",
+            "description": "<p>Ethereum chain name {main | rinkeby}.</p>"
           }
         ]
       }
@@ -233,13 +119,13 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "tx_hash",
-            "description": "<p>Transaction hash of the transaction.</p>"
+            "description": "<p>Transaction hash.</p>"
           }
         ]
       }
     },
     "version": "0.0.0",
-    "filename": "sentinel/client/transactions.py",
+    "filename": "./sentinel/client/transactions.py",
     "groupTitle": "Transactions"
   },
   {
@@ -273,16 +159,73 @@ define({ "api": [
         "Success 200": [
           {
             "group": "Success 200",
-            "type": "String[]",
+            "type": "String",
             "optional": false,
-            "field": "ovpn",
-            "description": "<p>Ovpn file data of the VPN server.</p>"
+            "field": "ip",
+            "description": "<p>IP address of the VPN server.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "port",
+            "description": "<p>Port number of the VPN server.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Unique token for validation.</p>"
           }
         ]
       }
     },
     "version": "0.0.0",
-    "filename": "sentinel/client/vpn.py",
+    "filename": "./sentinel/client/vpn.py",
+    "groupTitle": "VPN"
+  },
+  {
+    "type": "post",
+    "url": "/client/vpn/current",
+    "title": "Get current VPN usage.",
+    "name": "GetVpnCurrentUsage",
+    "group": "VPN",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "account_addr",
+            "description": "<p>Account address.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "session_name",
+            "description": "<p>Session name of the VPN connection.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "usage",
+            "description": "<p>Current VPN usage.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./sentinel/client/vpn.py",
     "groupTitle": "VPN"
   },
   {
@@ -318,7 +261,7 @@ define({ "api": [
       }
     },
     "version": "0.0.0",
-    "filename": "sentinel/client/vpn.py",
+    "filename": "./sentinel/client/vpn.py",
     "groupTitle": "VPN"
   },
   {
@@ -341,7 +284,78 @@ define({ "api": [
       }
     },
     "version": "0.0.0",
-    "filename": "sentinel/client/vpn.py",
+    "filename": "./sentinel/client/vpn.py",
+    "groupTitle": "VPN"
+  },
+  {
+    "type": "post",
+    "url": "/client/vpn/pay",
+    "title": "VPN usage payment.",
+    "name": "PayVpnUsage",
+    "group": "VPN",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "from_addr",
+            "description": "<p>Account address.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "amount",
+            "description": "<p>Amount to be payed to VPN server.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "session_id",
+            "description": "<p>Session ID of the VPN connection.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "tx_data",
+            "description": "<p>Hex code of the transaction.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "net",
+            "description": "<p>Ethereum chain name {main | rinkeby}.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String[]",
+            "optional": false,
+            "field": "errors",
+            "description": "<p>Errors if any.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String[]",
+            "optional": false,
+            "field": "tx_hashes",
+            "description": "<p>Transaction hashes.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./sentinel/client/vpn.py",
     "groupTitle": "VPN"
   }
 ] });

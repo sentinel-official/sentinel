@@ -1,3 +1,4 @@
+# coding=utf-8
 from ..eth import mainnet
 from ..eth import rinkeby
 from ..eth import sentinel_main
@@ -38,6 +39,7 @@ class ETHHelper(object):
         return error, account_addr
 
     def raw_transaction(self, net, tx_data):
+        error, tx_hash = None, None
         if net == 'main':
             error, tx_hash = mainnet.send_raw_transaction(tx_data)
         elif net == 'rinkeby':
@@ -54,6 +56,11 @@ class ETHHelper(object):
         error, sessions = vpn_service_manager.get_vpn_sessions(account_addr)
 
         return error, sessions
+
+    def get_initial_payment(self, account_addr):
+        error, is_payed = vpn_service_manager.get_initial_payment(account_addr)
+
+        return error, is_payed
 
     def get_vpn_usage(self, account_addr):
         usage = {
@@ -92,13 +99,17 @@ class ETHHelper(object):
         else:
             return error, None
 
-    def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data):
+    def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data, payment_type):
         errors, tx_hashes = [], []
         error, tx_hash = self.raw_transaction(net, tx_data)
         if error is None:
             tx_hashes.append(tx_hash)
-            error, tx_hash = vpn_service_manager.pay_vpn_session(
-                from_addr, amount, session_id)
+            if payment_type == 'normal':
+                error, tx_hash = vpn_service_manager.pay_vpn_session(
+                    from_addr, amount, session_id)
+            elif payment_type == 'init':
+                error, tx_hash = vpn_service_manager.set_initial_payment(
+                    from_addr)
             if error is None:
                 tx_hashes.append(tx_hash)
             else:

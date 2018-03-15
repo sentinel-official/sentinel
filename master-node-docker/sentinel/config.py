@@ -152,12 +152,17 @@ VPNSERVICE_ABI = [
                                                                  {"name": "_timestamp", "type": "uint256"}],
                                                       "name": "addVpnUsage", "outputs": [], "payable": false,
                                                       "stateMutability": "nonpayable", "type": "function"},
-    {"constant": false, "inputs": [{"name": "_from", "type": "address"}, {"name": "_amount", "type": "uint256"},
-                                   {"name": "_sessionId", "type": "uint256"}], "name": "payVpnSession", "outputs": [],
-     "payable": false, "stateMutability": "nonpayable", "type": "function"},
+    {"constant": false, "inputs": [{"name": "_addr", "type": "address"}, {"name": "_isPayed", "type": "bool"}],
+     "name": "setInitialPaymentOf", "outputs": [], "payable": false, "stateMutability": "nonpayable",
+     "type": "function"}, {"constant": false,
+                           "inputs": [{"name": "_from", "type": "address"}, {"name": "_amount", "type": "uint256"},
+                                      {"name": "_sessionId", "type": "uint256"}], "name": "payVpnSession",
+                           "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"},
     {"constant": false, "inputs": [{"name": "_owner", "type": "address"}], "name": "transferOwnership", "outputs": [],
-     "payable": false, "stateMutability": "nonpayable", "type": "function"}]
-VPNSERVICE_ADDRESS = '0xEe94e1452bbd3a9870aF6a7642cb47721Ac41b8A'
+     "payable": false, "stateMutability": "nonpayable", "type": "function"},
+    {"constant": true, "inputs": [{"name": "_addr", "type": "address"}], "name": "getInitialPaymentOf",
+     "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"}]
+VPNSERVICE_ADDRESS = '0x9768df18073d2Ab666cF98F953299342259EcBAa'
 VPNSERVICE_NAME = 'Vpn_service'
 COINBASE_ADDRESS = '0xA3F1592D8a09a91a7238f608620fFDe7C4B26029'
 COINBASE_PRIVATE_KEY = ''

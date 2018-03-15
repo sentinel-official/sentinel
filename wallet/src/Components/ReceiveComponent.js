@@ -52,9 +52,9 @@ class ReceiveComponent extends Component {
                 marginLeft: 290
               }}>
                 <label style={{
-                  color: '#532d91',
+                  color: '#31b0d5',
                   fontWeight: 'bold'
-                }}>{this.props.local_address}<CopyToClipboard text={this.props.local_address}
+                }}>{this.props.local_address} <CopyToClipboard text={this.props.local_address}
                   onCopy={() => this.setState({
                     snackMessage: 'Copied to Clipboard Successfully',
                     openSnack: true
@@ -63,8 +63,8 @@ class ReceiveComponent extends Component {
                       src={'../src/Images/download.jpeg'}
                       data-tip data-for="copyImage"
                       style={{
-                        height: 20,
-                        width: 20,
+                        height: 18,
+                        width: 18,
                         cursor: 'pointer'
                       }}
                     />

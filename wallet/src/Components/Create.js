@@ -373,7 +373,8 @@ const styles = {
     clipBoard: {
         height: 20,
         width: 20,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        marginLeft: 2
     },
     checkboxLabel: {
         color: 'rgb(240, 94, 9)',

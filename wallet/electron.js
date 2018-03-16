@@ -16,7 +16,7 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel Wallet", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.2", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -41,7 +41,7 @@ function windowManager() {
 function stopVPN() {
   if (process.platform === 'win32') {
     console.log("on close");
-    sudo.exec('taskkill /IM sentinel-wallet.exe /f && taskkill /IM openvpn.exe /f', disconnect,
+    sudo.exec('taskkill /IM sentinel.exe /f && taskkill /IM openvpn.exe /f', disconnect,
       function (error, stdout, stderr) {
         console.log("In exec");
       });

@@ -187,7 +187,8 @@ const styles = {
     clipBoard: {
         height: 20,
         width: 20,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        marginLeft:2
     },
     outputDiv: {
         height: 400,
@@ -196,7 +197,7 @@ const styles = {
         overflowX: 'hidden'
     },
     testOutputDiv: {
-        height: 370,
+        height: 365,
         overflowY: 'auto',
         marginTop: '2%',
         overflowX: 'hidden'

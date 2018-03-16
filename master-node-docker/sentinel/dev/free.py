@@ -33,7 +33,7 @@ class GetFreeAmount(object):
         if tx_done is True:
             message = {
                 'success': False,
-                'message': 'Free amount is already transferred.'
+                'message': 'Test Tokens already claimed'
             }
         else:
             errors, tx_hashes = eth_helper.free(account_addr, eths, sents)
@@ -55,7 +55,7 @@ class GetFreeAmount(object):
                     'success': True,
                     'errors': errors,
                     'tx_hashes': tx_hashes,
-                    'message': 'Free amount transaction initiated successfully.'
+                    'message': 'Successfully transferred Test Tokens'
                 }
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

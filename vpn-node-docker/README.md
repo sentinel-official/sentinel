@@ -1,6 +1,6 @@
 ### Installing docker in Linux
 
-`sudo apt install -y curl`
+`$ sudo apt install -y curl`
 
 `$ curl -fsSL get.docker.com -o /tmp/get-docker.sh`
 

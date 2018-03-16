@@ -1,4 +1,7 @@
 # coding=utf-8
+import rlp
+from ethereum.transactions import Transaction
+
 from .eth import mainnet
 from .eth import rinkeby
 from ..config import DECIMALS
@@ -32,8 +35,24 @@ class SentinelManger(object):
             return {'code': 201, 'error': str(err)}, None
         return None, balance
 
+    def transfer_amount(self, from_addr, to_addr, amount, private_key):
+        try:
+            tx = Transaction(nonce=self.net.web3.eth.getTransactionCount(from_addr),
+                             gasprice=self.net.web3.eth.gasPrice,
+                             startgas=1000000,
+                             to=self.address,
+                             value=0,
+                             data=self.net.web3.toBytes(
+                                 hexstr=self.contract.encodeABI(fn_name='transfer', args=[to_addr, amount])))
+            tx.sign(private_key)
+            raw_tx = self.net.web3.toHex(rlp.encode(tx))
+            tx_hash = self.net.web3.eth.sendRawTransaction(raw_tx)
+        except Exception as err:
+            return {'code': 202, 'error': str(err)}, None
+        return None, tx_hash
+
 
 sentinel_main = SentinelManger(
     mainnet, SENTINEL_NAME, SENTINEL_ADDRESS, SENTINEL_ABI)
-sentinel_test = SentinelManger(
+sentinel_rinkeby = SentinelManger(
     rinkeby, SENTINEL_TEST_NAME, SENTINEL_TEST_ADDRESS, SENTINEL_TEST_ABI)

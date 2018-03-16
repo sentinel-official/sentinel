@@ -309,7 +309,7 @@ class SendComponent extends Component {
           padding: '5%'
         }}>
           <FlatButton
-            label="Get Free Amount"
+            label="Get Free Tokens"
             labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', fontSize: 12, color: '#FAFAFA' }}
             onClick={this.getFree.bind(this)}
             disabled={!this.props.isTest}
@@ -327,7 +327,7 @@ class SendComponent extends Component {
               <Col xs={9}>
                 <TextField
                   hintText="Ex:0x6b6df9e25f7bf233435c1a52a7da4c4a64f5769e"
-                  hintStyle={{ bottom: 0, paddingLeft: '2%' }}
+                  hintStyle={{ bottom: 2, paddingLeft: 10 }}
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
                   onChange={this.addressChange.bind(this)}
@@ -368,6 +368,7 @@ class SendComponent extends Component {
                     width: '100%'
                   }}
                   value={this.state.unit}
+                  menuItemStyle={{ width: 192 }}
                   onChange={this.handleChange.bind(this)}
                 >
                   <MenuItem

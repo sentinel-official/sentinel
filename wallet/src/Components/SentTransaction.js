@@ -64,7 +64,7 @@ class SentTransaction extends Component {
                   </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            statusUrl=this.getStatusUrl();
+                                            statusUrl = this.getStatusUrl();
                                             this.openInExternalBrowser(`${statusUrl}/address/0x${history.topics[2].substring(26)}`)
                                         }}>{`0x${history.topics[2].substring(26)}`}</a>
                                     <CopyToClipboard text={`0x${history.topics[2].substring(26)}`}
@@ -104,7 +104,7 @@ class SentTransaction extends Component {
                 </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
-                                            statusUrl=this.getStatusUrl();
+                                            statusUrl = this.getStatusUrl();
                                             this.openInExternalBrowser(`${statusUrl}/address/0x${history.topics[1].substring(26)}`)
                                         }}>{`0x${history.topics[1].substring(26)}`}</a>
                                     <CopyToClipboard text={`0x${history.topics[1].substring(26)}`}
@@ -136,7 +136,7 @@ class SentTransaction extends Component {
                             <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
-                                    statusUrl=this.getStatusUrl();
+                                    statusUrl = this.getStatusUrl();
                                     this.openInExternalBrowser(`${statusUrl}/tx/${history.transactionHash}`)
                                 }}>{history.transactionHash}
                             </a>
@@ -159,7 +159,7 @@ class SentTransaction extends Component {
             })
         }
         return (
-            <div style={this.props.isTest ? styles.testOutputDiv :styles.outputDiv}>
+            <div style={this.props.isTest ? styles.testOutputDiv : styles.outputDiv}>
                 {output}
                 <Snackbar
                     open={this.state.openSnack}
@@ -190,7 +190,8 @@ const styles = {
     clipBoard: {
         height: 20,
         width: 20,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        marginLeft: 2
     },
     outputDiv: {
         height: 430,

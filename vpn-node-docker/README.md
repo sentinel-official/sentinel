@@ -4,9 +4,9 @@
 
 `$ curl -fsSL get.docker.com -o /tmp/get-docker.sh`
 
-`sudo sh /tmp/get-docker.sh`
+`$ sudo sh /tmp/get-docker.sh`
 
-`sudo usermod -aG docker $USER`
+`$ sudo usermod -aG docker $USER`
 
 ### Sentinel VPN node [Quick Run]
 

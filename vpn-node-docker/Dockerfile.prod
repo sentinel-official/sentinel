@@ -15,4 +15,4 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/re
 
 EXPOSE 1194/udp 3000
 
-CMD ["sh", "/root/run.sh"]
+ENTRYPOINT ["sh", "/root/run.sh"]

@@ -6,4 +6,4 @@ yarn-error.log*
 wallet/release-builds/
 wallet/package-lock.json
 **/.idea
-**/.vscode
+**/.vscode/

@@ -1,8 +1,10 @@
 # coding=utf-8
+from ..config import COINBASE_ADDRESS
+from ..config import COINBASE_PRIVATE_KEY
 from ..eth import mainnet
 from ..eth import rinkeby
 from ..eth import sentinel_main
-from ..eth import sentinel_test
+from ..eth import sentinel_rinkeby
 from ..eth import vpn_service_manager
 
 
@@ -27,10 +29,43 @@ class ETHHelper(object):
         _, balances['main']['eths'] = mainnet.get_balance(account_addr)
         _, balances['main']['sents'] = sentinel_main.get_balance(account_addr)
         _, balances['rinkeby']['eths'] = rinkeby.get_balance(account_addr)
-        _, balances['rinkeby']['sents'] = sentinel_test.get_balance(
+        _, balances['rinkeby']['sents'] = sentinel_rinkeby.get_balance(
             account_addr)
 
         return balances
+
+    def transfer_sents(self, from_addr, to_addr, amount, private_key, net):
+        error, tx_hash = None, None
+        if net == 'main':
+            error, tx_hash = sentinel_main.transfer_amount(from_addr, to_addr, amount, private_key)
+        elif net == 'rinkeby':
+            error, tx_hash = sentinel_rinkeby.transfer_amount(from_addr, to_addr, amount, private_key)
+
+        return error, tx_hash
+
+    def transfer_eths(self, from_addr, to_addr, amount, private_key, net):
+        error, tx_hash = None, None
+        if net == 'main':
+            error, tx_hash = mainnet.transfer_amount(from_addr, to_addr, amount, private_key)
+        elif net == 'rinkeby':
+            error, tx_hash = rinkeby.transfer_amount(from_addr, to_addr, amount, private_key)
+
+        return error, tx_hash
+
+    def free(self, to_addr, eths, sents):
+        errors, tx_hashes = [], []
+        error, tx_hash = self.transfer_eths(COINBASE_ADDRESS, to_addr, eths, COINBASE_PRIVATE_KEY, 'rinkeby')
+        if error is None:
+            tx_hashes.append(tx_hash)
+            error, tx_hash = self.transfer_sents(COINBASE_ADDRESS, to_addr, sents, COINBASE_PRIVATE_KEY, 'rinkeby')
+            if error is None:
+                tx_hashes.append(tx_hash)
+            else:
+                errors.append(error)
+        else:
+            errors.append(error)
+
+        return errors, tx_hashes
 
     def get_account_addr(self, private_key):
         error, account_addr = mainnet.get_address(private_key)

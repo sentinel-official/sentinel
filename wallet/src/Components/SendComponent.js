@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { transferAmount, isOnline, payVPNUsage } from '../Actions/AccountActions';
+import { transferAmount, isOnline, payVPNUsage, getFreeAmount } from '../Actions/AccountActions';
 import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost } from '../Actions/TransferActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
@@ -196,6 +196,13 @@ class SendComponent extends Component {
     })
   }
 
+  getFree() {
+    let self = this;
+    getFreeAmount(this.props.local_address, function (message) {
+      self.setState({ snackOpen: true, snackMessage: message })
+    })
+  }
+
   onClickSend = () => {
     var self = this;
     if (this.state.amount === '') {
@@ -301,6 +308,16 @@ class SendComponent extends Component {
           backgroundColor: '#c3deea',
           padding: '5%'
         }}>
+          <FlatButton
+            label="Get Free Amount"
+            labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', fontSize: 12, color: '#FAFAFA' }}
+            onClick={this.getFree.bind(this)}
+            disabled={!this.props.isTest}
+            style={{
+              backgroundColor: this.props.isTest ? '#2f3245' : 'rgba(47, 50, 69, 0.34)',
+              position: 'absolute', right: 0, marginTop: -30, marginRight: 60
+            }}
+          />
           <Grid>
             <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
@@ -355,11 +372,11 @@ class SendComponent extends Component {
                 >
                   <MenuItem
                     value="ETH"
-                    primaryText="ETH"
+                    primaryText={this.props.isTest ? "TEST ETH" : "ETH"}
                   />
                   <MenuItem
                     value="SENT"
-                    primaryText="SENT"
+                    primaryText={this.props.isTest ? "TEST SENT" : "SENT"}
                   />
                 </DropDownMenu>
               </Col>
@@ -464,7 +481,7 @@ class SendComponent extends Component {
             <Snackbar
               open={this.state.snackOpen}
               message={this.state.snackMessage}
-              autoHideDuration={10000}
+              autoHideDuration={8000}
               onRequestClose={this.snackRequestClose}
             />
           </div>

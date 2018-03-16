@@ -50,6 +50,7 @@ class ETHManager(object):
     def get_balance(self, account_addr):
         try:
             balance = self.web3.eth.getBalance(account_addr)
+            balance = balance / ((10 ** 18) * 1.0)
         except Exception as err:
             return {'code': 104, 'error': str(err)}, None
         return None, balance
@@ -63,7 +64,7 @@ class ETHManager(object):
 
     def transfer_amount(self, from_addr, to_addr, amount, private_key):
         try:
-            tx = Transaction(nonce=self.web3.eth.getTransactionCount(from_addr),
+            tx = Transaction(nonce=self.web3.eth.getTransactionCount(from_addr, 'pending'),
                              gasprice=self.web3.eth.gasPrice,
                              startgas=1000000,
                              to=to_addr,

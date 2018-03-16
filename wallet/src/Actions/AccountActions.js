@@ -201,6 +201,24 @@ export function payVPNUsage(data, cb) {
   });
 }
 
+export function getFreeAmount(account_addr, cb) {
+  fetch(B_URL + '/dev/free', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      account_addr: account_addr
+    })
+  }).then(function (response) {
+    response.json().then(function (response) {
+      console.log("Free res:", response)
+      cb(response.message)
+    })
+  })
+}
+
 export function getVPNUsageData(account_addr, cb) {
   fetch(B_URL + '/client/vpn/current', {
     method: 'POST',
@@ -382,6 +400,7 @@ export const getVPNList = (cb) => {
 
 
 export function connectVPN(account_addr, vpn_addr, cb) {
+  CONNECTED = false;
   console.log(remote.process.platform);
   if (remote.process.platform === 'darwin') {
     exec("if which openvpn > /dev/null;then echo 'true' ; else echo 'false'; fi",
@@ -459,20 +478,21 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               }
               var count = 0;
               if (remote.process.platform === 'darwin') checkVPNConnection();
-              else if (remote.process.platform === 'win32') {
-                setTimeout(function () {
-                  exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
-                    if (stdout.toString() === '') {
-                      cb({ message: 'Something went wrong.Please Try Again' }, false, false, false)
-                    }
-                    else {
-                      CONNECTED = true;
-                      cb(null, false, false, false);
-                    }
-                  })
-                }, 20000);
+              else if (remote.process.platform === 'win32') checkWindows();
+              // {
+              //   setTimeout(function () {
+              //     exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
+              //       if (stdout.toString() === '') {
+              //         cb({ message: 'Something went wrong.Please Try Again' }, false, false, false)
+              //       }
+              //       else {
+              //         CONNECTED = true;
+              //         cb(null, false, false, false);
+              //       }
+              //     })
+              //   }, 20000);
 
-              }
+              // }
               else {
                 setTimeout(function () {
                   getVPNPIDs(function (err, pids) {
@@ -484,6 +504,27 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                   });
 
                 }, 1000);
+              }
+              function checkWindows() {
+                console.log('IN windows..')
+                exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
+                  console.log('Win Err...', err, 'Stdout..', stdout, 'Stderr..', stderr)
+                  if (stdout.toString() === '') {
+
+                  }
+                  else {
+                    CONNECTED = true;
+                    cb(null, false, false, false);
+                    count = 8;
+                  }
+                  count++;
+                  if (count < 8) {
+                    setTimeout(function () { checkWindows(); }, 5000);
+                  }
+                  if (count == 8 && CONNECTED === false) {
+                    cb({ message: 'Something went wrong.Please Try Again' }, false, false, false)
+                  }
+                })
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {

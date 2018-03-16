@@ -8,7 +8,7 @@ getInstallerConfig()
     process.exit(1)
   })
 
-function getInstallerConfig () {
+function getInstallerConfig() {
   console.log('creating windows installer')
   const rootPath = path.join('./')
   const outPath = path.join(rootPath, 'release-builds')
@@ -23,6 +23,7 @@ function getInstallerConfig () {
     title: "Sentinel Wallet",
     outputDirectory: path.join(outPath, 'windows-installer'),
     exe: 'sentinel-wallet.exe',
+    loadingGif: path.join(rootPath, 'public', 'loading.gif'),
     setupExe: 'SentinelWalletInstaller.exe',
     setupIcon: path.join(rootPath, 'public', 'icon256x256.ico')
   })

@@ -50,6 +50,7 @@ class ETHManager(object):
     def get_balance(self, account_addr):
         try:
             balance = self.web3.eth.getBalance(account_addr)
+            balance = balance / ((10 ** 18) * 1.0)
         except Exception as err:
             return {'code': 104, 'error': str(err)}, None
         return None, balance

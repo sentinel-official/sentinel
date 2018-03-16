@@ -36,7 +36,6 @@ class SendComponent extends Component {
       isInitial: true,
       transactionStatus: '',
       session_id: null,
-      textDisabled: false,
       sliderValue: 20
     };
   }
@@ -70,8 +69,6 @@ class SendComponent extends Component {
         sending: nextProps.sending,
         password: ''
       })
-      if (nextProps.session_id === -1)
-        this.setState({ textDisabled: true })
       this.getGasLimit(nextProps.amount, nextProps.to_addr, nextProps.unit);
       this.props.propReceiveChange()
       if (nextProps.to_addr !== '') {
@@ -90,50 +87,54 @@ class SendComponent extends Component {
     let gas = this.state.gas;
     let amount = this.state.amount;
     let gas_price = this.state.sliderValue * (10 ** 9);
-    tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
-      let network;
-      let sessionId;
-      let paymentType;
-      if (self.props.isTest)
-        network = 'rinkeby'
-      else network = 'main'
-      if (self.state.session_id === -1) {
-        sessionId = null;
-        paymentType = 'init';
-      }
-      else {
-        paymentType = 'normal';
-        sessionId = self.state.session_id;
-      }
-      let body = {
-        from_addr: self.props.local_address,
-        amount: self.state.amount,
-        session_id: sessionId,
-        tx_data: data,
-        net: network,
-        payment_type: paymentType
-      }
-      payVPNUsage(body, function (err, tx_addr) {
-        self.props.clearSend();
-        if (err) {
-          self.setState({
-            snackOpen: true,
-            snackMessage: err.message,
-            to_address: '',
-            amount: '',
-            session_id: null,
-            unit: 'ETH',
-            password: '',
-            sending: false,
-            isDisabled: true,
-            textDisabled: false
-          });
+    if (this.state.session_id === -1 && parseInt(this.state.amount) !== 100) {
+      this.setState({ snackOpen: true, snackMessage: 'Please send 100 sends', sending: false })
+    }
+    else {
+      tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
+        let network;
+        let sessionId;
+        let paymentType;
+        if (self.props.isTest)
+          network = 'rinkeby'
+        else network = 'main'
+        if (self.state.session_id === -1) {
+          sessionId = null;
+          paymentType = 'init';
         }
         else {
-          self.clearFields(tx_addr)
+          paymentType = 'normal';
+          sessionId = self.state.session_id;
         }
-      });
-    })
+        let body = {
+          from_addr: self.props.local_address,
+          amount: self.state.amount,
+          session_id: sessionId,
+          tx_data: data,
+          net: network,
+          payment_type: paymentType
+        }
+        payVPNUsage(body, function (err, tx_addr) {
+          self.props.clearSend();
+          if (err) {
+            self.setState({
+              snackOpen: true,
+              snackMessage: err.message,
+              to_address: '',
+              amount: '',
+              session_id: null,
+              unit: 'ETH',
+              password: '',
+              sending: false,
+              isDisabled: true
+            });
+          }
+          else {
+            self.clearFields(tx_addr)
+          }
+        });
+      })
+    }
   }
 
   rawTransaction(privateKey) {
@@ -191,8 +192,7 @@ class SendComponent extends Component {
       unit: 'ETH',
       password: '',
       sending: false,
-      isDisabled: true,
-      textDisabled: false
+      isDisabled: true
     })
   }
 
@@ -346,7 +346,6 @@ class SendComponent extends Component {
                   type="number"
                   style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
                   fullWidth={true}
-                  disabled={this.state.textDisabled}
                   inputStyle={{ padding: 10 }}
                   onChange={this.amountChange.bind(this)} value={this.state.amount} />
               </Col>

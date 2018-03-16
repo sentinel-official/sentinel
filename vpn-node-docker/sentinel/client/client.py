@@ -1,5 +1,4 @@
 import json
-import os
 import time
 
 import falcon
@@ -24,7 +23,6 @@ class GenerateOVPN(object):
         vpn_addr = str(req.body['vpn_addr'])
         token = str(req.body['token'])
 
-        os.system("nohup redis-server >> /dev/null &")
         rs = redis.Redis()
         stored_token = rs.get(account_addr)
         name = str(int(time.time() * (10 ** 6)))

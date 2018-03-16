@@ -63,7 +63,7 @@ class ETHManager(object):
 
     def transfer_amount(self, from_addr, to_addr, amount, private_key):
         try:
-            tx = Transaction(nonce=self.web3.eth.getTransactionCount(from_addr),
+            tx = Transaction(nonce=self.web3.eth.getTransactionCount(from_addr, 'pending'),
                              gasprice=self.web3.eth.gasPrice,
                              startgas=1000000,
                              to=to_addr,

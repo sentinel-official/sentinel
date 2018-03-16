@@ -17,7 +17,7 @@ class VpnServiceManager(object):
 
     def pay_vpn_session(self, account_addr, amount, session_id):
         try:
-            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS),
+            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS, 'pending'),
                              gasprice=rinkeby.web3.eth.gasPrice,
                              startgas=1000000,
                              to=VPNSERVICE_ADDRESS,
@@ -34,7 +34,7 @@ class VpnServiceManager(object):
 
     def set_initial_payment(self, account_addr, is_payed=True):
         try:
-            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS),
+            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS, 'pending'),
                              gasprice=rinkeby.web3.eth.gasPrice,
                              startgas=1000000,
                              to=VPNSERVICE_ADDRESS,
@@ -110,7 +110,7 @@ class VpnServiceManager(object):
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp):
         try:
-            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS),
+            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS, 'pending'),
                              gasprice=rinkeby.web3.eth.gasPrice,
                              startgas=1000000,
                              to=VPNSERVICE_ADDRESS,

@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import sys
 import time
 from os import path, environ
 from thread import start_new_thread
@@ -34,10 +35,12 @@ def tasks():
 
 
 if __name__ == "__main__":
+    args_len = len(sys.argv)
     if path.exists(ACCOUNT_DATA_PATH) is True:
         node = Node(resume=True)
-    elif 'PASSWORD' in environ:
-        create_account(environ['PASSWORD'])
+    elif args_len > 1:
+        PASSWORD = sys.argv[1]
+        create_account(PASSWORD)
         node = Node(resume=True)
     else:
         print('ERROR: {} not found.'.format(ACCOUNT_DATA_PATH))

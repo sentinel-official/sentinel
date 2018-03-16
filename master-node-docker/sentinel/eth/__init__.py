@@ -2,5 +2,5 @@
 from .eth import mainnet
 from .eth import rinkeby
 from .sentinel_contract import sentinel_main
-from .sentinel_contract import sentinel_test
+from .sentinel_contract import sentinel_rinkeby
 from .vpn_contract import vpn_service_manager

@@ -1,5 +1,0 @@
-.DS_STORE
-.sass-cache
-node_modules
-release-builds
-electron-packager

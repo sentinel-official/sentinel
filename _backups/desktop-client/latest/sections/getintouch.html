@@ -1,0 +1,79 @@
+<template class="section-template">
+<section id="vpnusage" class="wrapper style1">
+  <div class="inner">
+    <h2>Transfer SENTs</h2>
+    <p>Once the transaction is made, we cannot reverse it. Please make sure to double check the transaction.</p>
+    <div class="split style1">
+      <section>
+        <form method="post" action="#">
+          <!-- <div class="field">
+            <label for="fromAddress">From</label>
+            <input type="text" name="from_address" readonly id="fromAddress" />
+          </div> -->
+          <div class="field">
+            <label for="toAddress">To</label>
+            <input type="text" name="to_addr" id="toAddress" />
+          </div>
+          <div class="field half" style="padding: 0">
+            <label for="amount">Amount (SENT)</label>
+            <input type="text" name="amount" id="amount" />
+          </div>
+          <div class="field half">
+            <label for="gas">Gas (SENT)</label>
+            <input type="text" name="gas" value="90000" id="gas"/>
+          </div>
+          <input type="text" name="session_id" value="" id="session_id"/>
+          <div class="clearfix"></div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea name="message" id="message" rows="2"></textarea>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password"/>
+          </div>
+          <input type="hidden" id="is_vpn" name="is_vpn" value="false"/>
+          <ul class="actions">
+            <li><a href="javascript:;" class="button submit" 
+              onclick="_transferAmount(this.form)"
+              id="transfer-amount-submit">Send</a></li>
+          </ul>
+        </form>
+      </section>
+      <section>
+        <ul class="contact">
+            <!-- <div id="transaction-receipt-div">
+                <label style="font-weight: bold;">From: </label>
+                <span id="transaction-receipt-from"></span>
+                <br/>
+                <label style="font-weight: bold;">To: </label>
+                <span id="transaction-receipt-to"></span>
+                <br/>
+                <label style="font-weight: bold;">Block Number: </label>
+                <span id="transaction-receipt-blocknumber"></span>
+                <br/>
+                <label style="font-weight: bold;">Block Hash: </label>
+                <span id="transaction-receipt-blockhash"></span>
+                <br/>
+                <label style="font-weight: bold;">Gas Used: </label>
+                <span id="transaction-receipt-gasused"></span>
+              </div> -->
+        
+          <!-- <li>
+            <h3>Confirm Transaction</h3>
+            <span></span>
+          </li>
+          <li>
+            <h3>Amount</h3>
+            <a href="#">100</a>
+          </li>
+          <li>
+            <h3>Address</h3>
+            <span>0xd399dfae339a9ad9ds9ad93339afa9</span>
+          </li> -->
+        </ul>
+      </section>
+    </div>
+  </div>
+</section>
+</template>

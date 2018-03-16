@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Sentinel</title>
+</head>
+
+<body>
+  <script src="./controllers.js"></script>
+  <script>
+    function _showAccountFunctions() {
+      if (fs.existsSync(KEYSTORE_FILE)) {
+        document.getElementById('create-account-div').style.display = 'none';
+        document.getElementById('account-functions-main-div').style.display = '';
+        document.getElementById('transaction-receipt-div').style.display = 'none';
+      } else {
+        document.getElementById('create-account-div').style.display = '';
+        document.getElementById('account-functions-main-div').style.display = 'none';
+      }
+    }
+
+    function _getAccount() {
+      getAccount(function (err, account_addr) {
+        if (err) console.log(err);
+        else document.getElementById('account_addr').innerHTML = account_addr;
+        _showAccountFunctions();
+        _getBalance();
+        _getTransactionHistory();
+      });
+    };
+
+    function _createAccount(form) {
+      document.getElementById('create-account-submit').disabled = true;
+      var password = form.password.value;
+      createAccount(password, function (err, account) {
+        if (err) console.log(err);
+        else _getAccount();
+      });
+    }
+
+    function _connectVPN() {
+      var account_addr = document.getElementById('account_addr').innerHTML;
+      _toggleVPNButtons();
+      connectVPN(account_addr, function (err) {
+        if (err) {
+          console.log(err);
+          _toggleVPNButtons();
+        }
+      });
+    }
+
+    function _toggleVPNButtons() {
+      document.getElementById("connect-vpn-button").disabled =
+        !document.getElementById("connect-vpn-button").disabled;
+      document.getElementById("disconnect-vpn-button").disabled =
+        !document.getElementById("disconnect-vpn-button").disabled;
+    }
+
+    function _disconnectVPN() {
+      _toggleVPNButtons();
+      disconnectVPN(function (err) {
+        if (err) {
+          console.log(err);
+          _toggleVPNButtons();
+        }
+      });
+    }
+
+    function _transferAmount(form) {
+      document.getElementById('tx_hash').style.display = 'none';
+      document.getElementById('transfer-amount-submit').disabled = true;
+      var data = {};
+      data['from_addr'] = document.getElementById('account_addr').innerHTML;
+      data['to_addr'] = form.to_addr.value;
+      data['amount'] = parseInt(form.amount.value);
+      data['gas'] = parseInt(form.gas.value);
+      data['unit'] = form.unit.value;
+      data['password'] = form.password.value
+      transferAmount(data, function (err, tx_hash) {
+        if (err) console.log(err);
+        else {
+          document.getElementById('tx_hash').innerHTML = 'Transaction Hash: ' + tx_hash;
+          document.getElementById('tx_hash').style.display = '';
+          document.getElementById('transfer-amount-submit').disabled = false;
+          _getTransactionHistory();
+        }
+      });
+    }
+
+    function _getBalance() {
+      var data = {
+        'account_addr': document.getElementById('account_addr').innerHTML,
+        'unit': 'SENT'
+      };
+      if (data['account_addr'].length > 0) {
+        setInterval(function () {
+          getBalance(data, function (err, balance) {
+            if (err) console.log(err);
+            else document.getElementById('balance').innerHTML = balance + ' SENTs';
+          });
+        }, 5 * 1000);
+      }
+    }
+
+    function _getTransactionReceipt(form) {
+      document.getElementById('check-tx-status-submit').disabled = true;
+      var txHash = form.tx_hash.value;
+      getTransactionReceipt(txHash, function (err, txReceipt) {
+        if (err) console.log(err);
+        else {
+          document.getElementById('transaction-receipt-from').innerHTML = txReceipt['from'];
+          document.getElementById('transaction-receipt-to').innerHTML = txReceipt['to'];
+          document.getElementById('transaction-receipt-blocknumber').innerHTML = txReceipt['blockNumber'];
+          document.getElementById('transaction-receipt-blockhash').innerHTML = txReceipt['blockHash'];
+          document.getElementById('transaction-receipt-gasused').innerHTML = txReceipt['gasUsed'];
+          document.getElementById('transaction-receipt-div').style.display = '';
+        }
+        document.getElementById('check-tx-status-submit').disabled = false;
+      });
+    }
+
+    function _getTransactionHistory() {
+      var account_addr = document.getElementById('account_addr').innerHTML;
+      var transactionHistoryDiv = document.getElementById('transaction-history-div')
+      transactionHistoryDiv.innerHTML = '';
+      getTransactionHistory(account_addr, function (err, history) {
+        if (err) console.log(err);
+        else {
+          history.forEach(function (record, index) {
+            var to_address = record['to_address'];
+            var amount = record['amount'];
+            var unit = record['unit'] + 's';
+            var tx_hash = record['tx_hash'];
+            var p = document.createElement('p');
+            p.innerHTML = to_address + ' | ' + amount + ' | ' + unit + ' | ' + tx_hash;
+            p.style.margin = '0px';
+            transactionHistoryDiv.appendChild(p);
+          });
+        }
+      });
+    }
+  </script>
+  <div id="create-account-div">
+    <form>
+      <input type="password" name="password" />
+      <input type="button" id="create-account-submit" value="Create New Account" onclick="_createAccount(this.form)" />
+    </form>
+  </div>
+  <div id="account-functions-main-div">
+    <div id="account-div">
+      <h3>Account</h3>
+      <label>Address: </label>
+      <span id="account_addr" style="margin: 0px;"></span>
+      <br />
+      <label>Balance: </label>
+      <span id="balance" style="margin: 0px;"></span>
+      <hr />
+    </div>
+    <div id="vpn-div">
+      <h3>VPN</h4>
+        <button id="connect-vpn-button" onclick="_connectVPN()">Connect</button>
+        <button id="disconnect-vpn-button" onclick="_disconnectVPN()" disabled>Disconnect</button>
+        <hr />
+    </div>
+    <div id="send-sents-main-div">
+      <h3>Send SENTs</h4>
+        <form>
+          <label>To:</label>
+          <input type="text" name="to_addr" />
+          <br />
+          <label>Amount:</label>
+          <input type="text" name="amount" />
+          <br />
+          <label>Gas:</label>
+          <input type="text" name="gas" value="90000" />
+          <br />
+          <label>Unit:</label>
+          <select name="unit">
+            <option value="SENT">SENT</option>
+            <option value="ETH">ETH</option>
+          </select>
+          <br />
+          <label>Password:</label>
+          <input type="password" name="password" />
+          <br />
+          <input type="button" id="transfer-amount-submit" value="Send Amount" onclick="_transferAmount(this.form)" />
+        </form>
+        <p id="tx_hash"></p>
+        <hr />
+    </div>
+    <div id="transaction-receipt-main-div">
+      <h3>Transaction Receipt</h3>
+      <form>
+        <input type="text" name="tx_hash" />
+        <input type="button" id="check-tx-status-submit" value="Check Status" onclick="_getTransactionReceipt(this.form)" />
+      </form>
+      <br/>
+      <div id="transaction-receipt-div">
+        <label style="font-weight: bold;">From: </label>
+        <span id="transaction-receipt-from"></span>
+        <br/>
+        <label style="font-weight: bold;">To: </label>
+        <span id="transaction-receipt-to"></span>
+        <br/>
+        <label style="font-weight: bold;">Block Number: </label>
+        <span id="transaction-receipt-blocknumber"></span>
+        <br/>
+        <label style="font-weight: bold;">Block Hash: </label>
+        <span id="transaction-receipt-blockhash"></span>
+        <br/>
+        <label style="font-weight: bold;">Gas Used: </label>
+        <span id="transaction-receipt-gasused"></span>
+      </div>
+      <hr />
+    </div>
+    <div id="transaction-history-main-div">
+      <h3>Transaction History</h3>
+      <span>To | Amount | Unit | Transaction Hash</span>
+      <div id="transaction-history-div">
+      </div>
+    </div>
+  </div>
+  <script>
+    _getAccount();
+  </script>
+</body>
+
+</html>

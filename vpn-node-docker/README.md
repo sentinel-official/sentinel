@@ -14,7 +14,7 @@ Below are the instructions on installing docker.
 
 `sudo apt-get install docker`
 
-### Installing the latest version of docker in Ubuntu or other relases
+### Installing the latest version of docker in Ubuntu or Debian based releases
 
 `sudo apt install -y curl`
 
@@ -24,7 +24,13 @@ Below are the instructions on installing docker.
 
 `sudo usermod -aG docker $USER`
 
-### Sentinel VPN node [Quick Run]
+### Running Sentinel VPN node
+
+You can setup and run VPN node in two ways
+
+#### Method #1 [Quick Run]
+
+Using existing docker image
 
 `cd ~`
 
@@ -32,7 +38,9 @@ Below are the instructions on installing docker.
 
 `sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 1194:1194/udp sentinelofficial/sentinel-vpn-node`
 
-### Creating docker image
+#### Method #2
+
+Buiding your own docker image
 
 `cd ~`
 
@@ -40,12 +48,8 @@ Below are the instructions on installing docker.
 
 `cd ~/sentinel/vpn-node-docker`
 
-`docker build --file Dockerfile.prod --tag sentinel-vpn-node --force-rm --no-cache .`
-
-### Running Sentinel VPN node
-
-`cd ~`
+`sudo docker build --file Dockerfile.prod --tag sentinel-vpn-node --force-rm --no-cache .`
 
 `mkdir -p $HOME/.sentinel`
 
-`docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 1194:1194/udp sentinel-vpn-node`
+`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 1194:1194/udp sentinel-vpn-node`

@@ -212,7 +212,7 @@ class Header extends Component {
                 justifyContent: 'center'
               }}>
                 <div>
-                  <span style={styles.basicWallet}>SENTINEL-Wallet</span>
+                  <span style={styles.basicWallet}>SENTINEL</span>
                 </div>
                 <Row>
                   <Col xs={8}><span

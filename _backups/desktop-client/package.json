@@ -1,0 +1,38 @@
+{
+  "name": "sentinel-gui",
+  "version": "0.1.0",
+  "private": true,
+  "main": "electron.js",
+  "homepage": "./",
+  "author": {
+    "name": "Sentinel"
+  },
+  "description": "Sentinel",
+  "dependencies": {
+    "exec": "^0.2.1",
+    "fs": "0.0.1-security"
+  },
+  "scripts": {
+    "postinstall": "electron-builder install-app-deps",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^1.7.9",
+    "electron-builder": "^19.46.4"
+  },
+  "build": {
+    "appId": "team.sentinel.app",
+    "productName": "Sentinel",
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+    
+    },
+    "linux": {
+      "category": "Network"
+    }
+  }
+}

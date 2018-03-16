@@ -35,10 +35,10 @@ def tasks():
 
 
 if __name__ == "__main__":
-    args_len = len(sys.argv)
+    argv_len = len(sys.argv)
     if path.exists(ACCOUNT_DATA_PATH) is True:
         node = Node(resume=True)
-    elif args_len > 1:
+    elif argv_len > 1:
         PASSWORD = sys.argv[1]
         create_account(PASSWORD)
         node = Node(resume=True)

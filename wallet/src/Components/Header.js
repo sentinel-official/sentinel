@@ -27,7 +27,8 @@ class Header extends Component {
       isMac: false,
       isTest: false,
       showPay: false,
-      payAccount: ''
+      payAccount: '',
+      testDisabled: false
     }
   }
 
@@ -60,32 +61,32 @@ class Header extends Component {
   }
 
   _connectVPN = () => {
-    this.setState({ showPopUp: false, statusSnack: true, statusMessage: 'Connecting...' })
+    this.setState({ showPopUp: false, statusSnack: true, testDisabled: true, statusMessage: 'Connecting...Please Wait' })
     let that = this;
     if (isOnline()) {
       connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isMacError, isWinError, account) {
         if (isMacError) {
-          that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: true })
+          that.setState({ status: false, showInstruct: true, testDisabled: false, statusSnack: false, isMac: true })
         }
         else if (isWinError) {
-          that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: false })
+          that.setState({ status: false, showInstruct: true, testDisabled: false, statusSnack: false, isMac: false })
         }
         else if (account) {
-          that.setState({ status: false, showPay: true, statusSnack: false, isMac: false, payAccount: account })
+          that.setState({ status: false, showPay: true, statusSnack: false, testDisabled: false, isMac: false, payAccount: account })
         }
         else if (err) {
           if (err.message !== true)
-            that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
+            that.setState({ status: false, statusSnack: false, showInstruct: false, testDisabled: false, openSnack: true, snackMessage: err.message })
         }
         else {
           that.props.onChange();
           //that.returnVPN();
-          that.setState({ status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: "Connected VPN" })
+          that.setState({ status: true, statusSnack: false, showInstruct: false, testDisabled: false, openSnack: true, snackMessage: "Connected VPN" })
         }
       })
     }
     else {
-      this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+      this.setState({ openSnack: true, statusSnack: false, testDisabled: false, snackMessage: 'Check your Internet Connection' })
     }
   }
 
@@ -268,6 +269,7 @@ class Header extends Component {
                 <Col>
                   <Toggle
                     toggled={this.state.isTest}
+                    disabled={this.state.testDisabled}
                     onToggle={this.testChange}
                     style={{ marginTop: 8, marginLeft: 20 }}
                   />

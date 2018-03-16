@@ -1,3 +1,13 @@
+### Installing docker in Linux
+
+`sudo apt install -y curl`
+
+`$ curl -fsSL get.docker.com -o /tmp/get-docker.sh`
+
+`sudo sh /tmp/get-docker.sh`
+
+`sudo usermod -aG docker $USER`
+
 ### Sentinel VPN node [Quick Run]
 
 `$ cd ~`

@@ -49,7 +49,7 @@ class Home extends Component {
                                 </div>
                             </Col>
                             <Col xs={4} style={{ marginLeft: '5%' }}>
-                                <h4 style={styles.bottomDivBuilt}>Beta Version 0.1.2 with testnet</h4>
+                                <h4 style={styles.bottomDivBuilt}>Beta Version 0.0.2 with testnet</h4>
                                 <hr align="left" style={styles.underLine} />
                                 <p style={styles.copyRight}>SentinelGroup.io</p>
                             </Col>

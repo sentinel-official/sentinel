@@ -130,7 +130,7 @@ class EtherTransaction extends Component {
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
                             <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
                             <span>ETHs</span>  |
-                    <span style={{ fontWeight: 'bold' }}> Status : </span><span>{history.isError === '0' ? 'Success' : 'Error'}</span>  |
+                    <span style={{ fontWeight: 'bold' }}> Status : </span><span style={{ fontWeight: 'bold' }}>{history.isError === '0' ? 'Success' : 'Error'}</span>  |
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {

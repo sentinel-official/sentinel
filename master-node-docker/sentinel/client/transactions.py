@@ -19,7 +19,7 @@ class RawTransaction(object):
         """
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net'])
-        error, tx_hash = eth_helper.raw_transaction(net, tx_data)
+        error, tx_hash = eth_helper.raw_transaction(tx_data, net)
 
         if error is None:
             message = {

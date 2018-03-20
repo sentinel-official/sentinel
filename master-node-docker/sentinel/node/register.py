@@ -5,7 +5,6 @@ from uuid import uuid4
 import falcon
 
 from ..db import db
-from ..logs import logger
 
 
 class RegisterNode(object):
@@ -20,27 +19,28 @@ class RegisterNode(object):
             'account_addr': account_addr
         })
         if node is None:
-            result = db.nodes.insert_one({
+            _ = db.nodes.insert_one({
                 'account_addr': account_addr,
                 'token': token,
                 'location': location,
                 'ip': ip,
                 'net_speed': net_speed
             })
-            if result.inserted_id:
-                message = {
-                    'success': True,
-                    'token': token,
-                    'message': 'Node registered successfully.'
-                }
-                resp.status = falcon.HTTP_200
-                resp.body = json.dumps(message)
         else:
-            message = {
-                'success': False,
-                'message': 'Error occurred while registering the node.'
-            }
-            try:
-                raise Exception('Error occurred while registering the node.')
-            except Exception as _:
-                logger.send_log(message, resp)
+            _ = db.nodes.find_one_and_update({
+                'account_addr': account_addr
+            }, {
+                '$set': {
+                    'token': token,
+                    'location': location,
+                    'ip': ip,
+                    'net_speed': net_speed
+                }
+            })
+        message = {
+            'success': True,
+            'token': token,
+            'message': 'Node registered successfully.'
+        }
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)

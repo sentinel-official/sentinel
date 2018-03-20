@@ -6,6 +6,7 @@ import falcon
 import requests
 
 from ..config import DECIMALS
+from ..config import LIMIT
 from ..db import db
 from ..eth import vpn_service_manager
 from ..helpers import eth_helper
@@ -55,89 +56,74 @@ class GetVpnCredentials(object):
         balances = eth_helper.get_balances(account_addr)
 
         if balances['rinkeby']['sents'] >= 100:
-            error, due_amount = eth_helper.get_due_amount(account_addr)
-            if error is not None:
-                message = {
-                    'success': False,
-                    'error': error,
-                    'message': 'Error occurred while checking the due amount.'
-                }
-                try:
-                    raise Exception(error)
-                except Exception as _:
-                    logger.send_log(message, resp)
-            elif due_amount == 0:
-                vpn_addr_len = len(vpn_addr)
+            error, usage = eth_helper.get_latest_vpn_usage(account_addr)
+            if error is None:
+                due_amount = 0 if usage['is_payed'] is True else usage['amount']
+                if (due_amount > 0) and (usage['received_bytes'] < LIMIT):
+                    vpn_addr = usage['account_addr']
 
-                if vpn_addr_len > 0:
-                    node = db.nodes.find_one({
-                        'vpn.status': 'up',
-                        'account_addr': vpn_addr
-                    }, {
-                        '_id': 0,
-                        'token': 0
-                    })
+                if (due_amount > 0) and (usage['received_bytes'] >= LIMIT):
+                    message = {
+                        'success': False,
+                        'message': 'You have due amount: ' + str(
+                            due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
+                    }
                 else:
                     node = db.nodes.find_one({
+                        'account_addr': vpn_addr,
                         'vpn.status': 'up'
                     }, {
                         '_id': 0,
                         'token': 0
                     })
-
-                if node is None:
-                    if vpn_addr_len > 0:
+                    if node is None:
                         message = {
                             'success': False,
-                            'message': 'VPN server is already occupied. Please try after sometime.'
+                            'message': 'Currently VPN server is not available. Please try after sometime.'
                         }
                     else:
-                        message = {
-                            'success': False,
-                            'message': 'All VPN servers are occupied. Please try after sometime.'
-                        }
-                else:
-                    error, is_payed = eth_helper.get_initial_payment(
-                        account_addr)
-                    if error is not None:
-                        message = {
-                            'success': False,
-                            'message': 'Error occurred while cheking initial payment status.'
-                        }
-                    elif is_payed:
-                        try:
-                            token = uuid4().hex
-                            ip, port = str(node['ip']), 3000
-                            body = {
-                                'account_addr': account_addr,
-                                'token': token
-                            }
-                            url = 'http://{}:{}/master/sendToken'.format(
-                                ip, port)
-                            _ = requests.post(url, json=body, timeout=10)
-                            message = {
-                                'success': True,
-                                'ip': ip,
-                                'port': port,
-                                'token': token
-                            }
-                        except Exception as _:
+                        error, is_payed = eth_helper.get_initial_payment(
+                            account_addr)
+                        if error is None:
+                            if is_payed is True:
+                                try:
+                                    token = uuid4().hex
+                                    ip, port = str(node['ip']), 3000
+                                    body = {
+                                        'account_addr': account_addr,
+                                        'token': token
+                                    }
+                                    url = 'http://{}:{}/master/sendToken'.format(
+                                        ip, port)
+                                    _ = requests.post(
+                                        url, json=body, timeout=10)
+                                    message = {
+                                        'success': True,
+                                        'ip': ip,
+                                        'port': port,
+                                        'token': token
+                                    }
+                                except Exception as _:
+                                    message = {
+                                        'success': False,
+                                        'message': 'Connection timed out while connecting to VPN server.'
+                                    }
+                                    logger.send_log(message, resp)
+                            else:
+                                message = {
+                                    'success': False,
+                                    'account_addr': vpn_addr,
+                                    'message': 'Initial payment status is empty.'
+                                }
+                        else:
                             message = {
                                 'success': False,
-                                'message': 'Connection timed out while connecting to VPN server.'
+                                'message': 'Error occurred while cheking initial payment status.'
                             }
-                            logger.send_log(message, resp)
-                    else:
-                        message = {
-                            'success': False,
-                            'account_addr': vpn_addr,
-                            'message': 'Initial payment status is empty.'
-                        }
             else:
                 message = {
                     'success': False,
-                    'message': 'You have due amount: ' + str(
-                        due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
+                    'message': 'Error occurred while checking due amount.'
                 }
         else:
             message = {
@@ -166,7 +152,8 @@ class PayVpnUsage(object):
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net'])
         from_addr = str(req.body['from_addr'])
-        amount = float(req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
+        amount = float(
+            req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
         session_id = int(req.body['session_id']
                          ) if 'session_id' in req.body and req.body['session_id'] is not None else None
 

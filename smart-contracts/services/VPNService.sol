@@ -28,9 +28,9 @@ contract VPNService is Owned {
     mapping(address => bool) public authorizedUsers;
 
     struct User {
-        uint256 dueAmount;
         bool initialPayment;
-        VpnUsage[] vpnUsage;
+        uint256 sessionsCount;
+        mapping(bytes32 => VpnUsage) vpnUsage;
     }
 
     struct VpnUsage {
@@ -43,7 +43,7 @@ contract VPNService is Owned {
     }
 
     VpnUsage _vpnUsageTemplate;
-    
+
     function addAuthorizedUser(
         address _addr)
             onlyOwner public {
@@ -62,7 +62,7 @@ contract VPNService is Owned {
             onlyOwner public {
                 users[_addr].initialPayment = _isPayed;
         }
-    
+
     function getInitialPaymentOf(
         address _addr)
             public constant returns(bool) {
@@ -75,53 +75,48 @@ contract VPNService is Owned {
         uint256 _receivedBytes,
         uint256 _sessionDuration,
         uint256 _amount,
-        uint256 _timestamp)
+        uint256 _timestamp,
+        bytes32 _sessionId)
             public {
                 require(authorizedUsers[msg.sender] == true);
+                require(_receivedBytes > 0);
+                require(_sessionDuration > 0);
+                require(_amount > 0);
                 VpnUsage storage _vpnUsage = _vpnUsageTemplate;
 
                 _vpnUsage.addr = _from;
-                _vpnUsage.receivedBytes = _receivedBytes;
-                _vpnUsage.sessionDuration = _sessionDuration;
-                _vpnUsage.amount = _amount;
+                _vpnUsage.receivedBytes += _receivedBytes;
+                _vpnUsage.sessionDuration += _sessionDuration;
+                _vpnUsage.amount += _amount;
                 _vpnUsage.timestamp = _timestamp;
                 _vpnUsage.isPayed = false;
 
-                users[_to].vpnUsage.push(_vpnUsage);
-                users[_to].dueAmount += _amount;
+                if(users[_to].vpnUsage[_sessionId].addr == 0x0)
+                    users[_to].sessionsCount += 1;
+                users[_to].vpnUsage[_sessionId] = _vpnUsage;
         }
 
     function payVpnSession(
         address _from,
         uint256 _amount,
-        uint256 _sessionId)
+        bytes32 _sessionId)
             public {
                 require(authorizedUsers[msg.sender] == true);
-                require(users[_from].dueAmount >= _amount);
                 require(users[_from].vpnUsage[_sessionId].amount == _amount);
                 require(users[_from].vpnUsage[_sessionId].isPayed == false);
 
-                users[_from].dueAmount -= _amount;
-                if ((users[_from].vpnUsage[_sessionId].amount - _amount) == 0) {
-                    users[_from].vpnUsage[_sessionId].isPayed = true;
-                }
+                users[_from].vpnUsage[_sessionId].isPayed = true;
         }
 
-    function getDueAmountOf(
+    function getVpnSessionsCountOf(
         address _address)
             public constant returns(uint256) {
-                return users[_address].dueAmount;
-        }
-
-    function getVpnSessionsOf(
-        address _address)
-            public constant returns(uint256) {
-                return users[_address].vpnUsage.length;
+                return users[_address].sessionsCount;
         }
 
     function getVpnUsageOf(
         address _address,
-        uint256 _sessionId)
+        bytes32 _sessionId)
             public constant returns(address, uint256, uint256, uint256, uint256, bool) {
                 return (
                     users[_address].vpnUsage[_sessionId].addr,

@@ -55,13 +55,12 @@ class UpdateConnections(object):
                         print(from_addr, to_addr, sent_bytes,
                               session_duration, amount, timestamp)
 
-                        if sent_bytes >= (100 * 1024 * 1024):
-                            error, tx_hash = eth_helper.add_vpn_usage(
-                                from_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
-                            if error:
-                                tx_hashes.append(error)
-                            else:
-                                tx_hashes.append(tx_hash)
+                        error, tx_hash = eth_helper.add_vpn_usage(
+                            from_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
+                        if error:
+                            tx_hashes.append(error)
+                        else:
+                            tx_hashes.append(tx_hash)
             message = {
                 'success': True,
                 'message': 'Connection details updated successfully.',

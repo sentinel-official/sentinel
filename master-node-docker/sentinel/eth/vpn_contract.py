@@ -48,32 +48,18 @@ class VpnServiceManager(object):
             return {'code': 202, 'error': str(err)}, None
         return None, tx_hash
 
-    def get_due_amount(self, account_addr):
-        try:
-            caller_object = {
-                'from': account_addr,
-                'to': VPNSERVICE_ADDRESS,
-                'data': rinkeby.web3.toHex(
-                    rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='getDueAmountOf', args=[account_addr])))
-            }
-            due = rinkeby.web3.toInt(
-                hexstr=rinkeby.web3.eth.call(caller_object))
-        except Exception as err:
-            return {'code': 203, 'error': str(err)}, None
-        return None, due
-
-    def get_vpn_sessions(self, account_addr):
+    def get_vpn_sessions_count(self, account_addr):
         try:
             caller_object = {
                 'from': account_addr,
                 'to': VPNSERVICE_ADDRESS,
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
-                    hexstr=self.contract.encodeABI(fn_name='getVpnSessionsOf', args=[account_addr])))
+                    hexstr=self.contract.encodeABI(fn_name='getVpnSessionsCountOf', args=[account_addr])))
             }
             sessions = rinkeby.web3.toInt(
                 hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
-            return {'code': 204, 'error': str(err)}, None
+            return {'code': 203, 'error': str(err)}, None
         return None, sessions
 
     def get_initial_payment(self, account_addr):
@@ -87,16 +73,16 @@ class VpnServiceManager(object):
             is_payed = rinkeby.web3.toInt(
                 hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
-            return {'code': 205, 'error': str(err)}, None
+            return {'code': 204, 'error': str(err)}, None
         return None, is_payed
 
-    def get_vpn_usage(self, account_addr, index):
+    def get_vpn_usage(self, account_addr, session_id):
         try:
             caller_object = {
                 'from': account_addr,
                 'to': VPNSERVICE_ADDRESS,
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
-                    hexstr=self.contract.encodeABI(fn_name='getVpnUsageOf', args=[account_addr, index])))
+                    hexstr=self.contract.encodeABI(fn_name='getVpnUsageOf', args=[account_addr, session_id])))
             }
             usage = rinkeby.web3.eth.call(caller_object)[2:]
             usage = [usage[i:i + 64] for i in range(0, len(usage), 64)]
@@ -105,10 +91,10 @@ class VpnServiceManager(object):
                          for i in range(1, len(usage))]
             usage[-1] = usage[-1] != 0
         except Exception as err:
-            return {'code': 206, 'error': str(err)}, None
+            return {'code': 205, 'error': str(err)}, None
         return None, usage
 
-    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp):
+    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id):
         try:
             tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS, 'pending'),
                              gasprice=rinkeby.web3.eth.gasPrice,
@@ -119,12 +105,12 @@ class VpnServiceManager(object):
                                                                                       args=[from_addr, to_addr,
                                                                                             sent_bytes,
                                                                                             session_duration, amount,
-                                                                                            timestamp])))
+                                                                                            timestamp, session_id])))
             tx.sign(COINBASE_PRIVATE_KEY)
             raw_tx = rinkeby.web3.toHex(rlp.encode(tx))
             tx_hash = rinkeby.web3.eth.sendRawTransaction(raw_tx)
         except Exception as err:
-            return {'code': 207, 'error': str(err)}, None
+            return {'code': 206, 'error': str(err)}, None
         return None, tx_hash
 
 

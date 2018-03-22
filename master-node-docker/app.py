@@ -19,6 +19,11 @@ from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
 from sentinel.node import UpdateNodesStatus
+from sentinel.node import GetDailySessionCount
+from sentinel.node import GetActiveSessionCount
+from sentinel.node import GetDailyNodeCount
+from sentinel.node import GetActiveNodeCount
+from sentinel.node import GetDailyDataCount
 from sentinel.utils import JSONTranslator
 
 
@@ -58,6 +63,13 @@ app.add_route('/node/update-connections', UpdateConnections())
 
 # DEV
 app.add_route('/dev/free', GetFreeAmount())
+
+#STATS
+app.add_route('/stats/sessions/daily-stats',GetDailySessionCount())
+app.add_route('/stats/sessions/active-count',GetActiveSessionCount())
+app.add_route('/stats/nodes/daily-stats',GetDailyNodeCount())
+app.add_route('/stats/nodes/active-count',GetActiveNodeCount())
+app.add_route('/stats/data/daily-stats',GetDailyDataCount())
 
 update_nodes_status = UpdateNodesStatus(max_secs=120)
 update_nodes_status.start()

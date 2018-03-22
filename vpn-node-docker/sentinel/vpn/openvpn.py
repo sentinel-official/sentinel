@@ -49,8 +49,8 @@ class OpenVPN(object):
                 connection = {
                     'session_name': line_arr[0],
                     'usage': {
-                        'up': line_arr[2],
-                        'down': line_arr[3]
+                        'up': int(line_arr[2]),
+                        'down': int(line_arr[3])
                     }
                 }
                 connections.append(connection)

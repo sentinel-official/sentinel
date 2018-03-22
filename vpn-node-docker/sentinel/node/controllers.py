@@ -7,7 +7,6 @@ import requests
 from ..config import ACCOUNT_DATA_PATH
 from ..config import LOCAL_SERVER_URL
 from ..config import MASTER_NODE_URL
-from ..db import db
 
 
 def register_node(node):
@@ -26,24 +25,6 @@ def register_node(node):
             'token': res['token']
         }
         node.update_nodeinfo(info)
-        result = db.nodes.find_one({
-            'address': node.account['addr']
-        })
-        if result is None:
-            _ = db.nodes.insert_one({
-                'address': node.account['addr'],
-                'location': node.location,
-                'net_speed': node.net_speed
-            })
-        else:
-            _ = db.nodes.find_one_and_update({
-                'address': node.account['addr']
-            }, {
-                '$set': {
-                    'location': node.location,
-                    'net_speed': node.net_speed
-                }
-            })
         return True
     return False
 
@@ -127,16 +108,3 @@ def deregister_node(node):
         return True
     return False
 
-
-def get_amount(node, amount, unit):
-    body = {
-        'account_addr': node.account['addr'],
-        'unit': unit,
-        'amount': amount
-    }
-    url = urljoin(MASTER_NODE_URL, 'dev/transfer-amount')
-    res = requests.post(url, json=body)
-
-    if res.status_code == 200 and res.ok:
-        return True
-    return False

@@ -87,6 +87,8 @@ if __name__ == "__main__":
                     openvpn.revoke(client_name)
                     connections = openvpn.get_connections(
                         client_name=client_name)
+                    openvpn.stop()
+                    openvpn.start()
                     result = db.clients.find_one({
                         'name': client_name
                     }, {

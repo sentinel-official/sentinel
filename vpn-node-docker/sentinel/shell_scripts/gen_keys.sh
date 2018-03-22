@@ -6,6 +6,7 @@ cd $ERSA_DIR && \
 ./easyrsa build-client-full client$1 nopass && \
 
 cd pki && \
+chmod 755 crl.pem && \
 cp *.crt *.key *.pem private/*.key issued/*.crt reqs/*.req $KEYS && \
 
 cat /etc/openvpn/client.conf > $OVPN && \

@@ -36,7 +36,8 @@ class UpdateConnections(object):
                 else:
                     _ = db.connections.find_one_and_update({
                         'account_addr': account_addr,
-                        'session_name': info['session_name']
+                        'session_name': info['session_name'],
+                        'end_time': None
                     }, {
                         '$set': {
                             'usage': info['usage'],

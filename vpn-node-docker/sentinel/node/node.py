@@ -4,6 +4,7 @@ from urllib2 import urlopen
 from speedtest_cli import Speedtest
 
 from ..config import ACCOUNT_DATA_PATH
+from ..db import db
 
 
 class Node(object):
@@ -41,6 +42,27 @@ class Node(object):
 
             self.update_nodeinfo({'type': 'location'})
             self.update_nodeinfo({'type': 'netspeed'})
+            self.save_to_db()
+
+    def save_to_db(self):
+        node = db.nodes.find_one({
+            'address': self.account['addr']
+        })
+        if node is None:
+            _ = db.nodes.insert_one({
+                'address': self.account['addr'],
+                'location': self.location,
+                'net_speed': self.net_speed
+            })
+        else:
+            _ = db.nodes.find_one_and_update({
+                'address': self.account['addr']
+            }, {
+                '$set': {
+                    'location': self.location,
+                    'net_speed': self.net_speed
+                }
+            })
 
     def save_account_data(self):
         data_file = open(ACCOUNT_DATA_PATH, 'w')

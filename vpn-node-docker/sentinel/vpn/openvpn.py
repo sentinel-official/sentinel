@@ -34,7 +34,8 @@ class OpenVPN(object):
 
     def revoke(self, client_name):
         cmd = 'cd /usr/share/easy-rsa && echo yes | ./easyrsa revoke ' + \
-              client_name + ' && ./easyrsa gen-crl'
+              client_name + ' && ./easyrsa gen-crl && ' + \
+              'chmod 755 pki/crl.pem && cp pki/crl.pem /etc/openvpn/keys'
         revoke_proc = subprocess.Popen(cmd, shell=True)
         revoke_proc.wait()
         return revoke_proc.returncode

@@ -327,7 +327,8 @@ class Header extends Component {
                     }}
                   >
                     {this.state.vpnList.map((vpn) =>
-                      <MenuItem value={vpn.account_addr} primaryText={vpn.location.city} />
+                      <MenuItem value={vpn.account_addr} 
+                      primaryText={`City:${vpn.location.city}, Speed:${(vpn.net_speed.download/ (1024 * 1024)).toFixed(2) + ' Mbps'}, Latency:${vpn.latency ? vpn.latency : 'None'}`} />
                     )}
                   </SelectField>
                   :

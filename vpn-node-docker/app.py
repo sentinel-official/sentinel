@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import sys
 import time
-from os import path, environ
+from os import path
 from thread import start_new_thread
 
 from sentinel.config import ACCOUNT_DATA_PATH
@@ -20,11 +20,11 @@ def tasks():
         try:
             vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
             if vpn_status_file is True:
-                connections = openvpn.get_connections()
-                connections_len = len(connections)
+                _connections = openvpn.get_connections()
+                connections_len = len(_connections)
                 if connections_len > 0:
                     send_connections_info(
-                        node.account['addr'], node.account['token'], connections)
+                        node.account['addr'], node.account['token'], _connections)
 
             send_nodeinfo(node, {
                 'type': 'alive'
@@ -35,6 +35,7 @@ def tasks():
 
 
 if __name__ == "__main__":
+    node = None
     argv_len = len(sys.argv)
     if path.exists(ACCOUNT_DATA_PATH) is True:
         node = Node(resume=True)

@@ -11,14 +11,6 @@ from ..vpn import Keys
 
 class GenerateOVPN(object):
     def on_post(self, req, res):
-        """
-        @api {post} /master/sendToken Generate OVPN for Client .
-        @apiName GenerateOVPN
-        @apiGroup VPN
-        @apiParam {String} account_addr Account address.
-        @apiParam {String} token Token of Client
-        @apiSuccess {Object[]} Status of the request.
-        """
         account_addr = str(req.body['account_addr'])
         vpn_addr = str(req.body['vpn_addr'])
         token = str(req.body['token'])

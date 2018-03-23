@@ -12,3 +12,5 @@ from .sessions_stats import GetActiveSessionCount
 from .node_stats import GetDailyNodeCount
 from .node_stats import GetActiveNodeCount
 from .data_stats import GetDailyDataCount
+from .time_stats import GetDailyDurationCount
+from .time_stats import GetAverageDuration

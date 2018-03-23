@@ -2,6 +2,7 @@
 import json
 
 import falcon
+from falcon_cors import CORS
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
@@ -39,7 +40,8 @@ class Up(object):
         resp.body = json.dumps({'status': 'UP'})
 
 
-app = falcon.API(middleware=[JSONTranslator()])
+cors = CORS(allow_all_origins=True)
+app = falcon.API(middleware=[cors.middleware, JSONTranslator()])
 app.add_route('/', Up())
 
 # Clients

@@ -27,7 +27,8 @@ class UpdateConnections(object):
             tx_hashes = []
             for info in connections:
                 info['account_addr'] = account_addr
-                info['client_addr'] = info['client_addr'].lower()
+                if 'client_addr' in info:
+                    info['client_addr'] = info['client_addr'].lower()
                 connection = db.connections.find_one({
                     'account_addr': account_addr,
                     'session_name': info['session_name']

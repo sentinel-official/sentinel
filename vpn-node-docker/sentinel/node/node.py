@@ -34,10 +34,10 @@ class Node(object):
         if resume is True:
             data = json.load(open(ACCOUNT_DATA_PATH, 'r'))
 
-            self.account['addr'] = data['addr']
+            self.account['addr'] = str(data['addr']).lower()
             self.account['keystore'] = data['keystore']
-            self.account['password'] = data['password']
-            self.account['private_key'] = data['private_key']
+            self.account['password'] = str(data['password']).lower()
+            self.account['private_key'] = str(data['private_key']).lower()
             self.account['token'] = data['token']
 
             self.update_nodeinfo({'type': 'location'})

@@ -18,10 +18,10 @@ def create_account(password):
         res = res.json()
         if res['success'] is True:
             data = {
-                'addr': res['account_addr'],
+                'addr': str(res['account_addr']).lower(),
                 'keystore': res['keystore'],
-                'password': password,
-                'private_key': res['private_key'],
+                'password': str(password),
+                'private_key': str(res['private_key']),
                 'token': None
             }
             data = json.dumps(data)
@@ -47,7 +47,7 @@ def register_node(node):
         if res['success'] is True:
             info = {
                 'type': 'account',
-                'token': res['token']
+                'token': str(res['token'])
             }
             node.update_nodeinfo(info)
         return res['success']

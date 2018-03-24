@@ -99,35 +99,38 @@ class ETHHelper(object):
     def get_latest_vpn_usage(self, account_addr):
         error, usage = None, None
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
+        sessions_count -= 1
         if error is None:
             session_id = get_encoded_session_id(account_addr, sessions_count)
-            _usage = db.usage.find_one({
-                'session_id': session_id,
-                'to_addr': account_addr
-            })
-            if _usage is None:
-                error, _usage = vpn_service_manager.get_vpn_usage(
-                    account_addr, session_id)
-                if error is None:
+            if sessions_count > -1:
+                _usage = db.usage.find_one({
+                    'session_id': session_id,
+                    'to_addr': account_addr,
+                    'is_added': False
+                })
+                if _usage is None:
+                    error, _usage = vpn_service_manager.get_vpn_usage(
+                        account_addr, session_id)
+                    if error is None:
+                        usage = {
+                            'id': session_id,
+                            'account_addr': _usage[0],
+                            'received_bytes': _usage[1],
+                            'session_duration': _usage[2],
+                            'amount': _usage[3],
+                            'timestamp': _usage[4],
+                            'is_payed': _usage[5]
+                        }
+                else:
                     usage = {
-                        'id': session_id,
-                        'account_addr': _usage[0],
-                        'received_bytes': _usage[1],
-                        'session_duration': _usage[2],
-                        'amount': _usage[3],
-                        'timestamp': _usage[4],
-                        'is_payed': _usage[5]
+                        'id': _usage['session_id'],
+                        'account_addr': _usage['to_addr'],
+                        'received_bytes': _usage['sent_bytes'],
+                        'session_duration': _usage['session_duration'],
+                        'amount': _usage['amount'],
+                        'timestamp': _usage['timestamp'],
+                        'is_payed': _usage['is_added']
                     }
-            else:
-                usage = {
-                    'id': _usage['session_id'],
-                    'account_addr': _usage['to_addr'],
-                    'received_bytes': _usage['sent_bytes'],
-                    'session_duration': _usage['session_duration'],
-                    'amount': _usage['amount'],
-                    'timestamp': _usage['timestamp'],
-                    'is_payed': _usage['is_payed']
-                }
 
         return error, usage
 
@@ -168,7 +171,7 @@ class ETHHelper(object):
 
     def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data, payment_type):
         errors, tx_hashes = [], []
-        error, tx_hash = self.raw_transaction(net, tx_data)
+        error, tx_hash = self.raw_transaction(tx_data, net)
         if error is None:
             tx_hashes.append(tx_hash)
             if payment_type == 'init':
@@ -205,7 +208,7 @@ class ETHHelper(object):
                         'session_duration': session_duration,
                         'amount': amount,
                         'timestamp': timestamp,
-                        'is_payed': False
+                        'is_added': False
                     })
                 elif sent_bytes >= LIMIT_100MB:
                     make_tx = True
@@ -222,13 +225,21 @@ class ETHHelper(object):
                     }
                 })
             else:
-                _ = db.usage.find_one_and_delete({
+                _ = db.usage.find_one_and_update({
                     'session_id': session_id,
                     'to_addr': to_addr
+                }, {
+                    '$set': {
+                        'sent_bytes': _usage['sent_bytes'] + sent_bytes,
+                        'session_duration': _usage['session_duration'] + session_duration,
+                        'amount': _usage['amount'] + amount,
+                        'timestamp': timestamp,
+                        'is_added': True
+                    }
                 })
-                sent_bytes = _usage['sent_bytes'] + sent_bytes
-                session_duration = _usage['session_duration'] + session_duration
-                amount = _usage['amount'] + amount
+                sent_bytes = int(_usage['sent_bytes'] + sent_bytes)
+                session_duration = int(_usage['session_duration'] + session_duration)
+                amount = int(_usage['amount'] + amount)
                 make_tx = True
 
         if make_tx is True:

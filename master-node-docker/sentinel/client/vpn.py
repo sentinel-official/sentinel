@@ -59,7 +59,7 @@ class GetVpnCredentials(object):
         if balances['rinkeby']['sents'] >= 100:
             error, usage = eth_helper.get_latest_vpn_usage(account_addr)
             if error is None:
-                due_amount = 0 if usage['is_payed'] is True else usage['amount']
+                due_amount = usage['amount'] if ((usage is not None) and usage['is_payed'] is False) else 0
                 if (due_amount > 0) and (usage['received_bytes'] < LIMIT_100MB):
                     vpn_addr = usage['account_addr'].lower()
 

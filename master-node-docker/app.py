@@ -13,7 +13,6 @@ from sentinel.client import PayVpnUsage
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.dev import GetFreeAmount
-from sentinel.node import AddVpnUsage
 from sentinel.node import DeRegisterNode
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
@@ -57,7 +56,6 @@ app.add_route('/node', Up())
 app.add_route('/node/account', CreateNewAccount())
 app.add_route('/node/register', RegisterNode())
 app.add_route('/node/update-nodeinfo', UpdateNodeInfo())
-app.add_route('/node/add-usage', AddVpnUsage())
 app.add_route('/node/deregister', DeRegisterNode())
 app.add_route('/node/update-connections', UpdateConnections())
 

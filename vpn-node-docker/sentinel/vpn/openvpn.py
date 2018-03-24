@@ -48,7 +48,7 @@ class OpenVPN(object):
             line_arr = line.split(',')
             if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
                 connection = {
-                    'session_name': line_arr[0],
+                    'session_name': str(line_arr[0]),
                     'usage': {
                         'up': int(line_arr[2]),
                         'down': int(line_arr[3])

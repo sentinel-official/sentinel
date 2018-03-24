@@ -401,7 +401,6 @@ export const getVPNList = (cb) => {
 
 export function connectVPN(account_addr, vpn_addr, cb) {
   CONNECTED = false;
-  console.log(remote.process.platform);
   if (remote.process.platform === 'darwin') {
     exec("if which openvpn > /dev/null;then echo 'true' ; else echo 'false'; fi",
       function (err, stdout, stderr) {
@@ -479,20 +478,6 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               var count = 0;
               if (remote.process.platform === 'darwin') checkVPNConnection();
               else if (remote.process.platform === 'win32') checkWindows();
-              // {
-              //   setTimeout(function () {
-              //     exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
-              //       if (stdout.toString() === '') {
-              //         cb({ message: 'Something went wrong.Please Try Again' }, false, false, false)
-              //       }
-              //       else {
-              //         CONNECTED = true;
-              //         cb(null, false, false, false);
-              //       }
-              //     })
-              //   }, 20000);
-
-              // }
               else {
                 setTimeout(function () {
                   getVPNPIDs(function (err, pids) {
@@ -661,6 +646,7 @@ export function getVPNdetails(cb) {
     speed: SPEED
   }
   if (CONNECTED) {
+    console.log('data...', data)
     cb(true, data);
   }
   else {

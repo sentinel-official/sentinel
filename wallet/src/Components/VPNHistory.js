@@ -31,7 +31,13 @@ class VPNHistory extends Component {
     };
 
     showText = (divID) => {
-        document.getElementById(divID).style.display = 'inline';
+        console.log("Display...", document.getElementById(divID).style.display);
+        if (document.getElementById(divID).style.display === 'none') {
+            document.getElementById(divID).style.display = 'inline';
+        }
+        else {
+            document.getElementById(divID).style.display = 'none';
+        }
     }
 
     getVpnHistory() {
@@ -42,6 +48,7 @@ class VPNHistory extends Component {
                     sendError(err)
                 }
                 else {
+                    console.log('Session Data..', history)
                     that.setState({ vpnUsage: history })
                 }
             })
@@ -68,8 +75,6 @@ class VPNHistory extends Component {
                 if (transactionDetails === undefined) {
                     that.setState({ openSnack: true, snackMessage: 'No transaction found with that transaction Id' })
                 } else {
-                    console.log('Transaction..', transactionDetails);
-                    console.log('Session Data..', sessionData)
                     var transacToAddr = '0x' + transactionDetails.topics[2].substring(26);
                     var transacFrom = '0x' + transactionDetails.topics[1].substring(26);
                     console.log("Trans..", transacFrom, transacToAddr);
@@ -115,7 +120,7 @@ class VPNHistory extends Component {
                         <Card>
                             <CardText>
                                 <span style={{ fontWeight: 600 }}>Session ID: </span>{sessionData.id}
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>VPN address: </span>{sessionData.account_addr}
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>VPN address: </span>{sessionData.account_addr} 
                                 <CopyToClipboard text={sessionData.account_addr}
                                     onCopy={() => that.setState({
                                         snackMessage: 'Copied to Clipboard Successfully',
@@ -129,10 +134,11 @@ class VPNHistory extends Component {
                                 <ReactTooltip id="copyImage" place="bottom">
                                     <span>Copy</span>
                                 </ReactTooltip>
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Amount: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS<br />
-                                <span style={{ fontWeight: 600 }}>Duration: </span>{sessionData.duration} secs
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Bytes: </span>{parseInt(sessionData.received_bytes) / (1024 * 1024)} MB
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
+                                <br />
+                                <span style={{ fontWeight: 600 }}>Amount: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Duration: </span>{sessionData.session_duration} secs
+                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Bytes: </span>{parseInt(sessionData.received_bytes) / (1024 * 1024)} MB<br/>
+                                <span style={{ fontWeight: 600}}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>
                             {
                                 sessionData.is_payed ?
@@ -175,6 +181,7 @@ class VPNHistory extends Component {
                                                 >
                                                     <Send />
                                                 </IconButton>
+
                                             </span>
                                         </div>
                                     </span>

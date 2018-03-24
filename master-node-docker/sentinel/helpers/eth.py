@@ -1,5 +1,6 @@
 # coding=utf-8
 from hashlib import md5
+
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
 from ..config import LIMIT
@@ -184,7 +185,7 @@ class ETHHelper(object):
         return errors, tx_hashes
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp):
-        error, tx_hash, make_tx = None, None, False
+        error, tx_hash, make_tx, session_id = None, None, False, None
         error, sessions_count = self.get_vpn_sessions_count(from_addr)
         if error is None:
             session_id = get_encoded_session_id(sessions_count)
@@ -225,7 +226,7 @@ class ETHHelper(object):
                 })
                 sent_bytes = _usage['sent_bytes'] + sent_bytes
                 session_duration = _usage['session_duration'] + \
-                    session_duration
+                                   session_duration
                 amount = _usage['amount'] + amount
                 make_tx = True
 

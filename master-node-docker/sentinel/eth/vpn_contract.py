@@ -39,8 +39,9 @@ class VpnServiceManager(object):
                              startgas=1000000,
                              to=VPNSERVICE_ADDRESS,
                              value=0,
-                             data=rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='setInitialPaymentOf',
-                                                                                      args=[account_addr, is_payed])))
+                             data=rinkeby.web3.toBytes(
+                                 hexstr=self.contract.encodeABI(fn_name='setInitialPaymentStatusOf',
+                                                                args=[account_addr, is_payed])))
             tx.sign(COINBASE_PRIVATE_KEY)
             raw_tx = rinkeby.web3.toHex(rlp.encode(tx))
             tx_hash = rinkeby.web3.eth.sendRawTransaction(raw_tx)
@@ -68,7 +69,7 @@ class VpnServiceManager(object):
                 'from': account_addr,
                 'to': VPNSERVICE_ADDRESS,
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
-                    hexstr=self.contract.encodeABI(fn_name='getInitialPaymentOf', args=[account_addr])))
+                    hexstr=self.contract.encodeABI(fn_name='getInitialPaymentStatusOf', args=[account_addr])))
             }
             is_payed = rinkeby.web3.toInt(
                 hexstr=rinkeby.web3.eth.call(caller_object))

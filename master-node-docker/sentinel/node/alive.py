@@ -17,7 +17,7 @@ class UpdateNodesStatus(object):
                 break
             min_time = int(time.time()) - self.max_secs
             _ = db.nodes.update_many({
-                'vpn.last_ping': {
+                'vpn.ping_on': {
                     '$lt': min_time
                 }
             }, {

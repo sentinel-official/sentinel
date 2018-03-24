@@ -60,6 +60,10 @@ class Header extends Component {
     })
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({ status: nextProps.status, testDisabled: nextProps.testDisabled })
+  }
+
   _connectVPN = () => {
     this.setState({ showPopUp: false, statusSnack: true, testDisabled: true, statusMessage: 'Connecting...Please Wait' })
     let that = this;
@@ -117,13 +121,14 @@ class Header extends Component {
     if (this.state.isTest) {
       if (isOnline()) {
         if (toggle) {
-          let that = this;
-          getVPNList(function (err, data) {
-            if (err) console.log('Error', err);
-            else {
-              that.setState({ vpnList: data, showPopUp: true });
-            }
-          })
+          // let that = this;
+          // getVPNList(function (err, data) {
+          //   if (err) console.log('Error', err);
+          //   else {
+          //     that.setState({ vpnList: data, showPopUp: true });
+          //   }
+          // })
+          this.props.moveToList();
         }
         else {
           this._disconnectVPN();
@@ -290,11 +295,11 @@ class Header extends Component {
                 </Col>
                 <Col>
                   <Toggle
-                    thumbStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
-                    trackStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
                     toggled={this.state.status}
                     onToggle={this.handleToggle}
                     style={{ marginTop: 8, marginLeft: 20 }}
+                    thumbStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                    trackStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
                   />
                 </Col>
               </Col>
@@ -323,12 +328,13 @@ class Header extends Component {
                     value={this.state.selectedVPN}
                     autoWidth={true}
                     onChange={(event, index, value) => {
+                      console.log("Value...", value);
                       this.setState({ selectedVPN: value })
                     }}
                   >
                     {this.state.vpnList.map((vpn) =>
-                      <MenuItem value={vpn.account_addr} 
-                      primaryText={`City:${vpn.location.city}, Speed:${(vpn.net_speed.download/ (1024 * 1024)).toFixed(2) + ' Mbps'}, Latency:${vpn.latency ? vpn.latency : 'None'}`} />
+                      <MenuItem value={vpn.account_addr}
+                        primaryText={`City:${vpn.location.city}, Speed:${(vpn.net_speed.download / (1024 * 1024)).toFixed(2) + ' Mbps'}, Latency:${vpn.latency ? vpn.latency : 'None'}`} />
                     )}
                   </SelectField>
                   :

@@ -2,6 +2,7 @@
 import json
 
 import falcon
+from falcon_cors import CORS
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
@@ -23,6 +24,9 @@ from sentinel.node import GetActiveSessionCount
 from sentinel.node import GetDailyNodeCount
 from sentinel.node import GetActiveNodeCount
 from sentinel.node import GetDailyDataCount
+from sentinel.node import GetTotalDataCount
+from sentinel.node import GetDailyDurationCount
+from sentinel.node import GetAverageDuration
 from sentinel.utils import JSONTranslator
 
 
@@ -36,7 +40,8 @@ class Up(object):
         resp.body = json.dumps({'status': 'UP'})
 
 
-app = falcon.API(middleware=[JSONTranslator()])
+cors = CORS(allow_all_origins=True)
+app = falcon.API(middleware=[cors.middleware, JSONTranslator()])
 app.add_route('/', Up())
 
 # Clients
@@ -68,6 +73,10 @@ app.add_route('/stats/sessions/active-count',GetActiveSessionCount())
 app.add_route('/stats/nodes/daily-stats',GetDailyNodeCount())
 app.add_route('/stats/nodes/active-count',GetActiveNodeCount())
 app.add_route('/stats/data/daily-stats',GetDailyDataCount())
+app.add_route('/stats/data/total-data',GetTotalDataCount())
+app.add_route('/stats/time/daily-stats',GetDailyDurationCount())
+app.add_route('/stats/time/average-duration',GetAverageDuration())
+
 
 update_nodes_status = UpdateNodesStatus(max_secs=120)
 update_nodes_status.start()

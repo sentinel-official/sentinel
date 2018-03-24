@@ -47,3 +47,15 @@ class GetDailyDataCount(object):
         message = {'success': True, 'stats': daily_count}
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
+
+class GetTotalDataCount(object):
+    def on_get(self,req,resp):
+        total_count=[]
+        result=db.connections.aggregate([{"$group":{"_id":None,"Total":{"$sum":"$usage.down"}}}])
+        for doc in result:
+            total_count.append(doc)
+
+        message = {'success': True, 'stats': total_count}
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)

@@ -10,6 +10,17 @@ from ..db import db
 class GetDailyDataCount(object):
     def on_get(self, req, resp):
         daily_count = []
+        output = db.connections.find({
+            'usage': {
+                '$exists': True
+            }
+        })
+        for data in output:
+            if (type(data['usage']['up']) is not int) or (type(data['usage']['down']) is not int):
+                data['usage']['up'] = int(data['usage']['up'])
+                data['usage']['down'] = int(data['usage']['down'])
+                db.connections.save(data)
+
         result = db.connections.aggregate([{
             '$project': {
                 'total': {
@@ -80,7 +91,7 @@ class GetDailyNodeCount(object):
                 'total': {
                     '$add': [
                         datetime.datetime(1970, 1, 1), {
-                            '$multiply': ['$created_at', 1000]
+                            '$multiply': ['$joined_on', 1000]
                         }
                     ]
                 }

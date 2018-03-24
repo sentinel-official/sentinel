@@ -10,8 +10,8 @@ from ..logs import logger
 
 class UpdateNodeInfo(object):
     def on_post(self, req, resp):
-        token = req.body['token']
-        account_addr = req.body['account_addr']
+        token = str(req.body['token'])
+        account_addr = str(req.body['account_addr']).lower()
         info = req.body['info']
 
         node = None
@@ -37,26 +37,26 @@ class UpdateNodeInfo(object):
                 }
             })
         elif info['type'] == 'vpn':
-            init_time = int(time.time())
+            init_on = int(time.time())
             node = db.nodes.find_one_and_update({
                 'account_addr': account_addr,
                 'token': token
             }, {
                 '$set': {
                     'vpn.status': 'up',
-                    'vpn.init_time': init_time,
-                    'vpn.last_ping': init_time
+                    'vpn.init_on': init_on,
+                    'vpn.ping_on': init_on
                 }
             })
         elif info['type'] == 'alive':
-            last_ping = int(time.time())
+            ping_on = int(time.time())
             node = db.nodes.find_one_and_update({
                 'account_addr': account_addr,
                 'token': token
             }, {
                 '$set': {
                     'vpn.status': 'up',
-                    'vpn.last_ping': last_ping
+                    'vpn.ping_on': ping_on
                 }
             })
 

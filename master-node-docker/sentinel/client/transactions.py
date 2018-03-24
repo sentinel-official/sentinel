@@ -18,7 +18,7 @@ class RawTransaction(object):
         @apiSuccess {String} tx_hash Transaction hash.
         """
         tx_data = str(req.body['tx_data'])
-        net = str(req.body['net'])
+        net = str(req.body['net']).lower()
         error, tx_hash = eth_helper.raw_transaction(tx_data, net)
 
         if error is None:

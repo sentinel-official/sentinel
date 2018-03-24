@@ -23,13 +23,13 @@ def get_latency(url):
 
 class RegisterNode(object):
     def on_post(self, req, resp):
-        account_addr = req.body['account_addr']
-        ip = req.body['ip']
+        account_addr = str(req.body['account_addr']).lower()
+        ip = str(req.body['ip'])
         location = req.body['location']
         net_speed = req.body['net_speed']
         token = uuid4().hex
         latency = get_latency(ip)
-        registered_on = int(time.time())
+        joined_on = int(time.time())
 
         node = db.nodes.find_one({
             'account_addr': account_addr
@@ -40,7 +40,7 @@ class RegisterNode(object):
                 'token': token,
                 'ip': ip,
                 'latency': latency,
-                'registered_on': registered_on,
+                'joined_on': joined_on,
                 'location': location,
                 'net_speed': net_speed
             })
@@ -67,7 +67,7 @@ class RegisterNode(object):
 
 class DeRegisterNode(object):
     def on_post(self, req, resp):
-        account_addr = req.body['account_addr']
+        account_addr = str(req.body['account_addr']).lower()
         token = req.body['token']
 
         node = db.nodes.find_one_and_delete({

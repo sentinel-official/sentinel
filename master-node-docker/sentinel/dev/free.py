@@ -25,7 +25,7 @@ def insert_free(to_addr):
 
 class GetFreeAmount(object):
     def on_post(self, req, resp):
-        account_addr = str(req.body['account_addr'])
+        account_addr = str(req.body['account_addr']).lower()
         eths = int(0.25 * (10 ** 18))
         sents = int(1000 * (DECIMALS * 1.0))
 

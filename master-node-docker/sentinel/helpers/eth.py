@@ -3,8 +3,8 @@ from hashlib import md5
 
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
-from ..config import LIMIT_10MB
 from ..config import LIMIT_100MB
+from ..config import LIMIT_10MB
 from ..config import SESSIONS_SALT
 from ..db import db
 from ..eth import mainnet

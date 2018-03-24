@@ -16,7 +16,7 @@ def calculate_amount(used_bytes):
 class UpdateConnections(object):
     def on_post(self, req, resp):
         token = str(req.body['token'])
-        account_addr = str(req.body['account_addr'])
+        account_addr = str(req.body['account_addr']).lower()
         connections = req.body['connections']
 
         node = db.nodes.find_one({
@@ -27,6 +27,7 @@ class UpdateConnections(object):
             tx_hashes = []
             for info in connections:
                 info['account_addr'] = account_addr
+                info['client_addr'] = info['client_addr'].lower()
                 connection = db.connections.find_one({
                     'account_addr': account_addr,
                     'session_name': info['session_name']

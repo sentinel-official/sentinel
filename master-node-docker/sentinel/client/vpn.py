@@ -93,7 +93,7 @@ class GetVpnCredentials(object):
                                         'account_addr': account_addr,
                                         'token': token
                                     }
-                                    url = 'http://{}:{}/master/sendToken'.format(
+                                    url = 'http://{}:{}/token'.format(
                                         ip, port)
                                     _ = requests.post(
                                         url, json=body, timeout=10)

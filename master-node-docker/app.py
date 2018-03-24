@@ -15,18 +15,18 @@ from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.dev import GetFreeAmount
 from sentinel.node import DeRegisterNode
+from sentinel.node import GetActiveNodeCount
+from sentinel.node import GetActiveSessionCount
+from sentinel.node import GetAverageDuration
+from sentinel.node import GetDailyDataCount
+from sentinel.node import GetDailyDurationCount
+from sentinel.node import GetDailyNodeCount
+from sentinel.node import GetDailySessionCount
+from sentinel.node import GetTotalDataCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
 from sentinel.node import UpdateNodesStatus
-from sentinel.node import GetDailySessionCount
-from sentinel.node import GetActiveSessionCount
-from sentinel.node import GetDailyNodeCount
-from sentinel.node import GetActiveNodeCount
-from sentinel.node import GetDailyDataCount
-from sentinel.node import GetTotalDataCount
-from sentinel.node import GetDailyDurationCount
-from sentinel.node import GetAverageDuration
 from sentinel.utils import JSONTranslator
 
 
@@ -64,19 +64,18 @@ app.add_route('/node/update-nodeinfo', UpdateNodeInfo())
 app.add_route('/node/deregister', DeRegisterNode())
 app.add_route('/node/update-connections', UpdateConnections())
 
+# Stats
+app.add_route('/stats/sessions/daily-stats', GetDailySessionCount())
+app.add_route('/stats/sessions/active-count', GetActiveSessionCount())
+app.add_route('/stats/nodes/daily-stats', GetDailyNodeCount())
+app.add_route('/stats/nodes/active-count', GetActiveNodeCount())
+app.add_route('/stats/data/daily-stats', GetDailyDataCount())
+app.add_route('/stats/data/total-data', GetTotalDataCount())
+app.add_route('/stats/time/daily-stats', GetDailyDurationCount())
+app.add_route('/stats/time/average-duration', GetAverageDuration())
+
 # DEV
 app.add_route('/dev/free', GetFreeAmount())
-
-#STATS
-app.add_route('/stats/sessions/daily-stats',GetDailySessionCount())
-app.add_route('/stats/sessions/active-count',GetActiveSessionCount())
-app.add_route('/stats/nodes/daily-stats',GetDailyNodeCount())
-app.add_route('/stats/nodes/active-count',GetActiveNodeCount())
-app.add_route('/stats/data/daily-stats',GetDailyDataCount())
-app.add_route('/stats/data/total-data',GetTotalDataCount())
-app.add_route('/stats/time/daily-stats',GetDailyDurationCount())
-app.add_route('/stats/time/average-duration',GetAverageDuration())
-
 
 update_nodes_status = UpdateNodesStatus(max_secs=120)
 update_nodes_status.start()

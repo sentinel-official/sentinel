@@ -21,7 +21,7 @@ def get_vpns_list():
         'account_addr': 1,
         'location': 1,
         'net_speed.upload': 1,
-        'latency':1,
+        'latency': 1,
         'net_speed.download': 1
     })
     return list(_list)

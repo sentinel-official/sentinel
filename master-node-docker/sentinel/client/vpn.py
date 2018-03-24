@@ -6,7 +6,7 @@ import falcon
 import requests
 
 from ..config import DECIMALS
-from ..config import LIMIT
+from ..config import LIMIT_100MB
 from ..db import db
 from ..eth import vpn_service_manager
 from ..helpers import eth_helper
@@ -51,8 +51,8 @@ class GetVpnCredentials(object):
         @apiSuccess {String} port Port number of the VPN server.
         @apiSuccess {String} token Unique token for validation.
         """
-        account_addr = str(req.body['account_addr'])
-        vpn_addr = str(req.body['vpn_addr'])
+        account_addr = str(req.body['account_addr']).lower()
+        vpn_addr = str(req.body['vpn_addr']).lower()
 
         balances = eth_helper.get_balances(account_addr)
 
@@ -60,10 +60,10 @@ class GetVpnCredentials(object):
             error, usage = eth_helper.get_latest_vpn_usage(account_addr)
             if error is None:
                 due_amount = 0 if usage['is_payed'] is True else usage['amount']
-                if (due_amount > 0) and (usage['received_bytes'] < LIMIT):
-                    vpn_addr = usage['account_addr']
+                if (due_amount > 0) and (usage['received_bytes'] < LIMIT_100MB):
+                    vpn_addr = usage['account_addr'].lower()
 
-                if (due_amount > 0) and (usage['received_bytes'] >= LIMIT):
+                if (due_amount > 0) and (usage['received_bytes'] >= LIMIT_100MB):
                     message = {
                         'success': False,
                         'message': 'You have due amount: ' + str(
@@ -114,7 +114,7 @@ class GetVpnCredentials(object):
                                 message = {
                                     'success': False,
                                     'account_addr': vpn_addr,
-                                    'message': 'Initial payment status is empty.'
+                                    'message': 'Initial VPN payment is not done.'
                                 }
                         else:
                             message = {
@@ -149,14 +149,14 @@ class PayVpnUsage(object):
         @apiSuccess {String[]} errors Errors if any.
         @apiSuccess {String[]} tx_hashes Transaction hashes.
         """
-        payment_type = str(req.body['payment_type'])  # normal OR init
+        payment_type = str(req.body['payment_type']).lower()  # init OR normal
         tx_data = str(req.body['tx_data'])
-        net = str(req.body['net'])
-        from_addr = str(req.body['from_addr'])
+        net = str(req.body['net']).lower()
+        from_addr = str(req.body['from_addr']).lower()
         amount = float(
             req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
-        session_id = int(req.body['session_id']
-                         ) if 'session_id' in req.body and req.body['session_id'] is not None else None
+        session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
+            'session_id'] is not None else None
 
         amount = int(amount * (DECIMALS * 1.0))
 
@@ -187,9 +187,9 @@ class PayVpnUsage(object):
 
 class ReportPayment(object):
     def on_post(self, req, resp):
-        from_addr = str(req.body['from_addr'])
+        from_addr = str(req.body['from_addr']).lower()
         amount = int(req.body['amount'])
-        session_id = int(req.body['session_id'])
+        session_id = str(req.body['session_id'])
 
         error, tx_hash = vpn_service_manager.pay_vpn_session(
             from_addr, amount, session_id)
@@ -224,7 +224,7 @@ class GetVpnUsage(object):
         @apiParam {String} account_addr Account address.
         @apiSuccess {Object[]} usage VPN usage details.
         """
-        account_addr = str(req.body['account_addr'])
+        account_addr = str(req.body['account_addr']).lower()
 
         error, usage = eth_helper.get_vpn_usage(account_addr)
 
@@ -275,7 +275,7 @@ class GetVpnCurrentUsage(object):
         @apiParam {String} session_name Session name of the VPN connection.
         @apiSuccess {Object} usage Current VPN usage.
         """
-        account_addr = str(req.body['account_addr'])
+        account_addr = str(req.body['account_addr']).lower()
         session_name = str(req.body['session_name'])
 
         usage = get_current_vpn_usage(account_addr, session_name)

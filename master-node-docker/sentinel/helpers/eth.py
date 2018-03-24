@@ -3,7 +3,8 @@ from hashlib import md5
 
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
-from ..config import LIMIT
+from ..config import LIMIT_10MB
+from ..config import LIMIT_100MB
 from ..config import SESSIONS_SALT
 from ..db import db
 from ..eth import mainnet
@@ -195,7 +196,7 @@ class ETHHelper(object):
                 'to_addr': to_addr
             })
             if _usage is None:
-                if sent_bytes < LIMIT:
+                if (sent_bytes > LIMIT_10MB) and (sent_bytes < LIMIT_100MB):
                     _ = db.usage.insert_one({
                         'session_id': session_id,
                         'from_addr': from_addr,
@@ -206,9 +207,9 @@ class ETHHelper(object):
                         'timestamp': timestamp,
                         'is_payed': False
                     })
-                else:
+                elif sent_bytes >= LIMIT_100MB:
                     make_tx = True
-            elif (_usage['sent_bytes'] + sent_bytes) < LIMIT:
+            elif (_usage['sent_bytes'] + sent_bytes) < LIMIT_100MB:
                 _ = db.usage.find_one_and_update({
                     'session_id': session_id,
                     'to_addr': to_addr

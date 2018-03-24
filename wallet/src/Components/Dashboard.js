@@ -30,7 +30,8 @@ class Dashboard extends Component {
       amount: '',
       unit: 'ETH',
       isTest: false,
-      sessionId: null
+      sessionId: null,
+      testDisabled: false
     }
     this.set = this.props.set;
   }
@@ -70,6 +71,7 @@ class Dashboard extends Component {
   getVPNapi = () => {
     var that = this;
     getVPNdetails(function (status, data) {
+      console.log("Data...", data, status)
       that.setState({ status: status, vpnData: data });
     })
   }
@@ -125,11 +127,20 @@ class Dashboard extends Component {
     })
   }
 
+  moveToVPN = () => {
+    console.log("jdkjdkj")
+    this.setState({ value: 'vpn' })
+  }
+
   onTestChange = (value) => {
     if (value === false && (this.state.value === 'vpn' || this.state.value === 'vpn_history'))
       this.setState({ isTest: value, value: 'send' })
     else
       this.setState({ isTest: value })
+  }
+
+  testDisable = (value) => {
+    this.setState({ testDisabled: value })
   }
 
   render() {
@@ -157,6 +168,9 @@ class Dashboard extends Component {
             ontestChange={this.onTestChange}
             local_address={this.state.local_address}
             vpnPayment={this.vpnPayment}
+            status={this.state.status}
+            testDisabled={this.state.testDisabled}
+            moveToList={this.moveToVPN}
           />
           <div>
             <Tabs
@@ -196,6 +210,9 @@ class Dashboard extends Component {
                   status={this.state.status}
                   vpnData={this.state.vpnData}
                   isTest={this.state.isTest}
+                  onChange={this.getVPNapi}
+                  vpnPayment={this.vpnPayment}
+                  changeTest={this.testDisable}
                 />
               </Tab>
               <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :

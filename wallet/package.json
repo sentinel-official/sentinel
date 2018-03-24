@@ -31,6 +31,7 @@
     "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-linux-x64/ --arch amd64 --config debian.json"
   },
   "devDependencies": {
+    "countrynames": "^0.1.1",
     "electron": "^1.8.3",
     "electron-winstaller": "^2.6.3",
     "electron-installer-debian": "^0.8.1",
@@ -48,6 +49,7 @@
     "react-simple-maps": "^0.11.2",
     "react-scripts": "1.1.1",
     "react-tooltip": "^3.4.0",
+    "react-world-flags": "0.0.3",
     "web3": "^0.20.6",
     "zfill": "0.0.2"
   }

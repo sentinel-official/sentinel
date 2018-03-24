@@ -4,7 +4,7 @@ from hashlib import md5
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
 from ..config import LIMIT
-from ..config import SESSION_SALT
+from ..config import SESSIONS_SALT
 from ..db import db
 from ..eth import mainnet
 from ..eth import rinkeby
@@ -13,9 +13,10 @@ from ..eth import sentinel_rinkeby
 from ..eth import vpn_service_manager
 
 
-def get_encoded_session_id(index):
+def get_encoded_session_id(account_addr, index):
+    account_addr = str(account_addr).lower().encode('utf-8')
     index = str(index).encode('utf-8')
-    session_id = md5(index + SESSION_SALT).hexdigest()
+    session_id = md5(account_addr + index + SESSIONS_SALT).hexdigest()
 
     return session_id
 
@@ -98,10 +99,10 @@ class ETHHelper(object):
         error, usage = None, None
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
         if error is None:
-            session_id = get_encoded_session_id(sessions_count)
+            session_id = get_encoded_session_id(account_addr, sessions_count)
             _usage = db.usage.find_one({
                 'session_id': session_id,
-                'from_addr': account_addr
+                'to_addr': account_addr
             })
             if _usage is None:
                 error, _usage = vpn_service_manager.get_vpn_usage(
@@ -143,7 +144,7 @@ class ETHHelper(object):
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
         if error is None:
             for index in range(0, sessions_count):
-                session_id = get_encoded_session_id(index)
+                session_id = get_encoded_session_id(account_addr, index)
                 error, _usage = vpn_service_manager.get_vpn_usage(
                     account_addr, session_id)
                 if error is None:
@@ -186,12 +187,12 @@ class ETHHelper(object):
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp):
         error, tx_hash, make_tx, session_id = None, None, False, None
-        error, sessions_count = self.get_vpn_sessions_count(from_addr)
+        error, sessions_count = self.get_vpn_sessions_count(to_addr)  # to_addr: client account address
         if error is None:
-            session_id = get_encoded_session_id(sessions_count)
+            session_id = get_encoded_session_id(to_addr, sessions_count)
             _usage = db.usage.find_one({
                 'session_id': session_id,
-                'from_addr': from_addr
+                'to_addr': to_addr
             })
             if _usage is None:
                 if sent_bytes < LIMIT:
@@ -210,7 +211,7 @@ class ETHHelper(object):
             elif (_usage['sent_bytes'] + sent_bytes) < LIMIT:
                 _ = db.usage.find_one_and_update({
                     'session_id': session_id,
-                    'from_addr': from_addr
+                    'to_addr': to_addr
                 }, {
                     '$set': {
                         'sent_bytes': _usage['sent_bytes'] + sent_bytes,
@@ -222,11 +223,10 @@ class ETHHelper(object):
             else:
                 _ = db.usage.find_one_and_delete({
                     'session_id': session_id,
-                    'from_addr': from_addr
+                    'to_addr': to_addr
                 })
                 sent_bytes = _usage['sent_bytes'] + sent_bytes
-                session_duration = _usage['session_duration'] + \
-                                   session_duration
+                session_duration = _usage['session_duration'] + session_duration
                 amount = _usage['amount'] + amount
                 make_tx = True
 

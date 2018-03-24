@@ -14,7 +14,7 @@ def check_free(to_addr):
         'to_addr': to_addr
     })
 
-    return (False if tx is None else True)
+    return (tx is None) is False
 
 
 def insert_free(to_addr):

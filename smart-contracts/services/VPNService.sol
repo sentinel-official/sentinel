@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.21;
 
 contract Owned {
     address public owner;
@@ -56,14 +56,15 @@ contract VPNService is Owned {
                 authorizedUsers[_addr] = false;
         }
 
-    function setInitialPaymentOf(
+    function setInitialPaymentStatusOf(
         address _addr,
         bool _isPayed)
-            onlyOwner public {
+            public {
+                require(authorizedUsers[msg.sender] == true);
                 users[_addr].initialPayment = _isPayed;
         }
 
-    function getInitialPaymentOf(
+    function getInitialPaymentStatusOf(
         address _addr)
             public constant returns(bool) {
                 return users[_addr].initialPayment;
@@ -82,18 +83,28 @@ contract VPNService is Owned {
                 require(_receivedBytes > 0);
                 require(_sessionDuration > 0);
                 require(_amount > 0);
-                VpnUsage storage _vpnUsage = _vpnUsageTemplate;
 
-                _vpnUsage.addr = _from;
-                _vpnUsage.receivedBytes += _receivedBytes;
-                _vpnUsage.sessionDuration += _sessionDuration;
-                _vpnUsage.amount += _amount;
-                _vpnUsage.timestamp = _timestamp;
-                _vpnUsage.isPayed = false;
-
-                if(users[_to].vpnUsage[_sessionId].addr == 0x0)
+                if(users[_to].vpnUsage[_sessionId].addr == 0x0) {
+                    VpnUsage storage _vpnUsage = _vpnUsageTemplate;
+                    
+                    _vpnUsage.addr = _from;
+                    _vpnUsage.receivedBytes = _receivedBytes;
+                    _vpnUsage.sessionDuration = _sessionDuration;
+                    _vpnUsage.amount = _amount;
+                    _vpnUsage.timestamp = _timestamp;
+                    _vpnUsage.isPayed = false;
+                    
                     users[_to].sessionsCount += 1;
-                users[_to].vpnUsage[_sessionId] = _vpnUsage;
+                    users[_to].vpnUsage[_sessionId] = _vpnUsage;
+                } else {
+                    require(users[_to].vpnUsage[_sessionId].addr == _from);
+                    require(users[_to].vpnUsage[_sessionId].isPayed == false);
+                    
+                    users[_to].vpnUsage[_sessionId].receivedBytes += _receivedBytes;
+                    users[_to].vpnUsage[_sessionId].sessionDuration += _sessionDuration;
+                    users[_to].vpnUsage[_sessionId].amount += _amount;
+                    users[_to].vpnUsage[_sessionId].timestamp = _timestamp;
+                }
         }
 
     function payVpnSession(

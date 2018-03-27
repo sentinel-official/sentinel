@@ -141,7 +141,7 @@ class VPNHistory extends Component {
                                 <span style={{ fontWeight: 600}}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>
                             {
-                                sessionData.is_payed ?
+                                sessionData.is_paid ?
                                     <span>
                                         <Done style={{ float: 'right', marginTop: '-7%', marginRight: '1%' }}
                                             data-tip data-for="payed" color="green" />

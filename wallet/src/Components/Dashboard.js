@@ -71,7 +71,6 @@ class Dashboard extends Component {
   getVPNapi = () => {
     var that = this;
     getVPNdetails(function (status, data) {
-      console.log("Data...", data, status)
       that.setState({ status: status, vpnData: data });
     })
   }
@@ -128,7 +127,6 @@ class Dashboard extends Component {
   }
 
   moveToVPN = () => {
-    console.log("jdkjdkj")
     this.setState({ value: 'vpn' })
   }
 

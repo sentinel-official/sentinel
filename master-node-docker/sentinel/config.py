@@ -139,7 +139,7 @@ VPNSERVICE_ABI = [
      "payable": false, "stateMutability": "nonpayable", "type": "function"},
     {"constant": true, "inputs": [{"name": "", "type": "address"}], "name": "authorizedUsers",
      "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"},
-    {"constant": false, "inputs": [{"name": "_addr", "type": "address"}, {"name": "_isPayed", "type": "bool"}],
+    {"constant": false, "inputs": [{"name": "_addr", "type": "address"}, {"name": "_isPaid", "type": "bool"}],
      "name": "setInitialPaymentStatusOf", "outputs": [], "payable": false, "stateMutability": "nonpayable",
      "type": "function"},
     {"constant": false, "inputs": [{"name": "_addr", "type": "address"}], "name": "removeAuthorizedUser", "outputs": [],

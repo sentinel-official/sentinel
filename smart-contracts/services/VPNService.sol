@@ -39,7 +39,7 @@ contract VPNService is Owned {
         uint256 sessionDuration;
         uint256 amount;
         uint256 timestamp;
-        bool isPayed;
+        bool isPaid;
     }
 
     VpnUsage _vpnUsageTemplate;
@@ -58,10 +58,10 @@ contract VPNService is Owned {
 
     function setInitialPaymentStatusOf(
         address _addr,
-        bool _isPayed)
+        bool _isPaid)
             public {
                 require(authorizedUsers[msg.sender] == true);
-                users[_addr].initialPayment = _isPayed;
+                users[_addr].initialPayment = _isPaid;
         }
 
     function getInitialPaymentStatusOf(
@@ -92,13 +92,13 @@ contract VPNService is Owned {
                     _vpnUsage.sessionDuration = _sessionDuration;
                     _vpnUsage.amount = _amount;
                     _vpnUsage.timestamp = _timestamp;
-                    _vpnUsage.isPayed = false;
+                    _vpnUsage.isPaid = false;
                     
                     users[_to].sessionsCount += 1;
                     users[_to].vpnUsage[_sessionId] = _vpnUsage;
                 } else {
                     require(users[_to].vpnUsage[_sessionId].addr == _from);
-                    require(users[_to].vpnUsage[_sessionId].isPayed == false);
+                    require(users[_to].vpnUsage[_sessionId].isPaid == false);
                     
                     users[_to].vpnUsage[_sessionId].receivedBytes += _receivedBytes;
                     users[_to].vpnUsage[_sessionId].sessionDuration += _sessionDuration;
@@ -114,9 +114,9 @@ contract VPNService is Owned {
             public {
                 require(authorizedUsers[msg.sender] == true);
                 require(users[_from].vpnUsage[_sessionId].amount == _amount);
-                require(users[_from].vpnUsage[_sessionId].isPayed == false);
+                require(users[_from].vpnUsage[_sessionId].isPaid == false);
 
-                users[_from].vpnUsage[_sessionId].isPayed = true;
+                users[_from].vpnUsage[_sessionId].isPaid = true;
         }
 
     function getVpnSessionsCountOf(
@@ -135,7 +135,7 @@ contract VPNService is Owned {
                     users[_address].vpnUsage[_sessionId].sessionDuration,
                     users[_address].vpnUsage[_sessionId].amount,
                     users[_address].vpnUsage[_sessionId].timestamp,
-                    users[_address].vpnUsage[_sessionId].isPayed
+                    users[_address].vpnUsage[_sessionId].isPaid
                 );
         }
 }

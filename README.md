@@ -2,79 +2,10 @@
 
 ## Sentinel Wallet - Download URLs
 
-**Here are the download URLs to the latest release of the Sentinel Wallet Desktop Clients - Alpha (v0.0.1)**
-- [  Mac OS v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1.dmg)
-- [  Windows Client v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1_Installer.exe)
-- [  Linux Client v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1_amd64.deb)
+**Here are the download URLs to the latest release of the Sentinel Desktop Clients - Alpha (v0.0.2)**
+- [  Mac OS ](http://sentinelgroup.io/releases/alpha-0.0.2/macos/sentinel-alpha-0.0.2.dmg)
+- [  Windows - x64 ](http://sentinelgroup.io/releases/alpha-0.0.2/windows/Sentinel-alpha-0.0.2-win-x64.exe)
+- [  Linux - x64 ](http://sentinelgroup.io/releases/alpha-0.0.2/ubuntu/16.04/sentinel_0.0.2_amd64.deb)
 
 **NOTE : Since you already know that Alpha releases are subject to bugs and errors, it is highly recommended that you use the Wallets at your own risk. However, it is safe to say that, none of the users that used the Sentinel Wallet till date did not have any issues.**
 
-## Sentinel VPN Node - Setup Guide
-
-### 1. Building Sentinel Docker Image
-
-`$ git clone https://github.com/sentinel-official/sentinel-py.git`
-
-`$ cd sentinel-py`
-
-`$ git checkout poc-beta`
-
-`$ cd docker/`
-
-`$ docker build --tag sentinelbeta/sentinel --compress --force-rm --no-cache .`
-
-These above commands will build the Sentinel docker image. To check run `docker images -a`
-
-## 2. Running Sentinel Nodes
-
-### 2.1) Download Scripts
-
-For running a Sentinel node first you need to install all the dependencies
-
-`$ wget -c https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/scripts/installers/linux.sh -O ~/install-dependencies.sh`
-
-`$ chmod +x ~/install-dependencies.sh`
-
-`$ ~/install-dependencies.sh`
-
-`$ wget -c https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/scripts/runners/linux.sh -O ~/sentinel.sh`
-
-`$ chmod +x ~/sentinel.sh`
-
-### 2.2) Starting nodes
-
-`$ ~/sentinel.sh start --type {boot|normal|miner|main} --name NAME`
-
-Additional flags:
-
-`-c -- For console`
-
-`-v5 -- For running in version 5 mode`
-
-`--bootnode-url -- Provide a boot node URL (If this flag is not privided, nodes will connect to the latest created boot node)`
-
-`--etherbase -- Provide Ethereum account address (default: 0x0000000000000000000000000000000000000001)`
-
-### 2.3) Stopping nodes
-
-Stop a node: `$ ~/sentinel.sh stop --type {boot|normal|miner|main} --name NAME`
-
-Stop all nodes: `$ ~/sentinel.sh stop --all`
-
-Remove specific node: `$ ~/sentinel.sh stop --type {boot|normal|miner|main} --name NAME --purge`
-
-Remove all nodes: `$ ~/sentinel.sh stop --purge-all`
-
-### 2.4) Show Info of Nodes
-
-View IP address: `$ ~/sentinel.sh show --type {boot|normal|miner|main} --name NAME --ip`
-
-View node enode address: `$ ~/sentinel.sh show --type {boot|normal|miner|main} --name NAME --node-addr`
-
-View peers of a node: `$ ~/sentinel.sh show --type {normal|miner|main} --name NAME --show-peers`
-
-View all Sentinel containers: `$ ~/sentinel.sh show --all`
-
-### 2.5) Update Sentinel Docker image:
-
-`$ ~/sentinel.sh update`

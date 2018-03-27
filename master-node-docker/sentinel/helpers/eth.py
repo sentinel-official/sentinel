@@ -86,9 +86,9 @@ class ETHHelper(object):
         return error, tx_hash
 
     def get_initial_payment(self, account_addr):
-        error, is_payed = vpn_service_manager.get_initial_payment(account_addr)
+        error, is_paid = vpn_service_manager.get_initial_payment(account_addr)
 
-        return error, is_payed
+        return error, is_paid
 
     def get_vpn_sessions_count(self, account_addr):
         error, sessions_count = vpn_service_manager.get_vpn_sessions_count(
@@ -119,7 +119,7 @@ class ETHHelper(object):
                             'session_duration': _usage[2],
                             'amount': _usage[3],
                             'timestamp': _usage[4],
-                            'is_payed': _usage[5]
+                            'is_paid': _usage[5]
                         }
                 else:
                     usage = {
@@ -129,7 +129,7 @@ class ETHHelper(object):
                         'session_duration': _usage['session_duration'],
                         'amount': _usage['amount'],
                         'timestamp': _usage['timestamp'],
-                        'is_payed': _usage['is_added']
+                        'is_paid': _usage['is_added']
                     }
 
         return error, usage
@@ -164,7 +164,7 @@ class ETHHelper(object):
                         'session_duration': _usage[2],
                         'amount': _usage[3],
                         'timestamp': _usage[4],
-                        'is_payed': _usage[5]
+                        'is_paid': _usage[5]
                     })
 
         return error, usage

@@ -32,7 +32,7 @@ class VpnServiceManager(object):
             return {'code': 201, 'error': str(err)}, None
         return None, tx_hash
 
-    def set_initial_payment(self, account_addr, is_payed=True):
+    def set_initial_payment(self, account_addr, is_paid=True):
         try:
             tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS, 'pending'),
                              gasprice=rinkeby.web3.eth.gasPrice,
@@ -41,7 +41,7 @@ class VpnServiceManager(object):
                              value=0,
                              data=rinkeby.web3.toBytes(
                                  hexstr=self.contract.encodeABI(fn_name='setInitialPaymentStatusOf',
-                                                                args=[account_addr, is_payed])))
+                                                                args=[account_addr, is_paid])))
             tx.sign(COINBASE_PRIVATE_KEY)
             raw_tx = rinkeby.web3.toHex(rlp.encode(tx))
             tx_hash = rinkeby.web3.eth.sendRawTransaction(raw_tx)
@@ -71,11 +71,11 @@ class VpnServiceManager(object):
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
                     hexstr=self.contract.encodeABI(fn_name='getInitialPaymentStatusOf', args=[account_addr])))
             }
-            is_payed = rinkeby.web3.toInt(
+            is_paid = rinkeby.web3.toInt(
                 hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 204, 'error': str(err)}, None
-        return None, is_payed
+        return None, is_paid
 
     def get_vpn_usage(self, account_addr, session_id):
         try:

@@ -59,7 +59,7 @@ class GetVpnCredentials(object):
         if balances['rinkeby']['sents'] >= 100:
             error, usage = eth_helper.get_latest_vpn_usage(account_addr)
             if error is None:
-                due_amount = usage['amount'] if ((usage is not None) and usage['is_payed'] is False) else 0
+                due_amount = usage['amount'] if ((usage is not None) and usage['is_paid'] is False) else 0
                 if (due_amount > 0) and (usage['received_bytes'] < LIMIT_100MB):
                     vpn_addr = usage['account_addr'].lower()
 
@@ -83,10 +83,10 @@ class GetVpnCredentials(object):
                             'message': 'Currently VPN server is not available. Please try after sometime.'
                         }
                     else:
-                        error, is_payed = eth_helper.get_initial_payment(
+                        error, is_paid = eth_helper.get_initial_payment(
                             account_addr)
                         if error is None:
-                            if is_payed is True:
+                            if is_paid is True:
                                 try:
                                     token = uuid4().hex
                                     ip, port = str(node['ip']), 3000
@@ -142,7 +142,7 @@ class PayVpnUsage(object):
         @apiName PayVpnUsage
         @apiGroup VPN
         @apiParam {String} from_addr Account address.
-        @apiParam {Number} amount Amount to be payed to VPN server.
+        @apiParam {Number} amount Amount to be paid to VPN server.
         @apiParam {Number} session_id Session ID of the VPN connection.
         @apiParam {String} tx_data Hex code of the transaction.
         @apiParam {String} net Ethereum chain name {main | rinkeby}.

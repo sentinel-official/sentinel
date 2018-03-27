@@ -9,4 +9,3 @@
 
 **NOTE : Since you already know that Alpha releases are subject to bugs and errors, it is highly recommended that you use the Wallets at your own risk. However, it is safe to say that, none of the users that used the Sentinel Wallet till date did not have any issues.**
 
-

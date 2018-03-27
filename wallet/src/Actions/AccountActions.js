@@ -546,7 +546,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
   if (fs.existsSync(OVPN_FILE)) {
     cb(null);
   } else {
-    fetch('http:' + vpn_ip + ':' + vpn_port + '/client/generateOVPN', {
+    fetch('http:' + vpn_ip + ':' + vpn_port + '/ovpn', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

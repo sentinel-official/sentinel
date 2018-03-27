@@ -44,7 +44,7 @@ class VPNComponent extends Component {
             isMac: false,
             showPay: false,
             payAccount: '',
-            markersList: ''
+            markersList: []
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -62,7 +62,7 @@ class VPNComponent extends Component {
         })
     }
     handleClick(marker, evt) {
-        console.log("Marker data: ", marker)
+        this.setState({ activeVpn: marker.vpn, showPopUp: true })
     }
     componentWillMount = () => {
         this.getVPNs()
@@ -81,6 +81,7 @@ class VPNComponent extends Component {
                 data.map((vpn, i) => {
                     var vpnServer = {
                         name: vpn.location.city,
+                        vpn: vpn,
                         coordinates: [vpn.location.longitude, vpn.location.latitude]
                     }
                     markers.push(vpnServer);
@@ -292,15 +293,16 @@ class VPNComponent extends Component {
                                             }}
                                             key={i}
                                             marker={marker}
+                                            onClick={this.handleClick.bind(this)}
                                             style={{
-                                                default: { stroke: "#0cef0c" },
+                                                // default: { stroke: "#0cef0c" },
                                                 hover: { stroke: "#FF5722" },
-                                                pressed: { stroke: "#FF5722" },
+                                                pressed: { stroke: 'transparent' }
                                             }}
                                         >
                                             <g transform="translate(-12, -24)">
                                                 <path
-                                                    fill="none"
+                                                    fill="currentColor"
                                                     strokeWidth="2"
                                                     strokeLinecap="square"
                                                     strokeMiterlimit="10"
@@ -308,7 +310,7 @@ class VPNComponent extends Component {
                                                     d="M20,9c0,4.9-8,13-8,13S4,13.9,4,9c0-5.1,4.1-8,8-8S20,3.9,20,9z"
                                                 />
                                                 <circle
-                                                    fill="none"
+                                                    fill="white"
                                                     strokeWidth="2"
                                                     strokeLinecap="square"
                                                     strokeMiterlimit="10"
@@ -327,6 +329,7 @@ class VPNComponent extends Component {
                                                     fill: "#607D8B",
                                                     stroke: "none",
                                                     visibility: "hidden",
+                                                    boxSizing: 'content-box'
                                                 }}
                                             >
                                                 {marker.name}
@@ -373,141 +376,141 @@ class VPNComponent extends Component {
                             <span style={{ marginLeft: '35%', position: 'absolute', marginTop: '20%' }}>
                                 Currently, no VPN servers are available.</span>
                         }
-                        <Dialog
-                            title="VPN Details"
-                            titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
-                            contentStyle={{ width: 350 }}
-                            open={this.state.showPopUp}
-                            onRequestClose={this.handleClose}
-                        >
-                            <Row>
-                                <Col xs={5}>
-                                    <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>City:</p>
-                                </Col>
-                                <Col xs={7}>
-                                    <p>{this.state.activeVpn ? this.state.activeVpn.location.city : ''}</p>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={5}>
-                                    <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>Country:</p>
-                                </Col>
-                                <Col xs={7}>
-                                    <p>{this.state.activeVpn ? this.state.activeVpn.location.country : ''}</p>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={5}>
-                                    <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>Bandwidth:</p>
-                                </Col>
-                                <Col xs={7}>
-                                    <p>{this.state.activeVpn ? (this.state.activeVpn.net_speed.download / (1024 * 1024)).toFixed(2) : ''} Mbps </p>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={5}>
-                                    <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>Latency:</p>
-                                </Col>
-                                <Col xs={7}>
-                                    <p>{this.state.activeVpn ? this.state.activeVpn.latency : ''} ms </p>
-                                </Col>
-                            </Row>
-                            <Row style={{ marginTop: '10%' }}>
-                                <Col xs={6}>
-                                    <RaisedButton
-                                        label="Close"
-                                        onClick={this.handleClose}
-                                        style={{ width: '100%' }}
-                                    />
-                                </Col>
-                                <Col xs={6}>
-                                    <RaisedButton
-                                        label="Connect"
-                                        primary={true}
-                                        style={{ width: '100%' }}
-                                        onClick={this._connectVPN.bind(this)}
-                                    />
-                                </Col>
-                            </Row>
-                        </Dialog>
-                        <Snackbar
-                            open={this.state.openSnack}
-                            message={this.state.snackMessage}
-                            autoHideDuration={2000}
-                            onRequestClose={this.snackRequestClose}
-                            style={{ marginBottom: '2%' }}
-                        />
-                        <Snackbar
-                            open={this.state.statusSnack}
-                            message={this.state.statusMessage}
-                            style={{ marginBottom: '2%' }}
-                        />
-                        <Dialog
-                            title="Install Dependencies"
-                            titleStyle={{ fontSize: 14 }}
-                            actions={instrucActions}
-                            modal={true}
-                            open={this.state.showInstruct}
-                        >
-                            {this.state.isMac ?
-                                <span>
-                                    This device does not have OpenVPN installed. Please install it by running below command: <br />
-                                    <code>brew install openvpn</code>
-                                    <CopyToClipboard text='brew install openvpn'
-                                        onCopy={() => this.setState({
-                                            snackMessage: 'Copied to Clipboard Successfully',
-                                            openSnack: true
-                                        })} >
-                                        <img
-                                            src={'../src/Images/download.jpeg'}
-                                            alt="copy"
-                                            data-tip data-for="copyImage"
-                                            style={styles.clipBoardDialog}
-                                        />
-                                    </CopyToClipboard>
-                                    <br />
-                                    If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
-                                        onClick={() => {
-                                            this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
-                                            for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
-                                        }}
-                                    >this page</a>
-                                </span>
-                                :
-                                <span>
-                                    OpenVPN Not Installed.Install here https://openvpn.net/index.php/open-source/downloads.html.
-                                    <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
-                                        onCopy={() => this.setState({
-                                            snackMessage: 'Copied to Clipboard Successfully',
-                                            openSnack: true
-                                        })} >
-                                        <img
-                                            src={'../src/Images/download.jpeg'}
-                                            alt="copy"
-                                            data-tip data-for="copyImage"
-                                            style={styles.clipBoardDialog}
-                                        />
-                                    </CopyToClipboard>
-
-                                </span>
-                            }
-                        </Dialog>
-                        <Dialog
-                            title="Initial Payment Reminder"
-                            titleStyle={{ fontSize: 14 }}
-                            actions={paymentActions}
-                            modal={true}
-                            open={this.state.showPay}
-                        >
-                            <span>
-                                Inorder to use VPN, you need to pay 100 sents for the first time. Please pay and then try to connect to the vpn.
-                            </span>
-                        </Dialog>
-                        <ReactTooltip id="copyImage" place="bottom">
-                            <span>Copy</span>
-                        </ReactTooltip>
                     </div>
                 }
+                <Dialog
+                    title="VPN Details"
+                    titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+                    contentStyle={{ width: 350 }}
+                    open={this.state.showPopUp}
+                    onRequestClose={this.handleClose}
+                >
+                    <Row>
+                        <Col xs={5}>
+                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>City:</p>
+                        </Col>
+                        <Col xs={7}>
+                            <p>{this.state.activeVpn ? this.state.activeVpn.location.city : ''}</p>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={5}>
+                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>Country:</p>
+                        </Col>
+                        <Col xs={7}>
+                            <p>{this.state.activeVpn ? this.state.activeVpn.location.country : ''}</p>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={5}>
+                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>Bandwidth:</p>
+                        </Col>
+                        <Col xs={7}>
+                            <p>{this.state.activeVpn ? (this.state.activeVpn.net_speed.download / (1024 * 1024)).toFixed(2) : ''} Mbps </p>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={5}>
+                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>Latency:</p>
+                        </Col>
+                        <Col xs={7}>
+                            <p>{this.state.activeVpn ? this.state.activeVpn.latency : ''} ms </p>
+                        </Col>
+                    </Row>
+                    <Row style={{ marginTop: '10%' }}>
+                        <Col xs={6}>
+                            <RaisedButton
+                                label="Close"
+                                onClick={this.handleClose}
+                                style={{ width: '100%' }}
+                            />
+                        </Col>
+                        <Col xs={6}>
+                            <RaisedButton
+                                label="Connect"
+                                primary={true}
+                                style={{ width: '100%' }}
+                                onClick={this._connectVPN.bind(this)}
+                            />
+                        </Col>
+                    </Row>
+                </Dialog>
+                <Snackbar
+                    open={this.state.openSnack}
+                    message={this.state.snackMessage}
+                    autoHideDuration={2000}
+                    onRequestClose={this.snackRequestClose}
+                    style={{ marginBottom: '2%' }}
+                />
+                <Snackbar
+                    open={this.state.statusSnack}
+                    message={this.state.statusMessage}
+                    style={{ marginBottom: '2%' }}
+                />
+                <Dialog
+                    title="Install Dependencies"
+                    titleStyle={{ fontSize: 14 }}
+                    actions={instrucActions}
+                    modal={true}
+                    open={this.state.showInstruct}
+                >
+                    {this.state.isMac ?
+                        <span>
+                            This device does not have OpenVPN installed. Please install it by running below command: <br />
+                            <code>brew install openvpn</code>
+                            <CopyToClipboard text='brew install openvpn'
+                                onCopy={() => this.setState({
+                                    snackMessage: 'Copied to Clipboard Successfully',
+                                    openSnack: true
+                                })} >
+                                <img
+                                    src={'../src/Images/download.jpeg'}
+                                    alt="copy"
+                                    data-tip data-for="copyImage"
+                                    style={styles.clipBoardDialog}
+                                />
+                            </CopyToClipboard>
+                            <br />
+                            If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
+                                onClick={() => {
+                                    this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
+                                            for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
+                                }}
+                            >this page</a>
+                        </span>
+                        :
+                        <span>
+                            OpenVPN Not Installed.Install here https://openvpn.net/index.php/open-source/downloads.html.
+                                    <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
+                                onCopy={() => this.setState({
+                                    snackMessage: 'Copied to Clipboard Successfully',
+                                    openSnack: true
+                                })} >
+                                <img
+                                    src={'../src/Images/download.jpeg'}
+                                    alt="copy"
+                                    data-tip data-for="copyImage"
+                                    style={styles.clipBoardDialog}
+                                />
+                            </CopyToClipboard>
+
+                        </span>
+                    }
+                </Dialog>
+                <Dialog
+                    title="Initial Payment Reminder"
+                    titleStyle={{ fontSize: 14 }}
+                    actions={paymentActions}
+                    modal={true}
+                    open={this.state.showPay}
+                >
+                    <span>
+                        Inorder to use VPN, you need to pay 100 sents for the first time. Please pay and then try to connect to the vpn.
+                            </span>
+                </Dialog>
+                <ReactTooltip id="copyImage" place="bottom">
+                    <span>Copy</span>
+                </ReactTooltip>
             </div>
         )
     }

@@ -1,11 +1,19 @@
 About Sentinel
-==
+===
 
 ![Sentinel Network](https://preview.ibb.co/mJcfOS/Sentinel_Logo.png)
 
-Sentinel is an open source project that has been in the works since mid-2017. The aim here is to develop a decentralized suite of products that secures access to information and enables secure communicate.
+Sentinel, an open source project, has been in the works since mid-2017. The project started off as an answer to circumventing issues with TOR but soon evolved to the stage where the access to information and secure communication had to be addressed before getting to TOR. With that said, the goal is to develop a decentralized suite of products that secure access to information and enables secure communication.
 
 The first among the suite of products is the decentralized Virtual Private Network or simply, dVPN. Why? To ensure secure access to everyday browsing before anything else.
+
+What are products that are part of the Sentinel Communications Suite?
+-
+
+- **dVPN** - Decentralized Virtual Private Network
+- **dChat** - Decentralized peer-to-peer Messaging - includes media, files, etc.
+- **dVoIP** - Decentralized peer-to-peer Voice over Internet Protocol for calls and delivery of real-time/streaming audio data
+- **dFiles** - Decentralized peer-to-peer File Management and Sharing Service
 
 Who can use or associate with Sentinel?
 -
@@ -107,6 +115,3 @@ A lot actually.
     The Sentinel Node Network will also be better developed to work with all operating systems (currently supporting only Linux) and minor issues around the docker utilizing resources of the OS will be addressed when releasing documentation for the same.
 
 If there's anything you would like to know, reach us out by check out the website or if it's development released, you can always raise an issue on GitHub and we will be more than happy to help you get things sorted.
-
-
-

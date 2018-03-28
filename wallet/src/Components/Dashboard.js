@@ -3,7 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Tabs, Tab } from 'material-ui';
 import SendComponent from './SendComponent';
 import Header from './Header';
-import { getEthBalance, getSentBalance, getAccount, getVPNdetails } from '../Actions/AccountActions';
+import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnectedData } from '../Actions/AccountActions';
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
@@ -46,6 +46,12 @@ class Dashboard extends Component {
         })
       }
     });
+    getVPNConnectedData(function (err, data) {
+      if (err) console.log(err)
+      else {
+        that.setState({ status: true, vpnData: data, isTest: true });
+      }
+    })
   }
 
   getUserEthBalance() {
@@ -169,6 +175,7 @@ class Dashboard extends Component {
             status={this.state.status}
             testDisabled={this.state.testDisabled}
             moveToList={this.moveToVPN}
+            isTest={this.state.isTest}
           />
           <div>
             <Tabs

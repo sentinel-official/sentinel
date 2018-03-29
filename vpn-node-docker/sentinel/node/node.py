@@ -20,8 +20,7 @@ class Node(object):
             'upload': None
         }
         self.vpn = {
-            'ovpn': None,
-            'status': None
+            'price_per_GB': None
         }
         self.account = {
             'addr': None,
@@ -39,6 +38,9 @@ class Node(object):
             self.account['password'] = str(data['password']).lower()
             self.account['private_key'] = str(data['private_key']).lower()
             self.account['token'] = data['token']
+
+            data = json.load(open(VPN_DATA, 'r'))
+            self.vpn['price_per_GB'] = float(data['price_per_GB'])
 
             self.update_nodeinfo({'type': 'location'})
             self.update_nodeinfo({'type': 'netspeed'})

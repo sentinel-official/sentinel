@@ -9,8 +9,8 @@ from ..db import db
 from ..helpers import eth_helper
 
 
-def calculate_amount(used_bytes):
-    return (used_bytes / (1024.0 * 1024.0 * 1024.0)) * 100.0
+def calculate_amount(used_bytes, price_per_GB):
+    return (used_bytes / (1024.0 * 1024.0 * 1024.0)) * price_per_GB
 
 
 class UpdateConnections(object):
@@ -52,7 +52,12 @@ class UpdateConnections(object):
                         sent_bytes = int(info['usage']['down'])
                         session_duration = int(
                             int(info['end_time']) - int(connection['start_time']))
-                        amount = int(calculate_amount(sent_bytes) * DECIMALS)
+                        node = db.nodes.find_one({
+                            'from_addr': from_addr
+                        }, {
+                            'price_per_GB': 1
+                        })
+                        amount = int(calculate_amount(sent_bytes, node['price_per_GB']) * DECIMALS)
                         timestamp = int(time.time())
 
                         print(from_addr, to_addr, sent_bytes,

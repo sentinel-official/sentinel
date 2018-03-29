@@ -19,6 +19,8 @@ def get_vpns_list():
     }, {
         '_id': 0,
         'account_addr': 1,
+        'ip': 1,
+        'price_per_GB': 1,
         'location': 1,
         'net_speed.upload': 1,
         'latency': 1,

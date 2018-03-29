@@ -1,6 +1,9 @@
 #!/bin/sh
 
 ACCOUNT_DATA=/root/.sentinel/account.data
+VPN_DATA=/root/.sentinel/vpn.data
+re=^[0-9]+([.][0-9]+)?$
+
 if [ -f "$ACCOUNT_DATA" ]; then
     echo "$ACCOUNT_DATA found."
 else
@@ -25,6 +28,16 @@ else
             if [ ${#PASSWORD} -le 0 ]; then
                 echo "Password length must be greater than zero."
                 continue
+            else
+                echo -n "Enter how many SENTs you cost per GB: "
+                read PRICE
+                if ! [[ $PRICE =~ $re ]]; then
+                    echo "Price must be a positive number."
+                    continue
+                else
+                    touch ${VPN_DATA}
+                    echo '{"price_per_GB": '${PRICE}'}' > ${VPN_DATA}
+                fi
             fi
         fi
         echo -n "Is everything correct ? [Y/N]: "

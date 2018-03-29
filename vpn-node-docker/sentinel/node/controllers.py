@@ -36,6 +36,7 @@ def create_account(password):
 def register_node(node):
     body = {
         'account_addr': node.account['addr'],
+        'price_per_GB': node.vpn['price_per_GB'],
         'location': node.location,
         'ip': getip.get(),
         'net_speed': node.net_speed

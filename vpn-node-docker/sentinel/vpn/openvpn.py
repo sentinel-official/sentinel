@@ -5,7 +5,7 @@ class OpenVPN(object):
     def __init__(self, show_output=True):
         self.init_cmd = 'sh /root/sentinel/shell_scripts/init.sh'
         self.start_cmd = 'openvpn --config /etc/openvpn/server.conf \
-                          --status /etc/openvpn/openvpn-status.log 2.5 \
+                          --status /etc/openvpn/openvpn-status.log 2 \
                           --ping-exit 15'
         if show_output is False:
             self.init_cmd += ' >> /dev/null 2>&1'
@@ -34,7 +34,8 @@ class OpenVPN(object):
 
     def revoke(self, client_name):
         cmd = 'cd /usr/share/easy-rsa && echo yes | ./easyrsa revoke ' + \
-              client_name + ' && ./easyrsa gen-crl'
+              client_name + ' && ./easyrsa gen-crl && ' + \
+              'chmod 755 pki/crl.pem && cp pki/crl.pem /etc/openvpn/keys'
         revoke_proc = subprocess.Popen(cmd, shell=True)
         revoke_proc.wait()
         return revoke_proc.returncode
@@ -47,10 +48,10 @@ class OpenVPN(object):
             line_arr = line.split(',')
             if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
                 connection = {
-                    'session_name': line_arr[0],
+                    'session_name': str(line_arr[0]),
                     'usage': {
-                        'up': line_arr[2],
-                        'down': line_arr[3]
+                        'up': int(line_arr[2]),
+                        'down': int(line_arr[3])
                     }
                 }
                 connections.append(connection)

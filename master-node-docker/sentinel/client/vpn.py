@@ -6,6 +6,7 @@ import falcon
 import requests
 
 from ..config import DECIMALS
+from ..config import LIMIT_100MB
 from ..db import db
 from ..eth import vpn_service_manager
 from ..helpers import eth_helper
@@ -18,9 +19,11 @@ def get_vpns_list():
     }, {
         '_id': 0,
         'account_addr': 1,
+        'ip': 1,
+        'price_per_GB': 1,
         'location': 1,
         'net_speed.upload': 1,
-        'latency':1,
+        'latency': 1,
         'net_speed.download': 1
     })
     return list(_list)
@@ -50,95 +53,80 @@ class GetVpnCredentials(object):
         @apiSuccess {String} port Port number of the VPN server.
         @apiSuccess {String} token Unique token for validation.
         """
-        account_addr = str(req.body['account_addr'])
-        vpn_addr = str(req.body['vpn_addr'])
+        account_addr = str(req.body['account_addr']).lower()
+        vpn_addr = str(req.body['vpn_addr']).lower()
 
         balances = eth_helper.get_balances(account_addr)
 
         if balances['rinkeby']['sents'] >= 100:
-            error, due_amount = eth_helper.get_due_amount(account_addr)
-            if error is not None:
-                message = {
-                    'success': False,
-                    'error': error,
-                    'message': 'Error occurred while checking the due amount.'
-                }
-                try:
-                    raise Exception(error)
-                except Exception as _:
-                    logger.send_log(message, resp)
-            elif due_amount == 0:
-                vpn_addr_len = len(vpn_addr)
+            error, usage = eth_helper.get_latest_vpn_usage(account_addr)
+            if error is None:
+                due_amount = usage['amount'] if ((usage is not None) and usage['is_paid'] is False) else 0
+                if (due_amount > 0) and (usage['received_bytes'] < LIMIT_100MB):
+                    vpn_addr = usage['account_addr'].lower()
 
-                if vpn_addr_len > 0:
-                    node = db.nodes.find_one({
-                        'vpn.status': 'up',
-                        'account_addr': vpn_addr
-                    }, {
-                        '_id': 0,
-                        'token': 0
-                    })
+                if (due_amount > 0) and (usage['received_bytes'] >= LIMIT_100MB):
+                    message = {
+                        'success': False,
+                        'message': 'You have due amount: ' + str(
+                            due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
+                    }
                 else:
                     node = db.nodes.find_one({
+                        'account_addr': vpn_addr,
                         'vpn.status': 'up'
                     }, {
                         '_id': 0,
                         'token': 0
                     })
-
-                if node is None:
-                    if vpn_addr_len > 0:
+                    if node is None:
                         message = {
                             'success': False,
-                            'message': 'VPN server is already occupied. Please try after sometime.'
+                            'message': 'Currently VPN server is not available. Please try after sometime.'
                         }
                     else:
-                        message = {
-                            'success': False,
-                            'message': 'All VPN servers are occupied. Please try after sometime.'
-                        }
-                else:
-                    error, is_payed = eth_helper.get_initial_payment(
-                        account_addr)
-                    if error is not None:
-                        message = {
-                            'success': False,
-                            'message': 'Error occurred while cheking initial payment status.'
-                        }
-                    elif is_payed:
-                        try:
-                            token = uuid4().hex
-                            ip, port = str(node['ip']), 3000
-                            body = {
-                                'account_addr': account_addr,
-                                'token': token
-                            }
-                            url = 'http://{}:{}/master/sendToken'.format(
-                                ip, port)
-                            _ = requests.post(url, json=body, timeout=10)
-                            message = {
-                                'success': True,
-                                'ip': ip,
-                                'port': port,
-                                'token': token
-                            }
-                        except Exception as _:
+                        error, is_paid = eth_helper.get_initial_payment(
+                            account_addr)
+                        if error is None:
+                            if is_paid is True:
+                                try:
+                                    token = uuid4().hex
+                                    ip, port = str(node['ip']), 3000
+                                    body = {
+                                        'account_addr': account_addr,
+                                        'token': token
+                                    }
+                                    url = 'http://{}:{}/token'.format(
+                                        ip, port)
+                                    _ = requests.post(
+                                        url, json=body, timeout=10)
+                                    message = {
+                                        'success': True,
+                                        'ip': ip,
+                                        'port': port,
+                                        'token': token
+                                    }
+                                except Exception as _:
+                                    message = {
+                                        'success': False,
+                                        'message': 'Connection timed out while connecting to VPN server.'
+                                    }
+                                    logger.send_log(message, resp)
+                            else:
+                                message = {
+                                    'success': False,
+                                    'account_addr': vpn_addr,
+                                    'message': 'Initial VPN payment is not done.'
+                                }
+                        else:
                             message = {
                                 'success': False,
-                                'message': 'Connection timed out while connecting to VPN server.'
+                                'message': 'Error occurred while cheking initial payment status.'
                             }
-                            logger.send_log(message, resp)
-                    else:
-                        message = {
-                            'success': False,
-                            'account_addr': vpn_addr,
-                            'message': 'Initial payment status is empty.'
-                        }
             else:
                 message = {
                     'success': False,
-                    'message': 'You have due amount: ' + str(
-                        due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
+                    'message': 'Error occurred while checking due amount.'
                 }
         else:
             message = {
@@ -156,20 +144,21 @@ class PayVpnUsage(object):
         @apiName PayVpnUsage
         @apiGroup VPN
         @apiParam {String} from_addr Account address.
-        @apiParam {Number} amount Amount to be payed to VPN server.
+        @apiParam {Number} amount Amount to be paid to VPN server.
         @apiParam {Number} session_id Session ID of the VPN connection.
         @apiParam {String} tx_data Hex code of the transaction.
         @apiParam {String} net Ethereum chain name {main | rinkeby}.
         @apiSuccess {String[]} errors Errors if any.
         @apiSuccess {String[]} tx_hashes Transaction hashes.
         """
-        payment_type = str(req.body['payment_type'])  # normal OR init
+        payment_type = str(req.body['payment_type']).lower()  # init OR normal
         tx_data = str(req.body['tx_data'])
-        net = str(req.body['net'])
-        from_addr = str(req.body['from_addr'])
-        amount = float(req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
-        session_id = int(req.body['session_id']
-                         ) if 'session_id' in req.body and req.body['session_id'] is not None else None
+        net = str(req.body['net']).lower()
+        from_addr = str(req.body['from_addr']).lower()
+        amount = float(
+            req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
+        session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
+            'session_id'] is not None else None
 
         amount = int(amount * (DECIMALS * 1.0))
 
@@ -200,9 +189,9 @@ class PayVpnUsage(object):
 
 class ReportPayment(object):
     def on_post(self, req, resp):
-        from_addr = str(req.body['from_addr'])
+        from_addr = str(req.body['from_addr']).lower()
         amount = int(req.body['amount'])
-        session_id = int(req.body['session_id'])
+        session_id = str(req.body['session_id'])
 
         error, tx_hash = vpn_service_manager.pay_vpn_session(
             from_addr, amount, session_id)
@@ -237,7 +226,7 @@ class GetVpnUsage(object):
         @apiParam {String} account_addr Account address.
         @apiSuccess {Object[]} usage VPN usage details.
         """
-        account_addr = str(req.body['account_addr'])
+        account_addr = str(req.body['account_addr']).lower()
 
         error, usage = eth_helper.get_vpn_usage(account_addr)
 
@@ -288,7 +277,7 @@ class GetVpnCurrentUsage(object):
         @apiParam {String} session_name Session name of the VPN connection.
         @apiSuccess {Object} usage Current VPN usage.
         """
-        account_addr = str(req.body['account_addr'])
+        account_addr = str(req.body['account_addr']).lower()
         session_name = str(req.body['session_name'])
 
         usage = get_current_vpn_usage(account_addr, session_name)

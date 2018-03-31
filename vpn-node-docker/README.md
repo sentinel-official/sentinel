@@ -10,10 +10,6 @@ Start running the node and make $SENT!
 
 Below are the instructions on installing docker. 
 
-### Installing a stable version of docker in Ubuntu or other Debian based releases
-
-`sudo apt-get install docker`
-
 ### Installing the latest version of docker in Ubuntu or Debian based releases
 
 `sudo apt install -y curl`

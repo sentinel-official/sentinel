@@ -1,80 +1,117 @@
-# Sentinel Security Group
+About Sentinel
+===
 
-## Sentinel Wallet - Download URLs
+![Sentinel Network](https://preview.ibb.co/mJcfOS/Sentinel_Logo.png)
 
-**Here are the download URLs to the latest release of the Sentinel Wallet Desktop Clients - Alpha (v0.0.1)**
-- [  Mac OS v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1.dmg)
-- [  Windows Client v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1_Installer.exe)
-- [  Linux Client v0.0.1 ](https://storage.googleapis.com/sentinel-packages/Sentinel-Wallet_alpha-0.0.1_amd64.deb)
+Sentinel, an open source project, has been in the works since mid-2017. The project started off as an answer to circumventing issues with TOR but soon evolved to the stage where the access to information and secure communication had to be addressed before getting to TOR. With that said, the goal is to develop a decentralized suite of products that secure access to information and enables secure communication.
 
-**NOTE : Since you already know that Alpha releases are subject to bugs and errors, it is highly recommended that you use the Wallets at your own risk. However, it is safe to say that, none of the users that used the Sentinel Wallet till date did not have any issues.**
+The first among the suite of products is the decentralized Virtual Private Network or simply, dVPN. Why? To ensure secure access to everyday browsing before anything else.
 
-## Sentinel VPN Node - Setup Guide
+What are products that are part of the Sentinel Communications Suite?
+-
 
-### 1. Building Sentinel Docker Image
+- **dVPN** - Decentralized Virtual Private Network
+- **dChat** - Decentralized peer-to-peer Messaging - includes media, files, etc.
+- **dVoIP** - Decentralized peer-to-peer Voice over Internet Protocol for calls and delivery of real-time/streaming audio data
+- **dFiles** - Decentralized peer-to-peer File Management and Sharing Service
 
-`$ git clone https://github.com/sentinel-official/sentinel-py.git`
+Who can use or associate with Sentinel?
+-
+- People that utilize the Secure Communication Suite are Sentinel's *Consumers* or *Users*.
+- People that provide resources and run the Sentinel Network are *Service Providers*
+- People that have a high reputation when providing services tend to eventually become Master Nodes, which are nodes that handle transactional data of multiple services as opposed to a single service by a *Service Provider* 
 
-`$ cd sentinel-py`
+Where is the majority of our development time invested?
+-
+- Development of the Wallet
+- Development of the dVPN Client
+- Development of the Node deployment infrastructure
 
-`$ git checkout poc-beta`
+Where is the majority of our research time invested?
+-
 
-`$ cd docker/`
+- **Identity Management**
 
-`$ docker build --tag sentinelbeta/sentinel --compress --force-rm --no-cache .`
+    How does one manage this anonymous, federated identity? Should it be federated at all?
 
-These above commands will build the Sentinel docker image. To check run `docker images -a`
+    The team has come to consensus with something called the AUID, Anonymous User ID, that will be the single point of information exchange between the User and the Service Provider. The team is considering the possibility of keeping this chain independent from the other chains, Services and Transactions. This chain will only communicate them as and when requested for and required during the workflow of a transaction.
 
-## 2. Running Sentinel Nodes
+- **Services Management**
 
-### 2.1) Download Scripts
+    Since Sentinel aims to develop a suite like say GSuite/Google Apps for Work, we will potentially encounter more transactions than any other blockchain dedicately developed for a dVPN might receive.
+    
+    The team has researched multiple DAOs that have smart contract capabilities and is inclined towards the use of engines like TenderMint for the development of the Service Chain - a chain, that has to communicate with the AUID Chain and the Transaction chain to authenticate, deliver services and address issues if any when delivering *services*. 
 
-For running a Sentinel node first you need to install all the dependencies
+- **Transactions Management**
+    
+    Sentinel, as you understand now, intends to use inter-chain communication among other things for efficient scaling and delivery of services. Owing to the possibility of Users using multiple services and Service Providers sharing multiple resources concurrently, Sentinel undergoes a massive load during Transaction processing.
+    
+    The current transaction chain is based on Ethereum which offers ERC20, a very standard protocol for transactions. Current gas prices and transaction speeds forced the team to think of ways to diversify and connect chains running on multiple protocols - For example, TenderMint as stated earlier.
 
-`$ wget -c https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/scripts/installers/linux.sh -O ~/install-dependencies.sh`
+What about the Tokens used?
+-
 
-`$ chmod +x ~/install-dependencies.sh`
+Currently, there exists only 1 token i.e. $SENT, which is an ERC20 token tradable on multiple platforms and exchanges.
 
-`$ ~/install-dependencies.sh`
+Now, if the Service Chain is implemented as stated above, the Sentinel Network will see a new token on the Service Chain, that is used exclusively to access Services and pay for them.
 
-`$ wget -c https://raw.githubusercontent.com/sentinel-official/sentinel-py/poc-beta/scripts/runners/linux.sh -O ~/sentinel.sh`
+#### How does the exchange happen?
 
-`$ chmod +x ~/sentinel.sh`
+Through a Swap Zone, this token will be exchanged for the token on the Transactions Chain. This swap zone will have an inbuilt 'Anonymous Mixer', which accepts inputs of both tokens (Service Chain & Transactions Chain) and output the swapped token.
 
-### 2.2) Starting nodes
+Extended capabilities of the Mixer can be best demonstrated when running a DEx (decentralized exchange) where, Users of the DEx can run their ERC20 Tokens through the Mixer, which then gives back the User equivalent pegged tokens, whatever that might be.
 
-`$ ~/sentinel.sh start --type {boot|normal|miner|main} --name NAME`
+Considering the use of TenderMint for the development of the Service Chain, swap of Sentinel Service Tokens ($SENT-SST) will be initially with $SENT. Given the possiblities and opportunities on the Cosmos Network and various Zones within, the Sentinel Mixer can also swap various tokens and assets developed on TenderMint and within Cosmos.
 
-Additional flags:
+What are we upto right now?
+-
 
-`-c -- For console`
+Currently we have worked on and released the **Sentinel Desktop Client - Alpha (v0.0.2)** which can be downloaded from here:
 
-`-v5 -- For running in version 5 mode`
+- [  Mac OS ](http://sentinelgroup.io/releases/alpha-0.0.2/macos/sentinel-alpha-0.0.2.dmg)
+- [  Windows - x64 ](http://sentinelgroup.io/releases/alpha-0.0.2/windows/Sentinel-alpha-0.0.2-win-x64.exe)
+- [  Linux - x64 ](http://sentinelgroup.io/releases/alpha-0.0.2/ubuntu/16.04/sentinel_0.0.2_amd64.deb)
 
-`--bootnode-url -- Provide a boot node URL (If this flag is not privided, nodes will connect to the latest created boot node)`
+The current Desktop Client has 2 primary components:
 
-`--etherbase -- Provide Ethereum account address (default: 0x0000000000000000000000000000000000000001)`
+- Wallet
+    
+    Capable of handling `$ETH`, `$SENT` and `$SENTTEST`
 
-### 2.3) Stopping nodes
+- dVPN
 
-Stop a node: `$ ~/sentinel.sh stop --type {boot|normal|miner|main} --name NAME`
+    To test the dVPN, Users can use `$SENTTEST` which are test tokens created to replicate the functionality of the Service Chain Tokens ($SENT-SST).
+    
+What can you do to support Sentinel Network?
+-
 
-Stop all nodes: `$ ~/sentinel.sh stop --all`
+If you really want to help and run a Linux System at home or on a server (in a VPS), it will be of great help if you can run the Sentinel dVPN Node and help us test the network.
 
-Remove specific node: `$ ~/sentinel.sh stop --type {boot|normal|miner|main} --name NAME --purge`
+Instructions on running a node are listed [here](https://github.com/sentinel-official/sentinel/blob/master/vpn-node-docker/README.md).
 
-Remove all nodes: `$ ~/sentinel.sh stop --purge-all`
+If you are an enthusiastic and want to evangelize $SENT, please use the dVPN and let us know issues through our Telegram Channel (available on our website - SentinelGroup.io)
 
-### 2.4) Show Info of Nodes
+What's something interesting we are coming up with?
+-
 
-View IP address: `$ ~/sentinel.sh show --type {boot|normal|miner|main} --name NAME --ip`
+A lot actually.
 
-View node enode address: `$ ~/sentinel.sh show --type {boot|normal|miner|main} --name NAME --node-addr`
+- **Website**
 
-View peers of a node: `$ ~/sentinel.sh show --type {normal|miner|main} --name NAME --show-peers`
+    There will be a new version of the website with complete project information, token details, exchanges listed, partnerships, enterprises and projects Sentinel has collaborated with and of course, the roadmap. Also, we have an exciting new domain and we will be migrating away from sentinelgroup.io eventually.
 
-View all Sentinel containers: `$ ~/sentinel.sh show --all`
+- **White Paper**
 
-### 2.5) Update Sentinel Docker image:
+    Owing the busy research and product development schedule (and the infinite iterations that are an output of a similar number of discussions), we have put the entire concept on paper and will release the same pretty soon.
+    
+- **MVP**
 
-`$ ~/sentinel.sh update`
+    We will be releasing a Minimum Viable Product (or something that can actually sustain the narrative) of the dVPN which is released as a beta, but we believe will be stable for a while. This will constantly receive updates until the next major version.
+
+    PS : Just for kicks we are planning on developing the Service Chain of the MVP using TenderMint. Let's see how far that goes.
+    
+- **Node Network**
+
+    The Sentinel Node Network will also be better developed to work with all operating systems (currently supporting only Linux) and minor issues around the docker utilizing resources of the OS will be addressed when releasing documentation for the same.
+
+If there's anything you would like to know, reach us out by check out the website or if it's development released, you can always raise an issue on GitHub and we will be more than happy to help you get things sorted.

@@ -1,13 +1,12 @@
 #!/bin/sh
 
-ACCOUNT_DATA=/root/.sentinel/account.data
-VPN_DATA=/root/.sentinel/vpn.data
-re=^[0-9]+([.][0-9]+)?$
+ACCOUNT_DATA_PATH=/root/.sentinel/account.data
+VPN_DATA_PATH=/root/.sentinel/vpn.data
 
-if [ -f "$ACCOUNT_DATA" ]; then
-    echo "$ACCOUNT_DATA found."
+if [ -f "$ACCOUNT_DATA_PATH" ]; then
+    echo "$ACCOUNT_DATA_PATH found."
 else
-    echo "$ACCOUNT_DATA not found."
+    echo "$ACCOUNT_DATA_PATH not found."
     OK=NOTOK
     while [ "$OK" == "NOTOK" ]; do
         echo -n "Do you have a wallet address? [Y/N]: "
@@ -19,8 +18,8 @@ else
                 echo 'Wrong wallet address length.'
                 continue
             else
-                touch ${ACCOUNT_DATA}
-                echo '{"keystore": "", "private_key": "", "password": "", "addr": "'${ADDRESS}'", "token": null}' > ${ACCOUNT_DATA}
+                touch ${ACCOUNT_DATA_PATH}
+                echo '{"keystore": "", "private_key": "", "password": "", "addr": "'${ADDRESS}'", "token": null}' > ${ACCOUNT_DATA_PATH}
             fi
         else
             echo -n "Please enter password for creating new wallet: "
@@ -31,12 +30,13 @@ else
             else
                 echo -n "Enter how many SENTs you cost per GB: "
                 read PRICE
-                if ! [[ $PRICE =~ $re ]]; then
+                PRICE=$(echo ${PRICE} | grep -Eq '^[0-9]+([.][0-9]+)?$' && echo ${PRICE})
+                if [ ${#PRICE} -le 0 ]; then
                     echo "Price must be a positive number."
                     continue
                 else
-                    touch ${VPN_DATA}
-                    echo '{"price_per_GB": '${PRICE}'}' > ${VPN_DATA}
+                    touch ${VPN_DATA_PATH}
+                    echo '{"price_per_GB": '${PRICE}'}' > ${VPN_DATA_PATH}
                 fi
             fi
         fi

@@ -40,7 +40,7 @@ class RegisterNode(object):
                 'account_addr': account_addr,
                 'token': token,
                 'ip': ip,
-                'price_per_GB': price_per_GB
+                'price_per_GB': price_per_GB,
                 'latency': latency,
                 'joined_on': joined_on,
                 'location': location,

@@ -7,7 +7,7 @@ from sentinel.server import Token
 from sentinel.utils import JSONTranslator
 
 
-class Up():
+class Up(object):
     def on_post(self, req, resp):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'status': 'UP'})

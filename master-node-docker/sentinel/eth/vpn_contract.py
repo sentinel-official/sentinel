@@ -75,7 +75,7 @@ class VpnServiceManager(object):
                 hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 204, 'error': str(err)}, None
-        return None, is_paid
+        return None, is_paid == 1
 
     def get_vpn_usage(self, account_addr, session_id):
         try:

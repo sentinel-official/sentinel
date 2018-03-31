@@ -61,7 +61,7 @@ class Header extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState({ status: nextProps.status, testDisabled: nextProps.testDisabled })
+    this.setState({ status: nextProps.status, testDisabled: nextProps.testDisabled, isTest: nextProps.isTest })
   }
 
   _connectVPN = () => {
@@ -290,7 +290,7 @@ class Header extends Component {
                     labelStyle={this.state.isTest ? { color: '#fafafa', textTransform: 'none', fontWeight: 600, fontSize: 14 } :
                       { color: '#4b4e5d', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
                     style={{ height: '18px', lineHeight: '18px' }}
-                    disabled={!this.state.isTest}
+                    disabled={true}
                     onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
                 </Col>
                 <Col>
@@ -315,92 +315,6 @@ class Header extends Component {
                 message={this.state.statusMessage}
                 style={{ marginBottom: '2%' }}
               />
-              <Dialog
-                title="VPN List"
-                titleStyle={{ fontSize: 14 }}
-                actions={actions}
-                modal={true}
-                open={this.state.showPopUp}
-              >
-                {this.state.vpnList.length !== 0 ?
-                  <SelectField
-                    hintText="Select VPN"
-                    value={this.state.selectedVPN}
-                    autoWidth={true}
-                    onChange={(event, index, value) => {
-                      console.log("Value...", value);
-                      this.setState({ selectedVPN: value })
-                    }}
-                  >
-                    {this.state.vpnList.map((vpn) =>
-                      <MenuItem value={vpn.account_addr}
-                        primaryText={`City:${vpn.location.city}, Speed:${(vpn.net_speed.download / (1024 * 1024)).toFixed(2) + ' Mbps'}, Latency:${vpn.latency ? vpn.latency : 'None'}`} />
-                    )}
-                  </SelectField>
-                  :
-                  <span>No VPNs Found</span>
-                }
-              </Dialog>
-              <Dialog
-                title="Install Dependencies"
-                titleStyle={{ fontSize: 14 }}
-                actions={instrucActions}
-                modal={true}
-                open={this.state.showInstruct}
-              >{this.state.isMac ? <span>
-                This device does not have OpenVPN installed. Please install it by running below command: <br />
-                <code>brew install openvpn</code>
-                <CopyToClipboard text='brew install openvpn'
-                  onCopy={() => this.setState({
-                    snackMessage: 'Copied to Clipboard Successfully',
-                    openSnack: true
-                  })} >
-                  <img
-                    src={'../src/Images/download.jpeg'}
-                    alt="copy"
-                    data-tip data-for="copyImage"
-                    style={styles.clipBoardDialog}
-                  />
-                </CopyToClipboard>
-                <br />
-                If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
-                    for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
-                  }}
-                >this page</a>
-              </span>
-                :
-                <span>
-                  OpenVPN Not Installed.
-                  Install here https://openvpn.net/index.php/open-source/downloads.html.
-                  <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
-                    onCopy={() => this.setState({
-                      snackMessage: 'Copied to Clipboard Successfully',
-                      openSnack: true
-                    })} >
-                    <img
-                      src={'../src/Images/download.jpeg'}
-                      alt="copy"
-                      data-tip data-for="copyImage"
-                      style={styles.clipBoardDialog}
-                    />
-                  </CopyToClipboard>
-
-                </span>
-                }
-              </Dialog>
-              <Dialog
-                title="Initial Payment Reminder"
-                titleStyle={{ fontSize: 14 }}
-                actions={paymentActions}
-                modal={true}
-                open={this.state.showPay}
-              >
-                <span>
-                  Inorder to use VPN, you need to pay 100 sents for the first time. Please pay and then try to connect to the vpn.
-                </span>
-              </Dialog>
               <ReactTooltip id="copyImage" place="bottom">
                 <span>Copy</span>
               </ReactTooltip>

@@ -1,7 +1,7 @@
 const url = require('url');
 const path = require('path');
 const electron = require('electron');
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, dialog } = electron;
 var i18n = new (require('./translations/i18n'));
 const remote = electron.remote;
 var { exec } = require('child_process');
@@ -9,6 +9,7 @@ var sudo = require('sudo-prompt');
 var disconnect = {
   name: 'DisconnectOpenVPN'
 };
+var showPrompt = true;
 
 function windowManager() {
   this.window = null;
@@ -22,17 +23,63 @@ function windowManager() {
       protocol: 'file:',
       slashes: true
     }));
+
     this.window.on('close', (e) => {
       if (process.platform === 'win32') {
         e.preventDefault();
         stopVPN();
         this.window.hide();
       }
+      else {
+        let self = this;
+        isVPNConnected(function (isConnected) {
+          console.log("vpn..", isConnected)
+          if (showPrompt && isConnected) {
+            // e.preventDefault();
+            let res = dialog.showMessageBox({
+              type: 'question',
+              buttons: ['Disconnect', 'Run in Background'],
+              title: 'Confirm',
+              message: 'You are currently connected to a VPN'
+            })
+            console.log('resp..', res);
+            if (!res) {
+              showPrompt = false;
+              stopVPN();
+              self.window = null;
+              app.quit();
+            }
+            else {
+              self.window = null;
+              showPrompt = false;
+              app.quit();
+            }
+          }
+        });
+      }
     });
-    this.window.on('closed', () => {
-      if (process.platform !== 'win32') {
-        stopVPN();
-        this.window = null;
+  }
+}
+
+function isVPNConnected(cb) {
+  if (process.platform === 'win32') {
+    exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
+      if (stdout.toString() === '') {
+        cb(false)
+      }
+      else {
+        cb(true)
+      }
+    })
+  }
+  else {
+    exec('pidof openvpn', function (err, stdout, stderr) {
+      if (stdout) {
+        console.log('stdout..', stdout)
+        cb(true);
+      }
+      else {
+        cb(false);
       }
     });
   }
@@ -48,6 +95,7 @@ function stopVPN() {
   }
   else {
     exec('pidof openvpn', (err, stdout, stderr) => {
+      console.log(stdout)
       if (stdout) {
         let pids = stdout.trim();
         let command = 'kill -2 ' + pids;
@@ -95,9 +143,7 @@ app.on('ready', function () {
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app.on('activate', () => {

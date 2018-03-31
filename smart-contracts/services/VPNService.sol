@@ -27,6 +27,12 @@ contract VPNService is Owned {
     mapping(address => User) private users;
     mapping(address => bool) public authorizedUsers;
 
+    function VPNService(
+        )
+            public {
+                authorizedUsers[owner] = true;
+        }
+
     struct User {
         bool initialPayment;
         uint256 sessionsCount;

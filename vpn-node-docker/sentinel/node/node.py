@@ -4,6 +4,7 @@ from urllib2 import urlopen
 from speedtest_cli import Speedtest
 
 from ..config import ACCOUNT_DATA_PATH
+from ..config import VPN_DATA_PATH
 from ..db import db
 
 
@@ -39,7 +40,7 @@ class Node(object):
             self.account['private_key'] = str(data['private_key']).lower()
             self.account['token'] = data['token']
 
-            data = json.load(open(VPN_DATA, 'r'))
+            data = json.load(open(VPN_DATA_PATH, 'r'))
             self.vpn['price_per_GB'] = float(data['price_per_GB'])
 
             self.update_nodeinfo({'type': 'location'})

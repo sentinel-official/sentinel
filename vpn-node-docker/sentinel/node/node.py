@@ -11,6 +11,7 @@ from ..db import db
 class Node(object):
     def __init__(self, resume=True):
         self.speed_test = Speedtest()
+        self.ip = None
         self.location = None
         self.net_speed = {
             'best_server': {
@@ -76,13 +77,14 @@ class Node(object):
 
     def update_nodeinfo(self, info=None):
         if info['type'] == 'location':
-            web_url = 'http://ip-api.com/json'
+            web_url = 'https://ipleak.net/json'
             response = json.load(urlopen(web_url))
+            self.ip = str(response['ip'])
             self.location = {
-                'city': response['city'],
-                'country': response['country'],
-                'latitude': response['lat'],
-                'longitude': response['lon']
+                'city': str(response['city_name']),
+                'country': str(response['country_name']),
+                'latitude': float(response['latitude']),
+                'longitude': float(response['longitude'])
             }
         elif info['type'] == 'netspeed':
             self.speed_test.get_best_server()

@@ -17,7 +17,7 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.2", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.3", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -46,6 +46,7 @@ function windowManager() {
             if (!res) {
               showPrompt = false;
               stopVPN();
+              console.log("In quit")
               self.window = null;
               app.quit();
             }
@@ -133,9 +134,9 @@ app.on('ready', function () {
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
-      // {
-      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      // }
+      {
+        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      }
     ]
   }
   ]

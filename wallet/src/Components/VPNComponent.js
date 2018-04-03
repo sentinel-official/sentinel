@@ -90,6 +90,12 @@ class VPNComponent extends Component {
                         vpn: vpn,
                         coordinates: [vpn.location.longitude, vpn.location.latitude]
                     }
+                    if (localStorage.getItem(vpn.account_addr) === null) {
+                        vpn.latency = parseFloat(self._loadLatency(vpn));
+                    }
+                    else {
+                        vpn.latency = parseFloat(localStorage.getItem(vpn.account_addr));
+                    }
                     markers.push(vpnServer);
                 })
                 self.setState({ vpnList: _.sortBy(data, o => o.location.city), markersList: markers })
@@ -102,6 +108,17 @@ class VPNComponent extends Component {
                         self.downSort()
                     }
                 }
+            }
+        })
+    }
+
+    _loadLatency(vpn) {
+        let self = this;
+        getLatency(vpn.ip, function (err, latency) {
+            if (err) return null;
+            else {
+                localStorage.setItem(vpn.account_addr, latency);
+                return latency
             }
         })
     }
@@ -163,6 +180,7 @@ class VPNComponent extends Component {
             if (err) console.log("Latency error..", err)
             else {
                 vpn.latency = latency;
+                localStorage.setItem(vpn.account_addr, latency);
                 self.setState({ activeVpn: vpn })
             }
         })
@@ -194,10 +212,10 @@ class VPNComponent extends Component {
 
     downSort() {
         if (this.state.sortType === 'speed') {
-            this.setState({ vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.net_speed.download).reverse(), sortUp: false })
+            this.setState({ vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.net_speed.download).reverse(), sortUp: false })
         }
         else if (this.state.sortType === 'latency') {
-            this.setState({ vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.latency).reverse(), sortUp: false })
+            this.setState({ vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.latency).reverse(), sortUp: false })
         }
         else {
             this.setState({ vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.location.city).reverse(), sortUp: false })
@@ -206,10 +224,10 @@ class VPNComponent extends Component {
 
     upSort() {
         if (this.state.sortType === 'speed') {
-            this.setState({ vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.net_speed.download), sortUp: true })
+            this.setState({ vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.net_speed.download), sortUp: true })
         }
         else if (this.state.sortType === 'latency') {
-            this.setState({ vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.latency), sortUp: true })
+            this.setState({ vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.latency), sortUp: true })
         }
         else {
             this.setState({ vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.location.city), sortUp: true })
@@ -300,7 +318,7 @@ class VPNComponent extends Component {
                             <IconButton onClick={this.handleZoomIn} style={{ position: 'absolute' }} tooltip="Zoom In">
                                 <ZoomIn />
                             </IconButton>
-                            <IconButton onClick={this.handleZoomOut} style={{ position: 'absolute', marginLeft: '3%' }}
+                            <IconButton onClick={this.handleZoomOut} style={{ position: 'absolute', marginLeft: '4%' }}
                                 tooltip="Zoom Out">
                                 <ZoomOut />
                             </IconButton>
@@ -448,7 +466,7 @@ class VPNComponent extends Component {
                                                 <a style={{ color: '#373a3c', cursor: 'pointer' }}
                                                     onClick={() => {
                                                         this.setState({
-                                                            vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.net_speed.download),
+                                                            vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.net_speed.download),
                                                             sortType: 'speed',
                                                             sortUp: true
                                                         })
@@ -468,7 +486,7 @@ class VPNComponent extends Component {
                                                 <a style={{ color: '#373a3c', cursor: 'pointer' }}
                                                     onClick={() => {
                                                         this.setState({
-                                                            vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.latency),
+                                                            vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.latency),
                                                             sortType: 'latency',
                                                             sortUp: true
                                                         })

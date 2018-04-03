@@ -100,6 +100,9 @@ function stopVPN() {
       if (stdout) {
         let pids = stdout.trim();
         let command = 'kill -2 ' + pids;
+        if (process.platform === 'darwin') {
+          command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
+        }
         exec(command, (err, stdout, stderr) => {
         });
       }

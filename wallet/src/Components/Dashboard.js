@@ -82,25 +82,6 @@ class Dashboard extends Component {
   }
 
   handleChange = (value) => {
-    // if (value === 'send') {
-    //   this.setState({
-    //     value: value,
-    //     color: 'orange'
-    //   });
-    // }
-    // else {
-    //   this.setState({
-    //     to_addr: '',
-    //     amount: '',
-    //     sessionId: null,
-    //     unit: 'ETH',
-    //     value: value,
-    //     sending: false,
-    //     color: 'orange',
-    //     isPropReceive: true
-    //   })
-
-    // }
     this.setState({
       value: value,
       color: 'orange'

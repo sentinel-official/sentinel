@@ -58,6 +58,26 @@ class VPNHistory extends Component {
         }
     }
 
+    getPaymentBytes(bytes) {
+        let data = (parseInt(bytes) / 1024);
+        if (data >= 1024) {
+            data = data / 1024;
+            if (data >= 1024) {
+                data = data / 1024;
+                data = data.toFixed(3);
+                return data + ' GB'
+            }
+            else {
+                data = data.toFixed(3);
+                return data + ' MB'
+            }
+        }
+        else {
+            data = data.toFixed(3);
+            return data + ' KB';
+        }
+    }
+
     payDue(sessionDetails) {
         this.props.payVPN(sessionDetails);
     }
@@ -120,7 +140,7 @@ class VPNHistory extends Component {
                         <Card>
                             <CardText>
                                 <span style={{ fontWeight: 600 }}>Session ID: </span>{sessionData.id}
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>VPN address: </span>{sessionData.account_addr} 
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>VPN address: </span>{sessionData.account_addr}
                                 <CopyToClipboard text={sessionData.account_addr}
                                     onCopy={() => that.setState({
                                         snackMessage: 'Copied to Clipboard Successfully',
@@ -136,9 +156,9 @@ class VPNHistory extends Component {
                                 </ReactTooltip>
                                 <br />
                                 <span style={{ fontWeight: 600 }}>Amount: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Duration: </span>{sessionData.session_duration} secs
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Bytes: </span>{parseInt(sessionData.received_bytes) / (1024 * 1024)} MB<br/>
-                                <span style={{ fontWeight: 600}}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Duration: </span>{sessionData.duration} secs
+                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Data: </span>{this.getPaymentBytes(sessionData.received_bytes)}<br />
+                                <span style={{ fontWeight: 600 }}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>
                             {
                                 sessionData.is_payed ?
@@ -209,7 +229,7 @@ class VPNHistory extends Component {
                         <div>
                             <span style={{ fontWeight: 600 }}>Total Due : </span>{parseInt(vpnUsage.due) / (10 ** 8)} SENTS<br />
                             <span style={{ fontWeight: 600 }} >Total Duration : </span>{vpnUsage.stats['duration']} secs<br />
-                            <span style={{ fontWeight: 600 }}>Total Received Bytes : </span>{parseInt(vpnUsage.stats['received_bytes']) / (1024 * 1024)} MB
+                            <span style={{ fontWeight: 600 }}>Total Received Data : </span>{this.getPaymentBytes(vpnUsage.stats['received_bytes'])}
                             <hr />
                             <h4 style={{ fontWeight: 600 }}>Sessions</h4>
                             <div style={{ overflow: 'auto', height: 300 }}>{sessionOutput}</div>

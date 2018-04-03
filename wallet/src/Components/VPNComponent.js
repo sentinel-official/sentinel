@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency } from '../Actions/AccountActions';
+import { getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN } from '../Actions/AccountActions';
 import ZoomIn from 'material-ui/svg-icons/content/add';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -50,7 +50,8 @@ class VPNComponent extends Component {
             vpnUpdatedList: [],
             searchText: '',
             sortUp: true,
-            sortType: 'vpn'
+            sortType: 'vpn',
+            selectedVPN: null
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -149,7 +150,7 @@ class VPNComponent extends Component {
                     else {
                         that.props.onChange();
                         //that.returnVPN();
-                        that.setState({ status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: "Connected VPN" })
+                        that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: "Connected VPN" })
                     }
                 })
             }
@@ -158,6 +159,15 @@ class VPNComponent extends Component {
             }
             this.props.changeTest(false)
         }
+    }
+
+    _disconnectVPN = () => {
+        this.setState({ statusSnack: true, statusMessage: 'Disconnecting...' })
+        var that = this;
+        disconnectVPN(function (err) {
+            that.props.onChange();
+            that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
+        });
     }
 
     getUsage() {
@@ -330,9 +340,16 @@ class VPNComponent extends Component {
                                         <p>Speed: {this.props.vpnData.speed}</p>
                                         <p>Download Usage: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.down ? this.state.usage.down : 0) / (1024 * 1024)).toFixed(2)} MB</p>
                                         <p>Upload Usage: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.up ? this.state.usage.up : 0) / (1024 * 1024)).toFixed(2)} MB</p>
+                                        <RaisedButton
+                                            label="Disconnect"
+                                            labelStyle={{ fontWeight: 'bold' }}
+                                            primary={true}
+                                            style={{ width: '100%' }}
+                                            onClick={this._disconnectVPN.bind(this)}
+                                        />
                                     </div>
                                     :
-                                    <div>No VPN Connected</div>
+                                    <div>Click any node to connect to VPN</div>
                                 }
                             </div>
                             <hr />
@@ -527,7 +544,10 @@ class VPNComponent extends Component {
                                                 }
                                                     data-tip data-for="listOver"
                                                     onClick={() => { this.vpnlistClicked(vpn) }}
-                                                    innerDivStyle={{ padding: 20 }} />
+                                                    innerDivStyle={{
+                                                        padding: 20, backgroundColor:
+                                                            this.state.selectedVPN === vpn.account_addr ? '#d0e7ef' : 'white'
+                                                    }} />
                                                 <Divider />
                                             </span>
                                         )}

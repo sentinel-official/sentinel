@@ -129,6 +129,7 @@ class Header extends Component {
           //   }
           // })
           this.props.moveToList();
+          this.setState({openSnack:true,snackMessage:'Select any node to connect'})
         }
         else {
           this._disconnectVPN();
@@ -308,12 +309,12 @@ class Header extends Component {
                 message={this.state.snackMessage}
                 autoHideDuration={2000}
                 onRequestClose={this.snackRequestClose}
-                style={{ marginBottom: '2%' }}
+                style={{ marginBottom: '1%' }}
               />
               <Snackbar
                 open={this.state.statusSnack}
                 message={this.state.statusMessage}
-                style={{ marginBottom: '2%' }}
+                style={{ marginBottom: '1%' }}
               />
               <ReactTooltip id="copyImage" place="bottom">
                 <span>Copy</span>

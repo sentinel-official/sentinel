@@ -58,7 +58,7 @@ class GetVpnCredentials(object):
 
         balances = eth_helper.get_balances(account_addr)
 
-        if balances['rinkeby']['sents'] >= 100:
+        if balances['rinkeby']['sents'] >= (100 * DECIMALS):
             error, usage = eth_helper.get_latest_vpn_usage(account_addr)
             if error is None:
                 due_amount = usage['amount'] if ((usage is not None) and usage['is_paid'] is False) else 0
@@ -69,7 +69,7 @@ class GetVpnCredentials(object):
                     message = {
                         'success': False,
                         'message': 'You have due amount: ' + str(
-                            due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
+                            due_amount / DECIMALS) + ' SENTs. Please try after clearing the due.'
                     }
                 else:
                     node = db.nodes.find_one({
@@ -155,12 +155,10 @@ class PayVpnUsage(object):
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net']).lower()
         from_addr = str(req.body['from_addr']).lower()
-        amount = float(
+        amount = int(
             req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
         session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
             'session_id'] is not None else None
-
-        amount = int(amount * (DECIMALS * 1.0))
 
         errors, tx_hashes = eth_helper.pay_vpn_session(
             from_addr, amount, session_id, net, tx_data, payment_type)

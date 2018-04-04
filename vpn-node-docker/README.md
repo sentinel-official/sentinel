@@ -36,7 +36,7 @@ Using existing docker image
 
 #### Method #2
 
-Buiding your own docker image
+Building your own docker image
 
 `cd ~`
 

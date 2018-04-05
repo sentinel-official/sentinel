@@ -62,8 +62,8 @@ if __name__ == "__main__":
             print(line)
             if 'Peer Connection Initiated with' in line:
                 client_name = line.split()[6][1:-1]
-                print('*' * 128)
                 if 'client' in client_name:
+                    print('*' * 128)
                     result = db.clients.find_one({
                         'name': client_name
                     }, {
@@ -83,8 +83,8 @@ if __name__ == "__main__":
                         node.account['addr'], node.account['token'], connections)
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
-                print('*' * 128)
                 if 'client' in client_name:
+                    print('*' * 128)
                     openvpn.revoke(client_name)
                     connections = openvpn.get_connections(
                         client_name=client_name)

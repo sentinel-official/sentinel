@@ -27,9 +27,6 @@ class RawTransaction(object):
                 'tx_hash': tx_hash,
                 'message': 'Transaction initiated successfully.'
             }
-            resp.status = falcon.HTTP_200
-            resp.body = json.dumps(message)
-
         else:
             message = {
                 'success': False,
@@ -40,3 +37,6 @@ class RawTransaction(object):
                 raise Exception(error)
             except Exception as _:
                 logger.send_log(message, resp)
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)

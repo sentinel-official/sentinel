@@ -11,8 +11,8 @@ from ..vpn import Keys
 
 class GenerateOVPN(object):
     def on_post(self, req, res):
-        account_addr = str(req.body['account_addr'])
-        vpn_addr = str(req.body['vpn_addr'])
+        account_addr = str(req.body['account_addr']).lower()
+        vpn_addr = str(req.body['vpn_addr']).lower()
         token = str(req.body['token'])
 
         rs = redis.Redis()

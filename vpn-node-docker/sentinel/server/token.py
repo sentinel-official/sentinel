@@ -6,7 +6,7 @@ import redis
 
 class Token(object):
     def on_post(self, req, res):
-        account_addr = str(req.body['account_addr'])
+        account_addr = str(req.body['account_addr']).lower()
         token = str(req.body['token'])
 
         rs = redis.Redis()

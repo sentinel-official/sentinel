@@ -10,6 +10,7 @@ import ReactTooltip from 'react-tooltip';
 import _ from 'lodash';
 import { sendError } from '../helpers/ErrorLog';
 let zfill = require('zfill');
+var lang = require('./language');
 
 class VPNHistory extends Component {
     constructor(props) {
@@ -95,6 +96,7 @@ class VPNHistory extends Component {
                 if (transactionDetails === undefined) {
                     that.setState({ openSnack: true, snackMessage: 'No transaction found with that transaction Id' })
                 } else {
+                    console.log("Details..", transactionDetails);
                     var transacToAddr = '0x' + transactionDetails.topics[2].substring(26);
                     var transacFrom = '0x' + transactionDetails.topics[1].substring(26);
                     console.log("Trans..", transacFrom, transacToAddr);
@@ -132,6 +134,7 @@ class VPNHistory extends Component {
         }
         let vpnUsage = this.state.vpnUsage;
         let that = this;
+        let language=this.props.lang;
         if (vpnUsage) {
             if (vpnUsage.sessions.length !== 0) {
                 var sessions = _.sortBy(vpnUsage.sessions, o => o.timeStamp).reverse()
@@ -140,7 +143,7 @@ class VPNHistory extends Component {
                         <Card>
                             <CardText>
                                 <span style={{ fontWeight: 600 }}>Session ID: </span>{sessionData.id}
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>VPN address: </span>{sessionData.account_addr}
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].VpnAddress}: </span>{sessionData.account_addr}
                                 <CopyToClipboard text={sessionData.account_addr}
                                     onCopy={() => that.setState({
                                         snackMessage: 'Copied to Clipboard Successfully',
@@ -155,10 +158,10 @@ class VPNHistory extends Component {
                                     <span>Copy</span>
                                 </ReactTooltip>
                                 <br />
-                                <span style={{ fontWeight: 600 }}>Amount: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>Duration: </span>{sessionData.duration} secs
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>Received Data: </span>{this.getPaymentBytes(sessionData.received_bytes)}<br />
-                                <span style={{ fontWeight: 600 }}>Time: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
+                                <span style={{ fontWeight: 600 }}>{lang[language].Amount}: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].Duration}: </span>{sessionData.duration} secs
+                            <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].ReceivedData}: </span>{this.getPaymentBytes(sessionData.received_bytes)}<br />
+                                <span style={{ fontWeight: 600 }}>{lang[language].Time}: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>
                             {
                                 sessionData.is_payed ?
@@ -172,13 +175,13 @@ class VPNHistory extends Component {
                                     <span>
                                         <CardActions>
                                             <RaisedButton
-                                                label="Pay Now"
+                                                label={lang[language].PayNow}
                                                 labelStyle={{ textTransform: 'none' }}
                                                 onClick={() => { this.payDue(sessionData) }}
                                                 primary={true}
                                             />
                                             <RaisedButton
-                                                label="Report"
+                                                label={lang[language].AlreadyReport}
                                                 labelStyle={{ textTransform: 'none' }}
                                                 onClick={() => { this.showText(sessionData.id) }}
                                             />
@@ -227,11 +230,11 @@ class VPNHistory extends Component {
                     </div>
                     {vpnUsage ?
                         <div>
-                            <span style={{ fontWeight: 600 }}>Total Due : </span>{parseInt(vpnUsage.due) / (10 ** 8)} SENTS<br />
-                            <span style={{ fontWeight: 600 }} >Total Duration : </span>{vpnUsage.stats['duration']} secs<br />
-                            <span style={{ fontWeight: 600 }}>Total Received Data : </span>{this.getPaymentBytes(vpnUsage.stats['received_bytes'])}
+                            <span style={{ fontWeight: 600 }}>{lang[language].TotalDue} : </span>{parseInt(vpnUsage.due) / (10 ** 8)} SENTS<br />
+                            <span style={{ fontWeight: 600 }} >{lang[language].TotalDuration} : </span>{vpnUsage.stats['duration']} secs<br />
+                            <span style={{ fontWeight: 600 }}>{lang[language].TotalData} : </span>{this.getPaymentBytes(vpnUsage.stats['received_bytes'])}
                             <hr />
-                            <h4 style={{ fontWeight: 600 }}>Sessions</h4>
+                            <h4 style={{ fontWeight: 600 }}>{lang[language].Sessions}</h4>
                             <div style={{ overflow: 'auto', height: 300 }}>{sessionOutput}</div>
                         </div>
 

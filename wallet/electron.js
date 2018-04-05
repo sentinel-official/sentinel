@@ -1,7 +1,7 @@
 const url = require('url');
 const path = require('path');
 const electron = require('electron');
-const { app, BrowserWindow, Menu, dialog } = electron;
+const { app, BrowserWindow, Menu, dialog, ipcMain } = electron;
 var i18n = new (require('./translations/i18n'));
 const remote = electron.remote;
 var { exec } = require('child_process');
@@ -126,7 +126,7 @@ const mainWindow = new windowManager();
 
 app.on('ready', mainWindow.createWindow);
 app.on('ready', function () {
-  const templates = [{
+  var m = Menu.buildFromTemplate([{
     label: "Edit",
     submenu: [
       { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
@@ -139,11 +139,17 @@ app.on('ready', function () {
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
       {
         role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      },
+      {
+        label: 'Change Language', submenu: [
+          { label: 'English', type: 'checkbox', checked: true, click() { m.items[0].submenu.items[9].submenu.items[1].checked = false; mainWindow.window.webContents.send('lang', 'en'); } },
+          { label: 'Japanese', type: 'checkbox', click() { m.items[0].submenu.items[9].submenu.items[0].checked = false; mainWindow.window.webContents.send('lang', 'ja'); } }
+        ]
       }
     ]
   }
-  ]
-  Menu.setApplicationMenu(Menu.buildFromTemplate(templates))
+  ])
+  Menu.setApplicationMenu(m)
 })
 
 app.on('window-all-closed', () => {

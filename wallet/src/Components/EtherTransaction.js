@@ -3,6 +3,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
 var config = require('../config');
+var lang = require('./language');
 
 let shell = window
     .require('electron')
@@ -39,8 +40,9 @@ class EtherTransaction extends Component {
         let that = this;
         let data = this.props.data;
         let address = this.props.local_address;
+        let language=this.props.lang;
         if (data.length === 0) {
-            output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Transactions yet</div>
+            output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>{lang[language].NoTransactions}</div>
         }
         else {
             output = data.map((history) => {
@@ -59,7 +61,7 @@ class EtherTransaction extends Component {
                                 <div>
                                     <span style={{
                                         fontWeight: 'bold'
-                                    }}>To:
+                                    }}>{lang[language].To}:
                   </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
@@ -79,7 +81,7 @@ class EtherTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold'
                                     }}>
-                                        Gas Price:
+                                        {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
                                         {parseInt(history.gasPrice) / (10 ** 9)} Gwei
@@ -119,7 +121,7 @@ class EtherTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold'
                                     }}>
-                                        Gas Price:
+                                        {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
                                         {parseInt(history.gasPrice) / (10 ** 9)} Gwei
@@ -128,7 +130,7 @@ class EtherTransaction extends Component {
                             </div>
                         }
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
-                            <span style={{ fontWeight: 'bold' }}>Amount : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
+                            <span style={{ fontWeight: 'bold' }}>{lang[language].Amount} : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
                             <span>ETHs</span>  |
                     <span style={{ fontWeight: 'bold' }}> Status : </span><span style={{ fontWeight: 'bold' }}>{history.isError === '0' ? 'Success' : 'Error'}</span>  |
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
@@ -137,7 +139,7 @@ class EtherTransaction extends Component {
                                     statusUrl = this.getStatusUrl();
                                     this.openInExternalBrowser(`${statusUrl}/tx/${history.hash}`)
                                 }}>{history.hash}</a>
-                            <CopyToClipboard text={history.transactionHash}
+                            <CopyToClipboard text={history.hash}
                                 onCopy={() => that.setState({
                                     snackMessage: 'Copied to Clipboard Successfully',
                                     openSnack: true

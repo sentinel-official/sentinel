@@ -4,6 +4,7 @@ import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
 var config = require('../config');
 let zfill = require('zfill');
+var lang = require('./language');
 
 let shell = window
     .require('electron')
@@ -39,9 +40,10 @@ class SentTransaction extends Component {
         let that = this;
         let data = this.props.data;
         let address = this.props.local_address;
+        let language=this.props.lang;
         let zfillAddress = '0x' + zfill(address.substring(2), 64);
         if (data.length === 0) {
-            output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Transactions yet</div>
+            output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>{lang[language].NoTransactions}</div>
         }
         else {
             output = data.map((history) => {
@@ -60,7 +62,7 @@ class SentTransaction extends Component {
                                 <div>
                                     <span style={{
                                         fontWeight: 'bold'
-                                    }}>To:
+                                    }}>{lang[language].To}:
                   </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
@@ -80,7 +82,7 @@ class SentTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold'
                                     }}>
-                                        Gas Price:
+                                        {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
                                         {parseInt(history.gasPrice) / (10 ** 9)} Gwei
@@ -120,7 +122,7 @@ class SentTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold'
                                     }}>
-                                        Gas Price:
+                                        {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
                                         {parseInt(history.gasPrice) / (10 ** 9)} Gwei
@@ -129,7 +131,7 @@ class SentTransaction extends Component {
                             </div>
                         }
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
-                            <span style={{ fontWeight: 'bold' }}>Amount : </span>
+                            <span style={{ fontWeight: 'bold' }}>{lang[language].Amount} : </span>
                             <span>{(parseInt(history.data) / (10 ** 8)).toFixed(3)} </span>
                             <span>SENTs</span>  |
                             <span style={{ fontWeight: 'bold' }}> Status : Success</span> |

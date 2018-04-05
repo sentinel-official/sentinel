@@ -35,6 +35,7 @@ contract VPNService is Owned {
 
     struct User {
         bool initialPayment;
+        uint256 dueAmount;
         uint256 sessionsCount;
         mapping(bytes32 => VpnUsage) vpnUsage;
     }
@@ -76,6 +77,12 @@ contract VPNService is Owned {
                 return users[_addr].initialPayment;
         }
 
+    function getDueAmountOf(
+        address _address)
+            public constant returns(uint256) {
+                return users[_address].dueAmount;
+        }
+
     function addVpnUsage(
         address _from,
         address _to,
@@ -99,18 +106,19 @@ contract VPNService is Owned {
                     _vpnUsage.amount = _amount;
                     _vpnUsage.timestamp = _timestamp;
                     _vpnUsage.isPaid = false;
-                    
+
                     users[_to].sessionsCount += 1;
                     users[_to].vpnUsage[_sessionId] = _vpnUsage;
                 } else {
                     require(users[_to].vpnUsage[_sessionId].addr == _from);
                     require(users[_to].vpnUsage[_sessionId].isPaid == false);
-                    
+
                     users[_to].vpnUsage[_sessionId].receivedBytes += _receivedBytes;
                     users[_to].vpnUsage[_sessionId].sessionDuration += _sessionDuration;
                     users[_to].vpnUsage[_sessionId].amount += _amount;
                     users[_to].vpnUsage[_sessionId].timestamp = _timestamp;
                 }
+                users[_to].dueAmount += _amount;
         }
 
     function payVpnSession(
@@ -119,9 +127,11 @@ contract VPNService is Owned {
         bytes32 _sessionId)
             public {
                 require(authorizedUsers[msg.sender] == true);
+                require(users[_from].dueAmount >= _amount);
                 require(users[_from].vpnUsage[_sessionId].amount == _amount);
                 require(users[_from].vpnUsage[_sessionId].isPaid == false);
 
+                users[_from].dueAmount -= _amount;
                 users[_from].vpnUsage[_sessionId].isPaid = true;
         }
 

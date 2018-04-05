@@ -49,6 +49,20 @@ class VpnServiceManager(object):
             return {'code': 202, 'error': str(err)}, None
         return None, tx_hash
 
+    def get_due_amount(self, account_addr):
+        try:
+            caller_object = {
+                'from': account_addr,
+                'to': VPNSERVICE_ADDRESS,
+                'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
+                    hexstr=self.contract.encodeABI(fn_name='getDueAmountOf', args=[account_addr])))
+            }
+            due_amount = rinkeby.web3.toInt(
+                hexstr=rinkeby.web3.eth.call(caller_object))
+        except Exception as err:
+            return {'code': 203, 'error': str(err)}, None
+        return None, due_amount
+
     def get_vpn_sessions_count(self, account_addr):
         try:
             caller_object = {
@@ -57,11 +71,11 @@ class VpnServiceManager(object):
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
                     hexstr=self.contract.encodeABI(fn_name='getVpnSessionsCountOf', args=[account_addr])))
             }
-            sessions = rinkeby.web3.toInt(
+            sessions_count = rinkeby.web3.toInt(
                 hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
-            return {'code': 203, 'error': str(err)}, None
-        return None, sessions
+            return {'code': 204, 'error': str(err)}, None
+        return None, sessions_count
 
     def get_initial_payment(self, account_addr):
         try:
@@ -74,7 +88,7 @@ class VpnServiceManager(object):
             is_paid = rinkeby.web3.toInt(
                 hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
-            return {'code': 204, 'error': str(err)}, None
+            return {'code': 205, 'error': str(err)}, None
         return None, is_paid == 1
 
     def get_vpn_usage(self, account_addr, session_id):
@@ -92,7 +106,7 @@ class VpnServiceManager(object):
                          for i in range(1, len(usage))]
             usage[-1] = usage[-1] != 0
         except Exception as err:
-            return {'code': 205, 'error': str(err)}, None
+            return {'code': 206, 'error': str(err)}, None
         return None, usage
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id):
@@ -111,7 +125,7 @@ class VpnServiceManager(object):
             raw_tx = rinkeby.web3.toHex(rlp.encode(tx))
             tx_hash = rinkeby.web3.eth.sendRawTransaction(raw_tx)
         except Exception as err:
-            return {'code': 206, 'error': str(err)}, None
+            return {'code': 207, 'error': str(err)}, None
         return None, tx_hash
 
 

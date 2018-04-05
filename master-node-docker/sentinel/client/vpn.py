@@ -59,13 +59,13 @@ class GetVpnCredentials(object):
         balances = eth_helper.get_balances(account_addr)
 
         if balances['rinkeby']['sents'] >= (100 * DECIMALS):
-            error, usage = eth_helper.get_latest_vpn_usage(account_addr)
-            if error is None:
-                due_amount = usage['amount'] if ((usage is not None) and usage['is_paid'] is False) else 0
-                if (due_amount > 0) and (usage['received_bytes'] < LIMIT_100MB):
+            error_1, due_amount = eth_helper.get_due_amount(account_addr)
+            error_2, usage = eth_helper.get_latest_vpn_usage(account_addr)
+            if (error_1 is None) and (error_2 is None):
+                if (usage is not None) and (usage['received_bytes'] < LIMIT_100MB):
                     vpn_addr = usage['account_addr'].lower()
 
-                if (due_amount > 0) and (usage['received_bytes'] >= LIMIT_100MB):
+                if due_amount > 0:
                     message = {
                         'success': False,
                         'message': 'You have due amount: ' + str(

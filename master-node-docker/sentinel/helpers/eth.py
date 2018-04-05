@@ -90,6 +90,11 @@ class ETHHelper(object):
 
         return error, is_paid
 
+    def get_due_amount(self, account_addr):
+        error, due_amount = vpn_service_manager.get_due_amount(account_addr)
+
+        return error, due_amount
+
     def get_vpn_sessions_count(self, account_addr):
         error, sessions_count = vpn_service_manager.get_vpn_sessions_count(
             account_addr)

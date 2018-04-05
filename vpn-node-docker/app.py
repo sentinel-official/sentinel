@@ -89,7 +89,7 @@ if __name__ == "__main__":
                     connections = [db.openvpn_usage.find_one({
                         'session_name': client_name
                     }, {
-                        'id': 0
+                        '_id': 0
                     })]
                     connections[0]['end_time'] = int(time.time())
                     send_connections_info(

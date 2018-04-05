@@ -54,7 +54,7 @@ class EtherTransaction extends Component {
                                     <span style={{
                                         color: 'red',
                                         fontWeight: 'bold'
-                                    }}>OUT
+                                    }}>{lang[language].Out}
                   </span>
                                     <span style={{ marginLeft: 5 }}>{new Date(history.timeStamp * 1000).toGMTString()}</span>
                                 </div>
@@ -70,7 +70,7 @@ class EtherTransaction extends Component {
                                         }}>{history.to}</a>
                                     <CopyToClipboard text={history.to}
                                         onCopy={() => that.setState({
-                                            snackMessage: 'Copied to Clipboard Successfully',
+                                            snackMessage: lang[language].Copied,
                                             openSnack: true
                                         })} >
                                         <img src={'../src/Images/download.jpeg'}
@@ -93,7 +93,7 @@ class EtherTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold',
                                         color: '#532d91'
-                                    }}>IN
+                                    }}>{lang[language].In}
                 </span>
                                     <span style={{ marginLeft: 5 }}>{new Date(history.timeStamp * 1000).toGMTString()}</span>
                                 </div>
@@ -101,7 +101,7 @@ class EtherTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold'
                                     }}>
-                                        From:
+                                        {lang[language].From}:
                 </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
@@ -110,7 +110,7 @@ class EtherTransaction extends Component {
                                         }}>{history.from}</a>
                                     <CopyToClipboard text={history.from}
                                         onCopy={() => that.setState({
-                                            snackMessage: 'Copied to Clipboard Successfully',
+                                            snackMessage: lang[language].Copied,
                                             openSnack: true
                                         })} >
                                         <img src={'../src/Images/download.jpeg'}
@@ -132,7 +132,7 @@ class EtherTransaction extends Component {
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
                             <span style={{ fontWeight: 'bold' }}>{lang[language].Amount} : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
                             <span>ETHs</span>  |
-                    <span style={{ fontWeight: 'bold' }}> Status : </span><span style={{ fontWeight: 'bold' }}>{history.isError === '0' ? 'Success' : 'Error'}</span>  |
+                    <span style={{ fontWeight: 'bold' }}> {lang[language].Status} : </span><span style={{ fontWeight: 'bold' }}>{history.isError === '0' ? lang[language].Success : lang[language].Fail}</span>  |
                     <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
@@ -141,7 +141,7 @@ class EtherTransaction extends Component {
                                 }}>{history.hash}</a>
                             <CopyToClipboard text={history.hash}
                                 onCopy={() => that.setState({
-                                    snackMessage: 'Copied to Clipboard Successfully',
+                                    snackMessage: lang[language].Copied,
                                     openSnack: true
                                 })} >
                                 <img src={'../src/Images/download.jpeg'}
@@ -150,7 +150,7 @@ class EtherTransaction extends Component {
                                     style={styles.clipBoard} />
                             </CopyToClipboard>
                             <ReactTooltip id="copyImage" place="bottom">
-                                <span>Copy</span>
+                                <span>{lang[language].Copy}</span>
                             </ReactTooltip>
                         </pre>
                     </div>

@@ -142,7 +142,7 @@ class VPNHistory extends Component {
                     return (
                         <Card>
                             <CardText>
-                                <span style={{ fontWeight: 600 }}>Session ID: </span>{sessionData.id}
+                                <span style={{ fontWeight: 600 }}>{lang[language].SessionId}: </span>{sessionData.id}
                                 <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].VpnAddress}: </span>{sessionData.account_addr}
                                 <CopyToClipboard text={sessionData.account_addr}
                                     onCopy={() => that.setState({

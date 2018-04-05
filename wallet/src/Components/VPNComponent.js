@@ -22,7 +22,7 @@ import Flag from 'react-world-flags';
 import ReactTooltip from 'react-tooltip';
 let Country = window.require('countrynames');
 var markers = []
-
+let lang = require('./language');
 var UsageInterval = null;
 class VPNComponent extends Component {
     constructor(props) {
@@ -283,6 +283,7 @@ class VPNComponent extends Component {
 
     render() {
         let that = this;
+        let language=this.props.lang;
         if (!this.state.isGetVPNCalled) {
             setInterval(function () {
                 that.getVPNs()
@@ -304,19 +305,19 @@ class VPNComponent extends Component {
         }
         const instrucActions = [
             <FlatButton
-                label="Close"
+                label={lang[language].Close}
                 primary={true}
                 onClick={this.closeInstruction}
             />
         ];
         const paymentActions = [
             <FlatButton
-                label="Close"
+                label={lang[language].Close}
                 primary={true}
                 onClick={this.handleClose}
             />,
             <FlatButton
-                label="Pay"
+                label={lang[language].Pay}
                 primary={true}
                 onClick={this.payVPN.bind(this)}
             />,
@@ -337,12 +338,12 @@ class VPNComponent extends Component {
                 }
                 <span style={this.state.mapActive ? { marginLeft: '82%', marginTop: 15, position: 'absolute' } : {}}>
                     <RaisedButton
-                        label="List"
+                        label={lang[language].List}
                         buttonStyle={this.state.mapActive ? {} : { backgroundColor: 'grey' }}
                         onClick={() => { this.setState({ mapActive: false }) }}
                     />
                     <RaisedButton
-                        label="Map"
+                        label={lang[language].Map}
                         buttonStyle={this.state.mapActive ? { backgroundColor: 'grey' } : {}}
                         onClick={() => { this.setState({ mapActive: true }) }}
                     />
@@ -472,7 +473,7 @@ class VPNComponent extends Component {
                                                             sortType: 'vpn',
                                                             sortUp: true
                                                         })
-                                                    }}>VPN Address</a>
+                                                    }}>{lang[language].VpnAddress}</a>
                                                 {this.state.sortType === 'vpn' ?
                                                     <span>
                                                         {
@@ -492,7 +493,7 @@ class VPNComponent extends Component {
                                                             sortType: 'speed',
                                                             sortUp: true
                                                         })
-                                                    }}>Bandwidth</a>
+                                                    }}>{lang[language].Bandwidth}</a>
                                                 {this.state.sortType === 'speed' ?
                                                     <span>
                                                         {
@@ -512,7 +513,7 @@ class VPNComponent extends Component {
                                                             sortType: 'latency',
                                                             sortUp: true
                                                         })
-                                                    }}>Latency</a>
+                                                    }}>{lang[language].Latency}</a>
                                                 {this.state.sortType === 'latency' ?
                                                     <span>
                                                         {this.state.sortUp ?
@@ -564,7 +565,7 @@ class VPNComponent extends Component {
                                 </List>
                                 :
                                 <span style={{ marginLeft: '35%', position: 'absolute', marginTop: '20%' }}>
-                                    Currently, no VPN servers are available.</span>
+                                    {lang[language].Latency}</span>
                             }
                         </div>
                 }
@@ -579,7 +580,7 @@ class VPNComponent extends Component {
                                 <p>Download Usage: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.down ? this.state.usage.down : 0) / (1024 * 1024)).toFixed(2)} MB</p>
                                 <p>Upload Usage: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.up ? this.state.usage.up : 0) / (1024 * 1024)).toFixed(2)} MB</p>
                                 <RaisedButton
-                                    label="Disconnect"
+                                    label={lang[language].Disconnect}
                                     labelStyle={{ fontWeight: 'bold' }}
                                     primary={true}
                                     style={{ width: '100%' }}
@@ -589,13 +590,13 @@ class VPNComponent extends Component {
                             :
                             <div>
                                 {this.state.dueAmount === 0 ?
-                                    'Click any node to connect to VPN' :
+                                    lang[language].ClickVPN :
                                     <span>
                                         <span onClick={() => { this.payDue() }} data-tip data-for="payTip" style={{ cursor: 'pointer' }}>
                                             You have {parseInt(this.state.dueAmount) / (10 ** 8)} SENTS Due
                                     </span>
                                         <ReactTooltip id="payTip" place="top" type="warning">
-                                            <span style={{color:'black'}}>Click to Pay</span>
+                                            <span style={{ color: 'black' }}>Click to Pay</span>
                                         </ReactTooltip>
                                     </span>
                                 }

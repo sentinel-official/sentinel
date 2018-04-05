@@ -25,15 +25,8 @@ function windowManager() {
     }));
 
     this.window.on('close', (e) => {
-      if (process.platform === 'win32') {
-        e.preventDefault();
-        stopVPN();
-        this.window.hide();
-      }
-      else {
         let self = this;
         isVPNConnected(function (isConnected) {
-          console.log("vpn..", isConnected)
           if (showPrompt && isConnected) {
             // e.preventDefault();
             let res = dialog.showMessageBox({
@@ -42,11 +35,9 @@ function windowManager() {
               title: 'Confirm',
               message: 'You are currently connected to a VPN'
             })
-            console.log('resp..', res);
             if (!res) {
               showPrompt = false;
               stopVPN();
-              console.log("In quit")
               self.window = null;
               app.quit();
             }
@@ -57,7 +48,6 @@ function windowManager() {
             }
           }
         });
-      }
     });
   }
 }
@@ -76,7 +66,6 @@ function isVPNConnected(cb) {
   else {
     exec('pidof openvpn', function (err, stdout, stderr) {
       if (stdout) {
-        console.log('stdout..', stdout)
         cb(true);
       }
       else {
@@ -88,15 +77,12 @@ function isVPNConnected(cb) {
 
 function stopVPN() {
   if (process.platform === 'win32') {
-    console.log("on close");
     sudo.exec('taskkill /IM sentinel.exe /f && taskkill /IM openvpn.exe /f', disconnect,
       function (error, stdout, stderr) {
-        console.log("In exec");
       });
   }
   else {
     exec('pidof openvpn', (err, stdout, stderr) => {
-      console.log(stdout)
       if (stdout) {
         let pids = stdout.trim();
         let command = 'kill -2 ' + pids;
@@ -138,14 +124,14 @@ app.on('ready', function () {
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
       {
-        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      },
-      {
         label: 'Change Language', submenu: [
-          { label: 'English', type: 'checkbox', checked: true, click() { m.items[0].submenu.items[9].submenu.items[1].checked = false; mainWindow.window.webContents.send('lang', 'en'); } },
-          { label: 'Japanese', type: 'checkbox', click() { m.items[0].submenu.items[9].submenu.items[0].checked = false; mainWindow.window.webContents.send('lang', 'ja'); } }
+          { label: 'English', type: 'checkbox', checked: true, click() { m.items[0].submenu.items[8].submenu.items[1].checked = false; mainWindow.window.webContents.send('lang', 'en'); } },
+          { label: 'Japanese', type: 'checkbox', click() { m.items[0].submenu.items[8].submenu.items[0].checked = false; mainWindow.window.webContents.send('lang', 'ja'); } }
         ]
-      }
+      },
+      // {
+      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      // },
     ]
   }
   ])

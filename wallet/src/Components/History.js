@@ -122,12 +122,12 @@ class History extends Component {
                 {ethOutput}
                 <div style={{ float: 'right' }}>
                   <RaisedButton
-                    label="Back"
+                    label={lang[language].Back}
                     onClick={() => { this.getEthHistory(this.state.pageNumber - 1) }}
                     disabled={this.state.pageNumber === 1 ? true : false}
                   />
                   <RaisedButton
-                    label="Next"
+                    label={lang[language].Next}
                     disabled={this.state.nextDisabled}
                     onClick={() => { this.getEthHistory(this.state.pageNumber + 1) }}
                   />

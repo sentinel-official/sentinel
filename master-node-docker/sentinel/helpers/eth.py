@@ -114,7 +114,7 @@ class ETHHelper(object):
                     if error is None:
                         usage = {
                             'id': session_id,
-                            'account_addr': _usage[0],
+                            'account_addr': str(_usage[0]).lower(),
                             'received_bytes': _usage[1],
                             'session_duration': _usage[2],
                             'amount': _usage[3],
@@ -124,7 +124,7 @@ class ETHHelper(object):
                 else:
                     usage = {
                         'id': _usage['session_id'],
-                        'account_addr': _usage['to_addr'],
+                        'account_addr': str(_usage['to_addr']).lower(),
                         'received_bytes': _usage['sent_bytes'],
                         'session_duration': _usage['session_duration'],
                         'amount': _usage['amount'],
@@ -159,7 +159,7 @@ class ETHHelper(object):
                     usage['stats']['amount'] += _usage[3]
                     usage['sessions'].append({
                         'id': session_id,
-                        'account_addr': _usage[0],
+                        'account_addr': str(_usage[0]).lower(),
                         'received_bytes': _usage[1],
                         'session_duration': _usage[2],
                         'amount': _usage[3],

@@ -86,8 +86,11 @@ if __name__ == "__main__":
                 if 'client' in client_name:
                     print('*' * 128)
                     openvpn.revoke(client_name)
-                    connections = openvpn.get_connections(
-                        client_name=client_name)
+                    connections = [db.openvpn_usage.find_one({
+                        'session_name': client_name
+                    }, {
+                        'id': 0
+                    })]
                     connections[0]['end_time'] = int(time.time())
                     send_connections_info(
                         node.account['addr'], node.account['token'], connections)

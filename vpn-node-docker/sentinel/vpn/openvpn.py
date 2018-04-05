@@ -61,6 +61,13 @@ class OpenVPN(object):
                         'down': int(line_arr[3])
                     }
                 }
+                db.openvpn_usage.update({
+                    'session_name': connection['session_name']
+                }, {
+                    '$set': connection['usage']
+                }, {
+                    'upsert': True
+                })
                 if (client_name is None) and (connection['usage']['down'] >= LIMIT_1GB):
                     self.disconnect_client(connection['session_name'])
                 connections.append(connection)

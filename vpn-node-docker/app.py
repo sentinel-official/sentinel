@@ -3,6 +3,7 @@ from __future__ import print_function
 import sys
 import time
 from os import path
+
 from thread import start_new_thread
 
 from sentinel.config import ACCOUNT_DATA_PATH

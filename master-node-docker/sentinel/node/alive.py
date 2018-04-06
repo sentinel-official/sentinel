@@ -12,9 +12,7 @@ class UpdateNodesStatus(object):
         self.t = None
 
     def update_thread(self):
-        while True:
-            if self.stop_thread:
-                break
+        while self.stop_thread is False:
             min_time = int(time.time()) - self.max_secs
             _ = db.nodes.update_many({
                 'vpn.ping_on': {
@@ -28,7 +26,8 @@ class UpdateNodesStatus(object):
             time.sleep(5)
 
     def start(self):
-        self.t = start_new_thread(self.update_thread, ())
+        if self.t is None:
+            self.t = start_new_thread(self.update_thread, ())
 
     def stop(self):
         self.stop_thread = True

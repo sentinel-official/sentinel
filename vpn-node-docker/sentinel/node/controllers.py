@@ -1,4 +1,5 @@
 import json
+
 from urlparse import urljoin
 
 from ..config import ACCOUNT_DATA_PATH

@@ -32,21 +32,22 @@ class App extends Component {
 
     setComponent = (name) => {
         this.setState({ scene: name })
+        console.log("Lang..",this.state.lang);
     }
 
     render() {
         let scene = this.state.scene;
         switch (scene) {
             case 'create':
-                return <Create set={this.setComponent} />
+                return <Create set={this.setComponent} lang={this.state.lang} />
             case 'authenticate':
-                return <Authenticate set={this.setComponent} />
+                return <Authenticate set={this.setComponent} lang={this.state.lang} />
             case 'dashboard':
                 return <Dashboard set={this.setComponent} lang={this.state.lang} />
             case 'home':
-                return <Home set={this.setComponent} />
+                return <Home set={this.setComponent} lang={this.state.lang} />
             default:
-                return <Home set={this.setComponent} />
+                return null
         }
     }
 }

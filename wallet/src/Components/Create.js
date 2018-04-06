@@ -16,6 +16,7 @@ class Create extends Component {
         super(props);
         this.state = {
             password: '',
+            confirmPwd: '',
             keystorePassword: '',
             keystore: '',
             file: '',
@@ -64,21 +65,26 @@ class Create extends Component {
         this.setState({ isLoading: true })
         var password = this.state.password;
         var that = this;
-        if (isOnline()) {
-            createAccount(password, function (err, account) {
-                if (err) sendError(err);
-                else {
-                    that.setState({
-                        account_addr: account.account_addr,
-                        private_key: account.private_key,
-                        keystore_addr: account.keystore_addr,
-                        isLoading: false
-                    })
-                }
-            });
+        if (this.state.password === this.state.confirmPwd) {
+            if (isOnline()) {
+                createAccount(password, function (err, account) {
+                    if (err) sendError(err);
+                    else {
+                        that.setState({
+                            account_addr: account.account_addr,
+                            private_key: account.private_key,
+                            keystore_addr: account.keystore_addr,
+                            isLoading: false
+                        })
+                    }
+                });
+            }
+            else {
+                this.setState({ openSnack: true, isLoading: false, snackMessage: 'Check your Internet Connection' })
+            }
         }
         else {
-            this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+            this.setState({ openSnack: true, isLoading: false, snackMessage: 'Passwords did not match' })
         }
     }
 
@@ -153,6 +159,16 @@ class Create extends Component {
                                     style={styles.textFieldCreate}
                                 />
                             </Paper>
+                            <Paper zDepth={2} style={styles.textBoxPaper}>
+                                <TextField
+                                    hintText="Confirm Password"
+                                    hintStyle={styles.textFieldCreateHint}
+                                    type="password"
+                                    underlineShow={false}
+                                    onChange={(event, password) => { this.setState({ confirmPwd: password }) }}
+                                    style={styles.textFieldCreate}
+                                />
+                            </Paper>
                             <RaisedButton label="Create"
                                 labelStyle={styles.buttonLabel}
                                 disabled={this.state.password === '' ? true : false}
@@ -162,7 +178,7 @@ class Create extends Component {
                             {this.state.isLoading === true ? this.renderProgress() : ''}
                             <p style={{ fontSize: 12, marginLeft: '3%' }}>(Or)</p>
                             <Paper zDepth={2} style={styles.bluePaper}>
-                                <div style={{ padding: '5%' }}>
+                                <div style={{ padding: '3%' }}>
                                     <RaisedButton
                                         label="Select keystore file"
                                         labelStyle={styles.buttonLabel}
@@ -348,7 +364,7 @@ const styles = {
     },
     bluePaper: {
         backgroundColor: 'rgba(181, 216, 232, 0.32)',
-        marginTop: '5%'
+        marginTop: '2%'
     },
     copyHeading: {
         color: 'rgb(240, 94, 9)',

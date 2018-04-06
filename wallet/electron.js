@@ -25,29 +25,29 @@ function windowManager() {
     }));
 
     this.window.on('close', (e) => {
-        let self = this;
-        isVPNConnected(function (isConnected) {
-          if (showPrompt && isConnected) {
-            // e.preventDefault();
-            let res = dialog.showMessageBox({
-              type: 'question',
-              buttons: ['Disconnect', 'Run in Background'],
-              title: 'Confirm',
-              message: 'You are currently connected to a VPN'
-            })
-            if (!res) {
-              showPrompt = false;
-              stopVPN();
-              self.window = null;
-              app.quit();
-            }
-            else {
-              self.window = null;
-              showPrompt = false;
-              app.quit();
-            }
+      let self = this;
+      isVPNConnected(function (isConnected) {
+        if (showPrompt && isConnected) {
+          // e.preventDefault();
+          let res = dialog.showMessageBox({
+            type: 'question',
+            buttons: ['Disconnect', 'Run in Background'],
+            title: 'Confirm',
+            message: 'You are currently connected to a VPN'
+          })
+          if (!res) {
+            showPrompt = false;
+            stopVPN();
+            self.window = null;
+            app.quit();
           }
-        });
+          else {
+            self.window = null;
+            showPrompt = false;
+            app.quit();
+          }
+        }
+      });
     });
   }
 }
@@ -124,14 +124,15 @@ app.on('ready', function () {
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
       {
-        label: 'Change Language', submenu: [
-          { label: 'English', type: 'checkbox', checked: true, click() { m.items[0].submenu.items[8].submenu.items[1].checked = false; mainWindow.window.webContents.send('lang', 'en'); } },
-          { label: 'Japanese', type: 'checkbox', click() { m.items[0].submenu.items[8].submenu.items[0].checked = false; mainWindow.window.webContents.send('lang', 'ja'); } }
-        ]
+        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
       },
-      // {
-      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      // },
+    ]
+  },
+  {
+    label: "Language",
+    submenu: [
+      { label: 'English', type: 'checkbox', checked: true, click() { m.items[1].submenu.items[1].checked = false; mainWindow.window.webContents.send('lang', 'en'); } },
+      { label: 'Japanese', type: 'checkbox', click() { m.items[1].submenu.items[0].checked = false; mainWindow.window.webContents.send('lang', 'ja'); } }
     ]
   }
   ])

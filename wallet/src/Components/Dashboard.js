@@ -57,11 +57,6 @@ class Dashboard extends Component {
     })
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    console.log("Next..", nextProps);
-    this.setState({ lang: nextProps.lang })
-  }
-
   getUserEthBalance() {
     let that = this;
     getEthBalance(this.state.local_address, (err, ethBalance) => {
@@ -152,7 +147,7 @@ class Dashboard extends Component {
       sents: this.state.sentBalance
     }
 
-    let language = this.state.lang;
+    let language = this.props.lang;
 
     return (
       <MuiThemeProvider>
@@ -167,7 +162,7 @@ class Dashboard extends Component {
             testDisabled={this.state.testDisabled}
             moveToList={this.moveToVPN}
             isTest={this.state.isTest}
-            lang={this.state.lang}
+            lang={this.props.lang}
           />
           <div>
             <Tabs
@@ -179,7 +174,7 @@ class Dashboard extends Component {
               inkBarStyle={{ backgroundColor: '#2f3245', height: 3 }}
             >
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].History} value="history">
-                <History local_address={this.state.local_address} isTest={this.state.isTest} lang={this.state.lang}/>
+                <History local_address={this.state.local_address} isTest={this.state.isTest} lang={this.props.lang}/>
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Send} value="send">
                 <SendComponent
@@ -193,12 +188,12 @@ class Dashboard extends Component {
                   isPropReceive={this.state.isPropReceive}
                   propReceiveChange={this.propReceiveChange.bind(this)}
                   clearSend={this.clearSend.bind(this)}
-                  lang={this.state.lang}
+                  lang={this.props.lang}
                 />
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Receive} value="receive">
                 <div>
-                  <ReceiveComponent local_address={this.state.local_address} lang={this.state.lang} />
+                  <ReceiveComponent local_address={this.state.local_address} lang={this.props.lang} />
                 </div>
               </Tab>
               <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :
@@ -211,12 +206,12 @@ class Dashboard extends Component {
                   onChange={this.getVPNapi}
                   vpnPayment={this.vpnPayment}
                   changeTest={this.testDisable}
-                  lang={this.state.lang}
+                  lang={this.props.lang}
                 />
               </Tab>
               <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :
                 { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label={lang[language].VpnHistory} value="vpn_history" disabled={!this.state.isTest}>
-                <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} lang={this.state.lang} />
+                <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} lang={this.props.lang} />
               </Tab>
             </Tabs>
           </div>

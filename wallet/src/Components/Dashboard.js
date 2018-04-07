@@ -9,6 +9,8 @@ import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
 import VPNHistory from './VPNHistory';
 import { sendError } from '../helpers/ErrorLog';
+let lang = require('./language');
+const { ipcRenderer } = window.require('electron');
 
 class Dashboard extends Component {
   constructor(props) {
@@ -31,7 +33,8 @@ class Dashboard extends Component {
       unit: 'ETH',
       isTest: false,
       sessionId: null,
-      testDisabled: false
+      testDisabled: false,
+      lang: 'en'
     }
     this.set = this.props.set;
   }
@@ -82,25 +85,6 @@ class Dashboard extends Component {
   }
 
   handleChange = (value) => {
-    // if (value === 'send') {
-    //   this.setState({
-    //     value: value,
-    //     color: 'orange'
-    //   });
-    // }
-    // else {
-    //   this.setState({
-    //     to_addr: '',
-    //     amount: '',
-    //     sessionId: null,
-    //     unit: 'ETH',
-    //     value: value,
-    //     sending: false,
-    //     color: 'orange',
-    //     isPropReceive: true
-    //   })
-
-    // }
     this.setState({
       value: value,
       color: 'orange'
@@ -163,6 +147,8 @@ class Dashboard extends Component {
       sents: this.state.sentBalance
     }
 
+    let language = this.props.lang;
+
     return (
       <MuiThemeProvider>
         <div>
@@ -176,6 +162,7 @@ class Dashboard extends Component {
             testDisabled={this.state.testDisabled}
             moveToList={this.moveToVPN}
             isTest={this.state.isTest}
+            lang={this.props.lang}
           />
           <div>
             <Tabs
@@ -186,10 +173,10 @@ class Dashboard extends Component {
               }}
               inkBarStyle={{ backgroundColor: '#2f3245', height: 3 }}
             >
-              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label="HISTORY" value="history">
-                <History local_address={this.state.local_address} isTest={this.state.isTest} />
+              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].History} value="history">
+                <History local_address={this.state.local_address} isTest={this.state.isTest} lang={this.props.lang}/>
               </Tab>
-              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label="SEND" value="send">
+              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Send} value="send">
                 <SendComponent
                   local_address={this.state.local_address}
                   amount={this.state.amount}
@@ -201,15 +188,16 @@ class Dashboard extends Component {
                   isPropReceive={this.state.isPropReceive}
                   propReceiveChange={this.propReceiveChange.bind(this)}
                   clearSend={this.clearSend.bind(this)}
+                  lang={this.props.lang}
                 />
               </Tab>
-              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label="RECEIVE" value="receive">
+              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Receive} value="receive">
                 <div>
-                  <ReceiveComponent local_address={this.state.local_address} />
+                  <ReceiveComponent local_address={this.state.local_address} lang={this.props.lang} />
                 </div>
               </Tab>
               <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :
-                { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label="VPN List" value="vpn" disabled={!this.state.isTest}>
+                { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label={lang[language].VpnList} value="vpn" disabled={!this.state.isTest}>
                 <VPNComponent
                   local_address={this.state.local_address}
                   status={this.state.status}
@@ -218,11 +206,12 @@ class Dashboard extends Component {
                   onChange={this.getVPNapi}
                   vpnPayment={this.vpnPayment}
                   changeTest={this.testDisable}
+                  lang={this.props.lang}
                 />
               </Tab>
               <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :
-                { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label="VPN History" value="vpn_history" disabled={!this.state.isTest}>
-                <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} />
+                { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label={lang[language].VpnHistory} value="vpn_history" disabled={!this.state.isTest}>
+                <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} lang={this.props.lang} />
               </Tab>
             </Tabs>
           </div>
@@ -230,13 +219,13 @@ class Dashboard extends Component {
             <div style={{ backgroundColor: '#31b0d5', position: 'absolute', bottom: 0, width: '100%' }}>
               <h4 style={{
                 textAlign: 'center', fontSize: 14, fontWeight: 'bold', padding: 14, margin: 0, color: 'white'
-              }}>TEST MODE ACTIVATED</h4>
+              }}>{lang[language].TestMode}</h4>
             </div>
             :
             <div></div>
           }
         </div>
-      </MuiThemeProvider>
+      </MuiThemeProvider >
     );
   }
 }

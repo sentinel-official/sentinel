@@ -7,6 +7,7 @@ import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
 import CopyIcon from 'material-ui/svg-icons/content/content-copy';
 
+let lang = require('./language');
 let shell = window
   .require('electron')
   .shell;
@@ -64,56 +65,12 @@ class Header extends Component {
     this.setState({ status: nextProps.status, testDisabled: nextProps.testDisabled, isTest: nextProps.isTest })
   }
 
-  _connectVPN = () => {
-    this.setState({ showPopUp: false, statusSnack: true, testDisabled: true, statusMessage: 'Connecting...Please Wait' })
-    let that = this;
-    if (isOnline()) {
-      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isMacError, isWinError, account) {
-        if (isMacError) {
-          that.setState({ status: false, showInstruct: true, testDisabled: false, statusSnack: false, isMac: true })
-        }
-        else if (isWinError) {
-          that.setState({ status: false, showInstruct: true, testDisabled: false, statusSnack: false, isMac: false })
-        }
-        else if (account) {
-          that.setState({ status: false, showPay: true, statusSnack: false, testDisabled: false, isMac: false, payAccount: account })
-        }
-        else if (err) {
-          if (err.message !== true)
-            that.setState({ status: false, statusSnack: false, showInstruct: false, testDisabled: false, openSnack: true, snackMessage: err.message })
-        }
-        else {
-          that.props.onChange();
-          //that.returnVPN();
-          that.setState({ status: true, statusSnack: false, showInstruct: false, testDisabled: false, openSnack: true, snackMessage: "Connected VPN" })
-        }
-      })
-    }
-    else {
-      this.setState({ openSnack: true, statusSnack: false, testDisabled: false, snackMessage: 'Check your Internet Connection' })
-    }
-  }
-
-  payVPN = () => {
-    let data = {
-      account_addr: this.state.payAccount,
-      amount: 10000000000,
-      id: -1
-    }
-    this.props.vpnPayment(data);
-    this.setState({ showPay: false })
-  }
-
-  returnVPN = () => {
-    return <VPNComponent isConnected={true} />
-  }
-
   _disconnectVPN = () => {
-    this.setState({ statusSnack: true, statusMessage: 'Disconnecting...' })
+    this.setState({ statusSnack: true, statusMessage: lang[this.props.lang].Disconnecting })
     var that = this;
     disconnectVPN(function (err) {
       that.props.onChange();
-      that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
+      that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
     });
   }
 
@@ -129,13 +86,14 @@ class Header extends Component {
           //   }
           // })
           this.props.moveToList();
+          this.setState({ openSnack: true, snackMessage: lang[this.props.lang].SelectNode })
         }
         else {
           this._disconnectVPN();
         }
       }
       else {
-        this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+        this.setState({ openSnack: true, snackMessage: lang[this.props.lang].CheckInternet })
       }
     }
   };
@@ -170,38 +128,7 @@ class Header extends Component {
     });
   };
   render() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="Connect"
-        primary={true}
-        disabled={this.state.selectedVPN == null || this.state.vpnList.length === 0 ? true : false}
-        onClick={this._connectVPN.bind(this)}
-      />,
-    ];
-    const instrucActions = [
-      <FlatButton
-        label="Close"
-        primary={true}
-        onClick={this.closeInstruction}
-      />
-    ];
-    const paymentActions = [
-      <FlatButton
-        label="Close"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="Pay"
-        primary={true}
-        onClick={this.payVPN.bind(this)}
-      />,
-    ];
+    let language = this.props.lang;
     return (
       <div style={{ height: 70, background: 'linear-gradient(to right,#2f3245 72%,#3d425c 28%)' }}>
         <div>
@@ -227,7 +154,7 @@ class Header extends Component {
                   <Col xs={4}>
                     <CopyToClipboard text={this.props.local_address}
                       onCopy={() => this.setState({
-                        snackMessage: 'Copied to Clipboard Successfully',
+                        snackMessage: lang[language].Copied,
                         openSnack: true
                       })} >
                       {/* <img
@@ -308,15 +235,15 @@ class Header extends Component {
                 message={this.state.snackMessage}
                 autoHideDuration={2000}
                 onRequestClose={this.snackRequestClose}
-                style={{ marginBottom: '2%' }}
+                style={{ marginBottom: '1%' }}
               />
               <Snackbar
                 open={this.state.statusSnack}
                 message={this.state.statusMessage}
-                style={{ marginBottom: '2%' }}
+                style={{ marginBottom: '1%' }}
               />
               <ReactTooltip id="copyImage" place="bottom">
-                <span>Copy</span>
+                <span>{lang[language].Copy}</span>
               </ReactTooltip>
             </Row>
           </Grid>

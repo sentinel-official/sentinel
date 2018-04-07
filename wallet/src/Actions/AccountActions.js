@@ -493,7 +493,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                       data.ipConnected = IPGENERATED;
                       data.location = LOCATION;
                       data.speed = SPEED;
-                      data.session_name=SESSION_NAME;
+                      data.session_name = SESSION_NAME;
                       let keystore = JSON.stringify(data);
                       fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                       });
@@ -517,7 +517,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     data.ipConnected = IPGENERATED;
                     data.location = LOCATION;
                     data.speed = SPEED;
-                    data.session_name=SESSION_NAME;
+                    data.session_name = SESSION_NAME;
                     let keystore = JSON.stringify(data);
                     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                     });
@@ -544,18 +544,21 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     data.ipConnected = IPGENERATED;
                     data.location = LOCATION;
                     data.speed = SPEED;
-                    data.session_name=SESSION_NAME;
+                    data.session_name = SESSION_NAME;
                     let keystore = JSON.stringify(data);
                     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                     });
                     cb(null, false, false, false);
-                    count = 10;
+                    count = 8;
                   }
 
                   count++;
 
-                  if (count < 10) {
+                  if (count < 8) {
                     setTimeout(function () { checkVPNConnection(); }, 5000);
+                  }
+                  if (count == 8 && CONNECTED === false) {
+                    cb({ message: 'Something went wrong.Please Try Again' }, false, false, false)
                   }
                 });
               }
@@ -710,7 +713,7 @@ export function isVPNConnected(cb) {
   if (remote.process.platform === 'win32') {
     getVPNProcesses(function (err, pid) {
       if (err) {
-        cb(null, false)
+        cb(err, false)
       } else {
         cb(null, true)
       }
@@ -723,17 +726,25 @@ export function isVPNConnected(cb) {
       } else if (pids) {
         cb(null, true)
       } else {
-        cb(null, false)
+        cb(true, false)
       }
     });
   }
 }
 
 export function getLatency(url, cb) {
-  exec("ping -c 2 " + url + " | tail -1 | awk '{print $4}' | cut -d '/' -f 2", function (err, stdout, stderr) {
-    if (err) cb(err, null)
-    else cb(null, stdout.toString())
-  })
+  if (remote.process.platform == 'win32') {
+    exec("ping -n 2 " + url + " | findstr /i \"average\"", function (err, stdout, stderr) {
+      if (err) cb(err, null)
+      else cb(null, stdout.toString().split(',')[2].split('=')[1].split('ms')[0]);
+    })
+  }
+  else {
+    exec("ping -c 2 " + url + " | tail -1 | awk '{print $4}' | cut -d '/' -f 2", function (err, stdout, stderr) {
+      if (err) cb(err, null)
+      else cb(null, stdout.toString())
+    })
+  }
 }
 
 export function getVPNConnectedData(cb) {
@@ -748,7 +759,7 @@ export function getVPNConnectedData(cb) {
             IPGENERATED = keystore.ipConnected;
             LOCATION = keystore.location;
             SPEED = keystore.speed;
-            SESSION_NAME=keystore.session_name;
+            SESSION_NAME = keystore.session_name;
             let connectedData = {
               ip: IPGENERATED,
               location: LOCATION,

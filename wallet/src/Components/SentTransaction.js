@@ -4,6 +4,7 @@ import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
 var config = require('../config');
 let zfill = require('zfill');
+var lang = require('./language');
 
 let shell = window
     .require('electron')
@@ -39,9 +40,10 @@ class SentTransaction extends Component {
         let that = this;
         let data = this.props.data;
         let address = this.props.local_address;
+        let language=this.props.lang;
         let zfillAddress = '0x' + zfill(address.substring(2), 64);
         if (data.length === 0) {
-            output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Transactions yet</div>
+            output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>{lang[language].NoTransactions}</div>
         }
         else {
             output = data.map((history) => {
@@ -53,14 +55,14 @@ class SentTransaction extends Component {
                                     <span style={{
                                         color: 'red',
                                         fontWeight: 'bold'
-                                    }}>OUT
+                                    }}>{lang[language].Out}
                   </span>
                                     <span style={{ marginLeft: 5 }}>{new Date(parseInt(history.timeStamp) * 1000).toGMTString()}</span>
                                 </div>
                                 <div>
                                     <span style={{
                                         fontWeight: 'bold'
-                                    }}>To:
+                                    }}>{lang[language].To}:
                   </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
@@ -69,7 +71,7 @@ class SentTransaction extends Component {
                                         }}>{`0x${history.topics[2].substring(26)}`}</a>
                                     <CopyToClipboard text={`0x${history.topics[2].substring(26)}`}
                                         onCopy={() => that.setState({
-                                            snackMessage: 'Copied to Clipboard Successfully',
+                                            snackMessage: lang[language].Copied,
                                             openSnack: true
                                         })} >
                                         <img src={'../src/Images/download.jpeg'}
@@ -80,7 +82,7 @@ class SentTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold'
                                     }}>
-                                        Gas Price:
+                                        {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
                                         {parseInt(history.gasPrice) / (10 ** 9)} Gwei
@@ -92,7 +94,7 @@ class SentTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold',
                                         color: '#532d91'
-                                    }}>IN
+                                    }}>{lang[language].In}
                 </span>
                                     <span style={{ marginLeft: 5 }}>{new Date(parseInt(history.timeStamp) * 1000).toGMTString()}</span>
                                 </div>
@@ -100,7 +102,7 @@ class SentTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold'
                                     }}>
-                                        From:
+                                        {lang[language].From}:
                 </span>
                                     <a style={{ cursor: 'pointer', marginLeft: 5 }}
                                         onClick={() => {
@@ -109,7 +111,7 @@ class SentTransaction extends Component {
                                         }}>{`0x${history.topics[1].substring(26)}`}</a>
                                     <CopyToClipboard text={`0x${history.topics[1].substring(26)}`}
                                         onCopy={() => that.setState({
-                                            snackMessage: 'Copied to Clipboard Successfully',
+                                            snackMessage: lang[language].GasPrice,
                                             openSnack: true
                                         })} >
                                         <img src={'../src/Images/download.jpeg'}
@@ -120,7 +122,7 @@ class SentTransaction extends Component {
                                     <span style={{
                                         fontWeight: 'bold'
                                     }}>
-                                        Gas Price:
+                                        {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
                                         {parseInt(history.gasPrice) / (10 ** 9)} Gwei
@@ -129,10 +131,10 @@ class SentTransaction extends Component {
                             </div>
                         }
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
-                            <span style={{ fontWeight: 'bold' }}>Amount : </span>
+                            <span style={{ fontWeight: 'bold' }}>{lang[language].Amount} : </span>
                             <span>{(parseInt(history.data) / (10 ** 8)).toFixed(3)} </span>
                             <span>SENTs</span>  |
-                            <span style={{ fontWeight: 'bold' }}> Status : Success</span> |
+                            <span style={{ fontWeight: 'bold' }}> {lang[language].Status} : {lang[language].Success}</span> |
                             <span style={{ fontWeight: 'bold' }}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
@@ -142,7 +144,7 @@ class SentTransaction extends Component {
                             </a>
                             <CopyToClipboard text={history.transactionHash}
                                 onCopy={() => that.setState({
-                                    snackMessage: 'Copied to Clipboard Successfully',
+                                    snackMessage: lang[language].Copied,
                                     openSnack: true
                                 })} >
                                 <img src={'../src/Images/download.jpeg'}
@@ -152,7 +154,7 @@ class SentTransaction extends Component {
                             </CopyToClipboard>
                         </pre>
                         <ReactTooltip id="copyImage" place="bottom">
-                            <span>Copy</span>
+                            <span>{lang[language].Copy}</span>
                         </ReactTooltip>
                     </div>
                 )

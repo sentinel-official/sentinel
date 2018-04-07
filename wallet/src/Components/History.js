@@ -7,6 +7,7 @@ import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import EtherTransaction from './EtherTransaction';
 import SentTransaction from './SentTransaction';
 let zfill = require('zfill');
+var lang = require('./language');
 
 class History extends Component {
   constructor(props) {
@@ -89,14 +90,17 @@ class History extends Component {
       this.getSentHistory();
       this.setState({ isInitial: false });
     }
-    let ethOutput = <EtherTransaction data={this.state.ethData} isTest={this.props.isTest} local_address={this.props.local_address} />
-    let sentOutput = <SentTransaction data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address} />
+    let language = this.props.lang;
+    let ethOutput = <EtherTransaction
+      data={this.state.ethData} isTest={this.props.isTest} local_address={this.props.local_address} lang={this.props.lang} />
+    let sentOutput = <SentTransaction
+      data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address} lang={this.props.lang} />
     return (
       <div style={{ margin: '1% 3%' }}>
         {this.state.ethActive ?
-          <span style={styles.transactionsHeading}>Eth Transactions</span> :
-          <span style={styles.transactionsHeading}>Sent Transactions</span>}
-        <span style={{ marginLeft: '60%' }}>
+          <span style={styles.transactionsHeading}>{lang[language].EthTransactions}</span> :
+          <span style={styles.transactionsHeading}>{lang[language].SentTransactions}</span>}
+        <span style={{ marginLeft: this.props.lang === 'en' ? '60%' : '58%' }}>
           <IconButton>
             <Refresh onClick={this.handleRefresh.bind(this)} />
           </IconButton>
@@ -118,12 +122,12 @@ class History extends Component {
                 {ethOutput}
                 <div style={{ float: 'right' }}>
                   <RaisedButton
-                    label="Back"
+                    label={lang[language].Back}
                     onClick={() => { this.getEthHistory(this.state.pageNumber - 1) }}
                     disabled={this.state.pageNumber === 1 ? true : false}
                   />
                   <RaisedButton
-                    label="Next"
+                    label={lang[language].Next}
                     disabled={this.state.nextDisabled}
                     onClick={() => { this.getEthHistory(this.state.pageNumber + 1) }}
                   />

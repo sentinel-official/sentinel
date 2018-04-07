@@ -8,6 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import Slider from 'material-ui/Slider';
 import { sendError } from '../helpers/ErrorLog';
 var config = require('../config');
+var lang = require('./language');
 
 let statusUrl;
 let shell = window
@@ -301,6 +302,7 @@ class SendComponent extends Component {
     }
   };
   render() {
+    let language = this.props.lang;
     return (
       <MuiThemeProvider>
         <div style={{
@@ -309,7 +311,7 @@ class SendComponent extends Component {
           padding: '5%'
         }}>
           <FlatButton
-            label="Get Free Tokens"
+            label={lang[language].GetTokens}
             labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', fontSize: 12, color: '#FAFAFA' }}
             onClick={this.getFree.bind(this)}
             disabled={!this.props.isTest}
@@ -321,7 +323,7 @@ class SendComponent extends Component {
           <Grid>
             <Row style={{ marginBottom: 15, paddingTop: 20 }}>
               <Col xs={3}>
-                <span>To</span>
+                <span>{lang[language].To}</span>
                 <span data-tip data-for="toField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
@@ -338,7 +340,7 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15, height: 30 }}>
               <Col xs={3}>
-                <span>Amount</span>
+                <span>{lang[language].Amount}</span>
                 <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={6}>
@@ -383,7 +385,7 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15, height: 30 }}>
               <Col xs={3}>
-                <span>Gas Limit</span>
+                <span>{lang[language].GasLimit}</span>
                 <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
@@ -412,7 +414,7 @@ class SendComponent extends Component {
             </Row> */}
             <Row style={{ marginBottom: 15, height: 30 }}>
               <Col xs={3}>
-                <span >Password</span>
+                <span >{lang[language].Password}</span>
                 <span data-tip data-for="passwordField" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={9}>
@@ -426,7 +428,7 @@ class SendComponent extends Component {
             </Row>
             <Row style={{ marginBottom: 15, height: 30 }}>
               <Col xs={3}>
-                <span>Gas Price</span>
+                <span>{lang[language].GasPrice}</span>
                 <span data-tip data-for="gasPrice" style={styles.questionMark}>?</span>
               </Col>
               <Col xs={4}>
@@ -488,7 +490,7 @@ class SendComponent extends Component {
           <div>
             <FlatButton disabled={this.state.to_address === '' || this.state.sending || this.state.isDisabled ? true : false}
               onClick={this.onClickSend.bind(this)}
-              label={this.state.sending === null || this.state.sending === false ? "Send" : "Sending..."}
+              label={this.state.sending === null || this.state.sending === false ? lang[language].Send : "Sending..."}
               style={
                 this.state.to_address === '' || this.state.sending === true || this.state.isDisabled === true ?
                   { backgroundColor: '#bdbdbd', marginLeft: 20 }

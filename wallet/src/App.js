@@ -3,40 +3,51 @@ import Home from './Components/Home';
 import Create from './Components/Create';
 import Dashboard from './Components/Dashboard';
 import Authenticate from './Components/Authenticate';
-import {checkKeystore} from './Actions/AccountActions';
+import { checkKeystore } from './Actions/AccountActions';
+const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            scene: null
+            scene: null,
+            lang: 'en'
         }
     }
-    componentWillMount=()=>{
+    componentWillMount = () => {
         var that = this;
         checkKeystore(function (err) {
-            if (err) that.setState({scene:'home'});
-            else that.setState({scene:'authenticate'});
-        })   
+            if (err) that.setState({ scene: 'home' });
+            else that.setState({ scene: 'authenticate' });
+        })
     }
 
-    setComponent=(name)=>{
-        this.setState({scene:name})
+    componentDidMount = () => {
+        let self = this;
+        ipcRenderer.on('lang', (event, arg) => {
+            console.log("App props..",arg);
+            self.setState({ lang: arg })
+        })
+    }
+
+    setComponent = (name) => {
+        this.setState({ scene: name })
+        console.log("Lang..",this.state.lang);
     }
 
     render() {
         let scene = this.state.scene;
         switch (scene) {
             case 'create':
-                return <Create set={this.setComponent} />
+                return <Create set={this.setComponent} lang={this.state.lang} />
             case 'authenticate':
-                return <Authenticate set={this.setComponent} />
+                return <Authenticate set={this.setComponent} lang={this.state.lang} />
             case 'dashboard':
-                return <Dashboard set={this.setComponent} />
+                return <Dashboard set={this.setComponent} lang={this.state.lang} />
             case 'home':
-                return <Home set={this.setComponent} />
+                return <Home set={this.setComponent} lang={this.state.lang} />
             default:
-                return <Home set={this.setComponent} />
+                return null
         }
     }
 }

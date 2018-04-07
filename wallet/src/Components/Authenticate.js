@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Dialog, FlatButton, TextField, Snackbar } from 'material-ui';
 import { getPrivateKey } from '../Actions/TransferActions';
+let lang = require('./language');
 
 class Authenticate extends Component {
     constructor(props) {
@@ -11,7 +12,6 @@ class Authenticate extends Component {
             showPopUp: true,
             openSnack: false,
             snackMessage: '',
-            buttonName: 'Submit',
             statusSnack: false,
             statusMessage: '',
             isDisabled: false
@@ -24,7 +24,7 @@ class Authenticate extends Component {
     }
 
     submitPassword = () => {
-        this.setState({ isDisabled: 'true', statusSnack: true, statusMessage: 'Checking credentials...' })
+        this.setState({ isDisabled: 'true', statusSnack: true, statusMessage: lang[this.props.lang].CheckCre })
         let self = this;
         setTimeout(function () {
             getPrivateKey(self.state.password, function (err, privateKey) {
@@ -46,15 +46,16 @@ class Authenticate extends Component {
     };
 
     render() {
+        let language = this.props.lang;
         const actions = [
             <FlatButton
-                label="Close"
+                label={lang[language].Close}
                 primary={true}
                 onClick={this.closeWindow}
                 style={{ border: '1px solid #00bcd4', borderRadius: 5 }}
             />,
             <FlatButton
-                label={this.state.buttonName}
+                label={lang[language].Submit}
                 disabled={this.state.isDisabled}
                 primary={true}
                 onClick={this.submitPassword}
@@ -65,7 +66,7 @@ class Authenticate extends Component {
             <MuiThemeProvider>
                 <div>
                     <Dialog
-                        title="Enter Keystore Password to Login"
+                        title={lang[language].KeystoreLogin}
                         titleStyle={{ fontSize: 16 }}
                         actions={actions}
                         modal={true}
@@ -73,7 +74,7 @@ class Authenticate extends Component {
                     >
                         <TextField
                             autoFocus={true}
-                            hintText="Enter Keystore Password"
+                            hintText={lang[language].KeyPass}
                             hintStyle={{ fontSize: 14 }}
                             type="password"
                             onChange={(event, password) => { this.setState({ password: password }) }}

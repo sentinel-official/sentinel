@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { Toolbar, ToolbarGroup, RaisedButton } from 'material-ui';
+let lang = require('./language');
 
 class Home extends Component {
     constructor(props) {
@@ -10,6 +11,7 @@ class Home extends Component {
     }
 
     render() {
+        let language=this.props.lang;
         return (
             <MuiThemeProvider>
                 <div>
@@ -23,14 +25,14 @@ class Home extends Component {
                             <br />
                             <Row>
                                 <Col>
-                                    <h2>Anonymous VPN backed by blockchain security</h2>
+                                    <h2>{lang[language].AnonymousVPN}</h2>
                                 </Col>
-                                <p style={styles.middleDivText}>Open-source wallet and secure service platform</p>
+                                <p style={styles.middleDivText}>{lang[language].OpenSource}</p>
                                 <br /><br />
                             </Row>
                         </Grid>
                         <RaisedButton
-                            label="Create / Restore Wallet"
+                            label={lang[language].CreateRestore}
                             style={{ marginLeft: '7%', backgroundColor: 'transparent',height:'42px' }}
                             labelStyle={styles.yesButtonLabel}
                             buttonStyle={styles.yesButton}
@@ -41,15 +43,12 @@ class Home extends Component {
                         <Row style={{ marginLeft: -20 }}>
                             <Col xs={7} style={styles.bottomDivCol}>
                                 <div style={{ marginLeft: '5%', padding: '7%' }}>
-                                    <h4 style={styles.moreAboutText}>Sentinel Anonymity Platform</h4>
-                                    <p style={{ fontSize: 14 }}>
-                                        Peer to peer erc based privacy application suite with multi chain
-                                        for gas-free services and anonymous erc token transactions
-                                        </p>
+                                    <h4 style={styles.moreAboutText}>{lang[language].SentinelAnonymity}</h4>
+                                    <p style={{ fontSize: 14 }}>{lang[language].PeerToPeer}</p>
                                 </div>
                             </Col>
                             <Col xs={4} style={{ marginLeft: '5%' }}>
-                                <h4 style={styles.bottomDivBuilt}>Beta Version 0.0.2 with testnet</h4>
+                                <h4 style={styles.bottomDivBuilt}>{lang[language].BetaVersion}</h4>
                                 <hr align="left" style={styles.underLine} />
                                 <p style={styles.copyRight}>SentinelGroup.io</p>
                             </Col>

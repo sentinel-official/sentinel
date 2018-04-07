@@ -123,16 +123,28 @@ app.on('ready', function () {
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
-      {
-        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      },
+      // {
+      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      // },
     ]
   },
   {
     label: "Language",
     submenu: [
-      { label: 'English', type: 'checkbox', checked: true, click() { m.items[1].submenu.items[1].checked = false; mainWindow.window.webContents.send('lang', 'en'); } },
-      { label: 'Japanese', type: 'checkbox', click() { m.items[1].submenu.items[0].checked = false; mainWindow.window.webContents.send('lang', 'ja'); } }
+      {
+        label: 'English', type: 'checkbox', checked: true, click() {
+          m.items[1].submenu.items[1].checked = false;
+          m.items[1].submenu.items[0].checked = true;
+          mainWindow.window.webContents.send('lang', 'en');
+        }
+      },
+      {
+        label: 'Japanese', type: 'checkbox', click() {
+          m.items[1].submenu.items[0].checked = false;
+          m.items[1].submenu.items[1].checked = true;
+          mainWindow.window.webContents.send('lang', 'ja');
+        }
+      }
     ]
   }
   ])

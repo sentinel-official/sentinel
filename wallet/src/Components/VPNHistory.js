@@ -103,6 +103,7 @@ class VPNHistory extends Component {
                     if (transacFrom.toLowerCase() === that.props.local_address.toLowerCase() &&
                         transacToAddr.toLowerCase() === sessionData.account_addr.toLowerCase() &&
                         parseInt(transactionDetails.data) === parseInt(sessionData.amount) &&
+                        (parseInt(transactionDetails.data) + 1) === parseInt(sessionData.amount) &&
                         parseInt(transactionDetails.timeStamp) >= sessionData.timestamp
                     ) {
                         let body = {
@@ -134,7 +135,7 @@ class VPNHistory extends Component {
         }
         let vpnUsage = this.state.vpnUsage;
         let that = this;
-        let language=this.props.lang;
+        let language = this.props.lang;
         if (vpnUsage) {
             if (vpnUsage.sessions.length !== 0) {
                 var sessions = _.sortBy(vpnUsage.sessions, o => o.timeStamp).reverse()

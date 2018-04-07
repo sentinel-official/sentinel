@@ -89,7 +89,7 @@ class SendComponent extends Component {
     let amount = this.state.amount;
     let gas_price = this.state.sliderValue * (10 ** 9);
     if (this.state.session_id === -1 && parseInt(this.state.amount) !== 100) {
-      this.setState({ snackOpen: true, snackMessage: 'Please send 100 sends', sending: false })
+      this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false })
     }
     else {
       tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
@@ -207,10 +207,10 @@ class SendComponent extends Component {
   onClickSend = () => {
     var self = this;
     if (this.state.amount === '') {
-      this.setState({ sending: false, snackOpen: true, snackMessage: 'Amount field is Empty' })
+      this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].AmountEmpty })
     }
     else if (this.state.password === '') {
-      this.setState({ sending: false, snackOpen: true, snackMessage: 'Password field is Empty' })
+      this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
     }
     else {
       if (isOnline()) {
@@ -219,7 +219,7 @@ class SendComponent extends Component {
           sending: true
         });
         setTimeout(function () {
-          getPrivateKey(self.state.password, function (err, privateKey) {
+          getPrivateKey(self.state.password, self.props.lang, function (err, privateKey) {
             //console.log("Get..", self.state.isDisabled, err, privateKey)
             if (err) {
               sendError(err)
@@ -237,21 +237,21 @@ class SendComponent extends Component {
         }, 500);
       }
       else {
-        this.setState({ snackOpen: true, snackMessage: 'Check your Internet Connection' })
+        this.setState({ snackOpen: true, snackMessage: lang[this.props.lang].CheckInternet })
       }
     }
   }
 
-  renderLink() {
-    return (
-      <div>
-        Your Transaction is Placed Successfully. Check Status <a onClick={() => {
-          statusUrl = this.getStatusUrl();
-          this.openInExternalBrowser(`${statusUrl}/tx/${this.state.tx_addr}`)
-        }} style={{ color: '#1d400' }}>Here</a>
-      </div>
-    )
-  }
+  // renderLink() {
+  //   return (
+  //     <div>
+  //       Your Transaction is Placed Successfully. Check Status <a onClick={() => {
+  //         statusUrl = this.getStatusUrl();
+  //         this.openInExternalBrowser(`${statusUrl}/tx/${this.state.tx_addr}`)
+  //       }} style={{ color: '#1d400' }}>Here</a>
+  //     </div>
+  //   )
+  // }
 
   openSnackBar = () => this.setState({
     snackMessage: 'Your Transaction is Placed Successfully.',
@@ -448,24 +448,23 @@ class SendComponent extends Component {
           </Grid>
           <div>
             <ReactTooltip id="toField" place="bottom">
-              <span>Wallet Address that you want to send Sentinel Tokens to</span>
+              <span>{lang[language].ToTooltip}</span>
             </ReactTooltip>
             <ReactTooltip id="amountField" place="bottom">
-              <span>Total Ethereum/Sentinel Tokens<br />
-                that you want to send to. <br />
-                Yes, this wallet can<br /> hold Ethereum too.</span>
+              <span>{lang[language].AmountTool1}<br />
+              {lang[language].AmountTool2}</span>
             </ReactTooltip>
             <ReactTooltip id="gasField" place="bottom">
-              <span>21000 is the default gas limit</span>
+              <span>{lang[language].GasFieldTool}</span>
             </ReactTooltip>
             <ReactTooltip id="gasPrice" place="bottom">
-              <span>Amount you pay per unit of gas</span>
+              <span>{lang[language].GasPriceTool}</span>
             </ReactTooltip>
             <ReactTooltip id="messageField" place="bottom">
               <span>A message that you might want to add as a transaction note</span>
             </ReactTooltip>
             <ReactTooltip id="passwordField" place="bottom">
-              <span>Your Sentinel AUID Password</span>
+              <span>{lang[language].PasswordTool}</span>
             </ReactTooltip>
             <Snackbar
               open={this.state.openSnack}

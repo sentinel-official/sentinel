@@ -168,6 +168,9 @@ class Header extends Component {
                         style={styles.clipBoard}
                       />
                     </CopyToClipboard>
+                    <ReactTooltip id="copyImage" place="bottom">
+                      <span>{lang[language].Copy}</span>
+                    </ReactTooltip>
                   </Col>
                 </Row>
               </Col>
@@ -242,9 +245,6 @@ class Header extends Component {
                 message={this.state.statusMessage}
                 style={{ marginBottom: '1%' }}
               />
-              <ReactTooltip id="copyImage" place="bottom">
-                <span>{lang[language].Copy}</span>
-              </ReactTooltip>
             </Row>
           </Grid>
         </div>

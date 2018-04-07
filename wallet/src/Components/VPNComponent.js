@@ -727,15 +727,13 @@ class VPNComponent extends Component {
                     }
                 </Dialog>
                 <Dialog
-                    title="Initial Payment Reminder"
+                    title={lang[language].InitialPayment}
                     titleStyle={{ fontSize: 14 }}
                     actions={paymentActions}
                     modal={true}
                     open={this.state.showPay}
                 >
-                    <span>
-                        Inorder to use VPN, you need to pay 100 sents for the first time. Please pay and then try to connect to the vpn.
-                            </span>
+                    <span>{lang[language].InorderVPN}</span>
                 </Dialog>
                 <ReactTooltip id="copyImage" place="bottom">
                     <span>{lang[language].Copy}</span>

@@ -6,10 +6,17 @@ var i18n = new (require('./translations/i18n'));
 const remote = electron.remote;
 var { exec } = require('child_process');
 var sudo = require('sudo-prompt');
+const fs = require('fs');
 var disconnect = {
   name: 'DisconnectOpenVPN'
 };
 var showPrompt = true;
+const SENT_DIR = getUserHome() + '/.sentinel';
+const KEYSTORE_FILE = SENT_DIR + '/keystore';
+if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
+function getUserHome() {
+  return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+}
 
 function windowManager() {
   this.window = null;
@@ -52,6 +59,18 @@ function windowManager() {
   }
 }
 
+
+function getKeystore(cb) {
+  console.log("Jey...", KEYSTORE_FILE);
+  fs.readFile(KEYSTORE_FILE, function (err, data) {
+    console.log("err..", err, data);
+    if (err) cb(err, null);
+    else {
+      cb(null, data);
+    }
+  });
+}
+
 function isVPNConnected(cb) {
   if (process.platform === 'win32') {
     exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
@@ -79,6 +98,16 @@ function stopVPN() {
   if (process.platform === 'win32') {
     sudo.exec('taskkill /IM sentinel.exe /f && taskkill /IM openvpn.exe /f', disconnect,
       function (error, stdout, stderr) {
+        if (error) console.log('Disconnecting failed');
+        else {
+          getKeystore(function (err, KEYSTOREDATA) {
+            let data = JSON.parse(KEYSTOREDATA);
+            data.isConnected = null;
+            let keystore = JSON.stringify(data);
+            fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
+            });
+          })
+        }
       });
   }
   else {
@@ -89,7 +118,15 @@ function stopVPN() {
         if (process.platform === 'darwin') {
           command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
         }
-        exec(command, (err, stdout, stderr) => {
+        exec(command, (comErr, stdOut, stdErr) => {
+          console.log("...", comErr, stdOut, stdErr);
+          getKeystore(function (error, KEYSTOREDATA) {
+            let data = JSON.parse(KEYSTOREDATA);
+            data.isConnected = null;
+            let keystore = JSON.stringify(data);
+            fs.writeFile(KEYSTORE_FILE, keystore, function (keyErr) {
+            });
+          })
         });
       }
     });

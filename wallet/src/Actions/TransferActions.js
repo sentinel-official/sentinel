@@ -57,7 +57,8 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
 }
 
 export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
-    amount = amount * Math.pow(10, 8);
+    // amount = amount * Math.pow(10, 8);
+    console.log("Amount..",amount);
     setWeb3();
     setContract();
     var SENTINEL_ADDRESS = getAddress();
@@ -79,13 +80,14 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
 
 export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     setWeb3();
+    console.log("Amount..",amount);
     var txParams = {
         nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
         gasPrice: gas_price,
         gasLimit: gas,
         from: from_addr,
         to: to_addr,
-        value: web3.toHex(web3.toWei(amount, 'ether')),
+        value: web3.toHex(amount),
         data: ''
     }
     var tx = new EthereumTx(txParams);

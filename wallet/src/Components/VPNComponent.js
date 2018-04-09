@@ -93,7 +93,7 @@ class VPNComponent extends Component {
                 console.log("Error in getting due...")
             }
             else {
-                let dueSession = history.sessions.find((obj) => { return obj.is_payed === false; })
+                let dueSession = history.sessions.find((obj) => { return obj.is_paid === false; })
                 self.setState({ dueAmount: history.due, dueSession: dueSession });
             }
         })
@@ -566,7 +566,7 @@ class VPNComponent extends Component {
                                 </List>
                                 :
                                 <span style={{ marginLeft: '35%', position: 'absolute', marginTop: '20%' }}>
-                                    {lang[language].Latency}</span>
+                                    {lang[language].NoServers}</span>
                             }
                         </div>
                 }

@@ -185,10 +185,17 @@ export function payVPNUsage(data, cb) {
           cb(null, tx_hash);
         } else {
           if (response.errors.length > 0) {
-            cb({
-              message: JSON.parse(response.errors[0].split("'").join('"')).error
-                || 'Error occurred while initiating transfer amount.'
-            }, null);
+            if (response.errors[0].error) {
+              cb({
+                message: response.errors[0].error || 'Something went wrong in transaction'
+              }, null);
+            }
+            else {
+              cb({
+                message: JSON.parse(response.errors[0].split("'").join('"')).error
+                  || 'Error occurred while initiating transfer amount.'
+              }, null);
+            }
           }
           else {
             cb({
@@ -580,7 +587,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
   if (fs.existsSync(OVPN_FILE)) {
     cb(null);
   } else {
-    fetch('http:' + vpn_ip + ':' + vpn_port + '/client/generateOVPN', {
+    fetch('http:' + vpn_ip + ':' + vpn_port + '/ovpn', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -668,8 +675,8 @@ export function disconnectVPN(cb) {
         if (remote.process.platform === 'darwin') {
           command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
         }
-        exec(command, function (err, stdout, stderr) {
-          console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
+        exec(command, function (error, stdout, stderr) {
+          console.log("Err..", error, "Out..", stdout.toString(), "Std..", stderr)
           CONNECTED = false;
           let data = JSON.parse(KEYSTOREDATA);
           data.isConnected = null;
@@ -750,8 +757,8 @@ export function getLatency(url, cb) {
 export function getVPNConnectedData(cb) {
   isVPNConnected(function (err, connected) {
     if (connected) {
-      getKeystore(function (err, data) {
-        if (err) cb(err, null)
+      getKeystore(function (error, data) {
+        if (error) cb(err, null)
         else {
           let keystore = JSON.parse(data);
           if (keystore.isConnected) {
@@ -768,7 +775,7 @@ export function getVPNConnectedData(cb) {
             cb(null, connectedData)
           }
           else {
-            cb(err, null);
+            cb(error, null);
           }
         }
       })

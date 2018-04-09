@@ -88,7 +88,7 @@ class SendComponent extends Component {
     let gas = this.state.gas;
     let amount = this.state.amount;
     let gas_price = this.state.sliderValue * (10 ** 9);
-    if (this.state.session_id === -1 && parseInt(this.state.amount) !== 100) {
+    if (this.state.session_id === -1 && parseInt(this.state.amount) !== 10000000000) {
       this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false })
     }
     else {
@@ -259,6 +259,8 @@ class SendComponent extends Component {
   })
 
   amountChange = (event, amount) => {
+    if (this.state.unit === 'ETH') amount = amount * Math.pow(10, 18);
+    else amount = amount * Math.pow(10, 8);
     this.setState({ amount: amount })
     let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
     if (trueAddress !== null) {
@@ -279,8 +281,8 @@ class SendComponent extends Component {
 
   getGasLimit = (amount, to, unit) => {
     var from = this.props.local_address;
-    if (unit === 'ETH') amount = amount * Math.pow(10, 18)
-    else amount = amount * Math.pow(10, 8)
+    // if (unit === 'ETH') amount = amount * Math.pow(10, 18)
+    // else amount = amount * Math.pow(10, 8)
     let that = this;
     getGasCost(from, to, amount, unit, function (gasLimit) {
       that.setState({ gas: gasLimit })
@@ -349,7 +351,10 @@ class SendComponent extends Component {
                   style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
                   fullWidth={true}
                   inputStyle={{ padding: 10 }}
-                  onChange={this.amountChange.bind(this)} value={this.state.amount} />
+                  onChange={this.amountChange.bind(this)} value={
+                    this.state.unit === 'ETH' ? parseFloat(this.state.amount / (10 ** 18)) :
+                      parseFloat(this.state.amount / (10 ** 8))
+                  } />
               </Col>
               <Col xs={3}>
                 <DropDownMenu
@@ -452,7 +457,7 @@ class SendComponent extends Component {
             </ReactTooltip>
             <ReactTooltip id="amountField" place="bottom">
               <span>{lang[language].AmountTool1}<br />
-              {lang[language].AmountTool2}</span>
+                {lang[language].AmountTool2}</span>
             </ReactTooltip>
             <ReactTooltip id="gasField" place="bottom">
               <span>{lang[language].GasFieldTool}</span>

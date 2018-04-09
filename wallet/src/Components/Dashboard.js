@@ -7,6 +7,7 @@ import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnect
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
+import SendNew from './SendNew';
 import VPNHistory from './VPNHistory';
 import { sendError } from '../helpers/ErrorLog';
 let lang = require('./language');
@@ -108,7 +109,7 @@ class Dashboard extends Component {
   vpnPayment = (sessionData) => {
     this.setState({
       to_addr: sessionData.account_addr,
-      amount: parseFloat(sessionData.amount / (10 ** 8)),
+      amount: sessionData.amount,
       unit: 'SENT',
       value: 'send',
       sessionId: sessionData.id,
@@ -174,7 +175,7 @@ class Dashboard extends Component {
               inkBarStyle={{ backgroundColor: '#2f3245', height: 3 }}
             >
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].History} value="history">
-                <History local_address={this.state.local_address} isTest={this.state.isTest} lang={this.props.lang}/>
+                <History local_address={this.state.local_address} isTest={this.state.isTest} lang={this.props.lang} />
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Send} value="send">
                 <SendComponent
@@ -190,6 +191,7 @@ class Dashboard extends Component {
                   clearSend={this.clearSend.bind(this)}
                   lang={this.props.lang}
                 />
+                {/* <SendNew /> */}
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Receive} value="receive">
                 <div>

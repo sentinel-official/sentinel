@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine
 
 ADD sentinel /root/sentinel
 
@@ -7,10 +7,13 @@ ADD app.py server.py run.sh /root/
 ENV SENT_ENV=DEV
 
 RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
-    apk add --no-cache ca-certificates easy-rsa mongodb openvpn ufw@testing wget && \
-    apk add --no-cache gcc musl-dev nano python-dev redis && \
+    apk add --no-cache ca-certificates easy-rsa mongodb openvpn redis ufw@testing && \
+    apk add --no-cache gcc python-dev musl-dev nano && \
+    mkdir -p /data/db && \
     wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
-    python /tmp/get-pip.py && pip install --no-cache-dir requests speedtest_cli falcon gunicorn getip2 pychalk==1.0.2 pymongo raven redis && \
+    python /tmp/get-pip.py && \
+    pip install --no-cache-dir falcon gunicorn pymongo raven redis requests speedtest_cli && \
+    pip install --no-cache-dir ipython && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
 
 EXPOSE 1194/udp 3000

@@ -2,7 +2,8 @@ from __future__ import print_function
 
 import sys
 import time
-from os import path, environ
+from os import path
+
 from thread import start_new_thread
 
 from sentinel.config import ACCOUNT_DATA_PATH
@@ -20,11 +21,11 @@ def tasks():
         try:
             vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
             if vpn_status_file is True:
-                connections = openvpn.get_connections()
-                connections_len = len(connections)
+                _connections = openvpn.get_connections()
+                connections_len = len(_connections)
                 if connections_len > 0:
                     send_connections_info(
-                        node.account['addr'], node.account['token'], connections)
+                        node.account['addr'], node.account['token'], _connections)
 
             send_nodeinfo(node, {
                 'type': 'alive'
@@ -35,6 +36,7 @@ def tasks():
 
 
 if __name__ == "__main__":
+    node = None
     argv_len = len(sys.argv)
     if path.exists(ACCOUNT_DATA_PATH) is True:
         node = Node(resume=True)
@@ -61,8 +63,8 @@ if __name__ == "__main__":
             print(line)
             if 'Peer Connection Initiated with' in line:
                 client_name = line.split()[6][1:-1]
-                print('*' * 128)
                 if 'client' in client_name:
+                    print('*' * 128)
                     result = db.clients.find_one({
                         'name': client_name
                     }, {
@@ -82,17 +84,14 @@ if __name__ == "__main__":
                         node.account['addr'], node.account['token'], connections)
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
-                print('*' * 128)
                 if 'client' in client_name:
+                    print('*' * 128)
                     openvpn.revoke(client_name)
-                    connections = openvpn.get_connections(
-                        client_name=client_name)
-                    result = db.clients.find_one({
-                        'name': client_name
+                    connections = [db.openvpn_usage.find_one({
+                        'session_name': client_name
                     }, {
-                        '_id': 0,
-                        'account_addr': 1
-                    })
+                        '_id': 0
+                    })]
                     connections[0]['end_time'] = int(time.time())
                     send_connections_info(
                         node.account['addr'], node.account['token'], connections)

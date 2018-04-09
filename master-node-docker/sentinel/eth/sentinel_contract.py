@@ -4,7 +4,6 @@ from ethereum.transactions import Transaction
 
 from .eth import mainnet
 from .eth import rinkeby
-from ..config import DECIMALS
 from ..config import SENTINEL_ABI
 from ..config import SENTINEL_ADDRESS
 from ..config import SENTINEL_NAME
@@ -30,7 +29,6 @@ class SentinelManger(object):
             }
             balance = self.net.web3.toInt(
                 hexstr=self.net.web3.eth.call(caller_object))
-            balance = balance / (DECIMALS * 1.0)
         except Exception as err:
             return {'code': 201, 'error': str(err)}, None
         return None, balance

@@ -1,4 +1,4 @@
 from pymongo import MongoClient
 
 mongo_client = MongoClient()
-db = mongo_client.vpn
+db = mongo_client.sentinel

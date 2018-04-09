@@ -3,14 +3,15 @@ import json
 
 import falcon
 
+from ..db import db
 from ..helpers import eth_helper
 from ..logs import logger
 
 
-class RawTransaction(object):
+class SwapsRawTransaction(object):
     def on_post(self, req, resp):
         """
-        @api {post} /client/raw-transaction Send raw transaction to specific chain.
+        @api {post} /swaps/transaction Send raw transaction to specific chain.
         @apiName RawTransaction
         @apiGroup Transactions
         @apiParam {String} tx_data Hex code of the transaction.
@@ -18,10 +19,14 @@ class RawTransaction(object):
         @apiSuccess {String} tx_hash Transaction hash.
         """
         tx_data = str(req.body['tx_data'])
-        net = str(req.body['net']).lower()
-        error, tx_hash = eth_helper.raw_transaction(tx_data, net)
+        error, tx_hash = eth_helper.raw_transaction(tx_data, 'main')
 
         if error is None:
+            _ = db.swaps.insert_one({
+                'tx_data': tx_data,
+                'tx_hash': tx_hash,
+                'status': 0
+            })
             message = {
                 'success': True,
                 'tx_hash': tx_hash,

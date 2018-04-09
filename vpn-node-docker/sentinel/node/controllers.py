@@ -1,74 +1,58 @@
 import json
+
 from urlparse import urljoin
 
-import getip
-import requests
-
 from ..config import ACCOUNT_DATA_PATH
-from ..config import LOCAL_SERVER_URL
 from ..config import MASTER_NODE_URL
-from ..db import db
-
-
-def register_node(node):
-    body = {
-        'account_addr': node.account['addr'],
-        'location': node.location,
-        'ip': getip.get(),
-        'net_speed': node.net_speed
-    }
-    url = urljoin(LOCAL_SERVER_URL, 'node/register')
-    res = requests.post(url, json=body)
-    res = res.json()
-    if res['success'] == True:
-        info = {
-            'type': 'account',
-            'token': res['token']
-        }
-        node.update_nodeinfo(info)
-        result = db.nodes.find_one({
-            'address': node.account['addr']
-        })
-        if result is None:
-            _ = db.nodes.insert_one({
-                'address': node.account['addr'],
-                'location': node.location,
-                'net_speed': node.net_speed
-            })
-        else:
-            _ = db.nodes.find_one_and_update({
-                'address': node.account['addr']
-            }, {
-                '$set': {
-                    'location': node.location,
-                    'net_speed': node.net_speed
-                }
-            })
-        return True
-    return False
+from ..utils import fetch
 
 
 def create_account(password):
     body = {
         'password': password
     }
-    url = urljoin(LOCAL_SERVER_URL, 'node/account')
-    res = requests.post(url, json=body)
-    res = res.json()
-    if res['success'] == True:
-        data = {
-            'addr': res['account_addr'],
-            'keystore': res['keystore'],
-            'password': password,
-            'private_key': res['private_key'],
-            'token': None
-        }
-        data = json.dumps(data)
-        data_file = open(ACCOUNT_DATA_PATH, 'w+')
-        data_file.writelines(data)
-        data_file.close()
-        return True
-    return False
+    url = urljoin(MASTER_NODE_URL, 'node/account')
+    try:
+        res = fetch().post(url, json=body)
+        res = res.json()
+        if res['success'] is True:
+            data = {
+                'addr': str(res['account_addr']).lower(),
+                'keystore': res['keystore'],
+                'password': str(password),
+                'private_key': str(res['private_key']),
+                'token': None
+            }
+            data = json.dumps(data)
+            data_file = open(ACCOUNT_DATA_PATH, 'w+')
+            data_file.writelines(data)
+            data_file.close()
+        return res['success']
+    except Exception as err:
+        print(err)
+
+
+def register_node(node):
+    body = {
+        'account_addr': node.account['addr'],
+        'price_per_GB': node.config['price_per_GB'],
+        'location': node.location,
+        'ip': node.ip,
+        'net_speed': node.net_speed
+    }
+    url = urljoin(MASTER_NODE_URL, 'node/register')
+    try:
+        res = fetch().post(url, json=body)
+        res = res.json()
+        if res['success'] is True:
+            info = {
+                'type': 'account',
+                'token': str(res['token'])
+            }
+            node.update_nodeinfo(info)
+        return res['success']
+    except Exception as err:
+        print(err)
 
 
 def send_nodeinfo(node, info):
@@ -78,14 +62,15 @@ def send_nodeinfo(node, info):
         'info': info
     }
     url = urljoin(MASTER_NODE_URL, 'node/update-nodeinfo')
-    res = requests.post(url, json=body)
-    res = res.json()
-    if res['success'] == True:
-        return True
-    return False
+    try:
+        res = fetch().post(url, json=body)
+        res = res.json()
+        return res['success']
+    except Exception as err:
+        print(err)
 
 
-def send_client_usage(node, to_addr, received_bytes, sent_bytes, session_duration):
+def send_client_usage(node, to_addr, sent_bytes, session_duration):
     body = {
         'from_addr': node.account['addr'],
         'to_addr': to_addr,
@@ -93,12 +78,13 @@ def send_client_usage(node, to_addr, received_bytes, sent_bytes, session_duratio
         'sent_bytes': sent_bytes,
         'session_duration': session_duration
     }
-    url = urljoin(LOCAL_SERVER_URL, 'node/add-usage')
-    res = requests.post(url, json=body)
-    res = res.json()
-    if res['success'] == True:
-        return True
-    return False
+    url = urljoin(MASTER_NODE_URL, 'node/add-usage')
+    try:
+        res = fetch().post(url, json=body)
+        res = res.json()
+        return res['success']
+    except Exception as err:
+        print(err)
 
 
 def send_connections_info(account_addr, token, connections):
@@ -108,11 +94,12 @@ def send_connections_info(account_addr, token, connections):
         'connections': connections
     }
     url = urljoin(MASTER_NODE_URL, 'node/update-connections')
-    res = requests.post(url, json=body)
-    res = res.json()
-    if res['success'] == True:
-        return True
-    return False
+    try:
+        res = fetch().post(url, json=body)
+        res = res.json()
+        return res['success']
+    except Exception as err:
+        print(err)
 
 
 def deregister_node(node):
@@ -120,23 +107,10 @@ def deregister_node(node):
         'account_addr': node.account['addr'],
         'token': node.account['token']
     }
-    url = urljoin(LOCAL_SERVER_URL, 'node/deregister')
-    res = requests.post(url, json=body)
-    res = res.json()
-    if res['success'] == True:
-        return True
-    return False
-
-
-def get_amount(node, amount, unit):
-    body = {
-        'account_addr': node.account['addr'],
-        'unit': unit,
-        'amount': amount
-    }
-    url = urljoin(MASTER_NODE_URL, 'dev/transfer-amount')
-    res = requests.post(url, json=body)
-
-    if res.status_code == 200 and res.ok:
-        return True
-    return False
+    url = urljoin(MASTER_NODE_URL, 'node/deregister')
+    try:
+        res = fetch().post(url, json=body)
+        res = res.json()
+        return res['success']
+    except Exception as err:
+        print(err)

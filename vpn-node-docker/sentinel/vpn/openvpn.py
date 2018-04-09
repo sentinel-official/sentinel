@@ -1,11 +1,15 @@
 import subprocess
 
+from ..config import LIMIT_1GB
+from ..db import db
+
 
 class OpenVPN(object):
     def __init__(self, show_output=True):
         self.init_cmd = 'sh /root/sentinel/shell_scripts/init.sh'
         self.start_cmd = 'openvpn --config /etc/openvpn/server.conf \
-                          --status /etc/openvpn/openvpn-status.log 2.5 \
+                          --status /etc/openvpn/openvpn-status.log 2 \
+                          --management 127.0.0.1 1195 \
                           --ping-exit 15'
         if show_output is False:
             self.init_cmd += ' >> /dev/null 2>&1'
@@ -32,9 +36,15 @@ class OpenVPN(object):
             self.vpn_proc, self.pid = None, None
         return kill_proc.returncode
 
+    def disconnect_client(self, client_name):
+        cmd = 'echo \'kill {}\' | nc 127.0.0.1 1195'.format(client_name)
+        disconnect_proc = subprocess.Popen(cmd, shell=True)
+        disconnect_proc.wait()
+
     def revoke(self, client_name):
         cmd = 'cd /usr/share/easy-rsa && echo yes | ./easyrsa revoke ' + \
-              client_name + ' && ./easyrsa gen-crl'
+              client_name + ' && ./easyrsa gen-crl && ' + \
+              'chmod 755 pki/crl.pem && cp pki/crl.pem /etc/openvpn/keys'
         revoke_proc = subprocess.Popen(cmd, shell=True)
         revoke_proc.wait()
         return revoke_proc.returncode
@@ -47,12 +57,21 @@ class OpenVPN(object):
             line_arr = line.split(',')
             if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
                 connection = {
-                    'session_name': line_arr[0],
+                    'session_name': str(line_arr[0]),
                     'usage': {
-                        'up': line_arr[2],
-                        'down': line_arr[3]
+                        'up': int(line_arr[2]),
+                        'down': int(line_arr[3])
                     }
                 }
+                db.openvpn_usage.update({
+                    'session_name': connection['session_name']
+                }, {
+                    '$set': {
+                        'usage': connection['usage']
+                    }
+                }, upsert=True)
+                if (client_name is None) and (connection['usage']['down'] >= LIMIT_1GB):
+                    self.disconnect_client(connection['session_name'])
                 connections.append(connection)
             elif 'ROUTING TABLE' in line:
                 break

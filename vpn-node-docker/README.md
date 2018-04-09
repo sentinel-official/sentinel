@@ -49,3 +49,13 @@ Building your own docker image
 `mkdir -p $HOME/.sentinel`
 
 `sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 1194:1194/udp sentinel-vpn-node`
+
+### Updating existing Sentinel VPN node
+
+`sudo docker pull sentinelofficial/sentinel-vpn-node`
+
+`sudo docker stop $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-vpn-node")`
+
+`sudo docker rm $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-vpn-node")`
+
+After running the above commands please follow the method #1 for running the node again

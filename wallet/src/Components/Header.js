@@ -7,6 +7,7 @@ import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
 import CopyIcon from 'material-ui/svg-icons/content/content-copy';
 
+let lang = require('./language');
 let shell = window
   .require('electron')
   .shell;
@@ -61,59 +62,15 @@ class Header extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState({ status: nextProps.status, testDisabled: nextProps.testDisabled })
-  }
-
-  _connectVPN = () => {
-    this.setState({ showPopUp: false, statusSnack: true, testDisabled: true, statusMessage: 'Connecting...Please Wait' })
-    let that = this;
-    if (isOnline()) {
-      connectVPN(this.props.local_address, this.state.selectedVPN, function (err, isMacError, isWinError, account) {
-        if (isMacError) {
-          that.setState({ status: false, showInstruct: true, testDisabled: false, statusSnack: false, isMac: true })
-        }
-        else if (isWinError) {
-          that.setState({ status: false, showInstruct: true, testDisabled: false, statusSnack: false, isMac: false })
-        }
-        else if (account) {
-          that.setState({ status: false, showPay: true, statusSnack: false, testDisabled: false, isMac: false, payAccount: account })
-        }
-        else if (err) {
-          if (err.message !== true)
-            that.setState({ status: false, statusSnack: false, showInstruct: false, testDisabled: false, openSnack: true, snackMessage: err.message })
-        }
-        else {
-          that.props.onChange();
-          //that.returnVPN();
-          that.setState({ status: true, statusSnack: false, showInstruct: false, testDisabled: false, openSnack: true, snackMessage: "Connected VPN" })
-        }
-      })
-    }
-    else {
-      this.setState({ openSnack: true, statusSnack: false, testDisabled: false, snackMessage: 'Check your Internet Connection' })
-    }
-  }
-
-  payVPN = () => {
-    let data = {
-      account_addr: this.state.payAccount,
-      amount: 10000000000,
-      id: -1
-    }
-    this.props.vpnPayment(data);
-    this.setState({ showPay: false })
-  }
-
-  returnVPN = () => {
-    return <VPNComponent isConnected={true} />
+    this.setState({ status: nextProps.status, testDisabled: nextProps.testDisabled, isTest: nextProps.isTest })
   }
 
   _disconnectVPN = () => {
-    this.setState({ statusSnack: true, statusMessage: 'Disconnecting...' })
+    this.setState({ statusSnack: true, statusMessage: lang[this.props.lang].Disconnecting })
     var that = this;
     disconnectVPN(function (err) {
       that.props.onChange();
-      that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: "Disconnected VPN" })
+      that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
     });
   }
 
@@ -129,13 +86,14 @@ class Header extends Component {
           //   }
           // })
           this.props.moveToList();
+          this.setState({ openSnack: true, snackMessage: lang[this.props.lang].SelectNode })
         }
         else {
           this._disconnectVPN();
         }
       }
       else {
-        this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+        this.setState({ openSnack: true, snackMessage: lang[this.props.lang].CheckInternet })
       }
     }
   };
@@ -170,38 +128,7 @@ class Header extends Component {
     });
   };
   render() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="Connect"
-        primary={true}
-        disabled={this.state.selectedVPN == null || this.state.vpnList.length === 0 ? true : false}
-        onClick={this._connectVPN.bind(this)}
-      />,
-    ];
-    const instrucActions = [
-      <FlatButton
-        label="Close"
-        primary={true}
-        onClick={this.closeInstruction}
-      />
-    ];
-    const paymentActions = [
-      <FlatButton
-        label="Close"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="Pay"
-        primary={true}
-        onClick={this.payVPN.bind(this)}
-      />,
-    ];
+    let language = this.props.lang;
     return (
       <div style={{ height: 70, background: 'linear-gradient(to right,#2f3245 72%,#3d425c 28%)' }}>
         <div>
@@ -227,7 +154,7 @@ class Header extends Component {
                   <Col xs={4}>
                     <CopyToClipboard text={this.props.local_address}
                       onCopy={() => this.setState({
-                        snackMessage: 'Copied to Clipboard Successfully',
+                        snackMessage: lang[language].Copied,
                         openSnack: true
                       })} >
                       {/* <img
@@ -290,7 +217,7 @@ class Header extends Component {
                     labelStyle={this.state.isTest ? { color: '#fafafa', textTransform: 'none', fontWeight: 600, fontSize: 14 } :
                       { color: '#4b4e5d', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
                     style={{ height: '18px', lineHeight: '18px' }}
-                    disabled={!this.state.isTest}
+                    disabled={true}
                     onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
                 </Col>
                 <Col>
@@ -308,101 +235,15 @@ class Header extends Component {
                 message={this.state.snackMessage}
                 autoHideDuration={2000}
                 onRequestClose={this.snackRequestClose}
-                style={{ marginBottom: '2%' }}
+                style={{ marginBottom: '1%' }}
               />
               <Snackbar
                 open={this.state.statusSnack}
                 message={this.state.statusMessage}
-                style={{ marginBottom: '2%' }}
+                style={{ marginBottom: '1%' }}
               />
-              <Dialog
-                title="VPN List"
-                titleStyle={{ fontSize: 14 }}
-                actions={actions}
-                modal={true}
-                open={this.state.showPopUp}
-              >
-                {this.state.vpnList.length !== 0 ?
-                  <SelectField
-                    hintText="Select VPN"
-                    value={this.state.selectedVPN}
-                    autoWidth={true}
-                    onChange={(event, index, value) => {
-                      console.log("Value...", value);
-                      this.setState({ selectedVPN: value })
-                    }}
-                  >
-                    {this.state.vpnList.map((vpn) =>
-                      <MenuItem value={vpn.account_addr}
-                        primaryText={`City:${vpn.location.city}, Speed:${(vpn.net_speed.download / (1024 * 1024)).toFixed(2) + ' Mbps'}, Latency:${vpn.latency ? vpn.latency : 'None'}`} />
-                    )}
-                  </SelectField>
-                  :
-                  <span>No VPNs Found</span>
-                }
-              </Dialog>
-              <Dialog
-                title="Install Dependencies"
-                titleStyle={{ fontSize: 14 }}
-                actions={instrucActions}
-                modal={true}
-                open={this.state.showInstruct}
-              >{this.state.isMac ? <span>
-                This device does not have OpenVPN installed. Please install it by running below command: <br />
-                <code>brew install openvpn</code>
-                <CopyToClipboard text='brew install openvpn'
-                  onCopy={() => this.setState({
-                    snackMessage: 'Copied to Clipboard Successfully',
-                    openSnack: true
-                  })} >
-                  <img
-                    src={'../src/Images/download.jpeg'}
-                    alt="copy"
-                    data-tip data-for="copyImage"
-                    style={styles.clipBoardDialog}
-                  />
-                </CopyToClipboard>
-                <br />
-                If brew is also not installed, then follow <a style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    this.openInExternalBrowser(`https://wwww.howtogeek.com/211541/homebrew-
-                    for-os-x-easily=installs-desktop-apps-and-terminal-utilities/`)
-                  }}
-                >this page</a>
-              </span>
-                :
-                <span>
-                  OpenVPN Not Installed.
-                  Install here https://openvpn.net/index.php/open-source/downloads.html.
-                  <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
-                    onCopy={() => this.setState({
-                      snackMessage: 'Copied to Clipboard Successfully',
-                      openSnack: true
-                    })} >
-                    <img
-                      src={'../src/Images/download.jpeg'}
-                      alt="copy"
-                      data-tip data-for="copyImage"
-                      style={styles.clipBoardDialog}
-                    />
-                  </CopyToClipboard>
-
-                </span>
-                }
-              </Dialog>
-              <Dialog
-                title="Initial Payment Reminder"
-                titleStyle={{ fontSize: 14 }}
-                actions={paymentActions}
-                modal={true}
-                open={this.state.showPay}
-              >
-                <span>
-                  Inorder to use VPN, you need to pay 100 sents for the first time. Please pay and then try to connect to the vpn.
-                </span>
-              </Dialog>
               <ReactTooltip id="copyImage" place="bottom">
-                <span>Copy</span>
+                <span>{lang[language].Copy}</span>
               </ReactTooltip>
             </Row>
           </Grid>

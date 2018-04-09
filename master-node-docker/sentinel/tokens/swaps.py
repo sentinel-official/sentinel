@@ -21,7 +21,7 @@ class Swaps(object):
     def get_btc_price(self, token_name):
         try:
             res = requests.get(TOKEN_PRICE_URLS[token_name])
-            if token_name == 'SENT':
+            if token_name == 'SENTinel':
                 btc_price = float(res.json()['last'])
             else:
                 btc_price = float(res.json()[0]['price_btc'])

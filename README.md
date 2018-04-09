@@ -63,7 +63,7 @@ Through a Swap Zone, this token will be exchanged for the token on the Transacti
 
 Extended capabilities of the Mixer can be best demonstrated when running a DEx (decentralized exchange) where, Users of the DEx can run their ERC20 Tokens through the Mixer, which then gives back the User equivalent pegged tokens, whatever that might be.
 
-Considering the use of TenderMint for the development of the Service Chain, swap of Sentinel Service Tokens ($SENT-SST) will be initially with $SENT. Given the possiblities and opportunities on the Cosmos Network and various Zones within, the Sentinel Mixer can also swap various tokens and assets developed on TenderMint and within Cosmos.
+Considering the use of TenderMint for the development of the Service Chain, swap of Sentinel Service Tokens ($SENT-SST) will be initially with $SENT. Given the possibilities and opportunities on the Cosmos Network and various Zones within, the Sentinel Mixer can also swap various tokens and assets developed on TenderMint and within Cosmos.
 
 What are we up to right now?
 -

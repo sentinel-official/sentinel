@@ -61,9 +61,7 @@ function windowManager() {
 
 
 function getKeystore(cb) {
-  console.log("Jey...", KEYSTORE_FILE);
   fs.readFile(KEYSTORE_FILE, function (err, data) {
-    console.log("err..", err, data);
     if (err) cb(err, null);
     else {
       cb(null, data);
@@ -160,9 +158,9 @@ app.on('ready', function () {
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
-      // {
-      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      // },
+      {
+        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      },
     ]
   },
   {

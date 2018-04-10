@@ -102,7 +102,9 @@ let lang = {
         'AmountTool2':'Yes, this wallet can hold Ethereum too.',
         'GasFieldTool':'21000 is the default gas limit',
         'GasPriceTool':'Amount you pay per unit of gas',
-        'PasswordTool':'Your Sentinel AUID Password'
+        'PasswordTool':'Your Sentinel AUID Password',
+        'Price':'Price (SENTS/GB)',
+        'Cost':'Price'
     },
     ja: {
         'BeCareful': 'ご注意',
@@ -112,6 +114,8 @@ let lang = {
         'GasFieldTool':'デフォルトのガス制限は21000です',
         'GasPriceTool':'ガスの単位あたりのあなたが支払う金額',
         'PasswordTool':'あなたのSentinel AUIDパスワード',
+        'Price':'価格 (SENTS/GB)',
+        'Cost':'価格',
         'CopyKeys': '安全な場所にあなたの秘密鍵を書き写してください。私達はデータベースにあなたの秘密鍵を格納しないことを忘れないでください。 私達はデータベースを保持しません。 ',
         'YourAddress': 'あなたのアドレス',
         'PrivateKey': '秘密鍵',

@@ -22,6 +22,7 @@ var IPGENERATED = '';
 var LOCATION = '';
 var SPEED = '';
 var KEYSTOREDATA = '';
+var CONNECTED_VPN = '';
 var sudo = remote.require('sudo-prompt');
 var connect = {
   name: 'ConnectOpenVPN'
@@ -428,7 +429,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
       if (stdout.toString() === '') {
         exec('cd c:\\Program Files (x86) && dir openvpn.exe /s /p | findstr "openvpn"', function (error, stdout1, stderr1) {
           if (stdout.toString() === '') {
-            cb({ message: 'false' }, false, true, false);
+            cb({ message: 'false' }, false, true, false, null);
           }
           else {
             nextStep();
@@ -465,8 +466,9 @@ export function connectVPN(account_addr, vpn_addr, cb) {
     }).then(function (response) {
       response.json().then(function (res) {
         if (res.success === true) {
-          getOVPNAndSave(account_addr, res['ip'], res['port'], vpn_addr, res['token'], function (err) {
-            if (err) cb(err, false, false, false);
+          console.log("VPN Response..", res);
+          getOVPNAndSave(account_addr, res['ip'], res['port'], res['vpn_addr'], res['token'], function (err) {
+            if (err) cb(err, false, false, false, null);
             else {
               if (OVPNDelTimer) clearInterval(OVPNDelTimer);
               if (remote.process.platform === 'win32') {
@@ -492,7 +494,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               else {
                 setTimeout(function () {
                   getVPNPIDs(function (err, pids) {
-                    if (err) cb({ message: err }, false, false, false);
+                    if (err) cb({ message: err }, false, false, false, null);
                     else {
                       CONNECTED = true;
                       let data = JSON.parse(KEYSTOREDATA);
@@ -500,11 +502,12 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                       data.ipConnected = IPGENERATED;
                       data.location = LOCATION;
                       data.speed = SPEED;
+                      data.connectedAddr = CONNECTED_VPN;
                       data.session_name = SESSION_NAME;
                       let keystore = JSON.stringify(data);
                       fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                       });
-                      cb(null, false, false, false);
+                      cb(null, false, false, false, res.message);
                     }
                   });
 
@@ -515,7 +518,6 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                 exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
                   console.log('Win Err...', err, 'Stdout..', stdout, 'Stderr..', stderr)
                   if (stdout.toString() === '') {
-
                   }
                   else {
                     CONNECTED = true;
@@ -524,11 +526,12 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     data.ipConnected = IPGENERATED;
                     data.location = LOCATION;
                     data.speed = SPEED;
+                    data.connectedAddr = CONNECTED_VPN;
                     data.session_name = SESSION_NAME;
                     let keystore = JSON.stringify(data);
                     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                     });
-                    cb(null, false, false, false);
+                    cb(null, false, false, false, res.message);
                     count = 8;
                   }
                   count++;
@@ -536,13 +539,13 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     setTimeout(function () { checkWindows(); }, 5000);
                   }
                   if (count == 8 && CONNECTED === false) {
-                    cb({ message: 'Something went wrong.Please Try Again' }, false, false, false)
+                    cb({ message: 'Something went wrong.Please Try Again' }, false, false, false,null)
                   }
                 })
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
-                  if (err) cb({ message: err }, false, false, false);
+                  if (err) cb({ message: err }, false, false, false,null);
                   else {
                     console.log("PIDS:", pids)
                     CONNECTED = true;
@@ -550,12 +553,13 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     data.isConnected = true;
                     data.ipConnected = IPGENERATED;
                     data.location = LOCATION;
+                    data.connectedAddr = CONNECTED_VPN;
                     data.speed = SPEED;
                     data.session_name = SESSION_NAME;
                     let keystore = JSON.stringify(data);
                     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                     });
-                    cb(null, false, false, false);
+                    cb(null, false, false, false, res.message);
                     count = 8;
                   }
 
@@ -565,7 +569,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     setTimeout(function () { checkVPNConnection(); }, 5000);
                   }
                   if (count == 8 && CONNECTED === false) {
-                    cb({ message: 'Something went wrong.Please Try Again' }, false, false, false)
+                    cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                   }
                 });
               }
@@ -574,9 +578,9 @@ export function connectVPN(account_addr, vpn_addr, cb) {
         }
         else {
           if (res.account_addr)
-            cb({ message: res.message || 'Initial Payment is not done' }, false, false, res.account_addr);
+            cb({ message: res.message || 'Initial Payment is not done' }, false, false, res.account_addr, null);
           else
-            cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false, false, false);
+            cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false, false, false, null);
         }
       })
     })
@@ -609,6 +613,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
             else {
               var ovpn = response['node']['vpn']['ovpn'].join('');
               SESSION_NAME = response['session_name'];
+              CONNECTED_VPN = vpn_addr;
               IPGENERATED = response['node']['vpn']['ovpn'][3].split(' ')[1];
               LOCATION = response['node']['location']['city'];
               SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + ' Mbps';
@@ -658,8 +663,10 @@ export function disconnectVPN(cb) {
         if (error) cb({ message: error.toString() || 'Disconnecting failed' });
         else {
           CONNECTED = false;
+          CONNECTED_VPN = null;
           let data = JSON.parse(KEYSTOREDATA);
           data.isConnected = null;
+          data.connectedAddr = null;
           let keystore = JSON.stringify(data);
           fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
           });
@@ -678,8 +685,10 @@ export function disconnectVPN(cb) {
         exec(command, function (error, stdout, stderr) {
           console.log("Err..", error, "Out..", stdout.toString(), "Std..", stderr)
           CONNECTED = false;
+          CONNECTED_VPN = null;
           let data = JSON.parse(KEYSTOREDATA);
           data.isConnected = null;
+          data.connectedAddr = null;
           let keystore = JSON.stringify(data);
           fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
           });
@@ -694,7 +703,8 @@ export function getVPNdetails(cb) {
   var data = {
     ip: IPGENERATED,
     location: LOCATION,
-    speed: SPEED
+    speed: SPEED,
+    vpn_addr: CONNECTED_VPN
   }
   if (CONNECTED) {
     console.log('data...', data)
@@ -767,10 +777,12 @@ export function getVPNConnectedData(cb) {
             LOCATION = keystore.location;
             SPEED = keystore.speed;
             SESSION_NAME = keystore.session_name;
+            CONNECTED_VPN = keystore.connectedAddr;
             let connectedData = {
               ip: IPGENERATED,
               location: LOCATION,
-              speed: SPEED
+              speed: SPEED,
+              vpn_addr: CONNECTED_VPN
             }
             cb(null, connectedData)
           }

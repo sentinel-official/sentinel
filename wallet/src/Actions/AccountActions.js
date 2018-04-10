@@ -162,8 +162,8 @@ export function getTransactionStatus(tx_addr, cb) {
       console.log("Response...", response)
       if (response.status === "1") {
         var status = response['result']["status"];
-        cb(null, status);
-      } else cb({ message: 'Error occurred while getting balance.' }, null);
+        cb(null, true);
+      } else cb({ message: 'Error occurred while getting balance.' }, false);
     })
   });
 }
@@ -539,13 +539,13 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     setTimeout(function () { checkWindows(); }, 5000);
                   }
                   if (count == 8 && CONNECTED === false) {
-                    cb({ message: 'Something went wrong.Please Try Again' }, false, false, false,null)
+                    cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                   }
                 })
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
-                  if (err) cb({ message: err }, false, false, false,null);
+                  if (err) cb({ message: err }, false, false, false, null);
                   else {
                     console.log("PIDS:", pids)
                     CONNECTED = true;
@@ -611,6 +611,10 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
               cb({ message: 'Something wrong. Please Try Later' })
             }
             else {
+              if(remote.process.platform==='win32'){
+                delete(response['node']['vpn']['ovpn'][17]);
+                delete(response['node']['vpn']['ovpn'][18]);
+              }
               var ovpn = response['node']['vpn']['ovpn'].join('');
               SESSION_NAME = response['session_name'];
               CONNECTED_VPN = vpn_addr;
@@ -700,19 +704,26 @@ export function disconnectVPN(cb) {
 }
 
 export function getVPNdetails(cb) {
-  var data = {
-    ip: IPGENERATED,
-    location: LOCATION,
-    speed: SPEED,
-    vpn_addr: CONNECTED_VPN
-  }
-  if (CONNECTED) {
-    console.log('data...', data)
-    cb(true, data);
-  }
-  else {
-    cb(false, data);
-  }
+  isVPNConnected(function (err, connected) {
+    if (connected) {
+      var data = {
+        ip: IPGENERATED,
+        location: LOCATION,
+        speed: SPEED,
+        vpn_addr: CONNECTED_VPN
+      }
+      if (CONNECTED) {
+        console.log('data...', data)
+        cb(true, data);
+      }
+      else {
+        cb(false, data);
+      }
+    } else {
+      CONNECTED = false;
+      cb(false, data);
+    }
+  })
 }
 
 export function getVPNProcesses(cb) {

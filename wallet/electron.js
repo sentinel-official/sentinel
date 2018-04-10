@@ -44,9 +44,10 @@ function windowManager() {
           })
           if (!res) {
             showPrompt = false;
-            stopVPN();
-            self.window = null;
-            app.quit();
+            stopVPN(function (err) {
+              self.window = null;
+              app.quit();
+            });
           }
           else {
             self.window = null;
@@ -92,11 +93,11 @@ function isVPNConnected(cb) {
   }
 }
 
-function stopVPN() {
+function stopVPN(cb) {
   if (process.platform === 'win32') {
     sudo.exec('taskkill /IM sentinel.exe /f && taskkill /IM openvpn.exe /f', disconnect,
       function (error, stdout, stderr) {
-        if (error) console.log('Disconnecting failed');
+        if (error) cb('Disconnecting failed');
         else {
           getKeystore(function (err, KEYSTOREDATA) {
             let data = JSON.parse(KEYSTOREDATA);
@@ -104,6 +105,7 @@ function stopVPN() {
             let keystore = JSON.stringify(data);
             fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
             });
+            cb(null);
           })
         }
       });
@@ -117,15 +119,18 @@ function stopVPN() {
           command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
         }
         exec(command, (comErr, stdOut, stdErr) => {
-          console.log("...", comErr, stdOut, stdErr);
           getKeystore(function (error, KEYSTOREDATA) {
             let data = JSON.parse(KEYSTOREDATA);
             data.isConnected = null;
             let keystore = JSON.stringify(data);
             fs.writeFile(KEYSTORE_FILE, keystore, function (keyErr) {
             });
+            cb(null);
           })
         });
+      }
+      else {
+        cb(null);
       }
     });
   }

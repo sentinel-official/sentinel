@@ -94,7 +94,8 @@ class History extends Component {
     let ethOutput = <EtherTransaction
       data={this.state.ethData} isTest={this.props.isTest} local_address={this.props.local_address} lang={this.props.lang} />
     let sentOutput = <SentTransaction
-      data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address} lang={this.props.lang} />
+      data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address}
+      lang={this.props.lang} currentHash={this.props.currentHash} removeHash={this.props.removeHash}/>
     return (
       <div style={{ margin: '1% 3%' }}>
         {this.state.ethActive ?

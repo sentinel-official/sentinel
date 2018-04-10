@@ -21,7 +21,7 @@ class SendComponent extends Component {
     this.state = {
       keystore: '',
       to_address: '',
-      amount: '',
+      amount: 0,
       gas: 21000,
       data: '',
       priv_key: '',
@@ -116,8 +116,8 @@ class SendComponent extends Component {
           payment_type: paymentType
         }
         payVPNUsage(body, function (err, tx_addr) {
-          self.props.clearSend();
           if (err) {
+            self.props.clearSend();
             self.setState({
               snackOpen: true,
               snackMessage: err.message,
@@ -131,6 +131,17 @@ class SendComponent extends Component {
             });
           }
           else {
+            var data = {
+              date: Date.now(),
+              to: self.state.to_address,
+              gasPrice: self.state.sliderValue,
+              amount: parseFloat((self.state.amount) / (10 ** 8)),
+              txHash: tx_addr
+            }
+            var txData = JSON.stringify(data);
+            self.props.getCurrentTx(tx_addr);
+            localStorage.setItem('currentTransaction', txData);
+            self.props.clearSend();
             self.clearFields(tx_addr)
           }
         });
@@ -297,10 +308,14 @@ class SendComponent extends Component {
   };
 
   handleChange = (event, index, unit) => {
-    this.setState({ unit });
+    console.log("Amount..", this.state.amount);
+    let amount;
+    if (unit === 'ETH') amount = (unit !== this.state.amount) ? this.state.amount * Math.pow(10, 10) : this.state.amount;
+    else amount = (unit !== this.state.amount) ? this.state.amount / Math.pow(10, 10) : this.state.amount;
+    this.setState({ amount: amount, unit: unit });
     let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
-    if (trueAddress !== null && this.state.amount !== '') {
-      this.getGasLimit(this.state.amount, this.state.to_address, unit)
+    if (trueAddress !== null && amount !== '') {
+      this.getGasLimit(amount, this.state.to_address, unit)
     }
   };
   render() {
@@ -352,8 +367,9 @@ class SendComponent extends Component {
                   fullWidth={true}
                   inputStyle={{ padding: 10 }}
                   onChange={this.amountChange.bind(this)} value={
-                    this.state.unit === 'ETH' ? parseFloat(this.state.amount / (10 ** 18)) :
-                      parseFloat(this.state.amount / (10 ** 8))
+                    (this.state.amount === null || this.state.amount === 0) ? null :
+                      (this.state.unit === 'ETH' ? parseFloat(this.state.amount / (10 ** 18)) :
+                        parseFloat(this.state.amount / (10 ** 8)))
                   } />
               </Col>
               <Col xs={3}>

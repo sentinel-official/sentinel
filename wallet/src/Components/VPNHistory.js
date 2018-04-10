@@ -55,7 +55,7 @@ class VPNHistory extends Component {
             })
         }
         else {
-            this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+            this.setState({ openSnack: true, snackMessage: lang[this.props.lang].CheckInternet })
         }
     }
 

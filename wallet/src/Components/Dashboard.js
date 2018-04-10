@@ -35,7 +35,8 @@ class Dashboard extends Component {
       isTest: false,
       sessionId: null,
       testDisabled: false,
-      lang: 'en'
+      lang: 'en',
+      currentHash: null
     }
     this.set = this.props.set;
   }
@@ -66,6 +67,10 @@ class Dashboard extends Component {
         that.setState({ ethBalance })
       }
     })
+  }
+
+  getTxHash = (txHash) => {
+    this.setState({ currentHash: txHash })
   }
 
   getUserSentBalance() {
@@ -128,6 +133,10 @@ class Dashboard extends Component {
       this.setState({ isTest: value })
   }
 
+  removeHash = () => {
+    this.setState({ currentHash: null })
+  }
+
   testDisable = (value) => {
     this.setState({ testDisabled: value })
   }
@@ -175,7 +184,9 @@ class Dashboard extends Component {
               inkBarStyle={{ backgroundColor: '#2f3245', height: 3 }}
             >
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].History} value="history">
-                <History local_address={this.state.local_address} isTest={this.state.isTest} lang={this.props.lang} />
+                <History
+                  local_address={this.state.local_address} isTest={this.state.isTest}
+                  lang={this.props.lang} currentHash={this.state.currentHash} removeHash={this.removeHash} />
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Send} value="send">
                 <SendComponent
@@ -190,6 +201,7 @@ class Dashboard extends Component {
                   propReceiveChange={this.propReceiveChange.bind(this)}
                   clearSend={this.clearSend.bind(this)}
                   lang={this.props.lang}
+                  getCurrentTx={this.getTxHash}
                 />
                 {/* <SendNew /> */}
               </Tab>

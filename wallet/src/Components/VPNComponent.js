@@ -201,6 +201,7 @@ class VPNComponent extends Component {
                 console.log('Err', err);
             }
             else {
+                self.props.onChange();
                 self.setState({ usage: usage })
             }
         })
@@ -758,7 +759,8 @@ class VPNComponent extends Component {
                                     style={styles.clipBoardDialog}
                                 />
                             </CopyToClipboard>
-
+                                <br/>
+                                Please install openvpn in default folder.(C:\\Program Files)
                         </span>
                     }
                 </Dialog>

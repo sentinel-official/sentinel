@@ -46,6 +46,7 @@ class SentTransaction extends Component {
             if (status) {
                 localStorage.removeItem('currentTransaction');
                 self.props.removeHash();
+                self.props.getHistory();
                 self.setState({ txStatus: 'Success' })
             }
             else {

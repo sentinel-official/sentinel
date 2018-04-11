@@ -611,9 +611,9 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
               cb({ message: 'Something wrong. Please Try Later' })
             }
             else {
-              if(remote.process.platform==='win32'){
-                delete(response['node']['vpn']['ovpn'][17]);
-                delete(response['node']['vpn']['ovpn'][18]);
+              if (remote.process.platform === 'win32') {
+                delete (response['node']['vpn']['ovpn'][17]);
+                delete (response['node']['vpn']['ovpn'][18]);
               }
               var ovpn = response['node']['vpn']['ovpn'].join('');
               SESSION_NAME = response['session_name'];
@@ -687,16 +687,21 @@ export function disconnectVPN(cb) {
           command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
         }
         exec(command, function (error, stdout, stderr) {
-          console.log("Err..", error, "Out..", stdout.toString(), "Std..", stderr)
-          CONNECTED = false;
-          CONNECTED_VPN = null;
-          let data = JSON.parse(KEYSTOREDATA);
-          data.isConnected = null;
-          data.connectedAddr = null;
-          let keystore = JSON.stringify(data);
-          fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
-          });
-          cb(null);
+          if (error) {
+            cb({ message: error.toString() || 'Disconnecting failed' })
+          }
+          else {
+            console.log("Err..", error, "Out..", stdout.toString(), "Std..", stderr)
+            CONNECTED = false;
+            CONNECTED_VPN = null;
+            let data = JSON.parse(KEYSTOREDATA);
+            data.isConnected = null;
+            data.connectedAddr = null;
+            let keystore = JSON.stringify(data);
+            fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
+            });
+            cb(null);
+          }
         });
       }
     });

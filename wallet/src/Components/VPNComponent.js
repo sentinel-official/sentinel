@@ -189,8 +189,14 @@ class VPNComponent extends Component {
         this.setState({ statusSnack: true, statusMessage: lang[this.props.lang].Disconnecting })
         var that = this;
         disconnectVPN(function (err) {
-            that.props.onChange();
-            that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+            if (err) {
+                that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message? err.message:'Disconnecting Failed.' })
+                that.props.onChange();
+            }
+            else {
+                that.props.onChange();
+                that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+            }
         });
     }
 
@@ -759,8 +765,8 @@ class VPNComponent extends Component {
                                     style={styles.clipBoardDialog}
                                 />
                             </CopyToClipboard>
-                                <br/>
-                                Please install openvpn in default folder.(C:\\Program Files)
+                            <br />
+                            Please install openvpn in default folder.(C:\\Program Files)
                         </span>
                     }
                 </Dialog>

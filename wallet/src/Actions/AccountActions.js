@@ -545,7 +545,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
-                  if (err) cb({ message: err }, false, false, false, null);
+                  if (err){}
                   else {
                     console.log("PIDS:", pids)
                     CONNECTED = true;
@@ -611,7 +611,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
               cb({ message: 'Something wrong. Please Try Later' })
             }
             else {
-              if (remote.process.platform === 'win32') {
+              if (remote.process.platform === 'win32' || remote.process.platform === 'darwin') {
                 delete (response['node']['vpn']['ovpn'][17]);
                 delete (response['node']['vpn']['ovpn'][18]);
               }

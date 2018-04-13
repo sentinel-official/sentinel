@@ -4,7 +4,7 @@ const electron = require('electron');
 const { app, BrowserWindow, Menu, dialog, ipcMain } = electron;
 var i18n = new (require('./translations/i18n'));
 const remote = electron.remote;
-var { exec } = require('child_process');
+var { exec, execSync } = require('child_process');
 var sudo = require('sudo-prompt');
 const fs = require('fs');
 var disconnect = {
@@ -111,28 +111,26 @@ function stopVPN(cb) {
       });
   }
   else {
-    exec('pidof openvpn', (err, stdout, stderr) => {
+    try {
+      let stdout = execSync('pidof openvpn').toString();
       if (stdout) {
+        console.log(stdout);
         let pids = stdout.trim();
         let command = 'kill -2 ' + pids;
         if (process.platform === 'darwin') {
           command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
         }
         exec(command, (comErr, stdOut, stdErr) => {
-          getKeystore(function (error, KEYSTOREDATA) {
-            let data = JSON.parse(KEYSTOREDATA);
-            data.isConnected = null;
-            let keystore = JSON.stringify(data);
-            fs.writeFile(KEYSTORE_FILE, keystore, function (keyErr) {
-            });
-            cb(null);
-          })
         });
+        cb(null);
       }
       else {
         cb(null);
       }
-    });
+    }
+    catch (err) {
+      cb(null);
+    }
   }
 }
 

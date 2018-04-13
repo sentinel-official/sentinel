@@ -160,7 +160,7 @@ class VPNHistory extends Component {
                                 </ReactTooltip>
                                 <br />
                                 <span style={{ fontWeight: 600 }}>{lang[language].Amount}: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].Duration}: </span>{sessionData.duration} secs
+                                <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].Duration}: </span>{sessionData.session_duration} secs
                             <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].ReceivedData}: </span>{this.getPaymentBytes(sessionData.received_bytes)}<br />
                                 <span style={{ fontWeight: 600 }}>{lang[language].Time}: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>

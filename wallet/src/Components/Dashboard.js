@@ -189,7 +189,21 @@ class Dashboard extends Component {
                   lang={this.props.lang} currentHash={this.state.currentHash} removeHash={this.removeHash} />
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Send} value="send">
-                <SendComponent
+                {/* <SendComponent
+                  local_address={this.state.local_address}
+                  amount={this.state.amount}
+                  to_addr={this.state.to_addr}
+                  unit={this.state.unit}
+                  session_id={this.state.sessionId}
+                  sending={this.state.sending}
+                  isTest={this.state.isTest}
+                  isPropReceive={this.state.isPropReceive}
+                  propReceiveChange={this.propReceiveChange.bind(this)}
+                  clearSend={this.clearSend.bind(this)}
+                  lang={this.props.lang}
+                  getCurrentTx={this.getTxHash}
+                /> */}
+                <SendNew
                   local_address={this.state.local_address}
                   amount={this.state.amount}
                   to_addr={this.state.to_addr}
@@ -203,7 +217,6 @@ class Dashboard extends Component {
                   lang={this.props.lang}
                   getCurrentTx={this.getTxHash}
                 />
-                {/* <SendNew /> */}
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Receive} value="receive">
                 <div>

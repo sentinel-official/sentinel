@@ -55,7 +55,7 @@ class VPNHistory extends Component {
             })
         }
         else {
-            this.setState({ openSnack: true, snackMessage: 'Check your Internet Connection' })
+            this.setState({ openSnack: true, snackMessage: lang[this.props.lang].CheckInternet })
         }
     }
 
@@ -102,7 +102,8 @@ class VPNHistory extends Component {
                     console.log("Trans..", transacFrom, transacToAddr);
                     if (transacFrom.toLowerCase() === that.props.local_address.toLowerCase() &&
                         transacToAddr.toLowerCase() === sessionData.account_addr.toLowerCase() &&
-                        parseInt(transactionDetails.data) === parseInt(sessionData.amount) &&
+                        (parseInt(transactionDetails.data) === parseInt(sessionData.amount) ||
+                            (parseInt(transactionDetails.data) + 1) === parseInt(sessionData.amount)) &&
                         parseInt(transactionDetails.timeStamp) >= sessionData.timestamp
                     ) {
                         let body = {
@@ -134,7 +135,7 @@ class VPNHistory extends Component {
         }
         let vpnUsage = this.state.vpnUsage;
         let that = this;
-        let language=this.props.lang;
+        let language = this.props.lang;
         if (vpnUsage) {
             if (vpnUsage.sessions.length !== 0) {
                 var sessions = _.sortBy(vpnUsage.sessions, o => o.timeStamp).reverse()
@@ -164,7 +165,7 @@ class VPNHistory extends Component {
                                 <span style={{ fontWeight: 600 }}>{lang[language].Time}: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>
                             {
-                                sessionData.is_payed ?
+                                sessionData.is_paid ?
                                     <span>
                                         <Done style={{ float: 'right', marginTop: '-7%', marginRight: '1%' }}
                                             data-tip data-for="payed" color="green" />

@@ -10,6 +10,7 @@ import ReactTooltip from 'react-tooltip';
 import { setTimeout } from 'timers';
 import { sendError } from '../helpers/ErrorLog';
 let keythereum = require('keythereum');
+let lang = require('./language');
 
 class Create extends Component {
     constructor(props) {
@@ -80,11 +81,11 @@ class Create extends Component {
                 });
             }
             else {
-                this.setState({ openSnack: true, isLoading: false, snackMessage: 'Check your Internet Connection' })
+                this.setState({ openSnack: true, isLoading: false, snackMessage: lang[this.props.lang].CheckInternet })
             }
         }
         else {
-            this.setState({ openSnack: true, isLoading: false, snackMessage: 'Passwords did not match' })
+            this.setState({ openSnack: true, isLoading: false, snackMessage: lang[this.props.lang].DidNotMatch })
         }
     }
 
@@ -102,12 +103,12 @@ class Create extends Component {
         }
         catch (err) {
             sendError(err);
-            cb({ message: 'Keystore and Password does not match' }, null);
+            cb({ message: lang[this.props.lang].KeyPassMatch }, null);
         }
     }
 
     _store = () => {
-        this.setState({ isRestoredisabled: true, snackOpen: true, openSnackMessage: 'Checking credentials...' })
+        this.setState({ isRestoredisabled: true, snackOpen: true, openSnackMessage: lang[this.props.lang].CheckCre })
         var keystore = this.state.keystore;
         var password = this.state.keystorePassword;
         var that = this;
@@ -128,6 +129,7 @@ class Create extends Component {
         }, 500)
     }
     render() {
+        let language = this.props.lang;
         return (
             <MuiThemeProvider>
                 <div>
@@ -140,18 +142,18 @@ class Create extends Component {
                     {this.state.private_key === '' ?
                         <div style={styles.createDiv}>
                             <div style={{ marginTop: '2%' }}>
-                                <span style={styles.headingCreate}>Create your Anonymous User ID</span>
+                                <span style={styles.headingCreate}>{lang[language].CreateAUID}</span>
                                 <span data-tip data-for="createID" style={styles.questionMark}>?</span>
                                 <ReactTooltip id="createID" place="bottom">
                                     <span>
-                                        Enter a password and create your own Sentinel Anonymous User ID (AUID)
-                                </span>
+                                        {lang[language].CreateTooltip}
+                                    </span>
                                 </ReactTooltip>
                             </div>
                             <hr width="50%" align="left" size="3" noshade style={{ backgroundColor: 'rgb(83, 45, 145)' }} />
                             <Paper zDepth={2} style={styles.textBoxPaper}>
                                 <TextField
-                                    hintText="Enter Password to create AUID"
+                                    hintText={lang[language].PasswordAUID}
                                     hintStyle={styles.textFieldCreateHint}
                                     type="password"
                                     underlineShow={false}
@@ -161,7 +163,7 @@ class Create extends Component {
                             </Paper>
                             <Paper zDepth={2} style={styles.textBoxPaper}>
                                 <TextField
-                                    hintText="Confirm Password"
+                                    hintText={lang[language].ConfirmPwd}
                                     hintStyle={styles.textFieldCreateHint}
                                     type="password"
                                     underlineShow={false}
@@ -169,7 +171,7 @@ class Create extends Component {
                                     style={styles.textFieldCreate}
                                 />
                             </Paper>
-                            <RaisedButton label="Create"
+                            <RaisedButton label={lang[language].Create}
                                 labelStyle={styles.buttonLabel}
                                 disabled={this.state.password === '' ? true : false}
                                 onClick={this._createAccount}
@@ -180,7 +182,7 @@ class Create extends Component {
                             <Paper zDepth={2} style={styles.bluePaper}>
                                 <div style={{ padding: '3%' }}>
                                     <RaisedButton
-                                        label="Select keystore file"
+                                        label={lang[language].SelectKeystore}
                                         labelStyle={styles.buttonLabel}
                                         onClick={() => { document.getElementById('filepicker').click() }}
                                         buttonStyle={this.state.file === '' ? styles.buttonCreate : styles.buttonRaisedKeystore}
@@ -196,7 +198,7 @@ class Create extends Component {
                                     }
                                     <Paper zDepth={2} style={styles.keyTextBoxPaper}>
                                         <TextField
-                                            hintText="Enter Keystore Password"
+                                            hintText={lang[language].KeyPass}
                                             hintStyle={{ fontSize: 12 }}
                                             type="password"
                                             underlineShow={false}
@@ -205,7 +207,7 @@ class Create extends Component {
                                         />
                                     </Paper>
                                     <RaisedButton
-                                        label="Restore Keystore File"
+                                        label={lang[language].RestoreKeystore}
                                         labelStyle={{ color: 'white', textTransform: 'none' }}
                                         disabled={this.state.file === '' || this.state.keystorePassword === '' ||
                                             this.state.isRestoredisabled ? true : false}
@@ -221,19 +223,17 @@ class Create extends Component {
                         </div>
                         :
                         <div style={{ marginLeft: '5%', marginRight: '5%' }}>
-                            <h3 style={styles.headingCreate}>Be Careful</h3>
+                            <h3 style={styles.headingCreate}>{lang[language].BeCareful}</h3>
                             <hr width="50%" align="left" size="3" noshade style={{ backgroundColor: 'rgb(83, 45, 145)' }} />
-                            <p style={styles.copyHeading}>
-                                Copy your keys to some secured place. Remember we don't store any of your keys in ours databases.
-                            We don't maintain a database.</p>
+                            <p style={styles.copyHeading}>{lang[language].CopyKeys}</p>
                             <div style={styles.detailsDiv}>
-                                <p style={styles.detailHeadBold}>Your Address:</p>
+                                <p style={styles.detailHeadBold}>{lang[language].YourAddress}:</p>
                                 <p style={styles.detailVal}>{this.state.account_addr}</p>
-                                <p style={styles.detailHeadBold}>Private Key:</p><p
+                                <p style={styles.detailHeadBold}>{lang[language].PrivateKey}:</p><p
                                     style={styles.detailVal}>{this.state.private_key}
                                     <CopyToClipboard text={this.state.private_key}
                                         onCopy={() => this.setState({
-                                            snackMessage: 'Copied to Clipboard Successfully',
+                                            snackMessage: lang[language].Copied,
                                             openSnack: true
                                         })}>
                                         <img src={'../src/Images/download.jpeg'}
@@ -242,14 +242,14 @@ class Create extends Component {
                                             style={styles.clipBoard} />
                                     </CopyToClipboard></p>
                                 <ReactTooltip id="copyImage" place="bottom">
-                                    <span>Copy</span>
+                                    <span>{lang[language].Copy}</span>
                                 </ReactTooltip>
-                                <p style={styles.detailHeadBold}>Your keystore file is stored at:</p>
+                                <p style={styles.detailHeadBold}>{lang[language].KeyLocation}:</p>
                                 <p style={styles.detailVal}>{this.state.keystore_addr}</p>
                             </div>
                             <br /><br />
                             <Checkbox
-                                label="Yes, I understood, I copied my keys in secured place"
+                                label={lang[language].YesUnderstand}
                                 labelStyle={styles.checkboxLabel}
                                 checked={this.state.checked}
                                 onCheck={() => {
@@ -262,7 +262,7 @@ class Create extends Component {
                             />
                             <br /><br />
                             <RaisedButton
-                                label="Go to Dashboard"
+                                label={lang[language].GoToDash}
                                 labelStyle={styles.yesButtonLabel}
                                 buttonStyle={this.state.checked ? styles.yesButton : styles.disabledButton}
                                 disabled={this.state.checked ? false : true}

@@ -82,8 +82,7 @@ class VPNComponent extends Component {
         if (nextProps.status === false)
             this.setState({ status: nextProps.status, selectedVPN: null });
         else
-            this.setState({ status: nextProps.status });
-
+            this.setState({ status: nextProps.status, selectedVPN: nextProps.vpnData.vpn_addr });
     }
 
     getDueAmount() {
@@ -93,7 +92,7 @@ class VPNComponent extends Component {
                 console.log("Error in getting due...")
             }
             else {
-                let dueSession = history.sessions.find((obj) => { return obj.is_payed === false; })
+                let dueSession = history.sessions.find((obj) => { return obj.is_paid === false; })
                 self.setState({ dueAmount: history.due, dueSession: dueSession });
             }
         })
@@ -158,40 +157,54 @@ class VPNComponent extends Component {
             this.setState({ showPopUp: false, statusSnack: true, statusMessage: 'Connecting...' })
             let that = this;
             if (isOnline()) {
-                connectVPN(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account) {
+                connectVPN(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, message) {
                     if (isMacError) {
                         that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: true })
+                        that.props.changeTest(false)
                     }
                     else if (isWinError) {
                         that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: false })
+                        that.props.changeTest(false)
                     }
                     else if (account) {
                         that.setState({ status: false, showPay: true, statusSnack: false, isMac: false, payAccount: account })
+                        that.props.changeTest(false)
                     }
                     else if (err) {
                         if (err.message !== true)
                             that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
+                        that.props.changeTest(false)
                     }
                     else {
                         that.props.onChange();
                         //that.returnVPN();
-                        that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: lang[that.props.lang].ConnectedVPN })
+                        that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}. ${message}` })
+                        that.props.changeTest(false)
                     }
                 })
             }
             else {
                 this.setState({ openSnack: true, statusSnack: false, status: false, snackMessage: lang[this.props.lang].CheckInternet })
+                this.props.changeTest(false)
             }
-            this.props.changeTest(false)
         }
     }
 
     _disconnectVPN = () => {
+        this.props.changeTest(true);
         this.setState({ statusSnack: true, statusMessage: lang[this.props.lang].Disconnecting })
         var that = this;
         disconnectVPN(function (err) {
-            that.props.onChange();
-            that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage:lang[that.props.lang].DisconnectVPN })
+            if (err) {
+                that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message? err.message:'Disconnecting Failed.' })
+                that.props.onChange();
+                that.props.changeTest(false);
+            }
+            else {
+                that.props.onChange();
+                that.props.changeTest(false);
+                that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+            }
         });
     }
 
@@ -202,6 +215,7 @@ class VPNComponent extends Component {
                 console.log('Err', err);
             }
             else {
+                self.props.onChange();
                 self.setState({ usage: usage })
             }
         })
@@ -252,6 +266,9 @@ class VPNComponent extends Component {
         else if (this.state.sortType === 'latency') {
             this.setState({ vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.latency).reverse(), sortUp: false })
         }
+        else if (this.state.sortType === 'price') {
+            this.setState({ vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.price_per_GB).reverse(), sortUp: false })
+        }
         else {
             this.setState({ vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.location.city).reverse(), sortUp: false })
         }
@@ -263,6 +280,9 @@ class VPNComponent extends Component {
         }
         else if (this.state.sortType === 'latency') {
             this.setState({ vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.latency), sortUp: true })
+        }
+        else if (this.state.sortType === 'price') {
+            this.setState({ vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.price_per_GB), sortUp: true })
         }
         else {
             this.setState({ vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.location.city), sortUp: true })
@@ -284,7 +304,7 @@ class VPNComponent extends Component {
 
     render() {
         let that = this;
-        let language=this.props.lang;
+        let language = this.props.lang;
         if (!this.state.isGetVPNCalled) {
             setInterval(function () {
                 that.getVPNs()
@@ -465,8 +485,8 @@ class VPNComponent extends Component {
                                         <Col xs={1}>
                                             <p style={{ fontWeight: 'bold' }}>{lang[language].Flag}</p>
                                         </Col>
-                                        <Col xs={5}>
-                                            <p style={{ fontWeight: 'bold' }}>
+                                        <Col xs={4}>
+                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
                                                 <a style={{ color: '#373a3c', cursor: 'pointer' }}
                                                     onClick={() => {
                                                         this.setState({
@@ -485,8 +505,8 @@ class VPNComponent extends Component {
                                                     </span>
                                                     : <span></span>}</p>
                                         </Col>
-                                        <Col xs={3}>
-                                            <p style={{ fontWeight: 'bold' }}>
+                                        <Col xs={2}>
+                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
                                                 <a style={{ color: '#373a3c', cursor: 'pointer' }}
                                                     onClick={() => {
                                                         this.setState({
@@ -505,8 +525,8 @@ class VPNComponent extends Component {
                                                     </span>
                                                     : <span></span>}</p>
                                         </Col>
-                                        <Col xs={3}>
-                                            <p style={{ fontWeight: 'bold' }}>
+                                        <Col xs={2}>
+                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
                                                 <a style={{ color: '#373a3c', cursor: 'pointer' }}
                                                     onClick={() => {
                                                         this.setState({
@@ -520,6 +540,26 @@ class VPNComponent extends Component {
                                                         {this.state.sortUp ?
                                                             <Down onClick={this.downSort.bind(this)} style={{ width: 18, height: 18, cursor: 'pointer' }} /> :
                                                             <Up onClick={this.upSort.bind(this)} style={{ width: 18, height: 18, cursor: 'pointer' }} />
+                                                        }
+                                                    </span>
+                                                    : <span></span>}</p>
+                                        </Col>
+                                        <Col xs={3}>
+                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
+                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                                    onClick={() => {
+                                                        this.setState({
+                                                            vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.price_per_GB),
+                                                            sortType: 'price',
+                                                            sortUp: true
+                                                        })
+                                                    }}>{lang[language].Price}</a>
+                                                {this.state.sortType === 'price' ?
+                                                    <span>
+                                                        {
+                                                            this.state.sortUp ?
+                                                                <Down onClick={this.downSort.bind(this)} style={{ width: 18, height: 18, cursor: 'pointer' }} /> :
+                                                                <Up onClick={this.upSort.bind(this)} style={{ width: 18, height: 18, cursor: 'pointer' }} />
                                                         }
                                                     </span>
                                                     : <span></span>}</p>
@@ -538,15 +578,18 @@ class VPNComponent extends Component {
                                                         <Col xs={1}>
                                                             <Flag code={Country.getCode(vpn.location.country)} height="16" />
                                                         </Col>
-                                                        <Col xs={5}>
-                                                            {vpn.location.city}, {vpn.location.country}
+                                                        <Col xs={4}>
+                                                            <p style={{ textAlign: 'center', wordBreak: 'break-all' }}>{vpn.location.city}, {vpn.location.country}</p>
+                                                        </Col>
+                                                        <Col xs={2}>
+                                                            <p style={{ textAlign: 'center' }}>{(vpn.net_speed.download / (1024 * 1024)).toFixed(2)} Mbps</p>
+                                                        </Col>
+                                                        <Col xs={2}>
+                                                            <p style={{ textAlign: 'center' }}>{vpn.latency ? vpn.latency : 'None'}
+                                                                {vpn.latency ? (vpn.latency === 'Loading...' ? null : ' ms') : null}</p>
                                                         </Col>
                                                         <Col xs={3}>
-                                                            {(vpn.net_speed.download / (1024 * 1024)).toFixed(2)} Mbps
-                                                    </Col>
-                                                        <Col xs={3}>
-                                                            {vpn.latency ? vpn.latency : 'None'}
-                                                            {vpn.latency ? (vpn.latency === 'Loading...' ? null : ' ms') : null}
+                                                            <p style={{ textAlign: 'center' }}>{vpn.price_per_GB ? vpn.price_per_GB : 100}</p>
                                                         </Col>
                                                         <ReactTooltip id="listOver" place="bottom">
                                                             <span>Click to Connect</span>
@@ -566,7 +609,7 @@ class VPNComponent extends Component {
                                 </List>
                                 :
                                 <span style={{ marginLeft: '35%', position: 'absolute', marginTop: '20%' }}>
-                                    {lang[language].Latency}</span>
+                                    {lang[language].NoServers}</span>
                             }
                         </div>
                 }
@@ -594,8 +637,8 @@ class VPNComponent extends Component {
                                     lang[language].ClickVPN :
                                     <span>
                                         <span onClick={() => { this.payDue() }} data-tip data-for="payTip" style={{ cursor: 'pointer' }}>
-                                        {lang[language].Uhave} {parseInt(this.state.dueAmount) / (10 ** 8)} SENTS {lang[language].Due}
-                                    </span>
+                                            {lang[language].Uhave} {parseInt(this.state.dueAmount) / (10 ** 8)} SENTS {lang[language].Due}
+                                        </span>
                                         <ReactTooltip id="payTip" place="top" type="warning">
                                             <span style={{ color: 'black' }}>{lang[language].ClickPay}</span>
                                         </ReactTooltip>
@@ -634,6 +677,14 @@ class VPNComponent extends Component {
                         </Col>
                         <Col xs={7}>
                             <p style={{ marginTop: -2 }}>{this.state.activeVpn ? (this.state.activeVpn.net_speed.download / (1024 * 1024)).toFixed(2) : ''} Mbps </p>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={5}>
+                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Cost}:</p>
+                        </Col>
+                        <Col xs={7}>
+                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.price_per_GB : ''} SENTS/GB</p>
                         </Col>
                     </Row>
                     <Row>
@@ -722,20 +773,19 @@ class VPNComponent extends Component {
                                     style={styles.clipBoardDialog}
                                 />
                             </CopyToClipboard>
-
+                            <br />
+                            Please install openvpn in default folder.(C:\\Program Files)
                         </span>
                     }
                 </Dialog>
                 <Dialog
-                    title="Initial Payment Reminder"
+                    title={lang[language].InitialPayment}
                     titleStyle={{ fontSize: 14 }}
                     actions={paymentActions}
                     modal={true}
                     open={this.state.showPay}
                 >
-                    <span>
-                        Inorder to use VPN, you need to pay 100 sents for the first time. Please pay and then try to connect to the vpn.
-                            </span>
+                    <span>{lang[language].InorderVPN}</span>
                 </Dialog>
                 <ReactTooltip id="copyImage" place="bottom">
                     <span>{lang[language].Copy}</span>

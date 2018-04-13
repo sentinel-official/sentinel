@@ -17,7 +17,7 @@ class History extends Component {
       sentData: [],
       isGetHistoryCalled: false,
       isLoading: true,
-      ethActive: true,
+      ethActive: false,
       openSnack: false,
       snackMessage: '',
       pageNumber: 1,
@@ -94,25 +94,26 @@ class History extends Component {
     let ethOutput = <EtherTransaction
       data={this.state.ethData} isTest={this.props.isTest} local_address={this.props.local_address} lang={this.props.lang} />
     let sentOutput = <SentTransaction
-      data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address} lang={this.props.lang} />
+      data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address}
+      lang={this.props.lang} currentHash={this.props.currentHash} removeHash={this.props.removeHash} getHistory={this.getSentHistory.bind(this)} />
     return (
       <div style={{ margin: '1% 3%' }}>
         {this.state.ethActive ?
           <span style={styles.transactionsHeading}>{lang[language].EthTransactions}</span> :
           <span style={styles.transactionsHeading}>{lang[language].SentTransactions}</span>}
-        <span style={{ marginLeft: this.props.lang === 'en' ? '60%' : '58%' }}>
-          <IconButton>
+        <span style={{ marginLeft: this.props.lang === 'en' ? '65%' : '62%' }}>
+          <IconButton style={{ position: 'absolute', marginLeft: -50, marginTop: -8 }}>
             <Refresh onClick={this.handleRefresh.bind(this)} />
           </IconButton>
-          <RaisedButton
-            label="ETH"
-            buttonStyle={this.state.ethActive ? { backgroundColor: 'grey' } : {}}
-            onClick={() => { this.setState({ ethActive: true }) }}
-          />
           <RaisedButton
             label="SENT"
             buttonStyle={this.state.ethActive ? {} : { backgroundColor: 'grey' }}
             onClick={() => { this.setState({ ethActive: false }) }}
+          />
+          <RaisedButton
+            label="ETH"
+            buttonStyle={this.state.ethActive ? { backgroundColor: 'grey' } : {}}
+            onClick={() => { this.setState({ ethActive: true }) }}
           />
         </span>
         {this.state.isLoading === true ? this.renderProgress() :

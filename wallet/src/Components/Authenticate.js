@@ -27,7 +27,7 @@ class Authenticate extends Component {
         this.setState({ isDisabled: 'true', statusSnack: true, statusMessage: lang[this.props.lang].CheckCre })
         let self = this;
         setTimeout(function () {
-            getPrivateKey(self.state.password, function (err, privateKey) {
+            getPrivateKey(self.state.password, self.props.lang, function (err, privateKey) {
                 if (err) {
                     self.setState({ isDisabled: false, password: '', statusSnack: false, openSnack: true, snackMessage: err.message })
                 }

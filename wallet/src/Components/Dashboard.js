@@ -7,6 +7,7 @@ import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnect
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
+import SendNew from './SendNew';
 import VPNHistory from './VPNHistory';
 import { sendError } from '../helpers/ErrorLog';
 let lang = require('./language');
@@ -34,7 +35,8 @@ class Dashboard extends Component {
       isTest: false,
       sessionId: null,
       testDisabled: false,
-      lang: 'en'
+      lang: 'en',
+      currentHash: null
     }
     this.set = this.props.set;
   }
@@ -65,6 +67,10 @@ class Dashboard extends Component {
         that.setState({ ethBalance })
       }
     })
+  }
+
+  getTxHash = (txHash) => {
+    this.setState({ currentHash: txHash })
   }
 
   getUserSentBalance() {
@@ -108,7 +114,7 @@ class Dashboard extends Component {
   vpnPayment = (sessionData) => {
     this.setState({
       to_addr: sessionData.account_addr,
-      amount: parseFloat(sessionData.amount / (10 ** 8)),
+      amount: sessionData.amount,
       unit: 'SENT',
       value: 'send',
       sessionId: sessionData.id,
@@ -125,6 +131,10 @@ class Dashboard extends Component {
       this.setState({ isTest: value, value: 'send' })
     else
       this.setState({ isTest: value })
+  }
+
+  removeHash = () => {
+    this.setState({ currentHash: null })
   }
 
   testDisable = (value) => {
@@ -174,7 +184,9 @@ class Dashboard extends Component {
               inkBarStyle={{ backgroundColor: '#2f3245', height: 3 }}
             >
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].History} value="history">
-                <History local_address={this.state.local_address} isTest={this.state.isTest} lang={this.props.lang}/>
+                <History
+                  local_address={this.state.local_address} isTest={this.state.isTest}
+                  lang={this.props.lang} currentHash={this.state.currentHash} removeHash={this.removeHash} />
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Send} value="send">
                 <SendComponent
@@ -189,7 +201,9 @@ class Dashboard extends Component {
                   propReceiveChange={this.propReceiveChange.bind(this)}
                   clearSend={this.clearSend.bind(this)}
                   lang={this.props.lang}
+                  getCurrentTx={this.getTxHash}
                 />
+                {/* <SendNew /> */}
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Receive} value="receive">
                 <div>

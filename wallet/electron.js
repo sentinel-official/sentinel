@@ -6,10 +6,17 @@ var i18n = new (require('./translations/i18n'));
 const remote = electron.remote;
 var { exec } = require('child_process');
 var sudo = require('sudo-prompt');
+const fs = require('fs');
 var disconnect = {
   name: 'DisconnectOpenVPN'
 };
 var showPrompt = true;
+const SENT_DIR = getUserHome() + '/.sentinel';
+const KEYSTORE_FILE = SENT_DIR + '/keystore';
+if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
+function getUserHome() {
+  return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+}
 
 function windowManager() {
   this.window = null;
@@ -37,9 +44,10 @@ function windowManager() {
           })
           if (!res) {
             showPrompt = false;
-            stopVPN();
-            self.window = null;
-            app.quit();
+            stopVPN(function (err) {
+              self.window = null;
+              app.quit();
+            });
           }
           else {
             self.window = null;
@@ -50,6 +58,16 @@ function windowManager() {
       });
     });
   }
+}
+
+
+function getKeystore(cb) {
+  fs.readFile(KEYSTORE_FILE, function (err, data) {
+    if (err) cb(err, null);
+    else {
+      cb(null, data);
+    }
+  });
 }
 
 function isVPNConnected(cb) {
@@ -75,10 +93,21 @@ function isVPNConnected(cb) {
   }
 }
 
-function stopVPN() {
+function stopVPN(cb) {
   if (process.platform === 'win32') {
     sudo.exec('taskkill /IM sentinel.exe /f && taskkill /IM openvpn.exe /f', disconnect,
       function (error, stdout, stderr) {
+        if (error) cb('Disconnecting failed');
+        else {
+          getKeystore(function (err, KEYSTOREDATA) {
+            let data = JSON.parse(KEYSTOREDATA);
+            data.isConnected = null;
+            let keystore = JSON.stringify(data);
+            fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
+            });
+            cb(null);
+          })
+        }
       });
   }
   else {
@@ -89,8 +118,19 @@ function stopVPN() {
         if (process.platform === 'darwin') {
           command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
         }
-        exec(command, (err, stdout, stderr) => {
+        exec(command, (comErr, stdOut, stdErr) => {
+          getKeystore(function (error, KEYSTOREDATA) {
+            let data = JSON.parse(KEYSTOREDATA);
+            data.isConnected = null;
+            let keystore = JSON.stringify(data);
+            fs.writeFile(KEYSTORE_FILE, keystore, function (keyErr) {
+            });
+            cb(null);
+          })
         });
+      }
+      else {
+        cb(null);
       }
     });
   }
@@ -131,8 +171,20 @@ app.on('ready', function () {
   {
     label: "Language",
     submenu: [
-      { label: 'English', type: 'checkbox', checked: true, click() { m.items[1].submenu.items[1].checked = false; mainWindow.window.webContents.send('lang', 'en'); } },
-      { label: 'Japanese', type: 'checkbox', click() { m.items[1].submenu.items[0].checked = false; mainWindow.window.webContents.send('lang', 'ja'); } }
+      {
+        label: 'English', type: 'checkbox', checked: true, click() {
+          m.items[1].submenu.items[1].checked = false;
+          m.items[1].submenu.items[0].checked = true;
+          mainWindow.window.webContents.send('lang', 'en');
+        }
+      },
+      {
+        label: 'Japanese', type: 'checkbox', click() {
+          m.items[1].submenu.items[0].checked = false;
+          m.items[1].submenu.items[1].checked = true;
+          mainWindow.window.webContents.send('lang', 'ja');
+        }
+      }
     ]
   }
   ])

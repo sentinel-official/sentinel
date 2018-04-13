@@ -21,7 +21,7 @@ class SendComponent extends Component {
     this.state = {
       keystore: '',
       to_address: '',
-      amount: '',
+      amount: 0,
       gas: 21000,
       data: '',
       priv_key: '',
@@ -88,8 +88,8 @@ class SendComponent extends Component {
     let gas = this.state.gas;
     let amount = this.state.amount;
     let gas_price = this.state.sliderValue * (10 ** 9);
-    if (this.state.session_id === -1 && parseInt(this.state.amount) !== 100) {
-      this.setState({ snackOpen: true, snackMessage: 'Please send 100 sends', sending: false })
+    if (this.state.session_id === -1 && parseInt(this.state.amount) !== 10000000000) {
+      this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false })
     }
     else {
       tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
@@ -116,8 +116,8 @@ class SendComponent extends Component {
           payment_type: paymentType
         }
         payVPNUsage(body, function (err, tx_addr) {
-          self.props.clearSend();
           if (err) {
+            self.props.clearSend();
             self.setState({
               snackOpen: true,
               snackMessage: err.message,
@@ -131,6 +131,17 @@ class SendComponent extends Component {
             });
           }
           else {
+            var data = {
+              date: Date.now(),
+              to: self.state.to_address,
+              gasPrice: self.state.sliderValue,
+              amount: parseFloat((self.state.amount) / (10 ** 8)),
+              txHash: tx_addr
+            }
+            var txData = JSON.stringify(data);
+            self.props.getCurrentTx(tx_addr);
+            localStorage.setItem('currentTransaction', txData);
+            self.props.clearSend();
             self.clearFields(tx_addr)
           }
         });
@@ -207,10 +218,10 @@ class SendComponent extends Component {
   onClickSend = () => {
     var self = this;
     if (this.state.amount === '') {
-      this.setState({ sending: false, snackOpen: true, snackMessage: 'Amount field is Empty' })
+      this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].AmountEmpty })
     }
     else if (this.state.password === '') {
-      this.setState({ sending: false, snackOpen: true, snackMessage: 'Password field is Empty' })
+      this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
     }
     else {
       if (isOnline()) {
@@ -219,7 +230,7 @@ class SendComponent extends Component {
           sending: true
         });
         setTimeout(function () {
-          getPrivateKey(self.state.password, function (err, privateKey) {
+          getPrivateKey(self.state.password, self.props.lang, function (err, privateKey) {
             //console.log("Get..", self.state.isDisabled, err, privateKey)
             if (err) {
               sendError(err)
@@ -237,21 +248,21 @@ class SendComponent extends Component {
         }, 500);
       }
       else {
-        this.setState({ snackOpen: true, snackMessage: 'Check your Internet Connection' })
+        this.setState({ snackOpen: true, snackMessage: lang[this.props.lang].CheckInternet })
       }
     }
   }
 
-  renderLink() {
-    return (
-      <div>
-        Your Transaction is Placed Successfully. Check Status <a onClick={() => {
-          statusUrl = this.getStatusUrl();
-          this.openInExternalBrowser(`${statusUrl}/tx/${this.state.tx_addr}`)
-        }} style={{ color: '#1d400' }}>Here</a>
-      </div>
-    )
-  }
+  // renderLink() {
+  //   return (
+  //     <div>
+  //       Your Transaction is Placed Successfully. Check Status <a onClick={() => {
+  //         statusUrl = this.getStatusUrl();
+  //         this.openInExternalBrowser(`${statusUrl}/tx/${this.state.tx_addr}`)
+  //       }} style={{ color: '#1d400' }}>Here</a>
+  //     </div>
+  //   )
+  // }
 
   openSnackBar = () => this.setState({
     snackMessage: 'Your Transaction is Placed Successfully.',
@@ -259,6 +270,8 @@ class SendComponent extends Component {
   })
 
   amountChange = (event, amount) => {
+    if (this.state.unit === 'ETH') amount = amount * Math.pow(10, 18);
+    else amount = amount * Math.pow(10, 8);
     this.setState({ amount: amount })
     let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
     if (trueAddress !== null) {
@@ -279,8 +292,8 @@ class SendComponent extends Component {
 
   getGasLimit = (amount, to, unit) => {
     var from = this.props.local_address;
-    if (unit === 'ETH') amount = amount * Math.pow(10, 18)
-    else amount = amount * Math.pow(10, 8)
+    // if (unit === 'ETH') amount = amount * Math.pow(10, 18)
+    // else amount = amount * Math.pow(10, 8)
     let that = this;
     getGasCost(from, to, amount, unit, function (gasLimit) {
       that.setState({ gas: gasLimit })
@@ -295,10 +308,14 @@ class SendComponent extends Component {
   };
 
   handleChange = (event, index, unit) => {
-    this.setState({ unit });
+    console.log("Amount..", this.state.amount);
+    let amount;
+    if (unit === 'ETH') amount = (unit !== this.state.amount) ? this.state.amount * Math.pow(10, 10) : this.state.amount;
+    else amount = (unit !== this.state.amount) ? this.state.amount / Math.pow(10, 10) : this.state.amount;
+    this.setState({ amount: amount, unit: unit });
     let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
-    if (trueAddress !== null && this.state.amount !== '') {
-      this.getGasLimit(this.state.amount, this.state.to_address, unit)
+    if (trueAddress !== null && amount !== '') {
+      this.getGasLimit(amount, this.state.to_address, unit)
     }
   };
   render() {
@@ -349,7 +366,11 @@ class SendComponent extends Component {
                   style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
                   fullWidth={true}
                   inputStyle={{ padding: 10 }}
-                  onChange={this.amountChange.bind(this)} value={this.state.amount} />
+                  onChange={this.amountChange.bind(this)} value={
+                    (this.state.amount === null || this.state.amount === 0) ? null :
+                      (this.state.unit === 'ETH' ? parseFloat(this.state.amount / (10 ** 18)) :
+                        parseFloat(this.state.amount / (10 ** 8)))
+                  } />
               </Col>
               <Col xs={3}>
                 <DropDownMenu
@@ -448,24 +469,23 @@ class SendComponent extends Component {
           </Grid>
           <div>
             <ReactTooltip id="toField" place="bottom">
-              <span>Wallet Address that you want to send Sentinel Tokens to</span>
+              <span>{lang[language].ToTooltip}</span>
             </ReactTooltip>
             <ReactTooltip id="amountField" place="bottom">
-              <span>Total Ethereum/Sentinel Tokens<br />
-                that you want to send to. <br />
-                Yes, this wallet can<br /> hold Ethereum too.</span>
+              <span>{lang[language].AmountTool1}<br />
+                {lang[language].AmountTool2}</span>
             </ReactTooltip>
             <ReactTooltip id="gasField" place="bottom">
-              <span>21000 is the default gas limit</span>
+              <span>{lang[language].GasFieldTool}</span>
             </ReactTooltip>
             <ReactTooltip id="gasPrice" place="bottom">
-              <span>Amount you pay per unit of gas</span>
+              <span>{lang[language].GasPriceTool}</span>
             </ReactTooltip>
             <ReactTooltip id="messageField" place="bottom">
               <span>A message that you might want to add as a transaction note</span>
             </ReactTooltip>
             <ReactTooltip id="passwordField" place="bottom">
-              <span>Your Sentinel AUID Password</span>
+              <span>{lang[language].PasswordTool}</span>
             </ReactTooltip>
             <Snackbar
               open={this.state.openSnack}

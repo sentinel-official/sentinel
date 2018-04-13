@@ -69,8 +69,14 @@ class Header extends Component {
     this.setState({ statusSnack: true, statusMessage: lang[this.props.lang].Disconnecting })
     var that = this;
     disconnectVPN(function (err) {
-      that.props.onChange();
-      that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+      if (err) {
+        that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
+        that.props.onChange();
+      }
+      else {
+        that.props.onChange();
+        that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+      }
     });
   }
 
@@ -168,6 +174,9 @@ class Header extends Component {
                         style={styles.clipBoard}
                       />
                     </CopyToClipboard>
+                    <ReactTooltip id="copyImage" place="bottom">
+                      <span>{lang[language].Copy}</span>
+                    </ReactTooltip>
                   </Col>
                 </Row>
               </Col>
@@ -242,9 +251,6 @@ class Header extends Component {
                 message={this.state.statusMessage}
                 style={{ marginBottom: '1%' }}
               />
-              <ReactTooltip id="copyImage" place="bottom">
-                <span>{lang[language].Copy}</span>
-              </ReactTooltip>
             </Row>
           </Grid>
         </div>

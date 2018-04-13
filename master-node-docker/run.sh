@@ -12,6 +12,7 @@ if [ "$SENT_ENV" != "DEV" ]; then
 fi
 
 nohup mongod >> /dev/null &
+python3 app.py &
 gunicorn -b 0.0.0.0:${PORT} \
          --reload \
          --log-level DEBUG \
@@ -19,5 +20,5 @@ gunicorn -b 0.0.0.0:${PORT} \
          --worker-class gevent \
          --threads ${THREADS} \
          --access-logfile /root/access.log \
-         app:app;
+         server:server;
 

@@ -11,7 +11,7 @@ class UpdateNodesStatus(object):
         self.stop_thread = False
         self.t = None
 
-    def update_thread(self):
+    def thread(self):
         while self.stop_thread is False:
             min_time = int(time.time()) - self.max_secs
             _ = db.nodes.update_many({
@@ -27,7 +27,7 @@ class UpdateNodesStatus(object):
 
     def start(self):
         if self.t is None:
-            self.t = start_new_thread(self.update_thread, ())
+            self.t = start_new_thread(self.thread, ())
 
     def stop(self):
         self.stop_thread = True

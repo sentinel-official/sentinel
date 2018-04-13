@@ -62,8 +62,10 @@ class GetVpnCredentials(object):
             error_1, due_amount = eth_helper.get_due_amount(account_addr)
             error_2, usage = eth_helper.get_latest_vpn_usage(account_addr)
             if (error_1 is None) and (error_2 is None):
+                session_resume = False
                 if (usage is not None) and (usage['received_bytes'] < LIMIT_100MB):
                     vpn_addr = usage['account_addr'].lower()
+                    session_resume = True
 
                 if due_amount > 0:
                     message = {
@@ -104,7 +106,9 @@ class GetVpnCredentials(object):
                                         'success': True,
                                         'ip': ip,
                                         'port': port,
-                                        'token': token
+                                        'token': token,
+                                        'vpn_addr': vpn_addr,
+                                        'message': 'Previous session has been resumed.' if session_resume is True else 'Started new session.'
                                     }
                                 except Exception as _:
                                     message = {

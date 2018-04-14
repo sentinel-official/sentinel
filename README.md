@@ -13,7 +13,6 @@ What are products that are part of the Sentinel Communications Suite?
 - **dVPN** - Decentralized Virtual Private Network
 - **dChat** - Decentralized peer-to-peer Messaging - includes media, files, etc.
 - **dVoIP** - Decentralized peer-to-peer Voice over Internet Protocol for calls and delivery of real-time/streaming audio data
-- **dFiles** - Decentralized peer-to-peer File Management and Sharing Service
 
 Who can use or associate with Sentinel?
 -
@@ -68,11 +67,11 @@ Considering the use of TenderMint for the development of the Service Chain, swap
 What are we up to right now?
 -
 
-Currently we have worked on and released the **Sentinel Desktop Client - Alpha (v0.0.2)** which can be downloaded from here:
+Currently we have worked on and released the **Sentinel Desktop Client - Alpha (v0.0.3)** which can be downloaded from here:
 
-- [  Mac OS ](http://sentinelgroup.io/releases/alpha-0.0.2/macos/sentinel-alpha-0.0.2.dmg)
-- [  Windows - x64 ](http://sentinelgroup.io/releases/alpha-0.0.2/windows/Sentinel-alpha-0.0.2-win-x64.exe)
-- [  Linux - x64 ](http://sentinelgroup.io/releases/alpha-0.0.2/ubuntu/16.04/sentinel_0.0.2_amd64.deb)
+- [  Mac OS ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.3-alpha/Sentinel-macosx-0.0.3-alpha.dmg)
+- [  Windows - x64 ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.31-alpha/Sentinel-win64-0.0.31-alpha.exe)
+- [  Linux - x64 ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.3-alpha/Sentinel-linux64-0.0.3-alpha.deb)
 
 The current Desktop Client has 2 primary components:
 

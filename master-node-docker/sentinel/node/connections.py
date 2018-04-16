@@ -47,24 +47,23 @@ class UpdateConnections(object):
                         }
                     })
                     if 'end_time' in info and info['end_time'] is not None:
-                        from_addr = account_addr
                         to_addr = str(connection['client_addr'])
                         sent_bytes = int(info['usage']['down'])
                         session_duration = int(
                             int(info['end_time']) - int(connection['start_time']))
                         node = db.nodes.find_one({
-                            'from_addr': from_addr
+                            'account_addr': account_addr
                         }, {
                             'price_per_GB': 1
                         })
                         amount = int(calculate_amount(sent_bytes, node['price_per_GB']) * DECIMALS)
                         timestamp = int(time.time())
 
-                        print(from_addr, to_addr, sent_bytes,
+                        print(account_addr, to_addr, sent_bytes,
                               session_duration, amount, timestamp)
 
                         error, tx_hash = eth_helper.add_vpn_usage(
-                            from_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
+                            account_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
                         if error:
                             tx_hashes.append(error)
                         else:

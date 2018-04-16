@@ -1,14 +1,12 @@
 #!/bin/sh
 
-ACCOUNT_DATA_PATH=/root/.sentinel/account.data
-VPN_DATA_PATH=/root/.sentinel/vpn.data
+ACCOUNT_DATA_PATH=$HOME/.sentinel/account.data
+CONFIG_DATA_PATH=$HOME/.sentinel/config.data
 
-if [ -f "$ACCOUNT_DATA_PATH" ]; then
-    echo "$ACCOUNT_DATA_PATH found."
+if [ -f "$ACCOUNT_DATA_PATH" ] && [ -f "$CONFIG_DATA_PATH" ]; then
+    echo "Found config files."
 else
-    echo "$ACCOUNT_DATA_PATH not found."
-    OK=NOTOK
-    while [ "$OK" == "NOTOK" ]; do
+    while true; do
         echo -n "Do you have a wallet address? [Y/N]: "
         read option
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
@@ -27,30 +25,29 @@ else
             if [ ${#PASSWORD} -le 0 ]; then
                 echo "Password length must be greater than zero."
                 continue
-            else
-                echo -n "Enter how many SENTs you cost per GB: "
-                read PRICE
-                PRICE=$(echo ${PRICE} | grep -Eq '^[0-9]+([.][0-9]+)?$' && echo ${PRICE})
-                if [ ${#PRICE} -le 0 ]; then
-                    echo "Price must be a positive number."
-                    continue
-                else
-                    touch ${VPN_DATA_PATH}
-                    echo '{"price_per_GB": '${PRICE}'}' > ${VPN_DATA_PATH}
-                fi
             fi
         fi
+
+        echo -n "Enter how many SENTs you cost per GB: "
+        read PRICE
+        PRICE=$(echo ${PRICE} | grep -Eq '^[0-9]+([.][0-9]+)?$' && echo ${PRICE})
+        if [ ${#PRICE} -le 0 ]; then
+            echo "Price must be a positive number."
+            continue
+        else
+            touch ${CONFIG_DATA_PATH}
+            echo '{"price_per_GB": '${PRICE}'}' > ${CONFIG_DATA_PATH}
+        fi
+
         echo -n "Is everything correct ? [Y/N]: "
         read option
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
-            OK=OK
-        else
-            OK=NOTOK
+            break
         fi
     done
 fi
 
-cd /root;
+cd $HOME;
 nohup redis-server >> /dev/null &
 nohup mongod >> /dev/null &
 gunicorn --reload -b 0.0.0.0:3000 --log-level DEBUG server:app &

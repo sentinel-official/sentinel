@@ -545,7 +545,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
-                  if (err){}
+                  if (err) {}
                   else {
                     console.log("PIDS:", pids)
                     CONNECTED = true;

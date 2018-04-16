@@ -78,6 +78,7 @@ class SendComponent extends Component {
       else {
         this.setState({ isDisabled: true })
       }
+      console.log("props..", nextProps);
     }
   }
 
@@ -122,7 +123,7 @@ class SendComponent extends Component {
               snackOpen: true,
               snackMessage: err.message,
               to_address: '',
-              amount: '',
+              amount: 0,
               session_id: null,
               unit: 'ETH',
               password: '',
@@ -199,7 +200,7 @@ class SendComponent extends Component {
       tx_addr: tx_addr,
       openSnack: true,
       to_address: '',
-      amount: '',
+      amount: 0,
       session_id: null,
       unit: 'ETH',
       password: '',
@@ -310,8 +311,8 @@ class SendComponent extends Component {
   handleChange = (event, index, unit) => {
     console.log("Amount..", this.state.amount);
     let amount;
-    if (unit === 'ETH') amount = (unit !== this.state.amount) ? this.state.amount * Math.pow(10, 10) : this.state.amount;
-    else amount = (unit !== this.state.amount) ? this.state.amount / Math.pow(10, 10) : this.state.amount;
+    if (unit === 'ETH') amount = (unit !== this.state.unit) ? this.state.amount * Math.pow(10, 10) : this.state.amount;
+    else amount = (unit !== this.state.unit) ? this.state.amount / Math.pow(10, 10) : this.state.amount;
     this.setState({ amount: amount, unit: unit });
     let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
     if (trueAddress !== null && amount !== '') {
@@ -350,6 +351,7 @@ class SendComponent extends Component {
                   style={{ backgroundColor: '#FAFAFA', height: 30 }}
                   underlineShow={false} fullWidth={true}
                   onChange={this.addressChange.bind(this)}
+                  disabled={this.state.session_id !== null ? true : false}
                   value={this.state.to_address}
                   inputStyle={{ padding: 10 }}
                 />
@@ -365,6 +367,7 @@ class SendComponent extends Component {
                   type="number"
                   style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
                   fullWidth={true}
+                  disabled={this.state.session_id !== null ? true : false}
                   inputStyle={{ padding: 10 }}
                   onChange={this.amountChange.bind(this)} value={
                     (this.state.amount === null || this.state.amount === 0) ? null :

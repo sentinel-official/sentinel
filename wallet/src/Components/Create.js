@@ -69,6 +69,7 @@ class Create extends Component {
         if (this.state.password === this.state.confirmPwd) {
             if (isOnline()) {
                 createAccount(password, function (err, account) {
+                    console.log("password..", password);
                     if (err) sendError(err);
                     else {
                         that.setState({

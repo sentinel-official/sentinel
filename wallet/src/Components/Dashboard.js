@@ -30,7 +30,7 @@ class Dashboard extends Component {
       to_addr: '',
       sending: false,
       isPropReceive: false,
-      amount: '',
+      amount: 0,
       unit: 'ETH',
       isTest: false,
       sessionId: null,
@@ -91,10 +91,23 @@ class Dashboard extends Component {
   }
 
   handleChange = (value) => {
-    this.setState({
-      value: value,
-      color: 'orange'
-    });
+    if (value === 'send') {
+      this.setState({
+        to_addr: '',
+        amount: 0,
+        sessionId: null,
+        unit: 'ETH',
+        isPropReceive: true,
+        value: 'send',
+        color: 'orange'
+      })
+    }
+    else {
+      this.setState({
+        value: value,
+        color: 'orange'
+      });
+    }
   };
 
   propReceiveChange = () => {
@@ -104,7 +117,7 @@ class Dashboard extends Component {
   clearSend = () => {
     this.setState({
       to_addr: '',
-      amount: '',
+      amount: 0,
       sessionId: null,
       unit: 'ETH',
       isPropReceive: true

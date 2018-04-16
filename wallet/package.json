@@ -3,7 +3,7 @@
   "description": "Application for Sentinel",
   "productName": "Sentinel",
   "author": "Dev Team <devteam@sentinelgroup.io>",
-  "version": "0.0.3",
+  "version": "0.0.31",
   "private": true,
   "main": "electron.js",
   "license": "MIT",

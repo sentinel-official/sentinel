@@ -532,13 +532,13 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                     });
                     cb(null, false, false, false, res.message);
-                    count = 8;
+                    count = 6;
                   }
                   count++;
-                  if (count < 8) {
+                  if (count < 6) {
                     setTimeout(function () { checkWindows(); }, 5000);
                   }
-                  if (count == 8 && CONNECTED === false) {
+                  if (count == 6 && CONNECTED === false) {
                     cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                   }
                 })

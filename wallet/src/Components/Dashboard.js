@@ -30,7 +30,7 @@ class Dashboard extends Component {
       to_addr: '',
       sending: false,
       isPropReceive: false,
-      amount: 0,
+      amount: '',
       unit: 'ETH',
       isTest: false,
       sessionId: null,
@@ -94,7 +94,7 @@ class Dashboard extends Component {
     if (value === 'send') {
       this.setState({
         to_addr: '',
-        amount: 0,
+        amount: '',
         sessionId: null,
         unit: 'ETH',
         isPropReceive: true,
@@ -117,7 +117,7 @@ class Dashboard extends Component {
   clearSend = () => {
     this.setState({
       to_addr: '',
-      amount: 0,
+      amount: '',
       sessionId: null,
       unit: 'ETH',
       isPropReceive: true

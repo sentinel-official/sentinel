@@ -159,7 +159,7 @@ class VPNComponent extends Component {
             if (isOnline()) {
                 connectVPN(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, message) {
                     if (isMacError) {
-                        that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: true })
+                        that.setState({ status: false, showInstruct: false, statusSnack: false, isMac: false, openSnack: true, snackMessage: err.message })
                         that.props.changeTest(false)
                     }
                     else if (isWinError) {

@@ -410,19 +410,74 @@ export const getVPNList = (cb) => {
   });
 }
 
+function isPackageInstalled(packageName, cb) {
+  exec(`export PATH=$PATH:/usr/local/opt/openvpn/sbin && which ${packageName}`,
+    function (err, stdout, stderr) {
+      if (err || stderr) cb(null, false);
+      else {
+        var brewPath = stdout.trim();
+        if (brewPath.length > 0) cb(null, true);
+        else cb(null, false);
+      }
+    });
+}
+
+function installPackage(packageName, cb) {
+  exec(`brew install ${packageName}`,
+    function (err, stdout, stderr) {
+      console.log(packageName, err, stdout, stderr)
+      if (err || stderr) cb(err || stderr, false);
+      else cb(null, true);
+    });
+}
 
 export function connectVPN(account_addr, vpn_addr, cb) {
   CONNECTED = false;
   if (remote.process.platform === 'darwin') {
-    exec("if which openvpn > /dev/null;then echo 'true' ; else echo 'false'; fi",
-      function (err, stdout, stderr) {
-        console.log("Err..", err, "Out..", stdout.toString(), "Std..", stderr)
-        if (stdout.trim().toString() == 'false') {
-          cb({ message: 'false' }, true, false)
-        } else {
-          nextStep();
-        }
-      })
+    var packageNames = ['brew', 'openvpn', 'pidof'];
+    packageNames.forEach(function (packageName) {
+      console.log(packageName);
+      isPackageInstalled(packageName,
+        function (err, isInstalled) {
+          if (err) {
+            cb({
+              message: `Error occured while installing ${packageName}`
+            }, true, false, false, null);
+            return;
+          }
+          else if (isInstalled === false) {
+            if (packageName === 'brew') {
+              cb({
+                message: 'Package Brew is not installed.'
+              }, true, false, false, null);
+              return;
+            } else if (packageName === 'openvpn') {
+              installPackage(packageName,
+                function (err, success) {
+                  if (err || success === false) {
+                    cb({
+                      message: `Error occurred while installing package: ${packageName}`
+                    }, true, false, false, null);
+                    return;
+                  }
+                });
+            }
+            else {
+              setTimeout(function () {
+                installPackage(packageName,
+                  function (err, success) {
+                    if (err || success === false) {
+                      cb({
+                        message: `Error occurred while installing package: ${packageName}`
+                      }, true, false, false, null);
+                      return;
+                    } else if (success === true) nextStep();
+                  });
+              }, 10000)
+            }
+          } else if (packageName === 'pidof') nextStep();
+        });
+    })
   }
   else if (remote.process.platform === 'win32') {
     exec('cd c:\\Program Files && dir openvpn.exe /s /p | findstr "openvpn"', function (err, stdout, stderr) {
@@ -446,7 +501,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
   function nextStep() {
     var command;
     if (remote.process.platform === 'darwin') {
-      var ovpncommand = 'openvpn ' + OVPN_FILE;
+      var ovpncommand = 'export PATH=$PATH:/usr/local/opt/openvpn/sbin && openvpn ' + OVPN_FILE;
       command = `/usr/bin/osascript -e 'do shell script "${ovpncommand}" with administrator privileges'`
     } else if (remote.process.platform === 'win32') {
       command = 'resources\\extras\\bin\\openvpn.exe ' + OVPN_FILE;
@@ -532,20 +587,20 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                     });
                     cb(null, false, false, false, res.message);
-                    count = 8;
+                    count = 6;
                   }
                   count++;
-                  if (count < 8) {
+                  if (count < 6) {
                     setTimeout(function () { checkWindows(); }, 5000);
                   }
-                  if (count == 8 && CONNECTED === false) {
+                  if (count == 6 && CONNECTED === false) {
                     cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                   }
                 })
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
-                  if (err) cb({ message: err }, false, false, false, null);
+                  if (err) {}
                   else {
                     console.log("PIDS:", pids)
                     CONNECTED = true;
@@ -611,7 +666,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
               cb({ message: 'Something wrong. Please Try Later' })
             }
             else {
-              if (remote.process.platform === 'win32') {
+              if (remote.process.platform === 'win32' || remote.process.platform === 'darwin') {
                 delete (response['node']['vpn']['ovpn'][17]);
                 delete (response['node']['vpn']['ovpn'][18]);
               }

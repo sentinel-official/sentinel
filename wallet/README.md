@@ -6,13 +6,13 @@ Download the installer from the Sentinel official [GitHub Repo](https://github.c
 Linux
 ---
 
-If you are on Ubuntu, tnstall the deb file with the Ubuntu Software Center or by running the command
+If you are on Ubuntu, install the deb file with the Ubuntu Software Center or by running the command
 
 ```
 sudo dpkg -i Sentinel***.deb
 ```
 
-In case of any issues/errors regarding dependencies then run below command and after running the above command.
+In case of any issues/errors regarding dependencies then run below command and then after run the above command.
 
 ```
 sudo apt-install -f
@@ -29,13 +29,13 @@ Mac
 
 - Then go to Contents > MacOs > Sentinel and run Sentinel.
 
-- While connecting to VPN, in case of the erorr - 'Package ***brew*** is not installed' error. Then please install homebrew in your system and then try connecting to the vpn.
+- While connecting to VPN, in case of the error - 'Package ***brew*** is not installed' error. Then please install homebrew in your system and then try connecting to the vpn.
 
 Windows
 ---
 
 - Run the Sentinel***.exe file with Run As Administrator option and a loading gif will be running and after a few min, you will have the app opened.
 
-- Please wait for sometime until the application close and open once again.
+- Please wait for sometime until the loading gif closes. App also will close once and will open again
 
-- And from second time, you can run the app from folder: C://Users/{yourUser}/AppData/sentinel/sentinel.exe. Don't forget to right click and run app with the *'Run as Adminisitrator'* option.
+- And from second time, you can run the app from folder: C://Users/{yourUser}/AppData/sentinel/sentinel.exe. Don't forget to right click and run app with the *'Run as Administrator'* option.

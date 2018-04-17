@@ -16,8 +16,7 @@ class SentinelManger(object):
     def __init__(self, net, name, address, abi):
         self.net = net
         self.address = address
-        self.contract = net.web3.eth.contract(
-            contract_name=name, abi=abi, address=address)
+        self.contract = net.web3.eth.contract(contract_name=name, abi=abi, address=address)
 
     def get_balance(self, account_addr):
         try:
@@ -27,8 +26,7 @@ class SentinelManger(object):
                 'data': self.net.web3.toHex(
                     self.net.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='balanceOf', args=[account_addr])))
             }
-            balance = self.net.web3.toInt(
-                hexstr=self.net.web3.eth.call(caller_object))
+            balance = self.net.web3.toInt(hexstr=self.net.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 201, 'error': str(err)}, None
         return None, balance
@@ -50,7 +48,5 @@ class SentinelManger(object):
         return None, tx_hash
 
 
-sentinel_main = SentinelManger(
-    mainnet, SENTINEL_NAME, SENTINEL_ADDRESS, SENTINEL_ABI)
-sentinel_rinkeby = SentinelManger(
-    rinkeby, SENTINEL_TEST_NAME, SENTINEL_TEST_ADDRESS, SENTINEL_TEST_ABI)
+sentinel_main = SentinelManger(mainnet, SENTINEL_NAME, SENTINEL_ADDRESS, SENTINEL_ABI)
+sentinel_rinkeby = SentinelManger(rinkeby, SENTINEL_TEST_NAME, SENTINEL_TEST_ADDRESS, SENTINEL_TEST_ABI)

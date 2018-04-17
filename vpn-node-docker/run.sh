@@ -4,7 +4,7 @@ ACCOUNT_DATA_PATH=$HOME/.sentinel/account.data
 CONFIG_DATA_PATH=$HOME/.sentinel/config.data
 
 if [ -f "$ACCOUNT_DATA_PATH" ] && [ -f "$CONFIG_DATA_PATH" ]; then
-    echo "Found config files."
+    echo "Found account and config files."
 else
     while true; do
         echo -n "Do you have a wallet address? [Y/N]: "
@@ -50,6 +50,6 @@ fi
 cd $HOME;
 nohup redis-server >> /dev/null &
 nohup mongod >> /dev/null &
-gunicorn --reload -b 0.0.0.0:3000 --log-level DEBUG server:app &
+gunicorn --reload -b 0.0.0.0:3000 --log-level DEBUG server:server &
 echo ; sleep 1; echo ;
 python app.py ${PASSWORD}

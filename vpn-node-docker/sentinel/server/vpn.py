@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 import time
 
@@ -40,8 +41,6 @@ class GenerateOVPN(object):
                     },
                     'session_name': 'client' + name
                 }
-                res.status = falcon.HTTP_200
-                res.body = json.dumps(message)
             else:
                 message = {
                     'success': False,
@@ -60,3 +59,6 @@ class GenerateOVPN(object):
                 raise Exception('Session Token Mismatch')
             except Exception as _:
                 logger.send_log(message, res)
+
+        res.status = falcon.HTTP_200
+        res.body = json.dumps(message)

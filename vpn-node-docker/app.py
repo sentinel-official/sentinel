@@ -1,9 +1,7 @@
-from __future__ import print_function
-
+# coding=utf-8
 import sys
 import time
 from os import path
-
 from thread import start_new_thread
 
 from sentinel.config import ACCOUNT_DATA_PATH
@@ -24,8 +22,7 @@ def tasks():
                 _connections = openvpn.get_connections()
                 connections_len = len(_connections)
                 if connections_len > 0:
-                    send_connections_info(
-                        node.account['addr'], node.account['token'], _connections)
+                    send_connections_info(node.account['addr'], node.account['token'], _connections)
 
             send_nodeinfo(node, {
                 'type': 'alive'
@@ -39,11 +36,11 @@ if __name__ == "__main__":
     node = None
     argv_len = len(sys.argv)
     if path.exists(ACCOUNT_DATA_PATH) is True:
-        node = Node(resume=True)
+        node = Node()
     elif argv_len > 1:
         PASSWORD = sys.argv[1]
         create_account(PASSWORD)
-        node = Node(resume=True)
+        node = Node()
     else:
         print('ERROR: {} not found.'.format(ACCOUNT_DATA_PATH))
         exit(1)
@@ -80,8 +77,7 @@ if __name__ == "__main__":
                         'client_addr': result['account_addr'],
                         'start_time': int(time.time())
                     }]
-                    send_connections_info(
-                        node.account['addr'], node.account['token'], connections)
+                    send_connections_info(node.account['addr'], node.account['token'], connections)
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
                 if 'client' in client_name:
@@ -93,5 +89,4 @@ if __name__ == "__main__":
                         '_id': 0
                     })]
                     connections[0]['end_time'] = int(time.time())
-                    send_connections_info(
-                        node.account['addr'], node.account['token'], connections)
+                    send_connections_info(node.account['addr'], node.account['token'], connections)

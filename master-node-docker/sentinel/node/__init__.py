@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
-
 from .connections import UpdateConnections
 from .info import UpdateNodeInfo
 from .register import DeRegisterNode

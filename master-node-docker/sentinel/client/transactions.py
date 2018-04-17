@@ -4,7 +4,6 @@ import json
 import falcon
 
 from ..helpers import eth_helper
-from ..logs import logger
 
 
 class RawTransaction(object):
@@ -33,10 +32,6 @@ class RawTransaction(object):
                 'error': error,
                 'message': 'Error occurred while initiating the transaction.'
             }
-            try:
-                raise Exception(error)
-            except Exception as _:
-                logger.send_log(message, resp)
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

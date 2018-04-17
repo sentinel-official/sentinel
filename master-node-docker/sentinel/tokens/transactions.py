@@ -5,7 +5,6 @@ import falcon
 
 from ..db import db
 from ..helpers import eth_helper
-from ..logs import logger
 
 
 class SwapsRawTransaction(object):
@@ -24,7 +23,7 @@ class SwapsRawTransaction(object):
         if error is None:
             _ = db.swaps.insert_one({
                 'tx_data': tx_data,
-                'tx_hash': tx_hash,
+                'tx_hash_0': tx_hash,
                 'status': 0
             })
             message = {
@@ -38,10 +37,6 @@ class SwapsRawTransaction(object):
                 'error': error,
                 'message': 'Error occurred while initiating the transaction.'
             }
-            try:
-                raise Exception(error)
-            except Exception as _:
-                logger.send_log(message, resp)
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

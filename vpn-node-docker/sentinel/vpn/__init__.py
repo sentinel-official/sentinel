@@ -1,4 +1,3 @@
-from __future__ import absolute_import
-
+# coding=utf-8
 from .openvpn import Keys
 from .openvpn import OpenVPN

@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 
 import falcon
@@ -17,8 +18,8 @@ class Up(object):
         resp.body = json.dumps({'status': 'UP'})
 
 
-app = falcon.API(middleware=[JSONTranslator()])
+server = falcon.API(middleware=[JSONTranslator()])
 
-app.add_route('/', Up())
-app.add_route('/token', Token())
-app.add_route('/ovpn', GenerateOVPN())
+server.add_route('/', Up())
+server.add_route('/token', Token())
+server.add_route('/ovpn', GenerateOVPN())

@@ -1,5 +1,4 @@
-from __future__ import absolute_import
-
+# coding=utf-8
 from .controllers import create_account
 from .controllers import deregister_node
 from .controllers import register_node

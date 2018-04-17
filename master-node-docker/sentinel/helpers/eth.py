@@ -24,8 +24,7 @@ def get_encoded_session_id(account_addr, index):
 
 class ETHHelper(object):
     def create_account(self, password):
-        error, account_addr, private_key, keystore = mainnet.create_account(
-            password)
+        error, account_addr, private_key, keystore = mainnet.create_account(password)
 
         return error, account_addr, private_key, keystore
 
@@ -49,30 +48,25 @@ class ETHHelper(object):
         _, balances['main']['eths'] = mainnet.get_balance(account_addr)
         _, balances['main']['sents'] = sentinel_main.get_balance(account_addr)
         _, balances['rinkeby']['eths'] = rinkeby.get_balance(account_addr)
-        _, balances['rinkeby']['sents'] = sentinel_rinkeby.get_balance(
-            account_addr)
+        _, balances['rinkeby']['sents'] = sentinel_rinkeby.get_balance(account_addr)
 
         return balances
 
     def transfer_sents(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
         if net == 'main':
-            error, tx_hash = sentinel_main.transfer_amount(
-                from_addr, to_addr, amount, private_key)
+            error, tx_hash = sentinel_main.transfer_amount(from_addr, to_addr, amount, private_key)
         elif net == 'rinkeby':
-            error, tx_hash = sentinel_rinkeby.transfer_amount(
-                from_addr, to_addr, amount, private_key)
+            error, tx_hash = sentinel_rinkeby.transfer_amount(from_addr, to_addr, amount, private_key)
 
         return error, tx_hash
 
     def transfer_eths(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
         if net == 'main':
-            error, tx_hash = mainnet.transfer_amount(
-                from_addr, to_addr, amount, private_key)
+            error, tx_hash = mainnet.transfer_amount(from_addr, to_addr, amount, private_key)
         elif net == 'rinkeby':
-            error, tx_hash = rinkeby.transfer_amount(
-                from_addr, to_addr, amount, private_key)
+            error, tx_hash = rinkeby.transfer_amount(from_addr, to_addr, amount, private_key)
 
         return error, tx_hash
 
@@ -96,8 +90,7 @@ class ETHHelper(object):
         return error, due_amount
 
     def get_vpn_sessions_count(self, account_addr):
-        error, sessions_count = vpn_service_manager.get_vpn_sessions_count(
-            account_addr)
+        error, sessions_count = vpn_service_manager.get_vpn_sessions_count(account_addr)
 
         return error, sessions_count
 
@@ -113,8 +106,7 @@ class ETHHelper(object):
             })
             if (_usage is None) and (sessions_count > 0):
                 session_id = get_encoded_session_id(account_addr, sessions_count - 1)
-                error, _usage = vpn_service_manager.get_vpn_usage(
-                    account_addr, session_id)
+                error, _usage = vpn_service_manager.get_vpn_usage(account_addr, session_id)
                 if error is None:
                     usage = {
                         'id': session_id,
@@ -153,8 +145,7 @@ class ETHHelper(object):
         if error is None:
             for index in range(0, sessions_count):
                 session_id = get_encoded_session_id(account_addr, index)
-                error, _usage = vpn_service_manager.get_vpn_usage(
-                    account_addr, session_id)
+                error, _usage = vpn_service_manager.get_vpn_usage(account_addr, session_id)
                 if error is None:
                     if _usage[5] is False:
                         usage['due'] += _usage[3]
@@ -179,11 +170,9 @@ class ETHHelper(object):
         if error is None:
             tx_hashes.append(tx_hash)
             if payment_type == 'init':
-                error, tx_hash = vpn_service_manager.set_initial_payment(
-                    from_addr)
+                error, tx_hash = vpn_service_manager.set_initial_payment(from_addr)
             elif payment_type == 'normal':
-                error, tx_hash = vpn_service_manager.pay_vpn_session(
-                    from_addr, amount, session_id)
+                error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, amount, session_id)
             if error is None:
                 tx_hashes.append(tx_hash)
             else:
@@ -247,20 +236,18 @@ class ETHHelper(object):
                 make_tx = True
 
         if make_tx is True:
-            error, tx_hash = vpn_service_manager.add_vpn_usage(
-                from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id)
+            error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration, amount,
+                                                               timestamp, session_id)
 
         return error, tx_hash
 
     # DEV
     def free(self, to_addr, eths, sents):
         errors, tx_hashes = [], []
-        error, tx_hash = self.transfer_eths(
-            COINBASE_ADDRESS, to_addr, eths, COINBASE_PRIVATE_KEY, 'rinkeby')
+        error, tx_hash = self.transfer_eths(COINBASE_ADDRESS, to_addr, eths, COINBASE_PRIVATE_KEY, 'rinkeby')
         if error is None:
             tx_hashes.append(tx_hash)
-            error, tx_hash = self.transfer_sents(
-                COINBASE_ADDRESS, to_addr, sents, COINBASE_PRIVATE_KEY, 'rinkeby')
+            error, tx_hash = self.transfer_sents(COINBASE_ADDRESS, to_addr, sents, COINBASE_PRIVATE_KEY, 'rinkeby')
             if error is None:
                 tx_hashes.append(tx_hash)
             else:

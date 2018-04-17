@@ -64,6 +64,7 @@ class RegisterNode(object):
             'token': token,
             'message': 'Node registered successfully.'
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -88,5 +89,6 @@ class DeRegisterNode(object):
                 'success': True,
                 'message': 'Node deregistred successfully.'
             }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

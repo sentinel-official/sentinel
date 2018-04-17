@@ -1,3 +1,4 @@
+# coding=utf-8
 import subprocess
 
 from ..config import LIMIT_1GB
@@ -21,11 +22,9 @@ class OpenVPN(object):
         init_proc.wait()
 
     def start(self):
-        self.vpn_proc = subprocess.Popen(
-            self.start_cmd, shell=True, stdout=subprocess.PIPE)
+        self.vpn_proc = subprocess.Popen(self.start_cmd, shell=True, stdout=subprocess.PIPE)
         pid_cmd = 'pidof openvpn'
-        pid_proc = subprocess.Popen(
-            pid_cmd, shell=True, stdout=subprocess.PIPE)
+        pid_proc = subprocess.Popen(pid_cmd, shell=True, stdout=subprocess.PIPE)
         self.pid = pid_proc.stdout.readline().strip()
 
     def stop(self):

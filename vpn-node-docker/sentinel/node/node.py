@@ -1,7 +1,8 @@
+# coding=utf-8
 import json
+from urllib2 import urlopen
 
 from speedtest_cli import Speedtest
-from urllib2 import urlopen
 
 from ..config import ACCOUNT_DATA_PATH
 from ..config import CONFIG_DATA_PATH

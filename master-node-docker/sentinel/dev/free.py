@@ -6,7 +6,6 @@ import falcon
 from ..config import DECIMALS
 from ..db import db
 from ..helpers import eth_helper
-from ..logs import logger
 
 
 def check_free(to_addr):
@@ -45,10 +44,6 @@ class GetFreeAmount(object):
                     'tx_hashes': tx_hashes,
                     'message': 'Error occurred while transferring free amount.'
                 }
-                try:
-                    raise Exception(errors)
-                except Exception as _:
-                    logger.send_log(message, resp)
             else:
                 insert_free(account_addr)
                 message = {
@@ -57,5 +52,6 @@ class GetFreeAmount(object):
                     'tx_hashes': tx_hashes,
                     'message': 'Successfully transferred Test Tokens'
                 }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

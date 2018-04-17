@@ -12,8 +12,8 @@ from ..config import VPNSERVICE_NAME
 
 class VpnServiceManager(object):
     def __init__(self):
-        self.contract = rinkeby.web3.eth.contract(
-            contract_name=VPNSERVICE_NAME, abi=VPNSERVICE_ABI, address=VPNSERVICE_ADDRESS)
+        self.contract = rinkeby.web3.eth.contract(contract_name=VPNSERVICE_NAME, abi=VPNSERVICE_ABI,
+                                                  address=VPNSERVICE_ADDRESS)
 
     def pay_vpn_session(self, account_addr, amount, session_id):
         try:
@@ -54,11 +54,10 @@ class VpnServiceManager(object):
             caller_object = {
                 'from': account_addr,
                 'to': VPNSERVICE_ADDRESS,
-                'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
-                    hexstr=self.contract.encodeABI(fn_name='getDueAmountOf', args=[account_addr])))
+                'data': rinkeby.web3.toHex(
+                    rinkeby.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='getDueAmountOf', args=[account_addr])))
             }
-            due_amount = rinkeby.web3.toInt(
-                hexstr=rinkeby.web3.eth.call(caller_object))
+            due_amount = rinkeby.web3.toInt(hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 203, 'error': str(err)}, None
         return None, due_amount
@@ -71,8 +70,7 @@ class VpnServiceManager(object):
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
                     hexstr=self.contract.encodeABI(fn_name='getVpnSessionsCountOf', args=[account_addr])))
             }
-            sessions_count = rinkeby.web3.toInt(
-                hexstr=rinkeby.web3.eth.call(caller_object))
+            sessions_count = rinkeby.web3.toInt(hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 204, 'error': str(err)}, None
         return None, sessions_count
@@ -85,8 +83,7 @@ class VpnServiceManager(object):
                 'data': rinkeby.web3.toHex(rinkeby.web3.toBytes(
                     hexstr=self.contract.encodeABI(fn_name='getInitialPaymentStatusOf', args=[account_addr])))
             }
-            is_paid = rinkeby.web3.toInt(
-                hexstr=rinkeby.web3.eth.call(caller_object))
+            is_paid = rinkeby.web3.toInt(hexstr=rinkeby.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 205, 'error': str(err)}, None
         return None, is_paid == 1
@@ -102,8 +99,7 @@ class VpnServiceManager(object):
             usage = rinkeby.web3.eth.call(caller_object)[2:]
             usage = [usage[i:i + 64] for i in range(0, len(usage), 64)]
             usage[0] = rinkeby.web3.toChecksumAddress(usage[0])
-            usage[1:] = [rinkeby.web3.toInt(hexstr=usage[i])
-                         for i in range(1, len(usage))]
+            usage[1:] = [rinkeby.web3.toInt(hexstr=usage[i]) for i in range(1, len(usage))]
             usage[-1] = usage[-1] != 0
         except Exception as err:
             return {'code': 206, 'error': str(err)}, None

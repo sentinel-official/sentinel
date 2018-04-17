@@ -49,6 +49,8 @@ brew install pidof
 
 - If brew is not installed, please follow [this URL](https://www.howtogeek.com/211541/homebrew-for-os-x-easily-installs-desktop-apps-and-terminal-utilities/) for a step by step process.
 
+- To know more about the Tunnelblick configuration, follow this [URL](
+https://tunnelblick.net/cFileLocations.html)
 Windows
 ---
 

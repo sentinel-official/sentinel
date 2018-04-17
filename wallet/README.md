@@ -31,6 +31,22 @@ Mac
 
 - While connecting to VPN, in case of the error - 'Package ***brew*** is not installed' error. Then please install homebrew in your system and then try connecting to the vpn.
 
+- If there's no OpenVPN and the client pops a message asking for a manual install, use [this URL](https://support.prolianteasyconnect.com/hc/en-us/articles/208045615-How-to-install-Management-OpenVPN-client-Mac-OS-X)
+
+- If OpenVPN is installed and the client throws up the an error, try this command: 
+
+```
+export PATH=$(brew --prefix openvpn)/sbin:$PATH
+````
+
+And also install 'pidof' before running app by using:
+
+````
+brew install pidof
+```
+
+- If brew is not installed, please follow [this URL](https://www.howtogeek.com/211541/homebrew-for-os-x-easily-installs-desktop-apps-and-terminal-utilities/) for a step by step process.
+
 Windows
 ---
 

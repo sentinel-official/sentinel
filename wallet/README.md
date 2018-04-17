@@ -35,6 +35,8 @@ Mac
 
 - If OpenVPN is installed and the client throws up the an error, try this command: 
 
+- To know more about the Tunnelblick configuration, follow this [URL](https://tunnelblick.net/cFileLocations.html#configuration-files)
+
 ```
 export PATH=$(brew --prefix openvpn)/sbin:$PATH
 ````

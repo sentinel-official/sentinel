@@ -136,43 +136,55 @@ SENTINEL_TEST_ADDRESS = '0x29317B796510afC25794E511e7B10659Ca18048B'
 SENTINEL_TEST_NAME = 'Sentinel Test Token'
 VPNSERVICE_ABI = [
     {"constant": false, "inputs": [{"name": "_addr", "type": "address"}], "name": "addAuthorizedUser", "outputs": [],
+     "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [
+        {"name": "_from", "type": "address"}, {"name": "_to", "type": "address"},
+        {"name": "_receivedBytes", "type": "uint256"}, {"name": "_sessionDuration", "type": "uint256"},
+        {"name": "_amount", "type": "uint256"}, {"name": "_timestamp", "type": "uint256"},
+        {"name": "_sessionId", "type": "bytes32"}], "name": "addVpnUsage", "outputs": [], "payable": false,
+                                                                              "stateMutability": "nonpayable",
+                                                                              "type": "function"}, {"constant": false,
+                                                                                                    "inputs": [{
+                                                                                                        "name": "_from",
+                                                                                                        "type": "address"},
+                                                                                                        {
+                                                                                                            "name": "_amount",
+                                                                                                            "type": "uint256"},
+                                                                                                        {
+                                                                                                            "name": "_sessionId",
+                                                                                                            "type": "bytes32"}],
+                                                                                                    "name": "payVpnSession",
+                                                                                                    "outputs": [],
+                                                                                                    "payable": false,
+                                                                                                    "stateMutability": "nonpayable",
+                                                                                                    "type": "function"},
+    {"constant": false, "inputs": [{"name": "_addr", "type": "address"}], "name": "removeAuthorizedUser", "outputs": [],
      "payable": false, "stateMutability": "nonpayable", "type": "function"},
-    {"constant": true, "inputs": [{"name": "", "type": "address"}], "name": "authorizedUsers",
-     "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"},
     {"constant": false, "inputs": [{"name": "_addr", "type": "address"}, {"name": "_isPaid", "type": "bool"}],
      "name": "setInitialPaymentStatusOf", "outputs": [], "payable": false, "stateMutability": "nonpayable",
      "type": "function"},
-    {"constant": false, "inputs": [{"name": "_addr", "type": "address"}], "name": "removeAuthorizedUser", "outputs": [],
+    {"constant": false, "inputs": [{"name": "_owner", "type": "address"}], "name": "transferOwnership", "outputs": [],
      "payable": false, "stateMutability": "nonpayable", "type": "function"},
-    {"constant": true, "inputs": [], "name": "owner", "outputs": [{"name": "", "type": "address"}], "payable": false,
-     "stateMutability": "view", "type": "function"}, {"constant": false,
-                                                      "inputs": [{"name": "_from", "type": "address"},
-                                                                 {"name": "_amount", "type": "uint256"},
-                                                                 {"name": "_sessionId", "type": "bytes32"}],
-                                                      "name": "payVpnSession", "outputs": [], "payable": false,
-                                                      "stateMutability": "nonpayable", "type": "function"},
+    {"inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor"},
+    {"constant": true, "inputs": [{"name": "", "type": "address"}], "name": "authorizedUsers",
+     "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"},
+    {"constant": true, "inputs": [{"name": "_address", "type": "address"}], "name": "getDueAmountOf",
+     "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "view", "type": "function"},
+    {"constant": true, "inputs": [{"name": "_addr", "type": "address"}], "name": "getInitialPaymentStatusOf",
+     "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"},
+    {"constant": true, "inputs": [{"name": "_address", "type": "address"}], "name": "getVpnSessionsCountOf",
+     "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "view", "type": "function"},
     {"constant": true, "inputs": [{"name": "_address", "type": "address"}, {"name": "_sessionId", "type": "bytes32"}],
      "name": "getVpnUsageOf",
      "outputs": [{"name": "", "type": "address"}, {"name": "", "type": "uint256"}, {"name": "", "type": "uint256"},
                  {"name": "", "type": "uint256"}, {"name": "", "type": "uint256"}, {"name": "", "type": "bool"}],
      "payable": false, "stateMutability": "view", "type": "function"},
-    {"constant": true, "inputs": [{"name": "_addr", "type": "address"}], "name": "getInitialPaymentStatusOf",
-     "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"},
-    {"constant": false, "inputs": [{"name": "_owner", "type": "address"}], "name": "transferOwnership", "outputs": [],
-     "payable": false, "stateMutability": "nonpayable", "type": "function"},
-    {"constant": true, "inputs": [{"name": "_address", "type": "address"}], "name": "getVpnSessionsCountOf",
-     "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "view", "type": "function"},
-    {"constant": false, "inputs": [{"name": "_from", "type": "address"}, {"name": "_to", "type": "address"},
-                                   {"name": "_receivedBytes", "type": "uint256"},
-                                   {"name": "_sessionDuration", "type": "uint256"},
-                                   {"name": "_amount", "type": "uint256"}, {"name": "_timestamp", "type": "uint256"},
-                                   {"name": "_sessionId", "type": "bytes32"}], "name": "addVpnUsage", "outputs": [],
-     "payable": false, "stateMutability": "nonpayable", "type": "function"}]
-VPNSERVICE_ADDRESS = '0x6ed024e3b754b6c1d256aE178F185DB12c03D8b6'
+    {"constant": true, "inputs": [], "name": "owner", "outputs": [{"name": "", "type": "address"}], "payable": false,
+     "stateMutability": "view", "type": "function"}]
+VPNSERVICE_ADDRESS = '0x86c592a4Ab2De10D8F1Ad3AD91e40BD676F559f2'
 VPNSERVICE_NAME = 'Vpn_service'
 COINBASE_ADDRESS = '0xA3F1592D8a09a91a7238f608620fFDe7C4B26029'
 COINBASE_PRIVATE_KEY = ''
-DECIMALS = 10 ** 8
+DECIMALS = (10 ** 8) * 1.0
 LIMIT_10MB = 10 * 1024 * 1024
 LIMIT_100MB = 100 * 1024 * 1024
 SESSIONS_SALT = ''.encode('utf-8')

@@ -1,7 +1,6 @@
 import json
-from urlparse import urljoin
 
-import getip
+from urlparse import urljoin
 
 from ..config import ACCOUNT_DATA_PATH
 from ..config import MASTER_NODE_URL
@@ -36,9 +35,9 @@ def create_account(password):
 def register_node(node):
     body = {
         'account_addr': node.account['addr'],
-        'price_per_GB': node.vpn['price_per_GB'],
+        'price_per_GB': node.config['price_per_GB'],
         'location': node.location,
-        'ip': getip.get(),
+        'ip': node.ip,
         'net_speed': node.net_speed
     }
     url = urljoin(MASTER_NODE_URL, 'node/register')

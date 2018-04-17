@@ -1,16 +1,17 @@
 import json
-from urllib2 import urlopen
 
 from speedtest_cli import Speedtest
+from urllib2 import urlopen
 
 from ..config import ACCOUNT_DATA_PATH
-from ..config import VPN_DATA_PATH
+from ..config import CONFIG_DATA_PATH
 from ..db import db
 
 
 class Node(object):
     def __init__(self, resume=True):
         self.speed_test = Speedtest()
+        self.ip = None
         self.location = None
         self.net_speed = {
             'best_server': {
@@ -20,7 +21,7 @@ class Node(object):
             'download': None,
             'upload': None
         }
-        self.vpn = {
+        self.config = {
             'price_per_GB': None
         }
         self.account = {
@@ -33,15 +34,14 @@ class Node(object):
 
         if resume is True:
             data = json.load(open(ACCOUNT_DATA_PATH, 'r'))
-
             self.account['addr'] = str(data['addr']).lower()
             self.account['keystore'] = data['keystore']
             self.account['password'] = str(data['password']).lower()
             self.account['private_key'] = str(data['private_key']).lower()
             self.account['token'] = data['token']
 
-            data = json.load(open(VPN_DATA_PATH, 'r'))
-            self.vpn['price_per_GB'] = float(data['price_per_GB'])
+            data = json.load(open(CONFIG_DATA_PATH, 'r'))
+            self.config['price_per_GB'] = float(data['price_per_GB'])
 
             self.update_nodeinfo({'type': 'location'})
             self.update_nodeinfo({'type': 'netspeed'})
@@ -76,13 +76,14 @@ class Node(object):
 
     def update_nodeinfo(self, info=None):
         if info['type'] == 'location':
-            web_url = 'http://ip-api.com/json'
+            web_url = 'https://ipleak.net/json'
             response = json.load(urlopen(web_url))
+            self.ip = str(response['ip'])
             self.location = {
-                'city': response['city'],
-                'country': response['country'],
-                'latitude': response['lat'],
-                'longitude': response['lon']
+                'city': str(response['city_name']),
+                'country': str(response['country_name']),
+                'latitude': float(response['latitude']),
+                'longitude': float(response['longitude'])
             }
         elif info['type'] == 'netspeed':
             self.speed_test.get_best_server()
@@ -96,9 +97,3 @@ class Node(object):
             if info['token'] is not None:
                 self.account['token'] = info['token']
             self.save_account_data()
-
-    def update_vpninfo(self, info=None):
-        if info['type'] == 'ovpn':
-            self.vpn['ovpn'] = info['ovpn']
-        elif info['type'] == 'status':
-            self.vpn['status'] = info['status']

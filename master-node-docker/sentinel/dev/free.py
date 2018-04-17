@@ -27,7 +27,7 @@ class GetFreeAmount(object):
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
         eths = int(0.25 * (10 ** 18))
-        sents = int(1000 * (DECIMALS * 1.0))
+        sents = int(1000 * DECIMALS)
 
         tx_done = check_free(account_addr)
         if tx_done is True:

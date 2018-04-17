@@ -144,6 +144,8 @@ class Dashboard extends Component {
       this.setState({ isTest: value, value: 'send' })
     else
       this.setState({ isTest: value })
+    this.getUserEthBalance();
+    this.getUserSentBalance();
   }
 
   removeHash = () => {

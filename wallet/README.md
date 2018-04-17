@@ -6,7 +6,7 @@ Download the installer from the Sentinel official [GitHub Repo](https://github.c
 Linux
 ---
 
-If you are on Ubuntu, install the deb file with the Ubuntu Software Center or by running the command
+If you are on Ubuntu, install the deb file with the Ubuntu Software Center or by running the command.
 
 ```
 sudo dpkg -i Sentinel***.deb
@@ -43,7 +43,7 @@ And also install 'pidof' before running app by using:
 
 ````
 brew install pidof
-```
+````
 
 - If brew is not installed, please follow [this URL](https://www.howtogeek.com/211541/homebrew-for-os-x-easily-installs-desktop-apps-and-terminal-utilities/) for a step by step process.
 

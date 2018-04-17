@@ -24,7 +24,7 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.3", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.31", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -55,6 +55,11 @@ function windowManager() {
             app.quit();
           }
         }
+        else {
+          self.window = null;
+          showPrompt = false;
+          app.quit();
+        }
       });
     });
   }
@@ -82,37 +87,35 @@ function isVPNConnected(cb) {
     })
   }
   else {
-    exec('pidof openvpn', function (err, stdout, stderr) {
+    try {
+      let stdout = execSync('pidof openvpn').toString();
       if (stdout) {
+        console.log("True...")
         cb(true);
       }
       else {
         cb(false);
       }
-    });
+    } catch (err) {
+      cb(false);
+    }
   }
 }
 
 function stopVPN(cb) {
   if (process.platform === 'win32') {
-    sudo.exec('taskkill /IM sentinel.exe /f && taskkill /IM openvpn.exe /f', disconnect,
+    sudo.exec('taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f', disconnect,
       function (error, stdout, stderr) {
         if (error) cb('Disconnecting failed');
         else {
-          getKeystore(function (err, KEYSTOREDATA) {
-            let data = JSON.parse(KEYSTOREDATA);
-            data.isConnected = null;
-            let keystore = JSON.stringify(data);
-            fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
-            });
-            cb(null);
-          })
+          cb(null);
         }
       });
   }
   else {
     try {
       let stdout = execSync('pidof openvpn').toString();
+      console.log(stdout);
       if (stdout) {
         console.log(stdout);
         let pids = stdout.trim();
@@ -120,9 +123,19 @@ function stopVPN(cb) {
         if (process.platform === 'darwin') {
           command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
         }
-        exec(command, (comErr, stdOut, stdErr) => {
-        });
-        cb(null);
+        try {
+          let output = execSync(command).toString();
+          getKeystore(function (error, KEYSTOREDATA) {
+            let data = JSON.parse(KEYSTOREDATA);
+            data.isConnected = null;
+            let keystore = JSON.stringify(data);
+            fs.writeFile(KEYSTORE_FILE, keystore, function (keyErr) {
+            });
+            cb(null);
+          })
+        } catch (err) {
+          cb(null);
+        }
       }
       else {
         cb(null);
@@ -161,9 +174,9 @@ app.on('ready', function () {
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
-      {
-        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      },
+      // {
+      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      // },
     ]
   },
   {

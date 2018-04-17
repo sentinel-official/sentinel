@@ -13,16 +13,17 @@ What are products that are part of the Sentinel Communications Suite?
 - **dVPN** - Decentralized Virtual Private Network
 - **dChat** - Decentralized peer-to-peer Messaging - includes media, files, etc.
 - **dVoIP** - Decentralized peer-to-peer Voice over Internet Protocol for calls and delivery of real-time/streaming audio data
-- **dFiles** - Decentralized peer-to-peer File Management and Sharing Service
 
 Who can use or associate with Sentinel?
 -
+
 - People that utilize the Secure Communication Suite are Sentinel's *Consumers* or *Users*.
 - People that provide resources and run the Sentinel Network are *Service Providers*
 - People that have a high reputation when providing services tend to eventually become Master Nodes, which are nodes that handle transactional data of multiple services as opposed to a single service by a *Service Provider* 
 
 Where is the majority of our development time invested?
 -
+
 - Development of the Wallet
 - Development of the dVPN Client
 - Development of the Node deployment infrastructure
@@ -38,7 +39,7 @@ Where is the majority of our research time invested?
 
 - **Services Management**
 
-    Since Sentinel aims to develop a suite like say GSuite/Google Apps for Work, we will potentially encounter more transactions than any other blockchain dedicately developed for a dVPN might receive.
+    Since Sentinel aims to develop a suite like say GSuite/Google Apps for Work, we will potentially encounter more transactions than any other blockchain dedicatedly developed for a dVPN might receive.
     
     The team has researched multiple DAOs that have smart contract capabilities and is inclined towards the use of engines like TenderMint for the development of the Service Chain - a chain, that has to communicate with the AUID Chain and the Transaction chain to authenticate, deliver services and address issues if any when delivering *services*. 
 
@@ -46,7 +47,7 @@ Where is the majority of our research time invested?
     
     Sentinel, as you understand now, intends to use inter-chain communication among other things for efficient scaling and delivery of services. Owing to the possibility of Users using multiple services and Service Providers sharing multiple resources concurrently, Sentinel undergoes a massive load during Transaction processing.
     
-    The current transaction chain is based on Ethereum which offers ERC20, a very standard protocol for transactions. Current gas prices and transaction speeds forced the team to think of ways to diversify and connect chains running on multiple protocols - For example, TenderMint as stated earlier.
+    The current transaction chain is based on Ethereum which offers ERC20, a very standard protocol for transactions. Current gas prices and transaction speeds forced the team to think of ways to diversify and connect chains running on multiple protocols - for example, TenderMint as stated earlier.
 
 What about the Tokens used?
 -
@@ -61,16 +62,16 @@ Through a Swap Zone, this token will be exchanged for the token on the Transacti
 
 Extended capabilities of the Mixer can be best demonstrated when running a DEx (decentralized exchange) where, Users of the DEx can run their ERC20 Tokens through the Mixer, which then gives back the User equivalent pegged tokens, whatever that might be.
 
-Considering the use of TenderMint for the development of the Service Chain, swap of Sentinel Service Tokens ($SENT-SST) will be initially with $SENT. Given the possiblities and opportunities on the Cosmos Network and various Zones within, the Sentinel Mixer can also swap various tokens and assets developed on TenderMint and within Cosmos.
+Considering the use of TenderMint for the development of the Service Chain, swap of Sentinel Service Tokens ($SENT-SST) will be initially with $SENT. Given the possibilities and opportunities on the Cosmos Network and various Zones within, the Sentinel Mixer can also swap various tokens and assets developed on TenderMint and within Cosmos.
 
-What are we upto right now?
+What are we up to right now?
 -
 
-Currently we have worked on and released the **Sentinel Desktop Client - Alpha (v0.0.2)** which can be downloaded from here:
+Currently we have worked on and released the **Sentinel Desktop Client - Alpha (v0.0.3)** which can be downloaded from here:
 
-- [  Mac OS ](http://sentinelgroup.io/releases/alpha-0.0.2/macos/sentinel-alpha-0.0.2.dmg)
-- [  Windows - x64 ](http://sentinelgroup.io/releases/alpha-0.0.2/windows/Sentinel-alpha-0.0.2-win-x64.exe)
-- [  Linux - x64 ](http://sentinelgroup.io/releases/alpha-0.0.2/ubuntu/16.04/sentinel_0.0.2_amd64.deb)
+- [  Mac OS ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.3-alpha/Sentinel-macosx-0.0.3-alpha.dmg)
+- [  Windows - x64 ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.31-alpha/Sentinel-win64-0.0.31-alpha.exe)
+- [  Linux - x64 ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.3-alpha/Sentinel-linux64-0.0.3-alpha.deb)
 
 The current Desktop Client has 2 primary components:
 
@@ -108,10 +109,10 @@ A lot actually.
 
     We will be releasing a Minimum Viable Product (or something that can actually sustain the narrative) of the dVPN which is released as a beta, but we believe will be stable for a while. This will constantly receive updates until the next major version.
 
-    PS : Just for kicks we are planning on developing the Service Chain of the MVP using TenderMint. Let's see how far that goes.
+    PS: Just for kicks we are planning on developing the Service Chain of the MVP using TenderMint. Let's see how far that goes.
     
 - **Node Network**
 
     The Sentinel Node Network will also be better developed to work with all operating systems (currently supporting only Linux) and minor issues around the docker utilizing resources of the OS will be addressed when releasing documentation for the same.
 
-If there's anything you would like to know, reach us out by check out the website or if it's development released, you can always raise an issue on GitHub and we will be more than happy to help you get things sorted.
+If there's anything you would like to know, reach us out by checking the website or if it's development released, you can always raise an issue on GitHub and we will be more than happy to help you get things sorted.

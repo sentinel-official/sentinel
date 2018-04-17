@@ -58,18 +58,20 @@ class GetVpnCredentials(object):
 
         balances = eth_helper.get_balances(account_addr)
 
-        if balances['rinkeby']['sents'] >= 100:
-            error, usage = eth_helper.get_latest_vpn_usage(account_addr)
-            if error is None:
-                due_amount = usage['amount'] if ((usage is not None) and usage['is_paid'] is False) else 0
-                if (due_amount > 0) and (usage['received_bytes'] < LIMIT_100MB):
+        if balances['rinkeby']['sents'] >= (100 * DECIMALS):
+            error_1, due_amount = eth_helper.get_due_amount(account_addr)
+            error_2, usage = eth_helper.get_latest_vpn_usage(account_addr)
+            if (error_1 is None) and (error_2 is None):
+                session_resume = False
+                if (usage is not None) and (usage['received_bytes'] < LIMIT_100MB):
                     vpn_addr = usage['account_addr'].lower()
+                    session_resume = True
 
-                if (due_amount > 0) and (usage['received_bytes'] >= LIMIT_100MB):
+                if due_amount > 0:
                     message = {
                         'success': False,
                         'message': 'You have due amount: ' + str(
-                            due_amount / (DECIMALS * 1.0)) + ' SENTs. Please try after clearing the due.'
+                            due_amount / DECIMALS) + ' SENTs. Please try after clearing the due.'
                     }
                 else:
                     node = db.nodes.find_one({
@@ -104,7 +106,9 @@ class GetVpnCredentials(object):
                                         'success': True,
                                         'ip': ip,
                                         'port': port,
-                                        'token': token
+                                        'token': token,
+                                        'vpn_addr': vpn_addr,
+                                        'message': 'Previous session has been resumed.' if session_resume is True else 'Started new session.'
                                     }
                                 except Exception as _:
                                     message = {
@@ -155,12 +159,10 @@ class PayVpnUsage(object):
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net']).lower()
         from_addr = str(req.body['from_addr']).lower()
-        amount = float(
+        amount = int(
             req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
         session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
             'session_id'] is not None else None
-
-        amount = int(amount * (DECIMALS * 1.0))
 
         errors, tx_hashes = eth_helper.pay_vpn_session(
             from_addr, amount, session_id, net, tx_data, payment_type)

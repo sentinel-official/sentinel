@@ -97,35 +97,18 @@ class ETHHelper(object):
     def get_latest_vpn_usage(self, account_addr):
         error, usage = None, None
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
-        if error is None:
-            session_id = get_encoded_session_id(account_addr, sessions_count)
-            _usage = db.usage.find_one({
-                'session_id': session_id,
-                'to_addr': account_addr,
-                'is_added': False
-            })
-            if (_usage is None) and (sessions_count > 0):
-                session_id = get_encoded_session_id(account_addr, sessions_count - 1)
-                error, _usage = vpn_service_manager.get_vpn_usage(account_addr, session_id)
-                if error is None:
-                    usage = {
-                        'id': session_id,
-                        'account_addr': str(_usage[0]).lower(),
-                        'received_bytes': _usage[1],
-                        'session_duration': _usage[2],
-                        'amount': _usage[3],
-                        'timestamp': _usage[4],
-                        'is_paid': _usage[5]
-                    }
-            elif _usage is not None:
+        if (error is None) and (sessions_count > 0):
+            session_id = get_encoded_session_id(account_addr, sessions_count - 1)
+            error, _usage = vpn_service_manager.get_vpn_usage(account_addr, session_id)
+            if error is None:
                 usage = {
-                    'id': _usage['session_id'],
-                    'account_addr': str(_usage['from_addr']).lower(),
-                    'received_bytes': _usage['sent_bytes'],
-                    'session_duration': _usage['session_duration'],
-                    'amount': _usage['amount'],
-                    'timestamp': _usage['timestamp'],
-                    'is_paid': _usage['is_added']
+                    'id': session_id,
+                    'account_addr': str(_usage[0]).lower(),
+                    'received_bytes': _usage[1],
+                    'session_duration': _usage[2],
+                    'amount': _usage[3],
+                    'timestamp': _usage[4],
+                    'is_paid': _usage[5]
                 }
 
         return error, usage
@@ -188,13 +171,12 @@ class ETHHelper(object):
         if error is None:
             session_id = get_encoded_session_id(to_addr, sessions_count)
             _usage = db.usage.find_one({
-                'session_id': session_id,
+                'from_addr': from_addr,
                 'to_addr': to_addr
             })
             if _usage is None:
                 if (sent_bytes > LIMIT_10MB) and (sent_bytes < LIMIT_100MB):
                     _ = db.usage.insert_one({
-                        'session_id': session_id,
                         'from_addr': from_addr,
                         'to_addr': to_addr,
                         'sent_bytes': sent_bytes,
@@ -207,7 +189,7 @@ class ETHHelper(object):
                     make_tx = True
             elif (_usage['sent_bytes'] + sent_bytes) < LIMIT_100MB:
                 _ = db.usage.find_one_and_update({
-                    'session_id': session_id,
+                    'from_addr': from_addr,
                     'to_addr': to_addr
                 }, {
                     '$set': {
@@ -219,7 +201,7 @@ class ETHHelper(object):
                 })
             else:
                 _ = db.usage.find_one_and_update({
-                    'session_id': session_id,
+                    'from_addr': from_addr,
                     'to_addr': to_addr
                 }, {
                     '$set': {

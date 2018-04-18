@@ -11,3 +11,5 @@ from .stats import GetDailyDurationCount
 from .stats import GetDailyNodeCount
 from .stats import GetDailySessionCount
 from .stats import GetTotalDataCount
+from .stats import GetNodeStatistics
+

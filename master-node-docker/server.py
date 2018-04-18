@@ -26,6 +26,7 @@ from sentinel.node import GetTotalDataCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
+from sentinel.node import GetNodeStatistics
 from sentinel.tokens import SwapsRawTransaction
 from sentinel.utils import JSONTranslator
 
@@ -73,6 +74,7 @@ server.add_route('/stats/data/daily-stats', GetDailyDataCount())
 server.add_route('/stats/data/total-data', GetTotalDataCount())
 server.add_route('/stats/time/daily-stats', GetDailyDurationCount())
 server.add_route('/stats/time/average-duration', GetAverageDuration())
+server.add_route('/stats/node', GetNodeStatistics())
 
 # Swaps
 server.add_route('/tokens', Up())

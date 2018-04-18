@@ -25,7 +25,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "package-mac": "electron-packager . sentinel --overwrite --asar --platform=darwin --arch=x64 --icon=public/icon256x256.ico --prune=true --out=release-builds",
-    "package-win": "electron-packager . sentinel --overwrite --asar --platform=win32 --icon=public/icon256x256.ico --prune=true --out=release-builds --version-string.CompanyName=Sentinel --version-string.FileDescription=S --version-string.ProductName=\"Sentinel\"",
+    "package-win": "electron-packager . sentinel --overwrite --asar --platform=win32 --icon=public/icon256x256.ico --prune=true --out=release-builds --win32metadata.CompanyName=Sentinel --win32metadata.FileDescription=\"Application for Sentinel\" --win32metadata.requested-execution-level=requireAdministrator --win32metadata.ProductName=\"Sentinel\"",
     "package-linux": "electron-packager . sentinel --overwrite --asar --platform=linux --arch=x64 --icon=public/icon256x256.png --prune=true --out=release-builds",
     "create-installer-mac": "electron-installer-dmg ./release-builds/sentinel-darwin-x64/sentinel.app sentinel --out=release-builds --overwrite --icon=public/icon256x256.icns",
     "create-installer-win": "node installers/windows/createinstaller.js",

@@ -77,14 +77,17 @@ function getKeystore(cb) {
 
 function isVPNConnected(cb) {
   if (process.platform === 'win32') {
-    exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
-      if (stdout.toString() === '') {
-        cb(false)
-      }
-      else {
+    try {
+      let stdout = execSync('tasklist /v /fo csv | findstr /i "openvpn.exe"')
+      if (stdout) {
         cb(true)
       }
-    })
+      else {
+        cb(false)
+      }
+    } catch (err) {
+      cb(false)
+    }
   }
   else {
     try {
@@ -104,13 +107,15 @@ function isVPNConnected(cb) {
 
 function stopVPN(cb) {
   if (process.platform === 'win32') {
-    sudo.exec('taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f', disconnect,
-      function (error, stdout, stderr) {
-        if (error) cb('Disconnecting failed');
-        else {
-          cb(null);
-        }
-      });
+    try {
+      let stdout = execSync('taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f')
+      if (stdout) cb(null);
+      else {
+        cb(null);
+      }
+    } catch (err) {
+      cb(null);
+    }
   }
   else {
     try {
@@ -174,9 +179,9 @@ app.on('ready', function () {
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
-      // {
-      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      // },
+      {
+        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      },
     ]
   },
   {

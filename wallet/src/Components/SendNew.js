@@ -586,16 +586,15 @@ class SendNew extends Component {
                             bodyStyle={{ padding: 0 }}
                             open={this.state.showTransScreen}
                             onRequestClose={this.handleClose}
-                            style={{ fontFamily: 'Poppins' }}
                         >
-                            <div style={{ backgroundColor: '#efefef' }}>
+                            <div style={{ backgroundColor: '#efefef', fontFamily: 'Poppins' }}>
                                 <p style={{ textAlign: 'center', padding: 10, color: 'black', fontSize: 14, letterSpacing: 1 }}>Exchange ERC20 tokens for Sentinel tokens</p>
                             </div>
                             <div style={{ backgroundColor: '#435e8d', marginTop: -16 }}>
                                 <p style={{ textAlign: 'center', padding: 30 }}>
                                     <Row>
                                         <Col xsOffset={3} xs={1}>
-                                            <img src={'../src/Images/logo.svg'} alt="logo" style={{ height: 70, width: 70 }} />
+                                            <img src={'../src/Images/eth.png'} alt="logo" style={{ height: 70, width: 70 }} />
                                         </Col>
                                         <Col xsOffset={1} xs={1}>
                                             <RightArrow style={{ height: 70, width: 70, fill: '#ccc' }} />
@@ -606,12 +605,12 @@ class SendNew extends Component {
                                     </Row>
                                 </p>
                             </div>
-                            <div style={{ backgroundColor: '#2c3d5b', marginTop: -16 }}>
+                            <div style={{ backgroundColor: '#2c3d5b', marginTop: -16, fontFamily: 'Poppins' }}>
                                 <p style={{
                                     fontSize: 14, textAlign: 'center', padding: 5, color: 'white', letterSpacing: 1, fontWeight: 'bold'
                                 }}>1 ETH=63,900 SENT</p>
                             </div>
-                            <div>
+                            <div style={{ fontFamily: 'Poppins' }}>
                                 <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold' }}>CONVERT</p>
                                 <Row style={{ width: '100%', marginTop: -12 }}>
                                     <Col xsOffset={2} xs={4}>
@@ -647,7 +646,7 @@ class SendNew extends Component {
                                                 width: '100%'
                                             }}
                                             value={this.state.unit}
-                                            menuItemStyle={{ width: 160 }}
+                                            menuItemStyle={{ width: '100%' }}
                                             onChange={this.handleChange.bind(this)}
                                         >
                                             <MenuItem
@@ -661,15 +660,38 @@ class SendNew extends Component {
                                         </DropDownMenu>
                                     </Col>
                                 </Row>
-                                <p style={{ textAlign: 'center', color: 'grey', fontSize: 12 }}>Balance: 0.23198126 ETH</p>
-                                <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold' }}>TO</p>
+                                <p style={{ textAlign: 'center', color: 'grey', fontSize: 12, fontFamily: 'Poppins' }}>Balance: 0.23198126 ETH</p>
+                                <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold', fontFamily: 'Poppins' }}>TO</p>
                                 <Row style={{ width: '100%', marginTop: -12 }}>
                                     <Col xsOffset={2} xs={8}>
-                                        <div style={{ backgroundColor: '#4e5565' }}>
+                                        <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins' }}>
                                             <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>6,455.5 </span>
                                                 <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}>SENT TOKENS</span>
                                             </p>
                                         </div>
+                                    </Col>
+                                </Row>
+                            </div>
+                            <div style={{ padding: 20, backgroundColor: '#dbdce0' }}>
+                                <Row>
+                                    <Col xsOffset={1} xs={5}>
+                                        <TextField
+                                            type="password"
+                                            hintText="PASSWORD"
+                                            hintStyle={{ fontSize: 16, bottom: 9, paddingLeft: 10 }}
+                                            underlineShow={false} fullWidth={true}
+                                            inputStyle={{ padding: 10, fontWeight: 'bold', color: '#2f3245' }}
+                                            style={{ height: 42, backgroundColor: '#f6f7f9' }}
+                                        />
+                                    </Col>
+                                    <Col xs={5}>
+                                        <RaisedButton
+                                            label="CONVERT"
+                                            labelStyle={{ color: 'white', fontWeight: 'bold', fontSize: 18, letterSpacing: 2 }}
+                                            fullWidth={true}
+                                            buttonStyle={{ backgroundColor: '#2e4770', height: 42, lineHeight: '42px' }}
+                                            style={{ height: 42 }}
+                                        />
                                     </Col>
                                 </Row>
                             </div>

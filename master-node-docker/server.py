@@ -14,6 +14,7 @@ from sentinel.client import PayVpnUsage
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.dev import GetFreeAmount
+from sentinel.logs import LogTheError
 from sentinel.node import DeRegisterNode
 from sentinel.node import GetActiveNodeCount
 from sentinel.node import GetActiveSessionCount
@@ -22,11 +23,11 @@ from sentinel.node import GetDailyDataCount
 from sentinel.node import GetDailyDurationCount
 from sentinel.node import GetDailyNodeCount
 from sentinel.node import GetDailySessionCount
+from sentinel.node import GetNodeStatistics
 from sentinel.node import GetTotalDataCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
-from sentinel.node import GetNodeStatistics
 from sentinel.tokens import SwapsRawTransaction
 from sentinel.utils import JSONTranslator
 
@@ -80,6 +81,9 @@ server.add_route('/stats/node', GetNodeStatistics())
 server.add_route('/tokens', Up())
 server.add_route('/tokens/swaps', Up())
 server.add_route('/tokens/swaps/raw-transaction', SwapsRawTransaction())
+
+# Logs
+server.add_route('/logs/error', LogTheError())
 
 # DEV
 server.add_route('/dev/free', GetFreeAmount())

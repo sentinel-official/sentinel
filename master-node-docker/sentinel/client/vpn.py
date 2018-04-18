@@ -5,8 +5,8 @@ from uuid import uuid4
 import falcon
 import requests
 
+from ..config import COINBASE_ADDRESS
 from ..config import DECIMALS
-from ..config import LIMIT_100MB
 from ..db import db
 from ..eth import vpn_service_manager
 from ..helpers import eth_helper
@@ -100,15 +100,16 @@ class GetVpnCredentials(object):
                                         'vpn_addr': vpn_addr,
                                         'message': 'Started VPN session.'
                                     }
-                                except Exception as _:
+                                except Exception as err:
                                     message = {
                                         'success': False,
-                                        'message': 'Connection timed out while connecting to VPN server.'
+                                        'message': 'Connection timed out while connecting to VPN server.',
+                                        'error': str(err)
                                     }
                             else:
                                 message = {
                                     'success': False,
-                                    'account_addr': vpn_addr,
+                                    'account_addr': COINBASE_ADDRESS,
                                     'message': 'Initial VPN payment is not done.'
                                 }
                         else:

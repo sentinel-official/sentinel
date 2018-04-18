@@ -3,7 +3,6 @@ import rlp
 from ethereum.transactions import Transaction
 
 from .eth import rinkeby
-from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
 from ..config import VPNSERVICE_ABI
 from ..config import VPNSERVICE_ADDRESS
@@ -15,9 +14,9 @@ class VpnServiceManager(object):
         self.contract = rinkeby.web3.eth.contract(contract_name=VPNSERVICE_NAME, abi=VPNSERVICE_ABI,
                                                   address=VPNSERVICE_ADDRESS)
 
-    def pay_vpn_session(self, account_addr, amount, session_id):
+    def pay_vpn_session(self, account_addr, amount, session_id, nonce):
         try:
-            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS, 'pending'),
+            tx = Transaction(nonce=nonce,
                              gasprice=rinkeby.web3.eth.gasPrice,
                              startgas=1000000,
                              to=VPNSERVICE_ADDRESS,
@@ -32,9 +31,9 @@ class VpnServiceManager(object):
             return {'code': 201, 'error': str(err)}, None
         return None, tx_hash
 
-    def set_initial_payment(self, account_addr, is_paid=True):
+    def set_initial_payment(self, account_addr, nonce, is_paid=True):
         try:
-            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS, 'pending'),
+            tx = Transaction(nonce=nonce,
                              gasprice=rinkeby.web3.eth.gasPrice,
                              startgas=1000000,
                              to=VPNSERVICE_ADDRESS,
@@ -105,9 +104,9 @@ class VpnServiceManager(object):
             return {'code': 206, 'error': str(err)}, None
         return None, usage
 
-    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id):
+    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id, nonce):
         try:
-            tx = Transaction(nonce=rinkeby.web3.eth.getTransactionCount(COINBASE_ADDRESS, 'pending'),
+            tx = Transaction(nonce=nonce,
                              gasprice=rinkeby.web3.eth.gasPrice,
                              startgas=1000000,
                              to=VPNSERVICE_ADDRESS,

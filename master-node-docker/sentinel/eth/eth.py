@@ -51,16 +51,23 @@ class ETHManager(object):
             return {'code': 104, 'error': str(err)}, None
         return None, balance
 
+    def get_transaction_count(self, account_addr):
+        try:
+            tx_count = self.web3.eth.getTransactionCount(account_addr, 'pending')
+        except Exception as err:
+            return {'code': 105, 'error': str(err)}, None
+        return None, tx_count
+
     def send_raw_transaction(self, tx_data):
         try:
             tx_hash = self.web3.eth.sendRawTransaction(tx_data)
         except Exception as err:
-            return {'code': 105, 'error': str(err)}, None
+            return {'code': 106, 'error': str(err)}, None
         return None, tx_hash
 
-    def transfer_amount(self, from_addr, to_addr, amount, private_key):
+    def transfer_amount(self, to_addr, amount, private_key, nonce):
         try:
-            tx = Transaction(nonce=self.web3.eth.getTransactionCount(from_addr, 'pending'),
+            tx = Transaction(nonce=nonce,
                              gasprice=self.web3.eth.gasPrice,
                              startgas=1000000,
                              to=to_addr,
@@ -70,14 +77,14 @@ class ETHManager(object):
             raw_tx = self.web3.toHex(rlp.encode(tx))
             tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
         except Exception as err:
-            return {'code': 106, 'error': str(err)}, None
+            return {'code': 107, 'error': str(err)}, None
         return None, tx_hash
 
     def get_tx_receipt(self, tx_hash):
         try:
             receipt = self.web3.eth.getTransactionReceipt(tx_hash)
         except Exception as err:
-            return {'code': 107, 'error': str(err)}, None
+            return {'code': 108, 'error': str(err)}, None
         return None, receipt
 
 

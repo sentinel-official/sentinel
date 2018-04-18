@@ -31,9 +31,9 @@ class SentinelManger(object):
             return {'code': 201, 'error': str(err)}, None
         return None, balance
 
-    def transfer_amount(self, from_addr, to_addr, amount, private_key):
+    def transfer_amount(self, to_addr, amount, private_key, nonce):
         try:
-            tx = Transaction(nonce=self.net.web3.eth.getTransactionCount(from_addr, 'pending'),
+            tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,
                              startgas=1000000,
                              to=self.address,

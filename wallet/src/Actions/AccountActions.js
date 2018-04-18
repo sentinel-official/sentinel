@@ -1,5 +1,6 @@
 import { sendError } from '../helpers/ErrorLog';
 const fs = window.require('fs');
+var async = window.require('async');
 const electron = window.require('electron');
 const remote = electron.remote;
 const { exec } = window.require('child_process');
@@ -419,6 +420,7 @@ export const getVPNList = (cb) => {
 function isPackageInstalled(packageName, cb) {
   exec(`export PATH=$PATH:/usr/local/opt/openvpn/sbin && which ${packageName}`,
     function (err, stdout, stderr) {
+      console.log("PackageInstalled..", err, stdout, stderr);
       if (err || stderr) cb(null, false);
       else {
         var brewPath = stdout.trim();
@@ -440,49 +442,80 @@ function installPackage(packageName, cb) {
 export function connectVPN(account_addr, vpn_addr, cb) {
   CONNECTED = false;
   if (remote.process.platform === 'darwin') {
-    var packageNames = ['brew', 'openvpn', 'pidof'];
-    packageNames.forEach(function (packageName) {
-      console.log(packageName);
-      isPackageInstalled(packageName,
-        function (err, isInstalled) {
+    // var packageNames = ['brew', 'openvpn', 'pidof'];
+    async.waterfall([
+      function (callback) {
+        isPackageInstalled('brew', function (err, isInstalled) {
           if (err) {
-            cb({
-              message: `Error occured while installing ${packageName}`
-            }, true, false, false, null);
-            return;
+            callback({
+              message: `Error occured while installing brew`
+            });
           }
-          else if (isInstalled === false) {
-            if (packageName === 'brew') {
-              cb({
-                message: 'Package Brew is not installed.'
-              }, true, false, false, null);
-              return;
-            } else if (packageName === 'openvpn') {
-              installPackage(packageName,
-                function (err, success) {
-                  if (err || success === false) {
-                    cb({
-                      message: `Error occurred while installing package: ${packageName}`
-                    }, true, false, false, null);
-                    return;
-                  }
+          else if (isInstalled) {
+            callback(null);
+          }
+          else {
+            callback({
+              message: `Package Brew is not Installed`
+            })
+          }
+        })
+      },
+      function (callback) {
+        isPackageInstalled('openvpn', function (err, isInstalled) {
+          if (err) {
+            callback({
+              message: `Error occured while installing openvpn`
+            });
+          }
+          else if (isInstalled) {
+            callback(null);
+          }
+          else {
+            installPackage('openvpn', function (Err, success) {
+              if (Err || success === false) {
+                callback({
+                  message: `Error occurred while installing package: openvpn`
                 });
-            }
-            else {
-              setTimeout(function () {
-                installPackage(packageName,
-                  function (err, success) {
-                    if (err || success === false) {
-                      cb({
-                        message: `Error occurred while installing package: ${packageName}`
-                      }, true, false, false, null);
-                      return;
-                    } else if (success === true) nextStep();
-                  });
-              }, 10000)
-            }
-          } else if (packageName === 'pidof') nextStep();
-        });
+              }
+              else {
+                callback(null)
+              }
+            })
+          }
+        })
+      },
+      function (callback) {
+        isPackageInstalled('pidof', function (err, isInstalled) {
+          if (err) {
+            callback({
+              message: `Error occured while installing pidof`
+            });
+          }
+          else if (isInstalled) {
+            callback(null);
+          }
+          else {
+            installPackage('pidof', function (Err, success) {
+              if (Err || success === false) {
+                callback({
+                  message: `Error occurred while installing package: pidof`
+                });
+              }
+              else {
+                callback(null)
+              }
+            })
+          }
+        })
+      },
+    ], function (error) {
+      if (error) {
+        cb(error, true, false, false, null);
+      }
+      else {
+        nextStep();
+      }
     })
   }
   else if (remote.process.platform === 'win32') {
@@ -593,13 +626,13 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                     });
                     cb(null, false, false, false, res.message);
-                    count = 6;
+                    count = 4;
                   }
                   count++;
-                  if (count < 6) {
+                  if (count < 4) {
                     setTimeout(function () { checkWindows(); }, 5000);
                   }
-                  if (count == 6 && CONNECTED === false) {
+                  if (count == 4 && CONNECTED === false) {
                     cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                   }
                 })
@@ -621,15 +654,15 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                     });
                     cb(null, false, false, false, res.message);
-                    count = 8;
+                    count = 6;
                   }
 
                   count++;
 
-                  if (count < 8) {
+                  if (count < 6) {
                     setTimeout(function () { checkVPNConnection(); }, 5000);
                   }
-                  if (count == 8 && CONNECTED === false) {
+                  if (count == 6 && CONNECTED === false) {
                     cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                   }
                 });

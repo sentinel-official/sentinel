@@ -90,7 +90,7 @@ class SendComponent extends Component {
     let amount = this.state.amount;
     let gas_price = this.state.sliderValue * (10 ** 9);
     if (this.state.session_id === -1 && parseInt(this.state.amount) !== 10000000000) {
-      this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false })
+      this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false,isDisabled:false })
     }
     else {
       tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {

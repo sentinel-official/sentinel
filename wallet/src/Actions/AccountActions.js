@@ -187,9 +187,15 @@ export function payVPNUsage(data, cb) {
         } else {
           if (response.errors.length > 0) {
             if (response.errors[0].error) {
-              cb({
-                message: response.errors[0].error || 'Something went wrong in transaction'
-              }, null);
+              try {
+                cb({
+                  message: JSON.parse(response.errors[0].error.split("'").join('"')).message || 'Something went wrong in transaction'
+                }, null);
+              } catch (err) {
+                cb({
+                  message: response.errors[0].error || 'Something went wrong in transaction'
+                }, null);
+              }
             }
             else {
               cb({
@@ -600,7 +606,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
               }
               function checkVPNConnection() {
                 getVPNPIDs(function (err, pids) {
-                  if (err) {}
+                  if (err) { }
                   else {
                     console.log("PIDS:", pids)
                     CONNECTED = true;
@@ -695,7 +701,7 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
 
 export function getVPNPIDs(cb) {
   exec('pidof openvpn', function (err, stdout, stderr) {
-    if (err) cb(err);
+    if (err) cb(err, null);
     else if (stdout) {
       var pids = stdout.trim();
       cb(null, pids);
@@ -839,7 +845,7 @@ export function getVPNConnectedData(cb) {
   isVPNConnected(function (err, connected) {
     if (connected) {
       getKeystore(function (error, data) {
-        if (error) cb(err, null)
+        if (error) cb(error, null)
         else {
           let keystore = JSON.parse(data);
           if (keystore.isConnected) {

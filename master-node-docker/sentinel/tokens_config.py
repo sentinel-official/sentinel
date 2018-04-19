@@ -1,6 +1,4 @@
 # coding=utf-8
-CENTRAL_WALLET = ''
-CENTRAL_WALLET_PRIVATE_KEY = ''
 TOKENS = {
     '': {
         'decimals': 18,

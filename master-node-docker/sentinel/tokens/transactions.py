@@ -7,7 +7,7 @@ from ..db import db
 from ..helpers import eth_helper
 
 
-class SwapsRawTransaction(object):
+class TokenSwapRawTransaction(object):
     def on_post(self, req, resp):
         """
         @api {post} /swaps/transaction Send raw transaction to specific chain.
@@ -21,7 +21,7 @@ class SwapsRawTransaction(object):
         error, tx_hash = eth_helper.raw_transaction(tx_data, 'main')
 
         if error is None:
-            _ = db.swaps.insert_one({
+            _ = db.token_swaps.insert_one({
                 'tx_data': tx_data,
                 'tx_hash_0': tx_hash,
                 'status': 0

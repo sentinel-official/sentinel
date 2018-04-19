@@ -3,16 +3,20 @@ Sentinel Desktop Client - Installation Guide
 
 Download the installer from the Sentinel official [GitHub Repo](https://github.com/sentinel-official/sentinel/releases) or [Website](https://sentinelgroup.io) for respective platform and follow the below instructions.
 
+*We're enabling developer console in this version for better error and log reporting. Please use it when submitting issues in the chat group or on our github repo*
+
+```Please enable testnet from topbar for using the Sentinel dVPN```
+
 Linux
 ---
 
-If you are on Ubuntu, install the deb file with the Ubuntu Software Center or by running the command.
+If you are on Ubuntu, tnstall the deb file with the Ubuntu Software Center or by running the command
 
 ```
 sudo dpkg -i Sentinel***.deb
 ```
 
-In case of any issues/errors regarding dependencies then run below command and then after run the above command.
+In case of any issues/errors regarding dependencies then run below command and after running the above command.
 
 ```
 sudo apt-install -f
@@ -25,40 +29,29 @@ Mac
 
 - Run the .dmg file and drag the Sentinel app to ***Applications*** folder.
 
-- Go to Applications Folder and right click on sentinel app and Click on *'Show Package Contents'* option.
+- Go to Applications Folder and right click on sentinel app and Click on ***Show Package Contents*** option.
 
-- Then go to Contents > MacOs > Sentinel and run Sentinel.
+- Then go to ```Contents > MacOs```  and run sentinel by double clicking the package.
 
-- While connecting to VPN, in case of the error - 'Package ***brew*** is not installed' error. Then please install homebrew in your system and then try connecting to the vpn.
+- Additionally You can create a shortcut of the app by right clicking the sentinel package and click ```make alias```, then copy the alias to your desktop for ease of use.
 
-- If there's no OpenVPN and the client pops a message asking for a manual install, use [this URL](https://openvpn.net/index.php/access-server/docs/admin-guides/183-how-to-connect-to-access-server-from-a-mac.html)
+- While connecting to VPN, in case of the erorr - 'Package ***brew*** is not installed' error. Then please install homebrew in your system and then try connecting to the vpn.
 
-- If OpenVPN is installed and the client throws up the an error, try this command: 
-
-```
-export PATH=$(brew --prefix openvpn)/sbin:$PATH
-````
-
-And also install 'pidof' before running app by using:
-
-````
-brew install pidof
-````
-
-- If brew is not installed, please follow [this URL](https://www.howtogeek.com/211541/homebrew-for-os-x-easily-installs-desktop-apps-and-terminal-utilities/) for a step by step process.
-
-- If you have errors regarding the installation of cask, please use the below command:
-
-````
-brew install cask
-````
-- To know more about the Tunnelblick configuration, follow this [URL](https://tunnelblick.net/cFileLocations.html)
+- Please follow instructions from this [howtogeek tutorial](https://www.howtogeek.com/211541/homebrew-for-os-x-easily-installs-desktop-apps-and-terminal-utilities/) to install Homebrew
 
 Windows
 ---
 
-- Run the Sentinel***.exe file with Run As Administrator option and a loading gif will be running and after a few min, you will have the app opened.
+- In this version you can launch the app without ```Run As Administrator```, anyhow a prompt will be shown to give admin access.
 
-- Please wait for sometime until the loading gif closes. App also will close once and will open again
+- Run the Sentinel***.exe file, You'll See The Sentinel Logo and after a little wait, the app will open.
 
-- And from second time, you can run the app from folder: C://Users/{yourUser}/AppData/sentinel/sentinel.exe. Don't forget to right click and run app with the *'Run as Administrator'* option.
+- And from second time, you can run the app from folder: 
+
+    ```C:/ > Users > {Your Username} > AppData > Local > Sentinel > Sentinel.exe```
+    
+- Additionally, you can create a shortcut of the app and save it on your desktop for ease of use. For that right click on the sentinel.exe file and click ```Create Shortcut```. After that you can copy that shortcut to your desktop and open the app from desktop everytime.
+
+- If you're facing any issues like ***OpenVPN Is Not Installed*** or ***Something Went Wrong***, please uninstall your already installed OpenVPN from control panel and then re-install OpenVPN from the following path on your local machine and re-run the Sentinel App.
+
+```C:// > Users > {Your Username} > AppData > Local > Sentinel > app-0.0.32 > resources > extras > openvpn-install-2.3.18-*.exe```

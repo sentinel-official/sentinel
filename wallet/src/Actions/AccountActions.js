@@ -446,6 +446,19 @@ export function getEthTransactionHistory(account_addr, page, cb) {
   }
 }
 
+function getOsascriptIDs(cb) {
+  exec('pidof osascript', function (err, stdout, stderr) {
+    if (err) cb(err, null);
+    else if (stdout) {
+      var pids = stdout.trim();
+      cb(null, pids);
+    }
+    else {
+      cb(true, null);
+    }
+  });
+}
+
 export function getSentTransactionHistory(account_addr, cb) {
   try {
     if (localStorage.getItem('config') === 'TEST')
@@ -771,15 +784,17 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                       fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
                       });
                       cb(null, false, false, false, res.message);
-                      count = 6;
+                      count = 2;
                     }
 
-                    count++;
+                    getOsascriptIDs(function (ERr, pid) {
+                      if (ERr) count++;
+                    })
 
-                    if (count < 6) {
+                    if (count < 2) {
                       setTimeout(function () { checkVPNConnection(); }, 5000);
                     }
-                    if (count == 6 && CONNECTED === false) {
+                    if (count == 2 && CONNECTED === false) {
                       cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                     }
                   });

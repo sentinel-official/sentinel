@@ -67,11 +67,11 @@ Considering the use of TenderMint for the development of the Service Chain, swap
 What are we up to right now?
 -
 
-Currently we have worked on and released the **Sentinel Desktop Client - Alpha (v0.0.3)** which can be downloaded from here:
+Currently we have worked on and released the **Sentinel Desktop Client - Alpha (v0.0.31)** which can be downloaded from here:
 
-- [  Mac OS ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.3-alpha/Sentinel-macosx-0.0.3-alpha.dmg)
-- [  Windows - x64 ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.31-alpha/Sentinel-win64-0.0.31-alpha.exe)
-- [  Linux - x64 ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.3-alpha/Sentinel-linux64-0.0.3-alpha.deb)
+- [  Mac OS x64](https://github.com/sentinel-official/sentinel/releases/download/v0.0.31-alpha/Sentinel-macosx-0.0.31-alpha.dmg)
+- [  Windows x64 ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.31-alpha/Sentinel-win64-0.0.31-alpha.exe)
+- [  Linux x64 ](https://github.com/sentinel-official/sentinel/releases/download/v0.0.31-alpha/Sentinel-linux64-0.0.31-alpha.deb)
 
 The current Desktop Client has 2 primary components:
 

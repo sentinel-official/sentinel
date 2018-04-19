@@ -3,9 +3,9 @@ Sentinel Desktop Client - Installation Guide
 
 Download the installer from the Sentinel official [GitHub Repo](https://github.com/sentinel-official/sentinel/releases) or [Website](https://sentinelgroup.io) for respective platform and follow the below instructions.
 
-*We're Enabling Developer Console In This Version For Better Error And Log Reporting. Please Use It When Submitting Issues In The Chat Group or on Our Github Repo*
+*We're enabling developer console in this version for better error and log reporting. Please use it when submitting issues in the chat group or on our github repo*
 
-```Please Enable Testnet From Topbar For Using The Sentinel dVPN```
+```Please enable testnet from topbar for using the Sentinel dVPN```
 
 Linux
 ---
@@ -42,7 +42,7 @@ Mac
 Windows
 ---
 
-- In This Version You Can Launch The App Without ```Run As Administrator```, anyhow a prompt will be shown to give admin access
+- In this version you can launch the app without ```Run As Administrator```, anyhow a prompt will be shown to give admin access.
 
 - Run the Sentinel***.exe file, You'll See The Sentinel Logo and after a little wait, the app will open.
 
@@ -50,7 +50,8 @@ Windows
 
     ```C:/ > Users > {Your Username} > AppData > Local > Sentinel > Sentinel.exe```
     
-- Additionally, You Can Create A Shortcut of the App And Save it On Your Desktop For Ease Of Use. For That Right Click On the sentinel.exe file and click ```Create Shortcut```. After That You Can Copy That Shortcut To Your Desktop And Open The App From Desktop Everytime.
+- Additionally, you can create a shortcut of the app and save it on your desktop for ease of use. For that right click on the sentinel.exe file and click ```Create Shortcut```. After that you can copy that shortcut to your desktop and open the app from desktop everytime.
 
-- If You're Facing Any Issues like ***OpenVPN Is Not Installed*** or ***Something Went Wrong***, Please Uninstall Your Already Installed OpenVPN from control panel and then re-install OpenVPN from the following path on Your Local Machine And Re-Run The Sentinel App.
+- If you're facing any issues like ***OpenVPN Is Not Installed*** or ***Something Went Wrong***, please uninstall your already installed OpenVPN from control panel and then re-install OpenVPN from the following path on your local machine and re-run the Sentinel App.
+
 ```C:// > Users > {Your Username} > AppData > Local > Sentinel > app-0.0.32 > resources > extras > openvpn-install-2.3.18-*.exe```

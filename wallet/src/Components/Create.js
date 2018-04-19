@@ -4,11 +4,10 @@ import {
     Toolbar, ToolbarGroup, TextField, RaisedButton,
     Chip, Checkbox, Paper, Snackbar, RefreshIndicator
 } from 'material-ui';
-import { createAccount, uploadKeystore, isOnline } from '../Actions/AccountActions';
+import { createAccount, uploadKeystore, isOnline, sendError } from '../Actions/AccountActions';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import { setTimeout } from 'timers';
-import { sendError } from '../helpers/ErrorLog';
 let keythereum = require('keythereum');
 let lang = require('./language');
 
@@ -34,6 +33,10 @@ class Create extends Component {
             openSnackMessage: ''
         }
         this.set = this.props.set;
+    }
+
+    componentDidCatch(error, info) {
+        sendError(error);
     }
 
     onChange = (event) => {
@@ -69,7 +72,6 @@ class Create extends Component {
         if (this.state.password === this.state.confirmPwd) {
             if (isOnline()) {
                 createAccount(password, function (err, account) {
-                    console.log("password..", password);
                     if (err) sendError(err);
                     else {
                         that.setState({

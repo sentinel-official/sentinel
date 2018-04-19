@@ -1,5 +1,6 @@
 const createWindowsInstaller = require('electron-winstaller').createWindowsInstaller
 const path = require('path')
+const appVersion='0.0.32'
 
 getInstallerConfig()
   .then(createWindowsInstaller)
@@ -16,15 +17,15 @@ function getInstallerConfig() {
   return Promise.resolve({
     appDirectory: path.join(outPath, 'sentinel-win32-x64/'),
     authors: 'Sentinel',
-    version: "0.0.2",
+    version: appVersion,
     noMsi: true,
-    name: "sentinel",
+    name: "Sentinel",
     description: "Sentinel",
-    title: "Sentinel-alpha-0.0.2",
+    title: "Sentinel-alpha-"+appVersion,
     outputDirectory: path.join(outPath, 'windows-installer'),
-    exe: 'sentinel.exe',
-    loadingGif: path.join(rootPath, 'public', 'loading.gif'),
-    setupExe: 'Sentinel-alpha-0.0.2-win-x64.exe',
+    exe: 'Sentinel.exe',
+    loadingGif: path.join(rootPath, 'public', 'icon256x256.png'),
+    setupExe: 'Sentinel-alpha-'+appVersion+'-win-x64.exe',
     setupIcon: path.join(rootPath, 'public', 'icon256x256.ico')
   })
 }

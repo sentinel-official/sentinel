@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getEthTransactionHistory, getSentTransactionHistory, isOnline } from '../Actions/AccountActions';
+import { getEthTransactionHistory, getSentTransactionHistory, isOnline, sendError } from '../Actions/AccountActions';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import _ from 'lodash';
 import { RaisedButton, IconButton, Snackbar } from 'material-ui';
@@ -38,6 +38,10 @@ class History extends Component {
         style={refresh}
       />
     )
+  }
+
+  componentDidCatch(error, info) {
+    sendError(error);
   }
 
   getEthHistory(page) {

@@ -25,14 +25,12 @@ class App extends Component {
     componentDidMount = () => {
         let self = this;
         ipcRenderer.on('lang', (event, arg) => {
-            console.log("App props..",arg);
             self.setState({ lang: arg })
         })
     }
 
     setComponent = (name) => {
         this.setState({ scene: name })
-        console.log("Lang..",this.state.lang);
     }
 
     render() {

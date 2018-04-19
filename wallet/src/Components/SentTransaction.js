@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
-import { getTransactionStatus } from '../Actions/AccountActions';
+import { getTransactionStatus, sendError } from '../Actions/AccountActions';
 var config = require('../config');
 let zfill = require('zfill');
 var lang = require('./language');
@@ -21,6 +21,10 @@ class SentTransaction extends Component {
             snackMessage: '',
             txStatus: 'Pending'
         }
+    }
+
+    componentDidCatch(error, info) {
+        sendError(error);
     }
 
     openInExternalBrowser(url) {

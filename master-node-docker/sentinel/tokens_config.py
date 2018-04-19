@@ -18,7 +18,7 @@ TOKENS = {
     '0xa44e5137293e855b1b7bc7e2c6f8cd796ffcb037': {
         'decimals': 8,
         'name': 'SENTinel',
-        'price_url': 'https://api.hitbtc.com/api/2/public/ticker/SENTBTC'
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/sentinel/?convert=BTC'
     },
     '0xe41d2489571d322189246dafa5ebde1f4699f498': {
         'decimals': 18,

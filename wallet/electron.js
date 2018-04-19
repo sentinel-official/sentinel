@@ -24,7 +24,7 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.31", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.32", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -77,20 +77,22 @@ function getKeystore(cb) {
 
 function isVPNConnected(cb) {
   if (process.platform === 'win32') {
-    exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
-      if (stdout.toString() === '') {
-        cb(false)
-      }
-      else {
+    try {
+      let stdout = execSync('tasklist /v /fo csv | findstr /i "openvpn.exe"')
+      if (stdout) {
         cb(true)
       }
-    })
+      else {
+        cb(false)
+      }
+    } catch (err) {
+      cb(false)
+    }
   }
   else {
     try {
       let stdout = execSync('pidof openvpn').toString();
       if (stdout) {
-        console.log("True...")
         cb(true);
       }
       else {
@@ -104,20 +106,20 @@ function isVPNConnected(cb) {
 
 function stopVPN(cb) {
   if (process.platform === 'win32') {
-    sudo.exec('taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f', disconnect,
-      function (error, stdout, stderr) {
-        if (error) cb('Disconnecting failed');
-        else {
-          cb(null);
-        }
-      });
+    try {
+      let stdout = execSync('taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f')
+      if (stdout) cb(null);
+      else {
+        cb(null);
+      }
+    } catch (err) {
+      cb(null);
+    }
   }
   else {
     try {
       let stdout = execSync('pidof openvpn').toString();
-      console.log(stdout);
       if (stdout) {
-        console.log(stdout);
         let pids = stdout.trim();
         let command = 'kill -2 ' + pids;
         if (process.platform === 'darwin') {
@@ -174,9 +176,9 @@ app.on('ready', function () {
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
       { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
       { label: "Quit", accelerator: "CmdOrCtrl+Q", selector: "quit:", role: 'close' },
-      // {
-      //   role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
-      // },
+      {
+        role: 'toggledevtools', label: i18n.__('Toggle Developer Tools')
+      },
     ]
   },
   {

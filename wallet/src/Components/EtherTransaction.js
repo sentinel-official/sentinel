@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
+import { sendError } from '../Actions/AccountActions';
 var config = require('../config');
 var lang = require('./language');
 
@@ -18,6 +19,10 @@ class EtherTransaction extends Component {
             openSnack: false,
             snackMessage: ''
         }
+    }
+
+    componentDidCatch(error, info) {
+        sendError(error);
     }
 
     openInExternalBrowser(url) {
@@ -40,7 +45,7 @@ class EtherTransaction extends Component {
         let that = this;
         let data = this.props.data;
         let address = this.props.local_address;
-        let language=this.props.lang;
+        let language = this.props.lang;
         if (data.length === 0) {
             output = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>{lang[language].NoTransactions}</div>
         }
@@ -55,7 +60,7 @@ class EtherTransaction extends Component {
                                         color: 'red',
                                         fontWeight: 'bold'
                                     }}>{lang[language].Out}
-                  </span>
+                                    </span>
                                     <span style={{ marginLeft: 5 }}>{new Date(history.timeStamp * 1000).toGMTString()}</span>
                                 </div>
                                 <div>
@@ -94,7 +99,7 @@ class EtherTransaction extends Component {
                                         fontWeight: 'bold',
                                         color: '#532d91'
                                     }}>{lang[language].In}
-                </span>
+                                    </span>
                                     <span style={{ marginLeft: 5 }}>{new Date(history.timeStamp * 1000).toGMTString()}</span>
                                 </div>
                                 <div>
@@ -190,7 +195,7 @@ const styles = {
         height: 20,
         width: 20,
         cursor: 'pointer',
-        marginLeft:2
+        marginLeft: 2
     },
     outputDiv: {
         height: 400,

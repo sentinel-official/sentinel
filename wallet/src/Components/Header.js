@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle } from 'material-ui';
-import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline } from '../Actions/AccountActions';
+import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline, sendError } from '../Actions/AccountActions';
 import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
 import CopyIcon from 'material-ui/svg-icons/content/content-copy';
@@ -33,6 +33,10 @@ class Header extends Component {
     }
   }
 
+  componentDidCatch(error, info) {
+    sendError(error);
+  }
+
   openInExternalBrowser(url) {
     shell.openExternal(url);
   }
@@ -54,7 +58,7 @@ class Header extends Component {
   componentDidMount = () => {
     let that = this;
     getVPNList(function (err, data) {
-      if (err) console.log('Error', err);
+      if (err){}
       else {
         that.setState({ vpnList: data });
       }

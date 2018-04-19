@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Dialog, FlatButton, TextField, Snackbar } from 'material-ui';
 import { getPrivateKey } from '../Actions/TransferActions';
+import { sendError } from '../Actions/AccountActions';
 let lang = require('./language');
 
 class Authenticate extends Component {
@@ -23,11 +24,17 @@ class Authenticate extends Component {
         window.close()
     }
 
+    componentDidCatch(error, info) {
+        sendError(error);
+    }
+
+
     submitPassword = () => {
         this.setState({ isDisabled: 'true', statusSnack: true, statusMessage: lang[this.props.lang].CheckCre })
         let self = this;
         setTimeout(function () {
             getPrivateKey(self.state.password, self.props.lang, function (err, privateKey) {
+                sendError(err);
                 if (err) {
                     self.setState({ isDisabled: false, password: '', statusSnack: false, openSnack: true, snackMessage: err.message })
                 }

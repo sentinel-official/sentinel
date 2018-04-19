@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider } from 'material-ui';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getVpnHistory, isOnline, getSentTransactionHistory, reportPayment } from '../Actions/AccountActions';
+import { getVpnHistory, isOnline, getSentTransactionHistory, reportPayment, sendError } from '../Actions/AccountActions';
 import { RaisedButton, Card, CardText, CardActions, IconButton, Snackbar, TextField } from 'material-ui';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Done from 'material-ui/svg-icons/action/done';
 import Send from 'material-ui/svg-icons/content/send';
 import ReactTooltip from 'react-tooltip';
 import _ from 'lodash';
-import { sendError } from '../helpers/ErrorLog';
 let zfill = require('zfill');
 var lang = require('./language');
 
@@ -25,6 +24,10 @@ class VPNHistory extends Component {
         }
     }
 
+    componentDidCatch(error, info) {
+        sendError(error);
+    }
+
     snackRequestClose = () => {
         this.setState({
             openSnack: false,
@@ -32,7 +35,6 @@ class VPNHistory extends Component {
     };
 
     showText = (divID) => {
-        console.log("Display...", document.getElementById(divID).style.display);
         if (document.getElementById(divID).style.display === 'none') {
             document.getElementById(divID).style.display = 'inline';
         }
@@ -49,7 +51,6 @@ class VPNHistory extends Component {
                     sendError(err)
                 }
                 else {
-                    console.log('Session Data..', history)
                     that.setState({ vpnUsage: history })
                 }
             })
@@ -96,10 +97,8 @@ class VPNHistory extends Component {
                 if (transactionDetails === undefined) {
                     that.setState({ openSnack: true, snackMessage: 'No transaction found with that transaction Id' })
                 } else {
-                    console.log("Details..", transactionDetails);
                     var transacToAddr = '0x' + transactionDetails.topics[2].substring(26);
                     var transacFrom = '0x' + transactionDetails.topics[1].substring(26);
-                    console.log("Trans..", transacFrom, transacToAddr);
                     if (transacFrom.toLowerCase() === that.props.local_address.toLowerCase() &&
                         transacToAddr.toLowerCase() === sessionData.account_addr.toLowerCase() &&
                         (parseInt(transactionDetails.data) === parseInt(sessionData.amount) ||

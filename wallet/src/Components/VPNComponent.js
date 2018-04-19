@@ -228,7 +228,7 @@ class VPNComponent extends Component {
         this.setState({ activeVpn: vpn, showPopUp: true })
         let self = this;
         getLatency(vpn.ip, function (err, latency) {
-            if (err){}
+            if (err) { }
             else {
                 vpn.latency = latency;
                 localStorage.setItem(vpn.account_addr, latency);
@@ -731,7 +731,7 @@ class VPNComponent extends Component {
                 />
                 <Dialog
                     title="Install Dependencies"
-                    titleStyle={{ fontSize: 14 }}
+                    titleStyle={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}
                     actions={instrucActions}
                     modal={true}
                     open={this.state.showInstruct}
@@ -761,22 +761,10 @@ class VPNComponent extends Component {
                             >this page</a>
                         </span>
                         :
-                        <span>
-                            OpenVPN Not Installed.Install here https://openvpn.net/index.php/open-source/downloads.html.
-                                    <CopyToClipboard text='https://openvpn.net/index.php/open-source/downloads.html'
-                                onCopy={() => this.setState({
-                                    snackMessage: lang[language].Copied,
-                                    openSnack: true
-                                })} >
-                                <img
-                                    src={'../src/Images/download.jpeg'}
-                                    alt="copy"
-                                    data-tip data-for="copyImage"
-                                    style={styles.clipBoardDialog}
-                                />
-                            </CopyToClipboard>
+                        <span style={{ fontSize: 14, letterSpacing: 1 }}>
+                            OpenVPN Not Installed. Please go to C://Users/"your-user-name"/AppData/Local/Sentinel/app-0.0.32/resources/extras and run openvpn-install-2.3.18-I602-x86_64.exe
                             <br />
-                            Please install openvpn in default folder.(C:\\Program Files)
+                            Just Install Openvpn without changing installation directory.
                         </span>
                     }
                 </Dialog>

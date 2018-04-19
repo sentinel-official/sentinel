@@ -639,9 +639,9 @@ export function connectVPN(account_addr, vpn_addr, cb) {
       })
     }
     else if (remote.process.platform === 'win32') {
-      exec('cd c:\\Program Files && dir openvpn.exe /s /p | findstr "openvpn"', function (err, stdout, stderr) {
+      exec('cd c:\\Program Files && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (err, stdout, stderr) {
         if (stdout.toString() === '') {
-          exec('cd c:\\Program Files (x86) && dir openvpn.exe /s /p | findstr "openvpn"', function (error, stdout1, stderr1) {
+          exec('cd c:\\Program Files (x86) && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (error, stdout1, stderr1) {
             if (stdout.toString() === '') {
               cb({ message: 'false' }, false, true, false, null);
             }

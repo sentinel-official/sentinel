@@ -9,6 +9,12 @@ Linux
 If you are on Ubuntu, install the deb file with the Ubuntu Software Center or by running the command.
 
 ```
+sudo apt-get install openvpn
+```
+
+
+
+```
 sudo dpkg -i Sentinel***.deb
 ```
 
@@ -19,6 +25,8 @@ sudo apt-install -f
 ```
 
 A prompt will open everytime you try to run app. This prompt is to have super user (sudo) privileges for application. Please enter your system password and continue.
+
+
 
 Mac
 ---
@@ -54,11 +62,17 @@ brew install cask
 ````
 - To know more about the Tunnelblick configuration, follow this [URL](https://tunnelblick.net/cFileLocations.html)
 
+
 Windows
 ---
 
+- OpenVPN installer can be located here in the middle of the page for windows version : https://openvpn.net/index.php/open-source/downloads.html
+  Download and install, you should reboot your computer when it's completely installed, this will ensure proper vpn connections. 
+
+- It is recommended that you exclude windows defender scanning for the sentinel wallet 
 - Run the Sentinel***.exe file with Run As Administrator option and a loading gif will be running and after a few min, you will have the app opened.
+
 
 - Please wait for sometime until the loading gif closes. App also will close once and will open again
 
-- And from second time, you can run the app from folder: C://Users/{yourUser}/AppData/sentinel/sentinel.exe. Don't forget to right click and run app with the *'Run as Administrator'* option.
+Note : - You can run the app from this folder(or move it where you desire): C://Users/{yourUser}/AppData/sentinel/sentinel.exe (versions may have appended naming convention). Don't forget to right click and run app with the *'Run as Administrator'* option.

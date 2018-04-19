@@ -5,7 +5,7 @@ Download the installer from the Sentinel official [GitHub Repo](https://github.c
 
 *We're Enabling Developer Console In This Version For Better Error And Log Reporting. Please Use It When Submitting Issues In The Chat Group or on Our Github Repo*
 
-```Please Enable Testnet From Topbar Before Using The Sentinel App```
+```Please Enable Testnet From Topbar For Using The Sentinel dVPN```
 
 Linux
 ---
@@ -42,7 +42,7 @@ Mac
 Windows
 ---
 
-- In This Version You Can Launch The App Without Administrator Access.
+- In This Version You Can Launch The App Without ```Run As Administrator```, anyhow a prompt will be shown to give admin access
 
 - Run the Sentinel***.exe file, You'll See The Sentinel Logo and after a little wait, the app will open.
 

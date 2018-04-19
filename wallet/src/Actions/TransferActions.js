@@ -1,4 +1,4 @@
-import { getKeystore } from './AccountActions';
+import { getKeystore, sendError } from './AccountActions';
 const keythereum = require('keythereum');
 const EthereumTx = require('ethereumjs-tx');
 const Web3 = require('web3');
@@ -31,14 +31,11 @@ function getAddress() {
 
 export function getGasCost(from_addr, to_addr, amount, unit, cb) {
     var gasCost;
-    console.log(from_addr, to_addr, amount);
     setWeb3();
     if (unit === 'ETH') {
         try {
             gasCost = web3.eth.estimateGas({ to: to_addr, value: amount })
-            console.log("Gas...", gasCost)
         } catch (err) {
-            console.log("Error...", err)
             gasCost = 21000
         }
         cb(gasCost)
@@ -47,9 +44,7 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
         setContract()
         try {
             gasCost = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
-            console.log("Gas...", gasCost)
         } catch (err) {
-            console.log("Error...", err)
             gasCost = 38119
         }
         cb(gasCost)
@@ -57,43 +52,49 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
 }
 
 export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
-    // amount = amount * Math.pow(10, 8);
-    console.log("Amount..",amount);
-    setWeb3();
-    setContract();
-    var SENTINEL_ADDRESS = getAddress();
-    var data = contract.transfer.getData(to_addr, amount, { from: from_addr });
-    var txParams = {
-        nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-        gasPrice: gas_price,
-        gasLimit: gas,
-        from: from_addr,
-        to: SENTINEL_ADDRESS,
-        value: '0x00',
-        data: data
+    try {
+        // amount = amount * Math.pow(10, 8);
+        setWeb3();
+        setContract();
+        var SENTINEL_ADDRESS = getAddress();
+        var data = contract.transfer.getData(to_addr, amount, { from: from_addr });
+        var txParams = {
+            nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
+            gasPrice: gas_price,
+            gasLimit: gas,
+            from: from_addr,
+            to: SENTINEL_ADDRESS,
+            value: '0x00',
+            data: data
+        }
+        var tx = new EthereumTx(txParams);
+        tx.sign(privateKey);
+        var serializedTx = '0x' + tx.serialize().toString('hex');
+        cb(serializedTx);
+    } catch (Err) {
+        sendError(Err);
     }
-    var tx = new EthereumTx(txParams);
-    tx.sign(privateKey);
-    var serializedTx = '0x' + tx.serialize().toString('hex');
-    cb(serializedTx);
 }
 
 export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
-    setWeb3();
-    console.log("Amount..",amount);
-    var txParams = {
-        nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-        gasPrice: gas_price,
-        gasLimit: gas,
-        from: from_addr,
-        to: to_addr,
-        value: web3.toHex(amount),
-        data: ''
+    try {
+        setWeb3();
+        var txParams = {
+            nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
+            gasPrice: gas_price,
+            gasLimit: gas,
+            from: from_addr,
+            to: to_addr,
+            value: web3.toHex(amount),
+            data: ''
+        }
+        var tx = new EthereumTx(txParams);
+        tx.sign(privateKey);
+        var serializedTx = '0x' + tx.serialize().toString('hex');
+        cb(serializedTx);
+    } catch (Err) {
+        sendError(Err);
     }
-    var tx = new EthereumTx(txParams);
-    tx.sign(privateKey);
-    var serializedTx = '0x' + tx.serialize().toString('hex');
-    cb(serializedTx);
 }
 
 export function getPrivateKey(password, language, cb) {

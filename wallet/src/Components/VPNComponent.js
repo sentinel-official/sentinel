@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN, getVpnHistory } from '../Actions/AccountActions';
+import { getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN, getVpnHistory, sendError } from '../Actions/AccountActions';
 import ZoomIn from 'material-ui/svg-icons/content/add';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -16,7 +16,6 @@ import {
     Markers,
     Marker
 } from 'react-simple-maps';
-import { sendError } from '../helpers/ErrorLog';
 import clear from 'material-ui/svg-icons/content/clear';
 import Flag from 'react-world-flags';
 import ReactTooltip from 'react-tooltip';
@@ -60,6 +59,10 @@ class VPNComponent extends Component {
         this.handleZoomOut = this.handleZoomOut.bind(this)
     }
 
+    componentDidCatch(error, info) {
+        sendError(error);
+    }
+
     handleZoomIn() {
         this.setState({
             zoom: this.state.zoom * 2,
@@ -80,7 +83,7 @@ class VPNComponent extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.status === false)
-            this.setState({ status: nextProps.status, selectedVPN: null });
+            this.setState({ status: nextProps.status, selectedVPN: null, usage: null });
         else
             this.setState({ status: nextProps.status, selectedVPN: nextProps.vpnData.vpn_addr });
     }
@@ -89,7 +92,7 @@ class VPNComponent extends Component {
         let self = this;
         getVpnHistory(this.props.local_address, (err, history) => {
             if (err) {
-                console.log("Error in getting due...")
+                sendError(err);
             }
             else {
                 let dueSession = history.sessions.find((obj) => { return obj.is_paid === false; })
@@ -154,7 +157,7 @@ class VPNComponent extends Component {
         }
         else {
             this.props.changeTest(true);
-            this.setState({ showPopUp: false, statusSnack: true, statusMessage: 'Connecting...' })
+            this.setState({ showPopUp: false, statusSnack: true, statusMessage: lang[this.props.lang].Connecting })
             let that = this;
             if (isOnline()) {
                 connectVPN(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, message) {
@@ -196,14 +199,14 @@ class VPNComponent extends Component {
         var that = this;
         disconnectVPN(function (err) {
             if (err) {
-                that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message? err.message:'Disconnecting Failed.' })
+                that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
                 that.props.onChange();
                 that.props.changeTest(false);
             }
             else {
                 that.props.onChange();
                 that.props.changeTest(false);
-                that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+                that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
             }
         });
     }
@@ -212,7 +215,6 @@ class VPNComponent extends Component {
         let self = this;
         getVPNUsageData(this.props.local_address, function (err, usage) {
             if (err) {
-                console.log('Err', err);
             }
             else {
                 self.props.onChange();
@@ -226,7 +228,7 @@ class VPNComponent extends Component {
         this.setState({ activeVpn: vpn, showPopUp: true })
         let self = this;
         getLatency(vpn.ip, function (err, latency) {
-            if (err) console.log("Latency error..", err)
+            if (err){}
             else {
                 vpn.latency = latency;
                 localStorage.setItem(vpn.account_addr, latency);

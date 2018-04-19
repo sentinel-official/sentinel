@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
+import { sendError } from '../Actions/AccountActions';
 import { Toolbar, ToolbarGroup, RaisedButton } from 'material-ui';
 let lang = require('./language');
 
@@ -10,8 +11,12 @@ class Home extends Component {
         this.set = this.props.set;
     }
 
+    componentDidCatch(error, info) {
+        sendError(error);
+    }
+
     render() {
-        let language=this.props.lang;
+        let language = this.props.lang;
         return (
             <MuiThemeProvider>
                 <div>
@@ -33,7 +38,7 @@ class Home extends Component {
                         </Grid>
                         <RaisedButton
                             label={lang[language].CreateRestore}
-                            style={{ marginLeft: '7%', backgroundColor: 'transparent',height:'42px' }}
+                            style={{ marginLeft: '7%', backgroundColor: 'transparent', height: '42px' }}
                             labelStyle={styles.yesButtonLabel}
                             buttonStyle={styles.yesButton}
                             onClick={() => { this.set('create') }}
@@ -90,7 +95,7 @@ const styles = {
         paddingLeft: 25,
         fontWeight: '600',
         fontSize: 16,
-        height:42
+        height: 42
     },
     yesButton: {
         backgroundColor: '#2f3245',

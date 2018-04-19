@@ -93,7 +93,6 @@ function isVPNConnected(cb) {
     try {
       let stdout = execSync('pidof openvpn').toString();
       if (stdout) {
-        console.log("True...")
         cb(true);
       }
       else {
@@ -120,9 +119,7 @@ function stopVPN(cb) {
   else {
     try {
       let stdout = execSync('pidof openvpn').toString();
-      console.log(stdout);
       if (stdout) {
-        console.log(stdout);
         let pids = stdout.trim();
         let command = 'kill -2 ' + pids;
         if (process.platform === 'darwin') {

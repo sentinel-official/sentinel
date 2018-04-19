@@ -12,8 +12,6 @@ If you are on Ubuntu, install the deb file with the Ubuntu Software Center or by
 sudo apt-get install openvpn
 ```
 
-
-
 ```
 sudo dpkg -i Sentinel***.deb
 ```
@@ -72,7 +70,12 @@ Windows
 - It is recommended that you exclude windows defender scanning for the sentinel wallet 
 - Run the Sentinel***.exe file with Run As Administrator option and a loading gif will be running and after a few min, you will have the app opened.
 
-
 - Please wait for sometime until the loading gif closes. App also will close once and will open again
 
-Note : - You can run the app from this folder(or move it where you desire): C://Users/{yourUser}/AppData/sentinel/sentinel.exe (versions may have appended naming convention). Don't forget to right click and run app with the *'Run as Administrator'* option.
+- You can run the app from the below mentioned folder (or move it where you desire)
+
+NOTE : versions may have appended naming convention
+
+````
+C://Users/{yourUser}/AppData/sentinel/sentinel.exe
+`````

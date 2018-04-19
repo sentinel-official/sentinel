@@ -2,7 +2,8 @@
 import json
 
 import falcon
-import redis
+
+from ..db import db
 
 
 class Token(object):
@@ -10,8 +11,14 @@ class Token(object):
         account_addr = str(req.body['account_addr']).lower()
         token = str(req.body['token'])
 
-        rs = redis.Redis()
-        rs.set(account_addr, token)
+        _ = db.clients.update({
+            'account_addr': account_addr,
+        }, {
+            '$set': {
+                'token': token
+            }
+        }, upsert=True)
+
         message = {
             'success': True
         }

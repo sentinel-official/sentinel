@@ -48,7 +48,6 @@ else
 fi
 
 cd $HOME;
-nohup redis-server >> /dev/null &
 nohup mongod >> /dev/null &
 gunicorn --reload -b 0.0.0.0:3000 --log-level DEBUG server:server &
 echo ; sleep 1; echo ;

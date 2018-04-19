@@ -49,17 +49,17 @@ class Node(object):
             self.save_to_db()
 
     def save_to_db(self):
-        node = db.nodes.find_one({
+        node = db.node.find_one({
             'address': self.account['addr']
         })
         if node is None:
-            _ = db.nodes.insert_one({
+            _ = db.node.insert_one({
                 'address': self.account['addr'],
                 'location': self.location,
                 'net_speed': self.net_speed
             })
         else:
-            _ = db.nodes.find_one_and_update({
+            _ = db.node.find_one_and_update({
                 'address': self.account['addr']
             }, {
                 '$set': {

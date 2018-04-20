@@ -1,5 +1,8 @@
 # coding=utf-8
+import time
 from hashlib import md5
+
+from redis import Redis
 
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
@@ -23,6 +26,9 @@ def get_encoded_session_id(account_addr, index):
 
 
 class ETHHelper(object):
+    def __init__(self):
+        self.redis = Redis()
+
     def create_account(self, password):
         error, account_addr, private_key, keystore = mainnet.create_account(password)
 
@@ -35,26 +41,23 @@ class ETHHelper(object):
         return error, account_addr
 
     def get_nonce(self, account_addr, net):
-        error, nonce = None, None
-        data = db.ethereum.find_one({
-            'account_addr': account_addr,
-            'net': net
-        })
-        if data is None:
-            if net == 'main':
-                error, nonce = mainnet.get_transaction_count(account_addr)
-            elif net == 'rinkeby':
-                error, nonce = rinkeby.get_transaction_count(account_addr)
-            if error is None:
-                _ = db.ethereum.insert_one({
-                    'account_addr': account_addr,
-                    'net': net,
-                    'nonce': int(nonce)
-                })
-        else:
-            error, nonce = None, int(data['nonce'])
+        key = account_addr + '_' + net
+        previous_nonce = self.redis.get(key)
+        if previous_nonce is not None:
+            previous_nonce = int(previous_nonce)
 
-        return error, nonce
+        if net == 'main':
+            error, nonce = mainnet.get_transaction_count(account_addr)
+        elif net == 'rinkeby':
+            error, nonce = rinkeby.get_transaction_count(account_addr)
+
+        print(error, previous_nonce, nonce)
+        if (error is None) and ((previous_nonce is None) or (nonce > previous_nonce)):
+            self.redis.set(key, nonce)
+            return nonce
+        else:
+            time.sleep(1)
+            return self.get_nonce(account_addr, net)
 
     def get_balances(self, account_addr):
         balances = {
@@ -74,39 +77,23 @@ class ETHHelper(object):
 
         return balances
 
-    def update_nonce(self, account_addr, net):
-        _ = db.ethereum.update({
-            'account_addr': account_addr,
-            'net': net
-        }, {
-            '$inc': {
-                'nonce': 1
-            }
-        })
-
     def transfer_sents(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
-        error, nonce = self.get_nonce(from_addr, net)
-        if error is None:
-            if net == 'main':
-                error, tx_hash = sentinel_main.transfer_amount(to_addr, amount, private_key, nonce)
-            elif net == 'rinkeby':
-                error, tx_hash = sentinel_rinkeby.transfer_amount(to_addr, amount, private_key, nonce)
-            if error is None:
-                self.update_nonce(from_addr, net)
+        nonce = self.get_nonce(from_addr, net)
+        if net == 'main':
+            error, tx_hash = sentinel_main.transfer_amount(to_addr, amount, private_key, nonce)
+        elif net == 'rinkeby':
+            error, tx_hash = sentinel_rinkeby.transfer_amount(to_addr, amount, private_key, nonce)
 
         return error, tx_hash
 
     def transfer_eths(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
-        error, nonce = self.get_nonce(from_addr, net)
-        if error is None:
-            if net == 'main':
-                error, tx_hash = mainnet.transfer_amount(to_addr, amount, private_key, nonce)
-            elif net == 'rinkeby':
-                error, tx_hash = rinkeby.transfer_amount(to_addr, amount, private_key, nonce)
-            if error is None:
-                self.update_nonce(from_addr, net)
+        nonce = self.get_nonce(from_addr, net)
+        if net == 'main':
+            error, tx_hash = mainnet.transfer_amount(to_addr, amount, private_key, nonce)
+        elif net == 'rinkeby':
+            error, tx_hash = rinkeby.transfer_amount(to_addr, amount, private_key, nonce)
 
         return error, tx_hash
 
@@ -192,17 +179,13 @@ class ETHHelper(object):
         error, tx_hash = self.raw_transaction(tx_data, net)
         if error is None:
             tx_hashes.append(tx_hash)
-            error, nonce = self.get_nonce(COINBASE_ADDRESS, 'rinkeby')
+            nonce = self.get_nonce(COINBASE_ADDRESS, 'rinkeby')
+            if payment_type == 'init':
+                error, tx_hash = vpn_service_manager.set_initial_payment(from_addr, nonce)
+            elif payment_type == 'normal':
+                error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, amount, session_id, nonce)
             if error is None:
-                if payment_type == 'init':
-                    error, tx_hash = vpn_service_manager.set_initial_payment(from_addr, nonce)
-                elif payment_type == 'normal':
-                    error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, amount, session_id, nonce)
-                if error is None:
-                    self.update_nonce(COINBASE_ADDRESS, 'rinkeby')
-                    tx_hashes.append(tx_hash)
-                else:
-                    errors.append(error)
+                tx_hashes.append(tx_hash)
             else:
                 errors.append(error)
         else:
@@ -263,12 +246,9 @@ class ETHHelper(object):
                 make_tx = True
 
         if make_tx is True:
-            error, nonce = self.get_nonce(COINBASE_ADDRESS, 'rinkeby')
-            if error is None:
-                error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration,
-                                                                   amount, timestamp, session_id, nonce)
-                if error is None:
-                    self.update_nonce(COINBASE_ADDRESS, 'rinkeby')
+            nonce = self.get_nonce(COINBASE_ADDRESS, 'rinkeby')
+            error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration, amount,
+                                                               timestamp, session_id, nonce)
 
         return error, tx_hash
 

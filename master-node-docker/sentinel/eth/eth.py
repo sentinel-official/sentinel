@@ -8,6 +8,8 @@ from ethereum.tools import keys
 from ethereum.transactions import Transaction
 from web3 import Web3, IPCProvider, HTTPProvider
 
+from ..config import MAX_TX_TRY
+
 
 class ETHManager(object):
     def __init__(self, provider=None, data_dir=None, rpc_url=None):
@@ -66,18 +68,26 @@ class ETHManager(object):
         return None, tx_hash
 
     def transfer_amount(self, to_addr, amount, private_key, nonce):
-        try:
-            tx = Transaction(nonce=nonce,
-                             gasprice=self.web3.eth.gasPrice,
-                             startgas=1000000,
-                             to=to_addr,
-                             value=amount,
-                             data='')
-            tx.sign(private_key)
-            raw_tx = self.web3.toHex(rlp.encode(tx))
-            tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
-        except Exception as err:
-            return {'code': 107, 'error': str(err)}, None
+        count = 0
+        while count < MAX_TX_TRY:
+            try:
+                tx = Transaction(nonce=nonce + count,
+                                 gasprice=self.web3.eth.gasPrice,
+                                 startgas=1000000,
+                                 to=to_addr,
+                                 value=amount,
+                                 data='')
+                tx.sign(private_key)
+                raw_tx = self.web3.toHex(rlp.encode(tx))
+                tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
+                if len(tx_hash) > 0:
+                    break
+            except Exception as err:
+                err = str(err)
+                if '-32000' in err:
+                    count = count + 1
+                if (count >= MAX_TX_TRY) or ('-32000' not in err):
+                    return {'code': 107, 'error': err}, None
         return None, tx_hash
 
     def get_tx_receipt(self, tx_hash):

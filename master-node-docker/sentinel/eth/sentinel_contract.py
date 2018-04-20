@@ -4,6 +4,7 @@ from ethereum.transactions import Transaction
 
 from .eth import mainnet
 from .eth import rinkeby
+from ..config import MAX_TX_TRY
 from ..config import SENTINEL_ABI
 from ..config import SENTINEL_ADDRESS
 from ..config import SENTINEL_NAME
@@ -32,19 +33,27 @@ class SentinelManger(object):
         return None, balance
 
     def transfer_amount(self, to_addr, amount, private_key, nonce):
-        try:
-            tx = Transaction(nonce=nonce,
-                             gasprice=self.net.web3.eth.gasPrice,
-                             startgas=1000000,
-                             to=self.address,
-                             value=0,
-                             data=self.net.web3.toBytes(
-                                 hexstr=self.contract.encodeABI(fn_name='transfer', args=[to_addr, amount])))
-            tx.sign(private_key)
-            raw_tx = self.net.web3.toHex(rlp.encode(tx))
-            tx_hash = self.net.web3.eth.sendRawTransaction(raw_tx)
-        except Exception as err:
-            return {'code': 202, 'error': str(err)}, None
+        count = 0
+        while count < MAX_TX_TRY:
+            try:
+                tx = Transaction(nonce=nonce + count,
+                                 gasprice=self.net.web3.eth.gasPrice,
+                                 startgas=1000000,
+                                 to=self.address,
+                                 value=0,
+                                 data=self.net.web3.toBytes(
+                                     hexstr=self.contract.encodeABI(fn_name='transfer', args=[to_addr, amount])))
+                tx.sign(private_key)
+                raw_tx = self.net.web3.toHex(rlp.encode(tx))
+                tx_hash = self.net.web3.eth.sendRawTransaction(raw_tx)
+                if len(tx_hash) > 0:
+                    break
+            except Exception as err:
+                err = str(err)
+                if '-32000' in err:
+                    count = count + 1
+                if (count >= MAX_TX_TRY) or ('-32000' not in err):
+                    return {'code': 202, 'error': err}, None
         return None, tx_hash
 
 

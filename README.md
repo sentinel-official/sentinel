@@ -1,7 +1,9 @@
 Sentinel
 ===
-### an Interoperable Networking Layer for Distributed Services
+### An Interoperable Networking Layer for Distributed Services
 
+_____________________
+![Sentinel Security Group](https://raw.githubusercontent.com/sentinel-official/sentinel/master/docs/Sentinel%20Security%20Group_LitePaper%20v10%20001.jpg)
 _____________________
 
 The Motivation
@@ -14,8 +16,6 @@ Based on interoperable blockchain technology, Sentinel Network aims to utilize m
 - manage identity
 - govern and run services with resource incentivization
 - process payments
-
-![Sentinel Security Group](https://raw.githubusercontent.com/sentinel-official/sentinel/master/docs/Sentinel%20Security%20Group_LitePaper%20v10%20001.jpg)
 
 Features of Sentinel
 ---
@@ -449,7 +449,7 @@ The model of metering & incentivizing system resources (like bandwidth, storage,
 
 
 Sentinel - Decentralized DNS and Content Delivery Network (dDNS and dCDN)
--
+---
 
 The Sentinel dDNS works to eliminate centralized resolution of a domain name's physical location to decentralize domain lookup. Sentinel aims to have nodes as gateway nodes and use DHT (distributed hash tables) on multiple nodes to do this.
 
@@ -467,7 +467,7 @@ For example, let's say *DocStore* is a Document Storage app, that uses Sentinel 
 In future, the ability for apps to run models on top of this data will also be provided by the Sentinel Network. Based on the computation resources available, the hardware that's optimized for Machine Learning (ML) algorithms or Deep Learning (DL) algorithms to run, will be automatically identified & matched with the requirement.
 
 Completion of Sentinel 'TestDrop'
--
+---
 
 Sentinel has conducted a successful 'TestDrop' where over 900 tested the Sentinel VPN MVP and provided feedback via a Telegram bot [@SentinelSupportBot](https://t.me/SentinelSupportBot)
 
@@ -497,11 +497,11 @@ As stated by the Cosmos team, “Tendermint is software for securely and consist
 
 Keeping the above and a host of other factors like Cosmos Swap Zones, the interoperability with Cosmos Hubs, etc. in perspective, the Sentinel team has picked up TenderMint to implement the first version (alpha) of the Sentinel Service Chain and continue research and contribute back to the community.
 
-How is Sentinel's Development team?
--
+Sentinel's Development Team
+---
 
-The teams sole focus is to output over 300 hours of dev work per week at a minimum and this number will only grow. Keep watching the github and see the new contributors. Sentinel, to accelerate progress will be represented at a renown public event in early May.
+The team's sole focus is to output over 300 hours of dev work per week at a minimum and this number will only grow. Keep watching the GitHub and see the new contributors. Sentinel, to accelerate progress will be represented at a renown public event in early May.
 
 Sentinel development team consists of a strong marketing, front-end and back-end development teams. Sentinel does not hire any remote back-end developers and currently all of the developers are working full time on the project.
 
-The team has over 25 individuals composing of full-stack developers, system architects, UI/UX engineers, hardware engineers, legal due-diligence etc. There are already over 450 commits to the Sentinel code in one quarter. This puts Sentinel in the top 25 projects that are committed on GitHub.
+The team has over 25 individuals composing of full-stack developers, system architects, UI/UX engineers, hardware engineers, legal due-diligence etc. There are already over 500 commits to the Sentinel code in one quarter. This puts Sentinel in the top 25 projects that are committed on GitHub.

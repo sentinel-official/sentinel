@@ -1,6 +1,6 @@
 Sentinel
 ===
-### a Networking Layer for Distributed Services
+### an Interoperable Networking Layer for Distributed Services
 
 _____________________
 
@@ -15,7 +15,7 @@ Based on interoperable blockchain technology, Sentinel Network aims to utilize m
 - govern and run services with resource incentivization
 - process payments
 
-![Sentinel Security Group](https://camo.githubusercontent.com/2b72aebad2b785a56bb1819afeca566ade2f85d3/68747470733a2f2f707265766965772e6962622e636f2f6d4a63664f532f53656e74696e656c5f4c6f676f2e706e67)
+![Sentinel Security Group](https://raw.githubusercontent.com/sentinel-official/sentinel/master/docs/Sentinel%20Security%20Group_LitePaper%20v10%20001.jpg)
 
 Features of Sentinel
 ---

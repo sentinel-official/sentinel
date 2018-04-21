@@ -115,12 +115,12 @@ Internet services that are most widely used by users:
 - **Are powerless to legislative law**
     - The US CLOUD Act amends the Stored Communications Act to allow federal law enforcement to compel U.S.-based service providers via warrant or subpoena, to provide requested data stored on servers regardless of whether they are located within the U.S. or in foreign countries.[5]
 
-    - China, in 2000 passed two laws to censorship that allow the governement to monitor and track communication and deny access to many shcolarly websites and media sharing services.
+    - China, in 2000 passed two laws to censorship that allow the governement to monitor and track communication and deny access to many scholarly websites and media sharing services.
 
 - **Are dependent on central servers, the failure of which can cause entire network failure**
-    - Hackers, bot-net, goverment DDOS attacks, node proliferation attacks are some of the many attacks proven to cripple server farms. The loss, or even downtime of which can cause catastrophic consequences. Eg; An outage of 10 seconds in a central server based trading paltform can cause millions of dollars in losses.
+    - Hackers, bot-net, goverment DDOS attacks, node proliferation attacks are some of the many attacks proven to cripple server farms. The loss, or even downtime of which can cause catastrophic consequences. Eg; An outage of 10 seconds in a central server based trading platform can cause millions of dollars in losses.
 
-With this in light we need:
+In light of this, we need:
 
 - A service development layer that isn’t centrally dependent. This service should allow easy resource sharing as well as easy development. 
 
@@ -212,7 +212,7 @@ The model of offering services and billing per transaction itself generates the 
 
 #1 Service Block
 -
-This are the root blocks from which service registration blocks are generated. These are sentinel node created blocks. 
+These are the root blocks from which service registration blocks are generated. These are sentinel node created blocks. 
 
 
 #2 Service Registration Block (created by Consumers)
@@ -445,7 +445,7 @@ The model of metering & incentivizing system resources (like bandwidth, storage,
 
 2)  Media - Sharing information with journalists and similar people for either whistle blowing or just additionally secure communication
 
-3)  Corporate Communications - Sharing inforamtion with team and boards without to the knowledge of people within the organization. Pretty important for corporations that deal with a lot of sensitive data, which shouldn't be known by everyone.
+3)  Corporate Communications - Sharing information with team and boards without the knowledge of people within the organization. Pretty important for corporations that deal with a lot of sensitive data, which shouldn't be known by everyone.
 
 
 Sentinel - Decentralized DNS and Content Delivery Network (dDNS and dCDN)

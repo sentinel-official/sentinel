@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { QRCode } from 'react-qr-svg';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { sendError } from '../Actions/AccountActions';
 import { Snackbar } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
 
@@ -13,6 +14,10 @@ class ReceiveComponent extends Component {
       openSnack: false,
       snackMessage: ''
     }
+  }
+
+  componentDidCatch(error, info) {
+    sendError(error);
   }
 
   snackRequestClose = () => {
@@ -81,7 +86,7 @@ class ReceiveComponent extends Component {
           message={this.state.snackMessage}
           autoHideDuration={2000}
           onRequestClose={this.snackRequestClose}
-          style={{ marginBottom: '2%'}}
+          style={{ marginBottom: '2%' }}
         />
       </div>
     )

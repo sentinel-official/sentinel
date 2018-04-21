@@ -24,7 +24,7 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.31", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.32", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -93,7 +93,6 @@ function isVPNConnected(cb) {
     try {
       let stdout = execSync('pidof openvpn').toString();
       if (stdout) {
-        console.log("True...")
         cb(true);
       }
       else {
@@ -120,9 +119,7 @@ function stopVPN(cb) {
   else {
     try {
       let stdout = execSync('pidof openvpn').toString();
-      console.log(stdout);
       if (stdout) {
-        console.log(stdout);
         let pids = stdout.trim();
         let command = 'kill -2 ' + pids;
         if (process.platform === 'darwin') {

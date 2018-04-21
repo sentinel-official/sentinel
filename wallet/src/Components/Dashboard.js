@@ -3,13 +3,12 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Tabs, Tab } from 'material-ui';
 import SendComponent from './SendComponent';
 import Header from './Header';
-import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnectedData } from '../Actions/AccountActions';
+import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnectedData, sendError } from '../Actions/AccountActions';
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
 import SendNew from './SendNew';
 import VPNHistory from './VPNHistory';
-import { sendError } from '../helpers/ErrorLog';
 let lang = require('./language');
 const { ipcRenderer } = window.require('electron');
 
@@ -40,11 +39,12 @@ class Dashboard extends Component {
     }
     this.set = this.props.set;
   }
+
   componentWillMount() {
     let that = this;
 
     getAccount((err, account_addr) => {
-      if (err) console.log(err)
+      if (err){}
       else {
         that.setState({
           local_address: account_addr
@@ -52,17 +52,22 @@ class Dashboard extends Component {
       }
     });
     getVPNConnectedData(function (err, data) {
-      if (err) console.log(err)
+      if (err){}
       else {
         that.setState({ status: true, vpnData: data, isTest: true });
       }
     })
   }
 
+  componentDidCatch(error, info) {
+    sendError(error);
+  }
+
+
   getUserEthBalance() {
     let that = this;
     getEthBalance(this.state.local_address, (err, ethBalance) => {
-      if (err) sendError(err);
+      if (err){}
       else {
         that.setState({ ethBalance })
       }
@@ -76,7 +81,7 @@ class Dashboard extends Component {
   getUserSentBalance() {
     let that = this;
     getSentBalance(this.state.local_address, (err, sentBalance) => {
-      if (err) console.log(err, 'got an error')
+      if (err){}
       else {
         that.setState({ sentBalance })
       }

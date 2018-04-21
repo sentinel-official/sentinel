@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { transferAmount, isOnline, payVPNUsage, getFreeAmount } from '../Actions/AccountActions';
+import { transferAmount, isOnline, payVPNUsage, getFreeAmount, sendError } from '../Actions/AccountActions';
 import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost } from '../Actions/TransferActions';
 import { purple500 } from 'material-ui/styles/colors';
 import ReactTooltip from 'react-tooltip';
 import Slider from 'material-ui/Slider';
-import { sendError } from '../helpers/ErrorLog';
 var config = require('../config');
 var lang = require('./language');
 
@@ -45,6 +44,10 @@ class SendComponent extends Component {
     //this.getGas()
   }
 
+  componentDidCatch(error, info) {
+    sendError(error);
+  }
+
   handleSlider = (event, value) => {
     this.setState({ sliderValue: value })
   }
@@ -78,7 +81,6 @@ class SendComponent extends Component {
       else {
         this.setState({ isDisabled: true })
       }
-      console.log("props..", nextProps);
     }
   }
 
@@ -90,7 +92,7 @@ class SendComponent extends Component {
     let amount = this.state.amount;
     let gas_price = this.state.sliderValue * (10 ** 9);
     if (this.state.session_id === -1 && parseInt(this.state.amount) !== 10000000000) {
-      this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false,isDisabled:false })
+      this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false, isDisabled: false })
     }
     else {
       tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
@@ -170,7 +172,6 @@ class SendComponent extends Component {
   }
 
   mainTransaction(tx_data) {
-    console.log("Main")
     let self = this;
     let net;
     if (this.props.isTest)
@@ -309,7 +310,6 @@ class SendComponent extends Component {
   };
 
   handleChange = (event, index, unit) => {
-    console.log("Amount..", this.state.amount);
     let amount;
     if (unit === 'ETH') amount = (unit !== this.state.unit) ? this.state.amount * Math.pow(10, 10) : this.state.amount;
     else amount = (unit !== this.state.unit) ? this.state.amount / Math.pow(10, 10) : this.state.amount;

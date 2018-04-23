@@ -1,10 +1,12 @@
 # coding=utf-8
+import json
 import sys
 import time
 from os import path
 from thread import start_new_thread
 
-from sentinel.config import ACCOUNT_DATA_PATH
+from sentinel.config import CONFIG_DATA_PATH
+from sentinel.config import KEYSTORE_FILE_PATH
 from sentinel.node import Node
 from sentinel.node import create_account
 from sentinel.node import register_node
@@ -32,27 +34,40 @@ def connections_job():
                 connections = openvpn.get_connections()
                 connections_len = len(connections)
                 if connections_len > 0:
-                    send_connections_info(node.account['addr'], node.account['token'], connections)
+                    send_connections_info(node.config['account_addr'], node.config['token'], connections)
         except Exception as err:
             print(str(err))
         time.sleep(5)
 
 
 if __name__ == "__main__":
-    node = None
-    argv_len = len(sys.argv)
-    if path.exists(ACCOUNT_DATA_PATH) is True:
-        node = Node()
-    elif argv_len > 1:
-        PASSWORD = sys.argv[1]
-        create_account(PASSWORD)
-        node = Node()
+    config = None
+    if path.exists(CONFIG_DATA_PATH) is True:
+        config = json.load(open(CONFIG_DATA_PATH, 'r'))
     else:
-        print('ERROR: {} not found.'.format(ACCOUNT_DATA_PATH))
+        print('ERROR: {} not found.'.format(CONFIG_DATA_PATH))
         exit(1)
 
+    if (len(sys.argv) > 1) and (len(config['account_addr']) == 0):
+        PASSWORD = sys.argv[1]
+        keystore, account_addr = create_account(PASSWORD)
+        if (keystore is not None) and (account_addr is not None):
+            keystore_file = open(KEYSTORE_FILE_PATH, 'w')
+            keystore_file.writelines(keystore)
+            keystore_file.close()
+
+            config['account_addr'] = account_addr
+        else:
+            print('Error occurred while creating a new account.')
+            exit(3)
+    else:
+        print('Password is not provided OR `account_addr` field in config file is not empty.')
+        exit(2)
+
+    node = Node(config)
     openvpn = OpenVPN()
-    if node.account['token'] is None:
+
+    if len(node.config['token']) == 0:
         register_node(node)
     openvpn.start()
     send_nodeinfo(node, {

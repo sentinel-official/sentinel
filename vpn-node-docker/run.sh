@@ -1,10 +1,9 @@
 #!/bin/sh
 
-ACCOUNT_DATA_PATH=$HOME/.sentinel/account.data
 CONFIG_DATA_PATH=$HOME/.sentinel/config.data
 
-if [ -f "$ACCOUNT_DATA_PATH" ] && [ -f "$CONFIG_DATA_PATH" ]; then
-    echo "Found account and config files."
+if [ -f "$CONFIG_DATA_PATH" ]; then
+    echo "Found config file."
 else
     while true; do
         echo -n "Do you have a wallet address? [Y/N]: "
@@ -12,12 +11,10 @@ else
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
             echo -n "Please enter your wallet address: "
             read ADDRESS
+            ADDRESS=$(echo ${ADDRESS} | grep -Eq '^0x[a-fA-F0-9]{40}$' && echo ${ADDRESS})
             if [ ${#ADDRESS} -ne 42 ]; then
-                echo 'Wrong wallet address length.'
+                echo 'Incorrect wallet address.'
                 continue
-            else
-                touch ${ACCOUNT_DATA_PATH}
-                echo '{"keystore": "", "private_key": "", "password": "", "addr": "'${ADDRESS}'", "token": null}' > ${ACCOUNT_DATA_PATH}
             fi
         else
             echo -n "Please enter password for creating new wallet: "
@@ -34,14 +31,13 @@ else
         if [ ${#PRICE} -le 0 ]; then
             echo "Price must be a positive number."
             continue
-        else
-            touch ${CONFIG_DATA_PATH}
-            echo '{"price_per_GB": '${PRICE}'}' > ${CONFIG_DATA_PATH}
         fi
 
         echo -n "Is everything correct ? [Y/N]: "
         read option
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
+            touch ${CONFIG_DATA_PATH}
+            echo '{"account_addr": "'${ADDRESS}'", "price_per_GB": '${PRICE}', "token": ""}' > ${CONFIG_DATA_PATH}
             break
         fi
     done

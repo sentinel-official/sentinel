@@ -68,7 +68,7 @@ class ETHManager(object):
         return None, tx_hash
 
     def transfer_amount(self, to_addr, amount, private_key, nonce):
-        count = 0
+        count, tx_hash = 0, None
         while count < MAX_TX_TRY:
             try:
                 tx = Transaction(nonce=nonce + count,

@@ -1,28 +1,40 @@
 # coding=utf-8
-TOKENS = {
-    '': {
+from .config import CENTRAL_WALLET
+
+TOKENS = [
+    {
+        'address': CENTRAL_WALLET,
         'decimals': 18,
         'name': 'Ethereum',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/ethereum/?convert=BTC'
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/ethereum/?convert=BTC',
+        'symbol': 'ETH'
     },
-    '0xa74476443119a942de498590fe1f2454d7d4ac0d': {
+    {
+        'address': '0xa74476443119a942de498590fe1f2454d7d4ac0d',
         'decimals': 18,
-        'name': 'Golem',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/?convert=BTC'
+        'name': 'Golem Network Token',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/?convert=BTC',
+        'symbol': 'GNT'
     },
-    '0xd26114cd6ee289accf82350c8d8487fedb8a0c07': {
+    {
+        'address': '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
         'decimals': 18,
-        'name': 'OmiseGO',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/omisego/?convert=BTC'
+        'name': 'OMGToken',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/omisego/?convert=BTC',
+        'symbol': 'OMG'
     },
-    '0xa44e5137293e855b1b7bc7e2c6f8cd796ffcb037': {
+    {
+        'address': '0xa44e5137293e855b1b7bc7e2c6f8cd796ffcb037',
         'decimals': 8,
         'name': 'SENTinel',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/sentinel/?convert=BTC'
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/sentinel/?convert=BTC',
+        'symbol': 'SENT'
     },
-    '0xe41d2489571d322189246dafa5ebde1f4699f498': {
+    {
+        'address': '0xe41d2489571d322189246dafa5ebde1f4699f498',
         'decimals': 18,
-        'name': 'ZRX',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/0x/?convert=BTC'
+        'name': '0x Protocol Token',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/0x/?convert=BTC',
+        'symbol': 'ZRX'
     }
-}
+]

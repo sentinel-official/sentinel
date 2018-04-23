@@ -13,6 +13,7 @@ class Tokens(object):
         try:
             res = requests.get(token['price_url']).json()
             btc_price = float(res[0]['price_btc'])
+            self.prices[token['name']] = btc_price
         except Exception as error:
             print(error)
         return btc_price
@@ -26,13 +27,12 @@ class Tokens(object):
         return sents
 
     def get_token(self, address=None, name=None):
+        token = None
         if address is not None:
-            return TOKENS[address.lower()]
+            token = [token for token in TOKENS if token['address'] == address]
         elif name is not None:
-            token = [TOKENS[token] for token in TOKENS if TOKENS[token]['name'] == name]
-            return token[0] if len(token) > 0 else None
-        else:
-            return None
+            token = [token for token in TOKENS if token['name'] == name]
+        return token[0] if ((token is not None) and (len(token) > 0)) else None
 
 
 tokens = Tokens()

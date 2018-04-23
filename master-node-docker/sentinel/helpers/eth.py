@@ -51,7 +51,6 @@ class ETHHelper(object):
         elif net == 'rinkeby':
             error, nonce = rinkeby.get_transaction_count(account_addr)
 
-        print(error, previous_nonce, nonce)
         if (error is None) and ((previous_nonce is None) or (nonce > previous_nonce)):
             self.redis.set(key, nonce)
             return nonce

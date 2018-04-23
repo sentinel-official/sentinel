@@ -16,7 +16,7 @@ class VpnServiceManager(object):
                                                   address=VPNSERVICE_ADDRESS)
 
     def pay_vpn_session(self, account_addr, amount, session_id, nonce):
-        count = 0
+        count, tx_hash = 0, None
         while count < MAX_TX_TRY:
             try:
                 tx = Transaction(nonce=nonce + count,
@@ -41,7 +41,7 @@ class VpnServiceManager(object):
         return None, tx_hash
 
     def set_initial_payment(self, account_addr, nonce, is_paid=True):
-        count = 0
+        count, tx_hash = 0, None
         while count < MAX_TX_TRY:
             try:
                 tx = Transaction(nonce=nonce + count,
@@ -122,7 +122,7 @@ class VpnServiceManager(object):
         return None, usage
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id, nonce):
-        count = 0
+        count, tx_hash = 0, None
         while count < MAX_TX_TRY:
             try:
                 tx = Transaction(nonce=nonce + count,

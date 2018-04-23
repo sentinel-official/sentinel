@@ -79,7 +79,7 @@ class Swaps(object):
                                     self.mark_as_error(tx_hash_0)
                                     print('No token found.')
                             elif tx_value > 0 and len(tx_input) == 2:
-                                to_address, token = tx['to'], tokens.get_token('')
+                                to_address, token = tx['to'], tokens.get_token(CENTRAL_WALLET)
                                 self.transfer(to_address, from_address, token, tx_value, tx_hash_0)
                             else:
                                 self.mark_as_error(tx_hash_0)

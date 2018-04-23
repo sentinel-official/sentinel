@@ -2,7 +2,7 @@ FROM alpine
 
 ADD sentinel /root/sentinel
 
-ADD app.py run.sh /root/
+ADD app.py server.py run.sh /root/
 
 ENV SENT_ENV=DEV
 

@@ -6,7 +6,7 @@ from sentinel.jobs import Swaps
 from sentinel.jobs import UpdateNodesStatus
 
 daily_active_nodes = DailyActiveNodes()
-update_nodes_status = UpdateNodesStatus(max_secs=120)
+update_nodes_status = UpdateNodesStatus(max_secs=60)
 swaps = Swaps()
 
 daily_active_nodes.start()

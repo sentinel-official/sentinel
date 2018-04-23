@@ -40,7 +40,26 @@ class ETHHelper(object):
 
         return error, account_addr
 
-    def get_nonce(self, account_addr, net):
+    def get_tx_receipt(self, tx_hash, net):
+        error, receipt = None, None
+        if net == 'main':
+            error, receipt = mainnet.get_tx_receipt(tx_hash)
+        elif net == 'rinkeby':
+            error, receipt = rinkeby.get_tx_receipt(tx_hash)
+
+        return error, receipt
+
+    def get_tx(self, tx_hash, net):
+        error, tx = None, None
+        if net == 'main':
+            error, tx = mainnet.get_tx(tx_hash)
+        elif net == 'rinkeby':
+            error, tx = rinkeby.get_tx(tx_hash)
+
+        return error, tx
+
+
+    def get_valid_nonce(self, account_addr, net):
         key = account_addr + '_' + net
         previous_nonce = self.redis.get(key)
         if previous_nonce is not None:
@@ -56,7 +75,7 @@ class ETHHelper(object):
             return nonce
         else:
             time.sleep(1)
-            return self.get_nonce(account_addr, net)
+            return self.get_valid_nonce(account_addr, net)
 
     def get_balances(self, account_addr):
         balances = {
@@ -78,7 +97,7 @@ class ETHHelper(object):
 
     def transfer_sents(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
-        nonce = self.get_nonce(from_addr, net)
+        nonce = self.get_valid_nonce(from_addr, net)
         if net == 'main':
             error, tx_hash = sentinel_main.transfer_amount(to_addr, amount, private_key, nonce)
         elif net == 'rinkeby':
@@ -88,7 +107,7 @@ class ETHHelper(object):
 
     def transfer_eths(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
-        nonce = self.get_nonce(from_addr, net)
+        nonce = self.get_valid_nonce(from_addr, net)
         if net == 'main':
             error, tx_hash = mainnet.transfer_amount(to_addr, amount, private_key, nonce)
         elif net == 'rinkeby':
@@ -178,7 +197,7 @@ class ETHHelper(object):
         error, tx_hash = self.raw_transaction(tx_data, net)
         if error is None:
             tx_hashes.append(tx_hash)
-            nonce = self.get_nonce(COINBASE_ADDRESS, 'rinkeby')
+            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
             if payment_type == 'init':
                 error, tx_hash = vpn_service_manager.set_initial_payment(from_addr, nonce)
             elif payment_type == 'normal':
@@ -245,7 +264,7 @@ class ETHHelper(object):
                 make_tx = True
 
         if make_tx is True:
-            nonce = self.get_nonce(COINBASE_ADDRESS, 'rinkeby')
+            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
             error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration, amount,
                                                                timestamp, session_id, nonce)
 

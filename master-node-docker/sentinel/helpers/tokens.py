@@ -2,6 +2,7 @@
 import requests
 
 from ..tokens_config import TOKENS
+from ..config import DECIMALS
 
 
 class Tokens(object):
@@ -23,7 +24,7 @@ class Tokens(object):
         sent_btc = self.get_btc_price(self.get_token(name='SENTinel'))
         token_btc = self.get_btc_price(token)
         sents = token_btc / sent_btc
-        sents = sents * value
+        sents = int((sents * value) * DECIMALS)
         return sents
 
     def get_token(self, address=None, name=None):

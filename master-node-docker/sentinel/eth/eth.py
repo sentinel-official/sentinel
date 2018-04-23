@@ -97,6 +97,13 @@ class ETHManager(object):
             return {'code': 108, 'error': str(err)}, None
         return None, receipt
 
+    def get_tx(self, tx_hash):
+        try:
+            receipt = self.web3.eth.getTransaction(tx_hash)
+        except Exception as err:
+            return {'code': 109, 'error': str(err)}, None
+        return None, receipt
+
 
 mainnet = ETHManager(provider='rpc', rpc_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
 rinkeby = ETHManager(provider='rpc', rpc_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')

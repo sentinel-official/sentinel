@@ -13,7 +13,7 @@ class GetSents(object):
         value = int(req.get_param('value'))
         token = tokens.get_token(to_addr)
         if token is not None:
-            sents = int(tokens.calculate_sents(token, value) * DECIMALS)
+            sents = tokens.calculate_sents(token, value)
             message = {
                 'success': True,
                 'sents': sents,

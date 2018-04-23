@@ -4,7 +4,6 @@ from _thread import start_new_thread
 
 from ..config import CENTRAL_WALLET
 from ..config import CENTRAL_WALLET_PRIVATE_KEY
-from ..config import DECIMALS
 from ..db import db
 from ..helpers import eth_helper
 from ..helpers import tokens
@@ -18,7 +17,7 @@ class Swaps(object):
 
     def transfer(self, from_address, to_address, token, value, tx_hash_0):
         if from_address == CENTRAL_WALLET:
-            sents = int(tokens.calculate_sents(token, value) * DECIMALS)
+            sents = tokens.calculate_sents(token, value)
             error, tx_hash = eth_helper.transfer_sents(CENTRAL_WALLET, to_address, sents, CENTRAL_WALLET_PRIVATE_KEY,
                                                        'main')
             if error is None:

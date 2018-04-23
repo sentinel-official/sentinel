@@ -3,7 +3,6 @@ import json
 
 import falcon
 
-from ..config import DECIMALS
 from ..helpers import tokens
 
 

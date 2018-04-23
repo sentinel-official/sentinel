@@ -1,5 +1,6 @@
 # coding=utf-8
 import json
+import time
 
 import falcon
 
@@ -24,7 +25,8 @@ class TokenSwapRawTransaction(object):
             _ = db.token_swaps.insert_one({
                 'tx_data': tx_data,
                 'tx_hash_0': tx_hash,
-                'status': 0
+                'status': 0,
+                'time_0': int(time.time())
             })
             message = {
                 'success': True,

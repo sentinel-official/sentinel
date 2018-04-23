@@ -1,8 +1,8 @@
 # coding=utf-8
 import requests
 
-from ..tokens_config import TOKENS
 from ..config import DECIMALS
+from ..tokens_config import TOKENS
 
 
 class Tokens(object):

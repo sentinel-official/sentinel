@@ -18,28 +18,27 @@ class Swaps(object):
     def transfer(self, from_address, to_address, token, value, tx_hash_0):
         if from_address == CENTRAL_WALLET:
             sents = tokens.calculate_sents(token, value)
-            error, tx_hash = eth_helper.transfer_sents(CENTRAL_WALLET, to_address, sents, CENTRAL_WALLET_PRIVATE_KEY,
-                                                       'main')
+            error, tx_hash_1 = eth_helper.transfer_sents(CENTRAL_WALLET, to_address, sents, CENTRAL_WALLET_PRIVATE_KEY,
+                                                         'main')
             if error is None:
-                _ = db.token_swaps.find_one_and_update({
-                    'tx_hash_0': tx_hash_0
-                }, {
-                    '$set': {
-                        'tx_hash_1': tx_hash,
-                        'status': 1
-                    }
-                })
+                self.mark_tx(tx_hash_0, 1, 'Transaction is initiated successfully.', tx_hash_1)
+                print('Transaction is initiated successfully.')
             else:
+                self.mark_tx(tx_hash_0, 0, 'Error occurred while initiating transaction.')
                 print('Error occurred while initiating transaction.')
         else:
+            self.mark_tx(tx_hash_0, -1, 'From address is not CENTRAL WALLET.')
             print('From address is not CENTRAL WALLET.')
 
-    def mark_as_error(self, tx_hash_0):
+    def mark_tx(self, tx_hash_0, status, message, tx_hash_1=None):
         _ = db.token_swaps.find_one_and_update({
             'tx_hash_0': tx_hash_0
         }, {
             '$set': {
-                'status': -1
+                'status': status,
+                'message': message,
+                'tx_hash_1': tx_hash_1,
+                'time_1': int(time.time())
             }
         })
 
@@ -58,10 +57,10 @@ class Swaps(object):
 
             for transaction in transactions:
                 tx_hash_0 = transaction['tx_hash_0']
-                error, receipt = eth_helper.get_receipt(tx_hash_0, 'main')
+                error, receipt = eth_helper.get_tx_receipt(tx_hash_0, 'main')
                 if (error is None) and (receipt is not None):
                     if receipt['status'] == 1:
-                        error, tx = eth_helper.get_transaction(tx_hash_0, 'main')
+                        error, tx = eth_helper.get_tx(tx_hash_0, 'main')
                         if (error is None) and (tx is not None):
                             from_address, tx_value, tx_input = str(tx['from']).lower(), int(tx['value']), tx['input']
                             if tx_value == 0 and len(tx_input) == 138:
@@ -72,22 +71,24 @@ class Swaps(object):
                                         token_value = int('0x' + tx_input[74:138].lstrip('0'), 0)
                                         self.transfer(to_address, from_address, token, token_value, tx_hash_0)
                                     else:
-                                        self.mark_as_error(tx_hash_0)
+                                        self.mark_tx(tx_hash_0, -1, 'Wrong transaction method.')
                                         print('Wrong transaction method.')
                                 else:
-                                    self.mark_as_error(tx_hash_0)
+                                    self.mark_tx(tx_hash_0, -1, 'No token found.')
                                     print('No token found.')
                             elif tx_value > 0 and len(tx_input) == 2:
                                 to_address, token = tx['to'], tokens.get_token(CENTRAL_WALLET)
                                 self.transfer(to_address, from_address, token, tx_value, tx_hash_0)
                             else:
-                                self.mark_as_error(tx_hash_0)
+                                self.mark_tx(tx_hash_0, -1, 'Not a valid transaction.')
                                 print('Not a valid transaction.')
                         else:
+                            self.mark_tx(tx_hash_0, 0, 'Can\'t find the transaction.')
                             print('Can\'t find the transaction.')
                     else:
-                        self.mark_as_error(tx_hash_0)
+                        self.mark_tx(tx_hash_0, -1, 'Failed transaction.')
                         print('Failed transaction.')
                 else:
+                    self.mark_tx(tx_hash_0, 0, 'Can\'t find the transaction receipt.')
                     print('Can\'t find the transaction receipt.')
             time.sleep(self.interval)

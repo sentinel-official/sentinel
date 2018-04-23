@@ -58,7 +58,6 @@ class ETHHelper(object):
 
         return error, tx
 
-
     def get_valid_nonce(self, account_addr, net):
         key = account_addr + '_' + net
         previous_nonce = self.redis.get(key)

@@ -63,12 +63,12 @@ class Swaps(object):
                         if receipt['status'] == 1:
                             error, tx = eth_helper.get_tx(tx_hash_0, 'main')
                             if (error is None) and (tx is not None):
-                                from_address, tx_value, tx_input = str(tx['from']).lower(), int(tx['value']), tx['input']
+                                from_address, to_address, tx_value, tx_input = str(tx['from']).lower(), str(tx['to']).lower(), int(tx['value']), tx['input']
                                 if tx_value == 0 and len(tx_input) == 138:
-                                    token = tokens.get_token(tx['to'])
+                                    token = tokens.get_token(to_address)
                                     if (token is not None) and (token['name'] != 'SENTinel'):
                                         if tx_input[:10] == '0xa9059cbb':
-                                            to_address = ('0x' + tx_input[10:74].lstrip('0')).lower()
+                                            to_address = ('0x' + tx_input[10:74].lstrip('0').zfill(40)).lower()
                                             token_value = int('0x' + tx_input[74:138].lstrip('0'), 0)
                                             self.transfer(to_address, from_address, token, token_value, tx_hash_0)
                                         else:
@@ -78,7 +78,7 @@ class Swaps(object):
                                         self.mark_tx(tx_hash_0, -1, 'No token found.')
                                         print('No token found.')
                                 elif tx_value > 0 and len(tx_input) == 2:
-                                    to_address, token = tx['to'], tokens.get_token(CENTRAL_WALLET)
+                                    token = tokens.get_token(to_address)
                                     self.transfer(to_address, from_address, token, tx_value, tx_hash_0)
                                 else:
                                     self.mark_tx(tx_hash_0, -1, 'Not a valid transaction.')

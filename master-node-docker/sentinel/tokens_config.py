@@ -10,6 +10,13 @@ TOKENS = [
         'symbol': 'ETH'
     },
     {
+        'address': '0xe41d2489571d322189246dafa5ebde1f4699f498',
+        'decimals': 18,
+        'name': '0x Protocol Token',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/0x/?convert=BTC',
+        'symbol': 'ZRX'
+    },
+    {
         'address': '0xa74476443119a942de498590fe1f2454d7d4ac0d',
         'decimals': 18,
         'name': 'Golem Network Token',
@@ -24,17 +31,17 @@ TOKENS = [
         'symbol': 'OMG'
     },
     {
+        'address': '0x3adfc4999f77d04c8341bac5f3a76f58dff5b37a',
+        'decimals': 8,
+        'name': 'Privatix',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/privatix/?convert=BTC',
+        'symbol': 'PRIX'
+    },
+    {
         'address': '0xa44e5137293e855b1b7bc7e2c6f8cd796ffcb037',
         'decimals': 8,
         'name': 'SENTinel',
         'price_url': 'https://api.coinmarketcap.com/v1/ticker/sentinel/?convert=BTC',
         'symbol': 'SENT'
-    },
-    {
-        'address': '0xe41d2489571d322189246dafa5ebde1f4699f498',
-        'decimals': 18,
-        'name': '0x Protocol Token',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/0x/?convert=BTC',
-        'symbol': 'ZRX'
     }
 ]

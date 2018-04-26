@@ -5,11 +5,12 @@ import DownArrow from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import TransIcon from 'material-ui/svg-icons/action/swap-horiz';
 import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { transferAmount, isOnline, payVPNUsage, getFreeAmount } from '../Actions/AccountActions';
-import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost } from '../Actions/TransferActions';
+import {
+    transferAmount, isOnline, payVPNUsage, getFreeAmount, getAvailableTokens, sendError, getTokenBalance,
+    getSentValue, getSentTransactionHistory, swapRawTransaction
+} from '../Actions/AccountActions';
+import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost, swapTransaction } from '../Actions/TransferActions';
 import ReactTooltip from 'react-tooltip';
-import { sendError } from '../helpers/ErrorLog';
-import { Transform } from 'stream';
 var config = require('../config');
 var lang = require('./language');
 
@@ -43,18 +44,31 @@ class SendNew extends Component {
             sending: false,
             openSnack: false,
             snackOpen: false,
+            isGetBalanceCalled: false,
             snackMessage: '',
             isDisabled: true,
             isInitial: true,
             transactionStatus: '',
             session_id: null,
             sliderValue: 20,
-            showTransScreen: false
+            showTransScreen: false,
+            tokens: [],
+            tokenBalances: {},
+            selectedToken: 'ETH',
+            currentSentValue: 1,
+            swapAmount: 1,
+            convertPass: '',
+            converting: false
         };
     }
 
     componentWillMount = () => {
         //this.getGas()
+        this.getTokensList();
+    }
+
+    componentDidMount = () => {
+        this.getCompareValue(this.state.selectedToken);
     }
 
     handleSlider = (event, value) => {
@@ -324,7 +338,142 @@ class SendNew extends Component {
         this.setState({ showTransScreen: false });
     };
 
+    getTokensList = () => {
+        let self = this;
+        getAvailableTokens(function (err, tokens) {
+            if (err) { }
+            else {
+                let tokensList = tokens.filter((token) => token.symbol !== 'SENT');
+                self.setState({ tokens: tokensList })
+                tokensList.map((token) => {
+                    self.getUnitBalance(token);
+                })
+            }
+        })
+    }
+
+    getBalancesTokens = () => {
+        let self = this;
+        self.state.tokens.map((token) => {
+            self.getUnitBalance(token);
+        })
+    }
+
+    getUnitBalance = (token) => {
+        if (token.symbol === 'ETH') {
+            let obj = this.state.tokenBalances;
+            obj[token.symbol] = this.props.balance.eths !== 'Loading' ? this.props.balance.eths.toFixed(8) : 'Loading';;
+            this.setState({ tokenBalances: obj });
+        }
+        else {
+            let self = this
+            getTokenBalance(token.address, self.props.local_address, token.decimals, function (err, tokenBalance) {
+                if (err) { }
+                else {
+                    let obj = self.state.tokenBalances;
+                    obj[token.symbol] = tokenBalance;
+                    self.setState({ tokenBalances: obj });
+                }
+            })
+        }
+    }
+
+    swapChange = (event, index, unit) => {
+        this.setState({ selectedToken: unit });
+        this.getCompareValue(unit);
+    };
+
+    getCompareValue = (symbol) => {
+        let token = this.state.tokens.find(obj => obj.symbol === symbol);
+        if (token) {
+            let self = this;
+            let value = 10 ** token.decimals;
+            getSentValue(token.address, value, function (err, swapValue) {
+                if (err) { }
+                else {
+                    self.setState({ currentSentValue: swapValue });
+                }
+            })
+        }
+    }
+
+    valueChange = (event, value) => {
+        this.setState({ swapAmount: value });
+        this.getCompareValue(this.state.selectedToken);
+    }
+
+    onClickConvert = () => {
+        let self = this;
+        if (this.state.convertPass === '') {
+            this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
+        }
+        else {
+            if (isOnline()) {
+                this.setState({
+                    converting: true
+                });
+                setTimeout(function () {
+                    getPrivateKey(self.state.convertPass, self.props.lang, function (err, privateKey) {
+                        if (err) {
+                            sendError(err)
+                            self.setState({
+                                snackOpen: true,
+                                snackMessage: err.message,
+                                converting: false
+                            })
+                        }
+                        else {
+                            let token = self.state.tokens.find(o => o.symbol === self.state.selectedToken);
+                            let ether_address = (self.state.tokens.find(o => o.symbol === 'ETH'))['address'];
+                            swapTransaction(self.props.local_address, ether_address, token.address,
+                                self.state.swapAmount * (10 ** (token.decimals)), privateKey,
+                                self.state.selectedToken, function (data) {
+                                    if (data) {
+                                        swapRawTransaction(data, function (err, txHash) {
+                                            if (err) {
+                                                self.setState({
+                                                    snackOpen: true,
+                                                    snackMessage: err.message,
+                                                    converting: false
+                                                })
+                                            }
+                                            else {
+                                                self.setState({
+                                                    convertPass: '',
+                                                    converting: false,
+                                                    openSnack: true,
+                                                    tx_addr: txHash
+                                                })
+                                            }
+                                        })
+                                    }
+                                    else {
+                                        self.setState({
+                                            snackOpen: true,
+                                            snackMessage: 'Error in swapping tokens',
+                                            converting: false
+                                        })
+                                    }
+                                })
+                        }
+                    })
+                }, 500);
+            }
+            else {
+                this.setState({ snackOpen: true, snackMessage: lang[this.props.lang].CheckInternet })
+            }
+        }
+    }
+
     render() {
+        let self = this;
+        if (!this.state.isGetBalanceCalled) {
+            setInterval(function () {
+                self.getBalancesTokens()
+            }, 10000);
+
+            this.setState({ isGetBalanceCalled: true });
+        }
         let language = this.props.lang;
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
@@ -345,42 +494,21 @@ class SendNew extends Component {
                                     </Row>
                                 </div>
                                 <div style={styles.otherBalanceDiv}>
-                                    <Row>
-                                        <Col xs={4}>
-                                            <img src={'../src/Images/logo.svg'} alt="logo" style={styles.otherBalanceLogo} />
-                                        </Col>
-                                        <Col xs={8}>
-                                            <p style={styles.otherBalanceBalc}>0.23198126</p>
-                                            <p style={styles.otherBalanceText}>Ethereum [ETH]</p>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col xs={4}>
-                                            <img src={'../src/Images/logo.svg'} alt="logo" style={styles.otherBalanceLogo} />
-                                        </Col>
-                                        <Col xs={8}>
-                                            <p style={styles.otherBalanceBalc}>24.4896</p>
-                                            <p style={styles.otherBalanceText}>OmiseGO [OMG]</p>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col xs={4}>
-                                            <img src={'../src/Images/logo.svg'} alt="logo" style={styles.otherBalanceLogo} />
-                                        </Col>
-                                        <Col xs={8}>
-                                            <p style={styles.otherBalanceBalc}>191.58</p>
-                                            <p style={styles.otherBalanceText}>0x [ZRX]</p>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col xs={4}>
-                                            <img src={'../src/Images/logo.svg'} alt="logo" style={styles.otherBalanceLogo} />
-                                        </Col>
-                                        <Col xs={8}>
-                                            <p style={styles.otherBalanceBalc}>0</p>
-                                            <p style={styles.otherBalanceText}>Golem [GNT]</p>
-                                        </Col>
-                                    </Row>
+                                    {this.state.tokens.length !== 0 ?
+                                        this.state.tokens.map((token) =>
+                                            <Row>
+                                                <Col xs={4}>
+                                                    <img src={'../src/Images/logo.svg'} alt="logo" style={styles.otherBalanceLogo} />
+                                                </Col>
+                                                <Col xs={8}>
+                                                    <p style={styles.otherBalanceBalc}>{this.state.tokenBalances[token.symbol] ? this.state.tokenBalances[token.symbol] : 0}</p>
+                                                    <p style={styles.otherBalanceText}>{token.name} [{token.symbol}]</p>
+                                                </Col>
+                                            </Row>
+                                        )
+                                        :
+                                        <div>No Tokens Found</div>
+                                    }
                                 </div>
                             </Col>
                             <Col xs={8} style={{ padding: '3% 5% 0px' }}>
@@ -504,7 +632,10 @@ class SendNew extends Component {
                                     label="Convert ERC20 to SENT"
                                     labelStyle={{ textTransform: 'none', color: 'white', fontWeight: 'bold', fontSize: 16 }}
                                     fullWidth={true}
-                                    onClick={() => { this.setState({ showTransScreen: true }) }}
+                                    onClick={() => {
+                                        this.setState({ showTransScreen: true });
+                                        this.getCompareValue(this.state.selectedToken);
+                                    }}
                                     icon={<TransIcon style={{ marginLeft: 0, height: 36, width: 36 }} />}
                                     buttonStyle={{ backgroundColor: '#595d8f', height: 48, lineHeight: '48px' }}
                                     style={{ height: 48 }}
@@ -608,7 +739,7 @@ class SendNew extends Component {
                             <div style={{ backgroundColor: '#2c3d5b', marginTop: -16, fontFamily: 'Poppins' }}>
                                 <p style={{
                                     fontSize: 14, textAlign: 'center', padding: 5, color: 'white', letterSpacing: 1, fontWeight: 'bold'
-                                }}>1 ETH=63,900 SENT</p>
+                                }}>1 {this.state.selectedToken} = {this.state.currentSentValue} SENTS</p>
                             </div>
                             <div style={{ fontFamily: 'Poppins' }}>
                                 <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold' }}>CONVERT</p>
@@ -620,6 +751,8 @@ class SendNew extends Component {
                                             inputStyle={{ padding: 10, fontWeight: 'bold', color: '#2f3245' }}
                                             style={{ backgroundColor: '#dfe3e6', height: 42, width: '110%' }}
                                             underlineShow={false} fullWidth={true}
+                                            onChange={this.valueChange.bind(this)}
+                                            value={this.state.swapAmount}
                                         />
                                     </Col>
                                     <Col xs={4}>
@@ -645,28 +778,28 @@ class SendNew extends Component {
                                                 height: 42,
                                                 width: '100%'
                                             }}
-                                            value={this.state.unit}
+                                            value={this.state.selectedToken}
                                             menuItemStyle={{ width: '100%' }}
-                                            onChange={this.handleChange.bind(this)}
+                                            onChange={this.swapChange.bind(this)}
                                         >
-                                            <MenuItem
-                                                value="ETH"
-                                                primaryText={this.props.isTest ? "TEST ETH" : "ETH"}
-                                            />
-                                            <MenuItem
-                                                value="SENT"
-                                                primaryText={this.props.isTest ? "TEST SENT" : "SENT"}
-                                            />
+                                            {this.state.tokens.length !== 0 ?
+                                                this.state.tokens.map((token) =>
+
+                                                    <MenuItem
+                                                        value={token.symbol}
+                                                        primaryText={token.symbol}
+                                                    />
+                                                ) : null}
                                         </DropDownMenu>
                                     </Col>
                                 </Row>
-                                <p style={{ textAlign: 'center', color: 'grey', fontSize: 12, fontFamily: 'Poppins' }}>Balance: 0.23198126 ETH</p>
+                                <p style={{ textAlign: 'center', color: 'grey', fontSize: 12, fontFamily: 'Poppins' }}>Balance: {this.state.tokenBalances[this.state.selectedToken]} {this.state.selectedToken}</p>
                                 <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold', fontFamily: 'Poppins' }}>TO</p>
                                 <Row style={{ width: '100%', marginTop: -12 }}>
                                     <Col xsOffset={2} xs={8}>
                                         <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins' }}>
-                                            <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>6,455.5 </span>
-                                                <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}>SENT TOKENS</span>
+                                            <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>{this.state.currentSentValue * this.state.swapAmount}</span>
+                                                <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}> SENT TOKENS</span>
                                             </p>
                                         </div>
                                     </Col>
@@ -679,6 +812,8 @@ class SendNew extends Component {
                                             type="password"
                                             hintText="PASSWORD"
                                             hintStyle={{ fontSize: 16, bottom: 9, paddingLeft: 10 }}
+                                            onChange={(event, password) => this.setState({ convertPass: password })}
+                                            value={this.state.convertPass}
                                             underlineShow={false} fullWidth={true}
                                             inputStyle={{ padding: 10, fontWeight: 'bold', color: '#2f3245' }}
                                             style={{ height: 42, backgroundColor: '#f6f7f9' }}
@@ -686,10 +821,14 @@ class SendNew extends Component {
                                     </Col>
                                     <Col xs={5}>
                                         <RaisedButton
-                                            label="CONVERT"
+                                            label={this.state.converting ? 'CONVERTING' : 'CONVERT'}
+                                            disabled={this.state.converting}
+                                            onClick={this.onClickConvert.bind(this)}
                                             labelStyle={{ color: 'white', fontWeight: 'bold', fontSize: 18, letterSpacing: 2 }}
                                             fullWidth={true}
-                                            buttonStyle={{ backgroundColor: '#2e4770', height: 42, lineHeight: '42px' }}
+                                            buttonStyle={this.state.converting ?
+                                                { backgroundColor: '#bdbdbd', height: 42, lineHeight: '42px' } :
+                                                { backgroundColor: '#2e4770', height: 42, lineHeight: '42px' }}
                                             style={{ height: 42 }}
                                         />
                                     </Col>
@@ -724,7 +863,9 @@ const styles = {
         padding: '6% 4%',
         paddingBottom: 0,
         backgroundColor: '#ececf1',
-        marginTop: '5%'
+        marginTop: '5%',
+        overflow: 'auto',
+        height: 265
     },
     questionMark: {
         marginLeft: 10,

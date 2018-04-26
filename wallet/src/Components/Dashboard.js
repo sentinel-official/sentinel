@@ -44,7 +44,7 @@ class Dashboard extends Component {
     let that = this;
 
     getAccount((err, account_addr) => {
-      if (err){}
+      if (err) { }
       else {
         that.setState({
           local_address: account_addr
@@ -52,7 +52,7 @@ class Dashboard extends Component {
       }
     });
     getVPNConnectedData(function (err, data) {
-      if (err){}
+      if (err) { }
       else {
         that.setState({ status: true, vpnData: data, isTest: true });
       }
@@ -67,7 +67,7 @@ class Dashboard extends Component {
   getUserEthBalance() {
     let that = this;
     getEthBalance(this.state.local_address, (err, ethBalance) => {
-      if (err){}
+      if (err) { }
       else {
         that.setState({ ethBalance })
       }
@@ -81,7 +81,7 @@ class Dashboard extends Component {
   getUserSentBalance() {
     let that = this;
     getSentBalance(this.state.local_address, (err, sentBalance) => {
-      if (err){}
+      if (err) { }
       else {
         that.setState({ sentBalance })
       }
@@ -226,6 +226,7 @@ class Dashboard extends Component {
                 <SendNew
                   local_address={this.state.local_address}
                   amount={this.state.amount}
+                  balance={userBalance}
                   to_addr={this.state.to_addr}
                   unit={this.state.unit}
                   session_id={this.state.sessionId}

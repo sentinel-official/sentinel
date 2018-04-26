@@ -9,21 +9,21 @@ class Tokens(object):
     def __init__(self):
         self.prices = {}
 
-    def get_btc_price(self, token):
-        btc_price = self.prices[token['name']] if token['name'] in self.prices else None
+    def get_usd_price(self, token):
+        usd_price = self.prices[token['name']] if token['name'] in self.prices else None
         try:
             res = requests.get(token['price_url']).json()
-            btc_price = float(res[0]['price_btc'])
-            self.prices[token['name']] = btc_price
+            usd_price = float(res[0]['price_usd'])
+            self.prices[token['name']] = usd_price
         except Exception as error:
             print(error)
-        return btc_price
+        return usd_price
 
     def calculate_sents(self, token, value):
         value = value / (1.0 * (10 ** token['decimals']))
-        sent_btc = self.get_btc_price(self.get_token(name='SENTinel'))
-        token_btc = self.get_btc_price(token)
-        sents = token_btc / sent_btc
+        sent_usd = self.get_usd_price(self.get_token(name='SENTinel'))
+        token_usd = self.get_usd_price(token)
+        sents = token_usd / sent_usd
         sents = int((sents * value) * DECIMALS)
         return sents
 

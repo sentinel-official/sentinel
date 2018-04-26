@@ -37,7 +37,7 @@ else
         read option
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
             touch ${CONFIG_DATA_PATH}
-            echo '{"account_addr": "'${ADDRESS}'", "price_per_GB": '${PRICE}', "token": ""}' > ${CONFIG_DATA_PATH}
+            echo '{"account_addr": "'${ADDRESS}'", "price_per_gb": '${PRICE}', "token": ""}' > ${CONFIG_DATA_PATH}
             break
         fi
     done

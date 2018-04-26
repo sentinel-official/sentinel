@@ -63,7 +63,8 @@ class Swaps(object):
                         if receipt['status'] == 1:
                             error, tx = eth_helper.get_tx(tx_hash_0, 'main')
                             if (error is None) and (tx is not None):
-                                from_address, to_address, tx_value, tx_input = str(tx['from']).lower(), str(tx['to']).lower(), int(tx['value']), tx['input']
+                                from_address, to_address, tx_value, tx_input = str(tx['from']).lower(), str(
+                                    tx['to']).lower(), int(tx['value']), tx['input']
                                 if tx_value == 0 and len(tx_input) == 138:
                                     token = tokens.get_token(to_address)
                                     if (token is not None) and (token['name'] != 'SENTinel'):

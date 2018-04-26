@@ -23,13 +23,13 @@ class Node(object):
         }
         self.config = {
             'account_addr': None,
-            'price_per_GB': None,
+            'price_per_gb': None,
             'token': None
         }
 
         if config is not None:
             self.config['account_addr'] = str(config['account_addr']).lower() if 'account_addr' in config else None
-            self.config['price_per_GB'] = float(config['price_per_GB']) if 'price_per_GB' in config else None
+            self.config['price_per_gb'] = float(config['price_per_gb']) if 'price_per_gb' in config else None
             self.config['token'] = str(config['token']) if 'token' in config else None
 
         self.update_nodeinfo({'type': 'location'})
@@ -43,7 +43,7 @@ class Node(object):
             'ip': self.ip,
             'location': self.location,
             'net_speed': self.net_speed,
-            'price_per_GB': self.config['price_per_GB'],
+            'price_per_gb': self.config['price_per_gb'],
             'token': self.config['token']
         }, upsert=True)
 

@@ -27,7 +27,7 @@ def register_node(node):
     body = {
         'ip': node.ip,
         'account_addr': node.config['account_addr'],
-        'price_per_GB': node.config['price_per_GB'],
+        'price_per_gb': node.config['price_per_gb'],
         'location': node.location,
         'net_speed': node.net_speed
     }

@@ -5,43 +5,33 @@ TOKENS = [
     {
         'address': CENTRAL_WALLET,
         'decimals': 18,
+        'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
         'name': 'Ethereum',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/ethereum/?convert=BTC',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/ethereum/?convert=SENT',
         'symbol': 'ETH'
     },
     {
         'address': '0xe41d2489571d322189246dafa5ebde1f4699f498',
         'decimals': 18,
+        'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1896.png',
         'name': '0x Protocol Token',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/0x/?convert=BTC',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/0x/?convert=SENT',
         'symbol': 'ZRX'
     },
     {
-        'address': '0xa74476443119a942de498590fe1f2454d7d4ac0d',
+        'address': '0xb8c77482e45f1f44de1745f52c74426c631bdd52',
         'decimals': 18,
-        'name': 'Golem Network Token',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/?convert=BTC',
-        'symbol': 'GNT'
-    },
-    {
-        'address': '0xd26114cd6ee289accf82350c8d8487fedb8a0c07',
-        'decimals': 18,
-        'name': 'OMGToken',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/omisego/?convert=BTC',
-        'symbol': 'OMG'
-    },
-    {
-        'address': '0x3adfc4999f77d04c8341bac5f3a76f58dff5b37a',
-        'decimals': 8,
-        'name': 'Privatix',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/privatix/?convert=BTC',
-        'symbol': 'PRIX'
+        'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',
+        'name': 'Binance Coin',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/binance-coin/?convert=SENT',
+        'symbol': 'BNB'
     },
     {
         'address': '0xa44e5137293e855b1b7bc7e2c6f8cd796ffcb037',
         'decimals': 8,
+        'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/2643.png',
         'name': 'SENTinel',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/sentinel/?convert=BTC',
+        'price_url': 'https://api.coinmarketcap.com/v1/ticker/sentinel/?convert=SENT',
         'symbol': 'SENT'
     }
 ]

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle } from 'material-ui';
-import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline, sendError } from '../Actions/AccountActions';
+import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline, sendError, connectSocks, disconnectSocks } from '../Actions/AccountActions';
 import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
 import CopyIcon from 'material-ui/svg-icons/content/content-copy';
@@ -26,6 +26,7 @@ class Header extends Component {
       status: false,
       showInstruct: false,
       isMac: false,
+      isSock: false,
       isTest: false,
       showPay: false,
       payAccount: '',
@@ -44,6 +45,7 @@ class Header extends Component {
   componentWillMount = () => {
     let that = this;
     localStorage.setItem('config', 'MAIN')
+    localStorage.setItem('vpnType', 'OpenVPN')
     isVPNConnected(function (err, data) {
       if (err) { }
       else if (data) {
@@ -58,7 +60,7 @@ class Header extends Component {
   componentDidMount = () => {
     let that = this;
     getVPNList(function (err, data) {
-      if (err){}
+      if (err) { }
       else {
         that.setState({ vpnList: data });
       }
@@ -128,6 +130,20 @@ class Header extends Component {
     }
   }
 
+  sockChange = (event, toggle) => {
+    let self = this;
+    if (toggle) {
+      this.setState({ isSock: true })
+      localStorage.setItem('vpnType', 'SOCKS')
+      connectSocks();
+    }
+    else {
+      this.setState({ isSock: false })
+      localStorage.setItem('vpnType', 'OpenVPN')
+      disconnectSocks();
+    }
+  }
+
   closeInstruction = () => {
     this.setState({ showInstruct: false });
   }
@@ -140,7 +156,7 @@ class Header extends Component {
   render() {
     let language = this.props.lang;
     return (
-      <div style={{ height: 70, background: 'linear-gradient(to right,#2f3245 72%,#3d425c 28%)' }}>
+      <div style={{ height: 70, background: 'linear-gradient(to right,#2f3245 65%,#3d425c 35%)' }}>
         <div>
           <Grid>
             <Row style={{ paddingTop: 10 }}>
@@ -149,7 +165,7 @@ class Header extends Component {
                   <img src={'../src/Images/logo.svg'} alt="logo" style={{ width: 50, height: 50, marginLeft: 10 }} />
                 </div>
               </Col>
-              <Col xs={5} style={{
+              <Col xs={4} style={{
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
@@ -220,7 +236,7 @@ class Header extends Component {
                   />
                 </Col>
               </Col>
-              <Col xs={1} style={{ paddingLeft: 50 }}>
+              <Col xs={1} style={{ paddingLeft: 40 }}>
                 <Col style={{
                   fontSize: 12,
                   fontWeight: '600',
@@ -237,6 +253,28 @@ class Header extends Component {
                   <Toggle
                     toggled={this.state.status}
                     onToggle={this.handleToggle}
+                    style={{ marginTop: 8, marginLeft: 20 }}
+                    thumbStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                    trackStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                  />
+                </Col>
+              </Col>
+              <Col xs={1} style={{ paddingLeft: 60 }}>
+                <Col style={{
+                  fontSize: 12,
+                  fontWeight: '600',
+                }}>
+                  <FlatButton
+                    label="SOCKS"
+                    labelStyle={{ color: '#FAFAFA', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
+                    style={{ height: '18px', lineHeight: '18px' }}
+                    disabled={true}
+                  />
+                </Col>
+                <Col>
+                  <Toggle
+                    toggled={this.state.isSock}
+                    onToggle={this.sockChange}
                     style={{ marginTop: 8, marginLeft: 20 }}
                     thumbStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
                     trackStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}

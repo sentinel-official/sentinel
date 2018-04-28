@@ -676,6 +676,26 @@ function installPackage(packageName, cb) {
   }
 }
 
+export function connectSocks() {
+  exec('ss-local -s 52.66.68.124 -m aes-256-gcm -k shadowsocks -p 4200 -l 1080', function (err, stdout, stderr) {
+    console.log("Socks...", err, stdout, stderr);
+  })
+}
+
+export function disconnectSocks() {
+  getSocksPIDs(function (err, pids) {
+    if (err) {
+      console.log("Error", err);
+    }
+    else {
+      var command = 'kill -2 ' + pids;
+      exec(command, function (error, stdout, stderr) {
+        console.log("Disc...", error, stdout, stderr);
+      });
+    }
+  });
+}
+
 export function connectVPN(account_addr, vpn_addr, cb) {
   try {
     CONNECTED = false;
@@ -984,6 +1004,23 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
 export function getVPNPIDs(cb) {
   try {
     exec('pidof openvpn', function (err, stdout, stderr) {
+      if (err) cb(err, null);
+      else if (stdout) {
+        var pids = stdout.trim();
+        cb(null, pids);
+      }
+      else {
+        cb(true, null);
+      }
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
+export function getSocksPIDs(cb) {
+  try {
+    exec('pidof ss-local', function (err, stdout, stderr) {
       if (err) cb(err, null);
       else if (stdout) {
         var pids = stdout.trim();

@@ -58,13 +58,18 @@ class SendNew extends Component {
             currentSentValue: 1,
             swapAmount: 1,
             convertPass: '',
-            converting: false
+            converting: false,
+            logoUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'
         };
     }
 
     componentWillMount = () => {
         //this.getGas()
         this.getTokensList();
+    }
+
+    componentDidCatch(error, info) {
+        sendError(error);
     }
 
     componentDidMount = () => {
@@ -115,7 +120,7 @@ class SendNew extends Component {
         let amount = this.state.amount;
         let gas_price = this.state.sliderValue * (10 ** 9);
         if (this.state.session_id === -1 && parseInt(this.state.amount) !== 10000000000) {
-            this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false })
+            this.setState({ snackOpen: true, snackMessage: 'Please send 100 SENTS', sending: false, isDisabled: false })
         }
         else {
             tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
@@ -195,7 +200,6 @@ class SendNew extends Component {
     }
 
     mainTransaction(tx_data) {
-        console.log("Main")
         let self = this;
         let net;
         if (this.props.isTest)
@@ -323,10 +327,9 @@ class SendNew extends Component {
     };
 
     handleChange = (event, index, unit) => {
-        console.log("Amount..", this.state.amount);
         let amount;
-        if (unit === 'ETH') amount = (unit !== this.state.amount) ? this.state.amount * Math.pow(10, 10) : this.state.amount;
-        else amount = (unit !== this.state.amount) ? this.state.amount / Math.pow(10, 10) : this.state.amount;
+        if (unit === 'ETH') amount = (unit !== this.state.unit) ? this.state.amount * Math.pow(10, 10) : this.state.amount;
+        else amount = (unit !== this.state.unit) ? this.state.amount / Math.pow(10, 10) : this.state.amount;
         this.setState({ amount: amount, unit: unit });
         let trueAddress = this.state.to_address.match(/^0x[a-zA-Z0-9]{40}$/)
         if (trueAddress !== null && amount !== '') {
@@ -379,7 +382,8 @@ class SendNew extends Component {
     }
 
     swapChange = (event, index, unit) => {
-        this.setState({ selectedToken: unit });
+        let token = this.state.tokens.find(obj => obj.symbol === unit);
+        this.setState({ selectedToken: unit, logoUrl: token.logo_url ? token.logo_url : '../src/Images/default.png' });
         this.getCompareValue(unit);
     };
 
@@ -498,7 +502,7 @@ class SendNew extends Component {
                                         this.state.tokens.map((token) =>
                                             <Row>
                                                 <Col xs={4}>
-                                                    <img src={'../src/Images/logo.svg'} alt="logo" style={styles.otherBalanceLogo} />
+                                                    <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'} alt="logo" style={styles.otherBalanceLogo} />
                                                 </Col>
                                                 <Col xs={8}>
                                                     <p style={styles.otherBalanceBalc}>{this.state.tokenBalances[token.symbol] ? this.state.tokenBalances[token.symbol] : 0}</p>
@@ -725,7 +729,7 @@ class SendNew extends Component {
                                 <p style={{ textAlign: 'center', padding: 30 }}>
                                     <Row>
                                         <Col xsOffset={3} xs={1}>
-                                            <img src={'../src/Images/eth.png'} alt="logo" style={{ height: 70, width: 70 }} />
+                                            <img src={this.state.logoUrl} alt="logo" style={{ height: 70, width: 70 }} />
                                         </Col>
                                         <Col xsOffset={1} xs={1}>
                                             <RightArrow style={{ height: 70, width: 70, fill: '#ccc' }} />

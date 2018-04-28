@@ -431,8 +431,15 @@ class SendNew extends Component {
                             let ether_address = (self.state.tokens.find(o => o.symbol === 'ETH'))['address'];
                             swapTransaction(self.props.local_address, ether_address, token.address,
                                 self.state.swapAmount * (10 ** (token.decimals)), privateKey,
-                                self.state.selectedToken, function (data) {
-                                    if (data) {
+                                self.state.selectedToken, function (err, data) {
+                                    if (err) {
+                                        self.setState({
+                                            snackOpen: true,
+                                            snackMessage: err.message,
+                                            converting: false
+                                        })
+                                    }
+                                    else if (data) {
                                         swapRawTransaction(data, function (err, txHash) {
                                             if (err) {
                                                 self.setState({
@@ -511,7 +518,11 @@ class SendNew extends Component {
                                             </Row>
                                         )
                                         :
-                                        <div>No Tokens Found</div>
+                                        <div>
+                                            <p style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginTop: '35%' }}>
+                                                No Tokens Found
+                                            </p>
+                                        </div>
                                     }
                                 </div>
                             </Col>
@@ -636,12 +647,15 @@ class SendNew extends Component {
                                     label="Convert ERC20 to SENT"
                                     labelStyle={{ textTransform: 'none', color: 'white', fontWeight: 'bold', fontSize: 16 }}
                                     fullWidth={true}
+                                    disabled={this.props.isTest || this.state.tokens.length === 0}
                                     onClick={() => {
                                         this.setState({ showTransScreen: true });
                                         this.getCompareValue(this.state.selectedToken);
                                     }}
                                     icon={<TransIcon style={{ marginLeft: 0, height: 36, width: 36 }} />}
-                                    buttonStyle={{ backgroundColor: '#595d8f', height: 48, lineHeight: '48px' }}
+                                    buttonStyle={this.props.isTest || this.state.tokens.length === 0 ?
+                                        { backgroundColor: '#bdbdbd', height: 48, lineHeight: '48px', cursor: 'not-allowed' } :
+                                        { backgroundColor: '#595d8f', height: 48, lineHeight: '48px' }}
                                     style={{ height: 48 }}
                                 />
                             </Col>
@@ -668,7 +682,7 @@ class SendNew extends Component {
                                             fullWidth={true}
                                             buttonStyle={
                                                 this.state.to_address === '' || this.state.sending === true || this.state.isDisabled === true ?
-                                                    { backgroundColor: '#bdbdbd', height: 48, lineHeight: '48px' }
+                                                    { backgroundColor: '#bdbdbd', height: 48, lineHeight: '48px', cursor: 'not-allowed' }
                                                     :
                                                     { backgroundColor: '#595d8f', height: 48, lineHeight: '48px' }
                                             }
@@ -752,7 +766,7 @@ class SendNew extends Component {
                                         <TextField
                                             type="number"
                                             underlineShow={false} fullWidth={true}
-                                            inputStyle={{ padding: 10, fontWeight: 'bold', color: '#2f3245' }}
+                                            inputStyle={{ padding: 10, textAlign: 'center', fontWeight: 'bold', color: '#2f3245' }}
                                             style={{ backgroundColor: '#dfe3e6', height: 42, width: '110%' }}
                                             underlineShow={false} fullWidth={true}
                                             onChange={this.valueChange.bind(this)}

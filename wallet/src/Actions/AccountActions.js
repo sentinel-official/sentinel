@@ -374,7 +374,7 @@ export function reportPayment(data, cb) {
 
 export function getAvailableTokens(cb) {
   try {
-    fetch('http://185.144.157.209:8333/tokens/available', {
+    fetch(B_URL + '/tokens/available', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -476,7 +476,7 @@ export function getTokenBalance(contract, addr, decimals, cb) {
 
 export function swapRawTransaction(data, cb) {
   try {
-    fetch('http://185.144.157.209:8333/tokens/swaps/raw-transaction', {
+    fetch(B_URL + '/tokens/swaps/raw-transaction', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -510,7 +510,7 @@ export function swapRawTransaction(data, cb) {
 
 export function getSentValue(toAddr, value, cb) {
   try {
-    fetch('http://185.144.157.209:8333/tokens/sents?to_addr=' + toAddr + '&value=' + value, {
+    fetch(B_URL + '/tokens/sents?to_addr=' + toAddr + '&value=' + value, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

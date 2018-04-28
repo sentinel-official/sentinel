@@ -1,5 +1,8 @@
 # coding=utf-8
+import time
 from hashlib import md5
+
+from redis import Redis
 
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
@@ -23,9 +26,11 @@ def get_encoded_session_id(account_addr, index):
 
 
 class ETHHelper(object):
+    def __init__(self):
+        self.redis = Redis()
+
     def create_account(self, password):
-        error, account_addr, private_key, keystore = mainnet.create_account(
-            password)
+        error, account_addr, private_key, keystore = mainnet.create_account(password)
 
         return error, account_addr, private_key, keystore
 
@@ -34,6 +39,44 @@ class ETHHelper(object):
         account_addr = account_addr[2:]
 
         return error, account_addr
+
+    def get_tx_receipt(self, tx_hash, net):
+        error, receipt = None, None
+        if net == 'main':
+            error, receipt = mainnet.get_tx_receipt(tx_hash)
+        elif net == 'rinkeby':
+            error, receipt = rinkeby.get_tx_receipt(tx_hash)
+
+        return error, receipt
+
+    def get_tx(self, tx_hash, net):
+        error, tx = None, None
+        if net == 'main':
+            error, tx = mainnet.get_tx(tx_hash)
+        elif net == 'rinkeby':
+            error, tx = rinkeby.get_tx(tx_hash)
+
+        return error, tx
+
+    def get_valid_nonce(self, account_addr, net):
+        key = account_addr + '_' + net
+        previous_nonce = self.redis.get(key)
+        if previous_nonce is not None:
+            previous_nonce = int(previous_nonce)
+
+        if net == 'main':
+            error, nonce = mainnet.get_transaction_count(account_addr)
+        elif net == 'rinkeby':
+            error, nonce = rinkeby.get_transaction_count(account_addr)
+        else:
+            error, nonce = -1, -1
+
+        if (error is None) and ((previous_nonce is None) or (nonce > previous_nonce)):
+            self.redis.set(key, nonce)
+            return nonce
+        else:
+            time.sleep(1)
+            return self.get_valid_nonce(account_addr, net)
 
     def get_balances(self, account_addr):
         balances = {
@@ -49,30 +92,27 @@ class ETHHelper(object):
         _, balances['main']['eths'] = mainnet.get_balance(account_addr)
         _, balances['main']['sents'] = sentinel_main.get_balance(account_addr)
         _, balances['rinkeby']['eths'] = rinkeby.get_balance(account_addr)
-        _, balances['rinkeby']['sents'] = sentinel_rinkeby.get_balance(
-            account_addr)
+        _, balances['rinkeby']['sents'] = sentinel_rinkeby.get_balance(account_addr)
 
         return balances
 
     def transfer_sents(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
+        nonce = self.get_valid_nonce(from_addr, net)
         if net == 'main':
-            error, tx_hash = sentinel_main.transfer_amount(
-                from_addr, to_addr, amount, private_key)
+            error, tx_hash = sentinel_main.transfer_amount(to_addr, amount, private_key, nonce)
         elif net == 'rinkeby':
-            error, tx_hash = sentinel_rinkeby.transfer_amount(
-                from_addr, to_addr, amount, private_key)
+            error, tx_hash = sentinel_rinkeby.transfer_amount(to_addr, amount, private_key, nonce)
 
         return error, tx_hash
 
     def transfer_eths(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
+        nonce = self.get_valid_nonce(from_addr, net)
         if net == 'main':
-            error, tx_hash = mainnet.transfer_amount(
-                from_addr, to_addr, amount, private_key)
+            error, tx_hash = mainnet.transfer_amount(to_addr, amount, private_key, nonce)
         elif net == 'rinkeby':
-            error, tx_hash = rinkeby.transfer_amount(
-                from_addr, to_addr, amount, private_key)
+            error, tx_hash = rinkeby.transfer_amount(to_addr, amount, private_key, nonce)
 
         return error, tx_hash
 
@@ -96,44 +136,25 @@ class ETHHelper(object):
         return error, due_amount
 
     def get_vpn_sessions_count(self, account_addr):
-        error, sessions_count = vpn_service_manager.get_vpn_sessions_count(
-            account_addr)
+        error, sessions_count = vpn_service_manager.get_vpn_sessions_count(account_addr)
 
         return error, sessions_count
 
     def get_latest_vpn_usage(self, account_addr):
         error, usage = None, None
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
-        if error is None:
-            session_id = get_encoded_session_id(account_addr, sessions_count)
-            _usage = db.usage.find_one({
-                'session_id': session_id,
-                'to_addr': account_addr,
-                'is_added': False
-            })
-            if (_usage is None) and (sessions_count > 0):
-                session_id = get_encoded_session_id(account_addr, sessions_count - 1)
-                error, _usage = vpn_service_manager.get_vpn_usage(
-                    account_addr, session_id)
-                if error is None:
-                    usage = {
-                        'id': session_id,
-                        'account_addr': str(_usage[0]).lower(),
-                        'received_bytes': _usage[1],
-                        'session_duration': _usage[2],
-                        'amount': _usage[3],
-                        'timestamp': _usage[4],
-                        'is_paid': _usage[5]
-                    }
-            elif _usage is not None:
+        if (error is None) and (sessions_count > 0):
+            session_id = get_encoded_session_id(account_addr, sessions_count - 1)
+            error, _usage = vpn_service_manager.get_vpn_usage(account_addr, session_id)
+            if error is None:
                 usage = {
-                    'id': _usage['session_id'],
-                    'account_addr': str(_usage['from_addr']).lower(),
-                    'received_bytes': _usage['sent_bytes'],
-                    'session_duration': _usage['session_duration'],
-                    'amount': _usage['amount'],
-                    'timestamp': _usage['timestamp'],
-                    'is_paid': _usage['is_added']
+                    'id': session_id,
+                    'account_addr': str(_usage[0]).lower(),
+                    'received_bytes': _usage[1],
+                    'session_duration': _usage[2],
+                    'amount': _usage[3],
+                    'timestamp': _usage[4],
+                    'is_paid': _usage[5]
                 }
 
         return error, usage
@@ -153,8 +174,7 @@ class ETHHelper(object):
         if error is None:
             for index in range(0, sessions_count):
                 session_id = get_encoded_session_id(account_addr, index)
-                error, _usage = vpn_service_manager.get_vpn_usage(
-                    account_addr, session_id)
+                error, _usage = vpn_service_manager.get_vpn_usage(account_addr, session_id)
                 if error is None:
                     if _usage[5] is False:
                         usage['due'] += _usage[3]
@@ -178,12 +198,11 @@ class ETHHelper(object):
         error, tx_hash = self.raw_transaction(tx_data, net)
         if error is None:
             tx_hashes.append(tx_hash)
+            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
             if payment_type == 'init':
-                error, tx_hash = vpn_service_manager.set_initial_payment(
-                    from_addr)
+                error, tx_hash = vpn_service_manager.set_initial_payment(from_addr, nonce)
             elif payment_type == 'normal':
-                error, tx_hash = vpn_service_manager.pay_vpn_session(
-                    from_addr, amount, session_id)
+                error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, amount, session_id, nonce)
             if error is None:
                 tx_hashes.append(tx_hash)
             else:
@@ -199,13 +218,12 @@ class ETHHelper(object):
         if error is None:
             session_id = get_encoded_session_id(to_addr, sessions_count)
             _usage = db.usage.find_one({
-                'session_id': session_id,
+                'from_addr': from_addr,
                 'to_addr': to_addr
             })
             if _usage is None:
                 if (sent_bytes > LIMIT_10MB) and (sent_bytes < LIMIT_100MB):
                     _ = db.usage.insert_one({
-                        'session_id': session_id,
                         'from_addr': from_addr,
                         'to_addr': to_addr,
                         'sent_bytes': sent_bytes,
@@ -218,7 +236,7 @@ class ETHHelper(object):
                     make_tx = True
             elif (_usage['sent_bytes'] + sent_bytes) < LIMIT_100MB:
                 _ = db.usage.find_one_and_update({
-                    'session_id': session_id,
+                    'from_addr': from_addr,
                     'to_addr': to_addr
                 }, {
                     '$set': {
@@ -230,7 +248,7 @@ class ETHHelper(object):
                 })
             else:
                 _ = db.usage.find_one_and_update({
-                    'session_id': session_id,
+                    'from_addr': from_addr,
                     'to_addr': to_addr
                 }, {
                     '$set': {
@@ -247,20 +265,19 @@ class ETHHelper(object):
                 make_tx = True
 
         if make_tx is True:
-            error, tx_hash = vpn_service_manager.add_vpn_usage(
-                from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id)
+            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
+            error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration, amount,
+                                                               timestamp, session_id, nonce)
 
         return error, tx_hash
 
     # DEV
     def free(self, to_addr, eths, sents):
         errors, tx_hashes = [], []
-        error, tx_hash = self.transfer_eths(
-            COINBASE_ADDRESS, to_addr, eths, COINBASE_PRIVATE_KEY, 'rinkeby')
+        error, tx_hash = self.transfer_eths(COINBASE_ADDRESS, to_addr, eths, COINBASE_PRIVATE_KEY, 'rinkeby')
         if error is None:
             tx_hashes.append(tx_hash)
-            error, tx_hash = self.transfer_sents(
-                COINBASE_ADDRESS, to_addr, sents, COINBASE_PRIVATE_KEY, 'rinkeby')
+            error, tx_hash = self.transfer_sents(COINBASE_ADDRESS, to_addr, sents, COINBASE_PRIVATE_KEY, 'rinkeby')
             if error is None:
                 tx_hashes.append(tx_hash)
             else:

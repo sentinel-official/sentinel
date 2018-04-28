@@ -58,6 +58,7 @@ class GetDailyDataCount(object):
             'success': True,
             'stats': daily_count
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -80,6 +81,7 @@ class GetTotalDataCount(object):
             'success': True,
             'stats': total_count
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -121,6 +123,7 @@ class GetDailyNodeCount(object):
             'success': True,
             'stats': daily_count
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -134,6 +137,7 @@ class GetActiveNodeCount(object):
             'success': True,
             'count': count
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -175,6 +179,7 @@ class GetDailySessionCount(object):
             'success': True,
             'stats': daily_count
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -188,6 +193,7 @@ class GetActiveSessionCount(object):
             'success': True,
             'count': count
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -237,6 +243,7 @@ class GetDailyDurationCount(object):
             'success': True,
             'stats': daily_count
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -272,5 +279,54 @@ class GetAverageDuration(object):
             'success': True,
             'average': avg_count
         }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
+class GetNodeStatistics(object):
+    def on_get(self, req, resp):
+        account_addr = str(req.get_param('addr'))
+
+        result = db.connections.aggregate([
+            {
+                '$match': {
+                    'account_addr': account_addr
+                }
+            }, {
+                '$group': {
+                    '_id': '$account_addr',
+                    'sessions_count': {
+                        '$sum': 1
+                    },
+                    'active_sessions': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$or': [
+                                        {
+                                            '$eq': ['$end_time', None]
+                                        }, {
+                                            '$eq': ['$end_time', None]
+                                        }
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    },
+                    'download': {
+                        '$sum': '$usage.down'
+                    },
+                    'upload': {
+                        '$sum': '$usage.up'
+                    }
+                }
+            }
+        ])
+        message = {
+            'success': True,
+            'result': list(result)
+        }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

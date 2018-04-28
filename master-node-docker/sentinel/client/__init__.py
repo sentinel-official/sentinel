@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
-
 from .account import CreateNewAccount
 from .account import GetBalance
 from .transactions import RawTransaction

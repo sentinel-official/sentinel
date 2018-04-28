@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
-
 from .connections import UpdateConnections
 from .info import UpdateNodeInfo
 from .register import DeRegisterNode
@@ -12,4 +10,5 @@ from .stats import GetDailyDataCount
 from .stats import GetDailyDurationCount
 from .stats import GetDailyNodeCount
 from .stats import GetDailySessionCount
+from .stats import GetNodeStatistics
 from .stats import GetTotalDataCount

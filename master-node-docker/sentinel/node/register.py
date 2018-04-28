@@ -24,7 +24,7 @@ def get_latency(url):
 class RegisterNode(object):
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
-        price_per_GB = float(req.body['price_per_GB'])
+        price_per_gb = float(req.body['price_per_gb'])
         ip = str(req.body['ip'])
         location = req.body['location']
         net_speed = req.body['net_speed']
@@ -40,7 +40,7 @@ class RegisterNode(object):
                 'account_addr': account_addr,
                 'token': token,
                 'ip': ip,
-                'price_per_GB': price_per_GB,
+                'price_per_gb': price_per_gb,
                 'latency': latency,
                 'joined_on': joined_on,
                 'location': location,
@@ -53,7 +53,7 @@ class RegisterNode(object):
                 '$set': {
                     'token': token,
                     'ip': ip,
-                    'price_per_GB': price_per_GB,
+                    'price_per_gb': price_per_gb,
                     'latency': latency,
                     'location': location,
                     'net_speed': net_speed
@@ -64,6 +64,7 @@ class RegisterNode(object):
             'token': token,
             'message': 'Node registered successfully.'
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -88,5 +89,6 @@ class DeRegisterNode(object):
                 'success': True,
                 'message': 'Node deregistred successfully.'
             }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

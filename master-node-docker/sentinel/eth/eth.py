@@ -8,16 +8,15 @@ from ethereum.tools import keys
 from ethereum.transactions import Transaction
 from web3 import Web3, IPCProvider, HTTPProvider
 
+from ..config import MAX_TX_TRY
+
 
 class ETHManager(object):
     def __init__(self, provider=None, data_dir=None, rpc_url=None):
-        self.data_dir = path.join(path.expanduser(
-            '~'), '.ethereum') if data_dir is None else data_dir
-        self.provider = 'ipc' if provider is None \
-            else provider
+        self.data_dir = path.join(path.expanduser('~'), '.ethereum') if data_dir is None else data_dir
+        self.provider = 'ipc' if provider is None else provider
         self.ipc_path = path.join(self.data_dir, 'geth.ipc')
-        self.web3 = Web3(IPCProvider(self.ipc_path)) if self.provider == 'ipc' \
-            else Web3(HTTPProvider(rpc_url))
+        self.web3 = Web3(IPCProvider(self.ipc_path)) if self.provider == 'ipc' else Web3(HTTPProvider(rpc_url))
 
     def create_account(self, password):
         try:
@@ -54,37 +53,57 @@ class ETHManager(object):
             return {'code': 104, 'error': str(err)}, None
         return None, balance
 
+    def get_transaction_count(self, account_addr):
+        try:
+            tx_count = self.web3.eth.getTransactionCount(account_addr, 'pending')
+        except Exception as err:
+            return {'code': 105, 'error': str(err)}, None
+        return None, tx_count
+
     def send_raw_transaction(self, tx_data):
         try:
             tx_hash = self.web3.eth.sendRawTransaction(tx_data)
         except Exception as err:
-            return {'code': 105, 'error': str(err)}, None
+            return {'code': 106, 'error': str(err)}, None
         return None, tx_hash
 
-    def transfer_amount(self, from_addr, to_addr, amount, private_key):
-        try:
-            tx = Transaction(nonce=self.web3.eth.getTransactionCount(from_addr, 'pending'),
-                             gasprice=self.web3.eth.gasPrice,
-                             startgas=1000000,
-                             to=to_addr,
-                             value=amount,
-                             data='')
-            tx.sign(private_key)
-            raw_tx = self.web3.toHex(rlp.encode(tx))
-            tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
-        except Exception as err:
-            return {'code': 106, 'error': str(err)}, None
+    def transfer_amount(self, to_addr, amount, private_key, nonce):
+        count, tx_hash = 0, None
+        while count < MAX_TX_TRY:
+            try:
+                tx = Transaction(nonce=nonce + count,
+                                 gasprice=self.web3.eth.gasPrice,
+                                 startgas=1000000,
+                                 to=to_addr,
+                                 value=amount,
+                                 data='')
+                tx.sign(private_key)
+                raw_tx = self.web3.toHex(rlp.encode(tx))
+                tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
+                if len(tx_hash) > 0:
+                    break
+            except Exception as err:
+                err = str(err)
+                if '-32000' in err:
+                    count = count + 1
+                if (count >= MAX_TX_TRY) or ('-32000' not in err):
+                    return {'code': 107, 'error': err}, None
         return None, tx_hash
 
     def get_tx_receipt(self, tx_hash):
         try:
             receipt = self.web3.eth.getTransactionReceipt(tx_hash)
         except Exception as err:
-            return {'code': 107, 'error': str(err)}, None
+            return {'code': 108, 'error': str(err)}, None
+        return None, receipt
+
+    def get_tx(self, tx_hash):
+        try:
+            receipt = self.web3.eth.getTransaction(tx_hash)
+        except Exception as err:
+            return {'code': 109, 'error': str(err)}, None
         return None, receipt
 
 
-mainnet = ETHManager(
-    provider='rpc', rpc_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
-rinkeby = ETHManager(
-    provider='rpc', rpc_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
+mainnet = ETHManager(provider='rpc', rpc_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy')
+rinkeby = ETHManager(provider='rpc', rpc_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')

@@ -2,16 +2,16 @@ FROM alpine
 
 ADD sentinel /root/sentinel
 
-ADD app.py run.sh /root/
+ADD app.py server.py run.sh /root/
 
 ENV SENT_ENV=DEV
 
-RUN apk add --no-cache gcc gmp-dev libffi-dev make mongodb musl-dev openssl-dev python3 python3-dev && \
+RUN apk add --no-cache gcc gmp-dev libffi-dev make mongodb musl-dev openssl-dev python3 python3-dev redis && \
     apk add --no-cache nano && \
     mkdir -p /data/db && \
     wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
     python3 /tmp/get-pip.py && \
-    pip3 install --no-cache-dir bitcoin ethereum eth_keyfile falcon falcon_cors gevent gunicorn pymongo raven && \
+    pip3 install --no-cache-dir bitcoin ethereum eth_keyfile falcon falcon_cors gevent gunicorn pymongo raven redis && \
     pip3 install --no-cache-dir web3==3.16.5 && \
     pip3 install --no-cache-dir ipython && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts

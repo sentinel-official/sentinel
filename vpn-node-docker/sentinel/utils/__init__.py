@@ -1,4 +1,3 @@
-from __future__ import absolute_import
-
+# coding=utf-8
 from .fetch import fetch
 from .middlewares import JSONTranslator

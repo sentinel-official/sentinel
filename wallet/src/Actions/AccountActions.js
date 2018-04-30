@@ -9,6 +9,7 @@ var ETH_BALANCE_URL;
 var SENT_BALANCE_URL;
 var ETH_TRANSC_URL;
 var SENT_TRANSC_URL1;
+var TOKEN_BALANCE_URL;
 var TRANSC_STATUS;
 const SENT_TRANSC_URL2 = `&topic1_2_opr=or&topic2=`;
 const SENT_DIR = getUserHome() + '/.sentinel';
@@ -371,6 +372,33 @@ export function reportPayment(data, cb) {
   }
 }
 
+export function getAvailableTokens(cb) {
+  try {
+    fetch('http://185.144.157.209:8333/tokens/available', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      }
+    }).then(function (response) {
+      if (response.status === 200) {
+        response.json().then(function (response) {
+          if (response.success === true) {
+            cb(null, response.tokens);
+          } else {
+            cb({ message: 'Error occurred while getting available tokens.' }, null);
+          }
+        });
+      }
+      else {
+        cb({ message: 'Server Error.Please Try Again' }, null);
+      }
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
 export function getEthBalance(data, cb) {
   try {
     if (localStorage.getItem('config') === 'TEST')
@@ -413,6 +441,86 @@ export function getSentBalance(data, cb) {
         if (response.status === '1') {
           var balance = response['result'] / (10 ** 8);
           cb(null, balance);
+        } else cb({ message: 'Error occurred while getting balance.' }, null);
+      });
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
+export function getTokenBalance(contract, addr, decimals, cb) {
+  try {
+    if (localStorage.getItem('config') === 'TEST')
+      TOKEN_BALANCE_URL = config.test.balanceUrl
+    else
+      TOKEN_BALANCE_URL = config.main.balanceUrl
+    fetch(TOKEN_BALANCE_URL + contract + "&address=" + addr, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      }
+    }).then(function (response) {
+      response.json().then(function (response) {
+        if (response.status === '1') {
+          var balance = response['result'] / (10 ** (decimals));
+          cb(null, balance);
+        } else cb({ message: 'Error occurred while getting balance.' }, null);
+      });
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
+export function swapRawTransaction(data, cb) {
+  try {
+    fetch('http://185.144.157.209:8333/tokens/swaps/raw-transaction', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({
+        tx_data: data
+      })
+    }).then(function (response) {
+      if (response.status === 200) {
+        response.json().then(function (response) {
+          console.log("Response...", response)
+          if (response.success === true) {
+            var tx_hash = response['tx_hash'];
+            cb(null, tx_hash);
+          } else {
+            sendError(response.error);
+            cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+          }
+        })
+      }
+      else {
+        cb({ message: response.message || 'Internal Server Error' }, null);
+      }
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
+export function getSentValue(toAddr, value, cb) {
+  try {
+    fetch('http://185.144.157.209:8333/tokens/sents?to_addr=' + toAddr + '&value=' + value, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      }
+    }).then(function (response) {
+      response.json().then(function (resp) {
+        if (resp.success === true) {
+          var sents = resp['sents'] / (10 ** 8);
+          cb(null, sents);
         } else cb({ message: 'Error occurred while getting balance.' }, null);
       });
     });

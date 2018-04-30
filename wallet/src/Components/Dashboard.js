@@ -44,7 +44,7 @@ class Dashboard extends Component {
     let that = this;
 
     getAccount((err, account_addr) => {
-      if (err){}
+      if (err) { }
       else {
         that.setState({
           local_address: account_addr
@@ -52,7 +52,7 @@ class Dashboard extends Component {
       }
     });
     getVPNConnectedData(function (err, data) {
-      if (err){}
+      if (err) { }
       else {
         that.setState({ status: true, vpnData: data, isTest: true });
       }
@@ -67,7 +67,7 @@ class Dashboard extends Component {
   getUserEthBalance() {
     let that = this;
     getEthBalance(this.state.local_address, (err, ethBalance) => {
-      if (err){}
+      if (err) { }
       else {
         that.setState({ ethBalance })
       }
@@ -81,7 +81,7 @@ class Dashboard extends Component {
   getUserSentBalance() {
     let that = this;
     getSentBalance(this.state.local_address, (err, sentBalance) => {
-      if (err){}
+      if (err) { }
       else {
         that.setState({ sentBalance })
       }
@@ -209,7 +209,7 @@ class Dashboard extends Component {
                   lang={this.props.lang} currentHash={this.state.currentHash} removeHash={this.removeHash} />
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Send} value="send">
-                <SendComponent
+                {/* <SendComponent
                   local_address={this.state.local_address}
                   amount={this.state.amount}
                   to_addr={this.state.to_addr}
@@ -222,8 +222,22 @@ class Dashboard extends Component {
                   clearSend={this.clearSend.bind(this)}
                   lang={this.props.lang}
                   getCurrentTx={this.getTxHash}
+                /> */}
+                <SendNew
+                  local_address={this.state.local_address}
+                  amount={this.state.amount}
+                  balance={userBalance}
+                  to_addr={this.state.to_addr}
+                  unit={this.state.unit}
+                  session_id={this.state.sessionId}
+                  sending={this.state.sending}
+                  isTest={this.state.isTest}
+                  isPropReceive={this.state.isPropReceive}
+                  propReceiveChange={this.propReceiveChange.bind(this)}
+                  clearSend={this.clearSend.bind(this)}
+                  lang={this.props.lang}
+                  getCurrentTx={this.getTxHash}
                 />
-                {/* <SendNew /> */}
               </Tab>
               <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Receive} value="receive">
                 <div>

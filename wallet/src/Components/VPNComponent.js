@@ -49,6 +49,7 @@ class VPNComponent extends Component {
             markersList: [],
             vpnUpdatedList: [],
             searchText: '',
+            isSock: false,
             sortUp: true,
             sortType: 'vpn',
             selectedVPN: null,
@@ -82,6 +83,10 @@ class VPNComponent extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (nextProps.isSock !== this.state.isSock) {
+            this.setState({ isSock: nextProps.isSock })
+            this.getVPNs()
+        }
         if (nextProps.status === false)
             this.setState({ status: nextProps.status, selectedVPN: null, usage: null });
         else

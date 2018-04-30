@@ -134,13 +134,15 @@ class Header extends Component {
     let self = this;
     if (toggle) {
       this.setState({ isSock: true })
-      localStorage.setItem('vpnType', 'SOCKS')
+      localStorage.setItem('vpnType', 'socks5')
       connectSocks();
+      this.props.onsockChange(true);
     }
     else {
       this.setState({ isSock: false })
-      localStorage.setItem('vpnType', 'OpenVPN')
+      localStorage.setItem('vpnType', 'openvpn')
       disconnectSocks();
+      this.props.onsockChange(false);
     }
   }
 
@@ -266,7 +268,9 @@ class Header extends Component {
                 }}>
                   <FlatButton
                     label="SOCKS"
-                    labelStyle={{ color: '#FAFAFA', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
+                    labelStyle={this.state.isTest ?
+                      { color: '#fafafa', textTransform: 'none', fontWeight: 600, fontSize: 14 } :
+                      { color: '#4b4e5d', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
                     style={{ height: '18px', lineHeight: '18px' }}
                     disabled={true}
                   />

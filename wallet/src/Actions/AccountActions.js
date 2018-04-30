@@ -618,7 +618,12 @@ export function getVpnHistory(account_addr, cb) {
 
 export const getVPNList = (cb) => {
   try {
-    fetch(B_URL + '/client/vpn/list', {
+    let listUrl;
+    if (localStorage.getItem('vpnType') === 'socks5')
+      listUrl = B_URL + '/client/vpn/socks-list'
+    else
+      listUrl = B_URL + '/client/vpn/list'
+    fetch(listUrl, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

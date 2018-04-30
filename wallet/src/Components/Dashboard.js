@@ -32,6 +32,7 @@ class Dashboard extends Component {
       amount: '',
       unit: 'ETH',
       isTest: false,
+      isSock: false,
       sessionId: null,
       testDisabled: false,
       lang: 'en',
@@ -153,6 +154,10 @@ class Dashboard extends Component {
     this.getUserSentBalance();
   }
 
+  onSockChange = (value) => {
+    this.setState({ isSock: value })
+  }
+
   removeHash = () => {
     this.setState({ currentHash: null })
   }
@@ -186,6 +191,7 @@ class Dashboard extends Component {
             balance={userBalance}
             onChange={this.getVPNapi}
             ontestChange={this.onTestChange}
+            onsockChange={this.onSockChange}
             local_address={this.state.local_address}
             vpnPayment={this.vpnPayment}
             status={this.state.status}
@@ -255,6 +261,7 @@ class Dashboard extends Component {
                   vpnPayment={this.vpnPayment}
                   changeTest={this.testDisable}
                   lang={this.props.lang}
+                  isSock={this.state.isSock}
                 />
               </Tab>
               <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :

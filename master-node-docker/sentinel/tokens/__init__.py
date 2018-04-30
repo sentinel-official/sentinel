@@ -1,3 +1,4 @@
 # coding=utf-8
-from .swaps import Swaps
-from .transactions import SwapsRawTransaction
+from .prices import GetSents
+from .tokens import GetAvailableTokens
+from .transactions import TokenSwapRawTransaction

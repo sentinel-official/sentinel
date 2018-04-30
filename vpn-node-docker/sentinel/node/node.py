@@ -1,15 +1,15 @@
+# coding=utf-8
 import json
-
-from speedtest_cli import Speedtest
 from urllib2 import urlopen
 
-from ..config import ACCOUNT_DATA_PATH
+from speedtest_cli import Speedtest
+
 from ..config import CONFIG_DATA_PATH
 from ..db import db
 
 
 class Node(object):
-    def __init__(self, resume=True):
+    def __init__(self, config):
         self.speed_test = Speedtest()
         self.ip = None
         self.location = None
@@ -22,55 +22,34 @@ class Node(object):
             'upload': None
         }
         self.config = {
-            'price_per_GB': None
-        }
-        self.account = {
-            'addr': None,
-            'keystore': None,
-            'password': None,
-            'private_key': None,
+            'account_addr': None,
+            'price_per_gb': None,
             'token': None
         }
 
-        if resume is True:
-            data = json.load(open(ACCOUNT_DATA_PATH, 'r'))
-            self.account['addr'] = str(data['addr']).lower()
-            self.account['keystore'] = data['keystore']
-            self.account['password'] = str(data['password']).lower()
-            self.account['private_key'] = str(data['private_key']).lower()
-            self.account['token'] = data['token']
+        if config is not None:
+            self.config['account_addr'] = str(config['account_addr']).lower() if 'account_addr' in config else None
+            self.config['price_per_gb'] = float(config['price_per_gb']) if 'price_per_gb' in config else None
+            self.config['token'] = str(config['token']) if 'token' in config else None
 
-            data = json.load(open(CONFIG_DATA_PATH, 'r'))
-            self.config['price_per_GB'] = float(data['price_per_GB'])
-
-            self.update_nodeinfo({'type': 'location'})
-            self.update_nodeinfo({'type': 'netspeed'})
-            self.save_to_db()
+        self.update_nodeinfo({'type': 'location'})
+        self.update_nodeinfo({'type': 'netspeed'})
+        self.save_to_db()
 
     def save_to_db(self):
-        node = db.nodes.find_one({
-            'address': self.account['addr']
-        })
-        if node is None:
-            _ = db.nodes.insert_one({
-                'address': self.account['addr'],
-                'location': self.location,
-                'net_speed': self.net_speed
-            })
-        else:
-            _ = db.nodes.find_one_and_update({
-                'address': self.account['addr']
-            }, {
-                '$set': {
-                    'location': self.location,
-                    'net_speed': self.net_speed
-                }
-            })
+        db.node.update({
+            'account_addr': self.config['account_addr']
+        }, {
+            'ip': self.ip,
+            'location': self.location,
+            'net_speed': self.net_speed,
+            'price_per_gb': self.config['price_per_gb'],
+            'token': self.config['token']
+        }, upsert=True)
 
-    def save_account_data(self):
-        data_file = open(ACCOUNT_DATA_PATH, 'w')
-        data = json.dumps(self.account)
-        # Must encrypt before save
+    def save_config_data(self):
+        data_file = open(CONFIG_DATA_PATH, 'w')
+        data = json.dumps(self.config)
         data_file.writelines(data)
         data_file.close()
 
@@ -93,7 +72,9 @@ class Node(object):
             }
             self.net_speed['download'] = self.speed_test.download()
             self.net_speed['upload'] = self.speed_test.upload()
-        elif info['type'] == 'account':
+        elif info['type'] == 'config':
+            if info['account_addr'] is not None:
+                self.config['account_addr'] = info['account_addr']
             if info['token'] is not None:
-                self.account['token'] = info['token']
-            self.save_account_data()
+                self.config['token'] = info['token']
+            self.save_config_data()

@@ -4,7 +4,6 @@ import json
 import falcon
 
 from ..helpers import eth_helper
-from ..logs import logger
 
 
 class CreateNewAccount(object):
@@ -20,8 +19,7 @@ class CreateNewAccount(object):
         """
         password = str(req.body['password'])
 
-        error, account_addr, private_key, keystore = eth_helper.create_account(
-            password)
+        error, account_addr, private_key, keystore = eth_helper.create_account(password)
 
         if error is None:
             message = {
@@ -31,19 +29,15 @@ class CreateNewAccount(object):
                 'keystore': json.dumps(keystore),
                 'message': 'Account created successfully. Please store the Private key and Keystore data safely.'
             }
-            resp.status = falcon.HTTP_200
-            resp.body = json.dumps(message)
-
         else:
             message = {
                 'success': False,
                 'error': error,
                 'message': 'Error occurred while create wallet. Please try again.'
             }
-            try:
-                raise Exception(error)
-            except Exception as _:
-                logger.send_log(message, resp)
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
 
 
 class GetBalance(object):
@@ -62,5 +56,6 @@ class GetBalance(object):
             'success': True,
             'balances': balances
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

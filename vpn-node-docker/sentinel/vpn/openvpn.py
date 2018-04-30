@@ -1,4 +1,7 @@
+# coding=utf-8
 import subprocess
+
+from pymongo import ReturnDocument
 
 from ..config import LIMIT_1GB
 from ..db import db
@@ -21,11 +24,9 @@ class OpenVPN(object):
         init_proc.wait()
 
     def start(self):
-        self.vpn_proc = subprocess.Popen(
-            self.start_cmd, shell=True, stdout=subprocess.PIPE)
+        self.vpn_proc = subprocess.Popen(self.start_cmd, shell=True, stdout=subprocess.PIPE)
         pid_cmd = 'pidof openvpn'
-        pid_proc = subprocess.Popen(
-            pid_cmd, shell=True, stdout=subprocess.PIPE)
+        pid_proc = subprocess.Popen(pid_cmd, shell=True, stdout=subprocess.PIPE)
         self.pid = pid_proc.stdout.readline().strip()
 
     def stop(self):
@@ -56,23 +57,23 @@ class OpenVPN(object):
             line = line.strip()
             line_arr = line.split(',')
             if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
-                connection = {
-                    'session_name': str(line_arr[0]),
-                    'usage': {
-                        'up': int(line_arr[2]),
-                        'down': int(line_arr[3])
-                    }
-                }
-                db.openvpn_usage.update({
-                    'session_name': connection['session_name']
+                client = db.clients.find_one_and_update({
+                    'session_name': str(line_arr[0])
                 }, {
                     '$set': {
-                        'usage': connection['usage']
+                        'usage': {
+                            'up': int(line_arr[2]),
+                            'down': int(line_arr[3])
+                        }
                     }
-                }, upsert=True)
-                if (client_name is None) and (connection['usage']['down'] >= LIMIT_1GB):
-                    self.disconnect_client(connection['session_name'])
-                connections.append(connection)
+                }, projection={
+                    '_id': 0,
+                    'token': 0
+                },
+                    return_document=ReturnDocument.AFTER)
+                if client['usage']['down'] >= LIMIT_1GB:
+                    self.disconnect_client(client['session_name'])
+                connections.append(client)
             elif 'ROUTING TABLE' in line:
                 break
         return connections

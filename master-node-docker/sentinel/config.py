@@ -11,8 +11,7 @@ SENTINEL_ABI = [
     {"constant": true, "inputs": [], "name": "totalSupply", "outputs": [{"name": "", "type": "uint256"}],
      "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false,
                                                                         "inputs": [{"name": "_from", "type": "address"},
-                                                                                   {"name": "_to",
-                                                                                    "type": "address"},
+                                                                                   {"name": "_to", "type": "address"},
                                                                                    {"name": "_value",
                                                                                     "type": "uint256"}],
                                                                         "name": "transferFrom", "outputs": [
@@ -29,10 +28,8 @@ SENTINEL_ABI = [
      "name": "burnFrom", "outputs": [{"name": "success", "type": "bool"}], "payable": false,
      "stateMutability": "nonpayable", "type": "function"}, {"constant": false,
                                                             "inputs": [{"name": "_serviceName", "type": "bytes32"},
-                                                                       {"name": "_from",
-                                                                        "type": "address"},
-                                                                       {"name": "_to",
-                                                                        "type": "address"},
+                                                                       {"name": "_from", "type": "address"},
+                                                                       {"name": "_to", "type": "address"},
                                                                        {"name": "_value", "type": "uint256"}],
                                                             "name": "payService", "outputs": [], "payable": false,
                                                             "stateMutability": "nonpayable", "type": "function"},
@@ -59,13 +56,12 @@ SENTINEL_ABI = [
         "inputs": [{"name": "_tokenName", "type": "string"}, {"name": "_tokenSymbol", "type": "string"},
                    {"name": "_decimals", "type": "uint8"}, {"name": "_totalSupply", "type": "uint256"}],
         "payable": false, "stateMutability": "nonpayable", "type": "constructor"}, {"anonymous": false, "inputs": [
-        {"indexed": true, "name": "from", "type": "address"}, {
-            "indexed": true, "name": "to", "type": "address"},
+        {"indexed": true, "name": "from", "type": "address"}, {"indexed": true, "name": "to", "type": "address"},
         {"indexed": false, "name": "value", "type": "uint256"}], "name": "Transfer", "type": "event"},
     {"anonymous": false, "inputs": [{"indexed": true, "name": "from", "type": "address"},
                                     {"indexed": false, "name": "value", "type": "uint256"}], "name": "Burn",
      "type": "event"}]
-SENTINEL_ADDRESS = '0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037'
+SENTINEL_ADDRESS = '0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037'.lower()
 SENTINEL_NAME = 'Sentinel'
 SENTINEL_TEST_ABI = [
     {"constant": true, "inputs": [], "name": "name", "outputs": [{"name": "", "type": "string"}], "payable": false,
@@ -78,8 +74,7 @@ SENTINEL_TEST_ABI = [
     {"constant": true, "inputs": [], "name": "totalSupply", "outputs": [{"name": "", "type": "uint256"}],
      "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false,
                                                                         "inputs": [{"name": "_from", "type": "address"},
-                                                                                   {"name": "_to",
-                                                                                    "type": "address"},
+                                                                                   {"name": "_to", "type": "address"},
                                                                                    {"name": "_value",
                                                                                     "type": "uint256"}],
                                                                         "name": "transferFrom", "outputs": [
@@ -96,10 +91,8 @@ SENTINEL_TEST_ABI = [
      "name": "burnFrom", "outputs": [{"name": "success", "type": "bool"}], "payable": false,
      "stateMutability": "nonpayable", "type": "function"}, {"constant": false,
                                                             "inputs": [{"name": "_serviceName", "type": "bytes32"},
-                                                                       {"name": "_from",
-                                                                        "type": "address"},
-                                                                       {"name": "_to",
-                                                                        "type": "address"},
+                                                                       {"name": "_from", "type": "address"},
+                                                                       {"name": "_to", "type": "address"},
                                                                        {"name": "_value", "type": "uint256"}],
                                                             "name": "payService", "outputs": [], "payable": false,
                                                             "stateMutability": "nonpayable", "type": "function"},
@@ -126,13 +119,12 @@ SENTINEL_TEST_ABI = [
         "inputs": [{"name": "_tokenName", "type": "string"}, {"name": "_tokenSymbol", "type": "string"},
                    {"name": "_decimals", "type": "uint8"}, {"name": "_totalSupply", "type": "uint256"}],
         "payable": false, "stateMutability": "nonpayable", "type": "constructor"}, {"anonymous": false, "inputs": [
-        {"indexed": true, "name": "from", "type": "address"}, {
-            "indexed": true, "name": "to", "type": "address"},
+        {"indexed": true, "name": "from", "type": "address"}, {"indexed": true, "name": "to", "type": "address"},
         {"indexed": false, "name": "value", "type": "uint256"}], "name": "Transfer", "type": "event"},
     {"anonymous": false, "inputs": [{"indexed": true, "name": "from", "type": "address"},
                                     {"indexed": false, "name": "value", "type": "uint256"}], "name": "Burn",
      "type": "event"}]
-SENTINEL_TEST_ADDRESS = '0x29317B796510afC25794E511e7B10659Ca18048B'
+SENTINEL_TEST_ADDRESS = '0x29317B796510afC25794E511e7B10659Ca18048B'.lower()
 SENTINEL_TEST_NAME = 'Sentinel Test Token'
 VPNSERVICE_ABI = [
     {"constant": false, "inputs": [{"name": "_addr", "type": "address"}], "name": "addAuthorizedUser", "outputs": [],
@@ -180,10 +172,13 @@ VPNSERVICE_ABI = [
      "payable": false, "stateMutability": "view", "type": "function"},
     {"constant": true, "inputs": [], "name": "owner", "outputs": [{"name": "", "type": "address"}], "payable": false,
      "stateMutability": "view", "type": "function"}]
-VPNSERVICE_ADDRESS = '0x86c592a4Ab2De10D8F1Ad3AD91e40BD676F559f2'
+VPNSERVICE_ADDRESS = '0x86c592a4Ab2De10D8F1Ad3AD91e40BD676F559f2'.lower()
 VPNSERVICE_NAME = 'Vpn_service'
-COINBASE_ADDRESS = '0xA3F1592D8a09a91a7238f608620fFDe7C4B26029'
+COINBASE_ADDRESS = '0xA3F1592D8a09a91a7238f608620fFDe7C4B26029'.lower()
 COINBASE_PRIVATE_KEY = ''
+CENTRAL_WALLET = ''.lower()
+CENTRAL_WALLET_PRIVATE_KEY = ''
+MAX_TX_TRY = 60
 DECIMALS = (10 ** 8) * 1.0
 LIMIT_10MB = 10 * 1024 * 1024
 LIMIT_100MB = 100 * 1024 * 1024

@@ -24,24 +24,26 @@ def get_latency(url):
 class RegisterNode(object):
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
-        price_per_GB = float(req.body['price_per_GB'])
+        price_per_gb = float(req.body['price_per_gb'])
         ip = str(req.body['ip'])
+        vpn_type = str(
+            req.body['vpn_type']
+        ) if 'vpn_type' in req.body and req.body['vpn_type'] else None
         location = req.body['location']
         net_speed = req.body['net_speed']
         token = uuid4().hex
         latency = get_latency(ip)
         joined_on = int(time.time())
 
-        node = db.nodes.find_one({
-            'account_addr': account_addr
-        })
+        node = db.nodes.find_one({'account_addr': account_addr})
         if node is None:
             _ = db.nodes.insert_one({
                 'account_addr': account_addr,
                 'token': token,
                 'ip': ip,
-                'price_per_GB': price_per_GB,
+                'price_per_gb': price_per_gb,
                 'latency': latency,
+                'vpn_type': vpn_type,
                 'joined_on': joined_on,
                 'location': location,
                 'net_speed': net_speed
@@ -53,8 +55,9 @@ class RegisterNode(object):
                 '$set': {
                     'token': token,
                     'ip': ip,
-                    'price_per_GB': price_per_GB,
+                    'price_per_gb': price_per_gb,
                     'latency': latency,
+                    'vpn_type': vpn_type,
                     'location': location,
                     'net_speed': net_speed
                 }
@@ -64,6 +67,7 @@ class RegisterNode(object):
             'token': token,
             'message': 'Node registered successfully.'
         }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
@@ -79,14 +83,12 @@ class DeRegisterNode(object):
         })
 
         if node is None:
-            message = {
-                'success': False,
-                'message': 'Node is not registered.'
-            }
+            message = {'success': False, 'message': 'Node is not registered.'}
         else:
             message = {
                 'success': True,
                 'message': 'Node deregistred successfully.'
             }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

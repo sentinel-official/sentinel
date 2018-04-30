@@ -12,6 +12,7 @@ if [ "$SENT_ENV" != "DEV" ]; then
 fi
 
 nohup mongod >> /dev/null &
+nohup redis-server >> /dev/null &
 python3 app.py &
 gunicorn -b 0.0.0.0:${PORT} \
          --reload \

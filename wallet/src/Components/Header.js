@@ -135,13 +135,11 @@ class Header extends Component {
     if (toggle) {
       this.setState({ isSock: true })
       localStorage.setItem('vpnType', 'socks5')
-      connectSocks();
       this.props.onsockChange(true);
     }
     else {
       this.setState({ isSock: false })
       localStorage.setItem('vpnType', 'openvpn')
-      disconnectSocks();
       this.props.onsockChange(false);
     }
   }

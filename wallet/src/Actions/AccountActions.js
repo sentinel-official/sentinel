@@ -681,13 +681,93 @@ function installPackage(packageName, cb) {
   }
 }
 
-export function connectSocks() {
-  exec('ss-local -s 52.66.68.124 -m aes-256-gcm -k shadowsocks -p 4200 -l 1080', function (err, stdout, stderr) {
-    console.log("Socks...", err, stdout, stderr);
+export function connectSocks(account_addr, vpn_addr, cb) {
+  fetch(B_URL + '/client/vpn', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      account_addr: account_addr,
+      vpn_addr: vpn_addr
+    })
+  }).then(function (response) {
+    response.json().then(function (res) {
+      if (res.success === true) {
+        getSocksCreds(account_addr, res['ip'], res['port'], res['vpn_addr'], res['token'], function (err, data) {
+          if (err) cb(err);
+          else {
+            exec('ss-local -s ' + data['ip'] + ' -m ' + data['method'] + ' -k ' + data['password'] + ' -p ' + data['port'] + ' -l 1080', function (err, stdout, stderr) {
+              console.log("Socks...", err, stdout, stderr);
+            })
+            setTimeout(function () {
+              getSocksPIDs(function (err, pids) {
+                if (err) cb({ message: err });
+                else {
+                  CONNECTED = true;
+                  let data = JSON.parse(KEYSTOREDATA);
+                  data.isConnected = true;
+                  data.ipConnected = IPGENERATED;
+                  data.location = LOCATION;
+                  data.speed = SPEED;
+                  data.connectedAddr = CONNECTED_VPN;
+                  data.session_name = SESSION_NAME;
+                  let keystore = JSON.stringify(data);
+                  fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
+                  });
+                  cb(null);
+                }
+              });
+            }, 2000);
+          }
+        })
+      }
+      else {
+        sendError(res);
+        if (res.account_addr)
+          cb({ message: res.message || 'Initial Payment is not done' });
+        else
+          cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' });
+      }
+    })
   })
 }
 
-export function disconnectSocks() {
+export function getSocksCreds(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
+  fetch('http:' + vpn_ip + ':' + vpn_port + '/creds', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      account_addr: account_addr,
+      vpn_addr: vpn_addr,
+      token: nonce
+    })
+  }).then(function (response) {
+    if (response.status === 200) {
+      response.json().then(function (response) {
+        if (response.success === true) {
+          console.log("VPN Response..", response);
+          SESSION_NAME = response['session_name'];
+          CONNECTED_VPN = vpn_addr;
+          IPGENERATED = response['node']['vpn']['config']['ip'];
+          LOCATION = response['node']['location']['city'];
+          SPEED = Number(response['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + ' Mbps';
+          cb(null, response['node']['vpn']['config']);
+        }
+        else {
+          sendError(response);
+          cb({ message: response.message || 'Error occurred while getting OVPN file, may be empty VPN resources.' }, null);
+        }
+      })
+    }
+  })
+}
+
+export function disconnectSocks(cb) {
   getSocksPIDs(function (err, pids) {
     if (err) {
       console.log("Error", err);
@@ -695,7 +775,20 @@ export function disconnectSocks() {
     else {
       var command = 'kill -2 ' + pids;
       exec(command, function (error, stdout, stderr) {
-        console.log("Disc...", error, stdout, stderr);
+        if (error) {
+          cb({ message: error.toString() || 'Disconnecting failed' })
+        }
+        else {
+          CONNECTED = false;
+          CONNECTED_VPN = null;
+          let data = JSON.parse(KEYSTOREDATA);
+          data.isConnected = null;
+          data.connectedAddr = null;
+          let keystore = JSON.stringify(data);
+          fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
+          });
+          cb(null);
+        }
       });
     }
   });
@@ -1157,15 +1250,28 @@ export function isVPNConnected(cb) {
       });
     }
     else {
-      getVPNPIDs(function (err, pids) {
-        if (err) {
-          cb(err, null)
-        } else if (pids) {
-          cb(null, true)
-        } else {
-          cb(true, false)
-        }
-      });
+      if (localStorage.getItem('vpnType') === 'socks5') {
+        getSocksPIDs(function (err, pids) {
+          if (err) {
+            cb(err, null)
+          } else if (pids) {
+            cb(null, true)
+          } else {
+            cb(true, false)
+          }
+        });
+      }
+      else {
+        getVPNPIDs(function (err, pids) {
+          if (err) {
+            cb(err, null)
+          } else if (pids) {
+            cb(null, true)
+          } else {
+            cb(true, false)
+          }
+        });
+      }
     }
   } catch (Err) {
     sendError(Err);

@@ -365,7 +365,7 @@ class SendNew extends Component {
     getUnitBalance = (token) => {
         if (token.symbol === 'ETH') {
             let obj = this.state.tokenBalances;
-            obj[token.symbol] = this.props.balance.eths !== 'Loading' ? this.props.balance.eths.toFixed(8) : 'Loading';;
+            obj[token.symbol] = this.props.balance.eths !== 'Loading' ? this.props.balance.eths.toFixed(8) : 'Loading';
             this.setState({ tokenBalances: obj });
         }
         else {
@@ -499,7 +499,9 @@ class SendNew extends Component {
                                             <img src={'../src/Images/logo.svg'} alt="logo" style={{ width: 50, height: 50, margin: '1% 10%' }} />
                                         </Col>
                                         <Col xs={8}>
-                                            <p style={{ fontSize: 18, fontWeight: 'bold', letterSpacing: 3 }}>17245.152</p>
+                                            <p style={{ fontSize: 18, fontWeight: 'bold', letterSpacing: 3 }}>
+                                                {this.props.balance.sents !== 'Loading' ? this.props.balance.sents.toFixed(8) : 'Loading'}
+                                            </p>
                                             <p style={{ color: 'grey', marginTop: -18, letterSpacing: 2 }}>Sentinel [SENT]</p>
                                         </Col>
                                     </Row>

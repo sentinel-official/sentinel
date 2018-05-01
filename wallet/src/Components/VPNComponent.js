@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN, getVpnHistory, sendError } from '../Actions/AccountActions';
+import { getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN, getVpnHistory, sendError, connectSocks, disconnectSocks } from '../Actions/AccountActions';
 import ZoomIn from 'material-ui/svg-icons/content/add';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -165,31 +165,48 @@ class VPNComponent extends Component {
             this.setState({ showPopUp: false, statusSnack: true, statusMessage: lang[this.props.lang].Connecting })
             let that = this;
             if (isOnline()) {
-                connectVPN(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, message) {
-                    if (isMacError) {
-                        that.setState({ status: false, showInstruct: false, statusSnack: false, isMac: false, openSnack: true, snackMessage: err.message })
-                        that.props.changeTest(false)
-                    }
-                    else if (isWinError) {
-                        that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: false })
-                        that.props.changeTest(false)
-                    }
-                    else if (account) {
-                        that.setState({ status: false, showPay: true, statusSnack: false, isMac: false, payAccount: account })
-                        that.props.changeTest(false)
-                    }
-                    else if (err) {
-                        if (err.message !== true)
-                            that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
-                        that.props.changeTest(false)
-                    }
-                    else {
-                        that.props.onChange();
-                        //that.returnVPN();
-                        that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}. ${message}` })
-                        that.props.changeTest(false)
-                    }
-                })
+                if (this.state.isSock) {
+                    connectSocks(this.props.local_address, this.state.activeVpn.account_addr, function (err) {
+                        if (err) {
+                            if (err.message !== true)
+                                that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else {
+                            that.props.onChange();
+                            //that.returnVPN();
+                            that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}` })
+                            that.props.changeTest(false)
+                        }
+                    })
+                }
+                else {
+                    connectVPN(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, message) {
+                        if (isMacError) {
+                            that.setState({ status: false, showInstruct: false, statusSnack: false, isMac: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else if (isWinError) {
+                            that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: false })
+                            that.props.changeTest(false)
+                        }
+                        else if (account) {
+                            that.setState({ status: false, showPay: true, statusSnack: false, isMac: false, payAccount: account })
+                            that.props.changeTest(false)
+                        }
+                        else if (err) {
+                            if (err.message !== true)
+                                that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else {
+                            that.props.onChange();
+                            //that.returnVPN();
+                            that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}. ${message}` })
+                            that.props.changeTest(false)
+                        }
+                    })
+                }
             }
             else {
                 this.setState({ openSnack: true, statusSnack: false, status: false, snackMessage: lang[this.props.lang].CheckInternet })
@@ -202,18 +219,34 @@ class VPNComponent extends Component {
         this.props.changeTest(true);
         this.setState({ statusSnack: true, statusMessage: lang[this.props.lang].Disconnecting })
         var that = this;
-        disconnectVPN(function (err) {
-            if (err) {
-                that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
-                that.props.onChange();
-                that.props.changeTest(false);
-            }
-            else {
-                that.props.onChange();
-                that.props.changeTest(false);
-                that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
-            }
-        });
+        if (this.state.isSock) {
+            disconnectSocks(function (err) {
+                if (err) {
+                    that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
+                    that.props.onChange();
+                    that.props.changeTest(false);
+                }
+                else {
+                    that.props.onChange();
+                    that.props.changeTest(false);
+                    that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+                }
+            });
+        }
+        else {
+            disconnectVPN(function (err) {
+                if (err) {
+                    that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
+                    that.props.onChange();
+                    that.props.changeTest(false);
+                }
+                else {
+                    that.props.onChange();
+                    that.props.changeTest(false);
+                    that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+                }
+            });
+        }
     }
 
     getUsage() {

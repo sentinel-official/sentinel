@@ -10,6 +10,7 @@ from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnCurrentUsage
 from sentinel.client import GetVpnUsage
 from sentinel.client import GetVpnsList
+from sentinel.client import GetSocksList
 from sentinel.client import PayVpnUsage
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
@@ -55,6 +56,7 @@ server.add_route('/client/raw-transaction', RawTransaction())
 server.add_route('/client/vpn', GetVpnCredentials())
 server.add_route('/client/vpn/current', GetVpnCurrentUsage())
 server.add_route('/client/vpn/list', GetVpnsList())
+server.add_route('/client/vpn/socks-list', GetSocksList())
 server.add_route('/client/vpn/usage', GetVpnUsage())
 server.add_route('/client/vpn/pay', PayVpnUsage())
 server.add_route('/client/vpn/report', ReportPayment())

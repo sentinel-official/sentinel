@@ -229,8 +229,7 @@ class ETHHelper(object):
                         'sent_bytes': sent_bytes,
                         'session_duration': session_duration,
                         'amount': amount,
-                        'timestamp': timestamp,
-                        'is_added': False
+                        'timestamp': timestamp
                     })
                 elif sent_bytes >= LIMIT_100MB:
                     make_tx = True
@@ -247,22 +246,14 @@ class ETHHelper(object):
                     }
                 })
             else:
-                _ = db.usage.find_one_and_update({
-                    'from_addr': from_addr,
-                    'to_addr': to_addr
-                }, {
-                    '$set': {
-                        'sent_bytes': _usage['sent_bytes'] + sent_bytes,
-                        'session_duration': _usage['session_duration'] + session_duration,
-                        'amount': _usage['amount'] + amount,
-                        'timestamp': timestamp,
-                        'is_added': True
-                    }
-                })
                 sent_bytes = int(_usage['sent_bytes'] + sent_bytes)
                 session_duration = int(_usage['session_duration'] + session_duration)
                 amount = int(_usage['amount'] + amount)
                 make_tx = True
+                _ = db.usage.find_one_and_delete({
+                    'from_addr': from_addr,
+                    'to_addr': to_addr
+                })
 
         if make_tx is True:
             nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')

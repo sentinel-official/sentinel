@@ -27,14 +27,16 @@ def alive_job():
 
 
 def connections_job():
+    extra = 2
     while True:
         try:
             vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
             if vpn_status_file is True:
                 connections = openvpn.get_connections()
                 connections_len = len(connections)
-                if connections_len > 0:
+                if (connections_len > 0) or (extra > 0):
                     send_connections_info(node.config['account_addr'], node.config['token'], connections)
+                    extra = 2 if connections_len > 0 else extra - 1
         except Exception as err:
             print(str(err))
         time.sleep(5)
@@ -48,7 +50,7 @@ if __name__ == "__main__":
         print('ERROR: {} not found.'.format(CONFIG_DATA_PATH))
         exit(1)
 
-    if (len(sys.argv) > 1) and (len(config['account_addr']) == 0):
+    if (len(config['account_addr']) == 0) and (len(sys.argv) > 1):
         PASSWORD = sys.argv[1]
         keystore, account_addr = create_account(PASSWORD)
         if (keystore is not None) and (account_addr is not None):
@@ -60,8 +62,11 @@ if __name__ == "__main__":
         else:
             print('Error occurred while creating a new account.')
             exit(3)
+    elif (len(config['account_addr']) == 42) and (len(sys.argv) == 1):
+        pass
     else:
-        print('Password is not provided OR `account_addr` field in config file is not empty.')
+        print('Password is not provided OR `account_addr` in config is incorrect. \
+               Please try again after deleting config file.')
         exit(2)
 
     node = Node(config)

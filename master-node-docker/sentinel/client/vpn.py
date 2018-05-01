@@ -12,9 +12,10 @@ from ..eth import vpn_service_manager
 from ..helpers import eth_helper
 
 
-def get_vpns_list():
+def get_vpns_list(vpn_type):
     _list = db.nodes.find({
-        'vpn.status': 'up'
+        'vpn.status': 'up',
+        'vpn_type': vpn_type
     }, {
         '_id': 0,
         'account_addr': 1,
@@ -62,9 +63,11 @@ class GetVpnCredentials(object):
             if error is None:
                 if due_amount > 0:
                     message = {
-                        'success': False,
-                        'message': 'You have due amount: ' + str(
-                            due_amount / DECIMALS) + ' SENTs. Please try after clearing the due.'
+                        'success':
+                        False,
+                        'message':
+                        'You have due amount: ' + str(due_amount / DECIMALS) +
+                        ' SENTs. Please try after clearing the due.'
                     }
                 else:
                     node = db.nodes.find_one({
@@ -76,11 +79,14 @@ class GetVpnCredentials(object):
                     })
                     if node is None:
                         message = {
-                            'success': False,
-                            'message': 'Currently VPN server is not available. Please try after sometime.'
+                            'success':
+                            False,
+                            'message':
+                            'Currently VPN server is not available. Please try after sometime.'
                         }
                     else:
-                        error, is_paid = eth_helper.get_initial_payment(account_addr)
+                        error, is_paid = eth_helper.get_initial_payment(
+                            account_addr)
                         if error is None:
                             if is_paid is True:
                                 try:
@@ -91,7 +97,8 @@ class GetVpnCredentials(object):
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)
-                                    _ = requests.post(url, json=body, timeout=10)
+                                    _ = requests.post(
+                                        url, json=body, timeout=10)
                                     message = {
                                         'success': True,
                                         'ip': ip,
@@ -102,20 +109,26 @@ class GetVpnCredentials(object):
                                     }
                                 except Exception as err:
                                     message = {
-                                        'success': False,
-                                        'message': 'Connection timed out while connecting to VPN server.',
-                                        'error': str(err)
+                                        'success':
+                                        False,
+                                        'message':
+                                        'Connection timed out while connecting to VPN server.',
+                                        'error':
+                                        str(err)
                                     }
                             else:
                                 message = {
                                     'success': False,
                                     'account_addr': COINBASE_ADDRESS,
-                                    'message': 'Initial VPN payment is not done.'
+                                    'message':
+                                    'Initial VPN payment is not done.'
                                 }
                         else:
                             message = {
-                                'success': False,
-                                'message': 'Error occurred while cheking initial payment status.'
+                                'success':
+                                False,
+                                'message':
+                                'Error occurred while cheking initial payment status.'
                             }
             else:
                 message = {
@@ -150,11 +163,15 @@ class PayVpnUsage(object):
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net']).lower()
         from_addr = str(req.body['from_addr']).lower()
-        amount = int(req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
-        session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
-            'session_id'] is not None else None
+        amount = int(
+            req.body['amount']
+        ) if 'amount' in req.body and req.body['amount'] is not None else None
+        session_id = str(
+            req.body['session_id']
+        ) if 'session_id' in req.body and req.body['session_id'] is not None else None
 
-        errors, tx_hashes = eth_helper.pay_vpn_session(from_addr, amount, session_id, net, tx_data, payment_type)
+        errors, tx_hashes = eth_helper.pay_vpn_session(
+            from_addr, amount, session_id, net, tx_data, payment_type)
 
         if len(errors) > 0:
             message = {
@@ -181,7 +198,8 @@ class ReportPayment(object):
         amount = int(req.body['amount'])
         session_id = str(req.body['session_id'])
 
-        error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, amount, session_id)
+        error, tx_hash = vpn_service_manager.pay_vpn_session(
+            from_addr, amount, session_id)
 
         if error is None:
             message = {
@@ -214,10 +232,7 @@ class GetVpnUsage(object):
         error, usage = eth_helper.get_vpn_usage(account_addr)
 
         if error is None:
-            message = {
-                'success': True,
-                'usage': usage
-            }
+            message = {'success': True, 'usage': usage}
         else:
             message = {
                 'success': False,
@@ -237,7 +252,32 @@ class GetVpnsList(object):
         @apiGroup VPN
         @apiSuccess {Object[]} list Details of all VPN servers.
         """
-        _list = get_vpns_list()
+        _list = get_vpns_list('openvpn')
+        for item in _list:
+            item['price_per_GB'] = item['price_per_gb']
+            item.pop('price_per_gb')
+
+        message = {
+            'success': True,
+            'list': _list
+        }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
+class GetSocksList(object):
+    def on_get(self, req, resp):
+        """
+        @api {get} /client/vpn/list Get all unoccupied VPN servers list.
+        @apiName GetVpnsList
+        @apiGroup VPN
+        @apiSuccess {Object[]} list Details of all VPN servers.
+        """
+        _list = get_vpns_list('socks5')
+        for item in _list:
+            item['price_per_GB'] = item['price_per_gb']
+            item.pop('price_per_gb')
 
         message = {
             'success': True,
@@ -263,10 +303,7 @@ class GetVpnCurrentUsage(object):
 
         usage = get_current_vpn_usage(account_addr, session_name)
 
-        message = {
-            'success': True,
-            'usage': usage
-        }
+        message = {'success': True, 'usage': usage}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

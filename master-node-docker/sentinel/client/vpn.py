@@ -20,7 +20,7 @@ def get_vpns_list(vpn_type):
         '_id': 0,
         'account_addr': 1,
         'ip': 1,
-        'price_per_GB': 1,
+        'price_per_gb': 1,
         'location': 1,
         'net_speed.upload': 1,
         'latency': 1,
@@ -253,8 +253,14 @@ class GetVpnsList(object):
         @apiSuccess {Object[]} list Details of all VPN servers.
         """
         _list = get_vpns_list('openvpn')
+        for item in _list:
+            item['price_per_GB'] = item['price_per_gb']
+            item.pop('price_per_gb')
 
-        message = {'success': True, 'list': _list}
+        message = {
+            'success': True,
+            'list': _list
+        }
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -269,8 +275,14 @@ class GetSocksList(object):
         @apiSuccess {Object[]} list Details of all VPN servers.
         """
         _list = get_vpns_list('socks5')
+        for item in _list:
+            item['price_per_GB'] = item['price_per_gb']
+            item.pop('price_per_gb')
 
-        message = {'success': True, 'list': _list}
+        message = {
+            'success': True,
+            'list': _list
+        }
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

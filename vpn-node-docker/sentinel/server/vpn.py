@@ -33,7 +33,7 @@ class GenerateOVPN(object):
                 }
             })
             data = db.node.find_one({
-                'address': vpn_addr
+                'account_addr': vpn_addr
             })
             keys = Keys(name=name)
             keys.generate()

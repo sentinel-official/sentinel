@@ -33,6 +33,7 @@ from sentinel.tokens import GetAvailableTokens
 from sentinel.tokens import GetSents
 from sentinel.tokens import TokenSwapRawTransaction
 from sentinel.utils import JSONTranslator
+from sentinel.client import UpdateConnection
 
 
 class Up(object):
@@ -60,6 +61,7 @@ server.add_route('/client/vpn/socks-list', GetSocksList())
 server.add_route('/client/vpn/usage', GetVpnUsage())
 server.add_route('/client/vpn/pay', PayVpnUsage())
 server.add_route('/client/vpn/report', ReportPayment())
+server.add_route('/client/update-connection', UpdateConnection())
 
 # Nodes
 server.add_route('/node/account', CreateNewAccount())

@@ -9,3 +9,4 @@ from .vpn import GetVpnsList
 from .vpn import GetSocksList
 from .vpn import PayVpnUsage
 from .vpn import ReportPayment
+from .connection import UpdateConnection

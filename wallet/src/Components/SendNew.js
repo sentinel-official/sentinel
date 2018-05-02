@@ -499,10 +499,10 @@ class SendNew extends Component {
                                             <img src={'../src/Images/logo.svg'} alt="logo" style={{ width: 50, height: 50, margin: '1% 10%' }} />
                                         </Col>
                                         <Col xs={8}>
-                                            <p style={{ fontSize: 18, fontWeight: 'bold', letterSpacing: 3 }}>
+                                            <p style={{ fontSize: 18, fontWeight: 'bold', letterSpacing: 3, wordBreak: 'break-all' }}>
                                                 {this.props.balance.sents !== 'Loading' ? this.props.balance.sents.toFixed(8) : 'Loading'}
                                             </p>
-                                            <p style={{ color: 'grey', marginTop: -18, letterSpacing: 2 }}>Sentinel [SENT]</p>
+                                            <p style={{ color: 'grey', marginTop: -18, letterSpacing: 2, wordBreak: 'break-all' }}>Sentinel [SENT]</p>
                                         </Col>
                                     </Row>
                                 </div>
@@ -871,13 +871,15 @@ const styles = {
     otherBalanceBalc: {
         fontSize: 16,
         fontWeight: 'bold',
-        letterSpacing: 3
+        letterSpacing: 3,
+        wordBreak: 'break-all'
     },
     otherBalanceText: {
         color: 'grey',
         fontSize: 14,
         marginTop: -15,
-        letterSpacing: 2
+        letterSpacing: 2,
+        wordBreak: 'break-all'
     },
     otherBalanceDiv: {
         padding: '6% 4%',

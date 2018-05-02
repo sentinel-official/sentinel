@@ -52,10 +52,10 @@ class Dashboard extends Component {
         })
       }
     });
-    getVPNConnectedData(function (err, data) {
+    getVPNConnectedData(function (err, data,sock) {
       if (err) { }
       else {
-        that.setState({ status: true, vpnData: data, isTest: true });
+        that.setState({ status: true, vpnData: data, isTest: true, isSock:sock });
       }
     })
   }
@@ -198,6 +198,7 @@ class Dashboard extends Component {
             testDisabled={this.state.testDisabled}
             moveToList={this.moveToVPN}
             isTest={this.state.isTest}
+            isSock={this.state.isSock}
             lang={this.props.lang}
           />
           <div>

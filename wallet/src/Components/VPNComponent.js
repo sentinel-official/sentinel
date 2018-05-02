@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN, getVpnHistory, sendError, connectSocks, disconnectSocks } from '../Actions/AccountActions';
+import {
+    getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN, getVpnHistory,
+    sendError, connectSocks, disconnectSocks, sendUsage, setStartValues, getStartValues
+} from '../Actions/AccountActions';
 import ZoomIn from 'material-ui/svg-icons/content/add';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -22,6 +25,9 @@ import ReactTooltip from 'react-tooltip';
 let Country = window.require('countrynames');
 var markers = []
 let lang = require('./language');
+let netStat = window.require('net-stat');
+let os = window.require('os');
+let ip = require('ip');
 var UsageInterval = null;
 
 class VPNComponent extends Component {
@@ -43,6 +49,7 @@ class VPNComponent extends Component {
             statusMessage: '',
             status: false,
             showInstruct: false,
+            showDialog: false,
             isMac: false,
             showPay: false,
             payAccount: '',
@@ -54,7 +61,10 @@ class VPNComponent extends Component {
             sortType: 'vpn',
             selectedVPN: null,
             dueAmount: 0,
-            dueSession: null
+            dueSession: null,
+            sessionName: '',
+            startDownload: 0,
+            startUpload: 0
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -79,7 +89,11 @@ class VPNComponent extends Component {
         this.setState({ activeVpn: marker.vpn, showPopUp: true })
     }
     componentWillMount = () => {
-        this.getVPNs()
+        this.getVPNs();
+        let self = this;
+        getStartValues(function (down, up) {
+            self.setState({ startDownload: down, startUpload: up })
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -90,7 +104,7 @@ class VPNComponent extends Component {
         if (nextProps.status === false)
             this.setState({ status: nextProps.status, selectedVPN: null, usage: null });
         else
-            this.setState({ status: nextProps.status, selectedVPN: nextProps.vpnData.vpn_addr });
+            this.setState({ status: nextProps.status, selectedVPN: nextProps.vpnData ? nextProps.vpnData.vpn_addr : null });
     }
 
     getDueAmount() {
@@ -166,8 +180,20 @@ class VPNComponent extends Component {
             let that = this;
             if (isOnline()) {
                 if (this.state.isSock) {
-                    connectSocks(this.props.local_address, this.state.activeVpn.account_addr, function (err) {
-                        if (err) {
+                    connectSocks(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, data) {
+                        if (isMacError) {
+                            that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else if (isWinError) {
+                            that.setState({ status: false, showDialog: true, statusSnack: false })
+                            that.props.changeTest(false)
+                        }
+                        else if (account) {
+                            that.setState({ status: false, showPay: true, statusSnack: false, payAccount: account })
+                            that.props.changeTest(false)
+                        }
+                        else if (err) {
                             if (err.message !== true)
                                 that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
                             that.props.changeTest(false)
@@ -175,8 +201,12 @@ class VPNComponent extends Component {
                         else {
                             that.props.onChange();
                             //that.returnVPN();
-                            that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}` })
+                            that.setState({
+                                selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false,
+                                openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}`, sessionName: data
+                            })
                             that.props.changeTest(false)
+                            that.calculateUsage(true);
                         }
                     })
                 }
@@ -229,6 +259,7 @@ class VPNComponent extends Component {
                 else {
                     that.props.onChange();
                     that.props.changeTest(false);
+                    sendUsage(that.props.local_address, that.state.selectedVPN, null);
                     that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
                 }
             });
@@ -249,12 +280,44 @@ class VPNComponent extends Component {
         }
     }
 
+    calculateUsage = (value) => {
+        let self = this;
+        let interfaces = os.networkInterfaces();
+        Object.keys(interfaces).map((key) => {
+            var obj = interfaces[key].find(o => { return (o.family === 'IPv4' && !o.internal) })
+            if (obj) {
+                let usage;
+                let downCur = netStat.totalRx({ iface: key })
+                let upCur = netStat.totalTx({ iface: key })
+                if (value) {
+                    usage = {
+                        'down': 0,
+                        'up': 0
+                    }
+                    setStartValues(downCur, upCur);
+                    self.setState({ startDownload: downCur, startUpload: upCur, usage: usage })
+                }
+                else {
+                    let downDiff = downCur - this.state.startDownload;
+                    let upDiff = upCur - this.state.startUpload;
+                    usage = {
+                        'down': downDiff,
+                        'up': upDiff
+                    }
+                    self.setState({ usage: usage })
+                }
+                sendUsage(self.props.local_address, self.state.selectedVPN, usage);
+            }
+        })
+    }
+
     getUsage() {
         let self = this;
         getVPNUsageData(this.props.local_address, function (err, usage) {
             if (err) {
             }
             else {
+                console.log("Usage...", usage)
                 self.props.onChange();
                 self.setState({ usage: usage })
             }
@@ -281,6 +344,10 @@ class VPNComponent extends Component {
 
     closeInstruction = () => {
         this.setState({ showInstruct: false });
+    }
+
+    closeDialog = () => {
+        this.setState({ showDialog: false });
     }
 
     snackRequestClose = () => {
@@ -345,7 +412,7 @@ class VPNComponent extends Component {
     render() {
         let that = this;
         let language = this.props.lang;
-        if (!this.state.isGetVPNCalled) {
+        if (!this.state.isGetVPNCalled && this.props.isTest) {
             setInterval(function () {
                 that.getVPNs()
                 that.getDueAmount()
@@ -355,7 +422,10 @@ class VPNComponent extends Component {
         }
         if (!UsageInterval && this.props.status) {
             UsageInterval = setInterval(function () {
-                that.getUsage()
+                if (that.state.isSock)
+                    that.calculateUsage(false);
+                else
+                    that.getUsage()
             }, 5000);
         }
         if (!this.props.status) {
@@ -369,6 +439,13 @@ class VPNComponent extends Component {
                 label={lang[language].Close}
                 primary={true}
                 onClick={this.closeInstruction}
+            />
+        ];
+        const dialogActions = [
+            <FlatButton
+                label={lang[language].Close}
+                primary={true}
+                onClick={this.closeDialog}
             />
         ];
         const paymentActions = [
@@ -814,6 +891,18 @@ class VPNComponent extends Component {
                     open={this.state.showPay}
                 >
                     <span>{lang[language].InorderVPN}</span>
+                </Dialog>
+                <Dialog
+                    title="Install Dependencies"
+                    titleStyle={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}
+                    actions={dialogActions}
+                    modal={true}
+                    open={this.state.showDialog}
+                >
+
+                    <span style={{ fontSize: 14, letterSpacing: 1 }}>
+                        ShadowSocks Not Installed. Please Install it and Try again.
+                        </span>
                 </Dialog>
                 <ReactTooltip id="copyImage" place="bottom">
                     <span>{lang[language].Copy}</span>

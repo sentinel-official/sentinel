@@ -11,8 +11,9 @@ var disconnect = {
   name: 'DisconnectOpenVPN'
 };
 var showPrompt = true;
+var vpnType = 'openvpn';
 const SENT_DIR = getUserHome() + '/.sentinel';
-const KEYSTORE_FILE = SENT_DIR + '/keystore';
+const CONFIG_FILE = SENT_DIR + '/config';
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
 function getUserHome() {
   return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -24,7 +25,7 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.32", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.4", resizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -66,8 +67,8 @@ function windowManager() {
 }
 
 
-function getKeystore(cb) {
-  fs.readFile(KEYSTORE_FILE, function (err, data) {
+function getConfig(cb) {
+  fs.readFile(CONFIG_FILE, function (err, data) {
     if (err) cb(err, null);
     else {
       cb(null, data);
@@ -96,10 +97,28 @@ function isVPNConnected(cb) {
         cb(true);
       }
       else {
-        cb(false);
+        let stdOutput = execSync('pidof ss-local').toString();
+        if (stdOutput) {
+          vpnType = 'socks5'
+          cb(true);
+        }
+        else {
+          cb(false);
+        }
       }
     } catch (err) {
-      cb(false);
+      try {
+        let stdOutput = execSync('pidof ss-local').toString();
+        if (stdOutput) {
+          vpnType = 'socks5'
+          cb(true);
+        }
+        else {
+          cb(false);
+        }
+      } catch (error) {
+        cb(false)
+      }
     }
   }
 }
@@ -118,7 +137,11 @@ function stopVPN(cb) {
   }
   else {
     try {
-      let stdout = execSync('pidof openvpn').toString();
+      var cmd;
+      if (vpnType === 'socks5')
+        cmd = 'pidof ss-local'
+      else cmd = 'pidof openvpn';
+      let stdout = execSync(cmd).toString();
       if (stdout) {
         let pids = stdout.trim();
         let command = 'kill -2 ' + pids;
@@ -127,11 +150,11 @@ function stopVPN(cb) {
         }
         try {
           let output = execSync(command).toString();
-          getKeystore(function (error, KEYSTOREDATA) {
+          getConfig(function (error, KEYSTOREDATA) {
             let data = JSON.parse(KEYSTOREDATA);
             data.isConnected = null;
             let keystore = JSON.stringify(data);
-            fs.writeFile(KEYSTORE_FILE, keystore, function (keyErr) {
+            fs.writeFile(CONFIG_FILE, keystore, function (keyErr) {
             });
             cb(null);
           })

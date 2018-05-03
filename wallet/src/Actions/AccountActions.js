@@ -746,10 +746,10 @@ export function connectSocks(account_addr, vpn_addr, cb) {
           })
         },
         function (callback) {
-          isPackageInstalled('shadowsocks', function (err, isInstalled) {
+          isPackageInstalled('ss-local', function (err, isInstalled) {
             if (err) {
               callback({
-                message: `Error occured while installing shadowsocks`
+                message: `Error occured while installing shadowsocks-libev`
               });
             }
             else if (isInstalled) {
@@ -760,7 +760,7 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                 if (Err || success === false) {
                   sendError(Err)
                   callback({
-                    message: `Error occurred while installing package: shadowsocks`
+                    message: `Error occurred while installing package: shadowsocks-libev`
                   });
                 }
                 else {
@@ -844,11 +844,19 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                 exec('ss-local -s ' + data['ip'] + ' -m ' + data['method'] + ' -k ' + data['password'] + ' -p ' + data['port'] + ' -l 1080', function (err, stdout, stderr) {
                   console.log("Socks...", err, stdout, stderr);
                 })
-                if(remote.process.platform!=='win32'){
-                  exec('gsettings set org.gnome.system.proxy mode "manual" && gsettings set org.gnome.system.proxy.socks host 127.0.0.1 && gsettings set org.gnome.system.proxy.socks port 1080',function (err, stdout, stderr){
+                if(remote.process.platform==='darwin'){
+                  exec('sh ./src/helpers/net.sh',function(err,stdout,stderr){
+                    if(stdout){
+                      console.log("NEt Out...",stdout.toString())
+                      var currentService=stdout.trim();
+                      exec(`networksetup -setsocksfirewallproxy ${currentService} localhost 1080 && networksetup -setsocksfirewallproxystate ${currentService} on`,function(error,Stdout,Stderr){
+                      })
+                    }
+                    if(err){
+                      console.log("Error..",err);
+                    }
                   })
                 }
-                
                 var count = 0;
                 if (remote.process.platform === 'win32') checkWindows();
                 else {
@@ -1002,7 +1010,6 @@ export function disconnectSocks(cb) {
   else {
     getSocksPIDs(function (err, pids) {
       if (err) {
-        
       }
       else {
         var command = 'kill -2 ' + pids;
@@ -1011,6 +1018,15 @@ export function disconnectSocks(cb) {
             cb({ message: error.toString() || 'Disconnecting failed' })
           }
           else {
+            if(remote.process.platform==='darwin'){
+              exec('sh ./src/helpers/net.sh',function(err,stdout,stderr){
+                if(stdout){
+                  var currentService=stdout.trim();
+                  exec(`networksetup -setsocksfirewallproxystate ${currentService} off`,function(error,Stdout,Stderr){
+                  })
+                }
+              })
+            }
             CONNECTED = false;
             CONNECTED_VPN = null;
             let data = {};

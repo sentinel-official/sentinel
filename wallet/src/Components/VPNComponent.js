@@ -25,6 +25,8 @@ import ReactTooltip from 'react-tooltip';
 let Country = window.require('countrynames');
 var markers = []
 let lang = require('./language');
+const electron = window.require('electron');
+const remote = electron.remote;
 let netStat = window.require('net-stat');
 let os = window.require('os');
 let ip = require('ip');
@@ -282,33 +284,42 @@ class VPNComponent extends Component {
 
     calculateUsage = (value) => {
         let self = this;
-        let interfaces = os.networkInterfaces();
-        Object.keys(interfaces).map((key) => {
-            var obj = interfaces[key].find(o => { return (o.family === 'IPv4' && !o.internal) })
-            if (obj) {
-                let usage;
-                let downCur = netStat.totalRx({ iface: key })
-                let upCur = netStat.totalTx({ iface: key })
-                if (value) {
-                    usage = {
-                        'down': 0,
-                        'up': 0
-                    }
-                    setStartValues(downCur, upCur);
-                    self.setState({ startDownload: downCur, startUpload: upCur, usage: usage })
-                }
+        if (remote.process.platform === 'darwin') {
+            console.log('darwin...')
+        } else {
+            let loopStop = false;
+            let interfaces = os.networkInterfaces();
+            Object.keys(interfaces).map((key) => {
+                if (loopStop) return;
                 else {
-                    let downDiff = downCur - this.state.startDownload;
-                    let upDiff = upCur - this.state.startUpload;
-                    usage = {
-                        'down': downDiff,
-                        'up': upDiff
+                    var obj = interfaces[key].find(o => { return (o.family === 'IPv4' && !o.internal) })
+                    if (obj) {
+                        let usage;
+                        let downCur = netStat.totalRx({ iface: key })
+                        let upCur = netStat.totalTx({ iface: key })
+                        if (value) {
+                            usage = {
+                                'down': 0,
+                                'up': 0
+                            }
+                            setStartValues(downCur, upCur);
+                            self.setState({ startDownload: downCur, startUpload: upCur, usage: usage })
+                        }
+                        else {
+                            let downDiff = downCur - this.state.startDownload;
+                            let upDiff = upCur - this.state.startUpload;
+                            usage = {
+                                'down': downDiff,
+                                'up': upDiff
+                            }
+                            self.setState({ usage: usage })
+                        }
+                        sendUsage(self.props.local_address, self.state.selectedVPN, usage);
+                        loopStop = true;
                     }
-                    self.setState({ usage: usage })
                 }
-                sendUsage(self.props.local_address, self.state.selectedVPN, usage);
-            }
-        })
+            })
+        }
     }
 
     getUsage() {

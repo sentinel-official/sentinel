@@ -16,11 +16,6 @@ class GetDailyDataCount(object):
                 '$exists': True
             }
         })
-        for data in output:
-            if (type(data['usage']['up']) is not int) or (type(data['usage']['down']) is not int):
-                data['usage']['up'] = int(data['usage']['up'])
-                data['usage']['down'] = int(data['usage']['down'])
-                db.connections.save(data)
 
         result = db.connections.aggregate([{
             '$project': {
@@ -291,11 +286,11 @@ class GetNodeStatistics(object):
         result = db.connections.aggregate([
             {
                 '$match': {
-                    'account_addr': account_addr
+                    'vpn_addr': account_addr
                 }
             }, {
                 '$group': {
-                    '_id': '$account_addr',
+                    '_id': '$vpn_addr',
                     'sessions_count': {
                         '$sum': 1
                     },

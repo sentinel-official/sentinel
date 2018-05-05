@@ -17,15 +17,19 @@ class DailyActiveNodes(object):
         while self.stop_thread is False:
             current_time = datetime.datetime.now()
             if (current_time.hour == self.hour) and (current_time.minute == self.minute):
-                nodes_count = db.nodes.find({
-                    'vpn.status': 'up'
-                }).count()
+                nodes = {
+                    'up': db.nodes.find({ 'vpn.status': 'up' }).count(),
+                    'total': db.nodes.find().count()
+                }
                 current_time = datetime.datetime.combine(current_time, datetime.time(0))
                 timestamp = int(time.mktime(current_time.timetuple()))
-                _ = db.statistics.insert_one({
-                    'nodes_count': nodes_count,
+                _ = db.statistics.update({
                     'timestamp': timestamp
-                })
+                }, {
+                    '$set': {
+                        'nodes': nodes
+                    }
+                }, upsert=True)
             time.sleep(45)
 
     def start(self):

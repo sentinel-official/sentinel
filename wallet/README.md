@@ -10,7 +10,7 @@ Download the installer from the Sentinel official [GitHub Repo](https://github.c
 Linux
 ---
 
-If you are on Ubuntu, tnstall the deb file with the Ubuntu Software Center or by running the command
+If you are on Ubuntu, install the deb file with the Ubuntu Software Center or by running the command
 
 ```
 sudo dpkg -i Sentinel***.deb
@@ -19,7 +19,7 @@ sudo dpkg -i Sentinel***.deb
 In case of any issues/errors regarding dependencies then run below command and after running the above command.
 
 ```
-sudo apt-install -f
+sudo apt install -f
 ```
 
 A prompt will open everytime you try to run app. This prompt is to have super user (sudo) privileges for application. Please enter your system password and continue.
@@ -55,3 +55,32 @@ Windows
 - If you're facing any issues like ***OpenVPN Is Not Installed*** or ***Something Went Wrong***, please uninstall your already installed OpenVPN from control panel and then re-install OpenVPN from the following path on your local machine and re-run the Sentinel App.
 
 ```C:// > Users > {Your Username} > AppData > Local > Sentinel > app-0.0.32 > resources > extras > openvpn-install-2.3.18-*.exe```
+
+
+**Version 0.0.4 alpha:**
+
+**Linux:**
+
+If you are using ubuntu version less than or equal to 16.04, then please run following command:
+```
+sudo add-apt-repository ppa:max-c-lv/shadowsocks-libev -y
+sudo apt-get update
+```
+Install the deb file with the Ubuntu Software Center or by running the command
+
+```
+sudo dpkg -i Sentinel***.deb
+```
+
+In case of any issues/errors regarding dependencies then run below command and after running the above command.
+
+```
+sudo apt install -f
+```
+
+A prompt will open everytime you try to run app. This prompt is to have super user (sudo) privileges for application. Please enter your system password and continue.
+
+To check socks list or to connect any socks node, then please enable testnet toggle and socks toggle which are on top right corner.
+After you can check socks nodes in vpn-list tab.
+
+After connecting to socks node, to use internet please restart your browser. You need to do for each time when you tried to connect.

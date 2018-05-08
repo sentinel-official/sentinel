@@ -27,6 +27,7 @@ var markers = []
 let lang = require('./language');
 const electron = window.require('electron');
 const remote = electron.remote;
+const { execSync } = window.require('child_process');
 let netStat = window.require('net-stat');
 let os = window.require('os');
 let ip = require('ip');
@@ -188,7 +189,7 @@ class VPNComponent extends Component {
                             that.props.changeTest(false)
                         }
                         else if (isWinError) {
-                            that.setState({ status: false, showDialog: true, statusSnack: false })
+                            that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
                             that.props.changeTest(false)
                         }
                         else if (account) {
@@ -295,8 +296,19 @@ class VPNComponent extends Component {
                     var obj = interfaces[key].find(o => { return (o.family === 'IPv4' && !o.internal) })
                     if (obj) {
                         let usage;
-                        let downCur = netStat.totalRx({ iface: key })
-                        let upCur = netStat.totalTx({ iface: key })
+                        let downCur;
+                        let upCur;
+                        if (remote.process.platform === 'darwin') {
+                            let cmd = `netstat - b - i | grep ${ obj.address } | awk '{print $7" "$8}'`;
+                            let output = execSync(cmd);
+                            let values = output.toString().trim().split(" ");
+                            downCur = values[0];
+                            upCur = values[1];
+                        }
+                        else {
+                            downCur = netStat.totalRx({ iface: key })
+                            upCur = netStat.totalTx({ iface: key })
+                        }
                         if (value) {
                             usage = {
                                 'down': 0,

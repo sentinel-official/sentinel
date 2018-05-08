@@ -84,10 +84,28 @@ function isVPNConnected(cb) {
         cb(true)
       }
       else {
-        cb(false)
+        let stdOutput = execSync('tasklist /v /fo csv | findstr /i "Shadowsocks.exe"')
+        if (stdOutput) {
+          vpnType = 'socks5';
+          cb(true)
+        }
+        else {
+          cb(false)
+        }
       }
     } catch (err) {
-      cb(false)
+      try {
+        let stdOutput = execSync('tasklist /v /fo csv | findstr /i "Shadowsocks.exe"');
+        if (stdOutput) {
+          vpnType = 'socks5'
+          cb(true);
+        }
+        else {
+          cb(false);
+        }
+      } catch (error) {
+        cb(false)
+      }
     }
   }
   else {
@@ -126,10 +144,25 @@ function isVPNConnected(cb) {
 function stopVPN(cb) {
   if (process.platform === 'win32') {
     try {
-      let stdout = execSync('taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f')
+      var cmd;
+      if (vpnType === 'socks5')
+        cmd = 'net stop sentinelSocks /f  && taskkill /IM sentinel.exe /f'
+      else cmd = 'taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f';
+      let stdout = execSync(cmd)
       if (stdout) cb(null);
       else {
-        cb(null);
+        try {
+          getConfig(function (error, KEYSTOREDATA) {
+            let data = JSON.parse(KEYSTOREDATA);
+            data.isConnected = null;
+            let keystore = JSON.stringify(data);
+            fs.writeFile(CONFIG_FILE, keystore, function (keyErr) {
+            });
+            cb(null);
+          })
+        } catch (err) {
+          cb(null);
+        }
       }
     } catch (err) {
       cb(null);

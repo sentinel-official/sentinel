@@ -806,23 +806,59 @@ export function connectSocks(account_addr, vpn_addr, cb) {
       })
     }
     else if (remote.process.platform === 'win32') {
-      exec('cd c:\\Program Files && IF EXIST Shadowsocks (cd OpenVPN && dir openvpn.exe /s /p | findstr "shadowsocks")', function (err, stdout, stderr) {
+      exec('cd c:\\ProgramData && IF EXIST chocolatey (echo "TRUE")', function (err, stdout, stderr) {
+        console.log("Checking Choco..", err, stdout, stderr);
         if (stdout.toString() === '') {
-          exec('cd c:\\Program Files (x86) && IF EXIST Shadowsocks (cd OpenVPN && dir openvpn.exe /s /p | findstr "shadowsocks")', function (error, stdout1, stderr1) {
-            if (stdout.toString() === '') {
-              cb({ message: 'false' }, false, true, false, null);
+          exec('IF EXIST Chocolatey (echo "TRUE")', function (error, stdout1, stderr1) {
+            console.log("Checking Choco Chockl..", error, stdout1, stderr1);
+            if (stdout1.toString() === '') {
+              let cmd = `@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"`
+              exec(cmd, function (instErr, instOut, instStdErr) {
+                console.log("Installing Choco..", instErr, instOut, instStdErr);
+                if (instErr) {
+                  cb({ message: 'Error in installing Chocolatey' }, false, true, false, null);
+                }
+                else {
+                  checkNssm();
+                }
+              })
             }
             else {
-              nextStep();
+              checkNssm();
             }
           })
         } else {
-          nextStep();
+          checkNssm();
         }
       })
     }
     else {
       nextStep();
+    }
+    function checkNssm() {
+      exec('nssm', function (nsmErr, nsmOut, nsmStderr) {
+        console.log("Checking nssm..", nsmErr, nsmOut, nsmStderr);
+        if (nsmErr) {
+          exec('choco install nssm -y', function (instaErr, instaOut, instDerr) {
+            console.log("Instaling nssm..", instaErr, instaOut, instDerr);
+            if (instaErr) {
+              cb({ message: 'Error in installing nssm' }, false, true, false, null);
+            }
+            else {
+              let username = getUserHome();
+              exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5.exe`, function (execErr, execOut, execStd) {
+                nextStep();
+              })
+            }
+          })
+        }
+        else {
+          let username = getUserHome();
+          exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\socks5.exe`, function (execErr, execOut, execStd) {
+            nextStep();
+          })
+        }
+      })
     }
     function nextStep() {
       fetch(B_URL + '/client/vpn', {
@@ -841,21 +877,43 @@ export function connectSocks(account_addr, vpn_addr, cb) {
             getSocksCreds(account_addr, res['ip'], res['port'], res['vpn_addr'], res['token'], function (err, data) {
               if (err) cb(err);
               else {
-                exec('ss-local -s ' + data['ip'] + ' -m ' + data['method'] + ' -k ' + data['password'] + ' -p ' + data['port'] + ' -l 1080', function (err, stdout, stderr) {
-                  console.log("Socks...", err, stdout, stderr);
-                })
-                if(remote.process.platform==='darwin'){
-                  exec('sh ./src/helpers/net.sh',function(err,stdout,stderr){
-                    if(stdout){
-                      console.log("NEt Out...",stdout.toString())
-                      var currentService=stdout.trim();
-                      exec(`networksetup -setsocksfirewallproxy ${currentService} localhost 1080 && networksetup -setsocksfirewallproxystate ${currentService} on`,function(error,Stdout,Stderr){
-                      })
+                if (remote.process.platform === 'win32') {
+                  fs.readFile('resources\\extras\\socks5\\config.json', 'utf8', function (err, data) {
+                    if (err) {
                     }
-                    if(err){
-                      console.log("Error..",err);
+                    else {
+                      var configData = JSON.parse(data);
+                      configData.configs[0].server = data['ip'];
+                      configData.configs[0].server_port = data['port'];
+                      configData.configs[0].password = data['password'];
+                      configData.configs[0].method = data['method'];
+                      configData.global = true;
+                      var config = JSON.stringify(configData);
+                      fs.writeFile(CONFIG_FILE, config, function (err) {
+                        exec('net start sentinelSocks', function (servErr, serveOut, serveStd) {
+                          console.log("Started...", servErr, serveOut, serveStd)
+                        })
+                      });
                     }
+                  });
+                }
+                else {
+                  exec('ss-local -s ' + data['ip'] + ' -m ' + data['method'] + ' -k ' + data['password'] + ' -p ' + data['port'] + ' -l 1080', function (err, stdout, stderr) {
+                    console.log("Socks...", err, stdout, stderr);
                   })
+                  if (remote.process.platform === 'darwin') {
+                    exec('sh ./src/helpers/net.sh', function (err, stdout, stderr) {
+                      if (stdout) {
+                        console.log("NEt Out...", stdout.toString())
+                        var currentService = stdout.trim();
+                        exec(`networksetup -setsocksfirewallproxy ${currentService} localhost 1080 && networksetup -setsocksfirewallproxystate ${currentService} on`, function (error, Stdout, Stderr) {
+                        })
+                      }
+                      if (err) {
+                        console.log("Error..", err);
+                      }
+                    })
+                  }
                 }
                 var count = 0;
                 if (remote.process.platform === 'win32') checkWindows();
@@ -898,13 +956,13 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                       fs.writeFile(CONFIG_FILE, keystore, function (err) {
                       });
                       cb(null, false, false, false, SESSION_NAME);
-                      count = 2;
+                      count = 4;
                     }
                     count++;
-                    if (count < 2) {
+                    if (count < 4) {
                       setTimeout(function () { checkWindows(); }, 5000);
                     }
-                    if (count == 2 && CONNECTED === false) {
+                    if (count == 4 && CONNECTED === false) {
                       cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                     }
                   })
@@ -991,7 +1049,7 @@ export function getSocksCreds(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, c
 
 export function disconnectSocks(cb) {
   if (remote.process.platform === 'win32') {
-    sudo.exec('taskkill /IM Shadowsocks.exe /f', disconnect,
+    exec('net stop sentinelSocks', disconnect,
       function (error, stdout, stderr) {
         if (error) cb({ message: error.toString() || 'Disconnecting failed' });
         else {
@@ -1018,11 +1076,11 @@ export function disconnectSocks(cb) {
             cb({ message: error.toString() || 'Disconnecting failed' })
           }
           else {
-            if(remote.process.platform==='darwin'){
-              exec('sh ./src/helpers/net.sh',function(err,stdout,stderr){
-                if(stdout){
-                  var currentService=stdout.trim();
-                  exec(`networksetup -setsocksfirewallproxystate ${currentService} off`,function(error,Stdout,Stderr){
+            if (remote.process.platform === 'darwin') {
+              exec('sh ./src/helpers/net.sh', function (err, stdout, stderr) {
+                if (stdout) {
+                  var currentService = stdout.trim();
+                  exec(`networksetup -setsocksfirewallproxystate ${currentService} off`, function (error, Stdout, Stderr) {
                   })
                 }
               })

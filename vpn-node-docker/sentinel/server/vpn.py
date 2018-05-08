@@ -10,6 +10,15 @@ from ..vpn import Keys
 
 class GenerateOVPN(object):
     def on_post(self, req, res):
+        """
+        @api {post} /ovpn Get OVPN file data.
+        @apiName GenerateOVPN
+        @apiGroup VPN
+        @apiParam {String} account_addr Client account address.
+        @apiParam {String} vpn_addr VPN server account address.
+        @apiParam {String} token Token for connecting to VPN servers.
+        @apiSuccess {Object} node Node details including ovpn data.
+        """
         account_addr = str(req.body['account_addr']).lower()
         vpn_addr = str(req.body['vpn_addr']).lower()
         token = str(req.body['token'])

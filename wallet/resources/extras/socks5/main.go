@@ -12,7 +12,7 @@ func main() {
 }
 
 func startSOCKS5() {
-	cmd := ".\\Shadowsocks.exe -c config.json"
+	cmd := ".\\Shadowsocks.exe -c gui-config.json"
 	cmdParts := strings.Fields(cmd)
 
 	execSOCKS5 := exec.Command(cmdParts[0], cmdParts[1:]...)

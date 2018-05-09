@@ -836,25 +836,14 @@ export function connectSocks(account_addr, vpn_addr, cb) {
       nextStep();
     }
     function checkNssm() {
-      exec('nssm', function (nsmErr, nsmOut, nsmStderr) {
-        console.log("Checking nssm..", nsmErr, nsmOut, nsmStderr);
-        if (nsmErr) {
-          exec('choco install nssm -y', function (instaErr, instaOut, instDerr) {
-            console.log("Instaling nssm..", instaErr, instaOut, instDerr);
-            if (instaErr) {
-              cb({ message: 'Error in installing nssm' }, false, true, false, null);
-            }
-            else {
-              let username = getUserHome();
-              exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5.exe`, function (execErr, execOut, execStd) {
-                nextStep();
-              })
-            }
-          })
+      exec('choco install nssm -y', function (instaErr, instaOut, instDerr) {
+        console.log("Instaling nssm..", instaErr, instaOut, instDerr);
+        if (instaErr) {
+          cb({ message: 'Error in installing nssm' }, false, true, false, null);
         }
         else {
           let username = getUserHome();
-          exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\socks5.exe`, function (execErr, execOut, execStd) {
+          exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5.exe`, function (execErr, execOut, execStd) {
             nextStep();
           })
         }
@@ -878,18 +867,20 @@ export function connectSocks(account_addr, vpn_addr, cb) {
               if (err) cb(err);
               else {
                 if (remote.process.platform === 'win32') {
-                  fs.readFile('resources\\extras\\socks5\\config.json', 'utf8', function (err, data) {
+                  fs.readFile('resources\\extras\\socks5\\gui-config.json', 'utf8', function (err, conf) {
                     if (err) {
+                      console.log("Err...", err)
                     }
                     else {
-                      var configData = JSON.parse(data);
+                      var configData = JSON.parse(conf);
                       configData.configs[0].server = data['ip'];
                       configData.configs[0].server_port = data['port'];
                       configData.configs[0].password = data['password'];
                       configData.configs[0].method = data['method'];
                       configData.global = true;
                       var config = JSON.stringify(configData);
-                      fs.writeFile(CONFIG_FILE, config, function (err) {
+                      fs.writeFile('resources\\extras\\socks5\\gui-config.json', config, function (writeErr) {
+                        if (writeErr) console.log('Error...', err);
                         exec('net start sentinelSocks', function (servErr, serveOut, serveStd) {
                           console.log("Started...", servErr, serveOut, serveStd)
                         })

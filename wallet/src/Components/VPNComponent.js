@@ -285,8 +285,34 @@ class VPNComponent extends Component {
 
     calculateUsage = (value) => {
         let self = this;
-        if (remote.process.platform === 'darwin') {
-            console.log('darwin...')
+        if (remote.process.platform === 'win32') {
+            let receivedOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.ReceivedBytes\"');
+            let receivedArr = receivedOut.toString().trim().split('\r\n');
+            let downCur;
+            let usage;
+            downCur = parseInt(receivedArr[0]) + parseInt(receivedArr[1]);
+            let sendOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.SentBytes\"');
+            let sendArr = sendOut.toString().trim().split('\r\n');
+            let upCur;
+            upCur = parseInt(sendArr[0]) + parseInt(sendArr[1]);
+            if (value) {
+                usage = {
+                    'down': 0,
+                    'up': 0
+                }
+                setStartValues(downCur, upCur);
+                self.setState({ startDownload: downCur, startUpload: upCur, usage: usage })
+            }
+            else {
+                let downDiff = downCur - this.state.startDownload;
+                let upDiff = upCur - this.state.startUpload;
+                usage = {
+                    'down': downDiff,
+                    'up': upDiff
+                }
+                self.setState({ usage: usage })
+            }
+            sendUsage(self.props.local_address, self.state.selectedVPN, usage);
         } else {
             let loopStop = false;
             let interfaces = os.networkInterfaces();
@@ -299,7 +325,7 @@ class VPNComponent extends Component {
                         let downCur;
                         let upCur;
                         if (remote.process.platform === 'darwin') {
-                            let cmd = `netstat - b - i | grep ${ obj.address } | awk '{print $7" "$8}'`;
+                            let cmd = `netstat - b - i | grep ${obj.address} | awk '{print $7" "$8}'`;
                             let output = execSync(cmd);
                             let values = output.toString().trim().split(" ");
                             downCur = values[0];

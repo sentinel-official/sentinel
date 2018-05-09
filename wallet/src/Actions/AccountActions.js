@@ -807,14 +807,11 @@ export function connectSocks(account_addr, vpn_addr, cb) {
     }
     else if (remote.process.platform === 'win32') {
       exec('cd c:\\ProgramData && IF EXIST chocolatey (echo "TRUE")', function (err, stdout, stderr) {
-        console.log("Checking Choco..", err, stdout, stderr);
         if (stdout.toString() === '') {
           exec('IF EXIST Chocolatey (echo "TRUE")', function (error, stdout1, stderr1) {
-            console.log("Checking Choco Chockl..", error, stdout1, stderr1);
             if (stdout1.toString() === '') {
               let cmd = `@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"`
               exec(cmd, function (instErr, instOut, instStdErr) {
-                console.log("Installing Choco..", instErr, instOut, instStdErr);
                 if (instErr) {
                   cb({ message: 'Error in installing Chocolatey' }, false, true, false, null);
                 }
@@ -837,7 +834,6 @@ export function connectSocks(account_addr, vpn_addr, cb) {
     }
     function checkNssm() {
       exec('choco install nssm -y', function (instaErr, instaOut, instDerr) {
-        console.log("Instaling nssm..", instaErr, instaOut, instDerr);
         if (instaErr) {
           cb({ message: 'Error in installing nssm' }, false, true, false, null);
         }
@@ -880,7 +876,6 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                       configData.global = true;
                       var config = JSON.stringify(configData);
                       fs.writeFile('resources\\extras\\socks5\\gui-config.json', config, function (writeErr) {
-                        if (writeErr) console.log('Error...', err);
                         exec('net start sentinelSocks', function (servErr, serveOut, serveStd) {
                           console.log("Started...", servErr, serveOut, serveStd)
                         })
@@ -890,10 +885,10 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                 }
                 else {
                   exec('ss-local -s ' + data['ip'] + ' -m ' + data['method'] + ' -k ' + data['password'] + ' -p ' + data['port'] + ' -l 1080', function (err, stdout, stderr) {
-                    console.log("Socks...", err, stdout, stderr);
                   })
                   if (remote.process.platform === 'darwin') {
-                    exec('sh ./src/helpers/net.sh', function (err, stdout, stderr) {
+                    let netcmd = `services=$(networksetup -listnetworkserviceorder | grep 'Hardware Port'); while read line; do sname=$(echo $line | awk -F  "(, )|(: )|[)]" '{print $2}'); sdev=$(echo $line | awk -F  "(, )|(: )|[)]" '{print $4}'); if [ -n "$sdev" ]; then ifout="$(ifconfig $sdev 2>/dev/null)"; echo "$ifout" | grep 'status: active' > /dev/null 2>&1; rc="$?"; if [ "$rc" -eq 0 ]; then currentservice="$sname"; currentdevice="$sdev"; currentmac=$(echo "$ifout" | awk '/ether/{print $2}'); fi; fi; done <<< "$(echo "$services")"; if [ -n "$currentservice" ]; then echo $currentservice; else >&2 echo "Could not find current service"; exit 1; fi`;
+                    exec(netcmd, function (err, stdout, stderr) {
                       if (stdout) {
                         console.log("NEt Out...", stdout.toString())
                         var currentService = stdout.trim();
@@ -1058,20 +1053,23 @@ export function disconnectSocks(cb) {
   }
   else {
     getSocksPIDs(function (err, pids) {
-      if (err) {
-      }
+      if (err) {cb(err)}
       else {
         var command = 'kill -2 ' + pids;
+        if (remote.process.platform === 'darwin') {
+          command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
+        }
         exec(command, function (error, stdout, stderr) {
           if (error) {
             cb({ message: error.toString() || 'Disconnecting failed' })
           }
           else {
             if (remote.process.platform === 'darwin') {
-              exec('sh ./src/helpers/net.sh', function (err, stdout, stderr) {
-                if (stdout) {
-                  var currentService = stdout.trim();
-                  exec(`networksetup -setsocksfirewallproxystate ${currentService} off`, function (error, Stdout, Stderr) {
+              let netcmd = `services=$(networksetup -listnetworkserviceorder | grep 'Hardware Port'); while read line; do sname=$(echo $line | awk -F  "(, )|(: )|[)]" '{print $2}'); sdev=$(echo $line | awk -F  "(, )|(: )|[)]" '{print $4}'); if [ -n "$sdev" ]; then ifout="$(ifconfig $sdev 2>/dev/null)"; echo "$ifout" | grep 'status: active' > /dev/null 2>&1; rc="$?"; if [ "$rc" -eq 0 ]; then currentservice="$sname"; currentdevice="$sdev"; currentmac=$(echo "$ifout" | awk '/ether/{print $2}'); fi; fi; done <<< "$(echo "$services")"; if [ -n "$currentservice" ]; then echo $currentservice; else >&2 echo "Could not find current service"; exit 1; fi`;
+              exec(netcmd, function (comErr, stdoutput, stderror) {
+                if (stdoutput) {
+                  var currentService = stdoutput.trim();
+                  exec(`networksetup -setsocksfirewallproxystate ${currentService} off`, function (runError, Stdout, Stderr) {
                   })
                 }
               })

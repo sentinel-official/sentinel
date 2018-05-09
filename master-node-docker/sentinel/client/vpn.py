@@ -35,10 +35,10 @@ def get_current_vpn_usage(account_addr, session_name):
         'session_name': session_name
     }, {
         '_id': 0,
-        'usage': 1
+        'server_usage': 1
     })
 
-    return {} if result is None else result['usage']
+    return {} if result is None else result['server_usage']
 
 
 class GetVpnCredentials(object):
@@ -299,7 +299,10 @@ class GetVpnCurrentUsage(object):
 
         usage = get_current_vpn_usage(account_addr, session_name)
 
-        message = {'success': True, 'usage': usage}
+        message = {
+            'success': True,
+            'usage': usage
+        }
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

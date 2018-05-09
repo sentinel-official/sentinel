@@ -46,7 +46,7 @@ class UpdateConnection(object):
                             'end_time': None
                         }, {
                             '$set': {
-                                'usage': connection['usage']
+                                'client_usage': connection['usage']
                             }
                         })
                     else:
@@ -68,7 +68,7 @@ class UpdateConnection(object):
                             })
                             for connection in ended_connections:
                                 to_addr = str(connection['client_addr'])
-                                sent_bytes = int(connection['usage']['down'])
+                                sent_bytes = int(connection['client_usage']['down'])
                                 session_duration = int(int(connection['end_time']) - int(connection['start_time']))
                                 amount = int(calculate_amount(sent_bytes, node['price_per_gb']) * DECIMALS)
                                 timestamp = int(time.time())

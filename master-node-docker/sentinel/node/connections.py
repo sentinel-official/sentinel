@@ -49,7 +49,7 @@ class UpdateConnections(object):
                         'end_time': None
                     }, {
                         '$set': {
-                            'usage': connection['usage']
+                            'server_usage': connection['usage']
                         }
                     })
                 session_names.append(connection['session_name'])
@@ -79,7 +79,7 @@ class UpdateConnections(object):
 
                 for connection in ended_connections:
                     to_addr = str(connection['client_addr'])
-                    sent_bytes = int(connection['usage']['down'])
+                    sent_bytes = int(connection['server_usage']['down'])
                     session_duration = int(int(connection['end_time']) - int(connection['start_time']))
                     amount = int(calculate_amount(sent_bytes, node['price_per_gb']) * DECIMALS)
                     timestamp = int(time.time())

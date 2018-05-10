@@ -50,7 +50,7 @@ class GetVpnCredentials(object):
         @apiParam {String} account_addr Account address.
         @apiParam {String} vpn_addr Account address of the VPN server.
         @apiSuccess {String} ip IP address of the VPN server.
-        @apiSuccess {String} port Port number of the VPN server.
+        @apiSuccess {Number} port Port number of the VPN server.
         @apiSuccess {String} token Unique token for validation.
         @apiSuccess {String} vpn_addr VPN server account address.
         """
@@ -65,7 +65,8 @@ class GetVpnCredentials(object):
                 if due_amount > 0:
                     message = {
                         'success': False,
-                        'message': 'You have due amount: ' + str(due_amount / DECIMALS) + ' SENTs. Please try after clearing the due.'
+                        'message': 'You have due amount: ' + str(
+                            due_amount / DECIMALS) + ' SENTs. Please try after clearing the due.'
                     }
                 else:
                     node = db.nodes.find_one({
@@ -155,7 +156,8 @@ class PayVpnUsage(object):
         net = str(req.body['net']).lower()
         from_addr = str(req.body['from_addr']).lower()
         amount = int(req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
-        session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body['session_id'] is not None else None
+        session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
+            'session_id'] is not None else None
 
         errors, tx_hashes = eth_helper.pay_vpn_session(
             from_addr, amount, session_id, net, tx_data, payment_type)

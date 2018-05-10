@@ -1,6 +1,7 @@
 # coding=utf-8
 import datetime
 import time
+
 from _thread import start_new_thread
 
 from ..db import db
@@ -18,7 +19,7 @@ class DailyActiveNodes(object):
             current_time = datetime.datetime.now()
             if (current_time.hour == self.hour) and (current_time.minute == self.minute):
                 nodes = {
-                    'up': db.nodes.find({ 'vpn.status': 'up' }).count(),
+                    'up': db.nodes.find({'vpn.status': 'up'}).count(),
                     'total': db.nodes.find().count()
                 }
                 current_time = datetime.datetime.combine(current_time, datetime.time(0))

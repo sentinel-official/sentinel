@@ -3,7 +3,6 @@ import json
 import time
 
 import falcon
-from pymongo import ReturnDocument
 
 from ..config import DECIMALS
 from ..db import db
@@ -85,7 +84,8 @@ class UpdateConnections(object):
                     timestamp = int(time.time())
                     print(account_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
 
-                    error, tx_hash = eth_helper.add_vpn_usage(account_addr, to_addr, sent_bytes, session_duration, amount,
+                    error, tx_hash = eth_helper.add_vpn_usage(account_addr, to_addr, sent_bytes, session_duration,
+                                                              amount,
                                                               timestamp)
                     if error:
                         tx_hashes.append(error)

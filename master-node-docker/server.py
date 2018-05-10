@@ -6,33 +6,34 @@ from falcon_cors import CORS
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
+from sentinel.client import GetSocksList
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnCurrentUsage
 from sentinel.client import GetVpnUsage
 from sentinel.client import GetVpnsList
-from sentinel.client import GetSocksList
 from sentinel.client import PayVpnUsage
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
+from sentinel.client import UpdateConnection
 from sentinel.dev import GetFreeAmount
 from sentinel.logs import LogTheError
 from sentinel.node import DeRegisterNode
-from sentinel.node import GetTotalNodeCount
-from sentinel.node import GetDailyActiveNodeCount
 from sentinel.node import GetActiveNodeCount
-from sentinel.node import GetDailyNodeCount
-from sentinel.node import GetNodeStatistics
-from sentinel.node import GetDailySessionCount
 from sentinel.node import GetActiveSessionCount
-from sentinel.node import GetAverageSessionsCount
 from sentinel.node import GetAverageDuration
-from sentinel.node import GetDailyDataCount
-from sentinel.node import GetTotalDataCount
-from sentinel.node import GetLastDataCount
-from sentinel.node import GetDailyDurationCount
 from sentinel.node import GetAverageNodesCount
-from sentinel.node import GetLastAverageDuration
+from sentinel.node import GetAverageSessionsCount
+from sentinel.node import GetDailyActiveNodeCount
 from sentinel.node import GetDailyAverageDuration
+from sentinel.node import GetDailyDataCount
+from sentinel.node import GetDailyDurationCount
+from sentinel.node import GetDailyNodeCount
+from sentinel.node import GetDailySessionCount
+from sentinel.node import GetLastAverageDuration
+from sentinel.node import GetLastDataCount
+from sentinel.node import GetNodeStatistics
+from sentinel.node import GetTotalDataCount
+from sentinel.node import GetTotalNodeCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
@@ -40,7 +41,6 @@ from sentinel.tokens import GetAvailableTokens
 from sentinel.tokens import GetSents
 from sentinel.tokens import TokenSwapRawTransaction
 from sentinel.utils import JSONTranslator
-from sentinel.client import UpdateConnection
 
 
 class Up(object):

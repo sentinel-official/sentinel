@@ -11,7 +11,7 @@ from ..db import db
 class GetDailyDataCount(object):
     def on_get(self, req, resp):
         daily_count = []
-        output = db.connections.find({'usage': {'$exists': True}})
+        output = db.connections.find({'server_usage': {'$exists': True}})
 
         result = db.connections.aggregate([{
             '$project': {
@@ -22,7 +22,7 @@ class GetDailyDataCount(object):
                         }
                     ]
                 },
-                'data': '$usage.down'
+                'data': '$server_usage.down'
             }
         }, {
             '$group': {
@@ -58,7 +58,7 @@ class GetTotalDataCount(object):
             '$group': {
                 '_id': None,
                 'Total': {
-                    '$sum': '$usage.down'
+                    '$sum': '$server_usage.down'
                 }
             }
         }])
@@ -75,15 +75,15 @@ class GetLastDataCount(object):
     def on_get(self, req, resp):
         total_count = []
         result = db.connections.aggregate([
-            {'$match':{'start_time':{'$gte':time.time()-(24*60*60)}}},
+            {'$match': {'start_time': {'$gte': time.time() - (24 * 60 * 60)}}},
             {
-            '$group': {
-                '_id': None,
-                'Total': {
-                    '$sum': '$usage.down'
+                '$group': {
+                    '_id': None,
+                    'Total': {
+                        '$sum': '$server_usage.down'
+                    }
                 }
-            }
-        }])
+            }])
 
         for doc in result:
             total_count.append(doc)
@@ -371,7 +371,7 @@ class GetDailyDurationCount(object):
                     '$cond': [{
                         '$eq': ['$end_time', None]
                     },
-                              int(time.time()), '$end_time']
+                        int(time.time()), '$end_time']
                 }
             }
         }, {
@@ -407,27 +407,27 @@ class GetDailyAverageDuration(object):
         daily_count = []
         result = db.connections.aggregate([{
             '$project': {
-                'total':{
-                    '$add':[datetime.datetime(1970,1,1),{
-                        '$multiply':['$start_time',1000]}
-                    ]},
+                'total': {
+                    '$add': [datetime.datetime(1970, 1, 1), {
+                        '$multiply': ['$start_time', 1000]}
+                             ]},
                 'Sum': {'$sum': {
                     '$subtract': [
                         {'$cond': [
-                            {'$eq': ['$end_time', None]}, 
-                            int(time.time()), 
+                            {'$eq': ['$end_time', None]},
+                            int(time.time()),
                             '$end_time']
                         },
                         '$start_time'
                     ]}
                 }}
-            }, {
+        }, {
             '$group': {
-                '_id': {'$dateToString':{'format':'%d/%m/%Y','date':'$total'}},
+                '_id': {'$dateToString': {'format': '%d/%m/%Y', 'date': '$total'}},
                 'Average': {'$avg': '$Sum'}}
-            },{
-            '$sort':{'_id':1}
-            }
+        }, {
+            '$sort': {'_id': 1}
+        }
         ])
 
         for doc in result:
@@ -437,6 +437,7 @@ class GetDailyAverageDuration(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
 
 class GetAverageDuration(object):
     def on_get(self, req, resp):
@@ -449,7 +450,7 @@ class GetAverageDuration(object):
                             '$cond': [{
                                 '$eq': ['$end_time', None]
                             },
-                                      int(time.time()), '$end_time']
+                                int(time.time()), '$end_time']
                         }, '$start_time']
                     }
                 }
@@ -470,33 +471,34 @@ class GetAverageDuration(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
 
 class GetLastAverageDuration(object):
     def on_get(self, req, resp):
         avg_count = []
         result = db.connections.aggregate([
-            {'$match':{'start_time':{'$gte':time.time()-(24*60*60)}}},
+            {'$match': {'start_time': {'$gte': time.time() - (24 * 60 * 60)}}},
             {
-            '$project': {
-                'Sum': {
-                    '$sum': {
-                        '$subtract': [{
-                            '$cond': [{
-                                '$eq': ['$end_time', None]
-                            },
-                                      int(time.time()), '$end_time']
-                        }, '$start_time']
+                '$project': {
+                    'Sum': {
+                        '$sum': {
+                            '$subtract': [{
+                                '$cond': [{
+                                    '$eq': ['$end_time', None]
+                                },
+                                    int(time.time()), '$end_time']
+                            }, '$start_time']
+                        }
                     }
                 }
-            }
-        }, {
-            '$group': {
-                '_id': None,
-                'Average': {
-                    '$avg': '$Sum'
+            }, {
+                '$group': {
+                    '_id': None,
+                    'Average': {
+                        '$avg': '$Sum'
+                    }
                 }
-            }
-        }])
+            }])
 
         for doc in result:
             avg_count.append(doc)
@@ -505,6 +507,7 @@ class GetLastAverageDuration(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
 
 class GetNodeStatistics(object):
     def on_get(self, req, resp):
@@ -532,10 +535,10 @@ class GetNodeStatistics(object):
                     }
                 },
                 'download': {
-                    '$sum': '$usage.down'
+                    '$sum': '$server_usage.down'
                 },
                 'upload': {
-                    '$sum': '$usage.up'
+                    '$sum': '$server_usage.up'
                 }
             }
         }])

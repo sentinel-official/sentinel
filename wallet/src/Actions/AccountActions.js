@@ -813,7 +813,7 @@ export function connectSocks(account_addr, vpn_addr, cb) {
               let cmd = `@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"`
               exec(cmd, function (instErr, instOut, instStdErr) {
                 if (instErr) {
-                  cb({ message: 'Error in installing Chocolatey' }, false, true, false, null);
+                  cb({ message: 'Choco Installation failed. Please install manually' }, false, true, false, null);
                 }
                 else {
                   checkNssm();
@@ -835,7 +835,7 @@ export function connectSocks(account_addr, vpn_addr, cb) {
     function checkNssm() {
       exec('choco install nssm -y', function (instaErr, instaOut, instDerr) {
         if (instaErr) {
-          cb({ message: 'Error in installing nssm' }, false, true, false, null);
+          cb({ message: 'Problem faced working with nssm. Please restart sentinel app once.' }, false, true, false, null);
         }
         else {
           let username = getUserHome();

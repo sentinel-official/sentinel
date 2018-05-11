@@ -496,17 +496,23 @@ class SendNew extends Component {
                         <Row>
                             <Col xs={4} style={{ padding: '3% 2% 0px' }}>
                                 <p style={{ fontSize: 16, fontWeight: 600, color: '#253245', letterSpacing: 2 }}>TOKEN BALANCE</p>
-                                <div style={{ padding: '6% 4%', paddingBottom: 0, backgroundColor: '#ececf1' }}>
+                                <div style={{ padding: '6% 4%', paddingBottom: 0, backgroundColor: '#ececf1', height: 85 }}>
                                     <Row>
                                         <Col xs={4}>
                                             <img src={'../src/Images/logo.svg'} alt="logo" style={{ width: 50, height: 50, margin: '1% 10%' }} />
                                         </Col>
                                         <Col xs={8}>
-                                            <p style={{ fontSize: 18, fontWeight: 'bold', letterSpacing: 3, wordBreak: 'break-all' }}>
+                                            <p style={{
+                                                fontSize: 18, fontWeight: 'bold', letterSpacing: 3, whiteSpace: 'nowrap',
+                                                textOverflow: 'ellipsis', width: 150, overflow: 'hidden'
+                                            }} data-tip data-for="sentsBal">
                                                 {this.props.balance.sents !== 'Loading' ? this.props.balance.sents.toFixed(8) : 'Loading'}
                                             </p>
-                                            <p style={{ color: 'grey', marginTop: -18, letterSpacing: 2, wordBreak: 'break-all' }}>Sentinel [SENT]</p>
+                                            <p style={{ color: 'grey', marginTop: -15, letterSpacing: 2, wordBreak: 'break-all' }}>Sentinel [SENT]</p>
                                         </Col>
+                                        <ReactTooltip id="sentsBal" place="bottom">
+                                            <span>{this.props.balance.sents !== 'Loading' ? this.props.balance.sents.toFixed(8) : 'Loading'}</span>
+                                        </ReactTooltip>
                                     </Row>
                                 </div>
                                 <div style={styles.otherBalanceDiv}>
@@ -675,7 +681,7 @@ class SendNew extends Component {
                                             value={this.state.password}
                                             underlineShow={false} fullWidth={true}
                                             inputStyle={{ padding: 10, fontWeight: 'bold', color: '#2f3245' }}
-                                            style={{ backgroundColor: '#d4dae2', height: 48, marginTop: 12 }}
+                                            style={{ backgroundColor: '#d4dae2', height: 48, marginTop: 10 }}
                                         />
                                     </Col>
                                     <Col xsOffset={1} xs={5}>

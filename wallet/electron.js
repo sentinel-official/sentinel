@@ -188,7 +188,7 @@ function stopVPN(cb) {
             let stdoutput = execSync(netcmd).toString();
             if (stdoutput) {
               var currentService = stdoutput.trim();
-              let runOut = execSync(`networksetup -setsocksfirewallproxystate ${currentService} off`);
+              let runOut = execSync(`networksetup -setsocksfirewallproxystate '${currentService}' off`);
             }
           }
           getConfig(function (error, KEYSTOREDATA) {

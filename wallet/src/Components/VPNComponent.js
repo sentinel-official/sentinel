@@ -325,7 +325,7 @@ class VPNComponent extends Component {
                         let downCur;
                         let upCur;
                         if (remote.process.platform === 'darwin') {
-                            let cmd = `netstat - b - i | grep ${obj.address} | awk '{print $7" "$8}'`;
+                            let cmd = `netstat -b -i | grep ${obj.address} | awk '{print $7" "$8}'`;
                             let output = execSync(cmd);
                             let values = output.toString().trim().split(" ");
                             downCur = values[0];

@@ -411,6 +411,9 @@ class SendNew extends Component {
         if (this.state.convertPass === '') {
             this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
         }
+        else if (parseFloat(this.state.currentSentValue * this.state.swapAmount) > 10000) {
+            this.setState({ sending: false, snackOpen: true, snackMessage: `Swap Limit for once is 10000 SENTS only` })
+        }
         else {
             if (isOnline()) {
                 this.setState({

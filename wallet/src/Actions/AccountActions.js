@@ -839,7 +839,7 @@ export function connectSocks(account_addr, vpn_addr, cb) {
         }
         else {
           let username = getUserHome();
-          exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5.exe`, function (execErr, execOut, execStd) {
+          exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\socks5.exe`, function (execErr, execOut, execStd) {
             nextStep();
           })
         }
@@ -892,7 +892,7 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                       if (stdout) {
                         console.log("NEt Out...", stdout.toString())
                         var currentService = stdout.trim();
-                        exec(`networksetup -setsocksfirewallproxy ${currentService} localhost 1080 && networksetup -setsocksfirewallproxystate ${currentService} on`, function (error, Stdout, Stderr) {
+                        exec(`networksetup -setsocksfirewallproxy '${currentService}' localhost 1080 && networksetup -setsocksfirewallproxystate '${currentService}' on`, function (error, Stdout, Stderr) {
                         })
                       }
                       if (err) {
@@ -1069,7 +1069,7 @@ export function disconnectSocks(cb) {
               exec(netcmd, function (comErr, stdoutput, stderror) {
                 if (stdoutput) {
                   var currentService = stdoutput.trim();
-                  exec(`networksetup -setsocksfirewallproxystate ${currentService} off`, function (runError, Stdout, Stderr) {
+                  exec(`networksetup -setsocksfirewallproxystate '${currentService}' off`, function (runError, Stdout, Stderr) {
                   })
                 }
               })

@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle } from 'material-ui';
-import { getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline, 
-  sendError, connectSocks, disconnectSocks,sendUsage } from '../Actions/AccountActions';
+import {
+  getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline,
+  sendError, connectSocks, disconnectSocks, sendUsage
+} from '../Actions/AccountActions';
 import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
 import CopyIcon from 'material-ui/svg-icons/content/content-copy';
@@ -69,7 +71,7 @@ class Header extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState({ status: nextProps.status, testDisabled: nextProps.testDisabled, isTest: nextProps.isTest,isSock:nextProps.isSock })
+    this.setState({ status: nextProps.status, testDisabled: nextProps.testDisabled, isTest: nextProps.isTest, isSock: nextProps.isSock })
   }
 
   _disconnectVPN = () => {
@@ -77,30 +79,30 @@ class Header extends Component {
     var that = this;
     if (this.state.isSock) {
       disconnectSocks(function (err) {
-          if (err) {
-              that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
-              that.props.onChange();
-          }
-          else {
-              that.props.onChange();
-              sendUsage(that.props.local_address, that.state.selectedVPN, null);
-              that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
-          }
+        if (err) {
+          that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
+          that.props.onChange();
+        }
+        else {
+          that.props.onChange();
+          sendUsage(that.props.local_address, that.state.selectedVPN, null);
+          that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+        }
       });
+    }
+    else {
+      disconnectVPN(function (err) {
+        if (err) {
+          that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
+          that.props.onChange();
+        }
+        else {
+          that.props.onChange();
+          that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+        }
+      });
+    }
   }
-  else {
-    disconnectVPN(function (err) {
-      if (err) {
-        that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
-        that.props.onChange();
-      }
-      else {
-        that.props.onChange();
-        that.setState({ selectedVPN: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
-      }
-    });
-  }
-}
 
   handleToggle = (event, toggle) => {
     if (this.state.isTest) {
@@ -140,28 +142,29 @@ class Header extends Component {
     else {
       if (this.state.status)
         this._disconnectVPN();
-      this.setState({ isTest: false })
+      this.setState({ isTest: false, isSock: false })
       localStorage.setItem('config', 'MAIN')
       this.props.ontestChange(false);
+      this.props.onsockChange(false);
     }
   }
 
   sockChange = (event, toggle) => {
-  if(this.state.isTest){
-    if (toggle) {
-      this.setState({ isSock: true })
-      localStorage.setItem('vpnType', 'socks5')
-      this.props.onsockChange(true);
-    }
-    else {
-      if(this.state.status){
-        this._disconnectVPN()
+    if (this.state.isTest) {
+      if (toggle) {
+        this.setState({ isSock: true })
+        localStorage.setItem('vpnType', 'socks5')
+        this.props.onsockChange(true);
       }
-      this.setState({ isSock: false })
-      localStorage.setItem('vpnType', 'openvpn')
-      this.props.onsockChange(false);
+      else {
+        if (this.state.status) {
+          this._disconnectVPN()
+        }
+        this.setState({ isSock: false })
+        localStorage.setItem('vpnType', 'openvpn')
+        this.props.onsockChange(false);
+      }
     }
-  }
   }
 
   closeInstruction = () => {

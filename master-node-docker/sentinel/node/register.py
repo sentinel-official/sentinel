@@ -37,6 +37,8 @@ class RegisterNode(object):
         joined_on = int(time.time())
 
         node = db.nodes.find_one({'account_addr': account_addr})
+        if location['city'] == 'None':
+            location['city'] = 'Unknown'
         if node is None:
             _ = db.nodes.insert_one({
                 'account_addr': account_addr,

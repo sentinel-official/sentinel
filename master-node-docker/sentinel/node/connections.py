@@ -3,7 +3,6 @@ import json
 import time
 
 import falcon
-from pymongo import ReturnDocument
 
 from ..config import DECIMALS
 from ..db import db
@@ -49,7 +48,7 @@ class UpdateConnections(object):
                         'end_time': None
                     }, {
                         '$set': {
-                            'usage': connection['usage']
+                            'server_usage': connection['usage']
                         }
                     })
                 session_names.append(connection['session_name'])
@@ -79,13 +78,14 @@ class UpdateConnections(object):
 
                 for connection in ended_connections:
                     to_addr = str(connection['client_addr'])
-                    sent_bytes = int(connection['usage']['down'])
+                    sent_bytes = int(connection['server_usage']['down'])
                     session_duration = int(int(connection['end_time']) - int(connection['start_time']))
                     amount = int(calculate_amount(sent_bytes, node['price_per_gb']) * DECIMALS)
                     timestamp = int(time.time())
                     print(account_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
 
-                    error, tx_hash = eth_helper.add_vpn_usage(account_addr, to_addr, sent_bytes, session_duration, amount,
+                    error, tx_hash = eth_helper.add_vpn_usage(account_addr, to_addr, sent_bytes, session_duration,
+                                                              amount,
                                                               timestamp)
                     if error:
                         tx_hashes.append(error)

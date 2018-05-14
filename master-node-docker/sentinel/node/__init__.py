@@ -6,9 +6,16 @@ from .register import RegisterNode
 from .stats import GetActiveNodeCount
 from .stats import GetActiveSessionCount
 from .stats import GetAverageDuration
+from .stats import GetAverageNodesCount
+from .stats import GetAverageSessionsCount
+from .stats import GetDailyActiveNodeCount
+from .stats import GetDailyAverageDuration
 from .stats import GetDailyDataCount
 from .stats import GetDailyDurationCount
 from .stats import GetDailyNodeCount
 from .stats import GetDailySessionCount
+from .stats import GetLastAverageDuration
+from .stats import GetLastDataCount
 from .stats import GetNodeStatistics
 from .stats import GetTotalDataCount
+from .stats import GetTotalNodeCount

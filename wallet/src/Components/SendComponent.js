@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, FlatButton, TextField } from 'material-ui';
+import { MuiThemeProvider, Snackbar, DropDownMenu, MenuItem, RaisedButton, TextField, Slider, FlatButton, Dialog } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import { transferAmount, isOnline, payVPNUsage, getFreeAmount, sendError } from '../Actions/AccountActions';
-import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost } from '../Actions/TransferActions';
-import { purple500 } from 'material-ui/styles/colors';
+import DownArrow from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import TransIcon from 'material-ui/svg-icons/action/swap-horiz';
+import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {
+  transferAmount, isOnline, payVPNUsage, getAvailableTokens, sendError, getTokenBalance,
+  getSentValue, getSentTransactionHistory, swapRawTransaction
+} from '../Actions/AccountActions';
+import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost, swapTransaction } from '../Actions/TransferActions';
 import ReactTooltip from 'react-tooltip';
-import Slider from 'material-ui/Slider';
 var config = require('../config');
 var lang = require('./language');
 
@@ -14,13 +19,21 @@ let shell = window
   .require('electron')
   .shell;
 
+const muiTheme = getMuiTheme({
+  slider: {
+    selectionColor: '#595d8f',
+    trackSize: 4,
+    handleSize: 20
+  },
+});
+
 class SendComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       keystore: '',
       to_address: '',
-      amount: '',
+      amount: 0,
       gas: 21000,
       data: '',
       priv_key: '',
@@ -31,21 +44,36 @@ class SendComponent extends Component {
       sending: false,
       openSnack: false,
       snackOpen: false,
+      isGetBalanceCalled: false,
       snackMessage: '',
       isDisabled: true,
       isInitial: true,
       transactionStatus: '',
       session_id: null,
-      sliderValue: 20
+      sliderValue: 20,
+      showTransScreen: false,
+      tokens: [],
+      tokenBalances: {},
+      selectedToken: 'ETH',
+      currentSentValue: 1,
+      swapAmount: 1,
+      convertPass: '',
+      converting: false,
+      logoUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'
     };
   }
 
   componentWillMount = () => {
     //this.getGas()
+    this.getTokensList();
   }
 
   componentDidCatch(error, info) {
     sendError(error);
+  }
+
+  componentDidMount = () => {
+    this.getCompareValue(this.state.selectedToken);
   }
 
   handleSlider = (event, value) => {
@@ -73,9 +101,9 @@ class SendComponent extends Component {
         sending: nextProps.sending,
         password: ''
       })
-      this.getGasLimit(nextProps.amount, nextProps.to_addr, nextProps.unit);
       this.props.propReceiveChange()
       if (nextProps.to_addr !== '') {
+        this.getGasLimit(nextProps.amount, nextProps.to_addr, nextProps.unit);
         this.setState({ isDisabled: false })
       }
       else {
@@ -210,13 +238,6 @@ class SendComponent extends Component {
     })
   }
 
-  getFree() {
-    let self = this;
-    getFreeAmount(this.props.local_address, function (message) {
-      self.setState({ snackOpen: true, snackMessage: message })
-    })
-  }
-
   onClickSend = () => {
     var self = this;
     if (this.state.amount === '') {
@@ -254,17 +275,6 @@ class SendComponent extends Component {
       }
     }
   }
-
-  // renderLink() {
-  //   return (
-  //     <div>
-  //       Your Transaction is Placed Successfully. Check Status <a onClick={() => {
-  //         statusUrl = this.getStatusUrl();
-  //         this.openInExternalBrowser(`${statusUrl}/tx/${this.state.tx_addr}`)
-  //       }} style={{ color: '#1d400' }}>Here</a>
-  //     </div>
-  //   )
-  // }
 
   openSnackBar = () => this.setState({
     snackMessage: 'Your Transaction is Placed Successfully.',
@@ -319,158 +329,348 @@ class SendComponent extends Component {
       this.getGasLimit(amount, this.state.to_address, unit)
     }
   };
+
+  handleClose = () => {
+    this.setState({ showTransScreen: false });
+  };
+
+  getTokensList = () => {
+    let self = this;
+    getAvailableTokens(function (err, tokens) {
+      if (err) { }
+      else {
+        let tokensList = tokens.filter((token) => token.symbol !== 'SENT');
+        self.setState({ tokens: tokensList })
+        tokensList.map((token) => {
+          self.getUnitBalance(token);
+        })
+      }
+    })
+  }
+
+  getBalancesTokens = () => {
+    let self = this;
+    self.state.tokens.map((token) => {
+      self.getUnitBalance(token);
+    })
+  }
+
+  getUnitBalance = (token) => {
+    if (token.symbol === 'ETH') {
+      let obj = this.state.tokenBalances;
+      obj[token.symbol] = this.props.balance.eths !== 'Loading' ? this.props.balance.eths.toFixed(8) : 'Loading';
+      this.setState({ tokenBalances: obj });
+    }
+    else {
+      let self = this
+      getTokenBalance(token.address, self.props.local_address, token.decimals, function (err, tokenBalance) {
+        if (err) { }
+        else {
+          let obj = self.state.tokenBalances;
+          obj[token.symbol] = tokenBalance;
+          self.setState({ tokenBalances: obj });
+        }
+      })
+    }
+  }
+
+  swapChange = (event, index, unit) => {
+    let token = this.state.tokens.find(obj => obj.symbol === unit);
+    this.setState({ selectedToken: unit, logoUrl: token.logo_url ? token.logo_url : '../src/Images/default.png' });
+    this.getCompareValue(unit);
+  };
+
+  getCompareValue = (symbol) => {
+    let token = this.state.tokens.find(obj => obj.symbol === symbol);
+    if (token) {
+      let self = this;
+      let value = 10 ** token.decimals;
+      getSentValue(token.address, value, function (err, swapValue) {
+        if (err) { }
+        else {
+          self.setState({ currentSentValue: swapValue });
+        }
+      })
+    }
+  }
+
+  valueChange = (event, value) => {
+    this.setState({ swapAmount: value });
+    this.getCompareValue(this.state.selectedToken);
+  }
+
+  onClickConvert = () => {
+    let self = this;
+    if (this.state.convertPass === '') {
+      this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
+    }
+    else if (parseFloat(this.state.currentSentValue * this.state.swapAmount) > 10000) {
+      this.setState({ sending: false, snackOpen: true, snackMessage: `Swap Limit for once is 10000 SENTS only` })
+    }
+    else {
+      if (isOnline()) {
+        this.setState({
+          converting: true
+        });
+        setTimeout(function () {
+          getPrivateKey(self.state.convertPass, self.props.lang, function (err, privateKey) {
+            if (err) {
+              sendError(err)
+              self.setState({
+                snackOpen: true,
+                snackMessage: err.message,
+                converting: false
+              })
+            }
+            else {
+              let token = self.state.tokens.find(o => o.symbol === self.state.selectedToken);
+              let ether_address = (self.state.tokens.find(o => o.symbol === 'ETH'))['address'];
+              swapTransaction(self.props.local_address, ether_address, token.address,
+                self.state.swapAmount * (10 ** (token.decimals)), privateKey,
+                self.state.selectedToken, function (err, data) {
+                  if (err) {
+                    self.setState({
+                      snackOpen: true,
+                      snackMessage: err.message,
+                      converting: false
+                    })
+                  }
+                  else if (data) {
+                    swapRawTransaction(data, function (err, txHash) {
+                      if (err) {
+                        self.setState({
+                          snackOpen: true,
+                          snackMessage: err.message,
+                          converting: false
+                        })
+                      }
+                      else {
+                        self.setState({
+                          convertPass: '',
+                          converting: false,
+                          openSnack: true,
+                          tx_addr: txHash
+                        })
+                      }
+                    })
+                  }
+                  else {
+                    self.setState({
+                      snackOpen: true,
+                      snackMessage: 'Error in swapping tokens',
+                      converting: false
+                    })
+                  }
+                })
+            }
+          })
+        }, 500);
+      }
+      else {
+        this.setState({ snackOpen: true, snackMessage: lang[this.props.lang].CheckInternet })
+      }
+    }
+  }
+
   render() {
+    let self = this;
+    if (!this.state.isGetBalanceCalled) {
+      setInterval(function () {
+        self.getBalancesTokens()
+      }, 10000);
+
+      this.setState({ isGetBalanceCalled: true });
+    }
     let language = this.props.lang;
     return (
-      <MuiThemeProvider>
-        <div style={{
-          minHeight: 530,
-          backgroundColor: '#c3deea',
-          padding: '5%'
-        }}>
-          <FlatButton
-            label={lang[language].GetTokens}
-            labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', fontSize: 12, color: '#FAFAFA' }}
-            onClick={this.getFree.bind(this)}
-            disabled={!this.props.isTest}
-            style={{
-              backgroundColor: this.props.isTest ? '#2f3245' : 'rgba(47, 50, 69, 0.34)',
-              position: 'absolute', right: 0, marginTop: -30, marginRight: 60
-            }}
-          />
+      <MuiThemeProvider muiTheme={muiTheme}>
+        <div>
           <Grid>
-            <Row style={{ marginBottom: 15, paddingTop: 20 }}>
-              <Col xs={3}>
-                <span>{lang[language].To}</span>
-                <span data-tip data-for="toField" style={styles.questionMark}>?</span>
+            <Row>
+              <Col xs={4} style={{ padding: '3% 2% 0px' }}>
+                <p style={{ fontSize: 16, fontWeight: 600, color: '#253245', letterSpacing: 2 }}>TOKEN BALANCE</p>
+                <div style={{ padding: '6% 4%', paddingBottom: 0, backgroundColor: '#ececf1', height: 85 }}>
+                  <Row>
+                    <Col xs={4}>
+                      <img src={'../src/Images/logo.svg'} alt="logo" style={{ width: 50, height: 50, margin: '1% 10%' }} />
+                    </Col>
+                    <Col xs={8}>
+                      <p style={{
+                        fontSize: 18, fontWeight: 'bold', letterSpacing: 3, whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis', width: 150, overflow: 'hidden'
+                      }} data-tip data-for="sentsBal">
+                        {this.props.balance.sents !== 'Loading' ? this.props.balance.sents.toFixed(8) : 'Loading'}
+                      </p>
+                      <p style={{ color: 'grey', marginTop: -15, letterSpacing: 2, wordBreak: 'break-all' }}>Sentinel [SENT]</p>
+                    </Col>
+                    <ReactTooltip id="sentsBal" place="bottom">
+                      <span>{this.props.balance.sents !== 'Loading' ? this.props.balance.sents.toFixed(8) : 'Loading'}</span>
+                    </ReactTooltip>
+                  </Row>
+                </div>
+                <div style={styles.otherBalanceDiv}>
+                  {this.state.tokens.length !== 0 ?
+                    this.state.tokens.map((token) =>
+                      <Row>
+                        <Col xs={4}>
+                          <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'} alt="logo" style={styles.otherBalanceLogo} />
+                        </Col>
+                        <Col xs={8}>
+                          <p style={styles.otherBalanceBalc}>{this.state.tokenBalances[token.symbol] ? this.state.tokenBalances[token.symbol] : 0}</p>
+                          <p style={styles.otherBalanceText}>{token.name} [{token.symbol}]</p>
+                        </Col>
+                      </Row>
+                    )
+                    :
+                    <div>
+                      <p style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginTop: '35%' }}>
+                        No Tokens Found
+                                            </p>
+                    </div>
+                  }
+                </div>
               </Col>
-              <Col xs={9}>
-                <TextField
-                  hintText="Ex:0x6b6df9e25f7bf233435c1a52a7da4c4a64f5769e"
-                  hintStyle={{ bottom: 2, paddingLeft: 10 }}
-                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
-                  underlineShow={false} fullWidth={true}
-                  onChange={this.addressChange.bind(this)}
-                  disabled={this.state.session_id !== null ? true : false}
-                  value={this.state.to_address}
-                  inputStyle={{ padding: 10 }}
-                />
+              <Col xs={8} style={{ padding: '3% 5% 0px' }}>
+                <div>
+                  <span style={styles.formHeading}>SEND TO ADDRESS</span>
+                  <span data-tip data-for="toField" style={styles.questionMark}>?</span>
+                  <TextField
+                    hintText="Example: 0x6b6df9e25f7bf23343mfkr45"
+                    hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
+                    style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15 }}
+                    underlineShow={false} fullWidth={true}
+                    onChange={this.addressChange.bind(this)}
+                    value={this.state.to_address}
+                    inputStyle={styles.textInputStyle}
+                  />
+                </div>
+                <div style={{ marginTop: '5%' }}>
+                  <span style={styles.formHeading}>AMOUNT TO SEND</span>
+                  <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
+                  <Row>
+                    <Col xs={8}>
+                      <TextField
+                        type="number"
+                        underlineShow={false} fullWidth={true}
+                        inputStyle={styles.textInputStyle}
+                        style={styles.textStyle}
+                        underlineShow={false} fullWidth={true}
+                        onChange={this.amountChange.bind(this)} value={
+                          (this.state.amount === null || this.state.amount === 0) ? null :
+                            (this.state.unit === 'ETH' ? parseFloat(this.state.amount / (10 ** 18)) :
+                              parseFloat(this.state.amount / (10 ** 8)))
+                        }
+                      />
+                    </Col>
+                    <Col xs={4}>
+                      <DropDownMenu
+                        autoWidth={false}
+                        iconButton={<DownArrow />}
+                        iconStyle={styles.dropDownIconStyle}
+                        labelStyle={styles.dropDownLabelStyle}
+                        style={{
+                          backgroundColor: '#b6b9cb',
+                          height: 42,
+                          width: '110%',
+                          marginTop: 12,
+                          marginLeft: -16
+                        }}
+                        value={this.state.unit}
+                        menuItemStyle={{ width: 160 }}
+                        onChange={this.handleChange.bind(this)}
+                      >
+                        <MenuItem
+                          value="ETH"
+                          primaryText={this.props.isTest ? "TEST ETH" : "ETH"}
+                        />
+                        <MenuItem
+                          value="SENT"
+                          primaryText={this.props.isTest ? "TEST SENT" : "SENT"}
+                        />
+                      </DropDownMenu>
+                    </Col>
+                  </Row>
+                </div>
+                <div style={{ marginTop: '5%' }}>
+                  <Row>
+                    <Col xs={4}>
+                      <span style={styles.formHeading}>GAS LIMIT</span>
+                      <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
+                      <TextField
+                        type="number"
+                        style={styles.textStyle}
+                        underlineShow={false} fullWidth={true}
+                        inputStyle={styles.textInputStyle}
+                        onChange={(event, gas) => this.setState({ gas })}
+                        value={this.state.gas}
+                      />
+                    </Col>
+                    <Col xsOffset={1} xs={7}>
+                      <span style={styles.formHeading}>GAS PRICE</span>
+                      <span data-tip data-for="gasPrice" style={styles.questionMark}>?</span>
+                      <span style={{ marginLeft: 20, color: '#595d8f', fontWeight: 'bold' }}>{this.state.sliderValue} </span>
+                      <span style={{ color: 'grey' }}>GWEI</span>
+                      <Slider
+                        min={1}
+                        max={99}
+                        step={1}
+                        value={this.state.sliderValue}
+                        onChange={this.handleSlider}
+                        sliderStyle={{ color: '#595d8f', marginBottom: 0, height: 'auto' }}
+                      />
+                    </Col>
+                  </Row>
+                </div>
               </Col>
             </Row>
-            <Row style={{ marginBottom: 15, height: 30 }}>
-              <Col xs={3}>
-                <span>{lang[language].Amount}</span>
-                <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
-              </Col>
-              <Col xs={6}>
-                <TextField
-                  type="number"
-                  style={{ backgroundColor: '#FAFAFA', height: 30 }} underlineShow={false}
+            <Row>
+              <Col xs={4} style={{ padding: '0% 2%' }}>
+                <RaisedButton
+                  label="Convert ERC20 to SENT"
+                  labelStyle={styles.buttonLabelStyle}
                   fullWidth={true}
-                  disabled={this.state.session_id !== null ? true : false}
-                  inputStyle={{ padding: 10 }}
-                  onChange={this.amountChange.bind(this)} value={
-                    (this.state.amount === null || this.state.amount === 0) ? null :
-                      (this.state.unit === 'ETH' ? parseFloat(this.state.amount / (10 ** 18)) :
-                        parseFloat(this.state.amount / (10 ** 8)))
-                  } />
-              </Col>
-              <Col xs={3}>
-                <DropDownMenu
-                  autoWidth={true}
-                  iconStyle={{
-                    top: -6
+                  disabled={this.props.isTest || this.state.tokens.length === 0}
+                  onClick={() => {
+                    this.setState({ showTransScreen: true });
+                    this.getCompareValue(this.state.selectedToken);
                   }}
-                  labelStyle={{
-                    height: 30,
-                    lineHeight: '30px',
-                    fontWeight: '600',
-                    color: '#2f3245'
-                  }}
-                  style={{
-                    backgroundColor: '#FAFAFA',
-                    height: 30,
-                    width: '100%'
-                  }}
-                  value={this.state.unit}
-                  menuItemStyle={{ width: 192 }}
-                  onChange={this.handleChange.bind(this)}
-                >
-                  <MenuItem
-                    value="ETH"
-                    primaryText={this.props.isTest ? "TEST ETH" : "ETH"}
-                  />
-                  <MenuItem
-                    value="SENT"
-                    primaryText={this.props.isTest ? "TEST SENT" : "SENT"}
-                  />
-                </DropDownMenu>
-              </Col>
-            </Row>
-            <Row style={{ marginBottom: 15, height: 30 }}>
-              <Col xs={3}>
-                <span>{lang[language].GasLimit}</span>
-                <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
-              </Col>
-              <Col xs={9}>
-                <TextField
-                  type="number"
-                  style={{ backgroundColor: '#FAFAFA', height: 30, width: '100%' }}
-                  underlineShow={false} fullWidth={true}
-                  inputStyle={{ padding: 10, color: '#666' }}
-                  onChange={(event, gas) => this.setState({ gas })}
-                  value={this.state.gas}
+                  icon={<TransIcon style={{ marginLeft: 0, height: 36, width: 36 }} />}
+                  buttonStyle={this.props.isTest || this.state.tokens.length === 0 ?
+                    styles.disabledButtonStyle : styles.enabledButtonStyle}
+                  style={{ height: 48 }}
                 />
               </Col>
-            </Row>
-            {/* <Row style={{ marginBottom: 15 }}>
-              <Col xs={3}>
-                <span>Message/Note</span>
-                <span data-tip data-for="messageField" style={styles.questionMark}>?</span>
-              </Col>
-              <Col xs={9}>
-                <TextField
-                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
-                  underlineShow={false} fullWidth={true}
-                  inputStyle={{ padding: 10 }}
-                  onChange={(event, data) => this.setState({ data })} value={this.state.data} />
-              </Col>
-            </Row> */}
-            <Row style={{ marginBottom: 15, height: 30 }}>
-              <Col xs={3}>
-                <span >{lang[language].Password}</span>
-                <span data-tip data-for="passwordField" style={styles.questionMark}>?</span>
-              </Col>
-              <Col xs={9}>
-                <TextField
-                  type="password"
-                  style={{ backgroundColor: '#FAFAFA', height: 30 }}
-                  underlineShow={false} fullWidth={true}
-                  inputStyle={{ padding: 10 }}
-                  onChange={(event, password) => this.setState({ password })} value={this.state.password} />
-              </Col>
-            </Row>
-            <Row style={{ marginBottom: 15, height: 30 }}>
-              <Col xs={3}>
-                <span>{lang[language].GasPrice}</span>
-                <span data-tip data-for="gasPrice" style={styles.questionMark}>?</span>
-              </Col>
-              <Col xs={4}>
-                <Slider
-                  min={1}
-                  max={99}
-                  step={1}
-                  value={this.state.sliderValue}
-                  onChange={this.handleSlider}
-                  sliderStyle={{ color: '#532d91', marginBottom: 0, marginTop: 2, height: 'auto', width: '80%' }}
-                />
-              </Col>
-              <Col xs={2} style={{ marginLeft: -50 }}>
-                <span >{this.state.sliderValue} Gwei</span>
+              <Col xs={8} style={{ padding: '0% 5%' }}>
+                <Row>
+                  <Col xs={6} style={{ marginTop: -35 }}>
+                    <span style={styles.formHeading}>PASSWORD</span>
+                    <span data-tip data-for="passwordField" style={styles.questionMark}>?</span>
+                    <TextField
+                      type="password"
+                      onChange={(event, password) => this.setState({ password })}
+                      value={this.state.password}
+                      underlineShow={false} fullWidth={true}
+                      inputStyle={styles.textInputStyle}
+                      style={{ backgroundColor: '#d4dae2', height: 48, marginTop: 10 }}
+                    />
+                  </Col>
+                  <Col xsOffset={1} xs={5}>
+                    <RaisedButton
+                      disabled={this.state.to_address === '' || this.state.sending || this.state.isDisabled ? true : false}
+                      onClick={this.onClickSend.bind(this)}
+                      label={this.state.sending === null || this.state.sending === false ? lang[language].Send : "Sending..."}
+                      labelStyle={styles.buttonLabelStyle}
+                      fullWidth={true}
+                      buttonStyle={
+                        this.state.to_address === '' || this.state.sending === true || this.state.isDisabled === true ?
+                          styles.disabledButtonStyle : styles.enabledButtonStyle
+                      }
+                      style={{ height: 48 }}
+                    />
+                  </Col>
+                </Row>
               </Col>
             </Row>
-          </Grid>
-          <div>
             <ReactTooltip id="toField" place="bottom">
               <span>{lang[language].ToTooltip}</span>
             </ReactTooltip>
@@ -509,38 +709,207 @@ class SendComponent extends Component {
               autoHideDuration={8000}
               onRequestClose={this.snackRequestClose}
             />
-          </div>
-          <div>
-            <FlatButton disabled={this.state.to_address === '' || this.state.sending || this.state.isDisabled ? true : false}
-              onClick={this.onClickSend.bind(this)}
-              label={this.state.sending === null || this.state.sending === false ? lang[language].Send : "Sending..."}
-              style={
-                this.state.to_address === '' || this.state.sending === true || this.state.isDisabled === true ?
-                  { backgroundColor: '#bdbdbd', marginLeft: 20 }
-                  :
-                  { backgroundColor: '#2f3245', marginLeft: 20 }
-              }
-              labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', color: '#FAFAFA' }}
-            />
-          </div>
-          {/* {this.state.tx_addr == null ? '' :  this.openSnackBar() } */}
+            < Dialog
+              contentStyle={{ width: 700 }}
+              bodyStyle={{ padding: 0 }}
+              open={this.state.showTransScreen}
+              onRequestClose={this.handleClose}
+            >
+              <div style={{ backgroundColor: '#efefef', fontFamily: 'Poppins' }}>
+                <p style={{ textAlign: 'center', padding: 10, color: 'black', fontSize: 14, letterSpacing: 1 }}>Exchange ERC20 tokens for Sentinel tokens</p>
+              </div>
+              <div style={{ backgroundColor: '#435e8d', marginTop: -16 }}>
+                <p style={{ textAlign: 'center', padding: 30 }}>
+                  <Row>
+                    <Col xsOffset={3} xs={1}>
+                      <img src={this.state.logoUrl} alt="logo" style={{ height: 70, width: 70 }} />
+                    </Col>
+                    <Col xsOffset={1} xs={1}>
+                      <RightArrow style={{ height: 70, width: 70, fill: '#ccc' }} />
+                    </Col>
+                    <Col xs={4}>
+                      <img src={'../src/Images/logo.svg'} alt="logo" style={{ height: 70, width: 70 }} />
+                    </Col>
+                  </Row>
+                </p>
+              </div>
+              <div style={{ backgroundColor: '#2c3d5b', marginTop: -16, fontFamily: 'Poppins' }}>
+                <p style={{
+                  fontSize: 14, textAlign: 'center', padding: 5, color: 'white', letterSpacing: 1, fontWeight: 'bold'
+                }}>1 {this.state.selectedToken} = {this.state.currentSentValue} SENTS</p>
+              </div>
+              <div style={{ fontFamily: 'Poppins' }}>
+                <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold' }}>CONVERT</p>
+                <Row style={{ width: '100%', marginTop: -12 }}>
+                  <Col xsOffset={2} xs={4}>
+                    <TextField
+                      type="number"
+                      underlineShow={false} fullWidth={true}
+                      inputStyle={styles.textInputStyle}
+                      style={{ backgroundColor: '#dfe3e6', height: 42, width: '110%' }}
+                      underlineShow={false} fullWidth={true}
+                      onChange={this.valueChange.bind(this)}
+                      value={this.state.swapAmount}
+                    />
+                  </Col>
+                  <Col xs={4}>
+                    <DropDownMenu
+                      autoWidth={false}
+                      iconButton={<DownArrow />}
+                      iconStyle={styles.dropDownIconStyle}
+                      labelStyle={styles.dropDownLabelStyle}
+                      style={{
+                        backgroundColor: '#b6c0cc',
+                        height: 42,
+                        width: '100%'
+                      }}
+                      value={this.state.selectedToken}
+                      menuItemStyle={{ width: '100%' }}
+                      onChange={this.swapChange.bind(this)}
+                    >
+                      {this.state.tokens.length !== 0 ?
+                        this.state.tokens.map((token) =>
+
+                          <MenuItem
+                            value={token.symbol}
+                            primaryText={token.symbol}
+                          />
+                        ) : null}
+                    </DropDownMenu>
+                  </Col>
+                </Row>
+                <p style={{ textAlign: 'center', color: 'grey', fontSize: 12, fontFamily: 'Poppins' }}>Balance: {this.state.tokenBalances[this.state.selectedToken]} {this.state.selectedToken}</p>
+                <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold', fontFamily: 'Poppins' }}>TO</p>
+                <Row style={{ width: '100%', marginTop: -12 }}>
+                  <Col xsOffset={2} xs={8}>
+                    <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins' }}>
+                      <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>{this.state.currentSentValue * this.state.swapAmount}</span>
+                        <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}> SENT TOKENS</span>
+                      </p>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+              <div style={{ padding: 20, backgroundColor: '#dbdce0' }}>
+                <Row>
+                  <Col xsOffset={1} xs={5}>
+                    <TextField
+                      type="password"
+                      hintText="PASSWORD"
+                      hintStyle={{ fontSize: 16, bottom: 9, paddingLeft: 10 }}
+                      onChange={(event, password) => this.setState({ convertPass: password })}
+                      value={this.state.convertPass}
+                      underlineShow={false} fullWidth={true}
+                      inputStyle={styles.textInputStyle}
+                      style={{ height: 42, backgroundColor: '#f6f7f9' }}
+                    />
+                  </Col>
+                  <Col xs={5}>
+                    <RaisedButton
+                      label={this.state.converting ? 'CONVERTING' : 'CONVERT'}
+                      disabled={this.state.converting}
+                      onClick={this.onClickConvert.bind(this)}
+                      labelStyle={{ color: 'white', fontWeight: 'bold', fontSize: 18, letterSpacing: 2 }}
+                      fullWidth={true}
+                      buttonStyle={this.state.converting ?
+                        { backgroundColor: '#bdbdbd', height: 42, lineHeight: '42px' } :
+                        { backgroundColor: '#2e4770', height: 42, lineHeight: '42px' }}
+                      style={{ height: 42 }}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            </Dialog>
+          </Grid>
         </div>
-        <div>
-        </div>
-      </MuiThemeProvider >
-    );
+      </MuiThemeProvider>
+    )
   }
 }
 
 const styles = {
+  otherBalanceLogo: {
+    width: 40,
+    height: 40,
+    margin: '1% 15%'
+  },
+  otherBalanceBalc: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 3,
+    wordBreak: 'break-all'
+  },
+  otherBalanceText: {
+    color: 'grey',
+    fontSize: 14,
+    marginTop: -15,
+    letterSpacing: 2,
+    wordBreak: 'break-all'
+  },
+  otherBalanceDiv: {
+    padding: '6% 4%',
+    paddingBottom: 0,
+    backgroundColor: '#ececf1',
+    marginTop: '5%',
+    overflow: 'auto',
+    height: 265
+  },
   questionMark: {
-    marginLeft: 3,
-    fontSize: 12,
+    marginLeft: 10,
+    fontSize: 13,
     borderRadius: '50%',
-    backgroundColor: '#4d9bb9',
-    paddingLeft: 5,
-    paddingRight: 5,
+    backgroundColor: '#2f3245',
+    paddingLeft: 6,
+    paddingRight: 6,
     color: 'white'
+  },
+  formHeading: {
+    fontSize: 16,
+    fontWeight: 600,
+    color: '#253245',
+    letterSpacing: 2
+  },
+  textInputStyle: {
+    padding: 10,
+    fontWeight: 'bold',
+    color: '#2f3245'
+  },
+  textStyle: {
+    backgroundColor: '#d4dae2',
+    height: 42,
+    marginTop: 12
+  },
+  dropDownLabelStyle: {
+    height: 42,
+    lineHeight: '42px',
+    fontWeight: '600',
+    color: '#2f3245',
+    textAlign: 'center',
+    paddingLeft: 0,
+    paddingRight: 24
+  },
+  dropDownIconStyle: {
+    top: -5,
+    right: 0,
+    fill: 'white'
+  },
+  buttonLabelStyle: {
+    textTransform: 'none',
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+  disabledButtonStyle: {
+    backgroundColor: '#bdbdbd',
+    height: 48,
+    lineHeight: '48px',
+    cursor: 'not-allowed'
+  },
+  enabledButtonStyle: {
+    backgroundColor: '#595d8f',
+    height: 48,
+    lineHeight: '48px'
   }
 }
+
 export default SendComponent;

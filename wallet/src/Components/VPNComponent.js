@@ -652,8 +652,8 @@ class VPNComponent extends Component {
                                             <p style={{ fontWeight: 'bold' }}>{lang[language].Flag}</p>
                                         </Col>
                                         <Col xs={4}>
-                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                            <p style={styles.columnHeadStyle}>
+                                                <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
                                                             vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.location.city),
@@ -672,8 +672,8 @@ class VPNComponent extends Component {
                                                     : <span></span>}</p>
                                         </Col>
                                         <Col xs={2}>
-                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                            <p style={styles.columnHeadStyle}>
+                                                <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
                                                             vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.net_speed.download),
@@ -692,8 +692,8 @@ class VPNComponent extends Component {
                                                     : <span></span>}</p>
                                         </Col>
                                         <Col xs={2}>
-                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                            <p style={styles.columnHeadStyle}>
+                                                <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
                                                             vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.latency),
@@ -711,8 +711,8 @@ class VPNComponent extends Component {
                                                     : <span></span>}</p>
                                         </Col>
                                         <Col xs={3}>
-                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                            <p style={styles.columnHeadStyle}>
+                                                <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
                                                             vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.price_per_GB),
@@ -745,17 +745,17 @@ class VPNComponent extends Component {
                                                             <Flag code={Country.getCode(vpn.location.country)} height="16" />
                                                         </Col>
                                                         <Col xs={4}>
-                                                            <p style={{ textAlign: 'center', wordBreak: 'break-all' }}>{vpn.location.city}, {vpn.location.country}</p>
+                                                            <p style={styles.fieldValueStyle}>{vpn.location.city}, {vpn.location.country}</p>
                                                         </Col>
                                                         <Col xs={2}>
-                                                            <p style={{ textAlign: 'center' }}>{(vpn.net_speed.download / (1024 * 1024)).toFixed(2)} Mbps</p>
+                                                            <p style={styles.fieldValueStyle}>{(vpn.net_speed.download / (1024 * 1024)).toFixed(2)} Mbps</p>
                                                         </Col>
                                                         <Col xs={2}>
-                                                            <p style={{ textAlign: 'center' }}>{vpn.latency ? vpn.latency : 'None'}
+                                                            <p style={styles.fieldValueStyle}>{vpn.latency ? vpn.latency : 'None'}
                                                                 {vpn.latency ? (vpn.latency === 'Loading...' ? null : ' ms') : null}</p>
                                                         </Col>
                                                         <Col xs={3}>
-                                                            <p style={{ textAlign: 'center' }}>{vpn.price_per_GB ? vpn.price_per_GB : 100}</p>
+                                                            <p style={styles.fieldValueStyle}>{vpn.price_per_GB ? vpn.price_per_GB : 100}</p>
                                                         </Col>
                                                         <ReactTooltip id="listOver" place="bottom">
                                                             <span>Click to Connect</span>
@@ -823,42 +823,42 @@ class VPNComponent extends Component {
                 >
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].City}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].City}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.location.city : ''}</p>
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? this.state.activeVpn.location.city : ''}</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Country}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].Country}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.location.country : ''}</p>
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? this.state.activeVpn.location.country : ''}</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Bandwidth}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].Bandwidth}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? (this.state.activeVpn.net_speed.download / (1024 * 1024)).toFixed(2) : ''} Mbps </p>
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? (this.state.activeVpn.net_speed.download / (1024 * 1024)).toFixed(2) : ''} Mbps </p>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Cost}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].Cost}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.price_per_GB : ''} SENTS/GB</p>
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? this.state.activeVpn.price_per_GB : ''} SENTS/GB</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Latency}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].Latency}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.latency : ''}
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? this.state.activeVpn.latency : ''}
                                 {this.state.activeVpn ? (this.state.activeVpn.latency === 'Loading...' ? null : 'ms') : null} </p>
                         </Col>
                     </Row>
@@ -886,12 +886,12 @@ class VPNComponent extends Component {
                     message={this.state.snackMessage}
                     autoHideDuration={2000}
                     onRequestClose={this.snackRequestClose}
-                    style={{ marginBottom: '2%' }}
+                    style={{ marginBottom: '1%' }}
                 />
                 <Snackbar
                     open={this.state.statusSnack}
                     message={this.state.statusMessage}
-                    style={{ marginBottom: '2%' }}
+                    style={{ marginBottom: '1%' }}
                 />
                 <Dialog
                     title="Install Dependencies"
@@ -984,6 +984,26 @@ const styles = {
         width: 14,
         cursor: 'pointer',
         marginLeft: 5
+    },
+    dialogHeadingStyle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: 'right'
+    },
+    dialogValueStyle: {
+        marginTop: -2
+    },
+    fieldValueStyle: {
+        textAlign: 'center',
+        wordBreak: 'break-all'
+    },
+    columnHeadStyle: {
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
+    columnSortStyle: {
+        color: '#373a3c',
+        cursor: 'pointer'
     }
 }
 

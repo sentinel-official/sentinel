@@ -111,12 +111,12 @@ class History extends Component {
           </IconButton>
           <RaisedButton
             label="SENT"
-            buttonStyle={this.state.ethActive ? {} : { backgroundColor: 'grey' }}
+            buttonStyle={this.state.ethActive ? {} : styles.activeButtonColor}
             onClick={() => { this.setState({ ethActive: false }) }}
           />
           <RaisedButton
             label="ETH"
-            buttonStyle={this.state.ethActive ? { backgroundColor: 'grey' } : {}}
+            buttonStyle={this.state.ethActive ? styles.activeButtonColor : {}}
             onClick={() => { this.setState({ ethActive: true }) }}
           />
         </span>
@@ -166,6 +166,9 @@ const styles = {
   transactionsHeading: {
     fontSize: 16,
     fontWeight: 600
+  },
+  activeButtonColor: {
+    backgroundColor: 'grey'
   }
 }
 

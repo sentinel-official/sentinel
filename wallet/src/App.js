@@ -17,8 +17,10 @@ class App extends Component {
     componentWillMount = () => {
         var that = this;
         checkKeystore(function (err) {
-            if (err) that.setState({ scene: 'home' });
-            else that.setState({ scene: 'authenticate' });
+            setTimeout(function () {
+                if (err) that.setState({ scene: 'home' });
+                else that.setState({ scene: 'authenticate' });
+            }, 5000);
         })
     }
 
@@ -45,7 +47,11 @@ class App extends Component {
             case 'home':
                 return <Home set={this.setComponent} lang={this.state.lang} />
             default:
-                return null
+                return <div style={{ backgroundColor: '#1e1e1e', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                    <img src='../src/Images/logo.jpeg' style={{ width: 150, height: 150 }} />
+                    <p style={{ fontSize: 40, color: 'white' }}>Sentinel Group</p>
+                    <img src='../src/Images/loading_home.gif' style={{}} />
+                </div>
         }
     }
 }

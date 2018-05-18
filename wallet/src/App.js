@@ -15,12 +15,13 @@ class App extends Component {
         }
     }
     componentWillMount = () => {
+        document.getElementById('home').style.display = 'none';
         var that = this;
         checkKeystore(function (err) {
             setTimeout(function () {
                 if (err) that.setState({ scene: 'home' });
                 else that.setState({ scene: 'authenticate' });
-            }, 5000);
+            }, 3000);
         })
     }
 

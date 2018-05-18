@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_tx_history"
+            android:title="@string/transaction_history" />
+        <item
+            android:id="@+id/nav_vpn_history"
+            android:title="@string/vpn_history" />
+        <item
+            android:id="@+id/nav_nw_stats"
+            android:title="@string/network_stats" />
+        <item
+            android:id="@+id/nav_usage_stats"
+            android:title="@string/usage_stats" />
+        <item
+            android:id="@+id/nav_reset_pin"
+            android:title="@string/reset_pin" />
+        <item
+            android:id="@+id/nav_help"
+            android:title="@string/help" />
+        <item
+            android:id="@+id/nav_about"
+            android:title="@string/about" />
+    </group>
+</menu>

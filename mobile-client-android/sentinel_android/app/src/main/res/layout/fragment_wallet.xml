@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_private_key"
+        style="@style/CustomTextAppearance.Text12.White50Normal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/private_key_desc"
+        app:layout_constraintBottom_toTopOf="@+id/tv_private_key_value"
+        app:layout_constraintEnd_toStartOf="@+id/ib_copy_key"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_private_key_value"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="@+id/tv_private_key"
+        app:layout_constraintStart_toStartOf="@+id/tv_private_key"
+        app:layout_constraintTop_toBottomOf="@+id/tv_private_key" />
+
+    <ImageButton
+        android:id="@+id/ib_copy_key"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="@dimen/margin_8"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_private_key_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_private_key"
+        app:layout_constraintTop_toTopOf="@+id/tv_private_key"
+        app:srcCompat="@drawable/ic_copy"
+        tools:ignore="ContentDescription" />
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@color/colorCardDark"
+        app:cardCornerRadius="@dimen/margin_4"
+        app:cardElevation="@dimen/margin_8"
+        app:cardPreventCornerOverlap="false"
+        app:layout_constraintBottom_toTopOf="@+id/btn_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_private_key_value"
+        app:layout_constraintVertical_bias="0.0">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_vpn_state"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_state_blue"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_4"
+                android:paddingTop="@dimen/margin_4"
+                android:text="Wallet Balance"
+                app:layout_constraintBottom_toTopOf="@+id/tv_sent_balance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread" />
+
+            <TextView
+                android:id="@+id/tv_sent_balance"
+                style="@style/CustomTextAppearance.Text32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawablePadding="@dimen/margin_4"
+                android:drawableTop="@drawable/ic_app_icon"
+                android:paddingLeft="@dimen/margin_8"
+                android:paddingRight="@dimen/margin_8"
+                android:text="893,678.25"
+                app:layout_constraintBottom_toTopOf="@+id/tv_sent_paid_desc"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
+
+            <TextView
+                android:id="@+id/tv_sent_paid_desc"
+                style="@style/CustomTextAppearance.Text12.GrayNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/sent_desc"
+                app:layout_constraintBottom_toTopOf="@+id/iv_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sent_balance" />
+
+            <ImageView
+                android:id="@+id/iv_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_1"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:src="@color/colorCardShadow"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ether_balance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sent_paid_desc"
+                app:layout_constraintVertical_chainStyle="spread"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_ether_balance"
+                style="@style/CustomTextAppearance.Text32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/margin_4"
+                android:drawableTop="@drawable/ic_ethereum"
+                android:paddingLeft="@dimen/margin_8"
+                android:paddingRight="@dimen/margin_8"
+                android:text="1.24456479"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ether_desc"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
+
+            <TextView
+                android:id="@+id/tv_ether_desc"
+                style="@style/CustomTextAppearance.Text12.GrayNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/eth_desc"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ether_balance" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/btn_send"
+        style="@style/CustomTextAppearance.OrangeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_receive"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_receive"
+        style="@style/CustomTextAppearance.BlueButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Receive"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_send"
+        app:layout_constraintTop_toTopOf="@+id/btn_send" />
+</android.support.constraint.ConstraintLayout>

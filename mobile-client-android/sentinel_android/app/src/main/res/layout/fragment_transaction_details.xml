@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_source"
+        style="@style/CustomTextAppearance.Text12"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Send SENT"
+        app:layout_constraintBottom_toTopOf="@+id/tv_date_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_date_time"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Thu 11 May 2018   10:30:47 GMT"
+        app:layout_constraintBottom_toTopOf="@+id/tv_tx_status"
+        app:layout_constraintEnd_toEndOf="@+id/tv_source"
+        app:layout_constraintStart_toStartOf="@+id/tv_source"
+        app:layout_constraintTop_toBottomOf="@+id/tv_source" />
+
+    <TextView
+        android:id="@+id/tv_tx_status"
+        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Status: Success"
+        app:layout_constraintBottom_toTopOf="@+id/iv_divider"
+        app:layout_constraintEnd_toEndOf="@+id/tv_date_time"
+        app:layout_constraintStart_toStartOf="@+id/tv_date_time"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date_time" />
+
+    <ImageView
+        android:id="@+id/iv_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_from"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_tx_status"
+        app:srcCompat="@color/colorCardDark"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_from"
+        style="@style/CustomTextAppearance.Text10.Gray"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/from"
+        app:layout_constraintBottom_toTopOf="@+id/tv_from_address"
+        app:layout_constraintEnd_toStartOf="@+id/ib_copy_from"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
+
+    <TextView
+        android:id="@+id/tv_from_address"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
+        app:layout_constraintBottom_toTopOf="@+id/tv_to"
+        app:layout_constraintEnd_toEndOf="@+id/tv_from"
+        app:layout_constraintStart_toStartOf="@+id/tv_from"
+        app:layout_constraintTop_toBottomOf="@+id/tv_from" />
+
+    <ImageButton
+        android:id="@+id/ib_copy_from"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="@dimen/margin_8"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_from_address"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_from"
+        app:layout_constraintTop_toTopOf="@+id/tv_from"
+        app:srcCompat="@drawable/ic_copy"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_to"
+        style="@style/CustomTextAppearance.Text10.Gray"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/to"
+        app:layout_constraintBottom_toTopOf="@+id/tv_to_address"
+        app:layout_constraintEnd_toStartOf="@+id/ib_copy_to"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_from_address" />
+
+    <TextView
+        android:id="@+id/tv_to_address"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
+        app:layout_constraintBottom_toTopOf="@+id/tv_tx_hash"
+        app:layout_constraintEnd_toEndOf="@+id/tv_to"
+        app:layout_constraintStart_toStartOf="@+id/tv_to"
+        app:layout_constraintTop_toBottomOf="@+id/tv_to" />
+
+    <ImageButton
+        android:id="@+id/ib_copy_to"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="@dimen/margin_8"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_to_address"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_to"
+        app:layout_constraintTop_toTopOf="@+id/tv_to"
+        app:srcCompat="@drawable/ic_copy"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_tx_hash"
+        style="@style/CustomTextAppearance.Text10.Gray"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/tx_hash"
+        app:layout_constraintBottom_toTopOf="@+id/tv_tx_hash_value"
+        app:layout_constraintEnd_toStartOf="@+id/ib_copy_tx_hash"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_to_address" />
+
+    <TextView
+        android:id="@+id/tv_tx_hash_value"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
+        app:layout_constraintBottom_toTopOf="@+id/tv_amount"
+        app:layout_constraintEnd_toEndOf="@+id/tv_tx_hash"
+        app:layout_constraintStart_toStartOf="@+id/tv_tx_hash"
+        app:layout_constraintTop_toBottomOf="@+id/tv_tx_hash" />
+
+    <ImageButton
+        android:id="@+id/ib_copy_tx_hash"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="@dimen/margin_8"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_tx_hash_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_tx_hash"
+        app:layout_constraintTop_toTopOf="@+id/tv_tx_hash"
+        app:srcCompat="@drawable/ic_copy"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_amount"
+        style="@style/CustomTextAppearance.Text10.Gray"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/amount"
+        app:layout_constraintBottom_toTopOf="@+id/tv_amount_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_tx_hash_value" />
+
+    <TextView
+        android:id="@+id/tv_amount_value"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="1,743 SENTS"
+        app:layout_constraintBottom_toTopOf="@+id/tv_gas_price"
+        app:layout_constraintEnd_toEndOf="@+id/tv_amount"
+        app:layout_constraintStart_toStartOf="@+id/tv_amount"
+        app:layout_constraintTop_toBottomOf="@+id/tv_amount" />
+
+    <TextView
+        android:id="@+id/tv_gas_price"
+        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/gas_price"
+        app:layout_constraintBottom_toTopOf="@+id/tv_gas_price_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_amount_value" />
+
+    <TextView
+        android:id="@+id/tv_gas_price_value"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="2 Gwei"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tv_gas_price"
+        app:layout_constraintStart_toStartOf="@+id/tv_gas_price"
+        app:layout_constraintTop_toBottomOf="@+id/tv_gas_price" />
+
+</android.support.constraint.ConstraintLayout>

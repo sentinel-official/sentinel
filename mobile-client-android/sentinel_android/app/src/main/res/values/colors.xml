@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3B72DD</color>
+    <color name="colorPrimaryDark">#5E1D1D27</color>
+    <color name="colorAccent">#3B73DF</color>
+    <!-- Button Colors -->
+    <color name="colorButtonOrange">#E18F49</color>
+    <color name="colorButtonBlue">#3B73DF</color>
+    <color name="colorButtonGreen">#9BD362</color>
+    <color name="colorButtonRed">#952222</color>
+    <!-- Text Colors -->
+    <color name="colorTextWhite">#FFFFFF</color>
+    <color name="colorTextWhiteWithAlpha70">#BAFFFFFF</color>
+    <color name="colorTextWhiteWithAlpha50">#80FFFFFF</color>
+    <color name="colorTextBlack">#1D1D27</color>
+    <color name="colorTextBlue">#879FCC</color>
+    <color name="colorTextGray">#AEB1B5</color>
+    <!-- Control Color -->
+    <color name="colorControlNormal">#1FFFFFFF</color>
+    <!-- Background Window Color -->
+    <color name="colorWindowDark">#292837</color>
+    <color name="colorDrawerBackground">#F0141414</color>
+    <color name="colorCardLight">#E6EAED</color>
+    <color name="colorCardDark">#363749</color>
+    <color name="colorCardShadow">#3D000000</color>
+    <!-- Ripple Mask -->
+    <color name="colorRippleMask">#33000000</color>
+</resources>

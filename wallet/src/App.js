@@ -50,7 +50,7 @@ class App extends Component {
             default:
                 return <div style={{ backgroundColor: '#1e1e1e', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                     <img src='../src/Images/logo.jpeg' style={{ width: 150, height: 150 }} />
-                    <p style={{ fontSize: 40, color: 'white' }}>Sentinel Group</p>
+                    <p style={{ fontSize: 40, color: 'white' }}>Sentinel Security Group</p>
                     <img src='../src/Images/loading_home.gif' style={{}} />
                 </div>
         }

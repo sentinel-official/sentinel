@@ -74,16 +74,20 @@ class GetTotalDataCount(object):
 class GetLastDataCount(object):
     def on_get(self, req, resp):
         total_count = []
-        result = db.connections.aggregate([
-            {'$match': {'start_time': {'$gte': time.time() - (24 * 60 * 60)}}},
-            {
-                '$group': {
-                    '_id': None,
-                    'Total': {
-                        '$sum': '$server_usage.down'
-                    }
+        result = db.connections.aggregate([{
+            '$match': {
+                'start_time': {
+                    '$gte': time.time() - (24 * 60 * 60)
                 }
-            }])
+            }
+        }, {
+            '$group': {
+                '_id': None,
+                'Total': {
+                    '$sum': '$server_usage.down'
+                }
+            }
+        }])
 
         for doc in result:
             total_count.append(doc)
@@ -255,6 +259,42 @@ class GetDailyPaidSentsCount(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
+
+class GetAveragePaidSentsCount(object):
+    def on_get(self, req, resp):
+        avg_count = []
+
+        result = db.payments.aggregate([{'$group':{'_id':0,'AverageCount':{'$avg':'$paid_count'}}}])
+
+        for doc in result:
+            avg_count.append(doc)
+
+        message = {'success': True, 'average': avg_count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+class GetAverageTotalSentsCount(object):
+    def on_get(self, req, resp):
+        avg_count = []
+
+        result = db.payments.aggregate([
+            {'$project':{
+                'total':{'$add':['$paid_count','$unpaid_count']}
+                }
+            },{
+                '$group':{'_id':0,'Avg':{'$avg':'$total'}}}
+            ])
+
+        for doc in result:
+            avg_count.append(doc)
+
+        message = {'success': True, 'average': avg_count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
 class GetDailyTotalSentsUsed(object):
     def on_get(self, req, resp):
         daily_count = []
@@ -267,7 +307,9 @@ class GetDailyTotalSentsUsed(object):
                         }
                     ]
                 },
-                'amount': {'$add':['$paid_count','$unpaid_count']}
+                'amount': {
+                    '$add': ['$paid_count', '$unpaid_count']
+                }
             }
         }, {
             '$group': {
@@ -294,6 +336,7 @@ class GetDailyTotalSentsUsed(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
 
 class GetAverageNodesCount(object):
     def on_get(self, req, resp):
@@ -451,7 +494,7 @@ class GetDailyDurationCount(object):
                     '$cond': [{
                         '$eq': ['$end_time', None]
                     },
-                        int(time.time()), '$end_time']
+                              int(time.time()), '$end_time']
                 }
             }
         }, {
@@ -488,27 +531,40 @@ class GetDailyAverageDuration(object):
         result = db.connections.aggregate([{
             '$project': {
                 'total': {
-                    '$add': [datetime.datetime(1970, 1, 1), {
-                        '$multiply': ['$start_time', 1000]}
-                             ]},
-                'Sum': {'$sum': {
-                    '$subtract': [
-                        {'$cond': [
-                            {'$eq': ['$end_time', None]},
-                            int(time.time()),
-                            '$end_time']
-                        },
-                        '$start_time'
-                    ]}
-                }}
+                    '$add': [
+                        datetime.datetime(1970, 1, 1), {
+                            '$multiply': ['$start_time', 1000]
+                        }
+                    ]
+                },
+                'Sum': {
+                    '$sum': {
+                        '$subtract': [{
+                            '$cond': [{
+                                '$eq': ['$end_time', None]
+                            },
+                                      int(time.time()), '$end_time']
+                        }, '$start_time']
+                    }
+                }
+            }
         }, {
             '$group': {
-                '_id': {'$dateToString': {'format': '%d/%m/%Y', 'date': '$total'}},
-                'Average': {'$avg': '$Sum'}}
+                '_id': {
+                    '$dateToString': {
+                        'format': '%d/%m/%Y',
+                        'date': '$total'
+                    }
+                },
+                'Average': {
+                    '$avg': '$Sum'
+                }
+            }
         }, {
-            '$sort': {'_id': 1}
-        }
-        ])
+            '$sort': {
+                '_id': 1
+            }
+        }])
 
         for doc in result:
             daily_count.append(doc)
@@ -530,7 +586,7 @@ class GetAverageDuration(object):
                             '$cond': [{
                                 '$eq': ['$end_time', None]
                             },
-                                int(time.time()), '$end_time']
+                                      int(time.time()), '$end_time']
                         }, '$start_time']
                     }
                 }
@@ -556,29 +612,33 @@ class GetAverageDuration(object):
 class GetLastAverageDuration(object):
     def on_get(self, req, resp):
         avg_count = []
-        result = db.connections.aggregate([
-            {'$match': {'start_time': {'$gte': time.time() - (24 * 60 * 60)}}},
-            {
-                '$project': {
-                    'Sum': {
-                        '$sum': {
-                            '$subtract': [{
-                                '$cond': [{
-                                    '$eq': ['$end_time', None]
-                                },
-                                    int(time.time()), '$end_time']
-                            }, '$start_time']
-                        }
+        result = db.connections.aggregate([{
+            '$match': {
+                'start_time': {
+                    '$gte': time.time() - (24 * 60 * 60)
+                }
+            }
+        }, {
+            '$project': {
+                'Sum': {
+                    '$sum': {
+                        '$subtract': [{
+                            '$cond': [{
+                                '$eq': ['$end_time', None]
+                            },
+                                      int(time.time()), '$end_time']
+                        }, '$start_time']
                     }
                 }
-            }, {
-                '$group': {
-                    '_id': None,
-                    'Average': {
-                        '$avg': '$Sum'
-                    }
+            }
+        }, {
+            '$group': {
+                '_id': None,
+                'Average': {
+                    '$avg': '$Sum'
                 }
-            }])
+            }
+        }])
 
         for doc in result:
             avg_count.append(doc)

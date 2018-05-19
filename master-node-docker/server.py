@@ -39,6 +39,8 @@ from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
 from sentinel.node import GetDailyPaidSentsCount
 from sentinel.node import GetDailyTotalSentsUsed
+from sentinel.node import GetAveragePaidSentsCount
+from sentinel.node import GetAverageTotalSentsCount
 from sentinel.tokens import GetAvailableTokens
 from sentinel.tokens import GetSents
 from sentinel.tokens import TokenSwapRawTransaction
@@ -97,6 +99,8 @@ server.add_route('/stats/time/average-daily', GetDailyAverageDuration())
 server.add_route('/stats/time/last-average', GetLastAverageDuration())
 server.add_route('/stats/payment/paid-sents-count', GetDailyPaidSentsCount())
 server.add_route('/stats/paymnet/total-sents-used', GetDailyTotalSentsUsed())
+server.add_route('/stats/payment/average-paid-sents', GetAveragePaidSentsCount())
+server.add_route('/stats/paymnet/average-total-sents', GetAverageTotalSentsCount())
 server.add_route('/stats/node', GetNodeStatistics())
 
 # Token Swaps

@@ -21,3 +21,5 @@ from .stats import GetTotalDataCount
 from .stats import GetTotalNodeCount
 from .stats import GetDailyPaidSentsCount
 from .stats import GetDailyTotalSentsUsed
+from .stats import GetAveragePaidSentsCount
+from .stats import GetAverageTotalSentsCount

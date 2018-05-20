@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/margin_8">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@color/colorCardDark"
+        app:cardCornerRadius="@dimen/margin_4"
+        app:cardElevation="@dimen/margin_8"
+        app:cardPreventCornerOverlap="false"
+        app:layout_constraintBottom_toTopOf="@+id/btn_make_payment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="spread_inside">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_vpn_state"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_state_green"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_4"
+                android:paddingTop="@dimen/margin_4"
+                android:text="VPN Status: Connected"
+                android:textColor="@color/colorTextBlack"
+                app:layout_constraintBottom_toTopOf="@+id/tv_source"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <TextView
+                android:id="@+id/tv_source"
+                style="@style/CustomTextAppearance.Text18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/margin_16"
+                android:paddingLeft="@dimen/margin_8"
+                android:paddingRight="@dimen/margin_8"
+                android:paddingTop="@dimen/margin_16"
+                android:text="Denver, CO, USA"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ether_balance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
+
+            <ImageView
+                android:id="@+id/iv_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_1"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:src="@color/colorCardShadow"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ether_balance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_source"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_ether_balance"
+                style="@style/CustomTextAppearance.Text12.White70"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="77 Mbps\nDownload Speed"
+                app:layout_constraintBottom_toTopOf="@+id/tv_bandwidth"
+                app:layout_constraintEnd_toStartOf="@+id/tv_upload_speed_span"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
+
+            <TextView
+                android:id="@+id/tv_upload_speed_span"
+                style="@style/CustomTextAppearance.Text12.White70"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:text="12 Mbps\nUpload Speed"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_ether_balance"
+                app:layout_constraintEnd_toStartOf="@+id/tv_ether_desc"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_ether_balance"
+                app:layout_constraintTop_toTopOf="@+id/tv_ether_balance"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/tv_ether_desc"
+                style="@style/CustomTextAppearance.Text12.White70"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:gravity="center"
+                android:text="2.5 GB\nData Used"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_upload_speed_span"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_upload_speed_span"
+                app:layout_constraintTop_toTopOf="@+id/tv_upload_speed_span"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/tv_bandwidth"
+                style="@style/CustomTextAppearance.Text10.Gray"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorCardShadow"
+                android:paddingBottom="@dimen/margin_8"
+                android:paddingEnd="@dimen/margin_4"
+                android:paddingLeft="@dimen/margin_8"
+                android:paddingRight="@dimen/margin_4"
+                android:paddingStart="@dimen/margin_8"
+                android:paddingTop="@dimen/margin_16"
+                android:text="Bandwidth"
+                app:layout_constraintBottom_toTopOf="@+id/tv_price"
+                app:layout_constraintEnd_toStartOf="@+id/tv_latency"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ether_balance" />
+
+            <TextView
+                android:id="@+id/tv_latency"
+                style="@style/CustomTextAppearance.Text10.Gray"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorCardShadow"
+                android:paddingBottom="@dimen/margin_8"
+                android:paddingEnd="@dimen/margin_8"
+                android:paddingLeft="@dimen/margin_4"
+                android:paddingRight="@dimen/margin_8"
+                android:paddingStart="@dimen/margin_4"
+                android:paddingTop="@dimen/margin_16"
+                android:text="Latency"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_bandwidth"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_bandwidth"
+                app:layout_constraintTop_toTopOf="@+id/tv_bandwidth" />
+
+            <TextView
+                android:id="@+id/tv_price"
+                style="@style/CustomTextAppearance.Text10.Gray"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorCardShadow"
+                android:paddingBottom="@dimen/margin_16"
+                android:paddingEnd="@dimen/margin_4"
+                android:paddingLeft="@dimen/margin_8"
+                android:paddingRight="@dimen/margin_4"
+                android:paddingStart="@dimen/margin_8"
+                android:paddingTop="@dimen/margin_8"
+                android:text="Price(SENTs/ GB)"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_duration"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_bandwidth" />
+
+            <TextView
+                android:id="@+id/tv_duration"
+                style="@style/CustomTextAppearance.Text10.Gray"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorCardShadow"
+                android:paddingBottom="@dimen/margin_16"
+                android:paddingEnd="@dimen/margin_8"
+                android:paddingLeft="@dimen/margin_4"
+                android:paddingRight="@dimen/margin_8"
+                android:paddingStart="@dimen/margin_4"
+                android:paddingTop="@dimen/margin_8"
+                android:text="Duration"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_price"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_price"
+                app:layout_constraintTop_toTopOf="@+id/tv_price" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/btn_make_payment"
+        style="@style/CustomTextAppearance.OrangeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/disconnect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_view_vpn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+    <Button
+        android:id="@+id/btn_view_vpn"
+        style="@style/CustomTextAppearance.BlueButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/view_vpns"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_make_payment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_make_payment"
+        app:layout_constraintTop_toTopOf="@+id/btn_make_payment" />
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:cardBackgroundColor="@color/colorCardDark"
+    app:cardCornerRadius="@dimen/margin_4"
+    app:cardElevation="@dimen/margin_8"
+    app:cardPreventCornerOverlap="false">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_vpn_state"
+            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_state_red"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_4"
+            android:paddingTop="@dimen/margin_4"
+            android:text="Payment pending for this session"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_session_id"
+            style="@style/CustomTextAppearance.Text10.Gray"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/session_id"
+            app:layout_constraintBottom_toTopOf="@+id/tv_session_id_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
+
+        <TextView
+            android:id="@+id/tv_session_id_value"
+            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="ad3thdbu67yhjo83bh0cbd683vc732b7h7cv34u2"
+            app:layout_constraintBottom_toTopOf="@+id/tv_received_data_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_session_id" />
+
+        <TextView
+            android:id="@+id/tv_received_data"
+            style="@style/CustomTextAppearance.Text10.Gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/received_data"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_received_data_value"
+            app:layout_constraintEnd_toStartOf="@+id/tv_received_data_value"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_received_data_value"
+            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            android:layout_width="0dp"
+            android:layout_height="14dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="212.497 MB"
+            app:layout_constraintBottom_toTopOf="@+id/tv_duration_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_received_data"
+            app:layout_constraintTop_toBottomOf="@+id/tv_session_id_value" />
+
+        <TextView
+            android:id="@+id/tv_duration"
+            style="@style/CustomTextAppearance.Text10.Gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/duration"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_duration_value"
+            app:layout_constraintEnd_toStartOf="@+id/tv_duration_value"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_duration_value"
+            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="223 secs"
+            app:layout_constraintBottom_toTopOf="@+id/tv_date_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_duration"
+            app:layout_constraintTop_toBottomOf="@+id/tv_received_data_value" />
+
+        <TextView
+            android:id="@+id/tv_date_time"
+            style="@style/CustomTextAppearance.Text10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorCardShadow"
+            android:padding="@dimen/margin_8"
+            android:text="Thu 11 May 2018    10:30:47 GMT"
+            app:layout_constraintBottom_toTopOf="@+id/tv_pay_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_duration_value" />
+
+        <TextView
+            android:id="@+id/tv_pay_value"
+            style="@style/CustomTextAppearance.Text14.Orange"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorCardShadow"
+            android:padding="@dimen/margin_8"
+            android:text="Pay 20.33659845 SENTs"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_date_time" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

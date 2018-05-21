@@ -44,6 +44,7 @@ from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
 from sentinel.tokens import GetAvailableTokens
 from sentinel.tokens import GetSents
+from sentinel.tokens import SwapStatus
 from sentinel.tokens import TokenSwapRawTransaction
 from sentinel.utils import JSONTranslator
 
@@ -109,6 +110,7 @@ server.add_route('/tokens', Up())
 server.add_route('/tokens/available', GetAvailableTokens())
 server.add_route('/tokens/sents', GetSents())
 server.add_route('/tokens/swaps/raw-transaction', TokenSwapRawTransaction())
+server.add_route('/tokens/swaps/status', SwapStatus())
 
 # Mixer
 server.add_route('/mixer', Up())

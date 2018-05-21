@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 
 public class LauncherActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -14,6 +16,7 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
         initView();
+        checkUserLoginState();
     }
 
     private void initView() {
@@ -21,16 +24,33 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.btn_restore).setOnClickListener(this);
     }
 
+    private void checkUserLoginState() {
+        String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
+        if (!aAccountAddress.isEmpty()) {
+            startCreateAccountActivity();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_create_auid:
-                startActivity(new Intent(this, CreateAccountActivity.class));
+                startCreateAccountActivity();
                 break;
 
             case R.id.btn_restore:
-                startActivity(new Intent(this, RestoreKeystoreActivity.class));
+                startRestoreKeystoreActivity();
                 break;
         }
+    }
+
+    private void startCreateAccountActivity() {
+        startActivity(new Intent(this, CreateAccountActivity.class));
+        finish();
+    }
+
+    private void startRestoreKeystoreActivity() {
+        startActivity(new Intent(this, RestoreKeystoreActivity.class));
+        finish();
     }
 }

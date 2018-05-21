@@ -8,13 +8,13 @@ import android.arch.persistence.room.Query;
 @Dao
 public interface PinEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPinEntity(PinEntity iEntity);
+    long insertPinEntity(PinEntity iEntity);
 
-    @Query("SELECT * FROM pin_entity WHERE accountAddress = :iAccountAddress")
-    PinEntity getPinEntity(String iAccountAddress);
+    @Query("SELECT Count(*) FROM pin_entity WHERE appPin = :iPin AND accountAddress = :iAccountAddress")
+    int getPinEntity(int iPin, String iAccountAddress);
 
-    @Query("UPDATE pin_entity SET appPin = :iPin WHERE accountAddress = :iAccountAddress")
-    void updatePin(int iPin, String iAccountAddress);
+    @Query("UPDATE pin_entity SET appPin = :iNewPin WHERE appPin = :iOldPin AND accountAddress = :iAccountAddress")
+    int updatePin(int iOldPin, int iNewPin, String iAccountAddress);
 
     @Query("DELETE FROM pin_entity")
     void deletePin();

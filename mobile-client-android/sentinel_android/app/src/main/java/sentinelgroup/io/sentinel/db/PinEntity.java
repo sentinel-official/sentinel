@@ -11,8 +11,7 @@ public class PinEntity {
     private String accountAddress;
     private int appPin;
 
-    public PinEntity(long id, String accountAddress, int appPin) {
-        this.id = id;
+    public PinEntity(String accountAddress, int appPin) {
         this.accountAddress = accountAddress;
         this.appPin = appPin;
     }

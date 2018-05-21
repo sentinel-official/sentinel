@@ -7,7 +7,6 @@
     <string name="create_account">Create your AUID</string>
     <string name="or">OR</string>
     <string name="restore_account_desc">Already have an account?\nRestore your Keystore File</string>
-    <string name="restore_account">Restore</string>
     <string name="password_hint">Enter Password to Create AUID</string>
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="next">Next</string>
@@ -65,4 +64,18 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_auid">Create User ID</string>
+    <string name="no_internet">No internet connectivity. Please try again.</string>
+    <string name="password_mismatch">Password and Confirm Password did not match</string>
+    <string name="please_note">Please Note</string>
+    <string name="secure_keys">Secure Keys</string>
+    <string name="storage_permission_denied">Storage permission not granted.</string>
+    <string name="key_copied">Private Key copied to clipboard</string>
+    <string name="set_app_pin">Set App PIN</string>
+    <string name="pin_mismatch">Pin and Confirm Pin did not match</string>
+    <string name="generic_error_message">Something went wrong. Please try again.</string>
+    <string name="invalid_pin">Invalid PIN. Please try again.</string>
+    <string name="restore_keystore">Restore Keystore File</string>
+    <string name="select_file">Select a File</string>
+    <string name="uploaded_success">File uploaded successfully</string>
 </resources>

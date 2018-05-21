@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_private_key"
+        android:id="@+id/private_key"
         style="@style/CustomTextAppearance.Text12.White50Normal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/private_key_desc"
-        app:layout_constraintBottom_toTopOf="@+id/tv_private_key_value"
+        app:layout_constraintBottom_toTopOf="@+id/tv_private_key"
         app:layout_constraintEnd_toStartOf="@+id/ib_copy_key"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,7 +22,7 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/tv_private_key_value"
+        android:id="@+id/tv_private_key"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -30,9 +30,9 @@
         android:layout_marginTop="4dp"
         android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
-        app:layout_constraintEnd_toEndOf="@+id/tv_private_key"
-        app:layout_constraintStart_toStartOf="@+id/tv_private_key"
-        app:layout_constraintTop_toBottomOf="@+id/tv_private_key" />
+        app:layout_constraintEnd_toEndOf="@+id/private_key"
+        app:layout_constraintStart_toStartOf="@+id/private_key"
+        app:layout_constraintTop_toBottomOf="@+id/private_key" />
 
     <ImageButton
         android:id="@+id/ib_copy_key"
@@ -42,10 +42,10 @@
         android:layout_marginRight="8dp"
         android:background="?android:attr/selectableItemBackground"
         android:padding="@dimen/margin_8"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_private_key_value"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_private_key"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_private_key"
-        app:layout_constraintTop_toTopOf="@+id/tv_private_key"
+        app:layout_constraintStart_toEndOf="@+id/private_key"
+        app:layout_constraintTop_toTopOf="@+id/private_key"
         app:srcCompat="@drawable/ic_copy"
         tools:ignore="ContentDescription" />
 
@@ -68,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_private_key_value"
+        app:layout_constraintTop_toBottomOf="@+id/tv_private_key"
         app:layout_constraintVertical_bias="0.0">
 
         <android.support.constraint.ConstraintLayout

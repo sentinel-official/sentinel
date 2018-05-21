@@ -13,4 +13,9 @@
     <style name="AppTheme.CustomTheme">
         <!-- status bar cannot be made transparent -->
     </style>
+
+    <style name="CustomDialogFragmentNoDim" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:backgroundDimAmount">0.0</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

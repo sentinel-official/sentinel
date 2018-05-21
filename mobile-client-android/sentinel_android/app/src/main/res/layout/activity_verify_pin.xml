@@ -98,6 +98,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
+        android:imeOptions="actionDone"
         app:layout_constraintBottom_toTopOf="@+id/btn_verify"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"

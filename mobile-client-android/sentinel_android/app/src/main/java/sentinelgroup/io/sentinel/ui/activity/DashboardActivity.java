@@ -12,6 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Logger;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -22,6 +25,8 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         initView();
+        String string = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
+        Logger.logDebug("ACC_ADDRESS", string);
     }
 
     private void initView() {

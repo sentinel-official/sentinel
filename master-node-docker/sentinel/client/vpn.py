@@ -12,14 +12,15 @@ from ..eth import vpn_service_manager
 from ..helpers import eth_helper
 
 
-def get_vpns_list():
+def get_vpns_list(vpn_type):
     _list = db.nodes.find({
-        'vpn.status': 'up'
+        'vpn.status': 'up',
+        'vpn_type': vpn_type
     }, {
         '_id': 0,
         'account_addr': 1,
         'ip': 1,
-        'price_per_GB': 1,
+        'price_per_gb': 1,
         'location': 1,
         'net_speed.upload': 1,
         'latency': 1,
@@ -34,10 +35,10 @@ def get_current_vpn_usage(account_addr, session_name):
         'session_name': session_name
     }, {
         '_id': 0,
-        'usage': 1
+        'server_usage': 1
     })
 
-    return {} if result is None else result['usage']
+    return {} if result is None else result['server_usage']
 
 
 class GetVpnCredentials(object):
@@ -49,8 +50,9 @@ class GetVpnCredentials(object):
         @apiParam {String} account_addr Account address.
         @apiParam {String} vpn_addr Account address of the VPN server.
         @apiSuccess {String} ip IP address of the VPN server.
-        @apiSuccess {String} port Port number of the VPN server.
+        @apiSuccess {Number} port Port number of the VPN server.
         @apiSuccess {String} token Unique token for validation.
+        @apiSuccess {String} vpn_addr VPN server account address.
         """
         account_addr = str(req.body['account_addr']).lower()
         vpn_addr = str(req.body['vpn_addr']).lower()
@@ -80,7 +82,8 @@ class GetVpnCredentials(object):
                             'message': 'Currently VPN server is not available. Please try after sometime.'
                         }
                     else:
-                        error, is_paid = eth_helper.get_initial_payment(account_addr)
+                        error, is_paid = eth_helper.get_initial_payment(
+                            account_addr)
                         if error is None:
                             if is_paid is True:
                                 try:
@@ -91,7 +94,8 @@ class GetVpnCredentials(object):
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)
-                                    _ = requests.post(url, json=body, timeout=10)
+                                    _ = requests.post(
+                                        url, json=body, timeout=10)
                                     message = {
                                         'success': True,
                                         'ip': ip,
@@ -138,11 +142,12 @@ class PayVpnUsage(object):
         @api {post} /client/vpn/pay VPN usage payment.
         @apiName PayVpnUsage
         @apiGroup VPN
+        @apiParam {String} payment_type Type of payment {init | normal}
+        @apiParam {String} tx_data Hex code of the transaction.
+        @apiParam {String} net Ethereum chain name {main | rinkeby}.
         @apiParam {String} from_addr Account address.
         @apiParam {Number} amount Amount to be paid to VPN server.
         @apiParam {Number} session_id Session ID of the VPN connection.
-        @apiParam {String} tx_data Hex code of the transaction.
-        @apiParam {String} net Ethereum chain name {main | rinkeby}.
         @apiSuccess {String[]} errors Errors if any.
         @apiSuccess {String[]} tx_hashes Transaction hashes.
         """
@@ -154,7 +159,8 @@ class PayVpnUsage(object):
         session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
             'session_id'] is not None else None
 
-        errors, tx_hashes = eth_helper.pay_vpn_session(from_addr, amount, session_id, net, tx_data, payment_type)
+        errors, tx_hashes = eth_helper.pay_vpn_session(
+            from_addr, amount, session_id, net, tx_data, payment_type)
 
         if len(errors) > 0:
             message = {
@@ -177,11 +183,21 @@ class PayVpnUsage(object):
 
 class ReportPayment(object):
     def on_post(self, req, resp):
+        """
+        @api {post} /client/vpn/report Report VPN payment.
+        @apiName ReportPayment
+        @apiGroup VPN
+        @apiParam {String} from_addr Account address.
+        @apiParam {Number} amount Amount to be paid to VPN server.
+        @apiParam {Number} session_id Session ID of the VPN connection.
+        @apiSuccess {String} tx_hash Transaction hash.
+        """
         from_addr = str(req.body['from_addr']).lower()
         amount = int(req.body['amount'])
         session_id = str(req.body['session_id'])
 
-        error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, amount, session_id)
+        error, tx_hash = vpn_service_manager.pay_vpn_session(
+            from_addr, amount, session_id)
 
         if error is None:
             message = {
@@ -214,10 +230,7 @@ class GetVpnUsage(object):
         error, usage = eth_helper.get_vpn_usage(account_addr)
 
         if error is None:
-            message = {
-                'success': True,
-                'usage': usage
-            }
+            message = {'success': True, 'usage': usage}
         else:
             message = {
                 'success': False,
@@ -237,7 +250,32 @@ class GetVpnsList(object):
         @apiGroup VPN
         @apiSuccess {Object[]} list Details of all VPN servers.
         """
-        _list = get_vpns_list()
+        _list = get_vpns_list('openvpn')
+        for item in _list:
+            item['price_per_GB'] = item['price_per_gb']
+            item.pop('price_per_gb')
+
+        message = {
+            'success': True,
+            'list': _list
+        }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
+class GetSocksList(object):
+    def on_get(self, req, resp):
+        """
+        @api {get} /client/vpn/socks-list Get all unoccupied Socks servers list.
+        @apiName GetSocksList
+        @apiGroup VPN
+        @apiSuccess {Object[]} list Details of all Socks servers.
+        """
+        _list = get_vpns_list('socks5')
+        for item in _list:
+            item['price_per_GB'] = item['price_per_gb']
+            item.pop('price_per_gb')
 
         message = {
             'success': True,

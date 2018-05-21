@@ -11,14 +11,6 @@ TOKENS = [
         'symbol': 'ETH'
     },
     {
-        'address': '0xe41d2489571d322189246dafa5ebde1f4699f498',
-        'decimals': 18,
-        'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1896.png',
-        'name': '0x Protocol Token',
-        'price_url': 'https://api.coinmarketcap.com/v1/ticker/0x/?convert=SENT',
-        'symbol': 'ZRX'
-    },
-    {
         'address': '0xb8c77482e45f1f44de1745f52c74426c631bdd52',
         'decimals': 18,
         'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',

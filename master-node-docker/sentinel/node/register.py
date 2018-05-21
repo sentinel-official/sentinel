@@ -24,7 +24,8 @@ def get_latency(url):
 class RegisterNode(object):
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
-        price_per_gb = float(req.body['price_per_gb'])
+        price_per_gb = float(req.body['price_per_gb']) if 'price_per_gb' in req.body else float(
+            req.body['price_per_GB'])
         ip = str(req.body['ip'])
         vpn_type = str(
             req.body['vpn_type']
@@ -36,6 +37,8 @@ class RegisterNode(object):
         joined_on = int(time.time())
 
         node = db.nodes.find_one({'account_addr': account_addr})
+        if location['city'] == 'None':
+            location['city'] = 'Unknown'
         if node is None:
             _ = db.nodes.insert_one({
                 'account_addr': account_addr,

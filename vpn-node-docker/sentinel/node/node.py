@@ -40,11 +40,13 @@ class Node(object):
         db.node.update({
             'account_addr': self.config['account_addr']
         }, {
-            'ip': self.ip,
-            'location': self.location,
-            'net_speed': self.net_speed,
-            'price_per_gb': self.config['price_per_gb'],
-            'token': self.config['token']
+            '$set': {
+                'ip': self.ip,
+                'location': self.location,
+                'net_speed': self.net_speed,
+                'price_per_gb': self.config['price_per_gb'],
+                'token': self.config['token']
+            }
         }, upsert=True)
 
     def save_config_data(self):
@@ -73,8 +75,9 @@ class Node(object):
             self.net_speed['download'] = self.speed_test.download()
             self.net_speed['upload'] = self.speed_test.upload()
         elif info['type'] == 'config':
-            if info['account_addr'] is not None:
+            if ('account_addr' in info) and (info['account_addr'] is not None):
                 self.config['account_addr'] = info['account_addr']
-            if info['token'] is not None:
+            if ('token' in info) and (info['token'] is not None):
                 self.config['token'] = info['token']
             self.save_config_data()
+        self.save_to_db()

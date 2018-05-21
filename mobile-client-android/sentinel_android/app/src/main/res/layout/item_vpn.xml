@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:cardBackgroundColor="@color/colorCardDark"
+    app:cardCornerRadius="@dimen/margin_4"
+    app:cardElevation="@dimen/margin_8"
+    app:cardPreventCornerOverlap="false">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorCardShadow">
+
+        <TextView
+            android:id="@+id/tv_source"
+            style="@style/CustomTextAppearance.Text18"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorCardDark"
+            android:paddingBottom="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_8"
+            android:paddingTop="@dimen/margin_16"
+            android:text="Denver, CO, USA"
+            app:layout_constraintBottom_toTopOf="@+id/tv_bandwidth"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_bandwidth"
+            style="@style/CustomTextAppearance.Text10.Gray"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:paddingEnd="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
+            android:text="Bandwidth"
+            app:layout_constraintBottom_toTopOf="@+id/tv_price"
+            app:layout_constraintEnd_toStartOf="@+id/button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_source" />
+
+        <TextView
+            android:id="@+id/tv_price"
+            style="@style/CustomTextAppearance.Text10.Gray"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:paddingEnd="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
+            android:text="Price(SENTs/ GB)"
+            app:layout_constraintBottom_toTopOf="@+id/tv_latency"
+            app:layout_constraintEnd_toEndOf="@+id/tv_bandwidth"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_bandwidth" />
+
+        <TextView
+            android:id="@+id/tv_latency"
+            style="@style/CustomTextAppearance.Text10.Gray"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:paddingEnd="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
+            android:text="Latency"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_price"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_price" />
+
+        <TextView
+            android:id="@+id/button"
+            style="@style/CustomTextAppearance.BlackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/connect"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_latency"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_bandwidth"
+            app:layout_constraintTop_toTopOf="@+id/tv_bandwidth"
+            app:layout_constraintVertical_bias="1.0" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

@@ -264,7 +264,7 @@ class GetAveragePaidSentsCount(object):
     def on_get(self, req, resp):
         avg_count = []
 
-        result = db.payments.aggregate([{'$group':{'_id':0,'AverageCount':{'$avg':'$paid_count'}}}])
+        result = db.payments.aggregate([{'$group': {'_id': 0, 'AverageCount': {'$avg': '$paid_count'}}}])
 
         for doc in result:
             avg_count.append(doc)
@@ -274,17 +274,18 @@ class GetAveragePaidSentsCount(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
+
 class GetAverageTotalSentsCount(object):
     def on_get(self, req, resp):
         avg_count = []
 
         result = db.payments.aggregate([
-            {'$project':{
-                'total':{'$add':['$paid_count','$unpaid_count']}
-                }
-            },{
-                '$group':{'_id':0,'Avg':{'$avg':'$total'}}}
-            ])
+            {'$project': {
+                'total': {'$add': ['$paid_count', '$unpaid_count']}
+            }
+            }, {
+                '$group': {'_id': 0, 'Avg': {'$avg': '$total'}}}
+        ])
 
         for doc in result:
             avg_count.append(doc)
@@ -494,7 +495,7 @@ class GetDailyDurationCount(object):
                     '$cond': [{
                         '$eq': ['$end_time', None]
                     },
-                              int(time.time()), '$end_time']
+                        int(time.time()), '$end_time']
                 }
             }
         }, {
@@ -543,7 +544,7 @@ class GetDailyAverageDuration(object):
                             '$cond': [{
                                 '$eq': ['$end_time', None]
                             },
-                                      int(time.time()), '$end_time']
+                                int(time.time()), '$end_time']
                         }, '$start_time']
                     }
                 }
@@ -586,7 +587,7 @@ class GetAverageDuration(object):
                             '$cond': [{
                                 '$eq': ['$end_time', None]
                             },
-                                      int(time.time()), '$end_time']
+                                int(time.time()), '$end_time']
                         }, '$start_time']
                     }
                 }
@@ -626,7 +627,7 @@ class GetLastAverageDuration(object):
                             '$cond': [{
                                 '$eq': ['$end_time', None]
                             },
-                                      int(time.time()), '$end_time']
+                                int(time.time()), '$end_time']
                         }, '$start_time']
                     }
                 }

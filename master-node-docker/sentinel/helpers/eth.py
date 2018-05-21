@@ -58,6 +58,15 @@ class ETHHelper(object):
 
         return error, tx
 
+    def get_tx_count(self, account_addr, net):
+        tx_count = -1
+        if net == 'main':
+            error, tx_count = mainnet.get_transaction_count(account_addr)
+        elif net == 'rinkeby':
+            error, tx_count = rinkeby.get_transaction_count(account_addr)
+
+        return tx_count
+
     def get_valid_nonce(self, account_addr, net):
         key = account_addr + '_' + net
         previous_nonce = self.redis.get(key)

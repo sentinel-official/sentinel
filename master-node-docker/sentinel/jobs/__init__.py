@@ -1,5 +1,6 @@
 # coding=utf-8
 from .alive import UpdateNodesStatus
-from .statistics import DailyActiveNodes
+from .mixer import Mixer
 from .payments import DailySentsCount
+from .statistics import DailyActiveNodes
 from .swaps import Swaps

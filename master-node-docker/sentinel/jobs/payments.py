@@ -1,7 +1,6 @@
 # coding=utf-8
 import datetime
 import time
-
 from _thread import start_new_thread
 
 from ..db import db
@@ -44,10 +43,10 @@ class DailySentsCount(object):
                                                         (24 * 60 * 60)):
                                     if obj['is_payed']:
                                         paid_count = paid_count + (
-                                            float(obj['amount']) / (10**8))
+                                                float(obj['amount']) / (10 ** 8))
                                     else:
                                         unpaid_count = unpaid_count + (
-                                            float(obj['amount']) / (10**8))
+                                                float(obj['amount']) / (10 ** 8))
 
                 _ = db.payments.update(
                     {

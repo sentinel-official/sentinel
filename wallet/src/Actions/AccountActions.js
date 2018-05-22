@@ -2,7 +2,8 @@ const fs = window.require('fs');
 var async = window.require('async');
 const electron = window.require('electron');
 const remote = electron.remote;
-const { exec } = window.require('child_process');
+const { exec, execSync } = window.require('child_process');
+const os = window.require('os');
 const config = require('../config');
 const B_URL = 'https://api.sentinelgroup.io';
 var ETH_BALANCE_URL;
@@ -832,16 +833,52 @@ export function connectSocks(account_addr, vpn_addr, cb) {
     else {
       nextStep();
     }
-    function checkNssm() {
-      exec('choco install nssm -y', function (instaErr, instaOut, instDerr) {
+   function checkNssm() {
+      exec('choco install nssm -y',async function (instaErr, instaOut, instDerr) {
         if (instaErr) {
           cb({ message: 'Problem faced working with nssm. Please restart sentinel app once.' }, false, true, false, null);
         }
         else {
-          let username = getUserHome();
-          exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\socks5.exe`, function (execErr, execOut, execStd) {
-            nextStep();
-          })
+          let cmd;
+          let output;
+          if(os.release().indexOf('10.') === 0){
+            cmd = 'reg query "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\URLAssociations\\http\\UserChoice" | findstr "ProgId"'
+            output =  execSync(`${cmd}`);
+            output =  await output.toString().trim().replace(/\s\s+/g, ' ');
+            output = await output.split(' ')[2].toLowerCase();
+            if(output.indexOf('app') > -1){
+              output = 'microsoftedge';
+            } else if (output.indexOf('ie.http') > -1){
+              output = 'iexplore'
+            } else if (output.indexOf('chrome') > -1){
+              output = 'chrome'
+            } else if (output.indexOf('firefox') > -1){
+              output = 'firefox'
+            }
+          } else {
+             cmd = 'reg query "HKLM\\Software\\Clients\\StartMenuInternet" | findstr "REG_SZ"';
+             output =  execSync(`${cmd}`);
+             output = await output.toString().trim().split(' ')[8].toLowerCase();
+             if(output.indexOf('iexplore') > -1){
+              output = 'iexplore';
+            } else if (output.indexOf('google') > -1){
+              output = 'chrome'
+            } else if (output.indexOf('firefox') > -1){
+              output = 'firefox'
+            }
+          }             
+             exec(`tasklist /v /fo csv | findstr /i ${output}`,function(stderr, stdout, error){
+              if(stdout.toString() === ''){
+                let username = getUserHome();
+                 exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\socks5.exe`, function (execErr, execOut, execStd) {
+                  nextStep();
+                 });
+                 
+                }
+               else {
+                   cb({ message: 'Your Default Browser is overriding proxy settings.Please close it if its running.' }, false, true, false, null);                 
+               }
+             });
         }
       })
     }
@@ -926,6 +963,7 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                   }, 2000);
                 }
                 function checkWindows() {
+                  console.log(count);
                   getSocksProcesses(function (err, pids) {
                     if (err) { }
                     else {
@@ -941,9 +979,14 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                       let keystore = JSON.stringify(data);
                       fs.writeFile(CONFIG_FILE, keystore, function (err) {
                       });
-                      cb(null, false, false, false, SESSION_NAME);
-                      count = 4;
+                      let cmd1 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 1';
+                      let cmd2 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyServer /t REG_SZ /d 127.0.0.1:1080';
+                      exec(`${cmd1} && ${cmd2}`, function(stderr,stdout,error){
+                           cb(null, false, false, false, SESSION_NAME);
+                           count = 4;
+                      });
                     }
+                    
                     count++;
                     if (count < 4) {
                       setTimeout(function () { checkWindows(); }, 5000);
@@ -1034,8 +1077,9 @@ export function getSocksCreds(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, c
 }
 
 export function disconnectSocks(cb) {
+  let cmd1 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 0';  
   if (remote.process.platform === 'win32') {
-    exec('net stop sentinelSocks', disconnect,
+    exec(`net stop sentinelSocks`, disconnect,
       function (error, stdout, stderr) {
         if (error) cb({ message: error.toString() || 'Disconnecting failed' });
         else {
@@ -1047,7 +1091,9 @@ export function disconnectSocks(cb) {
           let keystore = JSON.stringify(data);
           fs.writeFile(CONFIG_FILE, keystore, function (err) {
           });
-          cb(null);
+          exec(cmd1,function (stderr,stdout,error) {
+             cb(null);
+          }) 
         }
       });
   }
@@ -1082,6 +1128,7 @@ export function disconnectSocks(cb) {
             let keystore = JSON.stringify(data);
             fs.writeFile(CONFIG_FILE, keystore, function (err) {
             });
+            
             cb(null);
           }
         });

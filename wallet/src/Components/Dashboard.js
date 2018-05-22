@@ -35,7 +35,8 @@ class Dashboard extends Component {
       sessionId: null,
       testDisabled: false,
       lang: 'en',
-      currentHash: null
+      currentHash: null,
+      swapHash: null
     }
     this.set = this.props.set;
   }
@@ -76,6 +77,10 @@ class Dashboard extends Component {
 
   getTxHash = (txHash) => {
     this.setState({ currentHash: txHash })
+  }
+
+  getSwapHash = (txHash) => {
+    this.setState({ swapHash: txHash })
   }
 
   getUserSentBalance() {
@@ -161,6 +166,10 @@ class Dashboard extends Component {
     this.setState({ currentHash: null })
   }
 
+  removeSwapHash = () => {
+    this.setState({ swapHash: null })
+  }
+
   testDisable = (value) => {
     this.setState({ testDisabled: value })
   }
@@ -211,8 +220,8 @@ class Dashboard extends Component {
             >
               <Tab style={styles.enabledTabStyle} label={lang[language].History} value="history">
                 <History
-                  local_address={this.state.local_address} isTest={this.state.isTest}
-                  lang={this.props.lang} currentHash={this.state.currentHash} removeHash={this.removeHash} />
+                  local_address={this.state.local_address} isTest={this.state.isTest} swapHash={this.state.swapHash}
+                  lang={this.props.lang} currentHash={this.state.currentHash} removeHash={this.removeHash} removeSwapHash={this.removeSwapHash} />
               </Tab>
               <Tab style={styles.enabledTabStyle} label={lang[language].Send} value="send">
                 <SendComponent
@@ -229,6 +238,7 @@ class Dashboard extends Component {
                   clearSend={this.clearSend.bind(this)}
                   lang={this.props.lang}
                   getCurrentTx={this.getTxHash}
+                  getCurrentSwapHash={this.getSwapHash}
                 />
               </Tab>
               <Tab style={styles.enabledTabStyle} label={lang[language].Receive} value="receive">

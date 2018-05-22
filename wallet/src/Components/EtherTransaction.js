@@ -155,7 +155,7 @@ class EtherTransaction extends Component {
             })
         }
         return (
-            <div style={this.props.isTest ? styles.testOutputDiv : styles.outputDiv}>
+            <div style={this.props.isTest ? (this.props.hasExtraDiv ? styles.testOuptutDivExtra : styles.testOutputDiv) : (this.props.hasExtraDiv ? styles.outputDivExtra : styles.outputDiv)}>
                 {output}
                 <Snackbar
                     open={this.state.openSnack}
@@ -200,6 +200,18 @@ const styles = {
     },
     testOutputDiv: {
         height: 365,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    outputDivExtra: {
+        height: 365,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    testOutputDivExtra: {
+        height: 330,
         overflowY: 'auto',
         marginTop: '2%',
         overflowX: 'hidden'

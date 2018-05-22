@@ -445,6 +445,7 @@ class SendComponent extends Component {
                         })
                       }
                       else {
+                        self.props.getCurrentSwapHash(txHash);
                         self.setState({
                           convertPass: '',
                           converting: false,
@@ -488,7 +489,7 @@ class SendComponent extends Component {
           <Grid>
             <Row>
               <Col xs={4} style={{ padding: '3% 2% 0px' }}>
-                <p style={{ fontSize: 16, fontWeight: 600, color: '#253245', letterSpacing: 2 }}>TOKEN BALANCE</p>
+                <p style={{ fontSize: 16, fontWeight: 600, color: '#253245', letterSpacing: 2 }}>{lang[language].TokenBal}</p>
                 <div style={{ padding: '6% 4%', paddingBottom: 0, backgroundColor: '#ececf1', height: 85 }}>
                   <Row>
                     <Col xs={4}>
@@ -532,7 +533,7 @@ class SendComponent extends Component {
               </Col>
               <Col xs={8} style={{ padding: '3% 5% 0px' }}>
                 <div>
-                  <span style={styles.formHeading}>SEND TO ADDRESS</span>
+                  <span style={styles.formHeading}>{lang[language].SendTo}</span>
                   <span data-tip data-for="toField" style={styles.questionMark}>?</span>
                   <TextField
                     hintText="Example: 0x6b6df9e25f7bf23343mfkr45"
@@ -545,7 +546,7 @@ class SendComponent extends Component {
                   />
                 </div>
                 <div style={{ marginTop: '5%' }}>
-                  <span style={styles.formHeading}>AMOUNT TO SEND</span>
+                  <span style={styles.formHeading}>{lang[language].AmountTo}</span>
                   <span data-tip data-for="amountField" style={styles.questionMark}>?</span>
                   <Row>
                     <Col xs={8}>
@@ -594,7 +595,7 @@ class SendComponent extends Component {
                 <div style={{ marginTop: '5%' }}>
                   <Row>
                     <Col xs={4}>
-                      <span style={styles.formHeading}>GAS LIMIT</span>
+                      <span style={styles.formHeading}>{lang[language].GasLimit}</span>
                       <span data-tip data-for="gasField" style={styles.questionMark}>?</span>
                       <TextField
                         type="number"
@@ -606,7 +607,7 @@ class SendComponent extends Component {
                       />
                     </Col>
                     <Col xsOffset={1} xs={7}>
-                      <span style={styles.formHeading}>GAS PRICE</span>
+                      <span style={styles.formHeading}>{lang[language].GasPrice}</span>
                       <span data-tip data-for="gasPrice" style={styles.questionMark}>?</span>
                       <span style={{ marginLeft: 20, color: '#595d8f', fontWeight: 'bold' }}>{this.state.sliderValue} </span>
                       <span style={{ color: 'grey' }}>GWEI</span>
@@ -626,7 +627,7 @@ class SendComponent extends Component {
             <Row>
               <Col xs={4} style={{ padding: '0% 2%' }}>
                 <RaisedButton
-                  label="Convert ERC20 to SENT"
+                  label={lang[language].ConvertERC}
                   labelStyle={styles.buttonLabelStyle}
                   fullWidth={true}
                   disabled={this.props.isTest || this.state.tokens.length === 0}
@@ -643,7 +644,7 @@ class SendComponent extends Component {
               <Col xs={8} style={{ padding: '0% 5%' }}>
                 <Row>
                   <Col xs={6} style={{ marginTop: -35 }}>
-                    <span style={styles.formHeading}>PASSWORD</span>
+                    <span style={styles.formHeading}>{lang[language].Password}</span>
                     <span data-tip data-for="passwordField" style={styles.questionMark}>?</span>
                     <TextField
                       type="password"
@@ -716,7 +717,7 @@ class SendComponent extends Component {
               onRequestClose={this.handleClose}
             >
               <div style={{ backgroundColor: '#efefef', fontFamily: 'Poppins' }}>
-                <p style={{ textAlign: 'center', padding: 10, color: 'black', fontSize: 14, letterSpacing: 1 }}>Exchange ERC20 tokens for Sentinel tokens</p>
+                <p style={{ textAlign: 'center', padding: 10, color: 'black', fontSize: 14, letterSpacing: 1 }}>{lang[language].ExchangeERC}</p>
               </div>
               <div style={{ backgroundColor: '#435e8d', marginTop: -16 }}>
                 <p style={{ textAlign: 'center', padding: 30 }}>
@@ -739,7 +740,7 @@ class SendComponent extends Component {
                 }}>1 {this.state.selectedToken} = {this.state.currentSentValue} SENTS</p>
               </div>
               <div style={{ fontFamily: 'Poppins' }}>
-                <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold' }}>CONVERT</p>
+                <p style={{ fontSize: 16, textAlign: 'center', color: '#2c3d5b', fontWeight: 'bold' }}>{lang[language].Convert}</p>
                 <Row style={{ width: '100%', marginTop: -12 }}>
                   <Col xsOffset={2} xs={4}>
                     <TextField
@@ -806,7 +807,7 @@ class SendComponent extends Component {
                   </Col>
                   <Col xs={5}>
                     <RaisedButton
-                      label={this.state.converting ? 'CONVERTING' : 'CONVERT'}
+                      label={this.state.converting ? 'CONVERTING' : lang[language].Convert}
                       disabled={this.state.converting}
                       onClick={this.onClickConvert.bind(this)}
                       labelStyle={{ color: 'white', fontWeight: 'bold', fontSize: 18, letterSpacing: 2 }}

@@ -184,7 +184,7 @@ class VPNComponent extends Component {
             let that = this;
             if (isOnline()) {
                 if (this.state.isSock) {
-                    let openBrowser = true; 
+                    let openBrowser = true;
                     connectSocks(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, data) {
                         if (isMacError) {
                             that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
@@ -205,11 +205,11 @@ class VPNComponent extends Component {
                         }
                         else {
                             that.props.onChange();
-                            if(remote.process.platform==='win32' && openBrowser===true ){
+                            if (remote.process.platform === 'win32' && openBrowser === true) {
                                 exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
-                            console.log('browser opened');     
-                            openBrowser = false;
-                          });
+                                    console.log('browser opened');
+                                    openBrowser = false;
+                                });
                             }
                             //that.returnVPN();
                             that.setState({
@@ -268,11 +268,11 @@ class VPNComponent extends Component {
                     that.props.changeTest(false);
                 }
                 else {
-                    if(remote.process.platform==='win32'){
+                    if (remote.process.platform === 'win32') {
                         exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
-                    console.log('browser opened');     
-                  });
-                }
+                            console.log('browser opened');
+                        });
+                    }
                     that.props.onChange();
                     that.props.changeTest(false);
                     sendUsage(that.props.local_address, that.state.selectedVPN, null);

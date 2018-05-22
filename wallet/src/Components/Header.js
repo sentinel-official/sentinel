@@ -332,7 +332,7 @@ class Header extends Component {
                   />
                   <MenuItem
                     value="SOCKS"
-                    primaryText="SOCKS"
+                    primaryText="SOCKS v5"
                   />
                 </DropDownMenu>
               </Col>

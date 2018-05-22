@@ -189,7 +189,7 @@ class SentTransaction extends Component {
             })
         }
         return (
-            <div style={this.props.isTest ? styles.testOutputDiv : styles.outputDiv}>
+            <div style={this.props.isTest ? (this.props.hasExtraDiv ? styles.testOuptutDivExtra : styles.testOutputDiv) : (this.props.hasExtraDiv ? styles.outputDivExtra : styles.outputDiv)}>
                 {
                     (txData && this.props.currentHash) ?
                         <div style={styles.wholeDiv}>
@@ -296,6 +296,18 @@ const styles = {
     },
     testOutputDiv: {
         height: 400,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    outputDivExtra: {
+        height: 395,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    testOutputDivExtra: {
+        height: 365,
         overflowY: 'auto',
         marginTop: '2%',
         overflowX: 'hidden'

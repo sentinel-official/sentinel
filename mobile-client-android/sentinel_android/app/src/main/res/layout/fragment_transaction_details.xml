@@ -212,13 +212,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="1,743 SENTS"
-        app:layout_constraintBottom_toTopOf="@+id/tv_gas_price"
+        app:layout_constraintBottom_toTopOf="@+id/gas_price"
         app:layout_constraintEnd_toEndOf="@+id/tv_amount"
         app:layout_constraintStart_toStartOf="@+id/tv_amount"
         app:layout_constraintTop_toBottomOf="@+id/tv_amount" />
 
     <TextView
-        android:id="@+id/tv_gas_price"
+        android:id="@+id/gas_price"
         style="@style/CustomTextAppearance.Text12.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -228,21 +228,21 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/gas_price"
-        app:layout_constraintBottom_toTopOf="@+id/tv_gas_price_value"
+        app:layout_constraintBottom_toTopOf="@+id/tv_gas_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_amount_value" />
 
     <TextView
-        android:id="@+id/tv_gas_price_value"
+        android:id="@+id/tv_gas_price"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="2 Gwei"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tv_gas_price"
-        app:layout_constraintStart_toStartOf="@+id/tv_gas_price"
-        app:layout_constraintTop_toBottomOf="@+id/tv_gas_price" />
+        app:layout_constraintEnd_toEndOf="@+id/gas_price"
+        app:layout_constraintStart_toStartOf="@+id/gas_price"
+        app:layout_constraintTop_toBottomOf="@+id/gas_price" />
 
 </android.support.constraint.ConstraintLayout>

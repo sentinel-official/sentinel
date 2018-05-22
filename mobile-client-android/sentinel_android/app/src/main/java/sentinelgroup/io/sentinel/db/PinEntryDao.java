@@ -16,6 +16,9 @@ public interface PinEntryDao {
     @Query("UPDATE pin_entity SET appPin = :iNewPin WHERE appPin = :iOldPin AND accountAddress = :iAccountAddress")
     int updatePin(int iOldPin, int iNewPin, String iAccountAddress);
 
+    @Query("UPDATE pin_entity SET appPin = :iNewPin WHERE accountAddress = :iAccountAddress")
+    int updatePin(int iNewPin, String iAccountAddress);
+
     @Query("DELETE FROM pin_entity")
     void deletePin();
 }

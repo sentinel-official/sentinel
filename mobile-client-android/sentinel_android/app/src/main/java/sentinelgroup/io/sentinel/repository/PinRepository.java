@@ -1,8 +1,15 @@
 package sentinelgroup.io.sentinel.repository;
 
+import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
+
+import java.io.IOException;
+
 import sentinelgroup.io.sentinel.db.PinEntity;
 import sentinelgroup.io.sentinel.db.PinEntryDao;
 import sentinelgroup.io.sentinel.util.AppExecutors;
+import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
 public class PinRepository {
@@ -14,6 +21,7 @@ public class PinRepository {
     private final SingleLiveEvent<Boolean> mIsPinSetLiveEvent;
     private final SingleLiveEvent<Boolean> mIsPinResetLiveEvent;
     private final SingleLiveEvent<Boolean> mIsPinCorrectLiveEvent;
+    private final SingleLiveEvent<Resource<Boolean>> mIsPasswordCorrectLiveEvent;
 
     private PinRepository(PinEntryDao iDao, AppExecutors iAppExecutors) {
         mDao = iDao;
@@ -21,6 +29,7 @@ public class PinRepository {
         mIsPinSetLiveEvent = new SingleLiveEvent<>();
         mIsPinResetLiveEvent = new SingleLiveEvent<>();
         mIsPinCorrectLiveEvent = new SingleLiveEvent<>();
+        mIsPasswordCorrectLiveEvent = new SingleLiveEvent<>();
     }
 
     public static PinRepository getInstance(PinEntryDao iDao, AppExecutors iAppExecutors) {
@@ -36,18 +45,29 @@ public class PinRepository {
         return mIsPinSetLiveEvent;
     }
 
+    public SingleLiveEvent<Boolean> getIsPinCorrectLiveEvent() {
+        return mIsPinCorrectLiveEvent;
+    }
+
     public SingleLiveEvent<Boolean> getIsPinResetLiveEvent() {
         return mIsPinResetLiveEvent;
     }
 
-    public SingleLiveEvent<Boolean> getIsPinCorrectLiveEvent() {
-        return mIsPinCorrectLiveEvent;
+    public SingleLiveEvent<Resource<Boolean>> getIsPasswordCorrectLiveEvent() {
+        return mIsPasswordCorrectLiveEvent;
     }
 
     public void setAppPin(PinEntity iEntity) {
         mAppExecutors.diskIO().execute(() -> {
             long aInsertedId = mDao.insertPinEntity(iEntity);
             mIsPinSetLiveEvent.postValue(aInsertedId > 0L);
+        });
+    }
+
+    public void verifyAppPin(int iPin, String iAccountAddress) {
+        mAppExecutors.diskIO().execute(() -> {
+            int iEntries = mDao.getPinEntity(iPin, iAccountAddress);
+            mIsPinCorrectLiveEvent.postValue(iEntries == 1);
         });
     }
 
@@ -58,10 +78,22 @@ public class PinRepository {
         });
     }
 
-    public void verifyAppPin(int iPin, String iAccountAddress) {
+    public void resetAppPin(int iNewPin, String iAccountAddress) {
         mAppExecutors.diskIO().execute(() -> {
-            int iEntries = mDao.getPinEntity(iPin, iAccountAddress);
-            mIsPinCorrectLiveEvent.postValue(iEntries == 1);
+            int iNumberOfRows = mDao.updatePin(iNewPin, iAccountAddress);
+            mIsPinResetLiveEvent.postValue(iNumberOfRows == 1);
+        });
+    }
+
+    public void verifyKeystorePassword(String iPassword, String iFilePath) {
+        mIsPasswordCorrectLiveEvent.postValue(Resource.loading(null));
+        mAppExecutors.diskIO().execute(() -> {
+            try {
+                WalletUtils.loadCredentials(iPassword, iFilePath);
+                mIsPasswordCorrectLiveEvent.postValue(Resource.success(true));
+            } catch (IOException | CipherException e) {
+                mIsPasswordCorrectLiveEvent.postValue(Resource.error(e.getLocalizedMessage(), null));
+            }
         });
     }
 }

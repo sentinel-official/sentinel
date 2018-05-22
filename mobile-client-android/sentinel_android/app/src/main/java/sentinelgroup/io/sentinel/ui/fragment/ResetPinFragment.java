@@ -1,6 +1,5 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
-
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,62 +19,51 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
-import sentinelgroup.io.sentinel.util.AppConstants;
-import sentinelgroup.io.sentinel.util.AppPreferences;
-import sentinelgroup.io.sentinel.viewmodel.SetPinViewModel;
-import sentinelgroup.io.sentinel.viewmodel.SetPinViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModel;
+import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SetPinFragment#newInstance} factory method to
+ * Activities that contain this fragment must implement the
+ * {@link ResetPinFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link ResetPinFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SetPinFragment extends Fragment implements View.OnClickListener, PinEntryEditText.OnPinEnteredListener, TextWatcher {
+public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryEditText.OnPinEnteredListener, View.OnClickListener {
 
-    private SetPinViewModel mViewModel;
+    private ResetPinViewModel mViewModel;
 
-    private static final String ARG_ACC_ADDRESS = "account_address";
+    private OnFragmentInteractionListener mListener;
 
-    private String mAccountAddress;
+    private TextView mTvOldPin, mTvEnterPin, mTvReEnterPin;
+    private PinEntryEditText mEtOldPin, mEtEnterPin, mEtReEnterPin;
+    private Button mBtnReset;
 
-    private CreateAuidFragment.OnFragmentInteractionListener mListener;
-
-    private PinEntryEditText mEtEnterPin, mEtReEnterPin;
-    private TextView mTvPin, mTvPin2;
-    private Button mBtnSave;
-
-    public SetPinFragment() {
+    public ResetPinFragment() {
         // Required empty public constructor
     }
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this fragment.
      *
-     * @param iAccountAddress Parameter 1.
-     * @return A new instance of fragment SetPinFragment.
+     * @return A new instance of fragment ResetPinFragment.
      */
-    public static SetPinFragment newInstance(String iAccountAddress) {
-        SetPinFragment fragment = new SetPinFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_ACC_ADDRESS, iAccountAddress);
-        fragment.setArguments(args);
-        return fragment;
+    public static ResetPinFragment newInstance() {
+        return new ResetPinFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mAccountAddress = getArguments().getString(ARG_ACC_ADDRESS);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_set_pin, container, false);
+        return inflater.inflate(R.layout.fragment_reset_pin, container, false);
     }
 
     @Override
@@ -87,31 +75,45 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fragmentLoaded(getString(R.string.set_app_pin));
+        fragmentLoaded(getString(R.string.reset_pin));
         initViewModel();
     }
 
     private void initView(View iView) {
+        mTvOldPin = iView.findViewById(R.id.tv_old_pin);
+        mTvEnterPin = iView.findViewById(R.id.tv_enter_pin);
+        mTvReEnterPin = iView.findViewById(R.id.tv_re_enter_pin);
+        mEtOldPin = iView.findViewById(R.id.et_old_pin);
         mEtEnterPin = iView.findViewById(R.id.et_enter_pin);
         mEtReEnterPin = iView.findViewById(R.id.et_re_enter_pin);
-        mTvPin = iView.findViewById(R.id.tv_enter_pin);
-        mTvPin2 = iView.findViewById(R.id.tv_re_enter_pin);
-        mBtnSave = iView.findViewById(R.id.btn_save);
+        mBtnReset = iView.findViewById(R.id.btn_reset);
         // Set listeners
-        mEtEnterPin.setOnPinEnteredListener(this);
-        mEtReEnterPin.setOnPinEnteredListener(this);
+        mEtOldPin.addTextChangedListener(this);
         mEtEnterPin.addTextChangedListener(this);
         mEtReEnterPin.addTextChangedListener(this);
-        mBtnSave.setOnClickListener(this);
+        mEtEnterPin.setOnPinEnteredListener(this);
+        mEtReEnterPin.setOnPinEnteredListener(this);
+        mBtnReset.setOnClickListener(this);
     }
 
     private void initViewModel() {
-        SetPinViewModelFactory aFactory = InjectorModule.provideSetPinViewModelFactory(getContext());
-        mViewModel = ViewModelProviders.of(this, aFactory).get(SetPinViewModel.class);
+        ResetPinViewModelFactory aFactory = InjectorModule.provideResetPinViewModelFactory(getContext());
+        mViewModel = ViewModelProviders.of(this, aFactory).get(ResetPinViewModel.class);
 
-        mViewModel.getIsPinSetLiveEvent().observe(this, isPinSet -> {
+        mViewModel.getIsPinCorrectLiveEvent().observe(this, isPinCorrect -> {
+            if (isPinCorrect != null) {
+                if (isPinCorrect) {
+                    resetAppPin();
+                } else {
+                    clearInput();
+                    toggleEnabledState(true);
+                    showErrorDialog(getString(R.string.wrong_old_pin));
+                }
+            }
+        });
+
+        mViewModel.getIsPinResetLiveEvent().observe(this, isPinSet -> {
             if (isPinSet != null) {
-                AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_APP_PIN_SET, isPinSet);
                 if (isPinSet) {
                     loadNextActivity();
                 } else {
@@ -123,13 +125,20 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
         });
     }
 
+    private void resetAppPin() {
+        int aOldPin = Integer.parseInt(mEtOldPin.getText().toString());
+        int aNewPin = Integer.parseInt(mEtEnterPin.getText().toString());
+        mViewModel.resetAppPin(aOldPin, aNewPin);
+    }
+
     private void clearInput() {
+        mEtOldPin.setText("");
         mEtEnterPin.setText("");
         mEtReEnterPin.setText("");
     }
 
     private void toggleEnabledState(boolean iEnabled) {
-        mBtnSave.setEnabled(iEnabled);
+        mBtnReset.setEnabled(iEnabled);
     }
 
     private boolean validatePin(int iPin, int iPin2) {
@@ -163,8 +172,8 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof CreateAuidFragment.OnFragmentInteractionListener) {
-            mListener = (CreateAuidFragment.OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -175,11 +184,6 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onPinEntered(CharSequence str) {
-        mBtnSave.setEnabled(!mEtEnterPin.getText().toString().isEmpty() && !mEtReEnterPin.getText().toString().isEmpty());
     }
 
     @Override
@@ -194,19 +198,44 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
 
     @Override
     public void afterTextChanged(Editable s) {
-        mTvPin.setVisibility(mEtEnterPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        mTvPin2.setVisibility(mEtReEnterPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        mTvOldPin.setVisibility(mEtOldPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        mTvEnterPin.setVisibility(mEtEnterPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        mTvReEnterPin.setVisibility(mEtReEnterPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void onPinEntered(CharSequence str) {
+        mBtnReset.setEnabled(!mEtOldPin.getText().toString().isEmpty() && !mEtEnterPin.getText().toString().isEmpty() && !mEtReEnterPin.getText().toString().isEmpty());
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_save) {
+        if (v.getId() == R.id.btn_reset) {
             toggleEnabledState(false);
+            int aOldPin = Integer.parseInt(mEtOldPin.getText().toString().trim());
             int aPin = Integer.parseInt(mEtEnterPin.getText().toString().trim());
             int aPin2 = Integer.parseInt(mEtReEnterPin.getText().toString().trim());
             if (validatePin(aPin, aPin2)) {
-                mViewModel.setAppPin(aPin, mAccountAddress);
+                mViewModel.verifyOldPin(aOldPin);
             }
         }
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        void onFragmentLoaded(String iTitle);
+
+        void onShowErrorDialog(String iError);
+
+        void onLoadNextActivity();
     }
 }

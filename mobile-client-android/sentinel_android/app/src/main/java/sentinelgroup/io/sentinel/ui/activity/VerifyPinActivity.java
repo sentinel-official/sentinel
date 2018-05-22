@@ -15,6 +15,7 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.viewmodel.VerifyPinViewModel;
@@ -40,10 +41,12 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
         mEtPin = findViewById(R.id.et_enter_pin);
         mTvPin = findViewById(R.id.tv_enter_pin);
         mBtnVerify = findViewById(R.id.btn_verify);
+        Button aBtnForgotPin = findViewById(R.id.btn_forgot_pin);
         // Set Listeners
         mEtPin.setOnPinEnteredListener(this);
         mEtPin.addTextChangedListener(this);
         mBtnVerify.setOnClickListener(this);
+        aBtnForgotPin.setOnClickListener(this);
     }
 
     private void initViewModel() {
@@ -55,9 +58,9 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
                 if (isPinCorrect) {
                     loadDashboardActivity();
                 } else {
-                    Toast.makeText(this, R.string.invalid_pin, Toast.LENGTH_SHORT).show();
-                    mEtPin.setText("");
+                    clearInput();
                     toggleEnabledState(true);
+                    showError(getString(R.string.invalid_pin));
                 }
             }
         });
@@ -68,9 +71,17 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
         finish();
     }
 
+    private void clearInput() {
+        mEtPin.setText("");
+    }
+
     private void toggleEnabledState(boolean iEnabled) {
         mBtnVerify.setEnabled(iEnabled);
-        mTvPin.setEnabled(iEnabled);
+    }
+
+    private void showError(String iError) {
+        SingleActionDialogFragment.newInstance(getString(R.string.please_note), iError, getString(android.R.string.ok))
+                .show(getSupportFragmentManager(), "alert_dialog");
     }
 
     @Override
@@ -95,11 +106,26 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_verify) {
-            toggleEnabledState(false);
-            int aPin = Integer.parseInt(mEtPin.getText().toString().trim());
-            String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
-            mViewModel.verifyAppPin(aPin, aAccountAddress);
+        switch (v.getId()) {
+            case R.id.btn_verify:
+                toggleEnabledState(false);
+                int aPin = Integer.parseInt(mEtPin.getText().toString().trim());
+                String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
+                mViewModel.verifyAppPin(aPin, aAccountAddress);
+                break;
+            case R.id.btn_forgot_pin:
+                clearInput();
+                startActivityForResult(new Intent(VerifyPinActivity.this, ForgotPinActivity.class), AppConstants.REQ_CODE_FORGOT_PIN);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstants.REQ_CODE_FORGOT_PIN) {
+            if (resultCode == RESULT_OK)
+                Toast.makeText(VerifyPinActivity.this, getString(R.string.reset_pin_success), Toast.LENGTH_SHORT).show();
         }
     }
 }

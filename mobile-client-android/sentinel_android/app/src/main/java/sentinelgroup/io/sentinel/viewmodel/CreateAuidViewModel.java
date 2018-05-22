@@ -40,7 +40,7 @@ public class CreateAuidViewModel extends ViewModel {
 
     public void saveAccount(Account iData) {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            mRepository.saveKeystoreFile(iData, AppPreferences.getInstance().getString(AppConstants.PREF_FILE_PATH));
+            mRepository.saveKeystoreFile(iData, AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH));
         } else {
             mKeystoreFileLiveEvent.setValue(Resource.error("Storage not found. Unable to store keystore file.", null));
         }

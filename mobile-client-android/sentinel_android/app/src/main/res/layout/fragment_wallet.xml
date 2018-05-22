@@ -6,46 +6,45 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/private_key"
+        android:id="@+id/address"
         style="@style/CustomTextAppearance.Text12.White50Normal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="@string/private_key_desc"
-        app:layout_constraintBottom_toTopOf="@+id/tv_private_key"
-        app:layout_constraintEnd_toStartOf="@+id/ib_copy_key"
+        android:text="@string/address_desc"
+        app:layout_constraintBottom_toTopOf="@+id/tv_address"
+        app:layout_constraintEnd_toStartOf="@+id/ib_copy_address"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/tv_private_key"
+        android:id="@+id/tv_address"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="4dp"
-        android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
-        app:layout_constraintEnd_toEndOf="@+id/private_key"
-        app:layout_constraintStart_toStartOf="@+id/private_key"
-        app:layout_constraintTop_toBottomOf="@+id/private_key" />
+        app:layout_constraintEnd_toEndOf="@+id/address"
+        app:layout_constraintStart_toStartOf="@+id/address"
+        app:layout_constraintTop_toBottomOf="@+id/address" />
 
     <ImageButton
-        android:id="@+id/ib_copy_key"
+        android:id="@+id/ib_copy_address"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:background="?android:attr/selectableItemBackground"
         android:padding="@dimen/margin_8"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_private_key"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_address"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/private_key"
-        app:layout_constraintTop_toTopOf="@+id/private_key"
+        app:layout_constraintStart_toEndOf="@+id/address"
+        app:layout_constraintTop_toTopOf="@+id/address"
         app:srcCompat="@drawable/ic_copy"
         tools:ignore="ContentDescription" />
 
@@ -68,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_private_key"
+        app:layout_constraintTop_toBottomOf="@+id/tv_address"
         app:layout_constraintVertical_bias="0.0">
 
         <android.support.constraint.ConstraintLayout
@@ -76,7 +75,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tv_vpn_state"
+                android:id="@+id/wallet"
                 style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,31 +83,32 @@
                 android:gravity="center"
                 android:paddingBottom="@dimen/margin_4"
                 android:paddingTop="@dimen/margin_4"
-                android:text="Wallet Balance"
-                app:layout_constraintBottom_toTopOf="@+id/tv_sent_balance"
+                android:text="@string/wallet_balance"
+                app:layout_constraintBottom_toTopOf="@+id/tv_total_sent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread" />
 
             <TextView
-                android:id="@+id/tv_sent_balance"
+                android:id="@+id/tv_total_sent"
                 style="@style/CustomTextAppearance.Text32"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:drawablePadding="@dimen/margin_4"
                 android:drawableTop="@drawable/ic_app_icon"
+                android:gravity="center"
                 android:paddingLeft="@dimen/margin_8"
                 android:paddingRight="@dimen/margin_8"
-                android:text="893,678.25"
-                app:layout_constraintBottom_toTopOf="@+id/tv_sent_paid_desc"
+                android:text="@string/empty_token_value"
+                app:layout_constraintBottom_toTopOf="@+id/tv_total_sent_desc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
+                app:layout_constraintTop_toBottomOf="@+id/wallet" />
 
             <TextView
-                android:id="@+id/tv_sent_paid_desc"
+                android:id="@+id/tv_total_sent_desc"
                 style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/iv_divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sent_balance" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_sent" />
 
             <ImageView
                 android:id="@+id/iv_divider"
@@ -132,31 +132,33 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:src="@color/colorCardShadow"
-                app:layout_constraintBottom_toTopOf="@+id/tv_ether_balance"
+                app:layout_constraintBottom_toTopOf="@+id/tv_total_ether"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sent_paid_desc"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_sent_desc"
                 app:layout_constraintVertical_chainStyle="spread"
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:id="@+id/tv_ether_balance"
+                android:id="@+id/tv_total_ether"
                 style="@style/CustomTextAppearance.Text32"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/margin_4"
                 android:drawableTop="@drawable/ic_ethereum"
+                android:gravity="center"
                 android:paddingLeft="@dimen/margin_8"
                 android:paddingRight="@dimen/margin_8"
-                android:text="1.24456479"
-                app:layout_constraintBottom_toTopOf="@+id/tv_ether_desc"
+                android:text="@string/empty_token_value"
+                app:layout_constraintBottom_toTopOf="@+id/tv_total_ether_desc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
 
             <TextView
-                android:id="@+id/tv_ether_desc"
+                android:id="@+id/tv_total_ether_desc"
                 style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -165,7 +167,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_ether_balance" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_ether" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 

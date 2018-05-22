@@ -4,7 +4,6 @@ import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,18 +23,10 @@ import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.WalletUtils;
-
 import java.io.File;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
-import sentinelgroup.io.sentinel.util.AppConstants;
-import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModel;
@@ -118,6 +109,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                     toggleProgressDialog(false);
                     loadNextFragment(accountResource.data);
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
+                    mTetPassword.setText("");
                     toggleProgressDialog(false);
                     showErrorDialog(accountResource.message);
                 }
@@ -275,52 +267,4 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
         void onLoadNextActivity();
     }
-//
-//    private static class ValidateAccountTask extends AsyncTask<Void, Void, Boolean> {
-//        private WeakReference<RestoreKeystoreFragment> mWeakReference;
-//        private String mPassword, mKeystorePath, mAccountAddress, mErrorMessage;
-//
-//        ValidateAccountTask(RestoreKeystoreFragment iFragment, String iPassword, String iKeystorePath) {
-//            mWeakReference = new WeakReference<>(iFragment);
-//            mPassword = iPassword;
-//            mKeystorePath = iKeystorePath;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            if (mWeakReference.get() != null) {
-//                mWeakReference.get().toggleProgressDialog(true);
-//            }
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... voids) {
-//            try {
-//                Credentials aCredentials = WalletUtils.loadCredentials(mPassword, new File(mKeystorePath));
-//                Logger.logDebug("ACC_ADDRESS", aCredentials.getAddress());
-//                mAccountAddress = aCredentials.getAddress();
-//                AppPreferences.getInstance().saveString(AppConstants.PREFS_ACCOUNT_ADDRESS, mAccountAddress);
-//                return true;
-//            } catch (IOException e) {
-//                mErrorMessage = e.getLocalizedMessage();
-//            } catch (CipherException e) {
-//                mErrorMessage = e.getLocalizedMessage();
-//            }
-//            return false;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Boolean aIsRestored) {
-//            super.onPostExecute(aIsRestored);
-//            if (mWeakReference.get() != null) {
-//                mWeakReference.get().toggleProgressDialog(false);
-//                if (aIsRestored) {
-//                    mWeakReference.get().loadNextFragment(mAccountAddress);
-//                } else {
-//                    mWeakReference.get().showErrorDialog(mErrorMessage);
-//                }
-//            }
-//        }
-//    }
 }

@@ -19,6 +19,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -33,6 +34,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.DashboardActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ForgotPinActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ResetPinActivity"
             android:screenOrientation="portrait" />
     </application>
 

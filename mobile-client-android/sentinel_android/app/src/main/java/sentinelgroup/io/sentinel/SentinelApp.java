@@ -18,9 +18,9 @@ public class SentinelApp extends MultiDexApplication {
         super.onCreate();
         sInstance = this;
         MultiDex.install(this);
-        if (AppPreferences.getInstance().getString(AppConstants.PREF_FILE_PATH).isEmpty()) {
-            String aFilePath = new File(getFilesDir(), AppConstants.PREF_FILE_PATH).getAbsolutePath();
-            AppPreferences.getInstance().saveString(AppConstants.PREF_FILE_PATH, aFilePath);
+        if (AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH).isEmpty()) {
+            String aFilePath = new File(getFilesDir(), AppConstants.PREFS_FILE_PATH).getAbsolutePath();
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_FILE_PATH, aFilePath);
         }
     }
 

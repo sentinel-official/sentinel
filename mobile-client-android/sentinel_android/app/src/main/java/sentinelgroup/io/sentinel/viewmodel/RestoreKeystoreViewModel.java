@@ -14,7 +14,7 @@ public class RestoreKeystoreViewModel extends ViewModel {
     private final RestoreKeystoreRepository mRepository;
     private final SingleLiveEvent<Resource<String>> mRestoreLiveEvent;
 
-    public RestoreKeystoreViewModel(RestoreKeystoreRepository iRepository) {
+    RestoreKeystoreViewModel(RestoreKeystoreRepository iRepository) {
         mRepository = iRepository;
         mRestoreLiveEvent = iRepository.getRestoreLiveEvent();
     }
@@ -25,7 +25,7 @@ public class RestoreKeystoreViewModel extends ViewModel {
 
     public void restoreKeystoreFile(String iPassword, String iKeystorePath) {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            mRepository.restoreKeystoreFile(iPassword,iKeystorePath, AppPreferences.getInstance().getString(AppConstants.PREF_FILE_PATH));
+            mRepository.restoreKeystoreFile(iPassword,iKeystorePath, AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH));
         } else {
             mRestoreLiveEvent.setValue(Resource.error("Storage not found. Unable to store keystore file.", null));
         }

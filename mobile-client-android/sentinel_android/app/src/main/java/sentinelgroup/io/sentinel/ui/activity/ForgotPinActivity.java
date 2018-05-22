@@ -1,6 +1,5 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,13 +10,9 @@ import android.widget.TextView;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
-import sentinelgroup.io.sentinel.ui.fragment.CreateAuidFragment;
-import sentinelgroup.io.sentinel.ui.fragment.RestoreKeystoreFragment;
-import sentinelgroup.io.sentinel.ui.fragment.SecureKeysFragment;
-import sentinelgroup.io.sentinel.ui.fragment.SetPinFragment;
+import sentinelgroup.io.sentinel.ui.fragment.ForgotPinFragment;
 
-public class RestoreKeystoreActivity extends AppCompatActivity implements RestoreKeystoreFragment.OnFragmentInteractionListener,
-        CreateAuidFragment.OnFragmentInteractionListener {
+public class ForgotPinActivity extends AppCompatActivity implements ForgotPinFragment.OnFragmentInteractionListener {
 
     private Toolbar mToolbar;
     private TextView mToolbarTitle;
@@ -28,7 +23,7 @@ public class RestoreKeystoreActivity extends AppCompatActivity implements Restor
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container_simple);
         initView();
-        loadFragment(RestoreKeystoreFragment.newInstance());
+        loadFragment(ForgotPinFragment.newInstance());
     }
 
     private void initView() {
@@ -57,8 +52,7 @@ public class RestoreKeystoreActivity extends AppCompatActivity implements Restor
     }
 
     private void showProgress() {
-        if (mPrgDialog != null)
-            mPrgDialog.show(getSupportFragmentManager(), "progress_dialog");
+        mPrgDialog.show(getSupportFragmentManager(), "progress_dialog");
     }
 
     private void hideProgress() {
@@ -81,23 +75,12 @@ public class RestoreKeystoreActivity extends AppCompatActivity implements Restor
 
     @Override
     public void onBackPressed() {
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (aFragment instanceof RestoreKeystoreFragment) {
-            startActivity(new Intent(this, LauncherActivity.class));
-            finish();
-        }
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     @Override
     public void onFragmentLoaded(String iTitle) {
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (aFragment instanceof SetPinFragment) {
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-                getSupportActionBar().setDisplayShowHomeEnabled(false);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-        }
         setToolbarTitle(iTitle);
     }
 
@@ -115,13 +98,8 @@ public class RestoreKeystoreActivity extends AppCompatActivity implements Restor
     }
 
     @Override
-    public void onLoadNextFragment(Fragment iNextFragment) {
-        loadFragment(iNextFragment);
-    }
-
-    @Override
     public void onLoadNextActivity() {
-        startActivity(new Intent(this, DashboardActivity.class));
+        setResult(RESULT_OK);
         finish();
     }
 }

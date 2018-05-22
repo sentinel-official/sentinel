@@ -43,7 +43,7 @@
             app:trackTint="@color/colorTextWhiteWithAlpha50" />
 
         <TextView
-            android:id="@+id/tv_switch_state"
+            android:id="@+id/switch_state"
             style="@style/CustomTextAppearance.Text12.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -55,7 +55,6 @@
             android:paddingLeft="@dimen/margin_8"
             android:paddingRight="@dimen/margin_16"
             android:paddingStart="@dimen/margin_8"
-            android:paddingTop="@dimen/margin_8"
-            android:text="@string/test_net_state" />
+            android:paddingTop="@dimen/margin_8" />
     </LinearLayout>
 </android.support.design.widget.AppBarLayout>

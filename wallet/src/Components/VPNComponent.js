@@ -27,11 +27,12 @@ var markers = []
 let lang = require('./language');
 const electron = window.require('electron');
 const remote = electron.remote;
-const { execSync } = window.require('child_process');
+const { exec, execSync } = window.require('child_process');
 let netStat = window.require('net-stat');
 let os = window.require('os');
 let ip = require('ip');
 var UsageInterval = null;
+
 
 class VPNComponent extends Component {
     constructor(props) {
@@ -183,6 +184,7 @@ class VPNComponent extends Component {
             let that = this;
             if (isOnline()) {
                 if (this.state.isSock) {
+                    let openBrowser = true; 
                     connectSocks(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, data) {
                         if (isMacError) {
                             that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
@@ -203,6 +205,12 @@ class VPNComponent extends Component {
                         }
                         else {
                             that.props.onChange();
+                            if(remote.process.platform==='win32' && openBrowser===true ){
+                                exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
+                            console.log('browser opened');     
+                            openBrowser = false;
+                          });
+                            }
                             //that.returnVPN();
                             that.setState({
                                 selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false,
@@ -260,6 +268,11 @@ class VPNComponent extends Component {
                     that.props.changeTest(false);
                 }
                 else {
+                    if(remote.process.platform==='win32'){
+                        exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
+                    console.log('browser opened');     
+                  });
+                }
                     that.props.onChange();
                     that.props.changeTest(false);
                     sendUsage(that.props.local_address, that.state.selectedVPN, null);

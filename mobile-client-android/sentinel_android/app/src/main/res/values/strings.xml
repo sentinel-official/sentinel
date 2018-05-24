@@ -97,6 +97,10 @@
     <string name="wrong_old_pin">App PIN entered is wrong</string>
     <string name="gwei">%d Gwei</string>
     <string name="_20_gwei">20 Gwei</string>
+    <string name="copy_address">Copy Address</string>
+    <string name="receive">Receive</string>
+    <string name="payment_pending">Payment pending for this session</string>
+    <string name="pay_sents">Pay %.4d SENTs</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

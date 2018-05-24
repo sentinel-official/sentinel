@@ -11,5 +11,6 @@ public class EndPoint {
     public static final String UPDATE_NODE_INFO = "node/info";
     public static final String MAKE_VPN_USAGE_PAYMENT = "client/vpn/pay";
     public static final String REPORT_PAYMENT = "client/vpn/report";
+    public static final String RAW_TRANSACTION = "client/raw-transaction";
     public static final String GET_OVPN_CONFIG = "ovpn";
 }

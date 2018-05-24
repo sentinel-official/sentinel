@@ -60,13 +60,13 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:text="@string/sent_paid_desc"
-                app:layout_constraintBottom_toTopOf="@+id/iv_divider"
+                app:layout_constraintBottom_toTopOf="@+id/divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sent_paid" />
 
             <ImageView
-                android:id="@+id/iv_divider"
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_1"
                 android:layout_marginBottom="16dp"
@@ -99,7 +99,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv_total_duration_desc"
                 app:layout_constraintEnd_toStartOf="@+id/tv_total_received_data"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <TextView
                 android:id="@+id/tv_total_duration_desc"

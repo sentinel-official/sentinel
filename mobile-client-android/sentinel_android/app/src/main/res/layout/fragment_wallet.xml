@@ -43,7 +43,7 @@
         android:padding="@dimen/margin_8"
         app:layout_constraintBottom_toBottomOf="@+id/tv_address"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/address"
+        app:layout_constraintStart_toEndOf="@+id/tv_address"
         app:layout_constraintTop_toTopOf="@+id/address"
         app:srcCompat="@drawable/ic_copy"
         tools:ignore="ContentDescription" />
@@ -117,13 +117,13 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:text="@string/sent_desc"
-                app:layout_constraintBottom_toTopOf="@+id/iv_divider"
+                app:layout_constraintBottom_toTopOf="@+id/divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_total_sent" />
 
             <ImageView
-                android:id="@+id/iv_divider"
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_1"
                 android:layout_marginBottom="8dp"
@@ -155,7 +155,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv_total_ether_desc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <TextView
                 android:id="@+id/tv_total_ether_desc"
@@ -186,7 +186,7 @@
         style="@style/CustomTextAppearance.BlueButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="Receive"
+        android:text="@string/receive"
         app:layout_constraintBottom_toBottomOf="@+id/btn_send"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_send"

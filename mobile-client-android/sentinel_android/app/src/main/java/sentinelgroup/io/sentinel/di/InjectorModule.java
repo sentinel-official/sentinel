@@ -1,7 +1,6 @@
 package sentinelgroup.io.sentinel.di;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 
 import sentinelgroup.io.sentinel.db.AppDatabase;
 import sentinelgroup.io.sentinel.network.api.WebService;
@@ -10,11 +9,10 @@ import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.repository.PinRepository;
 import sentinelgroup.io.sentinel.repository.RestoreKeystoreRepository;
 import sentinelgroup.io.sentinel.repository.WalletRepository;
-import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
-import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.viewmodel.CreateAuidViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SetPinViewModelFactory;
@@ -73,14 +71,18 @@ public class InjectorModule {
         return new ForgotPinViewModelFactory(aRepository);
     }
 
-    public static ResetPinViewModelFactory provideResetPinViewModelFactory(Context iContext){
+    public static ResetPinViewModelFactory provideResetPinViewModelFactory(Context iContext) {
         PinRepository aRepository = providePinRepository(iContext);
         return new ResetPinViewModelFactory(aRepository);
     }
 
     public static WalletViewModelFactory provideWalletViewModelFactory() {
         WalletRepository aRepository = provideWalletRepository();
-        String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
-        return new WalletViewModelFactory(aRepository, aAccountAddress);
+        return new WalletViewModelFactory(aRepository);
+    }
+
+    public static ReceiveViewModelFactory provideReceiveViewModelFactory() {
+        AppExecutors aAppExecutors = AppExecutors.getInstance();
+        return new ReceiveViewModelFactory(aAppExecutors);
     }
 }

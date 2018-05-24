@@ -214,7 +214,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onReceiveClicked() {
-//        startActivity(new Intent(this,ReceiveActivity.class));
+        startActivity(new Intent(this,ReceiveActivity.class));
     }
 
     @Override

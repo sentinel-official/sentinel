@@ -64,6 +64,15 @@
         <item name="android:textColor">@color/colorTextWhiteWithAlpha70</item>
     </style>
 
+    <style name="CustomTextAppearance.Text12.Black">
+        <item name="android:textColor">@color/colorTextBlack</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text12.BlackNormal">
+        <item name="android:textColor">@color/colorWindowDark</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="CustomTextAppearance.Text12.BlueNormal">
         <item name="android:textColor">@color/colorTextBlue</item>
         <item name="android:textStyle">normal</item>

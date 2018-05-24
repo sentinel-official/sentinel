@@ -8,17 +8,15 @@ import sentinelgroup.io.sentinel.repository.WalletRepository;
 
 public class WalletViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final WalletRepository mRepository;
-    private final String mAccountAddress;
 
-    public WalletViewModelFactory(WalletRepository iRepository, String iAccountAddress) {
+    public WalletViewModelFactory(WalletRepository iRepository) {
         mRepository = iRepository;
-        mAccountAddress = iAccountAddress;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new WalletViewModel(mRepository, mAccountAddress);
+        return (T) new WalletViewModel(mRepository);
     }
 }

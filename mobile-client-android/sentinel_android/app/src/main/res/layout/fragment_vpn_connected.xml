@@ -65,7 +65,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
 
             <ImageView
-                android:id="@+id/iv_divider"
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_1"
                 android:layout_marginEnd="8dp"
@@ -93,7 +93,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/tv_upload_speed_span"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <TextView
                 android:id="@+id/tv_upload_speed_span"

@@ -16,16 +16,19 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.web3j.abi.datatypes.Function;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.Contract;
+import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -36,10 +39,17 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.ui.adapter.MaterialSpinnerAdapter;
 import sentinelgroup.io.sentinel.ui.custom.CustomSpinner;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Convert;
+import sentinelgroup.io.sentinel.util.Logger;
+import sentinelgroup.io.sentinel.util.NetworkUtil;
+
+import static org.web3j.tx.Contract.GAS_LIMIT;
+import static org.web3j.tx.ManagedTransaction.GAS_PRICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,7 +69,6 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     private TextView mTvGasPrice;
     private Button mBtnSend;
 
-    //    private ArrayAdapter<String> mAdapter;
     private MaterialSpinnerAdapter mAdapter;
 
     public SendFragment() {
@@ -266,9 +275,9 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         @Override
         protected String doInBackground(Void... voids) {
             Web3j web3j = mIsChecked
-                    ? Web3jFactory.build(new HttpService("https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy"))
-                    : Web3jFactory.build(new HttpService("https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy"));
-            String message;
+                    ? Web3jFactory.build(new HttpService("https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy"))
+                    : Web3jFactory.build(new HttpService("https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy"));
+            String message = null;
             try {
                 // verify password and keystore file
                 Credentials credentials = WalletUtils.loadCredentials("1234", AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH));
@@ -276,22 +285,21 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
                 EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(credentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
                 BigInteger nonce = ethGetTransactionCount.getTransactionCount();
                 // get gas price
-                EthGasPrice ethGasPrice = web3j.ethGasPrice().sendAsync().get();
-                BigInteger gasPrice = ethGasPrice.getGasPrice();
+                BigInteger gasPrice = Convert.toWei("1", Convert.Unit.GWEI);
                 //gas limit
                 BigInteger gasLimit = BigInteger.valueOf(21000);
                 // get to address
                 String to = "0x4819b11c320f2ecd05cfc71e9a34bd24b6180bb1";
                 // get value
-//                BigInteger value = BigInteger.valueOf(0.001);
+                BigInteger value = Convert.toWei("0.35", Convert.Unit.ETHER);
                 // create raw transaction object
-//                RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, to, value);
-
-                message = String.valueOf(gasPrice);
+                RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, to, value);
+                // encode and sign transacton
+                byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+                message = Numeric.toHexString(signedMessage);
             } catch (IOException | CipherException | InterruptedException | ExecutionException e) {
-                message = e.getLocalizedMessage();
+                e.printStackTrace();
             }
-
             return message;
         }
 
@@ -301,7 +309,14 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
             if (mWeakReference.get() != null) {
                 mWeakReference.get().toggleProgressDialog(false);
                 mWeakReference.get().showErrorDialog(s);
+                if(s!= null){
+                    Logger.logDebug("TX_DATA",s);
+                    callAPI();
+                }
             }
+        }
+
+        private void callAPI() {
         }
     }
 }

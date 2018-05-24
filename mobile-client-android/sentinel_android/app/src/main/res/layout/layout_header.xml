@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/actionBarSize"
-    android:background="@color/colorDrawerBackground"
+    android:background="@color/colorCardShadow"
+    android:layout_marginBottom="@dimen/margin_8"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">

@@ -7,6 +7,7 @@ import retrofit2.http.POST;
 import sentinelgroup.io.sentinel.network.model.Account;
 import sentinelgroup.io.sentinel.network.model.Balance;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.network.model.PayResponse;
 import sentinelgroup.io.sentinel.network.model.Tokens;
 import sentinelgroup.io.sentinel.network.model.Vpn;
 
@@ -25,4 +26,7 @@ public interface WebService {
 
     @GET(EndPoint.GET_UNOCCUPIED_VPN_SERVERS)
     Call<Vpn> getUnoccupiedVpnServers();
+
+    @POST(EndPoint.RAW_TRANSACTION)
+    Call<PayResponse> makeRawTransaction(@Body GenericRequestBody iBody);
 }

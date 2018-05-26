@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Single;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.Account;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
@@ -30,13 +31,13 @@ public class CreateAuidRepository {
     private static CreateAuidRepository sInstance;
     private final WebService mWebService;
     private final AppExecutors mAppExecutors;
-    private final MutableLiveData<Resource<Account>> mAccountMutableLiveData;
+    private final SingleLiveEvent<Resource<Account>> mAccountMutableLiveData;
     private final SingleLiveEvent<Resource<Account>> mKeystoreFileLiveEvent;
 
     private CreateAuidRepository(WebService iWebService, AppExecutors iAppExecutors) {
         mWebService = iWebService;
         mAppExecutors = iAppExecutors;
-        mAccountMutableLiveData = new MutableLiveData<>();
+        mAccountMutableLiveData = new SingleLiveEvent<>();
         mKeystoreFileLiveEvent = new SingleLiveEvent<>();
     }
 
@@ -49,7 +50,7 @@ public class CreateAuidRepository {
         return sInstance;
     }
 
-    public LiveData<Resource<Account>> getAccountMutableLiveData() {
+    public SingleLiveEvent<Resource<Account>> getAccountLiveEvent() {
         return mAccountMutableLiveData;
     }
 

@@ -4,29 +4,29 @@ import com.google.gson.annotations.SerializedName;
 
 public class GenericRequestBody {
     @SerializedName("password")
-    private String password = null;
+    private String password;
     @SerializedName("account_addr")
-    private String accountAddress = null;
+    private String accountAddress;
     @SerializedName("vpn_addr")
-    private String vpnAddress = null;
+    private String vpnAddress;
     @SerializedName("session_name")
-    private String sessionName = null;
+    private String sessionName;
     @SerializedName("token")
-    private String token = null;
+    private String token;
     @SerializedName("info")
-    private String info = null;
+    private String info;
     @SerializedName("payment_type")
-    private String paymentType = null;
+    private String paymentType;
     @SerializedName("tx_data")
-    private String txData = null;
+    private String txData;
     @SerializedName("net")
-    private String net = null;
+    private String net;
     @SerializedName("from_addr")
-    private String fromAddress = null;
+    private String fromAddress;
     @SerializedName("amount")
-    private String amount = null;
+    private String amount;
     @SerializedName("session_id")
-    private String sessionId = null;
+    private String sessionId;
 
     private GenericRequestBody(GenericRequestBodyBuilder iBuilder) {
         password = iBuilder.password;

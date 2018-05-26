@@ -4,29 +4,47 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * Ethereum unit conversion functions.
+ * Conversion functions - Ether, Network Data Rates
  */
 public final class Convert {
     private Convert() {
     }
 
-    public static BigInteger fromWei(String number, Unit unit) {
-        return fromWei(new BigDecimal(number), unit);
+    // Ether conversions
+    public static BigDecimal fromWei(String number, EtherUnit etherUnit) {
+        return fromWei(new BigDecimal(number), etherUnit);
     }
 
-    public static BigInteger fromWei(BigDecimal number, Unit unit) {
-        return number.divide(unit.getWeiFactor()).toBigInteger();
+    public static BigDecimal fromWei(BigDecimal number, EtherUnit etherUnit) {
+        return number.divide(etherUnit.getWeiFactor());
     }
 
-    public static BigInteger toWei(String number, Unit unit) {
-        return toWei(new BigDecimal(number), unit);
+    public static BigDecimal toWei(String number, EtherUnit etherUnit) {
+        return toWei(new BigDecimal(number), etherUnit);
     }
 
-    public static BigInteger toWei(BigDecimal number, Unit unit) {
-        return number.multiply(unit.getWeiFactor()).toBigInteger();
+    public static BigDecimal toWei(BigDecimal number, EtherUnit etherUnit) {
+        return number.multiply(etherUnit.getWeiFactor());
     }
 
-    public enum Unit {
+    // Network Data conversions
+    public static double fromBitsPerSecond(String number, DataUnit dataUnit) {
+        return fromBitsPerSecond(String.valueOf(number), dataUnit);
+    }
+
+    public static double fromBitsPerSecond(double number, DataUnit dataUnit) {
+        return number / dataUnit.getFactor();
+    }
+
+    public static double toBitsPerSecond(String number, DataUnit dataUnit) {
+        return toBitsPerSecond(String.valueOf(number), dataUnit);
+    }
+
+    public static double toBitsPerSecond(double number, DataUnit dataUnit) {
+        return number * dataUnit.getFactor();
+    }
+
+    public enum EtherUnit {
         WEI("wei", 0),
         KWEI("kwei", 3),
         MWEI("mwei", 6),
@@ -41,7 +59,7 @@ public final class Convert {
         private String name;
         private BigDecimal weiFactor;
 
-        Unit(String name, int factor) {
+        EtherUnit(String name, int factor) {
             this.name = name;
             this.weiFactor = BigDecimal.TEN.pow(factor);
         }
@@ -55,15 +73,51 @@ public final class Convert {
             return name;
         }
 
-        public static Unit fromString(String name) {
+        public static EtherUnit fromString(String name) {
             if (name != null) {
-                for (Unit unit : Unit.values()) {
-                    if (name.equalsIgnoreCase(unit.name)) {
-                        return unit;
+                for (EtherUnit etherUnit : EtherUnit.values()) {
+                    if (name.equalsIgnoreCase(etherUnit.name)) {
+                        return etherUnit;
                     }
                 }
             }
-            return Unit.valueOf(name);
+            return EtherUnit.valueOf(name);
+        }
+    }
+
+    public enum DataUnit {
+        BPS("bps", 0),
+        KBPS("Kbps", 3),
+        MBPS("Mbps", 6),
+        GBPS("Gbps", 9),
+        TBPS("Tbps", 12);
+
+        private String name;
+        private double factor;
+
+        DataUnit(String name, int factor) {
+            this.name = name;
+            this.factor = Math.pow(10, factor);
+        }
+
+        public double getFactor() {
+            return factor;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public static DataUnit fromString(String name) {
+            if (name != null) {
+                for (DataUnit dataUnit : DataUnit.values()) {
+                    if (name.equalsIgnoreCase(dataUnit.name)) {
+                        return dataUnit;
+                    }
+                }
+            }
+            return DataUnit.valueOf(name);
         }
     }
 }

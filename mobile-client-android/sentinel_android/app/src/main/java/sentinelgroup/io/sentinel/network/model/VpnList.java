@@ -6,10 +6,10 @@ public class VpnList {
     @SerializedName("account_addr")
     public String accountAddress;
     public String ip;
-    public float latency;
+    public double latency;
     public Location location;
     @SerializedName("net_speed")
     public NetSpeed netSpeed;
     @SerializedName("price_per_GB")
-    public int pricePerGb;
+    public double pricePerGb;
 }

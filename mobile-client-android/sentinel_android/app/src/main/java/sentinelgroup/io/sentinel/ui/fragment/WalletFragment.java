@@ -14,8 +14,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Locale;
-
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.Balance;
@@ -122,8 +120,8 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
 
     private void setBalanceValue(Balance iData) {
         boolean aIsChecked = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-        mTvTotalEther.setText(String.format(Locale.getDefault(), "%.8f", mViewModel.getFormattedEthBalance(aIsChecked ? iData.balances.rinkeby.eths : iData.balances.main.eths)));
-        mTvTotalSent.setText(String.format(Locale.getDefault(), "%.0f", mViewModel.getFormattedSentBalance(aIsChecked ? iData.balances.rinkeby.sents : iData.balances.main.sents)));
+        mTvTotalEther.setText(mViewModel.getFormattedEthBalance(aIsChecked ? iData.balances.rinkeby.eths : iData.balances.main.eths));
+        mTvTotalSent.setText(mViewModel.getFormattedSentBalance(aIsChecked ? iData.balances.rinkeby.sents : iData.balances.main.sents));
         setTextDesc(aIsChecked);
     }
 

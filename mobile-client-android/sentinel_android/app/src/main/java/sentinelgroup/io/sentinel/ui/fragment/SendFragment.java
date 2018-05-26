@@ -1,7 +1,6 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,40 +15,15 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import org.web3j.abi.datatypes.Function;
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.crypto.WalletUtils;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.Contract;
-import org.web3j.utils.Numeric;
-
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.ui.adapter.MaterialSpinnerAdapter;
 import sentinelgroup.io.sentinel.ui.custom.CustomSpinner;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
-import sentinelgroup.io.sentinel.util.Convert;
-import sentinelgroup.io.sentinel.util.Logger;
-import sentinelgroup.io.sentinel.util.NetworkUtil;
-
-import static org.web3j.tx.Contract.GAS_LIMIT;
-import static org.web3j.tx.ManagedTransaction.GAS_PRICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,8 +42,6 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     private SeekBar mSbGasPrice;
     private TextView mTvGasPrice;
     private Button mBtnSend;
-
-    private MaterialSpinnerAdapter mAdapter;
 
     public SendFragment() {
         // Required empty public constructor
@@ -122,6 +94,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mBtnSend = iView.findViewById(R.id.btn_send);
         // set default values
         mSbGasPrice.setProgress(19);
+        mTetGasLimit.setTransformationMethod(null);
         // set listeners
         mCsTokens.addTextChangedListener(this);
         mTetToAddress.addTextChangedListener(this);
@@ -132,13 +105,8 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mBtnSend.setOnClickListener(this);
     }
 
-    private void setupAdapter(boolean iIsChecked) {
-        mAdapter = new MaterialSpinnerAdapter(getContext(), generateStringList(iIsChecked));
-        mCsTokens.setAdapter(mAdapter);
-    }
+    private void initViewModel() {
 
-    private List<String> generateStringList(boolean iIsChecked) {
-        return Arrays.asList(Objects.requireNonNull(getContext()).getResources().getStringArray(iIsChecked ? R.array.spinner_test_list : R.array.spinner_list));
     }
 
     public void updateAdapterData(boolean iIsChecked) {
@@ -147,12 +115,21 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         setupAdapter(iIsChecked);
     }
 
-    private void initViewModel() {
-
+    private List<String> generateStringList(boolean iIsChecked) {
+        return Arrays.asList(Objects.requireNonNull(getContext()).getResources().getStringArray(iIsChecked ? R.array.spinner_test_list : R.array.spinner_list));
     }
 
-    private void toggleEnabledState(boolean iEnabled) {
+    private void setupAdapter(boolean iIsChecked) {
+        MaterialSpinnerAdapter aAdapter = new MaterialSpinnerAdapter(getContext(), generateStringList(iIsChecked));
+        mCsTokens.setAdapter(aAdapter);
+    }
+
+    private void toggleButtonState(boolean iEnabled) {
         mBtnSend.setEnabled(iEnabled);
+    }
+
+    private boolean validateGasLimit() {
+        return false;
     }
 
     private void offlineTransactionSigning() {
@@ -163,8 +140,9 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         String aPassword = mTetPassword.getText().toString();
         int aGasPrice = mSbGasPrice.getProgress() + 1;  // in GWei
 
-        boolean aBoolean = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-        new OfflineTransactionSigningTask(this, aBoolean).execute();
+
+//        boolean aBoolean = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+//        new OfflineTransactionSigningTask(this, aBoolean).execute();
     }
 
     public void fragmentLoaded(String iTitle) {
@@ -214,6 +192,12 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     @Override
     public void afterTextChanged(Editable s) {
+        mBtnSend.setEnabled(!mCsTokens.getText().toString().trim().isEmpty()
+                && !mTetToAddress.getText().toString().trim().isEmpty()
+                && !mTetAmount.getText().toString().trim().isEmpty()
+                && !mTetGasLimit.getText().toString().trim().isEmpty()
+                && !mTetGasLimit.getText().toString().trim().isEmpty()
+                && !mTetPassword.getText().toString().trim().isEmpty());
     }
 
     @Override
@@ -233,8 +217,9 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     @Override
     public void onClick(View v) {
-//        toggleEnabledState(false);
-        offlineTransactionSigning();
+        if (validateGasLimit()) {
+            offlineTransactionSigning();
+        }
     }
 
     /**
@@ -255,68 +240,5 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         void onShowErrorDialog(String iError);
 
         void onLoadNextActivity();
-    }
-
-    private static class OfflineTransactionSigningTask extends AsyncTask<Void, Void, String> {
-        WeakReference<SendFragment> mWeakReference;
-        boolean mIsChecked;
-
-        OfflineTransactionSigningTask(SendFragment iFragment, boolean isChecked) {
-            mWeakReference = new WeakReference<>(iFragment);
-            mIsChecked = isChecked;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mWeakReference.get().toggleProgressDialog(true);
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            Web3j web3j = mIsChecked
-                    ? Web3jFactory.build(new HttpService("https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy"))
-                    : Web3jFactory.build(new HttpService("https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy"));
-            String message = null;
-            try {
-                // verify password and keystore file
-                Credentials credentials = WalletUtils.loadCredentials("1234", AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH));
-                // get nonce
-                EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(credentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
-                BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-                // get gas price
-                BigInteger gasPrice = Convert.toWei("1", Convert.Unit.GWEI);
-                //gas limit
-                BigInteger gasLimit = BigInteger.valueOf(21000);
-                // get to address
-                String to = "0x4819b11c320f2ecd05cfc71e9a34bd24b6180bb1";
-                // get value
-                BigInteger value = Convert.toWei("0.35", Convert.Unit.ETHER);
-                // create raw transaction object
-                RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, to, value);
-                // encode and sign transacton
-                byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-                message = Numeric.toHexString(signedMessage);
-            } catch (IOException | CipherException | InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-            return message;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (mWeakReference.get() != null) {
-                mWeakReference.get().toggleProgressDialog(false);
-                mWeakReference.get().showErrorDialog(s);
-                if(s!= null){
-                    Logger.logDebug("TX_DATA",s);
-                    callAPI();
-                }
-            }
-        }
-
-        private void callAPI() {
-        }
     }
 }

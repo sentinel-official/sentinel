@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -21,11 +22,14 @@ import android.widget.Toast;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
+import sentinelgroup.io.sentinel.ui.fragment.VpnListFragment;
+import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
 import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
-public class DashboardActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, WalletFragment.OnFragmentInteractionListener {
+public class DashboardActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
+        WalletFragment.OnFragmentInteractionListener, VpnSelectFragment.OnFragmentInteractionListener, VpnListFragment.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -62,17 +66,14 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mSwitchNet.setOnCheckedChangeListener(this);
         aNavView.getHeaderView(0).findViewById(R.id.ib_back).setOnClickListener(v -> mDrawerLayout.closeDrawers());
         aNavView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // handle item click
-                        handleNavigationItemClick(menuItem.getItemId());
-                        // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
+                menuItem -> {
+                    // set item as selected to persist highlight
+                    menuItem.setChecked(true);
+                    // handle item click
+                    handleNavigationItemClick(menuItem.getItemId());
+                    // close drawer when item is tapped
+                    mDrawerLayout.closeDrawers();
+                    return true;
                 });
     }
 
@@ -98,10 +99,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case R.id.nav_vpn_history:
                 break;
-            case R.id.nav_nw_stats:
-                break;
-            case R.id.nav_usage_stats:
-                break;
+//            case R.id.nav_nw_stats:
+//                break;
+//            case R.id.nav_usage_stats:
+//                break;
             case R.id.nav_reset_pin:
                 startActivityForResult(new Intent(this, ResetPinActivity.class), AppConstants.REQ_RESET_PIN);
                 break;
@@ -156,7 +157,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     private void loadVpnFragment() {
-        // set
+        loadFragment(VpnSelectFragment.newInstance());
     }
 
     private void loadWalletFragment() {
@@ -214,7 +215,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onReceiveClicked() {
-        startActivity(new Intent(this,ReceiveActivity.class));
+        startActivity(new Intent(this, ReceiveActivity.class));
     }
 
     @Override
@@ -227,5 +228,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

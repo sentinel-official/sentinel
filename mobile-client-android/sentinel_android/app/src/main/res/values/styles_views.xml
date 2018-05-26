@@ -124,7 +124,7 @@
         <item name="android:textIsSelectable">false</item>
         <item name="android:cursorVisible">false</item>
         <item name="android:digits">1234567890</item>
-        <item name="android:inputType">number</item>
+        <item name="android:inputType">numberPassword</item>
         <item name="android:maxLength">4</item>
         <item name="android:maxLines">1</item>
         <item name="android:textSize">@dimen/text_20</item>
@@ -153,11 +153,8 @@
 
     <style name="CustomTextAppearance.BlackButton">
         <item name="android:textSize">@dimen/text_10</item>
+        <item name="android:minHeight">@dimen/margin_32</item>
         <item name="android:textColor">@color/colorButtonOrange</item>
-        <item name="android:paddingRight">@dimen/margin_16</item>
-        <item name="android:paddingLeft">@dimen/margin_16</item>
-        <item name="android:paddingTop">@dimen/margin_8</item>
-        <item name="android:paddingBottom">@dimen/margin_8</item>
         <item name="android:background">@drawable/shape_button_black</item>
     </style>
 

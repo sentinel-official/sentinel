@@ -3,11 +3,15 @@ package sentinelgroup.io.sentinel.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
+import java.math.BigDecimal;
+import java.util.Locale;
+
 import sentinelgroup.io.sentinel.network.model.Balance;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.repository.WalletRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Convert;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -40,15 +44,13 @@ public class WalletViewModel extends ViewModel {
         mRepository.getBalanceMutableLiveData(mBody);
     }
 
-    public double getFormattedEthBalance(double iEthValue) {
-        if (iEthValue != 0)
-            iEthValue /= Math.pow(10, 18);
-        return iEthValue;
+    public String getFormattedEthBalance(double iEthValue) {
+        BigDecimal aEth = Convert.fromWei(BigDecimal.valueOf(iEthValue), Convert.EtherUnit.ETHER);
+        return String.format(Locale.getDefault(), "%.8f", aEth);
     }
 
-    public double getFormattedSentBalance(double iSentValue) {
-        if (iSentValue != 0)
-            iSentValue /= Math.pow(10, 8);
-        return iSentValue;
+    public String getFormattedSentBalance(double iSentValue) {
+        iSentValue /= Math.pow(10, 8);
+        return String.format(Locale.getDefault(), iSentValue % 1 == 0 ? "%.0f" : ".7f", iSentValue);
     }
 }

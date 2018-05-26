@@ -101,6 +101,13 @@
     <string name="receive">Receive</string>
     <string name="payment_pending">Payment pending for this session</string>
     <string name="pay_sents">Pay %.4d SENTs</string>
+    <string name="vpn_location">%1s, %2s</string>
+    <string name="vpn_bandwidth">Bandwidth \t %s</string>
+    <string name="vpn_price">Price(SENTs/GB) \t %s</string>
+    <string name="vpn_latency">Latency \t %s</string>
+    <string name="vpn_bandwidth_value">%.2f Mbps</string>
+    <string name="vpn_price_value">%.0f SENTs</string>
+    <string name="vpn_latency_value">%.3f ms</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

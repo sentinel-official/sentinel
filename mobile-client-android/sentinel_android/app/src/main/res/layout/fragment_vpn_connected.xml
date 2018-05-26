@@ -42,7 +42,7 @@
                 android:paddingTop="@dimen/margin_4"
                 android:text="VPN Status: Connected"
                 android:textColor="@color/colorTextBlack"
-                app:layout_constraintBottom_toTopOf="@+id/tv_source"
+                app:layout_constraintBottom_toTopOf="@+id/tv_location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -50,7 +50,7 @@
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
             <TextView
-                android:id="@+id/tv_source"
+                android:id="@+id/tv_location"
                 style="@style/CustomTextAppearance.Text18"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv_ether_balance"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_source"
+                app:layout_constraintTop_toBottomOf="@+id/tv_location"
                 tools:ignore="ContentDescription" />
 
             <TextView

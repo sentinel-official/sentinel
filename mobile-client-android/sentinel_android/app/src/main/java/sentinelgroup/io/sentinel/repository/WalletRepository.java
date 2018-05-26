@@ -10,7 +10,6 @@ import sentinelgroup.io.sentinel.network.model.Balance;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.Tokens;
 import sentinelgroup.io.sentinel.util.AppConstants;
-import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
@@ -20,21 +19,19 @@ public class WalletRepository {
     private static final Object LOCK = new Object();
     private static WalletRepository sInstance;
     private final WebService mWebService;
-    private final AppExecutors mAppExecutors;
     private final MutableLiveData<Resource<Balance>> mBalanceMutableLiveData;
     private final SingleLiveEvent<Boolean> mTokenAlertLiveEvent;
 
-    private WalletRepository(WebService iWebService, AppExecutors iAppExecutors) {
+    private WalletRepository(WebService iWebService) {
         mWebService = iWebService;
-        mAppExecutors = iAppExecutors;
         mBalanceMutableLiveData = new MutableLiveData<>();
         mTokenAlertLiveEvent = new SingleLiveEvent<>();
     }
 
-    public static WalletRepository getInstance(WebService iWebService, AppExecutors iAppExecutors) {
+    public static WalletRepository getInstance(WebService iWebService) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new WalletRepository(iWebService, iAppExecutors);
+                sInstance = new WalletRepository(iWebService);
             }
         }
         return sInstance;

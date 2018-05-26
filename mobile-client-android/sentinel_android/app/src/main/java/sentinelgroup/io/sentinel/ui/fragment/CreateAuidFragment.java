@@ -91,7 +91,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
         CreateAuidViewModelFactory aFactory = InjectorModule.provideCreateAccountViewModelFactory();
         mViewModel = ViewModelProviders.of(this, aFactory).get(CreateAuidViewModel.class);
 
-        mViewModel.getAccountLiveData().observe(this, accountResource -> {
+        mViewModel.getAccountLiveEvent().observe(this, accountResource -> {
             if (accountResource != null) {
                 if (accountResource.status.equals(Status.LOADING)) {
                     toggleProgressDialog(true);
@@ -198,7 +198,8 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void afterTextChanged(Editable s) {
-        mBtnNext.setEnabled(!mTetPassword.getText().toString().isEmpty() && !mTetConfirmPassword.getText().toString().isEmpty());
+        mBtnNext.setEnabled(!mTetPassword.getText().toString().trim().isEmpty()
+                && !mTetConfirmPassword.getText().toString().trim().isEmpty());
     }
 
     @Override

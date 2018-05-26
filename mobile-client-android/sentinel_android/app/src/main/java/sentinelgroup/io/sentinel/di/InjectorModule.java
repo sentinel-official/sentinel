@@ -8,6 +8,7 @@ import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.repository.PinRepository;
 import sentinelgroup.io.sentinel.repository.RestoreKeystoreRepository;
+import sentinelgroup.io.sentinel.repository.SendRepository;
 import sentinelgroup.io.sentinel.repository.WalletRepository;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.viewmodel.CreateAuidViewModelFactory;
@@ -15,6 +16,7 @@ import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.VerifyPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.WalletViewModelFactory;
@@ -42,8 +44,12 @@ public class InjectorModule {
 
     private static WalletRepository provideWalletRepository() {
         WebService aWebService = WebClient.get();
-        AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return WalletRepository.getInstance(aWebService, aAppExecutors);
+        return WalletRepository.getInstance(aWebService);
+    }
+
+    private static SendRepository provideSendRepository() {
+        WebService aWebService = WebClient.get();
+        return SendRepository.getInstance(aWebService);
     }
 
     public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory() {
@@ -79,6 +85,12 @@ public class InjectorModule {
     public static WalletViewModelFactory provideWalletViewModelFactory() {
         WalletRepository aRepository = provideWalletRepository();
         return new WalletViewModelFactory(aRepository);
+    }
+
+    public static SendViewModelFactory provideSendViewModelFactory() {
+        SendRepository aRepository = provideSendRepository();
+        AppExecutors aAppExecutors = AppExecutors.getInstance();
+        return new SendViewModelFactory(aRepository, aAppExecutors);
     }
 
     public static ReceiveViewModelFactory provideReceiveViewModelFactory() {

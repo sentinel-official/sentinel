@@ -91,7 +91,7 @@
                     style="@style/CustomTextAppearance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:theme="@style/TextInputEditTextTheme" />
             </android.support.design.widget.TextInputLayout>
 
@@ -118,7 +118,8 @@
                     style="@style/CustomTextAppearance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="numberPassword"
+                    android:maxLength="7"
                     android:text="@string/default_gas_limit"
                     android:theme="@style/TextInputEditTextTheme" />
             </android.support.design.widget.TextInputLayout>
@@ -211,6 +212,7 @@
         style="@style/CustomTextAppearance.OrangeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

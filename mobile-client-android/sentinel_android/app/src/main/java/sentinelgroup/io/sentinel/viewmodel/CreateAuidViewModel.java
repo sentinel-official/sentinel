@@ -1,6 +1,5 @@
 package sentinelgroup.io.sentinel.viewmodel;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 import android.os.Environment;
 
@@ -15,17 +14,17 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
 public class CreateAuidViewModel extends ViewModel {
     private final CreateAuidRepository mRepository;
-    private final LiveData<Resource<Account>> mAccountLiveData;
+    private final SingleLiveEvent<Resource<Account>> mAccountLiveEvent;
     private final SingleLiveEvent<Resource<Account>> mKeystoreFileLiveEvent;
 
     CreateAuidViewModel(CreateAuidRepository iRepository) {
         mRepository = iRepository;
-        mAccountLiveData = iRepository.getAccountMutableLiveData();
+        mAccountLiveEvent = iRepository.getAccountLiveEvent();
         mKeystoreFileLiveEvent = iRepository.getKeystoreFileLiveEvent();
     }
 
-    public LiveData<Resource<Account>> getAccountLiveData() {
-        return mAccountLiveData;
+    public SingleLiveEvent<Resource<Account>> getAccountLiveEvent() {
+        return mAccountLiveEvent;
     }
 
     public SingleLiveEvent<Resource<Account>> getKeystoreFileLiveEvent() {

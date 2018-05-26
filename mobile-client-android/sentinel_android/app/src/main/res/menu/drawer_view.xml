@@ -7,12 +7,12 @@
         <item
             android:id="@+id/nav_vpn_history"
             android:title="@string/vpn_history" />
-        <item
-            android:id="@+id/nav_nw_stats"
-            android:title="@string/network_stats" />
-        <item
-            android:id="@+id/nav_usage_stats"
-            android:title="@string/usage_stats" />
+        <!--<item-->
+            <!--android:id="@+id/nav_nw_stats"-->
+            <!--android:title="@string/network_stats" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_usage_stats"-->
+            <!--android:title="@string/usage_stats" />-->
         <item
             android:id="@+id/nav_reset_pin"
             android:title="@string/reset_pin" />

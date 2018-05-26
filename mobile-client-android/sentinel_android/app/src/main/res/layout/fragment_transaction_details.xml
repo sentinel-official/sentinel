@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tv_source"
+            android:id="@+id/tv_location"
             style="@style/CustomTextAppearance.Text12"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -36,9 +36,9 @@
             android:layout_marginTop="4dp"
             android:text="Thu 11 May 2018   10:30:47 GMT"
             app:layout_constraintBottom_toTopOf="@+id/tv_tx_status"
-            app:layout_constraintEnd_toEndOf="@+id/tv_source"
-            app:layout_constraintStart_toStartOf="@+id/tv_source"
-            app:layout_constraintTop_toBottomOf="@+id/tv_source" />
+            app:layout_constraintEnd_toEndOf="@+id/tv_location"
+            app:layout_constraintStart_toStartOf="@+id/tv_location"
+            app:layout_constraintTop_toBottomOf="@+id/tv_location" />
 
         <TextView
             android:id="@+id/tv_tx_status"

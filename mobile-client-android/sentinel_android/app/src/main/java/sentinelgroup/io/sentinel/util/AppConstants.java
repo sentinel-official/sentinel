@@ -18,4 +18,8 @@ public class AppConstants {
     // Other app constants
     public static final String FOLDER_NAME = "Sentinel";
     public static final String FILE_NAME = "keystore.file";
+    public static final String INFURA_URL_MAIN_NET = "https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy";
+    public static final String INFURA_URL_TEST_NET = "https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy";
+    public static final String SENTINEL_ADDRESS_MAIN_NET = "0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037";
+    public static final String SENTINEL_ADDRESS_TEST_NET = "0x29317B796510afC25794E511e7B10659Ca18048B";
 }

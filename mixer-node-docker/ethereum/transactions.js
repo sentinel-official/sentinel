@@ -1,6 +1,7 @@
 let chains = require('./chains');
 let { getTransactionCount } = require('./accounts');
-let { generatePublicKey, generateAddress } = require('./keys');
+let { generatePublicKey,
+  generateAddress } = require('./keys');
 
 
 let getGasPrice = (chainName) => {
@@ -24,10 +25,11 @@ let transferEthers = (fromPrivateKey, toAddress, value, chainName, cb) => {
   let tx = new Tx(rawTx);
   tx.sign(fromPrivateKey);
   let serializedTx = '0x' + tx.serialize().toString('hex');
-  chains[chainName].web3.eth.sendRawTransaction(serializedTx, (err, txHash) => {
-    if (error) cb(error, null);
-    else cb(null, txHash);
-  });
+  chains[chainName].web3.eth.sendRawTransaction(serializedTx,
+    (err, txHash) => {
+      if (error) cb(error, null);
+      else cb(null, txHash);
+    });
 };
 
 let getEstimatedGasUnits = (fromAddress, toAddress, value, chainName, cb) {
@@ -36,11 +38,10 @@ let getEstimatedGasUnits = (fromAddress, toAddress, value, chainName, cb) {
     to: toAddress,
     value: value
   }, (error, gasUnits) => {
-    if(error) cb(error, null);
+    if (error) cb(error, null);
     else {
       gasUnits = Number(gasUnits);
       cb(null, gasUnits);
     }
   });
 };
-

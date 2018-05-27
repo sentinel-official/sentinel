@@ -2,6 +2,7 @@ let mongoose = require('mongoose');
 
 
 let mixDetailsSchema = new mongoose.Schema({
+  toAddress: String,
   destinationAddress: String,
   delayInSeconds: Number,
   insertedOn: Number,
@@ -13,6 +14,4 @@ let mixDetailsSchema = new mongoose.Schema({
     versionKey: false
   });
 
-module.exports = {
-  mixDetailsModel: mongoose.model('MixDetails', mixDetailsSchema)
-};
+module.exports = mongoose.model('MixDetails', mixDetailsSchema);

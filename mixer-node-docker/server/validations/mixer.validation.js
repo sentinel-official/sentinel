@@ -4,6 +4,7 @@ let { validate } = require('../helpers/validation.helper');
 
 let insertMixDetails = (req, res, next) => {
   let addMixDetailsSchema = joi.object().keys({
+    toAddress: joi.string().regex(/^[a-fA-F0-9]{40}$/).required(),
     destinationAddress: joi.string().regex(/^[a-fA-F0-9]{40}$/).required(),
     delayInSeconds: joi.number().required()
   });

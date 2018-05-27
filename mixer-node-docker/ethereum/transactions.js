@@ -1,3 +1,4 @@
+const Tx = require('ethereumjs-tx');
 let chains = require('./chains');
 let { getTransactionCount } = require('./accounts');
 let { generatePublicKey,
@@ -11,8 +12,10 @@ let getGasPrice = (chainName) => {
 };
 
 let transferEthers = (fromPrivateKey, toAddress, value, chainName, cb) => {
+  fromPrivateKey = Buffer.from(fromPrivateKey, 'hex');
+  toAddress = '0x' + toAddress;
   let frompublicKey = generatePublicKey(fromPrivateKey);
-  let fromAddress = generateAddress(frompublicKey);
+  let fromAddress = '0x' + generateAddress(frompublicKey).toString('hex');
   let rawTx = {
     nonce: getTransactionCount(fromAddress, chainName),
     gasPrice: getGasPrice(chainName),
@@ -26,13 +29,13 @@ let transferEthers = (fromPrivateKey, toAddress, value, chainName, cb) => {
   tx.sign(fromPrivateKey);
   let serializedTx = '0x' + tx.serialize().toString('hex');
   chains[chainName].web3.eth.sendRawTransaction(serializedTx,
-    (err, txHash) => {
+    (error, txHash) => {
       if (error) cb(error, null);
       else cb(null, txHash);
     });
 };
 
-let getEstimatedGasUnits = (fromAddress, toAddress, value, chainName, cb) {
+let getEstimatedGasUnits = (fromAddress, toAddress, value, chainName, cb) => {
   chains[chainName].web3.eth.estimateGas({
     from: fromAddress,
     to: toAddress,
@@ -45,3 +48,9 @@ let getEstimatedGasUnits = (fromAddress, toAddress, value, chainName, cb) {
     }
   });
 };
+
+module.exports = {
+  getGasPrice: getGasPrice,
+  transferEthers: transferEthers,
+  getEstimatedGasUnits: getEstimatedGasUnits
+}

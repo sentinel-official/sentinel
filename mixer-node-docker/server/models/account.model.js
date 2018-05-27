@@ -5,13 +5,12 @@ let accountSchema = new mongoose.Schema({
   address: String,
   privateKey: String,
   generatedOn: Number,
-  expiryOn: Number,
-  isValid: Boolean
+  balances: {
+    eth: Number
+  }
 }, {
     strict: true,
     versionKey: false
   });
 
-module.exports = {
-  accountModel: mongoose.model('Account', accountSchema)
-};
+module.exports = mongoose.model('Account', accountSchema);

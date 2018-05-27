@@ -8,7 +8,6 @@ let createAccount = (req, res) => {
   waterfall([
     (next) => {
       accountHelper.createAccount((error, account) => {
-        console.log(error, account);
         if (error) next({
           status: 500,
           message: 'Error occurred while creating new account.'
@@ -18,12 +17,12 @@ let createAccount = (req, res) => {
     }, (account, next) => {
       account = Object.assign(account, {
         generatedOn: Math.round(Date.now() / Math.pow(10, 3)),
-        expiryOn: Math.round((Date.now() + accountExpiry) / Math.pow(10, 3)),
-        isValid: true
+        balances: {
+          eth: 0
+        }
       });
       accountDbo.insertAccount(account,
         (error, result) => {
-          console.log(error, result);
           if (error) next({
             status: 500,
             message: 'Error occurred while inserting account.'
@@ -45,31 +44,19 @@ let createAccount = (req, res) => {
   });
 };
 
-let getBalance = (req, res) => {
+let getTotalBalance = (req, res) => {
   waterfall([
     (next) => {
-      accountDbo.getAccountAddresses(true,
-        (error, result) => {
-          console.log(error, result);
-          if (error) next({
-            status: 500,
-            message: 'Error occurred while getting account addresses.'
-          });
-          else next(null, result);
+      accountDbo.getTotalBalance((error, balance) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while getting balance.'
         });
-    }, (addresses, next) => {
-      accountHelper.getBalance(addresses,
-        (error, balance) => {
-          console.log(error, balance);
-          if (error) next({
-            status: 500,
-            message: 'Error occurred while getting balance.'
-          });
-          else next(null, {
-            status: 200,
-            balance: balance
-          });
+        else next(null, {
+          status: 200,
+          balance: balance
         });
+      });
     }
   ], (error, success) => {
     let response = Object.assign({
@@ -81,8 +68,7 @@ let getBalance = (req, res) => {
   });
 }
 
-
 module.exports = {
   createAccount: createAccount,
-  getBalance: getBalance
+  getTotalBalance: getTotalBalance
 };

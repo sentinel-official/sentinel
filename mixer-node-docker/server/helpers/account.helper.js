@@ -1,5 +1,6 @@
 let keys = require('../../ethereum/keys');
 let accounts = require('../../ethereum/accounts');
+let { accountModel } = require('../models/account.model');
 
 
 let createAccount = (cb) => {
@@ -16,19 +17,6 @@ let createAccount = (cb) => {
   }
 };
 
-let getBalance = (addresses, cb) => {
-  let balance = 0;
-  try {
-    addresses.forEach((address) => {
-      balance += accounts.getBalance(address, 'main')
-    });
-    cb(null, balance);
-  } catch (error) {
-    cb(error, null);
-  }
-}
-
 module.exports = {
-  createAccount: createAccount,
-  getBalance: getBalance
+  createAccount: createAccount
 };

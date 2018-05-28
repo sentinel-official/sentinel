@@ -276,7 +276,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     @Override
-    public void onLoadNextActivity(Class<?> iActivity) {
-        startActivity(new Intent(this, iActivity));
+    public void onLoadNextActivity(Intent iIntent) {
+        if (iIntent != null)
+            startActivity(iIntent);
     }
 }

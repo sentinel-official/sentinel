@@ -6,14 +6,24 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.ui.fragment.ResetPinFragment;
+import sentinelgroup.io.sentinel.network.model.VpnList;
+import sentinelgroup.io.sentinel.ui.fragment.VpnDetailsFragment;
+import sentinelgroup.io.sentinel.util.AppConstants;
 
-public class ResetPinActivity extends BaseActivity {
+public class VpnDetailsActivity extends BaseActivity {
+
+    private VpnList mVpnListData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadFragment(ResetPinFragment.newInstance());
+        getIntentExtras();
+    }
+
+    private void getIntentExtras() {
+        if (getIntent() != null)
+            mVpnListData = (VpnList) getIntent().getSerializableExtra(AppConstants.EXTRA_VPN_LIST);
+        loadFragment(VpnDetailsFragment.newInstance(mVpnListData));
     }
 
     @Override
@@ -27,12 +37,6 @@ public class ResetPinActivity extends BaseActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        setResult(RESULT_CANCELED);
-        finish();
     }
 
     @Override
@@ -62,12 +66,10 @@ public class ResetPinActivity extends BaseActivity {
 
     @Override
     public void onLoadNextFragment(Fragment iNextFragment) {
-        // Unused interface method
+        loadFragment(iNextFragment);
     }
 
     @Override
     public void onLoadNextActivity(Intent iIntent) {
-        setResult(RESULT_OK);
-        finish();
     }
 }

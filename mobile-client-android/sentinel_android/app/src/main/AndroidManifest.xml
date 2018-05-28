@@ -47,6 +47,7 @@
         <activity
             android:name=".ui.activity.ReceiveActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.VpnDetailsActivity"></activity>
     </application>
 
 </manifest>

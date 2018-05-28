@@ -1,5 +1,6 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -70,7 +71,7 @@ public class ForgotPinActivity extends SimpleBaseActivity{
     }
 
     @Override
-    public void onLoadNextActivity(Class<?> iActivity) {
+    public void onLoadNextActivity(Intent iIntent) {
         setResult(RESULT_OK);
         finish();
     }

@@ -1,5 +1,6 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
@@ -12,10 +13,27 @@ import sentinelgroup.io.sentinel.util.AppPreferences;
 
 public class SendActivity extends BaseActivity {
 
+    private boolean mIsVpnPay, mIsInit;
+    private String mAmount, mSessionId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadFragment(SendFragment.newInstance());
+        getIntentExtras();
+    }
+
+    private void getIntentExtras() {
+        Bundle aBundle = getIntent().getExtras();
+        if (aBundle != null) {
+            mIsVpnPay = aBundle.getBoolean(AppConstants.EXTRA_IS_VPN_PAY);
+            mIsInit = aBundle.getBoolean(AppConstants.EXTRA_IS_INIT);
+            mAmount = aBundle.getString(AppConstants.EXTRA_AMOUNT);
+            if (mIsVpnPay && !mIsInit)
+                mSessionId = aBundle.getString(AppConstants.EXTRA_SESSION_ID);
+            if (mIsInit)
+                showSingleActionError(aBundle.getString(AppConstants.EXTRA_INIT_MESSAGE));
+        }
+        loadFragment(SendFragment.newInstance(mIsVpnPay, mIsInit, mAmount, mSessionId));
     }
 
     @Override
@@ -71,7 +89,6 @@ public class SendActivity extends BaseActivity {
     }
 
     @Override
-    public void onLoadNextActivity(Class<?> iActivity) {
-
+    public void onLoadNextActivity(Intent iIntent) {
     }
 }

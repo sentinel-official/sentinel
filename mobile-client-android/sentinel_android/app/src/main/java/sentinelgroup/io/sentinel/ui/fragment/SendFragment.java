@@ -1,14 +1,19 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -43,15 +48,26 @@ import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
  */
 public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
+    private static final String ARG_IS_VPN_PAY = "is_vpn_pay";
+    private static final String ARG_IS_INIT = "is_init";
+    private static final String ARG_AMOUNT = "arg_amount";
+    private static final String ARG_SESSION_ID = "session_id";
+
+    private boolean mIsVpnPay, mIsInit;
+    private String mAmount, mSessionId;
+
     private SendViewModel mViewModel;
 
     private OnGenericFragmentInteractionListener mListener;
 
+    private CoordinatorLayout mRootLayout;
     private CustomSpinner mCsTokens;
     private TextInputEditText mTetToAddress, mTetAmount, mTetGasLimit, mTetPassword;
     private SeekBar mSbGasPrice;
     private TextView mTvGasPrice;
     private Button mBtnSend;
+    private MaterialSpinnerAdapter mAdapter;
+    private boolean mTransactionPlaced;
 
     public SendFragment() {
         // Required empty public constructor
@@ -61,15 +77,32 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
      * Use this factory method to create a new instance of
      * this fragment.
      *
+     * @param isVpnPay
+     * @param isInit
+     * @param iAmount
+     * @param iSessionId
      * @return A new instance of fragment SendFragment.
      */
-    public static SendFragment newInstance() {
-        return new SendFragment();
+    public static SendFragment newInstance(boolean isVpnPay, boolean isInit, String iAmount, String iSessionId) {
+        SendFragment aFragment = new SendFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_IS_VPN_PAY, isVpnPay);
+        args.putBoolean(ARG_IS_INIT, isInit);
+        args.putString(ARG_AMOUNT, iAmount);
+        args.putString(ARG_SESSION_ID, iSessionId);
+        aFragment.setArguments(args);
+        return aFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mIsVpnPay = getArguments().getBoolean(ARG_IS_VPN_PAY);
+            mIsInit = getArguments().getBoolean(ARG_IS_INIT);
+            mAmount = getArguments().getString(ARG_AMOUNT);
+            mSessionId = getArguments().getString(ARG_SESSION_ID);
+        }
     }
 
     @Override
@@ -91,9 +124,11 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         fragmentLoaded(getString(R.string.send));
         setupAdapter(AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE));
         initViewModel();
+        setupExtraValue();
     }
 
     private void initView(View iView) {
+        mRootLayout = iView.findViewById(R.id.root_layout);
         mCsTokens = iView.findViewById(R.id.cs_tokens);
         mTetToAddress = iView.findViewById(R.id.tet_to_address);
         mTetAmount = iView.findViewById(R.id.tet_amount);
@@ -114,6 +149,11 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mBtnSend.setOnClickListener(this);
     }
 
+    private void setupAdapter(boolean iIsChecked) {
+        mAdapter = new MaterialSpinnerAdapter(getContext(), generateStringList(iIsChecked));
+        mCsTokens.setAdapter(mAdapter);
+    }
+
     private void initViewModel() {
         SendViewModelFactory aFactory = InjectorModule.provideSendViewModelFactory();
         mViewModel = ViewModelProviders.of(this, aFactory).get(SendViewModel.class);
@@ -123,9 +163,13 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
                 if (txDataResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.signing_transaction));
                 } else if (txDataResource.data != null && txDataResource.status.equals(Status.SUCCESS)) {
-                    mViewModel.sendAmount(txDataResource.data);
+                    if (mIsVpnPay)
+                        mViewModel.makeVpnPay(mIsInit, txDataResource.data, mAmount, mSessionId);
+                    else
+                        mViewModel.sendAmount(txDataResource.data);
                 } else if (txDataResource.message != null && txDataResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
+                    clearForm(false);
                     showErrorDialog(txDataResource.message);
                 }
             }
@@ -136,7 +180,11 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
                     showProgressDialog(true, getString(R.string.sending));
                 } else if (payResponseResource.data != null && payResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
-                    showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.tx_hash));
+                    clearForm(true);
+                    if (mIsVpnPay)
+                        showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.txHashes[0]));
+                    else
+                        showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.txHash));
                 } else if (payResponseResource.message != null && payResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     showErrorDialog(payResponseResource.message);
@@ -145,34 +193,66 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         });
     }
 
-    private void showTransactionStatus(Uri iUri) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, iUri);
-        startActivity(intent);
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupExtraValue() {
+        if (mIsVpnPay) {
+            // set token
+            mCsTokens.setSelectedPosition(0);
+            mCsTokens.setText(mAdapter.getItem(mCsTokens.getSelectedPosition()));
+            mCsTokens.setOnTouchListener((v, event) -> true);
+            // set to address
+            mTetToAddress.setText(mViewModel.getSentinelAddress());
+            mTetToAddress.setEnabled(false);
+            // set amount
+            mTetAmount.setText(mAmount);
+            mTetAmount.setEnabled(false);
+        }
     }
+
+    private void clearForm(boolean iAllContent) {
+        mTetPassword.setText("");
+        if (iAllContent) {
+            mCsTokens.setText("");
+            mTetToAddress.setText("");
+            mTetAmount.setText("");
+            mTetGasLimit.setText("");
+        }
+    }
+
+    private void showTransactionStatus(Uri iUri) {
+        mTransactionPlaced = true;
+        Snackbar aSnackbar = Snackbar.make(mRootLayout, R.string.transaction_placed, Snackbar.LENGTH_LONG)
+                .setAction(R.string.check_status, v -> {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, iUri));
+                    } catch (ActivityNotFoundException ignored) {
+                    }
+                });
+        aSnackbar.setActionTextColor(ContextCompat.getColor(getContext(), R.color.colorButtonOrange));
+        aSnackbar.show();
+    }
+
+
 
     public void updateAdapterData(boolean iIsChecked) {
         mCsTokens.setText("");
         mCsTokens.setAdapter(null);
         setupAdapter(iIsChecked);
+        setupExtraValue();
     }
 
     private List<String> generateStringList(boolean iIsChecked) {
         return Arrays.asList(Objects.requireNonNull(getContext()).getResources().getStringArray(iIsChecked ? R.array.spinner_test_list : R.array.spinner_list));
     }
 
-    private void setupAdapter(boolean iIsChecked) {
-        MaterialSpinnerAdapter aAdapter = new MaterialSpinnerAdapter(getContext(), generateStringList(iIsChecked));
-        mCsTokens.setAdapter(aAdapter);
-    }
-
     private boolean validateGasLimit() {
         String aGasLimit = mTetGasLimit.getText().toString().trim();
         String aToken = mCsTokens.getText().toString().trim();
-        if (aToken.contains("SENT") &&
+        if (aToken.contains(AppConstants.SENT) &&
                 (!aGasLimit.isEmpty() && Integer.parseInt(aGasLimit) < Integer.parseInt(getString(R.string.gas_limit_sents))) || aGasLimit.isEmpty()) {
             mTetGasLimit.setText(getString(R.string.gas_limit_sents));
         }
-        if (aToken.contains("ETH") &&
+        if (aToken.contains(AppConstants.ETH) &&
                 (!aGasLimit.isEmpty() && Integer.parseInt(aGasLimit) < Integer.parseInt(getString(R.string.gas_limit_eth))) || aGasLimit.isEmpty()) {
             mTetGasLimit.setText(getString(R.string.gas_limit_eth));
         }
@@ -189,7 +269,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
         if (aTokens.contains("SENT")) {
             mViewModel.createTokenTransaction(aToAddress, aTetAmount, aGasLimit, aPassword, aGasPrice);
-        } else if (aTokens.contains("eth")) {
+        } else if (aTokens.contains("ETH")) {
             mViewModel.createEthTransaction(aToAddress, aTetAmount, aGasLimit, aPassword, aGasPrice);
         }
     }
@@ -250,9 +330,9 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     public void afterTextChanged(Editable s) {
         String aToken = mCsTokens.getText().toString().trim();
         if (!aToken.isEmpty()) {
-            if (aToken.contains("SENT")) {
+            if (aToken.contains(AppConstants.SENT)) {
                 mTetGasLimit.setText(getString(R.string.gas_limit_sents));
-            } else if (aToken.contains("ETH")) {
+            } else if (aToken.contains(AppConstants.ETH)) {
                 mTetGasLimit.setText(getString(R.string.gas_limit_eth));
             }
         }

@@ -64,6 +64,8 @@ dependencies {
     // Zxing QR code generator
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+    // FlagView
+    implementation 'com.github.KaKaVip:Android-Flag-Kit:v0.1'
     // Android Test Libs
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

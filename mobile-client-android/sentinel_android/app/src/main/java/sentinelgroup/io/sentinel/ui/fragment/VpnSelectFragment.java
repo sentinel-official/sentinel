@@ -1,7 +1,6 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +28,7 @@ public class VpnSelectFragment extends Fragment {
 
     private ViewPager mVpVpnSelect;
     private TabLayout mTabLayout;
+    private VpnSelectPagerAdapter mAdapter;
 
     public VpnSelectFragment() {
         // Required empty public constructor
@@ -65,30 +65,36 @@ public class VpnSelectFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initViewModel();
+        fragmentLoaded(getString(R.string.select_vpn));
+        setupViewPager();
     }
 
-    private void initView(View iView) {
-        mVpVpnSelect = iView.findViewById(R.id.vp_vpn_select);
-        mTabLayout = iView.findViewById(R.id.tab_layout);
+    private void setupViewPager() {
         // Setup ViewPager
-        VpnSelectPagerAdapter aAdapter = new VpnSelectPagerAdapter(getFragmentManager(), getContext());
-        mVpVpnSelect.setAdapter(aAdapter);
+        mAdapter = new VpnSelectPagerAdapter(getChildFragmentManager(), getContext());
+        mVpVpnSelect.setAdapter(mAdapter);
         // Setup TabLayout
         mTabLayout.setupWithViewPager(mVpVpnSelect);
         // Iterate over all tabs and set the custom view
         for (int i = 0; i < mTabLayout.getTabCount(); i++) {
             TabLayout.Tab aTabItem = mTabLayout.getTabAt(i);
             if (aTabItem != null) {
-                aTabItem.setCustomView(aAdapter.getTabView(i));
+                aTabItem.setCustomView(mAdapter.getTabView(i));
             }
         }
     }
 
-    private void initViewModel() {
-
+    private void initView(View iView) {
+        mVpVpnSelect = iView.findViewById(R.id.vp_vpn_select);
+        mTabLayout = iView.findViewById(R.id.tab_layout);
     }
 
+    // Interface interaction methods
+    public void fragmentLoaded(String iTitle) {
+        if (mListener != null) {
+            mListener.onFragmentLoaded(iTitle);
+        }
+    }
 
     @Override
     public void onAttach(Context context) {

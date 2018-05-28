@@ -13,7 +13,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.haipq.android.flagkit.FlagImageView;
+
 import java.util.List;
+import java.util.Locale;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.model.VpnList;
@@ -44,6 +47,8 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         VpnList aItemData = mData.get(position);
         holder.mTvLocation.setText(mContext.getString(R.string.vpn_location, aItemData.location.city, aItemData.location.country));
+        // Set country flag
+        holder.mFvFlag.setCountryCode(getCountryCode(aItemData.location.country));
         // Construct and set - Bandwidth SpannableString
         String aBandwidthValue = mContext.getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(aItemData.netSpeed.download, Convert.DataUnit.MBPS));
         String aBandwidth = mContext.getString(R.string.vpn_bandwidth, aBandwidthValue);
@@ -68,6 +73,9 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvLatency.setText(aStyleLatency);
+        // Set listeners
+        holder.mRootView.setOnClickListener(v -> onRootViewClick(aItemData));
+        holder.mBtnConnect.setOnClickListener(v -> onConnectClick(aItemData.accountAddress));
     }
 
     @Override
@@ -76,10 +84,33 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         return mData.size();
     }
 
-    private void onItemClicked(int iItemId, int iItemStartTime) {
-        if (mItemClickListener != null) {
-            mItemClickListener.onItemClick(iItemId, iItemStartTime);
+    class ViewHolder extends RecyclerView.ViewHolder {
+        View mRootView;
+        FlagImageView mFvFlag;
+        TextView mTvLocation, mTvBandwidth, mTvPrice, mTvLatency;
+        Button mBtnConnect;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            mRootView = itemView.getRootView();
+            mFvFlag = itemView.findViewById(R.id.fv_flag);
+            mTvLocation = itemView.findViewById(R.id.tv_location);
+            mTvBandwidth = itemView.findViewById(R.id.tv_bandwidth);
+            mTvPrice = itemView.findViewById(R.id.tv_price);
+            mTvLatency = itemView.findViewById(R.id.tv_latency);
+            mBtnConnect = itemView.findViewById(R.id.btn_connect);
         }
+    }
+
+    private String getCountryCode(String iCountryName) {
+        String[] isoCountryCodes = Locale.getISOCountries();
+        for (String code : isoCountryCodes) {
+            Locale locale = new Locale("", code);
+            if (iCountryName.equalsIgnoreCase(locale.getDisplayCountry())) {
+                return code;
+            }
+        }
+        return "";
     }
 
     public void loadData(List<VpnList> iData) {
@@ -120,22 +151,22 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    // Interface interaction method
+    private void onRootViewClick(VpnList iItemData) {
+        if (mItemClickListener != null) {
+            mItemClickListener.onRootViewClicked(iItemData);
+        }
+    }
 
-        TextView mTvLocation, mTvBandwidth, mTvPrice, mTvLatency;
-        Button mBtnConnect;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            mTvLocation = itemView.findViewById(R.id.tv_location);
-            mTvBandwidth = itemView.findViewById(R.id.tv_bandwidth);
-            mTvPrice = itemView.findViewById(R.id.tv_price);
-            mTvLatency = itemView.findViewById(R.id.tv_latency);
-            mBtnConnect = itemView.findViewById(R.id.btn_connect);
+    private void onConnectClick(String iVpnAddress) {
+        if (mItemClickListener != null) {
+            mItemClickListener.onConnectClicked(iVpnAddress);
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int iItemId, int iItemStartTime);
+        void onRootViewClicked(VpnList iItemData);
+
+        void onConnectClicked(String iVpnAddress);
     }
 }

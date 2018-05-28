@@ -1,7 +1,8 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,15 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.network.model.Location;
-import sentinelgroup.io.sentinel.network.model.NetSpeed;
+import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.VpnList;
+import sentinelgroup.io.sentinel.ui.activity.SendActivity;
+import sentinelgroup.io.sentinel.ui.activity.VpnDetailsActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.Status;
+import sentinelgroup.io.sentinel.viewmodel.VpnListViewModel;
+import sentinelgroup.io.sentinel.viewmodel.VpnListViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +34,8 @@ import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
  * create an instance of this fragment.
  */
 public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemClickListener {
+
+    private VpnListViewModel mViewModel;
 
     private OnGenericFragmentInteractionListener mListener;
 
@@ -85,29 +90,86 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     }
 
     private void initViewModel() {
-        List<VpnList> aData = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            VpnList aItem = new VpnList();
-            aItem.accountAddress = "0xa6504af2160ae41d7a5111fd0204741491e426f5";
-            aItem.ip = "103.208.85.63";
-            aItem.latency = 244.984;
-            Location aLocation = new Location();
-            aLocation.latitude = 1.2931;
-            aLocation.longitude = 103.8558;
-            aLocation.city = "Singapore";
-            aLocation.country = "Singapore";
-            aItem.location = aLocation;
-            NetSpeed aNetSpeed = new NetSpeed();
-            aNetSpeed.download = 2342173251.754693;
-            aNetSpeed.upload = 2274237170.0476236;
-            aItem.netSpeed = aNetSpeed;
-            aItem.pricePerGb = 125;
-            aData.add(aItem);
-        }
-        mAdapter.loadData(aData);
+        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory();
+        mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
+
+        mViewModel.getVpnListLiveData().observe(this, vpnResource -> {
+            if (vpnResource != null) {
+                if (vpnResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(false, getString(R.string.loading_vpn_list));
+                } else if (vpnResource.data != null && vpnResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    if (vpnResource.data.list != null && vpnResource.data.list.size() > 0)
+                        mAdapter.loadData(vpnResource.data.list);
+                } else if (vpnResource.message != null && vpnResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (vpnResource.message.equals("Initial VPN payment is not done.")) {
+                        loadNextActivity(constructSendActivityIntent(vpnResource.message, true, getString(R.string.init_vpn_pay), null));
+                    } else {
+
+                    }
+                }
+            }
+        });
+        mViewModel.getVpnGetServerCredentials().observe(this, vpnCredentialsResource -> {
+            if (vpnCredentialsResource != null) {
+                if (vpnCredentialsResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.fetching_server_details));
+                } else if (vpnCredentialsResource.data != null && vpnCredentialsResource.status.equals(Status.SUCCESS)) {
+                    // TODO get the OVPn config file and connect to VPN server & remove hideProgressDialog()
+                    hideProgressDialog();
+                } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    showErrorDialog(vpnCredentialsResource.message);
+                }
+            }
+        });
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    private Intent constructSendActivityIntent(String iError, boolean isInit, String iAmount, String iSessionId) {
+        Intent aIntent = new Intent(getActivity(), SendActivity.class);
+        Bundle aBundle = new Bundle();
+        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
+        aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
+        if (iError != null)
+            aBundle.putString(AppConstants.EXTRA_INIT_MESSAGE, iError);
+        if (iSessionId != null)
+            aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
+        aIntent.putExtras(aBundle);
+        return aIntent;
+    }
+
+    // Interface interaction methods
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
+        if (mListener != null) {
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
+        }
+    }
+
+    public void showErrorDialog(String iError) {
+        if (mListener != null) {
+            mListener.onShowErrorDialog(iError);
+        }
+    }
+
+    public void loadNextActivity(Intent iIntent) {
+        if (mListener != null) {
+            mListener.onLoadNextActivity(iIntent);
+        }
+    }
+//    public void loadNextFragment(String iAccountAddress, String iPrivateKey, String iKeystoreFilePath) {
+//        if (mListener != null) {
+//            AppPreferences.getInstance().saveString(AppConstants.PREFS_ACCOUNT_ADDRESS, iAccountAddress);
+//            mListener.onLoadNextFragment(SecureKeysFragment.newInstance(iAccountAddress, iPrivateKey, iKeystoreFilePath));
+//        }
+//    }
 
     @Override
     public void onAttach(Context context) {
@@ -127,7 +189,14 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     }
 
     @Override
-    public void onItemClick(int iItemId, int iItemStartTime) {
+    public void onRootViewClicked(VpnList iItemData) {
+        Intent aIntent = new Intent(getActivity(), VpnDetailsActivity.class);
+        aIntent.putExtra(AppConstants.EXTRA_VPN_LIST, iItemData);
+        loadNextActivity(aIntent);
+    }
 
+    @Override
+    public void onConnectClicked(String iVpnAddress) {
+        mViewModel.getVpnServerCredentials(iVpnAddress);
     }
 }

@@ -1,8 +1,9 @@
 package sentinelgroup.io.sentinel.viewmodel;
 
 import android.arch.lifecycle.ViewModel;
-import android.content.res.Resources;
 import android.net.Uri;
+
+import com.google.gson.Gson;
 
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.crypto.CipherException;
@@ -21,7 +22,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
-import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.PayResponse;
 import sentinelgroup.io.sentinel.repository.SendRepository;
@@ -29,6 +29,7 @@ import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Convert;
+import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.Sentinel;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
@@ -104,7 +105,7 @@ public class SendViewModel extends ViewModel {
                 // get Value
                 BigInteger aValue = BigInteger.ZERO;
                 // get EncodedFunction
-                BigInteger aTokenValue = BigInteger.valueOf((long) (Long.parseLong(iValue) * Math.pow(10, 8)));
+                BigInteger aTokenValue = getTokenValue(iValue);
                 Sentinel aSentinel = Sentinel.load(aSentinelAddress, aWeb3j, aCredentials, aGasPrice, aGasLimit);
                 String aData = FunctionEncoder.encode(aSentinel.transferSent(iToAddress, aTokenValue));
                 // get TxData
@@ -124,6 +125,10 @@ public class SendViewModel extends ViewModel {
                 : Web3jFactory.build(new HttpService(AppConstants.INFURA_URL_MAIN_NET));
     }
 
+    public String getSentinelAddress() {
+        return getSentinelAddress(AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE));
+    }
+
     private String getSentinelAddress(boolean isTest) {
         return isTest
                 ? AppConstants.SENTINEL_ADDRESS_TEST_NET
@@ -139,9 +144,28 @@ public class SendViewModel extends ViewModel {
         mRepository.makeRawTransaction(aBody);
     }
 
+    public void makeVpnPay(boolean isInit, String iTxData, String iValue, String iSessionId) {
+        boolean aIsTest = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+        String aFromAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .paymentType(isInit ? GenericRequestBody.PaymentType.INIT.toString() : GenericRequestBody.PaymentType.NORMAL.toString())
+                .txData(iTxData)
+                .net(aIsTest ? GenericRequestBody.NetUnit.RINKEBY.toString() : GenericRequestBody.NetUnit.MAIN.toString())
+                .fromAddress(aFromAddress)
+                .amount(getTokenValue(iValue))
+                .sessionId(iSessionId)
+                .build();
+        Logger.logDebug("Body", new Gson().toJson(aBody));
+        mRepository.makeVpnPayment(aBody);
+    }
+
+    private BigInteger getTokenValue(String iAmount) {
+        return BigInteger.valueOf((long) (Long.parseLong(iAmount) * Math.pow(10, 8)));
+    }
+
     public Uri getTransactionStatusUrl(String iTxHash) {
         boolean aIsTest = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-        String aUriString = Resources.getSystem().getString(aIsTest ? R.string.tx_test_net : R.string.tx_main_net, iTxHash);
+        String aUriString = (aIsTest ? AppConstants.TX_TEST_NET : AppConstants.TX_MAIN_NET) + iTxHash;
         return Uri.parse(aUriString);
     }
 }

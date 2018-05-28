@@ -2,7 +2,9 @@ package sentinelgroup.io.sentinel.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class VpnList {
+import java.io.Serializable;
+
+public class VpnList implements Serializable {
     @SerializedName("account_addr")
     public String accountAddress;
     public String ip;

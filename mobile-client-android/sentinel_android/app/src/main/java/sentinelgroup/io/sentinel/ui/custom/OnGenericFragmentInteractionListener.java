@@ -1,5 +1,6 @@
 package sentinelgroup.io.sentinel.ui.custom;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 /**
@@ -25,5 +26,5 @@ public interface OnGenericFragmentInteractionListener {
 
     void onLoadNextFragment(Fragment iNextFragment);
 
-    void onLoadNextActivity(Class<?> iActivity);
+    void onLoadNextActivity(Intent iIntent);
 }

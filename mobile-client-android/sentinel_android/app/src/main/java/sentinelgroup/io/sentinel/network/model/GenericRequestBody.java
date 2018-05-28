@@ -2,6 +2,8 @@ package sentinelgroup.io.sentinel.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.math.BigInteger;
+
 public class GenericRequestBody {
     @SerializedName("password")
     private String password;
@@ -24,7 +26,7 @@ public class GenericRequestBody {
     @SerializedName("from_addr")
     private String fromAddress;
     @SerializedName("amount")
-    private String amount;
+    private BigInteger amount;
     @SerializedName("session_id")
     private String sessionId;
 
@@ -84,7 +86,7 @@ public class GenericRequestBody {
         return fromAddress;
     }
 
-    public String getAmount() {
+    public BigInteger getAmount() {
         return amount;
     }
 
@@ -114,7 +116,7 @@ public class GenericRequestBody {
         @SerializedName("from_addr")
         private String fromAddress = null;
         @SerializedName("amount")
-        private String amount = null;
+        private BigInteger amount = null;
         @SerializedName("session_id")
         private String sessionId = null;
 
@@ -168,7 +170,7 @@ public class GenericRequestBody {
             return this;
         }
 
-        public GenericRequestBodyBuilder amount(String amount) {
+        public GenericRequestBodyBuilder amount(BigInteger amount) {
             this.amount = amount;
             return this;
         }
@@ -190,6 +192,22 @@ public class GenericRequestBody {
         private String name;
 
         NetUnit(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    public enum PaymentType {
+        INIT("init"),
+        NORMAL("normal");
+
+        private String name;
+
+        PaymentType(String name) {
             this.name = name;
         }
 

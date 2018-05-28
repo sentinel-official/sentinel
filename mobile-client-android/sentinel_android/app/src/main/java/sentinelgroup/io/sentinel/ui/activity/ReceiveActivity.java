@@ -2,6 +2,7 @@ package sentinelgroup.io.sentinel.ui.activity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
@@ -61,7 +62,6 @@ public class ReceiveActivity extends BaseActivity {
     }
 
     @Override
-    public void onLoadNextActivity(Class<?> iActivity) {
-
+    public void onLoadNextActivity(Intent iIntent) {
     }
 }

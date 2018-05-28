@@ -72,8 +72,10 @@ public class RestoreKeystoreActivity extends SimpleBaseActivity {
     }
 
     @Override
-    public void onLoadNextActivity(Class<?> iActivity) {
-        startActivity(new Intent(this, iActivity));
-        finish();
+    public void onLoadNextActivity(Intent iIntent) {
+        if (iIntent != null) {
+            startActivity(iIntent);
+            finish();
+        }
     }
 }

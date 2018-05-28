@@ -8,6 +8,7 @@ import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.repository.PinRepository;
 import sentinelgroup.io.sentinel.repository.SendRepository;
+import sentinelgroup.io.sentinel.repository.VpnRepository;
 import sentinelgroup.io.sentinel.repository.WalletRepository;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.viewmodel.CreateAuidViewModelFactory;
@@ -18,6 +19,7 @@ import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.VerifyPinViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.VpnListViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.WalletViewModelFactory;
 
 /**
@@ -43,6 +45,11 @@ public class InjectorModule {
     private static SendRepository provideSendRepository() {
         WebService aWebService = WebClient.get();
         return SendRepository.getInstance(aWebService);
+    }
+
+    private static VpnRepository provideVpnRepository() {
+        WebService aWebService = WebClient.get();
+        return VpnRepository.getInstance(aWebService);
     }
 
     public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory() {
@@ -91,5 +98,10 @@ public class InjectorModule {
     public static ReceiveViewModelFactory provideReceiveViewModelFactory() {
         AppExecutors aAppExecutors = AppExecutors.getInstance();
         return new ReceiveViewModelFactory(aAppExecutors);
+    }
+
+    public static VpnListViewModelFactory provideVpnListViewModelFactory() {
+        VpnRepository aRepository = provideVpnRepository();
+        return new VpnListViewModelFactory(aRepository);
     }
 }

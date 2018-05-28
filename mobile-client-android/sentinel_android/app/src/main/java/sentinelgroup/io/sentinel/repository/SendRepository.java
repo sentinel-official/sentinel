@@ -76,4 +76,44 @@ public class SendRepository {
             }
         });
     }
+
+    public void makeVpnPayment(GenericRequestBody iRequestBody) {
+        mTransactionLiveEvent.postValue(Resource.loading(null));
+        mWebService.makeVpnUsagePayment(iRequestBody).enqueue(new Callback<PayResponse>() {
+            @Override
+            public void onResponse(Call<PayResponse> call, Response<PayResponse> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<PayResponse> call, Throwable t) {
+                reportErrorResponse(null, t.getLocalizedMessage());
+            }
+
+            private void reportSuccessResponse(Response<PayResponse> response) {
+                if (response.body().success)
+                    mTransactionLiveEvent.postValue(Resource.success(response.body()));
+                else
+                    reportErrorResponse(response, null);
+            }
+
+            private void reportErrorResponse(Response<PayResponse> response, String iThrowableLocalMessage) {
+                if (response != null && response.body() != null) {
+                    Gson aGson = new Gson();
+                    PayError aPayError = null;
+                    if (response.body().errors != null)
+                        aPayError = aGson.fromJson(response.body().errors[0].error, PayError.class);
+                    else if (response.body().error != null)
+                        aPayError = aGson.fromJson(response.body().error.error, PayError.class);
+                    String aErrorMessage = (aPayError != null && !aPayError.message.isEmpty()) ? aPayError.message : response.body().message;
+                    mTransactionLiveEvent.postValue(Resource.error(aErrorMessage, response.body()));
+                } else if (iThrowableLocalMessage != null)
+                    mTransactionLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                else
+                    mTransactionLiveEvent.postValue(Resource.error(Resources.getSystem().getString(R.string.generic_error_message), null));
+            }
+
+
+        });
+    }
 }

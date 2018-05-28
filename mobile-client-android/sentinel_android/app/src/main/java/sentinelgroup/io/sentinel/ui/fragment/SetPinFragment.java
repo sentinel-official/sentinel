@@ -2,6 +2,7 @@ package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -121,7 +122,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
                     AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_APP_PIN_SET, isPinSetResource.data);
                     hideProgressDialog();
                     if (isPinSetResource.data) {
-                        loadNextActivity(DashboardActivity.class);
+                        loadNextActivity(new Intent(getActivity(), DashboardActivity.class));
                     } else {
                         clearInput();
                         Toast.makeText(getContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
@@ -171,9 +172,9 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
         }
     }
 
-    public void loadNextActivity(Class<?> iActivity) {
+    public void loadNextActivity(Intent iIntent) {
         if (mListener != null) {
-            mListener.onLoadNextActivity(iActivity);
+            mListener.onLoadNextActivity(iIntent);
         }
     }
 

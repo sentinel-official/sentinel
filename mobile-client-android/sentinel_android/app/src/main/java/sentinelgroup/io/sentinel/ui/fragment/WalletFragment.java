@@ -2,6 +2,7 @@ package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -143,9 +144,9 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void loadNextActivity(Class<?> iActivity) {
+    public void loadNextActivity(Intent iIntent) {
         if (mListener != null) {
-            mListener.onLoadNextActivity(iActivity);
+            mListener.onLoadNextActivity(iIntent);
         }
     }
 
@@ -175,11 +176,11 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btn_send:
-                loadNextActivity(SendActivity.class);
+                loadNextActivity(new Intent(getActivity(),SendActivity.class));
                 break;
 
             case R.id.btn_receive:
-                loadNextActivity(ReceiveActivity.class);
+                loadNextActivity(new Intent(getActivity(),ReceiveActivity.class));
                 break;
         }
     }

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.github.angads25.filepicker.model.DialogConfigs;
@@ -27,6 +28,7 @@ import java.io.File;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModel;
@@ -35,7 +37,7 @@ import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RestoreKeystoreFragment.OnFragmentInteractionListener} interface
+ * {@link OnGenericFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link RestoreKeystoreFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -44,14 +46,16 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
     private RestoreKeystoreViewModel mViewModel;
 
-    private OnFragmentInteractionListener mListener;
+    private OnGenericFragmentInteractionListener mListener;
 
     private TextInputEditText mTetPassword;
-    private ImageButton mIbUploadFile;
     private Button mBtnRestore;
+    private ImageButton mIbUpload;
+    private ImageView mIvUploaded;
 
     private String mKeystorePath = "";
     private int mButtonId;
+    private boolean mIsRequested;
 
     public RestoreKeystoreFragment() {
         // Required empty public constructor
@@ -89,11 +93,12 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
     private void initView(View iView) {
         mTetPassword = iView.findViewById(R.id.tet_password);
-        mIbUploadFile = iView.findViewById(R.id.ib_upload_file);
         mBtnRestore = iView.findViewById(R.id.btn_restore);
+        mIbUpload = iView.findViewById(R.id.ib_upload_file);
+        mIvUploaded = iView.findViewById(R.id.iv_uploaded);
         // Set Listeners
         mTetPassword.addTextChangedListener(this);
-        mIbUploadFile.setOnClickListener(this);
+        mIbUpload.setOnClickListener(this);
         mBtnRestore.setOnClickListener(this);
     }
 
@@ -101,17 +106,17 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         RestoreKeystoreViewModelFactory aFactory = InjectorModule.provideRestoreKeystoreViewModelFactory();
         mViewModel = ViewModelProviders.of(this, aFactory).get(RestoreKeystoreViewModel.class);
 
-        mViewModel.getRestoreLiveEvent().observe(this, accountResource -> {
-            if (accountResource != null) {
-                if (accountResource.status.equals(Status.LOADING)) {
-                    toggleProgressDialog(true);
-                } else if (accountResource.data != null && accountResource.status.equals(Status.SUCCESS)) {
-                    toggleProgressDialog(false);
-                    loadNextFragment(accountResource.data);
-                } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
+        mViewModel.getRestoreLiveEvent().observe(this, keystoreResource -> {
+            if (keystoreResource != null) {
+                if (keystoreResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.restoring_accunt));
+                } else if (keystoreResource.data != null && keystoreResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    loadNextFragment(keystoreResource.data);
+                } else if (keystoreResource.message != null && keystoreResource.status.equals(Status.ERROR)) {
                     mTetPassword.setText("");
-                    toggleProgressDialog(false);
-                    showErrorDialog(accountResource.message);
+                    hideProgressDialog();
+                    showErrorDialog(keystoreResource.message);
                 }
             }
         });
@@ -124,7 +129,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                 if (getActivity().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     return true;
                 } else {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    if (!mIsRequested) {
+                        mIsRequested = true;
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    }
                     return false;
                 }
         }
@@ -158,6 +166,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
             // files is an array of the paths of files selected by the Application User.
             if (files.length == 1) {
                 mKeystorePath = files[0];
+                mIvUploaded.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), R.string.uploaded_success, Toast.LENGTH_SHORT).show();
                 Logger.logDebug("KEYSTOREPATH", mKeystorePath);
                 mBtnRestore.setEnabled(!mTetPassword.getText().toString().isEmpty() && !mKeystorePath.isEmpty());
@@ -172,15 +181,22 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         mViewModel.restoreKeystoreFile(aPassword, mKeystorePath);
     }
 
+    // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
         }
     }
 
-    public void toggleProgressDialog(boolean isDialogShown) {
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
         if (mListener != null) {
-            mListener.onToggleProgressDialog(isDialogShown);
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
         }
     }
 
@@ -200,11 +216,11 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnGenericFragmentInteractionListener");
         }
     }
 
@@ -242,29 +258,8 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             performAction(mButtonId);
         } else {
+            mIsRequested = false;
             Toast.makeText(getContext(), R.string.storage_permission_denied, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentLoaded(String iTitle);
-
-        void onToggleProgressDialog(boolean isDialogShown);
-
-        void onShowErrorDialog(String iError);
-
-        void onLoadNextFragment(Fragment iNextFragment);
-
-        void onLoadNextActivity();
     }
 }

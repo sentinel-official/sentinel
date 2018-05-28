@@ -1,6 +1,8 @@
 package sentinelgroup.io.sentinel.viewmodel;
 
 import android.arch.lifecycle.ViewModel;
+import android.content.res.Resources;
+import android.net.Uri;
 
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.crypto.CipherException;
@@ -19,6 +21,9 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
+import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.network.model.PayResponse;
 import sentinelgroup.io.sentinel.repository.SendRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
@@ -32,16 +37,22 @@ public class SendViewModel extends ViewModel {
     private final SendRepository mRepository;
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<String>> mTxDataCreationLiveEvent;
+    private final SingleLiveEvent<Resource<PayResponse>> mTransactionLiveEvent;
 
 
-    public SendViewModel(SendRepository iRepository, AppExecutors iAppExecutors) {
+    SendViewModel(SendRepository iRepository, AppExecutors iAppExecutors) {
         mRepository = iRepository;
         mAppExecutors = iAppExecutors;
         mTxDataCreationLiveEvent = new SingleLiveEvent<>();
+        mTransactionLiveEvent = mRepository.getTransactionLiveEvent();
     }
 
     public SingleLiveEvent<Resource<String>> getTxDataCreationLiveEvent() {
         return mTxDataCreationLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<PayResponse>> getTransactionLiveEvent() {
+        return mTransactionLiveEvent;
     }
 
     public void createEthTransaction(String iToAddress, String iValue, String iGasLimit, String iPassword, String iGasPrice) {
@@ -119,8 +130,18 @@ public class SendViewModel extends ViewModel {
                 : AppConstants.SENTINEL_ADDRESS_MAIN_NET;
     }
 
-//    private String getMinimumGasLimit(){
-//        boolean aIsTest = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-//        return "";
-//    }
+    public void sendAmount(String iTxData) {
+        boolean aIsTest = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .txData(iTxData)
+                .net(aIsTest ? GenericRequestBody.NetUnit.RINKEBY.toString() : GenericRequestBody.NetUnit.MAIN.toString())
+                .build();
+        mRepository.makeRawTransaction(aBody);
+    }
+
+    public Uri getTransactionStatusUrl(String iTxHash) {
+        boolean aIsTest = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+        String aUriString = Resources.getSystem().getString(aIsTest ? R.string.tx_test_net : R.string.tx_main_net, iTxHash);
+        return Uri.parse(aUriString);
+    }
 }

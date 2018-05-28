@@ -12,57 +12,17 @@ import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.ForgotPinFragment;
 
-public class ForgotPinActivity extends AppCompatActivity implements ForgotPinFragment.OnFragmentInteractionListener {
-
-    private Toolbar mToolbar;
-    private TextView mToolbarTitle;
-    private ProgressDialogFragment mPrgDialog;
+public class ForgotPinActivity extends SimpleBaseActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_container_simple);
-        initView();
         loadFragment(ForgotPinFragment.newInstance());
     }
 
-    private void initView() {
-        mToolbar = findViewById(R.id.toolbar);
-        mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
-        mPrgDialog = ProgressDialogFragment.newInstance(true);
-        setupToolbar();
-    }
-
-    private void setupToolbar() {
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    private void setToolbarTitle(String iTitle) {
-        mToolbarTitle.setText(iTitle);
-    }
-
-    private void loadFragment(Fragment iFragment) {
+    @Override
+    public void loadFragment(Fragment iFragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
-    }
-
-    private void showProgress() {
-        mPrgDialog.show(getSupportFragmentManager(), "progress_dialog");
-    }
-
-    private void hideProgress() {
-        if (mPrgDialog != null)
-            mPrgDialog.dismiss();
-    }
-
-    private void showError(String iError) {
-        SingleActionDialogFragment.newInstance(getString(R.string.please_note), iError, getString(android.R.string.ok))
-                .show(getSupportFragmentManager(), "alert_dialog");
     }
 
     @Override
@@ -85,20 +45,32 @@ public class ForgotPinActivity extends AppCompatActivity implements ForgotPinFra
     }
 
     @Override
-    public void onToggleProgressDialog(boolean isDialogShown) {
-        if (isDialogShown)
-            showProgress();
-        else
-            hideProgress();
+    public void onShowProgressDialog(boolean isHalfDim, String iMessage) {
+        showProgressDialog(isHalfDim,iMessage);
+    }
+
+    @Override
+    public void onHideProgressDialog() {
+        hideProgressDialog();
     }
 
     @Override
     public void onShowErrorDialog(String iError) {
-        showError(iError);
+        showSingleActionError(iError);
     }
 
     @Override
-    public void onLoadNextActivity() {
+    public void onCopyToClipboardClicked(String iCopyString) {
+        copyToClipboard(iCopyString);
+    }
+
+    @Override
+    public void onLoadNextFragment(Fragment iNextFragment) {
+        loadFragment(iNextFragment);
+    }
+
+    @Override
+    public void onLoadNextActivity(Class<?> iActivity) {
         setResult(RESULT_OK);
         finish();
     }

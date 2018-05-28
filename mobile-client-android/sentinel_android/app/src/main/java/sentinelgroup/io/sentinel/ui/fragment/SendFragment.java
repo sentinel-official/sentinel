@@ -1,6 +1,9 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,22 +23,29 @@ import java.util.List;
 import java.util.Objects;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.adapter.MaterialSpinnerAdapter;
 import sentinelgroup.io.sentinel.ui.custom.CustomSpinner;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Status;
+import sentinelgroup.io.sentinel.viewmodel.SendViewModel;
+import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SendFragment.OnFragmentInteractionListener} interface
+ * {@link OnGenericFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link SendFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
-    private OnFragmentInteractionListener mListener;
+    private SendViewModel mViewModel;
+
+    private OnGenericFragmentInteractionListener mListener;
 
     private CustomSpinner mCsTokens;
     private TextInputEditText mTetToAddress, mTetAmount, mTetGasLimit, mTetPassword;
@@ -99,14 +109,45 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mCsTokens.addTextChangedListener(this);
         mTetToAddress.addTextChangedListener(this);
         mTetAmount.addTextChangedListener(this);
-        mTetGasLimit.addTextChangedListener(this);
         mTetPassword.addTextChangedListener(this);
         mSbGasPrice.setOnSeekBarChangeListener(this);
         mBtnSend.setOnClickListener(this);
     }
 
     private void initViewModel() {
+        SendViewModelFactory aFactory = InjectorModule.provideSendViewModelFactory();
+        mViewModel = ViewModelProviders.of(this, aFactory).get(SendViewModel.class);
 
+        mViewModel.getTxDataCreationLiveEvent().observe(this, txDataResource -> {
+            if (txDataResource != null) {
+                if (txDataResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.signing_transaction));
+                } else if (txDataResource.data != null && txDataResource.status.equals(Status.SUCCESS)) {
+                    mViewModel.sendAmount(txDataResource.data);
+                } else if (txDataResource.message != null && txDataResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    showErrorDialog(txDataResource.message);
+                }
+            }
+        });
+        mViewModel.getTransactionLiveEvent().observe(this, payResponseResource -> {
+            if (payResponseResource != null) {
+                if (payResponseResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.sending));
+                } else if (payResponseResource.data != null && payResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.tx_hash));
+                } else if (payResponseResource.message != null && payResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    showErrorDialog(payResponseResource.message);
+                }
+            }
+        });
+    }
+
+    private void showTransactionStatus(Uri iUri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, iUri);
+        startActivity(intent);
     }
 
     public void updateAdapterData(boolean iIsChecked) {
@@ -124,36 +165,51 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mCsTokens.setAdapter(aAdapter);
     }
 
-    private void toggleButtonState(boolean iEnabled) {
-        mBtnSend.setEnabled(iEnabled);
-    }
-
     private boolean validateGasLimit() {
-        return false;
+        String aGasLimit = mTetGasLimit.getText().toString().trim();
+        String aToken = mCsTokens.getText().toString().trim();
+        if (aToken.contains("SENT") &&
+                (!aGasLimit.isEmpty() && Integer.parseInt(aGasLimit) < Integer.parseInt(getString(R.string.gas_limit_sents))) || aGasLimit.isEmpty()) {
+            mTetGasLimit.setText(getString(R.string.gas_limit_sents));
+        }
+        if (aToken.contains("ETH") &&
+                (!aGasLimit.isEmpty() && Integer.parseInt(aGasLimit) < Integer.parseInt(getString(R.string.gas_limit_eth))) || aGasLimit.isEmpty()) {
+            mTetGasLimit.setText(getString(R.string.gas_limit_eth));
+        }
+        return true;
     }
 
     private void offlineTransactionSigning() {
-        String aTokens = mCsTokens.getText().toString();
-        String aToAddress = mTetToAddress.getText().toString();
-        String aTetAmount = mTetAmount.getText().toString();
-        String aGasLimit = mTetGasLimit.getText().toString();
-        String aPassword = mTetPassword.getText().toString();
-        int aGasPrice = mSbGasPrice.getProgress() + 1;  // in GWei
+        String aTokens = mCsTokens.getText().toString().trim();
+        String aToAddress = mTetToAddress.getText().toString().trim();
+        String aTetAmount = mTetAmount.getText().toString().trim();
+        String aGasLimit = mTetGasLimit.getText().toString().trim();
+        String aPassword = mTetPassword.getText().toString().trim();
+        String aGasPrice = String.valueOf(mSbGasPrice.getProgress() + 1);  // in GWei
 
-
-//        boolean aBoolean = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-//        new OfflineTransactionSigningTask(this, aBoolean).execute();
+        if (aTokens.contains("SENT")) {
+            mViewModel.createTokenTransaction(aToAddress, aTetAmount, aGasLimit, aPassword, aGasPrice);
+        } else if (aTokens.contains("eth")) {
+            mViewModel.createEthTransaction(aToAddress, aTetAmount, aGasLimit, aPassword, aGasPrice);
+        }
     }
 
+    // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
         }
     }
 
-    public void toggleProgressDialog(boolean isDialogShown) {
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
         if (mListener != null) {
-            mListener.onToggleProgressDialog(isDialogShown);
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
         }
     }
 
@@ -166,11 +222,11 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnGenericFragmentInteractionListener");
         }
     }
 
@@ -192,10 +248,17 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     @Override
     public void afterTextChanged(Editable s) {
+        String aToken = mCsTokens.getText().toString().trim();
+        if (!aToken.isEmpty()) {
+            if (aToken.contains("SENT")) {
+                mTetGasLimit.setText(getString(R.string.gas_limit_sents));
+            } else if (aToken.contains("ETH")) {
+                mTetGasLimit.setText(getString(R.string.gas_limit_eth));
+            }
+        }
         mBtnSend.setEnabled(!mCsTokens.getText().toString().trim().isEmpty()
                 && !mTetToAddress.getText().toString().trim().isEmpty()
                 && !mTetAmount.getText().toString().trim().isEmpty()
-                && !mTetGasLimit.getText().toString().trim().isEmpty()
                 && !mTetGasLimit.getText().toString().trim().isEmpty()
                 && !mTetPassword.getText().toString().trim().isEmpty());
     }
@@ -217,28 +280,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     @Override
     public void onClick(View v) {
-        if (validateGasLimit()) {
+        if (validateGasLimit())
             offlineTransactionSigning();
-        }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentLoaded(String iTitle);
-
-        void onToggleProgressDialog(boolean isDialogShown);
-
-        void onShowErrorDialog(String iError);
-
-        void onLoadNextActivity();
     }
 }

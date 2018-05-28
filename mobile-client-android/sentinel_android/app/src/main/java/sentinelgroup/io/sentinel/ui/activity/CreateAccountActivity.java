@@ -3,53 +3,25 @@ package sentinelgroup.io.sentinel.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
-import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.CreateAuidFragment;
-import sentinelgroup.io.sentinel.ui.fragment.SecureKeysFragment;
 import sentinelgroup.io.sentinel.ui.fragment.SetPinFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
-public class CreateAccountActivity extends AppCompatActivity implements CreateAuidFragment.OnFragmentInteractionListener {
-
-    private Toolbar mToolbar;
-    private TextView mToolbarTitle;
-    private ProgressDialogFragment mPrgDialog;
+public class CreateAccountActivity extends SimpleBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_container_simple);
-        initView();
         checkUserLoginState();
     }
 
-    private void initView() {
-        mToolbar = findViewById(R.id.toolbar);
-        mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
-        mPrgDialog = ProgressDialogFragment.newInstance(true);
-        setupToolbar();
-    }
-
-    private void setupToolbar() {
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    private void setToolbarTitle(String iTitle) {
-        mToolbarTitle.setText(iTitle);
+    @Override
+    public void loadFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
     }
 
     private void checkUserLoginState() {
@@ -59,31 +31,13 @@ public class CreateAccountActivity extends AppCompatActivity implements CreateAu
             loadFragment(CreateAuidFragment.newInstance());
         } else {
             // User has already used the app
-            if (AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_APP_PIN_SET)) {
+            if (AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_APP_PIN_SET)) { // Verify PIN
                 startActivity(new Intent(this, VerifyPinActivity.class));
                 finish();
-            } else {
+            } else { // Set PIN
                 loadFragment(SetPinFragment.newInstance(aAccountAddress));
             }
         }
-    }
-
-    private void loadFragment(Fragment iFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
-    }
-
-    private void showProgress() {
-        mPrgDialog.show(getSupportFragmentManager(), "progress_dialog");
-    }
-
-    private void hideProgress() {
-        if (mPrgDialog != null)
-            mPrgDialog.dismiss();
-    }
-
-    private void showError(String iError) {
-        SingleActionDialogFragment.newInstance(getString(R.string.please_note), iError, getString(android.R.string.ok))
-                .show(getSupportFragmentManager(), "alert_dialog");
     }
 
     @Override
@@ -106,27 +60,29 @@ public class CreateAccountActivity extends AppCompatActivity implements CreateAu
     @Override
     public void onFragmentLoaded(String iTitle) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (aFragment instanceof SecureKeysFragment || aFragment instanceof SetPinFragment) {
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-                getSupportActionBar().setDisplayShowHomeEnabled(false);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-        }
+        if (!(aFragment instanceof CreateAuidFragment))
+            hideBackIcon();
         setToolbarTitle(iTitle);
     }
 
     @Override
-    public void onToggleProgressDialog(boolean isDialogShown) {
-        if (isDialogShown)
-            showProgress();
-        else
-            hideProgress();
+    public void onShowProgressDialog(boolean isHalfDim, String iMessage) {
+        showProgressDialog(isHalfDim, iMessage);
+    }
+
+    @Override
+    public void onHideProgressDialog() {
+        hideProgressDialog();
     }
 
     @Override
     public void onShowErrorDialog(String iError) {
-        showError(iError);
+        showSingleActionError(iError);
+    }
+
+    @Override
+    public void onCopyToClipboardClicked(String iCopyString) {
+        copyToClipboard(iCopyString);
     }
 
     @Override
@@ -135,8 +91,8 @@ public class CreateAccountActivity extends AppCompatActivity implements CreateAu
     }
 
     @Override
-    public void onLoadNextActivity() {
-        startActivity(new Intent(this, DashboardActivity.class));
+    public void onLoadNextActivity(Class<?> iActivity) {
+        startActivity(new Intent(this, iActivity));
         finish();
     }
 }

@@ -1,10 +1,12 @@
 package sentinelgroup.io.sentinel.repository;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.content.res.Resources;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.Balance;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
@@ -72,7 +74,7 @@ public class WalletRepository {
                 if (iThrowableLocalMessage != null)
                     mBalanceMutableLiveData.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mBalanceMutableLiveData.postValue(Resource.error("Something went wrong. Please try again later.", null));
+                    mBalanceMutableLiveData.postValue(Resource.error(Resources.getSystem().getString(R.string.generic_error_message), null));
             }
         });
     }

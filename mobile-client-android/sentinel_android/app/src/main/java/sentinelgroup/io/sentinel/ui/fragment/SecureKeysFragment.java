@@ -1,8 +1,5 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
-
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,27 +13,27 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.Objects;
 
 import sentinelgroup.io.sentinel.R;
-
-import static android.content.Context.CLIPBOARD_SERVICE;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link OnGenericFragmentInteractionListener} interface
+ * to handle interaction events.
  * Use the {@link SecureKeysFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class SecureKeysFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+
     private static final String ARG_ACC_ADDRESS = "account_address";
     private static final String ARG_PRIVATE_KEY = "private key";
     private static final String ARG_KEYSTORE_FILE_PATH = "keystore_file_path";
 
     private String mAccountAddress, mPrivateKey, mKeyStoreFilePath;
 
-    private CreateAuidFragment.OnFragmentInteractionListener mListener;
+    private OnGenericFragmentInteractionListener mListener;
 
     private Button mBtnNext;
     private TextView mTvPrivateKey;
@@ -49,9 +46,9 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param iAccountAddress   Parameter 1.
-     * @param iPrivateKey       Parameter 2.
-     * @param iKeystoreFilePath Parameter 3.
+     * @param iAccountAddress   Account Address.
+     * @param iPrivateKey       Private Key.
+     * @param iKeystoreFilePath Keystore File Path.
      * @return A new instance of fragment SecureKeysFragment.
      */
     public static SecureKeysFragment newInstance(String iAccountAddress, String iPrivateKey, String iKeystoreFilePath) {
@@ -110,18 +107,16 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
         mBtnNext.setOnClickListener(this);
     }
 
-    private void copyKeyToClipboard() {
-        ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getContext()).getSystemService(CLIPBOARD_SERVICE);
-        if (clipboard != null) {
-            ClipData clip = ClipData.newPlainText(getString(R.string.app_name), mTvPrivateKey.getText().toString());
-            Toast.makeText(getContext(),R.string.key_copied,Toast.LENGTH_SHORT).show();
-            clipboard.setPrimaryClip(clip);
-        }
-    }
-
+    // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
+        }
+    }
+
+    public void copyToClipboard(String iCopyString) {
+        if (mListener != null) {
+            mListener.onCopyToClipboardClicked(iCopyString);
         }
     }
 
@@ -134,11 +129,11 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof CreateAuidFragment.OnFragmentInteractionListener) {
-            mListener = (CreateAuidFragment.OnFragmentInteractionListener) context;
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnGenericFragmentInteractionListener");
         }
     }
 
@@ -155,7 +150,7 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
                 loadNextFragment();
                 break;
             case R.id.ib_copy_key:
-                copyKeyToClipboard();
+                copyToClipboard(mTvPrivateKey.getText().toString());
         }
     }
 

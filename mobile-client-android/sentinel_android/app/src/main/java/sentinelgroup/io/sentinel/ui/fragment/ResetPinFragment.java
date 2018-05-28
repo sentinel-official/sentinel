@@ -19,13 +19,15 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModel;
 import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ResetPinFragment.OnFragmentInteractionListener} interface
+ * {@link OnGenericFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link ResetPinFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -34,7 +36,7 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
 
     private ResetPinViewModel mViewModel;
 
-    private OnFragmentInteractionListener mListener;
+    private OnGenericFragmentInteractionListener mListener;
 
     private TextView mTvOldPin, mTvEnterPin, mTvReEnterPin;
     private PinEntryEditText mEtOldPin, mEtEnterPin, mEtReEnterPin;
@@ -106,28 +108,31 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
                     resetAppPin();
                 } else {
                     clearInput();
-                    toggleEnabledState(true);
                     showErrorDialog(getString(R.string.wrong_old_pin));
                 }
             }
         });
 
-        mViewModel.getIsPinResetLiveEvent().observe(this, isPinSet -> {
-            if (isPinSet != null) {
-                if (isPinSet) {
-                    loadNextActivity();
-                } else {
-                    clearInput();
-                    toggleEnabledState(true);
-                    Toast.makeText(getContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
+        mViewModel.getIsPinResetLiveEvent().observe(this, isPinSetResource -> {
+            if (isPinSetResource != null) {
+                if (isPinSetResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.resetting_pin));
+                } else if (isPinSetResource.data != null && isPinSetResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    if (isPinSetResource.data) {
+                        loadNextActivity();
+                    } else {
+                        clearInput();
+                        Toast.makeText(getContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
     }
 
     private void resetAppPin() {
-        int aOldPin = Integer.parseInt(mEtOldPin.getText().toString());
-        int aNewPin = Integer.parseInt(mEtEnterPin.getText().toString());
+        int aOldPin = Integer.parseInt(mEtOldPin.getText().toString().trim());
+        int aNewPin = Integer.parseInt(mEtEnterPin.getText().toString().trim());
         mViewModel.resetAppPin(aOldPin, aNewPin);
     }
 
@@ -135,10 +140,6 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
         mEtOldPin.setText("");
         mEtEnterPin.setText("");
         mEtReEnterPin.setText("");
-    }
-
-    private void toggleEnabledState(boolean iEnabled) {
-        mBtnReset.setEnabled(iEnabled);
     }
 
     private boolean validatePin(int iPin, int iPin2) {
@@ -151,9 +152,22 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
         }
     }
 
+    // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
+        }
+    }
+
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
+        if (mListener != null) {
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
         }
     }
 
@@ -165,18 +179,18 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
 
     public void loadNextActivity() {
         if (mListener != null) {
-            mListener.onLoadNextActivity();
+            mListener.onLoadNextActivity(null);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnGenericFragmentInteractionListener");
         }
     }
 
@@ -198,20 +212,21 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
 
     @Override
     public void afterTextChanged(Editable s) {
-        mTvOldPin.setVisibility(mEtOldPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        mTvEnterPin.setVisibility(mEtEnterPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
-        mTvReEnterPin.setVisibility(mEtReEnterPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        mTvOldPin.setVisibility(mEtOldPin.getText().toString().trim().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        mTvEnterPin.setVisibility(mEtEnterPin.getText().toString().trim().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        mTvReEnterPin.setVisibility(mEtReEnterPin.getText().toString().trim().isEmpty() ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
     public void onPinEntered(CharSequence str) {
-        mBtnReset.setEnabled(!mEtOldPin.getText().toString().isEmpty() && !mEtEnterPin.getText().toString().isEmpty() && !mEtReEnterPin.getText().toString().isEmpty());
+        mBtnReset.setEnabled(!mEtOldPin.getText().toString().trim().isEmpty()
+                && !mEtEnterPin.getText().toString().trim().isEmpty()
+                && !mEtReEnterPin.getText().toString().trim().isEmpty());
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_reset) {
-            toggleEnabledState(false);
             int aOldPin = Integer.parseInt(mEtOldPin.getText().toString().trim());
             int aPin = Integer.parseInt(mEtEnterPin.getText().toString().trim());
             int aPin2 = Integer.parseInt(mEtReEnterPin.getText().toString().trim());
@@ -219,23 +234,5 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
                 mViewModel.verifyOldPin(aOldPin);
             }
         }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentLoaded(String iTitle);
-
-        void onShowErrorDialog(String iError);
-
-        void onLoadNextActivity();
     }
 }

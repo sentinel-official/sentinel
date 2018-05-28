@@ -20,6 +20,7 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModel;
 import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
@@ -27,7 +28,7 @@ import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ForgotPinFragment.OnFragmentInteractionListener} interface
+ * {@link OnGenericFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link ForgotPinFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -36,7 +37,7 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
 
     private ForgotPinViewModel mViewModel;
 
-    private OnFragmentInteractionListener mListener;
+    private OnGenericFragmentInteractionListener mListener;
 
     private TextInputEditText mTetPassword;
     private TextView mTvEnterPin, mTvReEnterPin;
@@ -105,44 +106,39 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
         mViewModel.getIsPasswordCorrectLiveEvent().observe(this, passwordResource -> {
             if (passwordResource != null) {
                 if (passwordResource.status.equals(Status.LOADING)) {
-                    toggleProgressDialog(true);
+                    showProgressDialog(true, getString(R.string.verifying_credentials));
                 } else if (passwordResource.data != null && passwordResource.status.equals(Status.SUCCESS)) {
-                    toggleProgressDialog(false);
-                    resetAppPin();
+                    mViewModel.resetAppPin(Integer.parseInt(mEtEnterPin.getText().toString()));
                 } else if (passwordResource.message != null && passwordResource.status.equals(Status.ERROR)) {
                     clearInput();
-                    toggleEnabledState(true);
-                    toggleProgressDialog(false);
+                    hideProgressDialog();
                     showErrorDialog(passwordResource.message);
                 }
             }
         });
 
-        mViewModel.getIsPinResetLiveEvent().observe(this, isPinSet -> {
-            if (isPinSet != null) {
-                if (isPinSet) {
-                    loadNextActivity();
-                } else {
-                    clearInput();
-                    toggleEnabledState(true);
-                    Toast.makeText(getContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
+        mViewModel.getIsPinResetLiveEvent().observe(this, isPinSetResource -> {
+            if (isPinSetResource != null) {
+                if (isPinSetResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.resetting_pin));
+                } else if (isPinSetResource.data != null && isPinSetResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    if (isPinSetResource.data) {
+                        loadNextActivity();
+                    } else {
+                        clearInput();
+                        Toast.makeText(getContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         });
-    }
-
-    private void resetAppPin() {
-        mViewModel.resetAppPin(Integer.parseInt(mEtEnterPin.getText().toString()));
     }
 
     private void clearInput() {
         mTetPassword.setText("");
         mEtEnterPin.setText("");
         mEtReEnterPin.setText("");
-    }
-
-    private void toggleEnabledState(boolean iEnabled) {
-        mBtnReset.setEnabled(iEnabled);
     }
 
     private boolean validatePin(int iPin, int iPin2) {
@@ -155,15 +151,22 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
         }
     }
 
+    // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
         }
     }
 
-    public void toggleProgressDialog(boolean isDialogShown) {
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
         if (mListener != null) {
-            mListener.onToggleProgressDialog(isDialogShown);
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
         }
     }
 
@@ -175,18 +178,18 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
 
     public void loadNextActivity() {
         if (mListener != null) {
-            mListener.onLoadNextActivity();
+            mListener.onLoadNextActivity(null);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnGenericFragmentInteractionListener");
         }
     }
 
@@ -194,6 +197,13 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onPinEntered(CharSequence str) {
+        mBtnReset.setEnabled(!mTetPassword.getText().toString().isEmpty()
+                && !mEtEnterPin.getText().toString().isEmpty()
+                && !mEtReEnterPin.getText().toString().isEmpty());
     }
 
     @Override
@@ -213,14 +223,8 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
     }
 
     @Override
-    public void onPinEntered(CharSequence str) {
-        mBtnReset.setEnabled(!mTetPassword.getText().toString().isEmpty() && !mEtEnterPin.getText().toString().isEmpty() && !mEtReEnterPin.getText().toString().isEmpty());
-    }
-
-    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_reset) {
-            toggleEnabledState(false);
             String aPassword = mTetPassword.getText().toString().trim();
             int aPin = Integer.parseInt(mEtEnterPin.getText().toString().trim());
             int aPin2 = Integer.parseInt(mEtReEnterPin.getText().toString().trim());
@@ -228,25 +232,5 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
                 mViewModel.verifyKeystorePassword(aPassword);
             }
         }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentLoaded(String iTitle);
-
-        void onToggleProgressDialog(boolean isDialogShown);
-
-        void onShowErrorDialog(String iError);
-
-        void onLoadNextActivity();
     }
 }

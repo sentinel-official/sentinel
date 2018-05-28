@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Status;
@@ -29,7 +30,7 @@ import sentinelgroup.io.sentinel.viewmodel.CreateAuidViewModelFactory;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CreateAuidFragment.OnFragmentInteractionListener} interface
+ * {@link OnGenericFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link CreateAuidFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -38,10 +39,11 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     private CreateAuidViewModel mViewModel;
 
-    private OnFragmentInteractionListener mListener;
+    private OnGenericFragmentInteractionListener mListener;
 
     private TextInputEditText mTetPassword, mTetConfirmPassword;
     private Button mBtnNext;
+    private boolean mIsRequested;
 
     public CreateAuidFragment() {
         // Required empty public constructor
@@ -94,11 +96,11 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
         mViewModel.getAccountLiveEvent().observe(this, accountResource -> {
             if (accountResource != null) {
                 if (accountResource.status.equals(Status.LOADING)) {
-                    toggleProgressDialog(true);
+                    showProgressDialog(true, getString(R.string.creating_account));
                 } else if (accountResource.data != null && accountResource.status.equals(Status.SUCCESS)) {
                     mViewModel.saveAccount(accountResource.data);
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
-                    toggleProgressDialog(false);
+                    hideProgressDialog();
                     showErrorDialog(accountResource.message);
                 }
             }
@@ -106,7 +108,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
         mViewModel.getKeystoreFileLiveEvent().observe(this, accountResource -> {
             if (accountResource != null) {
-                toggleProgressDialog(false);
+                hideProgressDialog();
                 if (accountResource.data != null && accountResource.status.equals(Status.SUCCESS)) {
                     loadNextFragment(accountResource.data.accountAddress, accountResource.data.privateKey, accountResource.data.keystoreFilePath);
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
@@ -138,22 +140,32 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                 if (getActivity().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     return true;
                 } else {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    if (!mIsRequested) {
+                        mIsRequested = true;
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    }
                     return false;
                 }
         }
         return true;
     }
 
+    // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
         }
     }
 
-    public void toggleProgressDialog(boolean isDialogShown) {
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
         if (mListener != null) {
-            mListener.onToggleProgressDialog(isDialogShown);
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
         }
     }
 
@@ -173,11 +185,11 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnGenericFragmentInteractionListener");
         }
     }
 
@@ -216,29 +228,8 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             createNewAccount();
         } else {
+            mIsRequested = false;
             Toast.makeText(getContext(), R.string.storage_permission_denied, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentLoaded(String iTitle);
-
-        void onToggleProgressDialog(boolean isDialogShown);
-
-        void onShowErrorDialog(String iError);
-
-        void onLoadNextFragment(Fragment iNextFragment);
-
-        void onLoadNextActivity();
     }
 }

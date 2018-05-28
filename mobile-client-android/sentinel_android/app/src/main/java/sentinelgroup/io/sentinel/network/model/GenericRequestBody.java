@@ -178,8 +178,24 @@ public class GenericRequestBody {
             return this;
         }
 
-        public GenericRequestBody build(){
+        public GenericRequestBody build() {
             return new GenericRequestBody(this);
+        }
+    }
+
+    public enum NetUnit {
+        MAIN("main"),
+        RINKEBY("rinkeby");
+
+        private String name;
+
+        NetUnit(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 }

@@ -7,7 +7,6 @@ import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.repository.PinRepository;
-import sentinelgroup.io.sentinel.repository.RestoreKeystoreRepository;
 import sentinelgroup.io.sentinel.repository.SendRepository;
 import sentinelgroup.io.sentinel.repository.WalletRepository;
 import sentinelgroup.io.sentinel.util.AppExecutors;
@@ -27,13 +26,7 @@ import sentinelgroup.io.sentinel.viewmodel.WalletViewModelFactory;
 public class InjectorModule {
     private static CreateAuidRepository provideCreateAccountRepository() {
         WebService aWebService = WebClient.get();
-        AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return CreateAuidRepository.getInstance(aWebService, aAppExecutors);
-    }
-
-    private static RestoreKeystoreRepository provideRestoreKeystoreRepository() {
-        AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return RestoreKeystoreRepository.getInstance(aAppExecutors);
+        return CreateAuidRepository.getInstance(aWebService);
     }
 
     private static PinRepository providePinRepository(Context iContext) {
@@ -54,12 +47,13 @@ public class InjectorModule {
 
     public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory() {
         CreateAuidRepository aRepository = provideCreateAccountRepository();
-        return new CreateAuidViewModelFactory(aRepository);
+        AppExecutors aAppExecutors = AppExecutors.getInstance();
+        return new CreateAuidViewModelFactory(aRepository, aAppExecutors);
     }
 
     public static RestoreKeystoreViewModelFactory provideRestoreKeystoreViewModelFactory() {
-        RestoreKeystoreRepository aRepository = provideRestoreKeystoreRepository();
-        return new RestoreKeystoreViewModelFactory(aRepository);
+        AppExecutors aAppExecutors = AppExecutors.getInstance();
+        return new RestoreKeystoreViewModelFactory(aAppExecutors);
     }
 
     public static SetPinViewModelFactory provideSetPinViewModelFactory(Context iContext) {
@@ -74,7 +68,8 @@ public class InjectorModule {
 
     public static ForgotPinViewModelFactory provideForgotPinViewModelFactory(Context iContext) {
         PinRepository aRepository = providePinRepository(iContext);
-        return new ForgotPinViewModelFactory(aRepository);
+        AppExecutors aAppExecutors = AppExecutors.getInstance();
+        return new ForgotPinViewModelFactory(aRepository, aAppExecutors);
     }
 
     public static ResetPinViewModelFactory provideResetPinViewModelFactory(Context iContext) {

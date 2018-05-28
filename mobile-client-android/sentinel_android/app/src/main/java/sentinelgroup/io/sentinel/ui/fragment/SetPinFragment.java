@@ -1,6 +1,5 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
-
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,25 +19,30 @@ import com.alimuzaffar.lib.pin.PinEntryEditText;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.ui.activity.DashboardActivity;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.SetPinViewModel;
 import sentinelgroup.io.sentinel.viewmodel.SetPinViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link OnGenericFragmentInteractionListener} interface
+ * to handle interaction events.
  * Use the {@link SetPinFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class SetPinFragment extends Fragment implements View.OnClickListener, PinEntryEditText.OnPinEnteredListener, TextWatcher {
-
-    private SetPinViewModel mViewModel;
-
     private static final String ARG_ACC_ADDRESS = "account_address";
 
     private String mAccountAddress;
 
-    private CreateAuidFragment.OnFragmentInteractionListener mListener;
+    private SetPinViewModel mViewModel;
+
+    private OnGenericFragmentInteractionListener mListener;
 
     private PinEntryEditText mEtEnterPin, mEtReEnterPin;
     private TextView mTvPin, mTvPin2;
@@ -52,7 +56,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param iAccountAddress Parameter 1.
+     * @param iAccountAddress Account Address.
      * @return A new instance of fragment SetPinFragment.
      */
     public static SetPinFragment newInstance(String iAccountAddress) {
@@ -109,15 +113,19 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
         SetPinViewModelFactory aFactory = InjectorModule.provideSetPinViewModelFactory(getContext());
         mViewModel = ViewModelProviders.of(this, aFactory).get(SetPinViewModel.class);
 
-        mViewModel.getIsPinSetLiveEvent().observe(this, isPinSet -> {
-            if (isPinSet != null) {
-                AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_APP_PIN_SET, isPinSet);
-                if (isPinSet) {
-                    loadNextActivity();
-                } else {
-                    clearInput();
-                    toggleEnabledState(true);
-                    Toast.makeText(getContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
+        mViewModel.getIsPinSetLiveEvent().observe(this, isPinSetResource -> {
+            if (isPinSetResource != null) {
+                if (isPinSetResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.setting_pin));
+                } else if (isPinSetResource.data != null && isPinSetResource.status.equals(Status.SUCCESS)) {
+                    AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_APP_PIN_SET, isPinSetResource.data);
+                    hideProgressDialog();
+                    if (isPinSetResource.data) {
+                        loadNextActivity(DashboardActivity.class);
+                    } else {
+                        clearInput();
+                        Toast.makeText(getContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -126,10 +134,6 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
     private void clearInput() {
         mEtEnterPin.setText("");
         mEtReEnterPin.setText("");
-    }
-
-    private void toggleEnabledState(boolean iEnabled) {
-        mBtnSave.setEnabled(iEnabled);
     }
 
     private boolean validatePin(int iPin, int iPin2) {
@@ -142,9 +146,22 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
         }
     }
 
+    // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
+        }
+    }
+
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
+        if (mListener != null) {
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
         }
     }
 
@@ -154,20 +171,20 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
         }
     }
 
-    public void loadNextActivity() {
+    public void loadNextActivity(Class<?> iActivity) {
         if (mListener != null) {
-            mListener.onLoadNextActivity();
+            mListener.onLoadNextActivity(iActivity);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof CreateAuidFragment.OnFragmentInteractionListener) {
-            mListener = (CreateAuidFragment.OnFragmentInteractionListener) context;
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnGenericFragmentInteractionListener");
         }
     }
 
@@ -179,7 +196,8 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
 
     @Override
     public void onPinEntered(CharSequence str) {
-        mBtnSave.setEnabled(!mEtEnterPin.getText().toString().isEmpty() && !mEtReEnterPin.getText().toString().isEmpty());
+        mBtnSave.setEnabled(!mEtEnterPin.getText().toString().isEmpty()
+                && !mEtReEnterPin.getText().toString().isEmpty());
     }
 
     @Override
@@ -201,7 +219,6 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_save) {
-            toggleEnabledState(false);
             int aPin = Integer.parseInt(mEtEnterPin.getText().toString().trim());
             int aPin2 = Integer.parseInt(mEtReEnterPin.getText().toString().trim());
             if (validatePin(aPin, aPin2)) {

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:padding="@dimen/margin_16"
     android:background="@android:color/transparent"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_16"
     tools:context=".ui.dialog.ProgressDialogFragment">
 
     <com.wang.avi.AVLoadingIndicatorView
@@ -17,4 +18,13 @@
         android:layout_gravity="center"
         app:indicatorColor="@color/colorPrimary"
         app:indicatorName="BallSpinFadeLoaderIndicator" />
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_loading_message"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_16"
+        android:gravity="center" />
+
+</LinearLayout>

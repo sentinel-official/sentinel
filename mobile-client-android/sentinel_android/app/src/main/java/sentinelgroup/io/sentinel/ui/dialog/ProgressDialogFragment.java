@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -28,14 +29,15 @@ import sentinelgroup.io.sentinel.R;
  * create an instance of this fragment.
  */
 public class ProgressDialogFragment extends DialogFragment {
-    private static final long ANIM_DURATION = 700L;
-    private static final float HALF_DIM = 0.6f;
+    private static final float HALF_DIM = 0.5f;
     private static final float NO_DIM = 0f;
     private static final String ARG_IS_HALF_DIM = "arg_is_half_dim";
 
     private float mDimAmount;
+    private String mLoadingMessage;
 
     private AVLoadingIndicatorView mAvlLoader;
+    private TextView mTvLoadingMessage;
 
     public ProgressDialogFragment() {
         // Required empty public constructor
@@ -72,12 +74,17 @@ public class ProgressDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        setLoadingText();
         showLoader();
-        mAvlLoader.show();
         getDialog().setOnKeyListener((dialog, keyCode, event) -> {
             // do nothing when back is pressed
             return (keyCode == android.view.KeyEvent.KEYCODE_BACK);
         });
+        resizeDialog();
+    }
+
+    private void setLoadingText() {
+        mTvLoadingMessage.setText(mLoadingMessage);
     }
 
     private void showLoader() {
@@ -88,6 +95,12 @@ public class ProgressDialogFragment extends DialogFragment {
     private void hideLoader() {
         if (mAvlLoader != null)
             mAvlLoader.hide();
+    }
+
+    private void resizeDialog() {
+        WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        getDialog().getWindow().setAttributes(params);
     }
 
     @Override
@@ -130,6 +143,15 @@ public class ProgressDialogFragment extends DialogFragment {
 
     private void initView(View iView) {
         mAvlLoader = iView.findViewById(R.id.avl_loader);
+        mTvLoadingMessage = iView.findViewById(R.id.tv_loading_message);
+    }
+
+    public void setNoDim() {
+        mDimAmount = NO_DIM;
+    }
+
+    public void setLoadingMessage(String iMessage) {
+        mLoadingMessage = iMessage;
     }
 
     @Override

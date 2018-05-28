@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModel;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
@@ -22,7 +23,7 @@ import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ReceiveFragment.OnFragmentInteractionListener} interface
+ * {@link OnGenericFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link ReceiveFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -31,7 +32,7 @@ public class ReceiveFragment extends Fragment implements View.OnClickListener {
 
     private ReceiveViewModel mViewModel;
 
-    private OnFragmentInteractionListener mListener;
+    private OnGenericFragmentInteractionListener mListener;
 
     ImageView mIvQrCode;
     TextView mTvAddress;
@@ -100,12 +101,7 @@ public class ReceiveFragment extends Fragment implements View.OnClickListener {
         mTvAddress.setText(mViewModel.getAddress());
     }
 
-    public void onCopyAddressClick(String iAccountAddress) {
-        if (mListener != null) {
-            mListener.onCopyAddressClicked(iAccountAddress);
-        }
-    }
-
+    // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
@@ -118,14 +114,20 @@ public class ReceiveFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    public void copyToClipboard(String iCopyString) {
+        if (mListener != null) {
+            mListener.onCopyToClipboardClicked(iCopyString);
+        }
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnGenericFragmentInteractionListener");
         }
     }
 
@@ -140,26 +142,8 @@ public class ReceiveFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.ib_copy_address:
                 if (!mTvAddress.getText().toString().isEmpty())
-                    onCopyAddressClick(mTvAddress.getText().toString());
+                    copyToClipboard(mTvAddress.getText().toString());
                 break;
         }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onCopyAddressClicked(String iAccountAddress);
-
-        void onFragmentLoaded(String iTitle);
-
-        void onShowErrorDialog(String iError);
     }
 }

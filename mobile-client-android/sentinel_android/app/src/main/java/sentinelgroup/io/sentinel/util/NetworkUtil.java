@@ -7,11 +7,7 @@ import android.net.NetworkInfo;
 import sentinelgroup.io.sentinel.SentinelApp;
 
 public class NetworkUtil {
-
-    private static final String NETWORK_WIFI = "WIFI";
-    private static final String NETWORK_MOBILE = "MOBILE";
     private static boolean mConnected = false;
-
 
     public static boolean isOnline() {
         try {

@@ -59,7 +59,6 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
                     loadDashboardActivity();
                 } else {
                     clearInput();
-                    toggleEnabledState(true);
                     showError(getString(R.string.invalid_pin));
                 }
             }
@@ -75,10 +74,6 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
         mEtPin.setText("");
     }
 
-    private void toggleEnabledState(boolean iEnabled) {
-        mBtnVerify.setEnabled(iEnabled);
-    }
-
     private void showError(String iError) {
         SingleActionDialogFragment.newInstance(getString(R.string.please_note), iError, getString(android.R.string.ok))
                 .show(getSupportFragmentManager(), "alert_dialog");
@@ -86,7 +81,7 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onPinEntered(CharSequence str) {
-        mBtnVerify.setEnabled(!mEtPin.getText().toString().isEmpty());
+        mBtnVerify.setEnabled(!mEtPin.getText().toString().trim().isEmpty());
     }
 
     @Override
@@ -101,14 +96,13 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void afterTextChanged(Editable s) {
-        mTvPin.setVisibility(mEtPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        mTvPin.setVisibility(mEtPin.getText().toString().trim().isEmpty() ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_verify:
-                toggleEnabledState(false);
                 int aPin = Integer.parseInt(mEtPin.getText().toString().trim());
                 String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
                 mViewModel.verifyAppPin(aPin, aAccountAddress);

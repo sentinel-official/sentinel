@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_vpn"
-        android:icon="@drawable/shape_vpn_unselected"
+        android:icon="@drawable/menu_vpn_unselected"
         android:title="@string/vpn"
         app:showAsAction="always" />
     <item

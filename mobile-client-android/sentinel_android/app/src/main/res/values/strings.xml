@@ -86,12 +86,11 @@
     <string name="active">Activated</string>
     <string name="deactive">Deactivated</string>
     <string name="wallet_balance">Wallet Balance</string>
-    <string name="free_token_requested">Free test tokens getiing mined. You will receive them in your wallet soon.</string>
+    <string name="free_token_requested">Free test SENT tokens getting mined. You will receive them in your wallet soon.</string>
     <string name="yay">Yay!</string>
     <string name="thanks">Thanks</string>
     <string name="ok">OK</string>
     <string name="empty_token_value">-</string>
-    <string name="default_gas_limit">21000</string>
     <string name="forgot_pin">Forgot PIN?</string>
     <string name="reset_pin_success">PIN reset successfully</string>
     <string name="wrong_old_pin">App PIN entered is wrong</string>
@@ -108,6 +107,18 @@
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_price_value">%.0f SENTs</string>
     <string name="vpn_latency_value">%.3f ms</string>
+    <string name="generic_loading_message">Please wait. Loading…</string>
+    <string name="creating_account">Creating a new account. Please wait…</string>
+    <string name="setting_pin">Setting up app PIN. Please wait…</string>
+    <string name="restoring_accunt">Restoring account. Please wait…</string>
+    <string name="verifying_credentials">Verifying credentials. Please wait…</string>
+    <string name="resetting_pin">Resetting app PIN. Please wait…</string>
+    <string name="gas_limit_sents">42000</string>
+    <string name="gas_limit_eth">21000</string>
+    <string name="sending">Sending…</string>
+    <string name="signing_transaction">Validating &amp; signing transaction. Please wait…</string>
+    <string name="tx_main_net">https://etherscan.io/tx/%1s</string>
+    <string name="tx_test_net">https://rinkeby.etherscan.io/tx/%1s</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

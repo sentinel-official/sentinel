@@ -51,6 +51,6 @@ public class WalletViewModel extends ViewModel {
 
     public String getFormattedSentBalance(double iSentValue) {
         iSentValue /= Math.pow(10, 8);
-        return String.format(Locale.getDefault(), iSentValue % 1 == 0 ? "%.0f" : ".7f", iSentValue);
+        return String.format(Locale.getDefault(), iSentValue % 1 == 0 ? "%.0f" : "%.7f", iSentValue);
     }
 }

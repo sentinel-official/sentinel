@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -21,20 +20,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
-import sentinelgroup.io.sentinel.ui.fragment.VpnListFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
 import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
+import static sentinelgroup.io.sentinel.util.AppConstants.ALERT_DIALOG_TAG;
+import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
+
 public class DashboardActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
-        WalletFragment.OnFragmentInteractionListener, VpnSelectFragment.OnFragmentInteractionListener, VpnListFragment.OnFragmentInteractionListener {
+        OnGenericFragmentInteractionListener {
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private SwitchCompat mSwitchNet;
     private TextView mSwitchState;
+    private ProgressDialogFragment mPrgDialog;
     private MenuItem mMenuVpn, mMenuWallet;
 
     @Override
@@ -57,6 +61,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mSwitchNet = findViewById(R.id.switch_net);
         mSwitchState = findViewById(R.id.switch_state);
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        mPrgDialog = ProgressDialogFragment.newInstance(true);
         NavigationView aNavView = findViewById(R.id.navigation_view);
         //setup toolbar
         setupToolbar();
@@ -113,6 +118,43 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
+    private void showProgressDialog(boolean isHalfDim, String iMessage) {
+        ToggleProgressDialogState(true, isHalfDim, iMessage == null ? getString(R.string.generic_loading_message) : iMessage);
+    }
+
+    private void hideProgressDialog() {
+        ToggleProgressDialogState(false, false, null);
+    }
+
+    private void ToggleProgressDialogState(boolean isShow, boolean isHalfDim, String iMessage) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(PROGRESS_DIALOG_TAG);
+        if (isShow) {
+            if (aFragment == null) {
+                if (!isHalfDim)
+                    mPrgDialog.setNoDim();
+                mPrgDialog.setLoadingMessage(iMessage);
+                mPrgDialog.show(getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
+            } else {
+                mPrgDialog.setLoadingMessage(iMessage);
+            }
+        } else {
+            if (aFragment != null)
+                mPrgDialog.dismiss();
+        }
+    }
+
+    private void showSingleActionError(String iMessage) {
+        showSingleActionError(null, iMessage, null);
+    }
+
+    private void showSingleActionError(String iTitle, String iMessage, String iActionText) {
+        String aTitle = iTitle != null ? iTitle : getString(R.string.please_note);
+        String aActionText = iActionText != null ? iActionText : getString(android.R.string.ok);
+
+        SingleActionDialogFragment.newInstance(aTitle, iMessage, aActionText)
+                .show(getSupportFragmentManager(), ALERT_DIALOG_TAG);
+    }
+
     private void loadFragment(Fragment iFragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
     }
@@ -149,10 +191,19 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private void toggleItemState(MenuItem item) {
         if (item.getItemId() == R.id.action_vpn) {
             mMenuVpn.setIcon(R.drawable.menu_vpn_selected);
-            mMenuWallet.setIcon(R.drawable.shape_wallet_unselected);
+            mMenuWallet.setIcon(R.drawable.menu_wallet_unselected);
         } else if (item.getItemId() == R.id.action_wallet) {
-            mMenuVpn.setIcon(R.drawable.shape_vpn_unselected);
+            mMenuVpn.setIcon(R.drawable.menu_vpn_unselected);
             mMenuWallet.setIcon(R.drawable.menu_wallet_selected);
+        }
+    }
+
+    protected void copyToClipboard(String iCopyString) {
+        ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            ClipData clip = ClipData.newPlainText(getString(R.string.app_name), iCopyString);
+            Toast.makeText(this, R.string.key_copied, Toast.LENGTH_SHORT).show();
+            clipboard.setPrimaryClip(clip);
         }
     }
 
@@ -164,21 +215,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         loadFragment(WalletFragment.newInstance());
     }
 
-    private void copyAddressToClipboard(String iAccountAddress) {
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        if (clipboard != null) {
-            ClipData clip = ClipData.newPlainText(getString(R.string.app_name), iAccountAddress);
-            Toast.makeText(this, R.string.address_copied, Toast.LENGTH_SHORT).show();
-            clipboard.setPrimaryClip(clip);
-        }
-    }
-
-    private void showError(String iTitle, String iMessage, String iButtonLabel) {
-        iTitle = iTitle == null ? getString(R.string.please_note) : iTitle;
-        iButtonLabel = iButtonLabel == null ? getString(R.string.ok) : iButtonLabel;
-        SingleActionDialogFragment.newInstance(iTitle, iMessage, iButtonLabel)
-                .show(getSupportFragmentManager(), "alert_dialog");
-    }
 
     @Override
     public void onBackPressed() {
@@ -199,26 +235,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     @Override
-    public void onCopyAddressClicked(String iAccountAddress) {
-        copyAddressToClipboard(iAccountAddress);
-    }
-
-    @Override
-    public void onShowRequestSuccessDialog(String iMessage) {
-        showError(getString(R.string.yay), iMessage, getString(R.string.thanks));
-    }
-
-    @Override
-    public void onSendClicked() {
-        startActivity(new Intent(this, SendActivity.class));
-    }
-
-    @Override
-    public void onReceiveClicked() {
-        startActivity(new Intent(this, ReceiveActivity.class));
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -231,7 +247,36 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentLoaded(String iTitle) {
+    }
 
+    @Override
+    public void onShowProgressDialog(boolean isHalfDim, String iMessage) {
+        showProgressDialog(isHalfDim, iMessage);
+    }
+
+    @Override
+    public void onHideProgressDialog() {
+        hideProgressDialog();
+    }
+
+    @Override
+    public void onShowErrorDialog(String iError) {
+        showSingleActionError(getString(R.string.yay), iError, getString(R.string.thanks));
+    }
+
+    @Override
+    public void onCopyToClipboardClicked(String iCopyString) {
+        copyToClipboard(iCopyString);
+    }
+
+    @Override
+    public void onLoadNextFragment(Fragment iNextFragment) {
+
+    }
+
+    @Override
+    public void onLoadNextActivity(Class<?> iActivity) {
+        startActivity(new Intent(this, iActivity));
     }
 }

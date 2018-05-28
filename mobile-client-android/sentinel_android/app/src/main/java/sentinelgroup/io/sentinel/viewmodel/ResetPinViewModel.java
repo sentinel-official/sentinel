@@ -5,12 +5,13 @@ import android.arch.lifecycle.ViewModel;
 import sentinelgroup.io.sentinel.repository.PinRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
 public class ResetPinViewModel extends ViewModel {
     private final PinRepository mRepository;
     private final SingleLiveEvent<Boolean> mIsPinCorrectLiveEvent;
-    private final SingleLiveEvent<Boolean> mIsPinResetLiveEvent;
+    private final SingleLiveEvent<Resource<Boolean>> mIsPinResetLiveEvent;
 
     ResetPinViewModel(PinRepository iRepository) {
         mRepository = iRepository;
@@ -22,7 +23,7 @@ public class ResetPinViewModel extends ViewModel {
         return mIsPinCorrectLiveEvent;
     }
 
-    public SingleLiveEvent<Boolean> getIsPinResetLiveEvent() {
+    public SingleLiveEvent<Resource<Boolean>> getIsPinResetLiveEvent() {
         return mIsPinResetLiveEvent;
     }
 

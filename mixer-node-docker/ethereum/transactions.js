@@ -18,8 +18,8 @@ let transferEthers = (fromPrivateKey, toAddress, value, chainName, cb) => {
   let fromAddress = '0x' + generateAddress(frompublicKey).toString('hex');
   let rawTx = {
     nonce: getTransactionCount(fromAddress, chainName),
-    gasPrice: getGasPrice(chainName),
-    gasLimit: chains[chainName].web3.toHex(1000000),
+    gasPrice: '0x04a817c800',
+    gasLimit: '0xf4240',
     to: toAddress,
     value: chains[chainName].web3.toHex(value),
     data: '0x0'

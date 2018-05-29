@@ -1,5 +1,5 @@
-let mixer = require('./mixer/index');
 let mongoose = require('mongoose');
+let mixer = require('./mixer/index');
 let mongoDbConfig = require('./config/vars').mongoDb;
 
 
@@ -9,6 +9,14 @@ mongoose.connect(mongoDbUrl,
     if (error) console.log(error);
     else {
       console.log(`Connected to database URL: ${mongoDbUrl}`);
-      mixer.start();
+      startMix();
     }
   });
+
+let startMix = () => {
+  mixer.start(() => {
+    setTimeout(() => {
+      startMix();
+    }, 30 * 1000);
+  });
+};

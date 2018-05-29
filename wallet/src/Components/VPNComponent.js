@@ -800,8 +800,8 @@ class VPNComponent extends Component {
                                 <p>IP: {this.props.vpnData.ip}</p>
                                 <p>{lang[language].Location}: {this.props.vpnData.location}</p>
                                 <p>{lang[language].Speed}: {this.props.vpnData.speed}</p>
-                                <p>{lang[language].DownloadUsage}: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.down ? this.state.usage.down : 0) / (1024 * 1024)).toFixed(2)} MB</p>
-                                <p>{lang[language].UploadUsage}: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.up ? this.state.usage.up : 0) / (1024 * 1024)).toFixed(2)} MB</p>
+                                <p>{lang[language].DownloadUsage}: {this.state.usage ? (parseInt(this.state.usage.down ? this.state.usage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB</p>
+                                <p>{lang[language].UploadUsage}: {this.state.usage ? (parseInt(this.state.usage.up ? this.state.usage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB</p>
                                 <RaisedButton
                                     label={lang[language].Disconnect}
                                     labelStyle={{ fontWeight: 'bold' }}

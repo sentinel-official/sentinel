@@ -71,5 +71,6 @@ public class VpnDetailsActivity extends BaseActivity {
 
     @Override
     public void onLoadNextActivity(Intent iIntent) {
+        startActivity(iIntent);
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="sentinelgroup.io.sentinel">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -47,7 +48,36 @@
         <activity
             android:name=".ui.activity.ReceiveActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.VpnDetailsActivity"></activity>
-    </application>
+        <activity
+            android:name=".ui.activity.VpnDetailsActivity"
+            android:screenOrientation="portrait" />
 
+        <!-- Declaring components in ics-openVPN -->
+        <service
+            android:name="de.blinkt.openvpn.core.OpenVPNService"
+            android:permission="android.permission.BIND_VPN_SERVICE">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="de.blinkt.openvpn.api.ExternalOpenVPNService"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="de.blinkt.openvpn.api.IOpenVPNAPIService" />
+            </intent-filter>
+        </service>
+        <activity
+            android:name="de.blinkt.openvpn.LaunchVPN"
+            android:excludeFromRecents="true"
+            android:label="@string/vpn_launch_title"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Panel"
+            tools:ignore="ExportedActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

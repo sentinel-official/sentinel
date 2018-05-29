@@ -10,6 +10,7 @@ import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.Account;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -61,6 +62,8 @@ public class CreateAuidRepository {
                         mAccountLiveEvent.postValue(Resource.success(response.body()));
                     else
                         reportErrorResponse(response, null);
+                } else {
+                    reportErrorResponse(null, null);
                 }
             }
 
@@ -70,7 +73,7 @@ public class CreateAuidRepository {
                 else if (iThrowableLocalMessage != null)
                     mAccountLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mAccountLiveEvent.postValue(Resource.error(Resources.getSystem().getString(R.string.generic_error_message), null));
+                    mAccountLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }

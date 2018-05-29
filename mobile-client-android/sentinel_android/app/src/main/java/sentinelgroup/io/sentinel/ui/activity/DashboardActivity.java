@@ -169,6 +169,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         toggleItemState(item);
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -176,11 +177,13 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 return true;
 
             case R.id.action_vpn:
-                loadVpnFragment();
+                if (!(aFragment instanceof VpnSelectFragment))
+                    loadVpnFragment();
                 return true;
 
             case R.id.action_wallet:
-                loadWalletFragment();
+                if (!(aFragment instanceof WalletFragment))
+                    loadWalletFragment();
                 return true;
 
             default:
@@ -262,7 +265,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onShowErrorDialog(String iError) {
-        showSingleActionError(getString(R.string.yay), iError, getString(R.string.thanks));
+        if (iError.equals(getString(R.string.free_token_requested)))
+            showSingleActionError(getString(R.string.yay), iError, getString(R.string.thanks));
+        else
+            showSingleActionError(iError);
     }
 
     @Override

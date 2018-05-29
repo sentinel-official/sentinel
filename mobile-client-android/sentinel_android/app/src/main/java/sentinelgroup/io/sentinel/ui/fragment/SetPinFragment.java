@@ -125,7 +125,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
                         loadNextActivity(new Intent(getActivity(), DashboardActivity.class));
                     } else {
                         clearInput();
-                        Toast.makeText(getContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), AppConstants.GENERIC_ERROR, Toast.LENGTH_SHORT).show();
                     }
                 }
             }

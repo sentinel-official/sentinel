@@ -36,4 +36,6 @@ public class AppConstants {
     public static final String ALERT_DIALOG_TAG = "sentinelgroup.io.sentinel.alert_dialog";
     public static final String SENT = "SENT";
     public static final String ETH = "ETH";
+    public static final String GENERIC_ERROR = "Something went wrong. Please try again.";
+    public static final String INIT_PAY_ERROR = "Initial VPN payment is not done.";
 }

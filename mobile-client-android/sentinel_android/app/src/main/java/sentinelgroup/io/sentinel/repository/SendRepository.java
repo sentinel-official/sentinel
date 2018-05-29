@@ -12,6 +12,7 @@ import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.PayError;
 import sentinelgroup.io.sentinel.network.model.PayResponse;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -60,6 +61,8 @@ public class SendRepository {
                         mTransactionLiveEvent.postValue(Resource.success(response.body()));
                     else
                         reportErrorResponse(response, null);
+                } else {
+                    reportErrorResponse(null, null);
                 }
             }
 
@@ -72,7 +75,7 @@ public class SendRepository {
                 } else if (iThrowableLocalMessage != null)
                     mTransactionLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mTransactionLiveEvent.postValue(Resource.error(Resources.getSystem().getString(R.string.generic_error_message), null));
+                    mTransactionLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }
@@ -91,10 +94,14 @@ public class SendRepository {
             }
 
             private void reportSuccessResponse(Response<PayResponse> response) {
-                if (response.body().success)
-                    mTransactionLiveEvent.postValue(Resource.success(response.body()));
-                else
-                    reportErrorResponse(response, null);
+                if (response != null && response.body() != null) {
+                    if (response.body().success)
+                        mTransactionLiveEvent.postValue(Resource.success(response.body()));
+                    else
+                        reportErrorResponse(response, null);
+                } else {
+                    reportErrorResponse(null, null);
+                }
             }
 
             private void reportErrorResponse(Response<PayResponse> response, String iThrowableLocalMessage) {
@@ -110,7 +117,7 @@ public class SendRepository {
                 } else if (iThrowableLocalMessage != null)
                     mTransactionLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mTransactionLiveEvent.postValue(Resource.error(Resources.getSystem().getString(R.string.generic_error_message), null));
+                    mTransactionLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
 
 

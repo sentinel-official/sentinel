@@ -103,11 +103,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                         mAdapter.loadData(vpnResource.data.list);
                 } else if (vpnResource.message != null && vpnResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    if (vpnResource.message.equals("Initial VPN payment is not done.")) {
-                        loadNextActivity(constructSendActivityIntent(vpnResource.message, true, getString(R.string.init_vpn_pay), null));
-                    } else {
-
-                    }
+                    showErrorDialog(vpnResource.message);
                 }
             }
         });
@@ -120,7 +116,11 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                     hideProgressDialog();
                 } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(vpnCredentialsResource.message);
+                    if (vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR))
+                        loadNextActivity(constructSendActivityIntent(vpnCredentialsResource.message, true, getString(R.string.init_vpn_pay), null));
+                    else
+                        showErrorDialog(vpnCredentialsResource.message);
+
                 }
             }
         });

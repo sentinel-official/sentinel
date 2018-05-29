@@ -11,6 +11,7 @@ import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.Vpn;
 import sentinelgroup.io.sentinel.network.model.VpnCredentials;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -73,7 +74,7 @@ public class VpnRepository {
                 if (iThrowableLocalMessage != null)
                     mVpnListMutableLiveData.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mVpnListMutableLiveData.postValue(Resource.error(Resources.getSystem().getString(R.string.generic_error_message), null));
+                    mVpnListMutableLiveData.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }
@@ -92,10 +93,14 @@ public class VpnRepository {
             }
 
             private void reportSuccessResponse(Response<VpnCredentials> response) {
-                if (response.body().success)
-                    mVpnGetServerCredentials.postValue(Resource.success(response.body()));
-                else
-                    reportErrorResponse(response, null);
+                if (response != null && response.body() != null) {
+                    if (response.body().success)
+                        mVpnGetServerCredentials.postValue(Resource.success(response.body()));
+                    else
+                        reportErrorResponse(response, null);
+                } else {
+                    reportErrorResponse(null,null);
+                }
             }
 
             private void reportErrorResponse(Response<VpnCredentials> response, String iThrowableLocalMessage) {
@@ -104,7 +109,7 @@ public class VpnRepository {
                 } else if (iThrowableLocalMessage != null)
                     mVpnGetServerCredentials.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mVpnGetServerCredentials.postValue(Resource.error(Resources.getSystem().getString(R.string.generic_error_message), null));
+                    mVpnGetServerCredentials.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }

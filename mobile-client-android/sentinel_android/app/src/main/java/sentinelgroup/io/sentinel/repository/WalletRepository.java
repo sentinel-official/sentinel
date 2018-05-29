@@ -67,6 +67,8 @@ public class WalletRepository {
                 if (response != null && response.body() != null) {
                     if (response.body().success)
                         mBalanceMutableLiveData.postValue(Resource.success(response.body()));
+                } else {
+                    reportErrorResponse(null);
                 }
             }
 
@@ -74,7 +76,7 @@ public class WalletRepository {
                 if (iThrowableLocalMessage != null)
                     mBalanceMutableLiveData.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mBalanceMutableLiveData.postValue(Resource.error(Resources.getSystem().getString(R.string.generic_error_message), null));
+                    mBalanceMutableLiveData.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }

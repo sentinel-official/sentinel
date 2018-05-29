@@ -3,6 +3,7 @@ package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +21,9 @@ import java.util.Locale;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.VpnList;
+import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Convert;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.VpnListViewModel;
@@ -142,7 +145,10 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                     hideProgressDialog();
                 } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(vpnCredentialsResource.message);
+                    if (vpnCredentialsResource.message.equals("Initial VPN payment is not done."))
+                        loadNextActivity(constructSendActivityIntent(vpnCredentialsResource.message, true, getString(R.string.init_vpn_pay), null));
+                    else
+                        showErrorDialog(vpnCredentialsResource.message);
                 }
             }
         });
@@ -171,6 +177,26 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         if (mListener != null) {
             mListener.onShowErrorDialog(iError);
         }
+    }
+
+    public void loadNextActivity(Intent iIntent) {
+        if (mListener != null) {
+            mListener.onLoadNextActivity(iIntent);
+        }
+    }
+
+    private Intent constructSendActivityIntent(String iError, boolean isInit, String iAmount, String iSessionId) {
+        Intent aIntent = new Intent(getActivity(), SendActivity.class);
+        Bundle aBundle = new Bundle();
+        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
+        aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
+        if (iError != null)
+            aBundle.putString(AppConstants.EXTRA_INIT_MESSAGE, iError);
+        if (iSessionId != null)
+            aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
+        aIntent.putExtras(aBundle);
+        return aIntent;
     }
 
     @Override

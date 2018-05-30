@@ -7,6 +7,7 @@ import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnect
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
+import MixerComponent from './MixerComponent';
 import VPNHistory from './VPNHistory';
 let lang = require('./language');
 const { ipcRenderer } = window.require('electron');
@@ -263,6 +264,9 @@ class Dashboard extends Component {
               <Tab style={this.state.isTest ? styles.enabledTabStyle : styles.disabledTabStyle}
                 label={lang[language].VpnHistory} value="vpn_history" disabled={!this.state.isTest}>
                 <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} lang={this.props.lang} />
+              </Tab>
+              <Tab style={styles.enabledTabStyle}label="Mixer" value="mixer">
+                <MixerComponent />
               </Tab>
             </Tabs>
           </div>

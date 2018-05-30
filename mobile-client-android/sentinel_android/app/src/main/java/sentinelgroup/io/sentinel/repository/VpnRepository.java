@@ -57,7 +57,6 @@ public class VpnRepository {
 
     // Network call
     private void getUnoccupiedVpnList() {
-        mVpnListMutableLiveData.postValue(Resource.loading(null));
         mWebService.getUnoccupiedVpnList().enqueue(new Callback<Vpn>() {
             @Override
             public void onResponse(Call<Vpn> call, Response<Vpn> response) {
@@ -123,7 +122,6 @@ public class VpnRepository {
     }
 
     public void getVpnUsageForUser(GenericRequestBody iRequestBody) {
-        mVpnGetServerCredentialsLiveEvent.postValue(Resource.loading(null));
         mWebService.getVpnUsageForUser(iRequestBody).enqueue(new Callback<VpnUsage>() {
             @Override
             public void onResponse(Call<VpnUsage> call, Response<VpnUsage> response) {
@@ -146,9 +144,9 @@ public class VpnRepository {
 
             private void reportErrorResponse(String iThrowableLocalMessage) {
                 if (iThrowableLocalMessage != null)
-                    mVpnGetServerCredentialsLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                    mVpnUsageLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mVpnGetServerCredentialsLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+                    mVpnUsageLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }

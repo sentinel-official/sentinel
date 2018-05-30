@@ -95,9 +95,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
 
         mViewModel.getVpnListLiveData().observe(this, vpnResource -> {
             if (vpnResource != null) {
-                if (vpnResource.status.equals(Status.LOADING)) {
-//                    showProgressDialog(false, getString(R.string.loading_vpn_list));
-                } else if (vpnResource.data != null && vpnResource.status.equals(Status.SUCCESS)) {
+                if (vpnResource.data != null && vpnResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     if (vpnResource.data.list != null && vpnResource.data.list.size() > 0)
                         mAdapter.loadData(vpnResource.data.list);

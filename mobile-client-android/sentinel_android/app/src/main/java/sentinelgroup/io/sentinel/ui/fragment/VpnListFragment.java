@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
@@ -77,7 +78,6 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        fragmentLoaded(getString(R.string.create_auid));
         initViewModel();
     }
 
@@ -96,7 +96,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         mViewModel.getVpnListLiveData().observe(this, vpnResource -> {
             if (vpnResource != null) {
                 if (vpnResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(false, getString(R.string.loading_vpn_list));
+//                    showProgressDialog(false, getString(R.string.loading_vpn_list));
                 } else if (vpnResource.data != null && vpnResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     if (vpnResource.data.list != null && vpnResource.data.list.size() > 0)
@@ -130,7 +130,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         Intent aIntent = new Intent(getActivity(), SendActivity.class);
         Bundle aBundle = new Bundle();
         aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
-        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, isInit);
         aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
         if (iError != null)
             aBundle.putString(AppConstants.EXTRA_INIT_MESSAGE, iError);

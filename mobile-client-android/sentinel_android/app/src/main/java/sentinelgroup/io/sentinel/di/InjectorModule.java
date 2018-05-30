@@ -19,6 +19,7 @@ import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.VerifyPinViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.VpnHistoryViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.VpnListViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.WalletViewModelFactory;
 
@@ -103,5 +104,10 @@ public class InjectorModule {
     public static VpnListViewModelFactory provideVpnListViewModelFactory() {
         VpnRepository aRepository = provideVpnRepository();
         return new VpnListViewModelFactory(aRepository);
+    }
+
+    public static VpnHistoryViewModelFactory provideVpnHistoryViewModelFactory() {
+        VpnRepository aRepository = provideVpnRepository();
+        return new VpnHistoryViewModelFactory(aRepository);
     }
 }

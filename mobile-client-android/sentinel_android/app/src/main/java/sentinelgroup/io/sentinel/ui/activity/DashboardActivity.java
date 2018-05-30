@@ -101,8 +101,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private void handleNavigationItemClick(int itemItemId) {
         switch (itemItemId) {
             case R.id.nav_tx_history:
+//                startActivityForResult(new Intent(this, TxHistoryActivity.class), AppConstants.REQ_TX_HISTORY);
                 break;
             case R.id.nav_vpn_history:
+                startActivityForResult(new Intent(this, VpnHistoryActivity.class), AppConstants.REQ_VPN_HISTORY);
                 break;
 //            case R.id.nav_nw_stats:
 //                break;
@@ -112,8 +114,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 startActivityForResult(new Intent(this, ResetPinActivity.class), AppConstants.REQ_RESET_PIN);
                 break;
             case R.id.nav_help:
+//                startActivityForResult(new Intent(this, HelpActivity.class), AppConstants.REQ_HELP);
                 break;
             case R.id.nav_about:
+//                startActivityForResult(new Intent(this, AboutActivity.class), AppConstants.REQ_ABOUT);
                 break;
         }
     }
@@ -205,7 +209,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
             ClipData clip = ClipData.newPlainText(getString(R.string.app_name), iCopyString);
-            Toast.makeText(this, R.string.key_copied, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.address_copied, Toast.LENGTH_SHORT).show();
             clipboard.setPrimaryClip(clip);
         }
     }

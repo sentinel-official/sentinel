@@ -91,14 +91,14 @@
     <string name="ok">OK</string>
     <string name="empty_token_value">-</string>
     <string name="forgot_pin">Forgot PIN?</string>
-    <string name="reset_pin_success">PIN reset successfully</string>
+    <string name="reset_pin_success">PIN reset successful</string>
     <string name="wrong_old_pin">App PIN entered is wrong</string>
     <string name="gwei">%d Gwei</string>
     <string name="_20_gwei">20 Gwei</string>
     <string name="copy_address">Copy Address</string>
     <string name="receive">Receive</string>
     <string name="payment_pending">Payment pending for this session</string>
-    <string name="pay_sents">Pay %.4d SENTs</string>
+    <string name="pay_sents">Pay %1s SENTs</string>
     <string name="vpn_location">%1s, %2s</string>
     <string name="vpn_bandwidth">Bandwidth \t %s</string>
     <string name="vpn_price">Price(SENTs/GB) \t %s</string>
@@ -128,6 +128,8 @@
     <string name="bandwidth">Bandwidth: %1s</string>
     <string name="latency">Latency: %1s</string>
     <string name="price">Price (Price( SENTs/GB): %1s</string>
+    <string name="coming_soon">Coming soon…</string>
+
 
     <string-array name="spinner_list">
         <item>SENT</item>

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Stats {
     @SerializedName("received_bytes")
-    public int receivedBytes;
-    public int duration;
-    public int amount;
+    public long receivedBytes;
+    public long duration;
+    public double amount;
 }

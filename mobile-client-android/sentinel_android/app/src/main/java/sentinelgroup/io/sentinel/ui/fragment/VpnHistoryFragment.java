@@ -1,0 +1,214 @@
+package sentinelgroup.io.sentinel.ui.fragment;
+
+
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.network.model.Session;
+import sentinelgroup.io.sentinel.network.model.Usage;
+import sentinelgroup.io.sentinel.ui.activity.SendActivity;
+import sentinelgroup.io.sentinel.ui.adapter.VpnHistoryListAdapter;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.Converter;
+import sentinelgroup.io.sentinel.util.SpannableStringUtil;
+import sentinelgroup.io.sentinel.util.Status;
+import sentinelgroup.io.sentinel.viewmodel.VpnHistoryViewModel;
+import sentinelgroup.io.sentinel.viewmodel.VpnHistoryViewModelFactory;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link VpnHistoryFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapter.OnItemClickListener {
+
+    private VpnHistoryViewModel mViewModel;
+
+    private OnGenericFragmentInteractionListener mListener;
+
+    private TextView mTvSentPaid, mTvTotalDuration, mTvTotalReceivedData;
+    private SwipeRefreshLayout mSrReload;
+    private RecyclerView mRvVpnHistory;
+
+    private VpnHistoryListAdapter mAdapter;
+
+    public VpnHistoryFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment.
+     *
+     * @return A new instance of fragment VpnHistoryFragment.
+     */
+    public static VpnHistoryFragment newInstance() {
+        return new VpnHistoryFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_vpn_history, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initViewModel();
+    }
+
+    private void initView(View iView) {
+        mTvSentPaid = iView.findViewById(R.id.tv_total_sent_paid);
+        mTvTotalDuration = iView.findViewById(R.id.tv_total_duration);
+        mTvTotalReceivedData = iView.findViewById(R.id.tv_total_received_data);
+        mSrReload = iView.findViewById(R.id.sr_reload);
+        mRvVpnHistory = iView.findViewById(R.id.rv_vpn_history);
+        // Setup RecyclerView
+        mRvVpnHistory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mAdapter = new VpnHistoryListAdapter(this, getContext());
+        mRvVpnHistory.setAdapter(mAdapter);
+        // setup swipe to refresh layout
+        mSrReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mViewModel.reloadUsageData();
+                mSrReload.setRefreshing(false);
+            }
+        });
+    }
+
+    private void initViewModel() {
+        VpnHistoryViewModelFactory aFactory = InjectorModule.provideVpnHistoryViewModelFactory();
+        mViewModel = ViewModelProviders.of(this, aFactory).get(VpnHistoryViewModel.class);
+
+        mViewModel.getVpnUsageLiveEvent().observe(this, vpnUsageResource -> {
+            if (vpnUsageResource != null) {
+                if (vpnUsageResource.data != null && vpnUsageResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    if (vpnUsageResource.data.usage != null) {
+                        setTotalUsageDetails(vpnUsageResource.data.usage);
+                        if (vpnUsageResource.data.usage.sessions != null && vpnUsageResource.data.usage.sessions.size() > 0)
+                            mAdapter.loadData(vpnUsageResource.data.usage.sessions);
+                    }
+                } else if (vpnUsageResource.message != null && vpnUsageResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    showErrorDialog(vpnUsageResource.message);
+                }
+            }
+        });
+    }
+
+    private void setTotalUsageDetails(Usage iUsage) {
+        mTvSentPaid.setText(Converter.getSentString(iUsage.stats.amount));
+        String aDuration = Converter.getDuration(iUsage.stats.duration);
+        String[] aDurationSplit = aDuration.split("\\s+");
+        SpannableString aStyledDuration = new SpannableStringUtil.SpannableStringUtilBuilder(aDuration, aDurationSplit[1])
+                .color(ContextCompat.getColor(getContext(), R.color.colorTextGray))
+                .relativeSize(0.5f)
+                .build();
+        mTvTotalDuration.setText(aStyledDuration);
+        String aSize = Converter.getFileSize(iUsage.stats.receivedBytes);
+        String[] aSizeSplit = aSize.split("\\s+");
+        SpannableString aStyledSize = new SpannableStringUtil.SpannableStringUtilBuilder(aSize, aSizeSplit[1])
+                .color(ContextCompat.getColor(getContext(), R.color.colorTextGray))
+                .relativeSize(0.5f)
+                .build();
+        mTvTotalReceivedData.setText(aStyledSize);
+    }
+
+    private Intent constructSendActivityIntent(String iError, boolean isInit, String iAmount, String iSessionId) {
+        Intent aIntent = new Intent(getActivity(), SendActivity.class);
+        Bundle aBundle = new Bundle();
+        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, isInit);
+        aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
+        if (iError != null)
+            aBundle.putString(AppConstants.EXTRA_INIT_MESSAGE, iError);
+        if (iSessionId != null)
+            aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
+        aIntent.putExtras(aBundle);
+        return aIntent;
+    }
+
+    // Interface interaction methods
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
+        if (mListener != null) {
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
+        }
+    }
+
+    public void showErrorDialog(String iError) {
+        if (mListener != null) {
+            mListener.onShowErrorDialog(iError);
+        }
+    }
+
+    public void loadNextActivity(Intent iIntent) {
+        if (mListener != null) {
+            mListener.onLoadNextActivity(iIntent);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnGenericFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onRootViewClicked(Session iSession) {
+
+    }
+
+    @Override
+    public void onPayClicked(String iValue, String iSessionId) {
+        loadNextActivity(constructSendActivityIntent(null,false,iValue,iSessionId));
+    }
+}

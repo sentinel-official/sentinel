@@ -29,7 +29,7 @@ import sentinelgroup.io.sentinel.R;
  * create an instance of this fragment.
  */
 public class ProgressDialogFragment extends DialogFragment {
-    private static final float HALF_DIM = 0.5f;
+    private static final float HALF_DIM = 0.7f;
     private static final float NO_DIM = 0f;
     private static final String ARG_IS_HALF_DIM = "arg_is_half_dim";
 

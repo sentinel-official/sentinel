@@ -153,7 +153,7 @@ public class SendViewModel extends ViewModel {
                 .net(aIsTest ? GenericRequestBody.NetUnit.RINKEBY.toString() : GenericRequestBody.NetUnit.MAIN.toString())
                 .fromAddress(aFromAddress)
                 .amount(getTokenValue(iValue))
-                .sessionId(iSessionId == null ? "" : iSessionId)
+                .sessionId(iSessionId)
                 .build();
         Logger.logDebug("Body", new Gson().toJson(aBody));
         mRepository.makeVpnPayment(aBody);

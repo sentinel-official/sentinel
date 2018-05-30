@@ -15,12 +15,12 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 public class VpnListViewModel extends ViewModel {
     private final VpnRepository mRepository;
     private final LiveData<Resource<Vpn>> mVpnListLiveData;
-    private final SingleLiveEvent<Resource<VpnCredentials>> mVpnGetServerCredentials;
+    private final SingleLiveEvent<Resource<VpnCredentials>> mVpnGetServerCredentialsLiveEvent;
 
     VpnListViewModel(VpnRepository iRepository) {
         mRepository = iRepository;
         mVpnListLiveData = iRepository.getVpnListMutableLiveData();
-        mVpnGetServerCredentials = iRepository.getVpnGetServerCredentials();
+        mVpnGetServerCredentialsLiveEvent = iRepository.getVpnGetServerCredentialsLiveEvent();
     }
 
     public LiveData<Resource<Vpn>> getVpnListLiveData() {
@@ -28,7 +28,7 @@ public class VpnListViewModel extends ViewModel {
     }
 
     public SingleLiveEvent<Resource<VpnCredentials>> getVpnGetServerCredentials() {
-        return mVpnGetServerCredentials;
+        return mVpnGetServerCredentialsLiveEvent;
     }
 
     public void getVpnServerCredentials(String iVPnAddress) {

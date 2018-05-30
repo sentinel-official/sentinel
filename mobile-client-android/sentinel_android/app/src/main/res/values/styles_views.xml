@@ -43,6 +43,10 @@
         <item name="android:textSize">@dimen/text_18</item>
     </style>
 
+    <style name="CustomTextAppearance.Text24">
+        <item name="android:textSize">@dimen/text_24</item>
+    </style>
+
     <style name="CustomTextAppearance.Text32">
         <item name="android:textSize">@dimen/text_32</item>
     </style>

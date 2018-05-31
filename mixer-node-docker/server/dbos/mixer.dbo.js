@@ -11,21 +11,36 @@ let insertMixDetails = (mixDetails, cb) => {
 
 let getMixDetails = (cb) => {
   MixDetailsModel.find({
-    status: 0,
+    $or: [
+      {
+        'remainingAmount': {
+          $exists: false
+        }
+      },
+      {
+        'remainingAmount': {
+          $gt: 0
+        }
+      }
+    ],
+    'tries': {
+      $lt: 10
+    }
   }, {
-      _id: 0
+      '_id': 0
     }, (error, result) => {
       if (error) cb(error, null);
       else cb(null, result);
     });
 };
 
-let updateMixStatus = (toAddress, status, cb) => {
+let updateMixStatus = (toAddress, message, cb) => {
   MixDetailsModel.findOneAndUpdate({
     toAddress: toAddress
   }, {
-      '$set': {
-        'status': status
+      $set: {
+        'lastUpdateOn': Math.round(Date.now() / Math.pow(10, 3)),
+        'message': message
       }
     }, (error, result) => {
       if (error) cb(error, null);
@@ -33,12 +48,33 @@ let updateMixStatus = (toAddress, status, cb) => {
     });
 };
 
-let insertTxHash = (toAddress, txHash, cb) => {
+let increaseTries = (toAddress, cb) => {
   MixDetailsModel.findOneAndUpdate({
     toAddress: toAddress
   }, {
-      '$push': {
-        txHashes: txHash
+      $inc: {
+        'tries': 1
+      }
+    }, (error, result) => {
+      if (error) cb(error, null);
+      else cb(null, result);
+    });
+}
+
+let updateTransactionsStatus = (toAddress, remainingAmount, txHash, message, cb) => {
+  MixDetailsModel.findOneAndUpdate({
+    toAddress: toAddress
+  }, {
+      $push: {
+        'transactionStatuses': {
+          'txHash': txHash,
+          'message': message,
+          'timestamp': Math.round(Date.now() / Math.pow(10, 3))
+        },
+      },
+      $set: {
+        'remainingAmount': remainingAmount,
+        'lastUpdateOn': Math.round(Date.now() / Math.pow(10, 3))
       }
     }, (error, result) => {
       if (error) cb(error, null);
@@ -50,5 +86,6 @@ module.exports = {
   insertMixDetails: insertMixDetails,
   getMixDetails: getMixDetails,
   updateMixStatus: updateMixStatus,
-  insertTxHash: insertTxHash
+  increaseTries: increaseTries,
+  updateTransactionsStatus: updateTransactionsStatus
 };

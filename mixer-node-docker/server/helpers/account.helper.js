@@ -8,7 +8,7 @@ let createAccount = (cb) => {
     let privateKey = keys.generatePrivateKey();
     let address = keys.generateAddress(keys.generatePublicKey(privateKey, false));
     let account = {
-      address: address.toString('hex'),
+      address: '0x' + address.toString('hex'),
       privateKey: privateKey.toString('hex')
     };
     cb(null, account);

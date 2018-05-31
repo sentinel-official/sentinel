@@ -17,6 +17,6 @@ let startMix = () => {
   mixer.start(() => {
     setTimeout(() => {
       startMix();
-    }, 30 * 1000);
+    }, 60 * 1000);
   });
 };

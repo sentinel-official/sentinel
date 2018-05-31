@@ -16,10 +16,7 @@ let createAccount = (req, res) => {
       });
     }, (account, next) => {
       account = Object.assign(account, {
-        generatedOn: Math.round(Date.now() / Math.pow(10, 3)),
-        balances: {
-          eth: 0
-        }
+        generatedOn: Math.round(Date.now() / Math.pow(10, 3))
       });
       accountDbo.insertAccount(account,
         (error, result) => {
@@ -44,17 +41,17 @@ let createAccount = (req, res) => {
   });
 };
 
-let getTotalBalance = (req, res) => {
+let getBalances = (req, res) => {
   waterfall([
     (next) => {
-      accountDbo.getTotalBalance((error, balance) => {
+      accountDbo.getBalances((error, balances) => {
         if (error) next({
           status: 500,
           message: 'Error occurred while getting balance.'
         });
         else next(null, {
           status: 200,
-          balance: balance
+          balances: balances
         });
       });
     }
@@ -70,5 +67,5 @@ let getTotalBalance = (req, res) => {
 
 module.exports = {
   createAccount: createAccount,
-  getTotalBalance: getTotalBalance
+  getBalances: getBalances
 };

@@ -10,38 +10,58 @@ let insertAccount = (account, cb) => {
   });
 };
 
-let getTotalBalance = (cb) => {
+let getBalances = (cb) => {
   AccountModel.aggregate([
     {
-      '$group': {
+      $match: {
+        'balances.eth': {
+          $gte: 20e9 * 50e3
+        }
+      }
+    }, {
+      $group: {
         '_id': null,
-        'balance': {
-          '$sum': '$balances.eth'
+        'eth': {
+          $sum: '$balances.eth'
+        },
+        'sent': {
+          $sum: '$balances.sent'
         }
       }
     }
   ], (error, result) => {
+    console.log(error, result);
     if (error) cb(error, null);
-    else cb(null, result[0].balance);
+    else {
+      delete (result[0]._id);
+      cb(null, result[0]);
+    }
   });
-}
+};
 
-let getFromAddressesDetails = (blackListAddresses, cb) => {
-  AccountModel.find({
+let getFromAddressesDetails = (blackListAddresses, coinSymbol, cb) => {
+  let findObject = {
     'address': {
-      '$nin': blackListAddresses
+      $nin: blackListAddresses
     },
     'balances.eth': {
-      '$gt': 0
-    },
-  }, {}, {
-      'sort': {
-        'balances.eth': -1
-      }
-    }, (error, result) => {
-      if (error) cb(error, null);
-      else cb(null, result);
-    });
+      $gte: 20e9 * 50e3
+    }
+  };
+  let sortKey = `balances.${coinSymbol}`;
+  if (coinSymbol !== 'eth') {
+    findObject[`balances.${coinSymbol}`] = {
+      $gte: 0
+    };
+  }
+  AccountModel.find(findObject, {}, {
+    sort: {
+      sortKey: -1
+    }
+  }, (error, result) => {
+    if (error) cb(error, null);
+    else cb(null, result);
+  });
 };
 
 let getAccountsDetails = (cb) => {
@@ -54,12 +74,13 @@ let getAccountsDetails = (cb) => {
     });
 };
 
-let updateAccountBalance = (address, balance, cb) => {
+let updateAccountBalance = (address, balance, coinSymbol, cb) => {
+  let updateKey = `balances.${coinSymbol}`;
   AccountModel.findOneAndUpdate({
     address: address
   }, {
-      '$set': {
-        'balances.eth': balance
+      $set: {
+        updateKey: balance
       }
     }, (error, result) => {
       if (error) cb(error, null);
@@ -71,6 +92,6 @@ module.exports = {
   insertAccount: insertAccount,
   getAccountsDetails: getAccountsDetails,
   updateAccountBalance: updateAccountBalance,
-  getTotalBalance: getTotalBalance,
+  getBalances: getBalances,
   getFromAddressesDetails: getFromAddressesDetails
 };

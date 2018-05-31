@@ -2,12 +2,16 @@ let mongoose = require('mongoose');
 
 
 let accountSchema = new mongoose.Schema({
-  address: String,
-  privateKey: String,
+  address: {
+    type: String,
+    unique: true
+  },
+  privateKey: {
+    type: String,
+    unique: true
+  },
   generatedOn: Number,
-  balances: {
-    eth: Number
-  }
+  balances: Object
 }, {
     strict: true,
     versionKey: false

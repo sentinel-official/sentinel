@@ -10,38 +10,61 @@ let start = (cb) => {
       console.log(error);
       cb();
     } else {
-      console.log(mixDetails);
       if (mixDetails.length === 0) cb();
       mixDetails.forEach((details, index) => {
-        let { toAddress, destinationAddress, delayInSeconds } = details;
-        let balance = getBalance(details.toAddress, 'main');
+        let { toAddress,
+          destinationAddress,
+          delayInSeconds,
+          coinSymbol,
+          remainingAmount } = details;
+        let balance = getBalance(toAddress, coinSymbol, 'main');
+        // let balance = 1e8;
         if (balance > 0) {
-          accountDbo.updateAccountBalance(toAddress, balance,
+          accountDbo.updateAccountBalance(toAddress, balance, coinSymbol,
             (error, result) => {
               if (error) {
-                console.log(error);
-                if (index === mixDetails.length - 1) cb();
-              }
-              else {
-                scheduleMixTransfer(toAddress, destinationAddress, delayInSeconds, balance,
-                  (error) => {
+                mixerDbo.updateMixStatus(toAddress, 'Error occurred while updating balance.',
+                  (error, result) => {
                     if (error) {
                       console.log(error);
                       if (index === mixDetails.length - 1) cb();
                     } else {
-                      mixerDbo.updateMixStatus(toAddress, 1,
-                        (error, result) => {
-                          if (error) {
-                            console.log(error);
-                            if (index === mixDetails.length - 1) cb();
-                          }
-                          else {
-                            console.log('Success');
-                            if (index === mixDetails.length - 1) cb();
-                          }
-                        });
+                      if (index === mixDetails.length - 1) cb();
                     }
                   });
+              } else {
+                if (!remainingAmount) remainingAmount = balance;
+                if (remainingAmount > 0) {
+                  if (remainingAmount !== balance) delayInSeconds = 15;
+                  scheduleMixTransfer(toAddress, destinationAddress, delayInSeconds, remainingAmount, coinSymbol,
+                    (error) => {
+                      if (error) {
+                        mixerDbo.updateMixStatus(toAddress, 'Error occurred while scheduling mix.',
+                          (error, result) => {
+                            if (error) {
+                              console.log(error);
+                              if (index === mixDetails.length - 1) cb();
+                            } else {
+                              if (index === mixDetails.length - 1) cb();
+                            }
+                          });
+
+                      } else {
+                        mixerDbo.updateMixStatus(toAddress, 'Mix scheduled successfully.',
+                          (error, result) => {
+                            if (error) {
+                              console.log(error);
+                              if (index === mixDetails.length - 1) cb();
+                            }
+                            else {
+                              if (index === mixDetails.length - 1) cb();
+                            }
+                          });
+                      }
+                    });
+                } else {
+                  if (index === mixDetails.length - 1) cb();
+                }
               }
             });
         } else {

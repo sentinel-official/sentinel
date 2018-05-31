@@ -1,15 +1,18 @@
 let schedule = require('node-schedule');
 let { mixTransfer } = require('./mixTransfer');
+let mixerDbo = require('../server/dbos/mixer.dbo');
 
 
-let scheduleMixTransfer = (toAddress, destinationAddress, delayInSeconds, amount, cb) => {
-  let date = new Date(Date.now() + (delayInSeconds * 1000))
+let scheduleMixTransfer = (toAddress, destinationAddress, delayInSeconds, totalAmount, coinSymbol, cb) => {
+  let date = new Date(Date.now() + (delayInSeconds * 1000));
   try {
     schedule.scheduleJob(date, () => {
-      mixTransfer(toAddress, destinationAddress, amount,
-        (error, result) => {
-          if (error) console.log(error);
-          else console.log(result);
+      mixTransfer(toAddress, destinationAddress, totalAmount, coinSymbol,
+        () => {
+          mixerDbo.increaseTries(toAddress,
+            (error, result) => {
+              console.log('-'.repeat(108));
+            });
         });
     });
     cb(null);

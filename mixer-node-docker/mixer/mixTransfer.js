@@ -1,33 +1,51 @@
 let mixerDbo = require('../server/dbos/mixer.dbo');
 let accountDbo = require('../server/dbos/account.dbo');
-let { transferEthers } = require('../ethereum/transactions');
+let { transfer } = require('../ethereum/transactions');
 
 
-let mixTransfer = (toAddress, destinationAddress, totalAmount, cb) => {
-  accountDbo.getFromAddressesDetails([toAddress],
+let mixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) => {
+  accountDbo.getFromAddressesDetails([toAddress], coinSymbol,
     (error, fromAddressesDetails) => {
-      if (error) console.log(error);
-      else {
-        fromAddressesDetails.forEach((fromAddressDetails) => {
-          let amount = Math.min(totalAmount, fromAddressDetails.balances.eth) - (21000 * 20e9);
+      if (error) {
+        mixerDbo.updateMixStatus(toAddress, 'Error occurred while getting from addresses details.',
+          (error, result) => {
+            cb();
+          });
+      } else {
+        if (fromAddressesDetails.length === 0) {
+          mixerDbo.updateMixStatus(toAddress, 'No from addresses details found.',
+            (error, result) => {
+              cb();
+            });
+        }
+        fromAddressesDetails.forEach((fromAddressDetails, index) => {
+          let amount = Math.min(totalAmount, fromAddressDetails.balances[coinSymbol]);
           if (amount > 0) {
-            transferEthers(fromAddressDetails.privateKey, destinationAddress, amount, 'main',
+            transfer(fromAddressDetails.privateKey, destinationAddress, amount, coinSymbol, 'main',
               (error, txHash) => {
-                if (error) console.log(error);
-                else {
-                  totalAmount -= (amount + (21000 * 20e9));
-                  mixerDbo.insertTxHash(toAddress, txHash,
+                if (error) {
+                  mixerDbo.updateTransactionsStatus(toAddress, totalAmount, null, 'Error occurred while initiating transaction.',
                     (error, result) => {
-                      if (error) console.log(error);
-                      else console.log(txHash);
+                      if (index === fromAddressesDetails.length - 1) cb();
+                    });
+                } else {
+                  totalAmount -= amount;
+                  mixerDbo.updateTransactionsStatus(toAddress, totalAmount, txHash, 'Transactions initiated successfully.',
+                    (error, result) => {
+                      if (index === fromAddressesDetails.length - 1) cb();
                     });
                 }
+              });
+          } else {
+            mixerDbo.updateMixStatus(toAddress, 'Minimum amount became zero.',
+              (error, result) => {
+                cb();
               });
           }
         });
       }
     });
-}
+};
 
 module.exports = {
   mixTransfer: mixTransfer

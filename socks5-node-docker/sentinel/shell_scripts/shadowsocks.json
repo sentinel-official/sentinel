@@ -1,0 +1,11 @@
+{
+    "server": "0.0.0.0",
+    "port_password": {
+        "4200": "shadowsocks",
+        "4201": "shadowsocks",
+        "4202": "shadowsocks",
+        "4203": "shadowsocks"
+    },
+    "timeout": 300,
+    "method": "aes-256-cfb"
+}

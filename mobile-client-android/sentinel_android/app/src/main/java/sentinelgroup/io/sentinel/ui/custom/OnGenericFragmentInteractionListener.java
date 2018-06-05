@@ -20,11 +20,13 @@ public interface OnGenericFragmentInteractionListener {
 
     void onHideProgressDialog();
 
-    void onShowErrorDialog(String iError);
+    void onShowSingleActionDialog(String iMessage);
 
-    void onCopyToClipboardClicked(String iCopyString);
+    void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId);
+
+    void onCopyToClipboardClicked(String iCopyString, int iToastTextId);
 
     void onLoadNextFragment(Fragment iNextFragment);
 
-    void onLoadNextActivity(Intent iIntent);
+    void onLoadNextActivity(Intent iIntent, int iReqCode);
 }

@@ -35,6 +35,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.DashboardActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.SendActivity"
@@ -49,7 +50,13 @@
             android:name=".ui.activity.ReceiveActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.VpnDetailsActivity"
+            android:name=".ui.activity.VpnListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.VpnHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.TxHistoryActivity"
             android:screenOrientation="portrait" />
 
         <!-- Declaring components in ics-openVPN -->
@@ -72,6 +79,7 @@
             android:name="de.blinkt.openvpn.LaunchVPN"
             android:excludeFromRecents="true"
             android:label="@string/vpn_launch_title"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.DeviceDefault.Light.Panel"
             tools:ignore="ExportedActivity">
             <intent-filter>
@@ -80,7 +88,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.VpnHistoryActivity"></activity>
     </application>
 
 </manifest>

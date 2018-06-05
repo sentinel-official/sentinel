@@ -114,9 +114,9 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    public void copyToClipboard(String iCopyString) {
+    public void copyToClipboard(String iCopyString, int iToastTextId) {
         if (mListener != null) {
-            mListener.onCopyToClipboardClicked(iCopyString);
+            mListener.onCopyToClipboardClicked(iCopyString, iToastTextId);
         }
     }
 
@@ -150,7 +150,7 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
                 loadNextFragment();
                 break;
             case R.id.ib_copy_key:
-                copyToClipboard(mTvPrivateKey.getText().toString());
+                copyToClipboard(mTvPrivateKey.getText().toString(), R.string.key_copied);
         }
     }
 

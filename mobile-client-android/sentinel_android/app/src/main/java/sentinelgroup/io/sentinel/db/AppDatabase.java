@@ -6,10 +6,21 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.util.Log;
 
+import sentinelgroup.io.sentinel.db.dao.GasEstimateEntryDao;
+import sentinelgroup.io.sentinel.db.dao.PinEntryDao;
+import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
+import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
+import sentinelgroup.io.sentinel.network.model.GasEstimateEntity;
+import sentinelgroup.io.sentinel.network.model.PinEntity;
+import sentinelgroup.io.sentinel.network.model.VpnListEntity;
+import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
+
 /**
  * {@link AppDatabase} database for the application containing tables and their respective DAO.
  */
-@Database(entities = {PinEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {GasEstimateEntity.class, PinEntity.class, VpnListEntity.class, VpnUsageEntity.class},
+        version = 5,
+        exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();
     // For Singleton instantiation
@@ -33,5 +44,11 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     // The associated DAOs for the database
-    public abstract PinEntryDao pinEntryDao();
+    public abstract PinEntryDao getPinEntryDao();
+
+    public abstract VpnListEntryDao getVpnListEntryDao();
+
+    public abstract GasEstimateEntryDao getGasEstimateEntryDao();
+
+    public abstract VpnUsageEntryDao getVpnUsageEntryDao();
 }

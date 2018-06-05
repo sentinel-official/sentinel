@@ -101,7 +101,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                     mViewModel.saveAccount(accountResource.data);
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(accountResource.message);
+                    showSingleActionDialog(accountResource.message);
                 }
             }
         });
@@ -112,7 +112,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                 if (accountResource.data != null && accountResource.status.equals(Status.SUCCESS)) {
                     loadNextFragment(accountResource.data.accountAddress, accountResource.data.privateKey, accountResource.data.keystoreFilePath);
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
-                    showErrorDialog(accountResource.message);
+                    showSingleActionDialog(accountResource.message);
                 }
             }
         });
@@ -127,7 +127,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     private boolean validatePassword(String iPassword, String iConfirmPassword) {
         if (!iPassword.equals(iConfirmPassword)) {
-            showErrorDialog(getString(R.string.password_mismatch));
+            showSingleActionDialog(getString(R.string.password_mismatch));
             return false;
         } else {
             return true;
@@ -169,9 +169,9 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(String iMessage) {
         if (mListener != null) {
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iMessage);
         }
     }
 
@@ -195,6 +195,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onDetach() {
+        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }

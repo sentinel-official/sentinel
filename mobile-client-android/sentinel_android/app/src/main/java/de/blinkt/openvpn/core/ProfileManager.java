@@ -91,7 +91,8 @@ public class ProfileManager {
         if (updateVersion) profile.mVersion += 1;
         ObjectOutputStream vpnFile;
         String filename = profile.getUUID().toString() + ".vp";
-        if (isTemporary) filename = TEMPORARY_PROFILE_FILENAME + ".vp";
+        if (isTemporary)
+            filename = TEMPORARY_PROFILE_FILENAME + ".vp";
         try {
             vpnFile = new ObjectOutputStream(context.openFileOutput(filename, Activity.MODE_PRIVATE));
             vpnFile.writeObject(profile);
@@ -210,6 +211,7 @@ public class ProfileManager {
         profiles.remove(vpnentry);
         saveProfileList(context);
         context.deleteFile(vpnentry + ".vp");
-        if (mLastConnectedVpn == profile) mLastConnectedVpn = null;
+        if (mLastConnectedVpn == profile)
+            mLastConnectedVpn = null;
     }
 }

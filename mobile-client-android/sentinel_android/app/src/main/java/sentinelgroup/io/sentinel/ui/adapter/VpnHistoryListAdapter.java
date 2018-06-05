@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 import sentinelgroup.io.sentinel.R;
@@ -38,15 +39,15 @@ public class VpnHistoryListAdapter extends RecyclerView.Adapter<VpnHistoryListAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Session aSession = mData.get(position);
         holder.mTvVpnPayState.setVisibility(aSession.isPaid ? View.GONE : View.VISIBLE);
-        holder.mTvSessionId.setText(aSession.id);
+        holder.mTvSessionId.setText(aSession.sessionId);
         holder.mTvReceivedData.setText(Converter.getFileSize(aSession.receivedBytes));
         holder.mTvDuration.setText(Converter.getLongDuration(aSession.sessionDuration));
         holder.mTvDateTime.setText(Converter.convertEpochToDate(aSession.timestamp));
         holder.mTvPayValue.setVisibility(aSession.isPaid ? View.GONE : View.VISIBLE);
-        if (aSession.isPaid) {
+        if (!aSession.isPaid) {
             holder.mTvPayValue.setText(mContext.getString(R.string.pay_sents, Converter.getSentString(aSession.amount)));
         }
-        holder.mTvPayValue.setOnClickListener(v -> onPayClick(Converter.getSentString(aSession.amount), aSession.id));
+        holder.mTvPayValue.setOnClickListener(v -> onPayClick(Converter.getSentString(aSession.amount), aSession.sessionId));
         holder.mRootView.setOnClickListener(v -> onRootViewClick(aSession));
     }
 
@@ -73,6 +74,7 @@ public class VpnHistoryListAdapter extends RecyclerView.Adapter<VpnHistoryListAd
     }
 
     public void loadData(List<Session> iData) {
+        Collections.reverse(iData);
         if (mData == null) {
             mData = iData;
             notifyDataSetChanged();
@@ -92,7 +94,7 @@ public class VpnHistoryListAdapter extends RecyclerView.Adapter<VpnHistoryListAd
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                     Session aOldData = mData.get(oldItemPosition);
                     Session aNewData = mData.get(newItemPosition);
-                    return aOldData.id.equals(aNewData.id);
+                    return aOldData.sessionId.equals(aNewData.sessionId);
                 }
 
                 @Override

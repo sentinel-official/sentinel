@@ -1,5 +1,6 @@
 package sentinelgroup.io.sentinel.viewmodel;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 import android.net.Uri;
 
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
+import sentinelgroup.io.sentinel.network.model.GasEstimateEntity;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.PayResponse;
 import sentinelgroup.io.sentinel.repository.SendRepository;
@@ -29,6 +31,7 @@ import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Convert;
+import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.Sentinel;
@@ -37,6 +40,7 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 public class SendViewModel extends ViewModel {
     private final SendRepository mRepository;
     private final AppExecutors mAppExecutors;
+    private final LiveData<GasEstimateEntity> mGasEstimateLiveData;
     private final SingleLiveEvent<Resource<String>> mTxDataCreationLiveEvent;
     private final SingleLiveEvent<Resource<PayResponse>> mTransactionLiveEvent;
 
@@ -44,8 +48,13 @@ public class SendViewModel extends ViewModel {
     SendViewModel(SendRepository iRepository, AppExecutors iAppExecutors) {
         mRepository = iRepository;
         mAppExecutors = iAppExecutors;
+        mGasEstimateLiveData = iRepository.getGasEstimateLiveData(AppConstants.GAS_PRICE_ESTIMATE_URL);
         mTxDataCreationLiveEvent = new SingleLiveEvent<>();
-        mTransactionLiveEvent = mRepository.getTransactionLiveEvent();
+        mTransactionLiveEvent = iRepository.getTransactionLiveEvent();
+    }
+
+    public LiveData<GasEstimateEntity> getGasEstimateLiveData() {
+        return mGasEstimateLiveData;
     }
 
     public SingleLiveEvent<Resource<String>> getTxDataCreationLiveEvent() {
@@ -105,7 +114,7 @@ public class SendViewModel extends ViewModel {
                 // get Value
                 BigInteger aValue = BigInteger.ZERO;
                 // get EncodedFunction
-                BigInteger aTokenValue = getTokenValue(iValue);
+                BigInteger aTokenValue = Converter.getTokenValue(iValue);
                 Sentinel aSentinel = Sentinel.load(aSentinelAddress, aWeb3j, aCredentials, aGasPrice, aGasLimit);
                 String aData = FunctionEncoder.encode(aSentinel.transferSent(iToAddress, aTokenValue));
                 // get TxData
@@ -152,15 +161,11 @@ public class SendViewModel extends ViewModel {
                 .txData(iTxData)
                 .net(aIsTest ? GenericRequestBody.NetUnit.RINKEBY.toString() : GenericRequestBody.NetUnit.MAIN.toString())
                 .fromAddress(aFromAddress)
-                .amount(getTokenValue(iValue))
+                .amount(Converter.getTokenValue(iValue))
                 .sessionId(iSessionId)
                 .build();
         Logger.logDebug("Body", new Gson().toJson(aBody));
         mRepository.makeVpnPayment(aBody);
-    }
-
-    private BigInteger getTokenValue(String iAmount) {
-        return BigInteger.valueOf((long) (Long.parseLong(iAmount) * Math.pow(10, 8)));
     }
 
     public Uri getTransactionStatusUrl(String iTxHash) {

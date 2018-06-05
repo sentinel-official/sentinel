@@ -1,9 +1,11 @@
 package sentinelgroup.io.sentinel.viewmodel;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.VpnUsage;
+import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
 import sentinelgroup.io.sentinel.repository.VpnRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
@@ -12,11 +14,11 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
 public class VpnHistoryViewModel extends ViewModel {
     private final VpnRepository mRepository;
-    private final SingleLiveEvent<Resource<VpnUsage>> mVpnUsageLiveEvent;
+    private final LiveData<VpnUsageEntity> mVpnUsageLiveEvent;
 
     VpnHistoryViewModel(VpnRepository iRepository) {
         mRepository = iRepository;
-        mVpnUsageLiveEvent = iRepository.getVpnUsageLiveEvent(getRequestBody());
+        mVpnUsageLiveEvent = iRepository.getVpnUsageEntity();
     }
 
     private GenericRequestBody getRequestBody() {
@@ -24,11 +26,11 @@ public class VpnHistoryViewModel extends ViewModel {
         return new GenericRequestBody.GenericRequestBodyBuilder().accountAddress(aAccountAddress).build();
     }
 
-    public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent() {
+    public LiveData<VpnUsageEntity> getVpnUsageLiveEvent() {
         return mVpnUsageLiveEvent;
     }
 
-    public void reloadUsageData() {
+    public void reloadVpnUsage() {
         mRepository.getVpnUsageForUser(getRequestBody());
     }
 }

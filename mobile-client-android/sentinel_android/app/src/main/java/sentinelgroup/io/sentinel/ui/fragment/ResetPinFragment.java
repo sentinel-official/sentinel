@@ -174,13 +174,13 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
 
     public void showErrorDialog(String iError) {
         if (mListener != null) {
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iError);
         }
     }
 
     public void loadNextActivity() {
         if (mListener != null) {
-            mListener.onLoadNextActivity(null);
+            mListener.onLoadNextActivity(null, AppConstants.REQ_CODE_NULL);
         }
     }
 
@@ -197,6 +197,7 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
 
     @Override
     public void onDetach() {
+        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }

@@ -1,12 +1,10 @@
 package sentinelgroup.io.sentinel.repository;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.content.res.Resources;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.Balance;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
@@ -16,6 +14,9 @@ import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
+/**
+ * Repository class to handle Wallet related data
+ */
 public class WalletRepository {
     // For Singleton instantiation
     private static final Object LOCK = new Object();
@@ -52,6 +53,7 @@ public class WalletRepository {
 
     // Network call
     private void getAccountBalance(GenericRequestBody iBody) {
+        mBalanceMutableLiveData.postValue(Resource.loading(null));
         mWebService.getAccountBalance(iBody).enqueue(new Callback<Balance>() {
             @Override
             public void onResponse(Call<Balance> call, Response<Balance> response) {

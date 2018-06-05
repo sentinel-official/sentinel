@@ -1,5 +1,6 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,12 @@ public class ResetPinActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        disableTestNetSwitch(true);
+    }
+
+    @Override
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         finish();
@@ -51,23 +58,35 @@ public class ResetPinActivity extends BaseActivity {
     }
 
     @Override
-    public void onShowErrorDialog(String iError) {
-        showSingleActionError(iError);
+    public void onShowSingleActionDialog(String iMessage) {
+        showSingleActionError(iMessage);
     }
 
     @Override
-    public void onCopyToClipboardClicked(String iCopyString) {
-        copyToClipboard(iCopyString);
+    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        // Unimplemented interface method
+    }
+
+    @Override
+    public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
+        copyToClipboard(iCopyString, iToastTextId);
     }
 
     @Override
     public void onLoadNextFragment(Fragment iNextFragment) {
-        // Unused interface method
+        // Unimplemented interface method
     }
 
     @Override
-    public void onLoadNextActivity(Intent iIntent) {
-        setResult(RESULT_OK);
-        finish();
+    public void onLoadNextActivity(Intent iIntent, int iReqCode) {
+        if (iIntent == null) {
+            setResult(RESULT_OK);
+            finish();
+        }
+    }
+
+    @Override
+    public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
+        // Unimplemented interface method
     }
 }

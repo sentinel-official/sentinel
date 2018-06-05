@@ -19,8 +19,9 @@ import com.haipq.android.flagkit.FlagImageView;
 import java.util.Locale;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
-import sentinelgroup.io.sentinel.network.model.VpnList;
+import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -37,7 +38,7 @@ import sentinelgroup.io.sentinel.viewmodel.VpnListViewModelFactory;
 public class VpnDetailsFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_VPN_LIST = "vpn_list";
 
-    private VpnList mVpnListData;
+    private VpnListEntity mVpnListData;
 
     private VpnListViewModel mViewModel;
 
@@ -58,7 +59,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
      * @param iVpnListData Parameter 1.
      * @return A new instance of fragment VpnDetailsFragment.
      */
-    public static VpnDetailsFragment newInstance(VpnList iVpnListData) {
+    public static VpnDetailsFragment newInstance(VpnListEntity iVpnListData) {
         VpnDetailsFragment fragment = new VpnDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_VPN_LIST, iVpnListData);
@@ -70,7 +71,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mVpnListData = (VpnList) getArguments().getSerializable(ARG_VPN_LIST);
+            mVpnListData = (VpnListEntity) getArguments().getSerializable(ARG_VPN_LIST);
         }
     }
 
@@ -104,17 +105,17 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         mTvPrice = iView.findViewById(R.id.tv_price);
         mBtnConnect = iView.findViewById(R.id.btn_connect);
         // set default value
-        mFvFlag.setCountryCode(getCountryCode(mVpnListData.location.country));
-        mTvLocation.setText(getString(R.string.vpn_location, mVpnListData.location.city, mVpnListData.location.country));
-        mTvCity.setText(getString(R.string.city, mVpnListData.location.city));
-        mTvCountry.setText(getString(R.string.country, mVpnListData.location.country));
-        String aBandwidthValue = getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(mVpnListData.netSpeed.download, Convert.DataUnit.MBPS));
+        mFvFlag.setCountryCode(getCountryCode(mVpnListData.getLocation().country));
+        mTvLocation.setText(getString(R.string.vpn_location, mVpnListData.getLocation().city, mVpnListData.getLocation().country));
+        mTvCity.setText(getString(R.string.city, mVpnListData.getLocation().city));
+        mTvCountry.setText(getString(R.string.country, mVpnListData.getLocation().country));
+        String aBandwidthValue = getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(mVpnListData.getNetSpeed().download, Convert.DataUnit.MBPS));
         String aBandwidth = getString(R.string.bandwidth, aBandwidthValue);
         mTvBandwidth.setText(aBandwidth);
-        String aLatencyValue = getString(R.string.vpn_latency_value, mVpnListData.latency);
+        String aLatencyValue = getString(R.string.vpn_latency_value, mVpnListData.getLatency());
         String aLatency = getString(R.string.latency, aLatencyValue);
         mTvLatency.setText(aLatency);
-        String aPriceValue = getString(R.string.vpn_price_value, mVpnListData.pricePerGb);
+        String aPriceValue = getString(R.string.vpn_price_value, mVpnListData.getPricePerGb());
         String aPrice = getString(R.string.price, aPriceValue);
         mTvPrice.setText(aPrice);
         // Set listener
@@ -133,7 +134,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     }
 
     private void initViewModel() {
-        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory();
+        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext());
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
 
         mViewModel.getVpnGetServerCredentials().observe(this, vpnCredentialsResource -> {
@@ -141,20 +142,56 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                 if (vpnCredentialsResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.fetching_server_details));
                 } else if (vpnCredentialsResource.data != null && vpnCredentialsResource.status.equals(Status.SUCCESS)) {
-                    // TODO get the OVPn config file and connect to VPN server & remove hideProgressDialog()
-                    hideProgressDialog();
+                    mViewModel.getVpnConfig(vpnCredentialsResource.data);
                 } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    if (vpnCredentialsResource.message.equals("Initial VPN payment is not done."))
-                        loadNextActivity(constructSendActivityIntent(vpnCredentialsResource.message, true, getString(R.string.init_vpn_pay), null));
+                    if (vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR))
+                        // TODO show double action dialog here
+                        showDoubleActionDialog(getString(R.string.init_vpn_pay_pending_message));
                     else
                         showErrorDialog(vpnCredentialsResource.message);
                 }
             }
         });
+        mViewModel.getVpnConfigLiveEvent().observe(this, vpnConfigResource -> {
+            if (vpnConfigResource != null) {
+                if (vpnConfigResource.status.equals((Status.LOADING))) {
+                    showProgressDialog(true, getString(R.string.fetching_config));
+                } else if (vpnConfigResource.data != null && vpnConfigResource.status.equals(Status.SUCCESS)) {
+                    mViewModel.saveCurrentVpnSessionConfig(vpnConfigResource.data);
+                } else if (vpnConfigResource.message != null && vpnConfigResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    showErrorDialog(vpnConfigResource.message);
+                }
+            }
+        });
+        mViewModel.getVpnConfigSaveLiveEvent().observe(this, vpnConfigSaveResource -> {
+            if (vpnConfigSaveResource != null) {
+                if (vpnConfigSaveResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.saving_config));
+                } else if (vpnConfigSaveResource.data != null && vpnConfigSaveResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    loadNextActivity(null);
+                } else if (vpnConfigSaveResource.message != null && vpnConfigSaveResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    showErrorDialog(vpnConfigSaveResource.message);
+                }
+            }
+        });
+    }
+
+    public Intent constructSendActivityIntent() {
+        Intent aIntent = new Intent(getActivity(), SendActivity.class);
+        Bundle aBundle = new Bundle();
+        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
+        aBundle.putString(AppConstants.EXTRA_AMOUNT, getString(R.string.init_vpn_pay));
+        aIntent.putExtras(aBundle);
+        return aIntent;
     }
 
     // Interface interaction methods
+
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
@@ -175,28 +212,20 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
 
     public void showErrorDialog(String iError) {
         if (mListener != null) {
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iError);
+        }
+    }
+
+    private void showDoubleActionDialog(String iMessage) {
+        if (mListener != null) {
+            mListener.onShowDoubleActionDialog(iMessage, R.string.pay, android.R.string.cancel);
         }
     }
 
     public void loadNextActivity(Intent iIntent) {
         if (mListener != null) {
-            mListener.onLoadNextActivity(iIntent);
+            mListener.onLoadNextActivity(iIntent, AppConstants.REQ_VPN_INIT_PAY);
         }
-    }
-
-    private Intent constructSendActivityIntent(String iError, boolean isInit, String iAmount, String iSessionId) {
-        Intent aIntent = new Intent(getActivity(), SendActivity.class);
-        Bundle aBundle = new Bundle();
-        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
-        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
-        aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
-        if (iError != null)
-            aBundle.putString(AppConstants.EXTRA_INIT_MESSAGE, iError);
-        if (iSessionId != null)
-            aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
-        aIntent.putExtras(aBundle);
-        return aIntent;
     }
 
     @Override
@@ -212,6 +241,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onDetach() {
+        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }
@@ -219,7 +249,10 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_connect) {
-            mViewModel.getVpnServerCredentials(mVpnListData.accountAddress);
+            if (!SentinelApp.isStart)
+                mViewModel.getVpnServerCredentials(mVpnListData.getAccountAddress());
+            else
+                showErrorDialog(getString(R.string.vpn_already_connected));
         }
     }
 }

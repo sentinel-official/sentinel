@@ -13,6 +13,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 import sentinelgroup.io.sentinel.R;
 
 /**
@@ -22,11 +24,12 @@ import sentinelgroup.io.sentinel.R;
  * create an instance of this fragment.
  */
 public class SingleActionDialogFragment extends DialogFragment {
-    private static final String ARG_TITLE = "title";
+    private static final String ARG_TITLE = "title_id";
     private static final String ARG_MESSAGE = "message";
-    private static final String ARG_POSITIVE_OPTION = "positive_option";
+    private static final String ARG_POSITIVE_OPTION = "positive_option_id";
 
-    private String mTitle, mMessage, mPositiveOption;
+    private int mTitleId, mPositiveOptionId;
+    private String mMessage;
 
     public SingleActionDialogFragment() {
         // Required empty public constructor
@@ -36,16 +39,17 @@ public class SingleActionDialogFragment extends DialogFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param iTitle   Parameter 1.
-     * @param iMessage Parameter 2.
+     * @param iTitleId          title id
+     * @param iMessage          message text
+     * @param iPositiveOptionId positive option id
      * @return A new instance of fragment SingleActionDialogFragment.
      */
-    public static SingleActionDialogFragment newInstance(String iTitle, String iMessage, String iPositiveOption) {
+    public static SingleActionDialogFragment newInstance(int iTitleId, String iMessage, int iPositiveOptionId) {
         SingleActionDialogFragment fragment = new SingleActionDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE, iTitle);
+        args.putInt(ARG_TITLE, iTitleId);
         args.putString(ARG_MESSAGE, iMessage);
-        args.putString(ARG_POSITIVE_OPTION, iPositiveOption);
+        args.putInt(ARG_POSITIVE_OPTION, iPositiveOptionId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,14 +58,14 @@ public class SingleActionDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mTitle = getArguments().getString(ARG_TITLE);
+            mTitleId = getArguments().getInt(ARG_TITLE);
             mMessage = getArguments().getString(ARG_MESSAGE);
-            mPositiveOption = getArguments().getString(ARG_POSITIVE_OPTION);
+            mPositiveOptionId = getArguments().getInt(ARG_POSITIVE_OPTION);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_single_action_dialog, container, false);
@@ -85,13 +89,13 @@ public class SingleActionDialogFragment extends DialogFragment {
     }
 
     private void resizeDialog() {
-        WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
+        WindowManager.LayoutParams params = Objects.requireNonNull(getDialog().getWindow()).getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         getDialog().getWindow().setAttributes(params);
     }
 
     private void initDialog() {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        Objects.requireNonNull(getDialog().getWindow()).requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().setCanceledOnTouchOutside(false);
         getDialog().setCancelable(false);
     }
@@ -100,9 +104,9 @@ public class SingleActionDialogFragment extends DialogFragment {
         TextView aTvDialogTitle = iView.findViewById(R.id.tv_dialog_title);
         TextView aTvDialogBody = iView.findViewById(R.id.tv_dialog_body);
         Button aBtnPositive = iView.findViewById(R.id.btn_dialog_positive);
-        aTvDialogTitle.setText(mTitle);
+        aTvDialogTitle.setText(mTitleId);
         aTvDialogBody.setText(mMessage);
-        aBtnPositive.setText(mPositiveOption);
+        aBtnPositive.setText(mPositiveOptionId);
         aBtnPositive.setOnClickListener(v -> getDialog().dismiss());
     }
 }

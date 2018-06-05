@@ -66,6 +66,8 @@ public class CreateAuidViewModel extends ViewModel {
             try {
                 if (!aFile.exists())
                     aFile.createNewFile();
+                if (!aInternalFile.exists())
+                    aInternalFile.createNewFile();
                 FileOutputStream aFileStream = new FileOutputStream(aFile);
                 FileOutputStream aInternalFileStream = new FileOutputStream(aInternalFile);
                 OutputStreamWriter aFileWriter = new OutputStreamWriter(aFileStream);

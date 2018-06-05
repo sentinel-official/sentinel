@@ -1,16 +1,14 @@
 package sentinelgroup.io.sentinel.repository;
 
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.WalletUtils;
-
-import java.io.IOException;
-
-import sentinelgroup.io.sentinel.db.PinEntity;
-import sentinelgroup.io.sentinel.db.PinEntryDao;
+import sentinelgroup.io.sentinel.network.model.PinEntity;
+import sentinelgroup.io.sentinel.db.dao.PinEntryDao;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
+/**
+ * Repository class to handle PIN related data
+ */
 public class PinRepository {
     // For Singleton instantiation
     private static final Object LOCK = new Object();

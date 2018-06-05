@@ -3,17 +3,12 @@ package sentinelgroup.io.sentinel.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
-import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.ForgotPinFragment;
 
-public class ForgotPinActivity extends SimpleBaseActivity{
+public class ForgotPinActivity extends SimpleBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +42,7 @@ public class ForgotPinActivity extends SimpleBaseActivity{
 
     @Override
     public void onShowProgressDialog(boolean isHalfDim, String iMessage) {
-        showProgressDialog(isHalfDim,iMessage);
+        showProgressDialog(isHalfDim, iMessage);
     }
 
     @Override
@@ -56,13 +51,18 @@ public class ForgotPinActivity extends SimpleBaseActivity{
     }
 
     @Override
-    public void onShowErrorDialog(String iError) {
-        showSingleActionError(iError);
+    public void onShowSingleActionDialog(String iMessage) {
+        showSingleActionError(iMessage);
     }
 
     @Override
-    public void onCopyToClipboardClicked(String iCopyString) {
-        copyToClipboard(iCopyString);
+    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        // Unimplemented interface method
+    }
+
+    @Override
+    public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
+        copyToClipboard(iCopyString, iToastTextId);
     }
 
     @Override
@@ -71,8 +71,10 @@ public class ForgotPinActivity extends SimpleBaseActivity{
     }
 
     @Override
-    public void onLoadNextActivity(Intent iIntent) {
-        setResult(RESULT_OK);
-        finish();
+    public void onLoadNextActivity(Intent iIntent, int iReqCode) {
+        if (iIntent == null) {
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 }

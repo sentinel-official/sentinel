@@ -1,4 +1,4 @@
-package sentinelgroup.io.sentinel.db;
+package sentinelgroup.io.sentinel.network.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
@@ -6,8 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "pin_entity", indices = {@Index(value = {"accountAddress"}, unique = true)})
 public class PinEntity {
-    @PrimaryKey(autoGenerate = true)
-    private long id;
+    @PrimaryKey
+    private long id = 1;
     private String accountAddress;
     private int appPin;
 

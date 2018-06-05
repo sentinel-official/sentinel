@@ -53,6 +53,7 @@ import de.blinkt.openvpn.core.VpnStatus.StateListener;
 import sentinelgroup.io.sentinel.BuildConfig;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.activity.DashboardActivity;
+import sentinelgroup.io.sentinel.util.AppConstants;
 
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_CONNECTED;
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_WAITING_FOR_USER_INPUT;
@@ -266,7 +267,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             default:
                 return R.drawable.ic_stat_vpn;
         }*/
-        return R.drawable.ic_app_icon;
+        return R.drawable.ic_notification;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -295,15 +296,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     }
 
     PendingIntent getGraphPendingIntent() {
-        // Let the configure Button show the Log
-        // Editor : I'm not sure about this but
-        // TODO : Check what the fuck is this.
         Class activityClass = DashboardActivity.class;
         if (mNotificationActivityClass != null) {
             activityClass = mNotificationActivityClass;
         }
         Intent intent = new Intent(getBaseContext(), activityClass);
-        intent.putExtra("PAGE", "graph");
+        intent.putExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY, AppConstants.HOME);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         PendingIntent startLW = PendingIntent.getActivity(this, 0, intent, 0);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);

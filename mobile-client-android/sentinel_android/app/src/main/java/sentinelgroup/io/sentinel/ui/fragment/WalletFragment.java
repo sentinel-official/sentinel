@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
@@ -100,10 +99,14 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
 
         mViewModel.getBalanceLiveData().observe(this, balanceResource -> {
             if (balanceResource != null) {
-                if (balanceResource.data != null && balanceResource.status.equals(Status.SUCCESS)) {
+                if (balanceResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true,getString(R.string.fetching_balance));
+                } else if (balanceResource.data != null && balanceResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
                     setBalanceValue(balanceResource.data);
                 } else if (balanceResource.status.equals(Status.ERROR) && balanceResource.message != null) {
-                    Toast.makeText(getContext(), balanceResource.message, Toast.LENGTH_SHORT).show();
+                    hideProgressDialog();
+                    showErrorDialog(balanceResource.message);
                 }
             }
         });
@@ -132,21 +135,33 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
     }
 
     // Interface interaction methods
+    public void showProgressDialog(boolean isHalfDim, String iMessage) {
+        if (mListener != null) {
+            mListener.onShowProgressDialog(isHalfDim, iMessage);
+        }
+    }
+
+    public void hideProgressDialog() {
+        if (mListener != null) {
+            mListener.onHideProgressDialog();
+        }
+    }
+
     public void showErrorDialog(String iError) {
         if (mListener != null) {
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iError);
         }
     }
 
-    public void copyToClipboard(String iCopyString) {
+    public void copyToClipboard(String iCopyString, int iToastTextId) {
         if (mListener != null) {
-            mListener.onCopyToClipboardClicked(iCopyString);
+            mListener.onCopyToClipboardClicked(iCopyString, iToastTextId);
         }
     }
 
-    public void loadNextActivity(Intent iIntent) {
+    public void loadNextActivity(Intent iIntent, int iReqCode) {
         if (mListener != null) {
-            mListener.onLoadNextActivity(iIntent);
+            mListener.onLoadNextActivity(iIntent, iReqCode);
         }
     }
 
@@ -163,6 +178,7 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onDetach() {
+        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }
@@ -172,15 +188,15 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.ib_copy_address:
                 if (!mTvAddress.getText().toString().isEmpty())
-                    copyToClipboard(mTvAddress.getText().toString());
+                    copyToClipboard(mTvAddress.getText().toString(), R.string.address_copied);
                 break;
 
             case R.id.btn_send:
-                loadNextActivity(new Intent(getActivity(),SendActivity.class));
+                loadNextActivity(new Intent(getActivity(), SendActivity.class), AppConstants.REQ_CODE_NULL);
                 break;
 
             case R.id.btn_receive:
-                loadNextActivity(new Intent(getActivity(),ReceiveActivity.class));
+                loadNextActivity(new Intent(getActivity(), ReceiveActivity.class), AppConstants.REQ_CODE_NULL);
                 break;
         }
     }

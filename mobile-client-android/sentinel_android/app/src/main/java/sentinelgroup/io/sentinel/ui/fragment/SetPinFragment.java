@@ -168,13 +168,13 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
 
     public void showErrorDialog(String iError) {
         if (mListener != null) {
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iError);
         }
     }
 
     public void loadNextActivity(Intent iIntent) {
         if (mListener != null) {
-            mListener.onLoadNextActivity(iIntent);
+            mListener.onLoadNextActivity(iIntent, AppConstants.REQ_CODE_NULL);
         }
     }
 
@@ -191,6 +191,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Pi
 
     @Override
     public void onDetach() {
+        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }

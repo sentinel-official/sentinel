@@ -1,10 +1,17 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -19,20 +26,36 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.blinkt.openvpn.LaunchVPN;
+import de.blinkt.openvpn.VpnProfile;
+import de.blinkt.openvpn.core.ConnectionStatus;
+import de.blinkt.openvpn.core.IOpenVPNServiceInternal;
+import de.blinkt.openvpn.core.OpenVPNService;
+import de.blinkt.openvpn.core.ProfileManager;
+import de.blinkt.openvpn.core.VpnStatus;
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
+import sentinelgroup.io.sentinel.ui.custom.ProfileAsync;
+import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
+import sentinelgroup.io.sentinel.ui.fragment.VpnConnectedFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
 import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
-import static sentinelgroup.io.sentinel.util.AppConstants.ALERT_DIALOG_TAG;
+import static sentinelgroup.io.sentinel.util.AppConstants.DOUBLE_ACTION_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
+import static sentinelgroup.io.sentinel.util.AppConstants.SINGLE_ACTION_DIALOG_TAG;
 
 public class DashboardActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
-        OnGenericFragmentInteractionListener {
+        OnGenericFragmentInteractionListener, OnVpnConnectionListener, VpnStatus.StateListener, DoubleActionDialogFragment.OnDialogActionListener {
+
+    private String mIntentExtra;
+    private boolean mHasActivityResult;
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -40,20 +63,55 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private TextView mSwitchState;
     private ProgressDialogFragment mPrgDialog;
     private MenuItem mMenuVpn, mMenuWallet;
+    private ProfileAsync profileAsync;
+    private IOpenVPNServiceInternal mService;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mService = IOpenVPNServiceInternal.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mService = null;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         initView();
-        loadWalletFragment();
+        loadVpnFragment();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // setup testnet switch
-        setupTestNetSwitch();
+        // setup VPN listeners & services
+        VpnStatus.addStateListener(this);
+        Intent intent = new Intent(this, OpenVPNService.class);
+        intent.setAction(OpenVPNService.START_SERVICE);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        // check intent
+        if (getIntent().getExtras() != null) {
+            mIntentExtra = getIntent().getStringExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY);
+        }
+        if (mIntentExtra != null && mIntentExtra.equals(AppConstants.HOME)) {
+            loadVpnFragment();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindService(mConnection);
+    }
+
+    @Override
+    protected void onStop() {
+        VpnStatus.removeStateListener(this);
+        super.onStop();
     }
 
     private void initView() {
@@ -92,16 +150,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
-    private void setupTestNetSwitch() {
-        boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-        mSwitchNet.setChecked(isActive);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
-    }
-
     private void handleNavigationItemClick(int itemItemId) {
         switch (itemItemId) {
             case R.id.nav_tx_history:
-//                startActivityForResult(new Intent(this, TxHistoryActivity.class), AppConstants.REQ_TX_HISTORY);
+                startActivityForResult(new Intent(this, TxHistoryActivity.class), AppConstants.REQ_TX_HISTORY);
                 break;
             case R.id.nav_vpn_history:
                 startActivityForResult(new Intent(this, VpnHistoryActivity.class), AppConstants.REQ_VPN_HISTORY);
@@ -139,7 +191,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 mPrgDialog.setLoadingMessage(iMessage);
                 mPrgDialog.show(getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
             } else {
-                mPrgDialog.setLoadingMessage(iMessage);
+                mPrgDialog.updateLoadingMessage(iMessage);
             }
         } else {
             if (aFragment != null)
@@ -147,17 +199,33 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
-    private void showSingleActionError(String iMessage) {
-        showSingleActionError(null, iMessage, null);
+    protected void showSingleActionError(String iMessage) {
+        showSingleActionError(-1, iMessage, -1);
     }
 
-    private void showSingleActionError(String iTitle, String iMessage, String iActionText) {
-        String aTitle = iTitle != null ? iTitle : getString(R.string.please_note);
-        String aActionText = iActionText != null ? iActionText : getString(android.R.string.ok);
-
-        SingleActionDialogFragment.newInstance(aTitle, iMessage, aActionText)
-                .show(getSupportFragmentManager(), ALERT_DIALOG_TAG);
+    protected void showSingleActionError(int iTitleId, String iMessage, int iPositiveOptionId) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(SINGLE_ACTION_DIALOG_TAG);
+        int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
+        int aPositiveOptionText = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.ok;
+        if (aFragment == null)
+            SingleActionDialogFragment.newInstance(aTitleId, iMessage, aPositiveOptionText)
+                    .show(getSupportFragmentManager(), SINGLE_ACTION_DIALOG_TAG);
     }
+
+    protected void showDoubleActionError(String iMessage) {
+        showDoubleActionError(-1, iMessage, -1, -1);
+    }
+
+    protected void showDoubleActionError(int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);
+        int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
+        int aPositiveOptionId = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.ok;
+        int aNegativeOptionId = iNegativeOptionId != -1 ? iNegativeOptionId : android.R.string.cancel;
+        if (aFragment == null)
+            DoubleActionDialogFragment.newInstance(aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
+                    .show(getSupportFragmentManager(), DOUBLE_ACTION_DIALOG_TAG);
+    }
+
 
     private void loadFragment(Fragment iFragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
@@ -174,7 +242,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        toggleItemState(item);
+        toggleItemState(item.getItemId());
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
@@ -195,33 +263,85 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
-    private void toggleItemState(MenuItem item) {
-        if (item.getItemId() == R.id.action_vpn) {
+    private void toggleItemState(int iItemId) {
+        if (iItemId == R.id.action_vpn) {
             mMenuVpn.setIcon(R.drawable.menu_vpn_selected);
             mMenuWallet.setIcon(R.drawable.menu_wallet_unselected);
-        } else if (item.getItemId() == R.id.action_wallet) {
+        } else if (iItemId == R.id.action_wallet) {
             mMenuVpn.setIcon(R.drawable.menu_vpn_unselected);
             mMenuWallet.setIcon(R.drawable.menu_wallet_selected);
         }
     }
 
-    protected void copyToClipboard(String iCopyString) {
+    private void activateTestNetForVpn() {
+        mSwitchNet.setChecked(true);
+        mSwitchNet.setEnabled(false);
+        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, mSwitchNet.isChecked());
+    }
+
+    private void copyToClipboard(String iCopyString, int iToastTextId) {
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
             ClipData clip = ClipData.newPlainText(getString(R.string.app_name), iCopyString);
-            Toast.makeText(this, R.string.address_copied, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, iToastTextId, Toast.LENGTH_SHORT).show();
             clipboard.setPrimaryClip(clip);
         }
     }
 
     private void loadVpnFragment() {
+        activateTestNetForVpn();
         loadFragment(VpnSelectFragment.newInstance());
     }
 
     private void loadWalletFragment() {
+        mSwitchNet.setEnabled(true);
         loadFragment(WalletFragment.newInstance());
     }
 
+    void setupProfile(String iPath) {
+        if (!SentinelApp.isStart) {
+            profileAsync = new ProfileAsync(this, iPath, new ProfileAsync.OnProfileLoadListener() {
+                @Override
+                public void onProfileLoadSuccess() {
+                    startVPN();
+                }
+
+                @Override
+                public void onProfileLoadFailed(String msg) {
+                    Toast.makeText(DashboardActivity.this, "Init Fail" + msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+            profileAsync.execute();
+        }
+    }
+
+    private void startVPN() {
+        try {
+            ProfileManager pm = ProfileManager.getInstance(this);
+            VpnProfile profile = pm.getProfileByName(Build.MODEL);//
+            startVPNConnection(profile);
+        } catch (Exception ex) {
+            SentinelApp.isStart = false;
+        }
+    }
+
+    private void startVPNConnection(VpnProfile profile) {
+        Intent intent = new Intent(getApplicationContext(), LaunchVPN.class);
+        intent.putExtra(LaunchVPN.EXTRA_KEY, profile.getUUID().toString());
+        intent.setAction(Intent.ACTION_MAIN);
+        startActivity(intent);
+    }
+
+    private void stopVPNConnection() {
+        ProfileManager.setConntectedVpnProfileDisconnected(this);
+        if (mService != null) {
+            try {
+                mService.stopVPN(false);
+            } catch (RemoteException e) {
+                VpnStatus.logException(e);
+            }
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -235,6 +355,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
         mSwitchState.setText(getString(R.string.test_net_state, getString(isChecked ? R.string.active : R.string.deactive)));
+
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (aFragment instanceof WalletFragment) {
             ((WalletFragment) aFragment).updateBalance();
@@ -244,10 +365,32 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         switch (requestCode) {
+            case AppConstants.REQ_VPN_HISTORY:
+                if (resultCode == RESULT_OK) {
+                    if (!(aFragment instanceof WalletFragment))
+                        loadVpnFragment();
+                }
+                break;
             case AppConstants.REQ_RESET_PIN:
                 if (resultCode == RESULT_OK) {
                     Toast.makeText(this, R.string.reset_pin_success, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case AppConstants.REQ_VPN_CONNECT:
+                if (resultCode == RESULT_OK) {
+                    mHasActivityResult = true;
+                }
+                break;
+            case AppConstants.REQ_VPN_PAY:
+                if (resultCode == RESULT_OK) {
+                    loadVpnFragment();
+                }
+                break;
+            case AppConstants.REQ_VPN_INIT_PAY:
+                if (resultCode == RESULT_OK) {
+                    showSingleActionError(getString(R.string.init_vpn_pay_success_message));
                 }
                 break;
         }
@@ -268,26 +411,89 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     @Override
-    public void onShowErrorDialog(String iError) {
-        if (iError.equals(getString(R.string.free_token_requested)))
-            showSingleActionError(getString(R.string.yay), iError, getString(R.string.thanks));
+    public void onShowSingleActionDialog(String iMessage) {
+        if (iMessage.equals(getString(R.string.free_token_requested)))
+            showSingleActionError(R.string.yay, iMessage, R.string.thanks);
         else
-            showSingleActionError(iError);
+            showSingleActionError(iMessage);
     }
 
     @Override
-    public void onCopyToClipboardClicked(String iCopyString) {
-        copyToClipboard(iCopyString);
+    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        showDoubleActionError(R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
+    }
+
+    @Override
+    public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
+        copyToClipboard(iCopyString, iToastTextId);
     }
 
     @Override
     public void onLoadNextFragment(Fragment iNextFragment) {
-
+        loadFragment(iNextFragment);
     }
 
     @Override
-    public void onLoadNextActivity(Intent iIntent) {
+    public void onLoadNextActivity(Intent iIntent, int iReqCode) {
         if (iIntent != null)
-            startActivity(iIntent);
+            if (iReqCode != AppConstants.REQ_CODE_NULL)
+                startActivityForResult(iIntent, iReqCode);
+            else
+                startActivity(iIntent);
+    }
+
+    @Override
+    public void onVpnConnectionInitiated(String iVpnConfigFilePath) {
+        loadFragment(VpnConnectedFragment.newInstance());
+        setupProfile(iVpnConfigFilePath);
+    }
+
+    @Override
+    public void onVpnDisconnectionInitiated() {
+        SentinelApp.isStart = true;
+        stopVPNConnection();
+    }
+
+    @Override
+    public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        if (isPositiveButton) {
+            if (aFragment instanceof VpnSelectFragment)
+                ((VpnSelectFragment) aFragment).makeInitPayment();
+        }
+        iDialog.dismiss();
+    }
+
+    @Override
+    public void updateState(String state, String logMessage, int localizedResId, ConnectionStatus level) {
+        runOnUiThread(() -> {
+            Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+
+            if (state.equals("CONNECTED")) {
+                SentinelApp.isStart = true;
+            }
+
+            if (state.equals("NOPROCESS")) {
+                AppPreferences.getInstance().saveString(AppConstants.PREFS_SESSION_NAME, "");
+                if (!(aFragment instanceof WalletFragment) && !mHasActivityResult && SentinelApp.isStart) {
+                    loadVpnFragment();
+                }
+                SentinelApp.isStart = false;
+            }
+
+            if (state.equals("AUTH_FAILED")) {
+                SentinelApp.isStart = false;
+                Toast.makeText(getApplicationContext(), "Wrong Username or Password!", Toast.LENGTH_SHORT).show();
+            }
+
+            if (mHasActivityResult) {
+                onVpnConnectionInitiated(AppPreferences.getInstance().getString(AppConstants.PREFS_CONFIG_PATH));
+                mHasActivityResult = false;
+            }
+        });
+    }
+
+    @Override
+    public void setConnectedVPN(String uuid) {
     }
 }

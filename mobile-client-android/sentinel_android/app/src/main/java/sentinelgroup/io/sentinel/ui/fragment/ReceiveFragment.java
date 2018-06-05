@@ -110,13 +110,13 @@ public class ReceiveFragment extends Fragment implements View.OnClickListener {
 
     public void showErrorDialog(String iError) {
         if (mListener != null) {
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iError);
         }
     }
 
-    public void copyToClipboard(String iCopyString) {
+    public void copyToClipboard(String iCopyString, int iToastTextId) {
         if (mListener != null) {
-            mListener.onCopyToClipboardClicked(iCopyString);
+            mListener.onCopyToClipboardClicked(iCopyString, iToastTextId);
         }
     }
 
@@ -142,7 +142,7 @@ public class ReceiveFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.ib_copy_address:
                 if (!mTvAddress.getText().toString().isEmpty())
-                    copyToClipboard(mTvAddress.getText().toString());
+                    copyToClipboard(mTvAddress.getText().toString(), R.string.address_copied);
                 break;
         }
     }

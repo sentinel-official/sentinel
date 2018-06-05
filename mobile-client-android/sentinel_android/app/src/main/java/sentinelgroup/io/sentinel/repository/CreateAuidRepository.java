@@ -15,7 +15,7 @@ import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
 /**
- * Repository that handles Account objects
+ * Repository class to handle Account related data
  */
 public class CreateAuidRepository {
     // For Singleton instantiation

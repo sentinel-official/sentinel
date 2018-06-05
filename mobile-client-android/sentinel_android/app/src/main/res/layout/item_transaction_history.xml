@@ -31,7 +31,7 @@
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:id="@+id/tv_location"
+            android:id="@+id/tv_source"
             style="@style/CustomTextAppearance.Text12"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -39,6 +39,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Node Earnings"
+            app:layout_constraintBottom_toTopOf="@+id/tv_date_time"
             app:layout_constraintEnd_toStartOf="@+id/tv_source_earnings"
             app:layout_constraintStart_toEndOf="@+id/iv_source"
             app:layout_constraintTop_toTopOf="parent" />
@@ -52,10 +53,10 @@
             android:layout_marginRight="8dp"
             android:gravity="end"
             android:text="+1,743"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_source"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_location"
-            app:layout_constraintTop_toTopOf="@+id/tv_location" />
+            app:layout_constraintStart_toEndOf="@+id/tv_source"
+            app:layout_constraintTop_toTopOf="@+id/tv_source" />
 
         <TextView
             android:id="@+id/tv_date_time"
@@ -69,7 +70,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_tx_status"
             app:layout_constraintStart_toEndOf="@+id/iv_source"
-            app:layout_constraintTop_toBottomOf="@+id/tv_location" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_source" />
 
         <TextView
             android:id="@+id/tv_tx_status"

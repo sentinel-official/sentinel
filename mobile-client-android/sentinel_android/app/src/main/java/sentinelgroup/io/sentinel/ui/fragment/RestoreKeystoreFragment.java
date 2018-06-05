@@ -203,7 +203,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     public void showErrorDialog(String iError) {
         if (mListener != null) {
             mTetPassword.setText("");
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iError);
         }
     }
 
@@ -226,6 +226,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
     @Override
     public void onDetach() {
+        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }

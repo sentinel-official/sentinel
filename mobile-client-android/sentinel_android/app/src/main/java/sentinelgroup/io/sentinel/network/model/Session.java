@@ -1,13 +1,12 @@
 package sentinelgroup.io.sentinel.network.model;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Index;
-import android.arch.persistence.room.PrimaryKey;
-
 import com.google.gson.annotations.SerializedName;
 
-public class Session {
-    public String id;
+import java.io.Serializable;
+
+public class Session implements Serializable {
+    @SerializedName("id")
+    public String sessionId;
     @SerializedName("account_addr")
     public String accountAddress;
     @SerializedName("received_bytes")
@@ -18,5 +17,4 @@ public class Session {
     public long timestamp;
     @SerializedName("is_paid")
     public boolean isPaid;
-    public String sessionId;
 }

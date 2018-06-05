@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/colorDrawerBackground"
-        android:fitsSystemWindows="true"
+        android:fitsSystemWindows="false"
         android:theme="@style/DrawerItemTheme"
         app:headerLayout="@layout/layout_header"
         app:itemBackground="@drawable/selector_drawer_item_background"

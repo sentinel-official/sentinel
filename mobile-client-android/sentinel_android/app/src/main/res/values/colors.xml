@@ -25,4 +25,5 @@
     <color name="colorCardShadow">#3D000000</color>
     <!-- Ripple Mask -->
     <color name="colorRippleMask">#33000000</color>
+    <color name="colorRippleMaskLight">#66FFFFFF</color>
 </resources>

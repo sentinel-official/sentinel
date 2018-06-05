@@ -31,7 +31,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">View VPNs</string>
     <string name="make_payment">Make Payment</string>
-    <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN</string>
+    <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN.\nIf you have already paid, Please wait for a couple of mins, or you can report the payment</string>
     <string name="view_list">View List</string>
     <string name="view_map">View Map</string>
     <string name="connect_to_vpn">Connect to VPN</string>
@@ -57,15 +57,12 @@
     <string name="session_id">Session ID</string>
     <string name="received_data">Received Data</string>
     <string name="duration">Duration</string>
-    <string name="report">Report</string>
+    <string name="report">Report Payment</string>
     <string name="save">Save</string>
     <string name="reset">Reset</string>
     <string name="enter_old_pin">Enter Old PIN</string>
     <string name="enter_new_pin">Enter New PIN</string>
     <string name="re_enter_new_pin">Re-Enter New PIN</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_auid">Create User ID</string>
     <string name="no_internet">No internet connectivity. Please try again.</string>
     <string name="password_mismatch">Password and Confirm Password did not match</string>
@@ -74,6 +71,7 @@
     <string name="storage_permission_denied">Storage permission not granted.</string>
     <string name="key_copied">Private Key copied to clipboard</string>
     <string name="address_copied">Address copied to clipboard</string>
+    <string name="hash_copied">Transaction Hash copied to clipboard</string>
     <string name="set_app_pin">Set App PIN</string>
     <string name="pin_mismatch">Pin and Confirm Pin did not match</string>
     <string name="invalid_pin">Invalid PIN. Please try again.</string>
@@ -94,14 +92,15 @@
     <string name="reset_pin_success">PIN reset successful</string>
     <string name="wrong_old_pin">App PIN entered is wrong</string>
     <string name="gwei">%d Gwei</string>
-    <string name="_20_gwei">20 Gwei</string>
     <string name="copy_address">Copy Address</string>
     <string name="receive">Receive</string>
     <string name="payment_pending">Payment pending for this session</string>
+    <string name="sents">%1s SENTs</string>
+    <string name="eths">%1s ETH</string>
     <string name="pay_sents">Pay %1s SENTs</string>
     <string name="vpn_location">%1s, %2s</string>
     <string name="vpn_bandwidth">Bandwidth \t %s</string>
-    <string name="vpn_price">Price(SENTs/GB) \t %s</string>
+    <string name="vpn_price">Price(SENTs / GB) \t %s</string>
     <string name="vpn_latency">Latency \t %s</string>
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_price_value">%.0f SENTs</string>
@@ -119,6 +118,9 @@
     <string name="empty_vpn_list">All the servers are occupied. Please try later.</string>
     <string name="loading_vpn_list">Loading the VPN list…</string>
     <string name="init_vpn_pay">100</string>
+    <string name="init_vpn_pay_title">Initial Payment Reminder</string>
+    <string name="init_vpn_pay_success_message">Payment is being processed, please wait a couple of minutes before you connect to the VPN</string>
+    <string name="init_vpn_pay_pending_message">Inorder to use VPN, you need to pay 100 SENTs for the first time.\n\nIf you have already paid, please wait a couple of minutes before you connect to the VPN.</string>
     <string name="transaction_placed">Transaction placed…</string>
     <string name="check_status">Check status</string>
     <string name="select_vpn">Select VPN</string>
@@ -127,9 +129,19 @@
     <string name="country">Country: %1s</string>
     <string name="bandwidth">Bandwidth: %1s</string>
     <string name="latency">Latency: %1s</string>
-    <string name="price">Price (Price( SENTs/GB): %1s</string>
+    <string name="price">Price(SENTs / GB): %1s</string>
     <string name="coming_soon">Coming soon…</string>
-
+    <string name="fetching_config">Fetching VPN configurations…</string>
+    <string name="saving_config">Saving VPN configurations…</string>
+    <string name="vpn_requires_testnet">Activate Testnet to use VPN services.</string>
+    <string name="download_speed">Download Speed</string>
+    <string name="data_used">Data Used</string>
+    <string name="upload_speed">Upload Speed</string>
+    <string name="vpn_status">VPN Status: %1s</string>ring>
+    <string name="duration_value">Duration %1s</string>
+    <string name="vpn_already_connected">You have already connected to a VPN server. Please disconnect from it before connecting to a new VPN server.</string>
+    <string name="pending_payment_desc">Pending payment for previous session</string>
+    <string name="amount_owed">Amount Owed</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>
@@ -251,4 +263,27 @@
     <string name="private_key_password">Private Key Password</string>
     <string name="error_rsa_sign">Error signing with Android keystore key %1$s: %2$s</string>
 
+    <string name="estimate_low"><![CDATA[Below recommended level]]></string>
+    <string name="estimate_normal"><![CDATA[Estimate: Normal (< 5 mins to confirm)]]></string>
+    <string name="estimate_fast"><![CDATA[Estimate: Fast (< 2 mins to confirm)]]></string>
+    <string name="estimate_fastest"><![CDATA[Estimate: Fastest (1–2 Blocks to confirm)]]></string>
+    <string name="session_cost">Session Cost</string>
+    <string name="vpn_session_details">VPN Session Details</string>
+    <string name="reporting_payment">Reporting VPN payment…</string>
+    <string name="fetching_balance">Fetching your balance…</string>
+    <string name="pay">Pay</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loading_tx_history">Loading Transaction History…</string>
+    <string name="send_eth">Send ETH</string>
+    <string name="receive_eth">Receive ETH</string>
+    <string name="earning_positive">+ %1s</string>
+    <string name="earning_neagtive">- %1s</string>
+    <string name="status_success">Status: Success</string>
+    <string name="status_fail">Status: Fail</string>
+    <string name="send_sent">Send SENT</string>
+    <string name="receive_sent">Receive SENT</string>
+    <string name="tx_details">Transaction Details</string>
+    <string name="view_on_etherscan">View on Etherscan</string>
 </resources>

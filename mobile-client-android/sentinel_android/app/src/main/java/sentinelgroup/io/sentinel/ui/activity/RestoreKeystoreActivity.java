@@ -57,13 +57,18 @@ public class RestoreKeystoreActivity extends SimpleBaseActivity {
     }
 
     @Override
-    public void onShowErrorDialog(String iError) {
-        showSingleActionError(iError);
+    public void onShowSingleActionDialog(String iMessage) {
+        showSingleActionError(iMessage);
     }
 
     @Override
-    public void onCopyToClipboardClicked(String iCopyString) {
-        copyToClipboard(iCopyString);
+    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        // Unimplemented interface method
+    }
+
+    @Override
+    public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
+        copyToClipboard(iCopyString, iToastTextId);
     }
 
     @Override
@@ -72,7 +77,7 @@ public class RestoreKeystoreActivity extends SimpleBaseActivity {
     }
 
     @Override
-    public void onLoadNextActivity(Intent iIntent) {
+    public void onLoadNextActivity(Intent iIntent, int iReqCode) {
         if (iIntent != null) {
             startActivity(iIntent);
             finish();

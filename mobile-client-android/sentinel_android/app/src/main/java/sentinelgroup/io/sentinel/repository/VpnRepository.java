@@ -1,53 +1,113 @@
 package sentinelgroup.io.sentinel.repository;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.content.res.Resources;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
+import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.network.model.ReportPay;
 import sentinelgroup.io.sentinel.network.model.Vpn;
+import sentinelgroup.io.sentinel.network.model.VpnConfig;
 import sentinelgroup.io.sentinel.network.model.VpnCredentials;
+import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.network.model.VpnUsage;
+import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
+/**
+ * Repository class to handle VPN related data
+ */
 public class VpnRepository {
     // For Singleton instantiation
     private static final Object LOCK = new Object();
     private static VpnRepository sInstance;
+    private final VpnListEntryDao mListDao;
+    private final VpnUsageEntryDao mUsageDao;
     private final WebService mWebService;
-    private final MutableLiveData<Resource<Vpn>> mVpnListMutableLiveData;
-    private final SingleLiveEvent<Resource<VpnCredentials>> mVpnGetServerCredentialsLiveEvent;
+    private final AppExecutors mAppExecutors;
+    private final MutableLiveData<List<VpnListEntity>> mVpnListMutableLiveData;
+    private final MutableLiveData<VpnUsageEntity> mVpnUsageMutableLiveData;
+    private final SingleLiveEvent<String> mVpnListErrorLiveEvent;
     private final SingleLiveEvent<Resource<VpnUsage>> mVpnUsageLiveEvent;
+    private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
+    private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
+    private final SingleLiveEvent<Resource<ReportPay>> mReportPaymentLiveEvent;
 
-    private VpnRepository(WebService iWebService) {
+    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, WebService iWebService, AppExecutors iAppExecutors) {
+        mListDao = iListDao;
+        mUsageDao = iUsageDao;
         mWebService = iWebService;
+        mAppExecutors = iAppExecutors;
         mVpnListMutableLiveData = new MutableLiveData<>();
-        mVpnGetServerCredentialsLiveEvent = new SingleLiveEvent<>();
+        mVpnUsageMutableLiveData = new MutableLiveData<>();
+        mVpnListErrorLiveEvent = new SingleLiveEvent<>();
         mVpnUsageLiveEvent = new SingleLiveEvent<>();
+        mVpnServerCredentialsLiveEvent = new SingleLiveEvent<>();
+        mVpnConfigLiveEvent = new SingleLiveEvent<>();
+        mReportPaymentLiveEvent = new SingleLiveEvent<>();
+
+        LiveData<List<VpnListEntity>> aVpnListServerData = getVpnListMutableLiveData();
+        aVpnListServerData.observeForever(vpnList -> {
+            mAppExecutors.diskIO().execute(() -> {
+                if (vpnList != null && vpnList.size() > 0) {
+                    mListDao.insertVpnListEntity(vpnList);
+                }
+            });
+        });
+
+        LiveData<VpnUsageEntity> aVpnUsageServerData = getVpnUsageMutableLiveData();
+        aVpnUsageServerData.observeForever(vpnUsage -> {
+            mAppExecutors.diskIO().execute(() -> {
+                if (vpnUsage != null) {
+                    mUsageDao.insertVpnUsageEntity(vpnUsage);
+                }
+            });
+        });
     }
 
-    public static VpnRepository getInstance(WebService iWebService) {
+    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, WebService iWebService, AppExecutors iAppExecutors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new VpnRepository(iWebService);
+                sInstance = new VpnRepository(iListDao, iUsageDao, iWebService, iAppExecutors);
             }
         }
         return sInstance;
     }
 
-    public MutableLiveData<Resource<Vpn>> getVpnListMutableLiveData() {
+    private MutableLiveData<List<VpnListEntity>> getVpnListMutableLiveData() {
         getUnoccupiedVpnList();
         return mVpnListMutableLiveData;
     }
 
-    public SingleLiveEvent<Resource<VpnCredentials>> getVpnGetServerCredentialsLiveEvent() {
-        return mVpnGetServerCredentialsLiveEvent;
+    private MutableLiveData<VpnUsageEntity> getVpnUsageMutableLiveData() {
+        return mVpnUsageMutableLiveData;
+    }
+
+    // public getter methods for LiveData & SingleLiveEvent
+    public LiveData<List<VpnListEntity>> getVpnListLiveData() {
+        return mListDao.getVpnLisEntity();
+    }
+
+    public LiveData<VpnListEntity> getVpnLiveData(String iVpnAddress) {
+        return mListDao.getVpnEntity(iVpnAddress);
+    }
+
+    public LiveData<VpnUsageEntity> getVpnUsageEntity() {
+        return mUsageDao.getVpnUsageEntity();
+    }
+
+    public SingleLiveEvent<String> getVpnListErrorLiveEvent() {
+        return mVpnListErrorLiveEvent;
     }
 
     public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent(GenericRequestBody iRequestBody) {
@@ -55,8 +115,20 @@ public class VpnRepository {
         return mVpnUsageLiveEvent;
     }
 
+    public SingleLiveEvent<Resource<VpnCredentials>> getVpnServerCredentialsLiveEvent() {
+        return mVpnServerCredentialsLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<VpnConfig>> getVpnConfigLiveEvent() {
+        return mVpnConfigLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<ReportPay>> getReportPaymentLiveEvent() {
+        return mReportPaymentLiveEvent;
+    }
+
     // Network call
-    private void getUnoccupiedVpnList() {
+    public void getUnoccupiedVpnList() {
         mWebService.getUnoccupiedVpnList().enqueue(new Callback<Vpn>() {
             @Override
             public void onResponse(Call<Vpn> call, Response<Vpn> response) {
@@ -69,25 +141,22 @@ public class VpnRepository {
             }
 
             private void reportSuccessResponse(Response<Vpn> response) {
-                if (response != null && response.body() != null) {
-                    if (response.body().success)
-                        mVpnListMutableLiveData.postValue(Resource.success(response.body()));
-                    else
-                        reportErrorResponse(Resources.getSystem().getString(R.string.empty_vpn_list));
-                }
+                if (response != null && response.body() != null)
+                    if (response.body().success && response.body().list != null && response.body().list.size() > 0)
+                        mVpnListMutableLiveData.postValue(response.body().list);
             }
 
             private void reportErrorResponse(String iThrowableLocalMessage) {
                 if (iThrowableLocalMessage != null)
-                    mVpnListMutableLiveData.postValue(Resource.error(iThrowableLocalMessage, null));
+                    mVpnListErrorLiveEvent.postValue(iThrowableLocalMessage);
                 else
-                    mVpnListMutableLiveData.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+                    mVpnListErrorLiveEvent.postValue(AppConstants.GENERIC_ERROR);
             }
         });
     }
 
     public void getVpnServerCredentials(GenericRequestBody iRequestBody) {
-        mVpnGetServerCredentialsLiveEvent.postValue(Resource.loading(null));
+        mVpnServerCredentialsLiveEvent.postValue(Resource.loading(null));
         mWebService.getVpnServerCredentials(iRequestBody).enqueue(new Callback<VpnCredentials>() {
             @Override
             public void onResponse(Call<VpnCredentials> call, Response<VpnCredentials> response) {
@@ -102,7 +171,7 @@ public class VpnRepository {
             private void reportSuccessResponse(Response<VpnCredentials> response) {
                 if (response != null && response.body() != null) {
                     if (response.body().success)
-                        mVpnGetServerCredentialsLiveEvent.postValue(Resource.success(response.body()));
+                        mVpnServerCredentialsLiveEvent.postValue(Resource.success(response.body()));
                     else
                         reportErrorResponse(response, null);
                 } else {
@@ -112,16 +181,17 @@ public class VpnRepository {
 
             private void reportErrorResponse(Response<VpnCredentials> response, String iThrowableLocalMessage) {
                 if (response != null && response.body() != null) {
-                    mVpnGetServerCredentialsLiveEvent.postValue(Resource.error(response.body().message, null));
+                    mVpnServerCredentialsLiveEvent.postValue(Resource.error(response.body().message, null));
                 } else if (iThrowableLocalMessage != null)
-                    mVpnGetServerCredentialsLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                    mVpnServerCredentialsLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mVpnGetServerCredentialsLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+                    mVpnServerCredentialsLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }
 
     public void getVpnUsageForUser(GenericRequestBody iRequestBody) {
+        mVpnUsageLiveEvent.postValue(Resource.loading(null));
         mWebService.getVpnUsageForUser(iRequestBody).enqueue(new Callback<VpnUsage>() {
             @Override
             public void onResponse(Call<VpnUsage> call, Response<VpnUsage> response) {
@@ -135,8 +205,44 @@ public class VpnRepository {
 
             private void reportSuccessResponse(Response<VpnUsage> response) {
                 if (response != null && response.body() != null) {
-                    if (response.body().success)
+                    if (response.body().success) {
+                        mVpnUsageMutableLiveData.postValue(response.body().usage);
                         mVpnUsageLiveEvent.postValue(Resource.success(response.body()));
+                    } else {
+                        reportErrorResponse(null);
+                    }
+                } else {
+                    reportErrorResponse(null);
+                }
+            }
+
+            private void reportErrorResponse(String iThrowableLocalMessage) {
+                if (iThrowableLocalMessage != null) {
+                    mVpnUsageLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                } else {
+                    mVpnUsageLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+                }
+            }
+        });
+    }
+
+    public void getVpnConfig(String iUrl, GenericRequestBody iRequestBody) {
+        mVpnConfigLiveEvent.postValue(Resource.loading(null));
+        mWebService.getVpnConfig(iUrl, iRequestBody).enqueue(new Callback<VpnConfig>() {
+            @Override
+            public void onResponse(Call<VpnConfig> call, Response<VpnConfig> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<VpnConfig> call, Throwable t) {
+                reportErrorResponse(t.getLocalizedMessage());
+            }
+
+            private void reportSuccessResponse(Response<VpnConfig> response) {
+                if (response != null && response.body() != null) {
+                    if (response.body().success)
+                        mVpnConfigLiveEvent.postValue(Resource.success(response.body()));
                 } else {
                     reportErrorResponse(null);
                 }
@@ -144,9 +250,42 @@ public class VpnRepository {
 
             private void reportErrorResponse(String iThrowableLocalMessage) {
                 if (iThrowableLocalMessage != null)
-                    mVpnUsageLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                    mVpnConfigLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mVpnUsageLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+                    mVpnConfigLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+            }
+        });
+    }
+
+    public void reportPayment(GenericRequestBody iRequestBody) {
+        mReportPaymentLiveEvent.postValue(Resource.loading(null));
+        mWebService.reportPayment(iRequestBody).enqueue(new Callback<ReportPay>() {
+            @Override
+            public void onResponse(Call<ReportPay> call, Response<ReportPay> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<ReportPay> call, Throwable t) {
+                reportErrorResponse(t.getLocalizedMessage());
+            }
+
+            private void reportSuccessResponse(Response<ReportPay> response) {
+                if (response != null && response.body() != null) {
+                    if (response.body().success)
+                        mReportPaymentLiveEvent.postValue(Resource.success(response.body()));
+                    else
+                        reportErrorResponse(response.message());
+                } else {
+                    reportErrorResponse(null);
+                }
+            }
+
+            private void reportErrorResponse(String iThrowableLocalMessage) {
+                if (iThrowableLocalMessage != null)
+                    mVpnConfigLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                else
+                    mVpnConfigLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }

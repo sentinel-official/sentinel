@@ -19,15 +19,16 @@ import java.util.List;
 import java.util.Locale;
 
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.network.model.VpnList;
+import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.util.Convert;
+import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.SpannableStringUtil;
 
 public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHolder> {
 
     private OnItemClickListener mItemClickListener;
 
-    private List<VpnList> mData;
+    private List<VpnListEntity> mData;
     private final Context mContext;
 
 
@@ -45,12 +46,12 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        VpnList aItemData = mData.get(position);
-        holder.mTvLocation.setText(mContext.getString(R.string.vpn_location, aItemData.location.city, aItemData.location.country));
+        VpnListEntity aItemData = mData.get(position);
+        holder.mTvLocation.setText(mContext.getString(R.string.vpn_location, aItemData.getLocation().city, aItemData.getLocation().country));
         // Set country flag
-        holder.mFvFlag.setCountryCode(getCountryCode(aItemData.location.country));
+        holder.mFvFlag.setCountryCode(Converter.getCountryCode(aItemData.getLocation().country));
         // Construct and set - Bandwidth SpannableString
-        String aBandwidthValue = mContext.getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(aItemData.netSpeed.download, Convert.DataUnit.MBPS));
+        String aBandwidthValue = mContext.getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(aItemData.getNetSpeed().download, Convert.DataUnit.MBPS));
         String aBandwidth = mContext.getString(R.string.vpn_bandwidth, aBandwidthValue);
         SpannableString aStyledBandwidth = new SpannableStringUtil.SpannableStringUtilBuilder(aBandwidth, aBandwidthValue)
                 .color(Color.WHITE)
@@ -58,7 +59,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                 .build();
         holder.mTvBandwidth.setText(aStyledBandwidth);
         // Construct and set - Price SpannableString
-        String aPriceValue = mContext.getString(R.string.vpn_price_value, aItemData.pricePerGb);
+        String aPriceValue = mContext.getString(R.string.vpn_price_value, aItemData.getPricePerGb());
         String aPrice = mContext.getString(R.string.vpn_price, aPriceValue);
         SpannableString aStyledPrice = new SpannableStringUtil.SpannableStringUtilBuilder(aPrice, aPriceValue)
                 .color(Color.WHITE)
@@ -66,7 +67,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                 .build();
         holder.mTvPrice.setText(aStyledPrice);
         // Construct and set - Latency SpannableString
-        String aLatencyValue = mContext.getString(R.string.vpn_latency_value, aItemData.latency);
+        String aLatencyValue = mContext.getString(R.string.vpn_latency_value, aItemData.getLatency());
         String aLatency = mContext.getString(R.string.vpn_latency, aLatencyValue);
         SpannableString aStyleLatency = new SpannableStringUtil.SpannableStringUtilBuilder(aLatency, aLatencyValue)
                 .color(Color.WHITE)
@@ -75,7 +76,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         holder.mTvLatency.setText(aStyleLatency);
         // Set listeners
         holder.mRootView.setOnClickListener(v -> onRootViewClick(aItemData));
-        holder.mBtnConnect.setOnClickListener(v -> onConnectClick(aItemData.accountAddress));
+        holder.mBtnConnect.setOnClickListener(v -> onConnectClick(aItemData.getAccountAddress()));
     }
 
     @Override
@@ -102,18 +103,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         }
     }
 
-    private String getCountryCode(String iCountryName) {
-        String[] isoCountryCodes = Locale.getISOCountries();
-        for (String code : isoCountryCodes) {
-            Locale locale = new Locale("", code);
-            if (iCountryName.equalsIgnoreCase(locale.getDisplayCountry())) {
-                return code;
-            }
-        }
-        return "";
-    }
-
-    public void loadData(List<VpnList> iData) {
+    public void loadData(List<VpnListEntity> iData) {
         if (mData == null) {
             mData = iData;
             notifyDataSetChanged();
@@ -131,19 +121,19 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    VpnList aOldData = mData.get(oldItemPosition);
-                    VpnList aNewData = mData.get(newItemPosition);
-                    return aOldData.accountAddress.equals(aNewData.accountAddress);
+                    VpnListEntity aOldData = mData.get(oldItemPosition);
+                    VpnListEntity aNewData = mData.get(newItemPosition);
+                    return aOldData.getAccountAddress().equals(aNewData.getAccountAddress());
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    VpnList aOldData = mData.get(oldItemPosition);
-                    VpnList aNewData = mData.get(newItemPosition);
-                    return aOldData.latency == aNewData.latency
-                            && aOldData.pricePerGb == aNewData.pricePerGb
-                            && aOldData.netSpeed.download == aNewData.netSpeed.download
-                            && aOldData.netSpeed.upload == aNewData.netSpeed.upload;
+                    VpnListEntity aOldData = mData.get(oldItemPosition);
+                    VpnListEntity aNewData = mData.get(newItemPosition);
+                    return aOldData.getLatency() == aNewData.getLatency()
+                            && aOldData.getPricePerGb() == aNewData.getPricePerGb()
+                            && aOldData.getNetSpeed().download == aNewData.getNetSpeed().download
+                            && aOldData.getNetSpeed().upload == aNewData.getNetSpeed().upload;
                 }
             });
             mData = iData;
@@ -152,7 +142,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
     }
 
     // Interface interaction method
-    private void onRootViewClick(VpnList iItemData) {
+    private void onRootViewClick(VpnListEntity iItemData) {
         if (mItemClickListener != null) {
             mItemClickListener.onRootViewClicked(iItemData);
         }
@@ -165,7 +155,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
     }
 
     public interface OnItemClickListener {
-        void onRootViewClicked(VpnList iItemData);
+        void onRootViewClicked(VpnListEntity iItemData);
 
         void onConnectClicked(String iVpnAddress);
     }

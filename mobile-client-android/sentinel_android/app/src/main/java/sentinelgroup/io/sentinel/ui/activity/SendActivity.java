@@ -1,5 +1,6 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,10 +10,8 @@ import android.widget.CompoundButton;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.fragment.SendFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
-import sentinelgroup.io.sentinel.util.AppPreferences;
 
 public class SendActivity extends BaseActivity {
-
     private boolean mIsVpnPay, mIsInit;
     private String mAmount, mSessionId;
 
@@ -20,6 +19,17 @@ public class SendActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getIntentExtras();
+    }
+
+    @Override
+    public void loadFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        disableTestNetSwitch(mIsVpnPay);
     }
 
     private void getIntentExtras() {
@@ -30,15 +40,8 @@ public class SendActivity extends BaseActivity {
             mAmount = aBundle.getString(AppConstants.EXTRA_AMOUNT);
             if (mIsVpnPay && !mIsInit)
                 mSessionId = aBundle.getString(AppConstants.EXTRA_SESSION_ID);
-            if (mIsInit)
-                showSingleActionError(aBundle.getString(AppConstants.EXTRA_INIT_MESSAGE));
         }
         loadFragment(SendFragment.newInstance(mIsVpnPay, mIsInit, mAmount, mSessionId));
-    }
-
-    @Override
-    public void loadFragment(Fragment iFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
     }
 
     @Override
@@ -50,8 +53,15 @@ public class SendActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        if (aFragment instanceof SendFragment)
+            setResult(((SendFragment) aFragment).getTransactionState() ? RESULT_OK : RESULT_CANCELED);
+        finish();
+    }
+
+    @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (aFragment instanceof SendFragment) {
             ((SendFragment) aFragment).updateAdapterData(isChecked);
@@ -74,13 +84,18 @@ public class SendActivity extends BaseActivity {
     }
 
     @Override
-    public void onShowErrorDialog(String iError) {
-        showSingleActionError(iError);
+    public void onShowSingleActionDialog(String iMessage) {
+        showSingleActionError(iMessage);
     }
 
     @Override
-    public void onCopyToClipboardClicked(String iCopyString) {
-        copyToClipboard(iCopyString);
+    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        // Unimplemented interface method
+    }
+
+    @Override
+    public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
+        copyToClipboard(iCopyString, iToastTextId);
     }
 
     @Override
@@ -89,6 +104,12 @@ public class SendActivity extends BaseActivity {
     }
 
     @Override
-    public void onLoadNextActivity(Intent iIntent) {
+    public void onLoadNextActivity(Intent iIntent, int iReqCode) {
+        // Unimplemented interface method
+    }
+
+    @Override
+    public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
+        // Unimplemented interface method
     }
 }

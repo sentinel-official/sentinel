@@ -1,9 +1,11 @@
-package sentinelgroup.io.sentinel.db;
+package sentinelgroup.io.sentinel.db.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+
+import sentinelgroup.io.sentinel.network.model.PinEntity;
 
 @Dao
 public interface PinEntryDao {

@@ -76,13 +76,18 @@ public class CreateAccountActivity extends SimpleBaseActivity {
     }
 
     @Override
-    public void onShowErrorDialog(String iError) {
-        showSingleActionError(iError);
+    public void onShowSingleActionDialog(String iMessage) {
+        showSingleActionError(iMessage);
     }
 
     @Override
-    public void onCopyToClipboardClicked(String iCopyString) {
-        copyToClipboard(iCopyString);
+    public void onShowDoubleActionDialog(String iMessageId, int iPositiveOptionId, int iNegativeOptionId) {
+        // Unimplemented interface method
+    }
+
+    @Override
+    public void onCopyToClipboardClicked(String iCopyString, int iToastText) {
+        copyToClipboard(iCopyString, iToastText);
     }
 
     @Override
@@ -91,7 +96,7 @@ public class CreateAccountActivity extends SimpleBaseActivity {
     }
 
     @Override
-    public void onLoadNextActivity(Intent iIntent) {
+    public void onLoadNextActivity(Intent iIntent, int iReqCode) {
         if (iIntent != null) {
             startActivity(iIntent);
             finish();

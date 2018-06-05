@@ -154,6 +154,11 @@ public class ProgressDialogFragment extends DialogFragment {
         mLoadingMessage = iMessage;
     }
 
+    public void updateLoadingMessage(String iMessage) {
+        setLoadingMessage(iMessage);
+        setLoadingText();
+    }
+
     @Override
     public void onDestroyView() {
         hideLoader();

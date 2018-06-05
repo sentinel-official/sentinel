@@ -14,15 +14,18 @@ import android.widget.Toast;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
-import static sentinelgroup.io.sentinel.util.AppConstants.ALERT_DIALOG_TAG;
+import static sentinelgroup.io.sentinel.util.AppConstants.DOUBLE_ACTION_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
+import static sentinelgroup.io.sentinel.util.AppConstants.SINGLE_ACTION_DIALOG_TAG;
 
-public abstract class BaseActivity extends AppCompatActivity implements OnGenericFragmentInteractionListener, CompoundButton.OnCheckedChangeListener {
+public abstract class BaseActivity extends AppCompatActivity implements OnGenericFragmentInteractionListener,
+        CompoundButton.OnCheckedChangeListener, DoubleActionDialogFragment.OnDialogActionListener {
     private Toolbar mToolbar;
     private SwitchCompat mSwitchNet;
     private TextView mToolbarTitle, mSwitchState;
@@ -91,7 +94,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
                 mPrgDialog.setLoadingMessage(iMessage);
                 mPrgDialog.show(getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
             } else {
-                mPrgDialog.setLoadingMessage(iMessage);
+                mPrgDialog.updateLoadingMessage(iMessage);
             }
         } else {
             if (aFragment != null)
@@ -100,24 +103,43 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     }
 
     protected void showSingleActionError(String iMessage) {
-        showSingleActionError(null, iMessage, null);
+        showSingleActionError(-1, iMessage, -1);
     }
 
-    protected void showSingleActionError(String iTitle, String iMessage, String iActionText) {
-        String aTitle = iTitle != null ? iTitle : getString(R.string.please_note);
-        String aActionText = iActionText != null ? iActionText : getString(android.R.string.ok);
-
-        SingleActionDialogFragment.newInstance(aTitle, iMessage, aActionText)
-                .show(getSupportFragmentManager(), ALERT_DIALOG_TAG);
+    protected void showSingleActionError(int iTitleId, String iMessage, int iPositiveOptionId) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(SINGLE_ACTION_DIALOG_TAG);
+        int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
+        int aPositiveOptionText = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.ok;
+        if (aFragment == null)
+            SingleActionDialogFragment.newInstance(aTitleId, iMessage, aPositiveOptionText)
+                    .show(getSupportFragmentManager(), SINGLE_ACTION_DIALOG_TAG);
     }
 
-    protected void copyToClipboard(String iCopyString) {
+    protected void showDoubleActionError(String iMessage) {
+        showDoubleActionError(-1, iMessage, -1, -1);
+    }
+
+    protected void showDoubleActionError(int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);
+        int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
+        int aPositiveOptionId = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.ok;
+        int aNegativeOptionId = iNegativeOptionId != -1 ? iNegativeOptionId : android.R.string.cancel;
+        if (aFragment == null)
+            DoubleActionDialogFragment.newInstance(aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
+                    .show(getSupportFragmentManager(), DOUBLE_ACTION_DIALOG_TAG);
+    }
+
+    protected void copyToClipboard(String iCopyString, int iToastTextId) {
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
             ClipData clip = ClipData.newPlainText(getString(R.string.app_name), iCopyString);
-            Toast.makeText(this, R.string.key_copied, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, iToastTextId, Toast.LENGTH_SHORT).show();
             clipboard.setPrimaryClip(clip);
         }
+    }
+
+    protected void disableTestNetSwitch(boolean isVpnFunction) {
+        mSwitchNet.setEnabled(!isVpnFunction);
     }
 
     // abstract

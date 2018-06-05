@@ -7,29 +7,41 @@ public class AppConstants {
     // Keys used in SharedPreference
     public static final String PREFS_ACCOUNT_ADDRESS = "prefs_account_address";
     public static final String PREFS_FILE_PATH = "prefs_file_path";
+    public static final String PREFS_CONFIG_PATH = "prefs_config_path";
     public static final String PREFS_IS_APP_PIN_SET = "prefs_is_app_pin_set";
     public static final String PREFS_IS_FIRST_TIME = "prefs_is_first_time";
     public static final String PREFS_IS_TEST_NET_ACTIVE = "prefs_is_test_net_active";
+    public static final String PREFS_VPN_ADDRESS = "prefs_vpn_address";
+    public static final String PREFS_SESSION_NAME = "prefs_session_name";
+    public static final String PREFS_GAS_NORMAL = "prefs_standard";
+    public static final String PREFS_GAS_FAST = "prefs_fast";
+    public static final String PREFS_GAS_FASTEST = "prefs_fastest";
 
     // Request codes
+    public static final int REQ_CODE_NULL = -1;
     public static final int REQ_TX_HISTORY = 100;
     public static final int REQ_VPN_HISTORY = 101;
     public static final int REQ_RESET_PIN = 102;
     public static final int REQ_HELP = 103;
     public static final int REQ_ABOUT = 104;
-    public static final int REQ_CODE_FORGOT_PIN = 200;
+    public static final int REQ_CODE_FORGOT_PIN = 105;
+    public static final int REQ_VPN_CONNECT = 106;
+    public static final int REQ_VPN_PAY = 107;
+    public static final int REQ_VPN_INIT_PAY = 108;
 
     // EXTRA used in Intent
-    public static final String EXTRA_INIT_MESSAGE = "init_pay_message";
     public static final String EXTRA_IS_VPN_PAY = "is_vpn_pay";
     public static final String EXTRA_IS_INIT = "is_init";
     public static final String EXTRA_AMOUNT = "amount";
     public static final String EXTRA_SESSION_ID = "session_id";
     public static final String EXTRA_VPN_LIST = "vpn_list";
+    public static final String EXTRA_NOTIFICATION_ACTIVITY = "notification_activity";
+    public static final String EXTRA_CONFIG_PATH = "config_path";
 
     // Other app constants
     public static final String FOLDER_NAME = "Sentinel";
     public static final String FILE_NAME = "keystore.file";
+    public static final String CONFIG_NAME = "client.ovpn";
     public static final String INFURA_URL_MAIN_NET = "https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy";
     public static final String INFURA_URL_TEST_NET = "https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy";
     public static final String SENTINEL_ADDRESS_MAIN_NET = "0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037";
@@ -37,9 +49,16 @@ public class AppConstants {
     public static final String TX_MAIN_NET = "https://etherscan.io/tx/";
     public static final String TX_TEST_NET = "https://rinkeby.etherscan.io/tx/";
     public static final String PROGRESS_DIALOG_TAG = "sentinelgroup.io.sentinel.progress_dialog";
-    public static final String ALERT_DIALOG_TAG = "sentinelgroup.io.sentinel.alert_dialog";
+    public static final String SINGLE_ACTION_DIALOG_TAG = "sentinelgroup.io.sentinel.single_action_dialog";
+    public static final String DOUBLE_ACTION_DIALOG_TAG = "sentinelgroup.io.sentinel.double_action_dialog";
     public static final String SENT = "SENT";
     public static final String ETH = "ETH";
     public static final String GENERIC_ERROR = "Something went wrong. Please try again.";
     public static final String INIT_PAY_ERROR = "Initial VPN payment is not done.";
+    public static final String URL_BUILDER = "http://%1s:%d/ovpn";
+    public static final String GAS_PRICE_ESTIMATE_URL = "https://www.etherchain.org/api/gasPriceOracle";
+    public static final String ETH_TX_URL_BUILDER = "https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=txlist&startblock=0&endblock=latest&address=%1s";
+    public static final String SENT_TX_URL_BUILDER = "https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0x29317B796510afC25794E511e7B10659Ca18048B&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=%1s&topic1_2_opr=or&topic2=%2s";
+    public static final String ETHERSCAN_URL_BUILDER = "https://rinkeby.etherscan.io/tx/%1s";
+    public static final String HOME = "home";
 }

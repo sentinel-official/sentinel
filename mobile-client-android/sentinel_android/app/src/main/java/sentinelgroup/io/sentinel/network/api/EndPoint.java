@@ -9,8 +9,6 @@ public class EndPoint {
     public static final String GET_VPN_SERVER_CREDENTIALS = "client/vpn";
     public static final String GET_VPN_USAGE_FOR_USER = "client/vpn/usage";
     public static final String GET_VPN_CURRENT_USAGE = "client/vpn/current";
-    public static final String UPDATE_NODE_INFO = "node/info";
     public static final String MAKE_VPN_USAGE_PAYMENT = "client/vpn/pay";
     public static final String REPORT_PAYMENT = "client/vpn/report";
-    public static final String GET_OVPN_CONFIG = "ovpn";
 }

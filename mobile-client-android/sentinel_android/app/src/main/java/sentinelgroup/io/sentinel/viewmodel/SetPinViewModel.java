@@ -2,7 +2,7 @@ package sentinelgroup.io.sentinel.viewmodel;
 
 import android.arch.lifecycle.ViewModel;
 
-import sentinelgroup.io.sentinel.db.PinEntity;
+import sentinelgroup.io.sentinel.network.model.PinEntity;
 import sentinelgroup.io.sentinel.repository.PinRepository;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;

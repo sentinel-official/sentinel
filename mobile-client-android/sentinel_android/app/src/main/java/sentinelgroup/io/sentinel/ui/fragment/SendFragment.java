@@ -64,10 +64,11 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     private CustomSpinner mCsTokens;
     private TextInputEditText mTetToAddress, mTetAmount, mTetGasLimit, mTetPassword;
     private SeekBar mSbGasPrice;
-    private TextView mTvGasPrice;
+    private TextView mTvGasPrice, mTvGasEstimate;
     private Button mBtnSend;
     private MaterialSpinnerAdapter mAdapter;
-    private boolean mTransactionPlaced;
+    private int mNormal, mFast, mFastest;
+    private boolean mTransactionSuccess = false;
 
     public SendFragment() {
         // Required empty public constructor
@@ -136,9 +137,9 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mTetPassword = iView.findViewById(R.id.tet_password);
         mSbGasPrice = iView.findViewById(R.id.sb_gas_price);
         mTvGasPrice = iView.findViewById(R.id.tv_gas_price);
+        mTvGasEstimate = iView.findViewById(R.id.tv_gas_estimate);
         mBtnSend = iView.findViewById(R.id.btn_send);
         // set default values
-        mSbGasPrice.setProgress(19);
         mTetGasLimit.setTransformationMethod(null);
         // set listeners
         mCsTokens.addTextChangedListener(this);
@@ -149,15 +150,38 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mBtnSend.setOnClickListener(this);
     }
 
+    private void setGasPrice(int iGasPrice) {
+        mSbGasPrice.setProgress(iGasPrice - 1);
+        mTvGasPrice.setText(getString(R.string.gwei, iGasPrice));
+    }
+
     private void setupAdapter(boolean iIsChecked) {
-        mAdapter = new MaterialSpinnerAdapter(getContext(), generateStringList(iIsChecked));
-        mCsTokens.setAdapter(mAdapter);
+        if (getContext() != null) {
+            mAdapter = new MaterialSpinnerAdapter(getContext(), generateStringList(iIsChecked));
+            mCsTokens.setAdapter(mAdapter);
+        }
     }
 
     private void initViewModel() {
-        SendViewModelFactory aFactory = InjectorModule.provideSendViewModelFactory();
+        SendViewModelFactory aFactory = InjectorModule.provideSendViewModelFactory(getContext());
         mViewModel = ViewModelProviders.of(this, aFactory).get(SendViewModel.class);
 
+        mViewModel.getGasEstimateLiveData().observe(this, gasEstimateEntity -> {
+            if (gasEstimateEntity != null) {
+                mNormal = (int) Float.parseFloat(gasEstimateEntity.getStandard());
+                mFast = (int) Float.parseFloat(gasEstimateEntity.getFast());
+                mFastest = (int) Float.parseFloat(gasEstimateEntity.getFastest());
+            } else {
+                mNormal = 10;
+                mFast = 15;
+                mFastest = 20;
+            }
+            AppPreferences.getInstance().saveInteger(AppConstants.PREFS_GAS_NORMAL, mNormal);
+            AppPreferences.getInstance().saveInteger(AppConstants.PREFS_GAS_FAST, mFast);
+            AppPreferences.getInstance().saveInteger(AppConstants.PREFS_GAS_FASTEST, mFastest);
+            setGasPrice(mNormal);
+            mTvGasEstimate.setText(getGasEstimateText(mNormal));
+        });
         mViewModel.getTxDataCreationLiveEvent().observe(this, txDataResource -> {
             if (txDataResource != null) {
                 if (txDataResource.status.equals(Status.LOADING)) {
@@ -181,9 +205,9 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
                 } else if (payResponseResource.data != null && payResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     clearForm(true);
-                    if (mIsVpnPay)
-                        showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.txHashes[0]));
-                    else
+                    if (payResponseResource.data.txHashes != null && payResponseResource.data.txHashes.size() > 0)
+                        showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.txHashes.get(0)));
+                    else if (payResponseResource.data.txHash != null)
                         showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.txHash));
                 } else if (payResponseResource.message != null && payResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
@@ -195,10 +219,10 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     @SuppressLint("ClickableViewAccessibility")
     private void setupExtraValue() {
+        mCsTokens.setSelectedPosition(0);
+        mCsTokens.setText(mAdapter.getItem(mCsTokens.getSelectedPosition()));
         if (mIsVpnPay) {
-            // set token
-            mCsTokens.setSelectedPosition(0);
-            mCsTokens.setText(mAdapter.getItem(mCsTokens.getSelectedPosition()));
+            // disable touch listener
             mCsTokens.setOnTouchListener((v, event) -> true);
             // set to address
             mTetToAddress.setText(mViewModel.getSentinelAddress());
@@ -220,7 +244,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     }
 
     private void showTransactionStatus(Uri iUri) {
-        mTransactionPlaced = true;
+        mTransactionSuccess = true;
         Snackbar aSnackbar = Snackbar.make(mRootLayout, R.string.transaction_placed, Snackbar.LENGTH_LONG)
                 .setAction(R.string.check_status, v -> {
                     try {
@@ -233,12 +257,12 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     }
 
 
-
     public void updateAdapterData(boolean iIsChecked) {
-        mCsTokens.setText("");
         mCsTokens.setAdapter(null);
         setupAdapter(iIsChecked);
         setupExtraValue();
+        mCsTokens.setAdapter(null);
+        setupAdapter(iIsChecked);
     }
 
     private List<String> generateStringList(boolean iIsChecked) {
@@ -265,13 +289,28 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         String aTetAmount = mTetAmount.getText().toString().trim();
         String aGasLimit = mTetGasLimit.getText().toString().trim();
         String aPassword = mTetPassword.getText().toString().trim();
-        String aGasPrice = String.valueOf(mSbGasPrice.getProgress() + 1);  // in GWei
+        String aGasPrice = String.valueOf(mSbGasPrice.getProgress() + mNormal);  // in GWei
 
         if (aTokens.contains("SENT")) {
             mViewModel.createTokenTransaction(aToAddress, aTetAmount, aGasLimit, aPassword, aGasPrice);
         } else if (aTokens.contains("ETH")) {
             mViewModel.createEthTransaction(aToAddress, aTetAmount, aGasLimit, aPassword, aGasPrice);
         }
+    }
+
+    private int getGasEstimateText(int iValue) {
+        if (iValue >= mFastest)
+            return R.string.estimate_fastest;
+        else if (iValue >= mFast)
+            return R.string.estimate_fast;
+        else if (iValue >= mNormal)
+            return R.string.estimate_normal;
+        else
+            return R.string.estimate_low;
+    }
+
+    public boolean getTransactionState() {
+        return mTransactionSuccess;
     }
 
     // Interface interaction methods
@@ -295,7 +334,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     public void showErrorDialog(String iError) {
         if (mListener != null) {
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iError);
         }
     }
 
@@ -312,6 +351,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     @Override
     public void onDetach() {
+        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }
@@ -345,17 +385,16 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        mTvGasEstimate.setText(getGasEstimateText(progress + 1));
         mTvGasPrice.setText(getString(R.string.gwei, progress + 1));
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
     }
 
     @Override

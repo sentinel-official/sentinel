@@ -21,14 +21,13 @@ import android.widget.TextView;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.Session;
-import sentinelgroup.io.sentinel.network.model.Usage;
+import sentinelgroup.io.sentinel.network.model.Stats;
 import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnHistoryListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.SpannableStringUtil;
-import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.VpnHistoryViewModel;
 import sentinelgroup.io.sentinel.viewmodel.VpnHistoryViewModelFactory;
 
@@ -84,6 +83,7 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        fragmentLoaded(getString(R.string.vpn_history));
         initViewModel();
     }
 
@@ -98,62 +98,51 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
         mAdapter = new VpnHistoryListAdapter(this, getContext());
         mRvVpnHistory.setAdapter(mAdapter);
         // setup swipe to refresh layout
-        mSrReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mViewModel.reloadUsageData();
-                mSrReload.setRefreshing(false);
-            }
+        mSrReload.setOnRefreshListener(() -> {
+            mViewModel.reloadVpnUsage();
+            mSrReload.setRefreshing(false);
         });
     }
 
     private void initViewModel() {
-        VpnHistoryViewModelFactory aFactory = InjectorModule.provideVpnHistoryViewModelFactory();
+        VpnHistoryViewModelFactory aFactory = InjectorModule.provideVpnHistoryViewModelFactory(getContext());
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnHistoryViewModel.class);
 
-        mViewModel.getVpnUsageLiveEvent().observe(this, vpnUsageResource -> {
-            if (vpnUsageResource != null) {
-                if (vpnUsageResource.data != null && vpnUsageResource.status.equals(Status.SUCCESS)) {
-                    hideProgressDialog();
-                    if (vpnUsageResource.data.usage != null) {
-                        setTotalUsageDetails(vpnUsageResource.data.usage);
-                        if (vpnUsageResource.data.usage.sessions != null && vpnUsageResource.data.usage.sessions.size() > 0)
-                            mAdapter.loadData(vpnUsageResource.data.usage.sessions);
-                    }
-                } else if (vpnUsageResource.message != null && vpnUsageResource.status.equals(Status.ERROR)) {
-                    hideProgressDialog();
-                    showErrorDialog(vpnUsageResource.message);
-                }
+        mViewModel.getVpnUsageLiveEvent().observe(this, vpnUsage -> {
+            if (vpnUsage != null && vpnUsage.getStats() != null) {
+                setTotalUsageDetails(vpnUsage.getStats());
+                if (vpnUsage.getSessions() != null && vpnUsage.getSessions().size() > 0)
+                    mAdapter.loadData(vpnUsage.getSessions());
             }
         });
     }
 
-    private void setTotalUsageDetails(Usage iUsage) {
-        mTvSentPaid.setText(Converter.getSentString(iUsage.stats.amount));
-        String aDuration = Converter.getDuration(iUsage.stats.duration);
-        String[] aDurationSplit = aDuration.split("\\s+");
-        SpannableString aStyledDuration = new SpannableStringUtil.SpannableStringUtilBuilder(aDuration, aDurationSplit[1])
+    private void setTotalUsageDetails(Stats iUsageStats) {
+        mTvSentPaid.setText(Converter.getSentString(iUsageStats.amount));
+        // Construct and set - Duration SpannableString
+        String aDuration = Converter.getDuration(iUsageStats.duration);
+        String aDurationSubString = aDuration.substring(aDuration.indexOf(' '));
+        SpannableString aStyledDuration = new SpannableStringUtil.SpannableStringUtilBuilder(aDuration, aDurationSubString)
                 .color(ContextCompat.getColor(getContext(), R.color.colorTextGray))
                 .relativeSize(0.5f)
                 .build();
         mTvTotalDuration.setText(aStyledDuration);
-        String aSize = Converter.getFileSize(iUsage.stats.receivedBytes);
-        String[] aSizeSplit = aSize.split("\\s+");
-        SpannableString aStyledSize = new SpannableStringUtil.SpannableStringUtilBuilder(aSize, aSizeSplit[1])
+        // Construct and set - Data Size SpannableString
+        String aSize = Converter.getFileSize(iUsageStats.receivedBytes);
+        String aSizeSubString = aSize.substring(aSize.indexOf(' '));
+        SpannableString aStyledSize = new SpannableStringUtil.SpannableStringUtilBuilder(aSize, aSizeSubString)
                 .color(ContextCompat.getColor(getContext(), R.color.colorTextGray))
                 .relativeSize(0.5f)
                 .build();
         mTvTotalReceivedData.setText(aStyledSize);
     }
 
-    private Intent constructSendActivityIntent(String iError, boolean isInit, String iAmount, String iSessionId) {
+    private Intent constructSendActivityIntent(String iAmount, String iSessionId) {
         Intent aIntent = new Intent(getActivity(), SendActivity.class);
         Bundle aBundle = new Bundle();
         aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
-        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, isInit);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, false);
         aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
-        if (iError != null)
-            aBundle.putString(AppConstants.EXTRA_INIT_MESSAGE, iError);
         if (iSessionId != null)
             aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
         aIntent.putExtras(aBundle);
@@ -161,6 +150,12 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
     }
 
     // Interface interaction methods
+    public void fragmentLoaded(String iTitle) {
+        if (mListener != null) {
+            mListener.onFragmentLoaded(iTitle);
+        }
+    }
+
     public void showProgressDialog(boolean isHalfDim, String iMessage) {
         if (mListener != null) {
             mListener.onShowProgressDialog(isHalfDim, iMessage);
@@ -175,13 +170,19 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
 
     public void showErrorDialog(String iError) {
         if (mListener != null) {
-            mListener.onShowErrorDialog(iError);
+            mListener.onShowSingleActionDialog(iError);
         }
     }
 
-    public void loadNextActivity(Intent iIntent) {
+    public void loadNextFragment(Fragment iNextFragment) {
         if (mListener != null) {
-            mListener.onLoadNextActivity(iIntent);
+            mListener.onLoadNextFragment(iNextFragment);
+        }
+    }
+
+    public void loadNextActivity(Intent iIntent, int iReqCode) {
+        if (mListener != null) {
+            mListener.onLoadNextActivity(iIntent, iReqCode);
         }
     }
 
@@ -198,17 +199,18 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
 
     @Override
     public void onDetach() {
+        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }
 
     @Override
     public void onRootViewClicked(Session iSession) {
-
+        loadNextFragment(VpnSessionDetailsFragment.newInstance(iSession));
     }
 
     @Override
     public void onPayClicked(String iValue, String iSessionId) {
-        loadNextActivity(constructSendActivityIntent(null,false,iValue,iSessionId));
+        loadNextActivity(constructSendActivityIntent(iValue, iSessionId), AppConstants.REQ_VPN_PAY);
     }
 }

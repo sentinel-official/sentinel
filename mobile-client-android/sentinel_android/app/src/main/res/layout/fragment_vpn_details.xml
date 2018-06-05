@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorWindowDark">
 
     <com.haipq.android.flagkit.FlagImageView
         android:id="@+id/fv_flag"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/margin_24"
-        android:layout_marginEnd="8dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginRight="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_location"
         app:layout_constraintEnd_toStartOf="@+id/tv_location"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -24,9 +22,11 @@
         style="@style/CustomTextAppearance.Text18"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/margin_8"
+        android:paddingTop="@dimen/margin_16"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_city"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/fv_flag"
@@ -86,12 +86,12 @@
         android:id="@+id/tv_price"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="17dp"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_connect"
         app:layout_constraintEnd_toEndOf="@+id/tv_latency"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tv_latency"
         app:layout_constraintTop_toBottomOf="@+id/tv_latency" />
 

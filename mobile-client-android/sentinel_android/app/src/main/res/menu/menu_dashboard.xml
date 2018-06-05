@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_vpn"
-        android:icon="@drawable/menu_vpn_unselected"
+        android:icon="@drawable/menu_vpn_selected"
         android:title="@string/vpn"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_wallet"
-        android:icon="@drawable/menu_wallet_selected"
+        android:icon="@drawable/menu_wallet_unselected"
         android:title="@string/wallet"
         app:showAsAction="always" />
 </menu>

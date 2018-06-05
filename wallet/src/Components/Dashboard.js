@@ -265,8 +265,8 @@ class Dashboard extends Component {
                 label={lang[language].VpnHistory} value="vpn_history" disabled={!this.state.isTest}>
                 <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} lang={this.props.lang} />
               </Tab>
-              <Tab style={styles.enabledTabStyle}label="Mixer" value="mixer">
-                <MixerComponent />
+              <Tab style={styles.enabledTabStyle} label="Mixer" value="mixer">
+                <MixerComponent local_address={this.state.local_address} lang={this.props.lang} isTest={this.state.isTest} />
               </Tab>
             </Tabs>
           </div>

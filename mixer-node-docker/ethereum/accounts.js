@@ -32,7 +32,14 @@ let getBalance = (address, coinSymbol, cb) => {
   }
 };
 
+let getBalanceSync = (address, coinSymbol) => {
+  let balance = coinSymbol === 'eth' ? web3.eth.getBalance(address) : tokens.balanceOfSync(address, coinSymbol);
+  balance = web3.toDecimal(balance);
+  return balance;
+}
+
 module.exports = {
   getTransactionCount: getTransactionCount,
-  getBalance: getBalance
+  getBalance: getBalance,
+  getBalanceSync: getBalanceSync
 };

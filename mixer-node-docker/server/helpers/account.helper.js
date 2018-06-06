@@ -42,7 +42,7 @@ let getBalancesOfAllAddresses = (addresses,  cb) => {
     getBalancesOfAddress(address, (error, balances) => {
       if(error) next(error);
       else {
-        allBalances.address = balances;
+        allBalances[address] = balances;
         next(null);
       }
     });

@@ -25,6 +25,11 @@ class Tokens {
       else cb(null, balance);
     });
   }
+
+  balanceOfSync(address, tokenSymbol) {
+    let balance = this[tokenSymbol].contract.balanceOf(address);
+    return balance;
+  }
 }
 
 let tokens = new Tokens(tokenConfigs);

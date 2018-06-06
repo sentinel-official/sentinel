@@ -1,5 +1,7 @@
+let async = require('async');
 let keys = require('../../ethereum/keys');
 let accounts = require('../../ethereum/accounts');
+let accountDbo = require('../dbos/account.dbo');
 let { accountModel } = require('../models/account.model');
 
 
@@ -17,6 +19,41 @@ let createAccount = (cb) => {
   }
 };
 
+let getBalancesOfAddress = (address, cb) => {
+  let balances = {};
+  let coinSymbols = ['eth', 'sent'];
+  async.each(coinSymbols, (coinSymbol, next) => {
+    accounts.getBalance(address, coinSymbol, (error, balance) => {
+      if(error) next(error);
+      else {
+        balances[coinSymbol] = balance;
+        next(null);
+      }
+    });
+  }, (error) => {
+    if(error) cb(error, null);
+    else cb(null, balances);
+  });
+};
+
+let getBalancesOfAllAddresses = (addresses,  cb) => {
+  let allBalances = {};
+  async.each(addresses, (address, next) => {
+    getBalancesOfAddress(address, (error, balances) => {
+      if(error) next(error);
+      else {
+        allBalances.address = balances;
+        next(null);
+      }
+    });
+  }, (error) => {
+    if(error) cb(error, null);
+    else cb(null, allBalances);
+  });
+};
+
 module.exports = {
-  createAccount: createAccount
+  createAccount: createAccount,
+  getBalancesOfAddress: getBalancesOfAddress,
+  getBalancesOfAllAddresses: getBalancesOfAllAddresses
 };

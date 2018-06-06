@@ -10,35 +10,6 @@ let insertAccount = (account, cb) => {
   });
 };
 
-let getBalances = (cb) => {
-  AccountModel.aggregate([
-    {
-      $match: {
-        'balances.eth': {
-          $gte: 20e9 * 50e3
-        }
-      }
-    }, {
-      $group: {
-        '_id': null,
-        'eth': {
-          $sum: '$balances.eth'
-        },
-        'sent': {
-          $sum: '$balances.sent'
-        }
-      }
-    }
-  ], (error, result) => {
-    console.log(error, result);
-    if (error) cb(error, null);
-    else {
-      delete (result[0]._id);
-      cb(null, result[0]);
-    }
-  });
-};
-
 let getFromAddressesDetails = (blackListAddresses, coinSymbol, cb) => {
   let findObject = {
     'address': {
@@ -50,7 +21,7 @@ let getFromAddressesDetails = (blackListAddresses, coinSymbol, cb) => {
   };
   let sortKey = `balances.${coinSymbol}`;
   if (coinSymbol !== 'eth') {
-    findObject[`balances.${coinSymbol}`] = {
+    findObject[sortKey] = {
       $gte: 0
     };
   }
@@ -64,7 +35,7 @@ let getFromAddressesDetails = (blackListAddresses, coinSymbol, cb) => {
   });
 };
 
-let getAccountsDetails = (cb) => {
+let getAllAccounts = (cb) => {
   AccountModel.find({},
     {
       _id: 0
@@ -74,24 +45,20 @@ let getAccountsDetails = (cb) => {
     });
 };
 
-let updateAccountBalance = (address, balance, coinSymbol, cb) => {
-  let updateKey = `balances.${coinSymbol}`;
-  AccountModel.findOneAndUpdate({
+let getAccount = (address, cb) => {
+  AccountModel.find({
     address: address
   }, {
-      $set: {
-        updateKey: balance
-      }
-    }, (error, result) => {
+      _id: 0
+    }, (error, details) => {
       if (error) cb(error, null);
-      else cb(null, result);
+      else cb(null, details);
     });
 };
 
 module.exports = {
   insertAccount: insertAccount,
-  getAccountsDetails: getAccountsDetails,
-  updateAccountBalance: updateAccountBalance,
-  getBalances: getBalances,
+  getAllAccounts: getAllAccounts,
+  getAccount: getAccount,
   getFromAddressesDetails: getFromAddressesDetails
 };

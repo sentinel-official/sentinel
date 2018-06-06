@@ -10,8 +10,7 @@ let accountSchema = new mongoose.Schema({
     type: String,
     unique: true
   },
-  generatedOn: Number,
-  balances: Object
+  generatedOn: Number
 }, {
     strict: true,
     versionKey: false

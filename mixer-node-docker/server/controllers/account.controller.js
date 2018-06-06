@@ -1,11 +1,12 @@
-let { waterfall } = require('async');
+let async = require('async');
+let lodash = require('lodash');
 let accountHelper = require('../helpers/account.helper');
 let accountDbo = require('../dbos/account.dbo');
 let { accountExpiry } = require('../../config/ethereum/accounts');
 
 
 let createAccount = (req, res) => {
-  waterfall([
+  async.waterfall([
     (next) => {
       accountHelper.createAccount((error, account) => {
         if (error) next({
@@ -42,17 +43,34 @@ let createAccount = (req, res) => {
 };
 
 let getBalances = (req, res) => {
-  waterfall([
+  async.waterfall([
     (next) => {
-      accountDbo.getBalances((error, balances) => {
-        if (error) next({
+      accountDbo.getAllAccounts((error, accounts) => {
+        if(error) next({
           status: 500,
-          message: 'Error occurred while getting balance.'
-        });
-        else next(null, {
-          status: 200,
-          balances: balances
-        });
+          message: 'Error occurred while getting accounts.'
+        }, null);
+        else {
+          let addresses = lodash.pluck(accounts, 'address');
+          next(null, addresses);
+        }
+      })
+    }, (addresses, next) => {
+      accountHelper.getBalancesOfAllAddresses(addresses, (error, balancesOfAllAddresses) => {
+        if(error) next({
+          status: 500,
+          message: 'Error occurred while getting balances of accounts.'
+        }, null);
+        else {
+          let balances = {
+            eth: lodash.sum(lodash.pluck(balancesOfAllAddresses, 'eth')),
+            sent: lodash.sum(lodash.pluck(balancesOfAllAddresses, 'sent'))
+          };
+          next(null, {
+            status: 200,
+            balances: balances
+          });
+        }
       });
     }
   ], (error, success) => {

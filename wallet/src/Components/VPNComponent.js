@@ -66,6 +66,7 @@ class VPNComponent extends Component {
             selectedVPN: null,
             dueAmount: 0,
             dueSession: null,
+            isTor: false,
             sessionName: '',
             startDownload: 0,
             startUpload: 0
@@ -163,6 +164,22 @@ class VPNComponent extends Component {
         })
     }
 
+    checkTor = () => {
+        let self = this;
+        fetch('https://check.torproject.org/api/ip', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        }).then(function (response) {
+            response.json().then(function (resp) {
+                self.setState({ isTor: resp['isTor'] })
+            })
+        })
+    }
+
     _loadLatency(vpn) {
         let self = this;
         getLatency(vpn.ip, function (err, latency) {
@@ -245,6 +262,9 @@ class VPNComponent extends Component {
                             //that.returnVPN();
                             that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}. ${message}` })
                             that.props.changeTest(false)
+                            setTimeout(function () {
+                                that.checkTor();
+                            }, 5000)
                         }
                     })
                 }
@@ -797,6 +817,7 @@ class VPNComponent extends Component {
                     <div style={styles.vpnDetails}>
                         {this.props.status === true ?
                             <div style={{ fontSize: 14 }}>
+                                <p>Tor Connected: {this.state.isTor ? 'True' : 'False'}</p>
                                 <p>IP: {this.props.vpnData.ip}</p>
                                 <p>{lang[language].Location}: {this.props.vpnData.location}</p>
                                 <p>{lang[language].Speed}: {this.props.vpnData.speed}</p>

@@ -9,6 +9,8 @@ import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.bugsnag.android.Bugsnag;
+
 import java.io.File;
 
 import de.blinkt.openvpn.core.OpenVPNService;
@@ -26,6 +28,7 @@ public class SentinelApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         PRNGFixes.apply();
+        Bugsnag.init(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannels();
         }

@@ -88,6 +88,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-    </application>
 
+        <!-- Bugsnag -->
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="3ef59c1aedfd5938d2b519f33cf6b5ec" />
+    </application>
 </manifest>

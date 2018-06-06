@@ -59,7 +59,7 @@ class MixerComponent extends React.Component {
             unit: 'SENT',
             password: '',
             nextDisabled: true,
-            selectedRow: [-1],
+            selectedRow: [],
             snackOpen: false,
             snackMessage: '',
             mixerToAddr: ''
@@ -93,7 +93,7 @@ class MixerComponent extends React.Component {
             self.setState({
                 stepIndex: stepIndex + 1,
                 finished: stepIndex >= 2,
-                nextDisabled: true
+                nextDisabled: self.state.selectedRow.length ? self.state.selectedRow[0] === -1 : false
             });
         })
     }
@@ -177,7 +177,7 @@ class MixerComponent extends React.Component {
     handlePrev = () => {
         const { stepIndex } = this.state;
         if (stepIndex > 0) {
-            this.setState({ stepIndex: stepIndex - 1, nextDisabled: false });
+            this.setState({ stepIndex: stepIndex - 1, nextDisabled: false, password: '' });
         }
     };
 
@@ -280,9 +280,9 @@ class MixerComponent extends React.Component {
                     <Table onRowSelection={this.handleRowSelection}>
                         <TableHeader>
                             <TableRow>
-                                <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: 14 }}>Service Charge</TableHeaderColumn>
-                                <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: 14 }}>SENT Balance</TableHeaderColumn>
-                                <TableHeaderColumn style={{ color: 'black', fontWeight: 'bold', fontSize: 14 }}>ETH Balance</TableHeaderColumn>
+                                <TableHeaderColumn style={styles.headerColumnStyle}>Service Charge</TableHeaderColumn>
+                                <TableHeaderColumn style={styles.headerColumnStyle}>SENT Balance</TableHeaderColumn>
+                                <TableHeaderColumn style={styles.headerColumnStyle}>ETH Balance</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody deselectOnClickaway={false}>
@@ -298,6 +298,12 @@ class MixerComponent extends React.Component {
                 </div>)
             case 2:
                 return (<div>
+                    <span style={styles.detailsHeadingStyle}>Destination Address: </span>
+                    <span style={styles.detailsStyle}>{this.state.destAddress}</span><br />
+                    <span style={styles.detailsHeadingStyle}>Service Charge: </span>
+                    <span style={styles.detailsStyle}>{this.state.pools[this.state.selectedRow[0]].service_charge} + Gas Price</span><br />
+                    <span style={styles.detailsHeadingStyle}>Amount: </span>
+                    <span style={styles.detailsStyle}>{this.state.amount} {this.state.unit}</span>
                     <TextField
                         type="password"
                         hintText="Enter Keystore Password to Confirm"
@@ -306,7 +312,7 @@ class MixerComponent extends React.Component {
                         value={this.state.password}
                         underlineShow={false} fullWidth={true}
                         inputStyle={styles.textInputStyle}
-                        style={{ height: 42 }}
+                        style={{ height: 42, marginTop: '5%' }}
                     />
                 </div>)
             default:
@@ -315,21 +321,25 @@ class MixerComponent extends React.Component {
     }
 
     render() {
-        const { finished, stepIndex } = this.state;
-        const contentStyle = { margin: '0 16px' };
+        const { finished, stepIndex, selectedRow, nextDisabled } = this.state;
+        const contentStyle = { margin: '16px' };
 
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
                 <div style={{ width: '100%', maxWidth: 950, margin: 'auto' }}>
-                    <Stepper activeStep={stepIndex} style={{ width: '60%' }}>
+                    <Stepper activeStep={stepIndex} style={{ width: '20%', marginTop: 10 }}>
                         <Step>
-                            <StepLabel>Enter Details to Mix</StepLabel>
+                            <StepLabel style={stepIndex > 0 ? styles.preStepStyle : styles.activeStepStyle}>
+                                Enter Details to Mix</StepLabel>
                         </Step>
                         <Step>
-                            <StepLabel>List of Pools</StepLabel>
+                            <StepLabel style={stepIndex >= 1 ?
+                                (stepIndex === 1 ? styles.activeStepStyle : styles.preStepStyle) : styles.disabledStepStyle}>
+                                List of Pools</StepLabel>
                         </Step>
                         <Step>
-                            <StepLabel>Confirmation</StepLabel>
+                            <StepLabel style={stepIndex < 2 ? styles.disabledStepStyle : styles.activeStepStyle}>
+                                Confirmation</StepLabel>
                         </Step>
                     </Stepper>
                     <div style={contentStyle}>
@@ -346,7 +356,7 @@ class MixerComponent extends React.Component {
               </a> to reset the example.
             </p>
                         ) : (
-                                <div style={stepIndex === 2 ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400, flexDirection: 'column' } : {}}>
+                                <div style={stepIndex === 2 ? { display: 'flex', alignItems: 'center', padding: '10%', textAlign: 'center', height: 400, flexDirection: 'column' } : {}}>
                                     <p style={stepIndex === 2 ? { width: '80%' } : { width: '100%' }}>{this.getStepContent(stepIndex)}</p>
                                     <div style={{ marginTop: 12, flexDirection: 'row' }}>
                                         <FlatButton
@@ -361,9 +371,9 @@ class MixerComponent extends React.Component {
                                         <RaisedButton
                                             label={stepIndex === 2 ? 'Confirm' : 'Next'}
                                             primary={true}
-                                            disabled={this.state.nextDisabled || this.state.selectedRow.length === 0}
+                                            disabled={nextDisabled || (stepIndex === 1 && selectedRow.length === 0)}
                                             onClick={this.handleNext}
-                                            buttonStyle={this.state.nextDisabled || this.state.selectedRow.length === 0 ?
+                                            buttonStyle={nextDisabled || (stepIndex === 1 && selectedRow.length === 0) ?
                                                 { backgroundColor: '#c7c9d4' } : { backgroundColor: '#2f3245' }}
                                             style={{
                                                 borderRadius: 5,
@@ -380,8 +390,8 @@ class MixerComponent extends React.Component {
                             style={{ marginBottom: '2%' }}
                         />
                     </div>
-                </div>
-            </MuiThemeProvider>
+                </div >
+            </MuiThemeProvider >
         );
     }
 }
@@ -405,6 +415,41 @@ const styles = {
         marginTop: 12,
         marginBottom: 20
     },
+    detailsHeadingStyle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        letterSpacing: 0.5
+    },
+    detailsStyle: {
+        fontSize: 16,
+        letterSpacing: 0.5
+    },
+    headerColumnStyle: {
+        color: 'black',
+        fontWeight: 'bold',
+        fontSize: 14
+    },
+    activeStepStyle: {
+        fontSize: 14,
+        paddingRight: 20,
+        height: 45,
+        color: 'black',
+        backgroundColor: '#ddd',
+        borderBottomRightRadius: 20,
+        borderTopRightRadius: 20
+    },
+    preStepStyle: {
+        fontSize: 14,
+        paddingRight: 20,
+        height: 45,
+        color: 'black',
+        backgroundColor: '#ddd'
+    },
+    disabledStepStyle: {
+        fontSize: 14,
+        paddingRight: 20,
+        height: 45
+    }
 }
 
 export default MixerComponent;

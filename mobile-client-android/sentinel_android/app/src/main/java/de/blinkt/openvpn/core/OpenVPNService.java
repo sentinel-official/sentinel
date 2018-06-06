@@ -363,7 +363,8 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             if (mDeviceStateReceiver != null) mDeviceStateReceiver.userPause(false);
             return START_NOT_STICKY;
         }
-        if (intent != null && START_SERVICE.equals(intent.getAction())) return START_NOT_STICKY;
+        if (intent != null && START_SERVICE.equals(intent.getAction()))
+            return START_NOT_STICKY;
         if (intent != null && START_SERVICE_STICKY.equals(intent.getAction())) {
             return START_REDELIVER_INTENT;
         }

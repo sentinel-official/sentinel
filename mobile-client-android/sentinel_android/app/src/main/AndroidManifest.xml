@@ -79,7 +79,6 @@
             android:name="de.blinkt.openvpn.LaunchVPN"
             android:excludeFromRecents="true"
             android:label="@string/vpn_launch_title"
-            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.DeviceDefault.Light.Panel"
             tools:ignore="ExportedActivity">
             <intent-filter>

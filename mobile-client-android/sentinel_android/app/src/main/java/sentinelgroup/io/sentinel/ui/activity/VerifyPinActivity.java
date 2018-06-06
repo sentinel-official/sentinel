@@ -83,9 +83,14 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void verifyPin() {
-        int aPin = Integer.parseInt(mEtPin.getText().toString().trim());
-        String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
-        mViewModel.verifyAppPin(aPin, aAccountAddress);
+        String aPinString = mEtPin.getText().toString().trim();
+        if(!aPinString.isEmpty()){
+            int aPin = Integer.parseInt(aPinString);
+            String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
+            mViewModel.verifyAppPin(aPin, aAccountAddress);
+        } else {
+            showSingleActionDialog(getString(R.string.pin_empty));
+        }
     }
 
     @Override

@@ -1,3 +1,3 @@
 # coding=utf-8
-from .openvpn import Keys
-from .openvpn import OpenVPN
+# from .shadowsocks import Keys
+from .shadowsocks import ShadowSocks

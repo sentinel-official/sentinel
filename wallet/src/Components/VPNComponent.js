@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN, getVpnHistory, sendError } from '../Actions/AccountActions';
+import {
+    getVPNList, connectVPN, getVPNUsageData, isOnline, getLatency, disconnectVPN, getVpnHistory,
+    sendError, connectSocks, disconnectSocks, sendUsage, setStartValues, getStartValues
+} from '../Actions/AccountActions';
 import ZoomIn from 'material-ui/svg-icons/content/add';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -22,7 +25,14 @@ import ReactTooltip from 'react-tooltip';
 let Country = window.require('countrynames');
 var markers = []
 let lang = require('./language');
+const electron = window.require('electron');
+const remote = electron.remote;
+const { exec, execSync } = window.require('child_process');
+let netStat = window.require('net-stat');
+let os = window.require('os');
+let ip = require('ip');
 var UsageInterval = null;
+
 
 class VPNComponent extends Component {
     constructor(props) {
@@ -43,17 +53,22 @@ class VPNComponent extends Component {
             statusMessage: '',
             status: false,
             showInstruct: false,
+            showDialog: false,
             isMac: false,
             showPay: false,
             payAccount: '',
             markersList: [],
             vpnUpdatedList: [],
             searchText: '',
+            isSock: false,
             sortUp: true,
             sortType: 'vpn',
             selectedVPN: null,
             dueAmount: 0,
-            dueSession: null
+            dueSession: null,
+            sessionName: '',
+            startDownload: 0,
+            startUpload: 0
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -78,14 +93,22 @@ class VPNComponent extends Component {
         this.setState({ activeVpn: marker.vpn, showPopUp: true })
     }
     componentWillMount = () => {
-        this.getVPNs()
+        this.getVPNs();
+        let self = this;
+        getStartValues(function (down, up) {
+            self.setState({ startDownload: down, startUpload: up })
+        })
     }
 
     componentWillReceiveProps(nextProps) {
+        if (nextProps.isSock !== this.state.isSock) {
+            this.setState({ isSock: nextProps.isSock })
+            this.getVPNs()
+        }
         if (nextProps.status === false)
             this.setState({ status: nextProps.status, selectedVPN: null, usage: null });
         else
-            this.setState({ status: nextProps.status, selectedVPN: nextProps.vpnData.vpn_addr });
+            this.setState({ status: nextProps.status, selectedVPN: nextProps.vpnData ? nextProps.vpnData.vpn_addr : null });
     }
 
     getDueAmount() {
@@ -160,31 +183,71 @@ class VPNComponent extends Component {
             this.setState({ showPopUp: false, statusSnack: true, statusMessage: lang[this.props.lang].Connecting })
             let that = this;
             if (isOnline()) {
-                connectVPN(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, message) {
-                    if (isMacError) {
-                        that.setState({ status: false, showInstruct: false, statusSnack: false, isMac: false, openSnack: true, snackMessage: err.message })
-                        that.props.changeTest(false)
-                    }
-                    else if (isWinError) {
-                        that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: false })
-                        that.props.changeTest(false)
-                    }
-                    else if (account) {
-                        that.setState({ status: false, showPay: true, statusSnack: false, isMac: false, payAccount: account })
-                        that.props.changeTest(false)
-                    }
-                    else if (err) {
-                        if (err.message !== true)
-                            that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
-                        that.props.changeTest(false)
-                    }
-                    else {
-                        that.props.onChange();
-                        //that.returnVPN();
-                        that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}. ${message}` })
-                        that.props.changeTest(false)
-                    }
-                })
+                if (this.state.isSock) {
+                    let openBrowser = true;
+                    connectSocks(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, data) {
+                        if (isMacError) {
+                            that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else if (isWinError) {
+                            that.setState({ status: false, statusSnack: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else if (account) {
+                            that.setState({ status: false, showPay: true, statusSnack: false, payAccount: account })
+                            that.props.changeTest(false)
+                        }
+                        else if (err) {
+                            if (err.message !== true)
+                                that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else {
+                            that.props.onChange();
+                            if (remote.process.platform === 'win32' && openBrowser === true) {
+                                exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
+                                    console.log('browser opened');
+                                    openBrowser = false;
+                                });
+                            }
+                            //that.returnVPN();
+                            that.setState({
+                                selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false,
+                                openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}`, sessionName: data
+                            })
+                            that.props.changeTest(false)
+                            that.calculateUsage(true);
+                        }
+                    })
+                }
+                else {
+                    connectVPN(this.props.local_address, this.state.activeVpn.account_addr, function (err, isMacError, isWinError, account, message) {
+                        if (isMacError) {
+                            that.setState({ status: false, showInstruct: false, statusSnack: false, isMac: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else if (isWinError) {
+                            that.setState({ status: false, showInstruct: true, statusSnack: false, isMac: false })
+                            that.props.changeTest(false)
+                        }
+                        else if (account) {
+                            that.setState({ status: false, showPay: true, statusSnack: false, isMac: false, payAccount: account })
+                            that.props.changeTest(false)
+                        }
+                        else if (err) {
+                            if (err.message !== true)
+                                that.setState({ status: false, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: err.message })
+                            that.props.changeTest(false)
+                        }
+                        else {
+                            that.props.onChange();
+                            //that.returnVPN();
+                            that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}. ${message}` })
+                            that.props.changeTest(false)
+                        }
+                    })
+                }
             }
             else {
                 this.setState({ openSnack: true, statusSnack: false, status: false, snackMessage: lang[this.props.lang].CheckInternet })
@@ -197,18 +260,117 @@ class VPNComponent extends Component {
         this.props.changeTest(true);
         this.setState({ statusSnack: true, statusMessage: lang[this.props.lang].Disconnecting })
         var that = this;
-        disconnectVPN(function (err) {
-            if (err) {
-                that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
-                that.props.onChange();
-                that.props.changeTest(false);
+        if (this.state.isSock) {
+            disconnectSocks(function (err) {
+                if (err) {
+                    that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
+                    that.props.onChange();
+                    that.props.changeTest(false);
+                }
+                else {
+                    if (remote.process.platform === 'win32') {
+                        exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
+                            console.log('browser opened');
+                        });
+                    }
+                    that.props.onChange();
+                    that.props.changeTest(false);
+                    sendUsage(that.props.local_address, that.state.selectedVPN, null);
+                    that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+                }
+            });
+        }
+        else {
+            disconnectVPN(function (err) {
+                if (err) {
+                    that.setState({ statusSnack: false, openSnack: true, snackMessage: err.message ? err.message : 'Disconnecting Failed.' })
+                    that.props.onChange();
+                    that.props.changeTest(false);
+                }
+                else {
+                    that.props.onChange();
+                    that.props.changeTest(false);
+                    that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+                }
+            });
+        }
+    }
+
+    calculateUsage = (value) => {
+        let self = this;
+        if (remote.process.platform === 'win32') {
+            let receivedOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.ReceivedBytes\"');
+            let receivedArr = receivedOut.toString().trim().split('\r\n');
+            let downCur;
+            let usage;
+            downCur = parseInt(receivedArr[0]) + parseInt(receivedArr[1]);
+            let sendOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.SentBytes\"');
+            let sendArr = sendOut.toString().trim().split('\r\n');
+            let upCur;
+            upCur = parseInt(sendArr[0]) + parseInt(sendArr[1]);
+            if (value) {
+                usage = {
+                    'down': 0,
+                    'up': 0
+                }
+                setStartValues(downCur, upCur);
+                self.setState({ startDownload: downCur, startUpload: upCur, usage: usage })
             }
             else {
-                that.props.onChange();
-                that.props.changeTest(false);
-                that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+                let downDiff = downCur - this.state.startDownload;
+                let upDiff = upCur - this.state.startUpload;
+                usage = {
+                    'down': downDiff,
+                    'up': upDiff
+                }
+                self.setState({ usage: usage })
             }
-        });
+            sendUsage(self.props.local_address, self.state.selectedVPN, usage);
+        } else {
+            let loopStop = false;
+            let interfaces = os.networkInterfaces();
+            Object.keys(interfaces).map((key) => {
+                if (loopStop) return;
+                else {
+                    var obj = interfaces[key].find(o => { return (o.family === 'IPv4' && !o.internal) })
+                    if (obj) {
+                        let usage;
+                        let downCur;
+                        let upCur;
+                        if (remote.process.platform === 'darwin') {
+                            let cmd = `netstat -b -i | grep ${obj.address} | awk '{print $7" "$8}'`;
+                            let output = execSync(cmd);
+                            let values = output.toString().trim().split(" ");
+                            downCur = values[0];
+                            upCur = values[1];
+                        }
+                        else {
+                            downCur = netStat.totalRx({ iface: key })
+                            upCur = netStat.totalTx({ iface: key })
+                        }
+                        if (value) {
+                            usage = {
+                                'down': 0,
+                                'up': 0
+                            }
+                            setStartValues(downCur, upCur);
+                            self.setState({ startDownload: downCur, startUpload: upCur, usage: usage })
+                        }
+                        else {
+                            let downDiff = downCur - this.state.startDownload;
+                            let upDiff = upCur - this.state.startUpload;
+                            usage = {
+                                'down': downDiff,
+                                'up': upDiff
+                            }
+                            self.setState({ usage: usage })
+                        }
+                        sendUsage(self.props.local_address, self.state.selectedVPN, usage);
+                        loopStop = true;
+                    }
+                }
+            })
+        }
     }
 
     getUsage() {
@@ -217,6 +379,7 @@ class VPNComponent extends Component {
             if (err) {
             }
             else {
+                console.log("Usage...", usage)
                 self.props.onChange();
                 self.setState({ usage: usage })
             }
@@ -243,6 +406,10 @@ class VPNComponent extends Component {
 
     closeInstruction = () => {
         this.setState({ showInstruct: false });
+    }
+
+    closeDialog = () => {
+        this.setState({ showDialog: false });
     }
 
     snackRequestClose = () => {
@@ -307,7 +474,7 @@ class VPNComponent extends Component {
     render() {
         let that = this;
         let language = this.props.lang;
-        if (!this.state.isGetVPNCalled) {
+        if (!this.state.isGetVPNCalled && this.props.isTest) {
             setInterval(function () {
                 that.getVPNs()
                 that.getDueAmount()
@@ -317,7 +484,10 @@ class VPNComponent extends Component {
         }
         if (!UsageInterval && this.props.status) {
             UsageInterval = setInterval(function () {
-                that.getUsage()
+                if (that.state.isSock)
+                    that.calculateUsage(false);
+                else
+                    that.getUsage()
             }, 5000);
         }
         if (!this.props.status) {
@@ -331,6 +501,13 @@ class VPNComponent extends Component {
                 label={lang[language].Close}
                 primary={true}
                 onClick={this.closeInstruction}
+            />
+        ];
+        const dialogActions = [
+            <FlatButton
+                label={lang[language].Close}
+                primary={true}
+                onClick={this.closeDialog}
             />
         ];
         const paymentActions = [
@@ -488,8 +665,8 @@ class VPNComponent extends Component {
                                             <p style={{ fontWeight: 'bold' }}>{lang[language].Flag}</p>
                                         </Col>
                                         <Col xs={4}>
-                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                            <p style={styles.columnHeadStyle}>
+                                                <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
                                                             vpnUpdatedList: _.sortBy(this.state.vpnUpdatedList, o => o.location.city),
@@ -508,8 +685,8 @@ class VPNComponent extends Component {
                                                     : <span></span>}</p>
                                         </Col>
                                         <Col xs={2}>
-                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                            <p style={styles.columnHeadStyle}>
+                                                <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
                                                             vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.net_speed.download),
@@ -528,8 +705,8 @@ class VPNComponent extends Component {
                                                     : <span></span>}</p>
                                         </Col>
                                         <Col xs={2}>
-                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                            <p style={styles.columnHeadStyle}>
+                                                <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
                                                             vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.latency),
@@ -547,8 +724,8 @@ class VPNComponent extends Component {
                                                     : <span></span>}</p>
                                         </Col>
                                         <Col xs={3}>
-                                            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                                                <a style={{ color: '#373a3c', cursor: 'pointer' }}
+                                            <p style={styles.columnHeadStyle}>
+                                                <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
                                                             vpnUpdatedList: _.orderBy(this.state.vpnUpdatedList, o => o.price_per_GB),
@@ -581,17 +758,17 @@ class VPNComponent extends Component {
                                                             <Flag code={Country.getCode(vpn.location.country)} height="16" />
                                                         </Col>
                                                         <Col xs={4}>
-                                                            <p style={{ textAlign: 'center', wordBreak: 'break-all' }}>{vpn.location.city}, {vpn.location.country}</p>
+                                                            <p style={styles.fieldValueStyle}>{vpn.location.city}, {vpn.location.country}</p>
                                                         </Col>
                                                         <Col xs={2}>
-                                                            <p style={{ textAlign: 'center' }}>{(vpn.net_speed.download / (1024 * 1024)).toFixed(2)} Mbps</p>
+                                                            <p style={styles.fieldValueStyle}>{(vpn.net_speed.download / (1024 * 1024)).toFixed(2)} Mbps</p>
                                                         </Col>
                                                         <Col xs={2}>
-                                                            <p style={{ textAlign: 'center' }}>{vpn.latency ? vpn.latency : 'None'}
+                                                            <p style={styles.fieldValueStyle}>{vpn.latency ? vpn.latency : 'None'}
                                                                 {vpn.latency ? (vpn.latency === 'Loading...' ? null : ' ms') : null}</p>
                                                         </Col>
                                                         <Col xs={3}>
-                                                            <p style={{ textAlign: 'center' }}>{vpn.price_per_GB ? vpn.price_per_GB : 100}</p>
+                                                            <p style={styles.fieldValueStyle}>{vpn.price_per_GB ? vpn.price_per_GB : 100}</p>
                                                         </Col>
                                                         <ReactTooltip id="listOver" place="bottom">
                                                             <span>Click to Connect</span>
@@ -623,8 +800,8 @@ class VPNComponent extends Component {
                                 <p>IP: {this.props.vpnData.ip}</p>
                                 <p>{lang[language].Location}: {this.props.vpnData.location}</p>
                                 <p>{lang[language].Speed}: {this.props.vpnData.speed}</p>
-                                <p>{lang[language].DownloadUsage}: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.down ? this.state.usage.down : 0) / (1024 * 1024)).toFixed(2)} MB</p>
-                                <p>{lang[language].UploadUsage}: {this.state.usage === null ? 0.00 : (parseInt(this.state.usage.up ? this.state.usage.up : 0) / (1024 * 1024)).toFixed(2)} MB</p>
+                                <p>{lang[language].DownloadUsage}: {this.state.usage ? (parseInt(this.state.usage.down ? this.state.usage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB</p>
+                                <p>{lang[language].UploadUsage}: {this.state.usage ? (parseInt(this.state.usage.up ? this.state.usage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB</p>
                                 <RaisedButton
                                     label={lang[language].Disconnect}
                                     labelStyle={{ fontWeight: 'bold' }}
@@ -659,42 +836,42 @@ class VPNComponent extends Component {
                 >
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].City}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].City}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.location.city : ''}</p>
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? this.state.activeVpn.location.city : ''}</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Country}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].Country}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.location.country : ''}</p>
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? this.state.activeVpn.location.country : ''}</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Bandwidth}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].Bandwidth}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? (this.state.activeVpn.net_speed.download / (1024 * 1024)).toFixed(2) : ''} Mbps </p>
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? (this.state.activeVpn.net_speed.download / (1024 * 1024)).toFixed(2) : ''} Mbps </p>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Cost}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].Cost}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.price_per_GB : ''} SENTS/GB</p>
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? this.state.activeVpn.price_per_GB : ''} SENTS/GB</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>
-                            <p style={{ fontSize: 14, fontWeight: 'bold', textAlign: 'right' }}>{lang[language].Latency}:</p>
+                            <p style={styles.dialogHeadingStyle}>{lang[language].Latency}:</p>
                         </Col>
                         <Col xs={7}>
-                            <p style={{ marginTop: -2 }}>{this.state.activeVpn ? this.state.activeVpn.latency : ''}
+                            <p style={styles.dialogValueStyle}>{this.state.activeVpn ? this.state.activeVpn.latency : ''}
                                 {this.state.activeVpn ? (this.state.activeVpn.latency === 'Loading...' ? null : 'ms') : null} </p>
                         </Col>
                     </Row>
@@ -722,12 +899,12 @@ class VPNComponent extends Component {
                     message={this.state.snackMessage}
                     autoHideDuration={2000}
                     onRequestClose={this.snackRequestClose}
-                    style={{ marginBottom: '2%' }}
+                    style={{ marginBottom: '1%' }}
                 />
                 <Snackbar
                     open={this.state.statusSnack}
                     message={this.state.statusMessage}
-                    style={{ marginBottom: '2%' }}
+                    style={{ marginBottom: '1%' }}
                 />
                 <Dialog
                     title="Install Dependencies"
@@ -777,6 +954,18 @@ class VPNComponent extends Component {
                 >
                     <span>{lang[language].InorderVPN}</span>
                 </Dialog>
+                <Dialog
+                    title="Install Dependencies"
+                    titleStyle={{ fontSize: 14, color: 'black', fontWeight: 'bold' }}
+                    actions={dialogActions}
+                    modal={true}
+                    open={this.state.showDialog}
+                >
+
+                    <span style={{ fontSize: 14, letterSpacing: 1 }}>
+                        ShadowSocks Not Installed. Please Install it and Try again.
+                        </span>
+                </Dialog>
                 <ReactTooltip id="copyImage" place="bottom">
                     <span>{lang[language].Copy}</span>
                 </ReactTooltip>
@@ -808,6 +997,26 @@ const styles = {
         width: 14,
         cursor: 'pointer',
         marginLeft: 5
+    },
+    dialogHeadingStyle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: 'right'
+    },
+    dialogValueStyle: {
+        marginTop: -2
+    },
+    fieldValueStyle: {
+        textAlign: 'center',
+        wordBreak: 'break-all'
+    },
+    columnHeadStyle: {
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
+    columnSortStyle: {
+        color: '#373a3c',
+        cursor: 'pointer'
     }
 }
 

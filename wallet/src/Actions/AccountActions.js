@@ -825,11 +825,7 @@ export function connectSocks(account_addr, vpn_addr, cb) {
     async function checkNssm() {
               let username = getUserHome();
               exec(`${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\service.exe`, function (execErr, execOut, execStd) {
-                console.log("execerr", execErr);
-                console.log("execOut", execOut);
-                console.log("execStd", execStd);
                 exec(`net start sentinelSocks`,function(stderr,stdout,error){
-                  console.log("inside no serivce");
                   nextStep();
                 });
                 });
@@ -1011,7 +1007,6 @@ export function getSocksCreds(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, c
     if (response.status === 200) {
       response.json().then(function (response) {
         if (response.success === true) {
-          console.log("VPN Response..", response);
           SESSION_NAME = response['session_name'];
           CONNECTED_VPN = vpn_addr;
           IPGENERATED = response['node']['vpn']['config']['ip'];
@@ -1254,7 +1249,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                   exec(command, function (err, stdout, stderr) {
                     OVPNDelTimer = setTimeout(function () {
                       fs.unlinkSync(OVPN_FILE);
-                    }, 5 * 1000);
+                    }, 1000);
                   });
                 }
                 var count = 0;
@@ -1382,7 +1377,6 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
         if (response.status === 200) {
           response.json().then(function (response) {
             if (response.success === true) {
-              console.log("VPN Response..", response);
               if (response['node'] === null) {
                 cb({ message: 'Something wrong. Please Try Later' })
               }

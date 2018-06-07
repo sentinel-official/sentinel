@@ -50,7 +50,6 @@ public class VpnSelectPagerAdapter extends FragmentPagerAdapter {
     }
 
     public View getTabView(int position) {
-        // Given you have a custom layout in `res/layout/custom_tab.xml` with a TextView and ImageView
         View aView = LayoutInflater.from(mContext).inflate(R.layout.item_tab, null);
         TextView aTvTabItem = aView.findViewById(R.id.tv_tab_item);
         aTvTabItem.setBackground(ContextCompat.getDrawable(mContext, position == 0 ? R.drawable.selector_tab_item_left : R.drawable.selector_tab_item_right));

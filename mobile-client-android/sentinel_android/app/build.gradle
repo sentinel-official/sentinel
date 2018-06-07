@@ -71,6 +71,8 @@ dependencies {
     implementation 'com.github.KaKaVip:Android-Flag-Kit:v0.1'
     // Bugsnag
     implementation 'com.bugsnag:bugsnag-android-ndk:1.+'
+    // VIewPagerIndicator
+    implementation 'com.github.vivchar:ViewPagerIndicator:1.1.0'
     // Android Test Libs
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

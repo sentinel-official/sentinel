@@ -136,6 +136,7 @@
 
     <!-- Button Themes -->
     <style name="CustomTextAppearance.OrangeButton">
+        <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/selector_button_text_white</item>
         <item name="android:paddingRight">@dimen/margin_16</item>
@@ -147,6 +148,7 @@
 
     <style name="CustomTextAppearance.BlueButton">
         <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/selector_button_text_white</item>
         <item name="android:paddingRight">@dimen/margin_16</item>
         <item name="android:paddingLeft">@dimen/margin_16</item>
@@ -158,10 +160,18 @@
     <style name="CustomTextAppearance.BlackButton">
         <item name="android:textSize">@dimen/text_10</item>
         <item name="android:minHeight">@dimen/margin_32</item>
+        <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/colorButtonOrange</item>
         <item name="android:background">@drawable/shape_button_black</item>
     </style>
 
+    <style name="CustomTextAppearance.HelperButton">
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">@dimen/margin_48</item>
+        <item name="android:minWidth">@dimen/margin_128</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@drawable/shape_helper_button</item>
+    </style>
 
     <style name="CustomTextAppearance.TransparentOrangeButton">
         <item name="android:textStyle">bold</item>

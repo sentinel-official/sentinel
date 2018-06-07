@@ -16,6 +16,7 @@ public class AppConstants {
     public static final String PREFS_GAS_NORMAL = "prefs_standard";
     public static final String PREFS_GAS_FAST = "prefs_fast";
     public static final String PREFS_GAS_FASTEST = "prefs_fastest";
+    public static final String PREFS_IS_HELPER_SHOWN = "is_helper_shown";
 
     // Request codes
     public static final int REQ_CODE_NULL = -1;
@@ -23,11 +24,12 @@ public class AppConstants {
     public static final int REQ_VPN_HISTORY = 101;
     public static final int REQ_RESET_PIN = 102;
     public static final int REQ_HELP = 103;
-    public static final int REQ_ABOUT = 104;
+    public static final int REQ_SOCIAL_LINKS = 104;
     public static final int REQ_CODE_FORGOT_PIN = 105;
     public static final int REQ_VPN_CONNECT = 106;
     public static final int REQ_VPN_PAY = 107;
     public static final int REQ_VPN_INIT_PAY = 108;
+    public static final int REQ_HELPER_SCREENS = 109;
 
     // EXTRA used in Intent
     public static final String EXTRA_IS_VPN_PAY = "is_vpn_pay";
@@ -37,6 +39,7 @@ public class AppConstants {
     public static final String EXTRA_VPN_LIST = "vpn_list";
     public static final String EXTRA_NOTIFICATION_ACTIVITY = "notification_activity";
     public static final String EXTRA_CONFIG_PATH = "config_path";
+    public static final String EXTRA_REQ_CODE = "req_code";
 
     // Other app constants
     public static final String FOLDER_NAME = "Sentinel";

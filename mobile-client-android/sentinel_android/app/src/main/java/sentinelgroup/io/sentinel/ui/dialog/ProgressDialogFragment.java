@@ -107,7 +107,7 @@ public class ProgressDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final Context aContext = new ContextThemeWrapper(getActivity(), R.style.CustomDialogFragmentNoDim);
+        final Context aContext = new ContextThemeWrapper(getActivity(), R.style.CustomDialogFragmentNoDimTheme);
         LayoutInflater aLayoutInflater = inflater.cloneInContext(aContext);
         return aLayoutInflater.inflate(R.layout.fragment_progress_dialog, container, false);
     }

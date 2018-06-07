@@ -132,10 +132,10 @@ public class TxDetailsFragment extends Fragment implements View.OnClickListener 
             double aGas = Double.parseDouble(Convert.fromWei(mTxData.gasPrice, Convert.EtherUnit.GWEI).toPlainString());
             mTvGasPrice.setText(getString(R.string.gwei, ((int) aGas)));
         } else {
-            String aToAddress = mTxData.topics.get(1);
-            String aFromAddress = mTxData.topics.get(2);
+            String aFromAddress = mTxData.topics.get(1);
+            String aToAddress = mTxData.topics.get(2);
             String aMyAddress = Converter.get64bitAddress(mAddress.substring(2));
-            boolean isReceivedTransaction = aFromAddress.equalsIgnoreCase(aMyAddress);
+            boolean isReceivedTransaction = aToAddress.equalsIgnoreCase(aMyAddress);
             mTvSource.setText(isReceivedTransaction ? R.string.receive_sent : R.string.send_sent);
             String aTimeStamp = Converter.convertHexToString(mTxData.timeStamp);
             mTvDateTime.setText(Converter.convertEpochToDate(Long.parseLong(aTimeStamp)));
@@ -147,7 +147,8 @@ public class TxDetailsFragment extends Fragment implements View.OnClickListener 
             mTvTxHash.setText(mTxData.transactionHash);
             String aValue = Converter.getFormattedSentBalance(Double.parseDouble(Converter.convertHexToString(mTxData.data)));
             mTvAmount.setText(getString(R.string.sents, aValue));
-            double aGas = Double.parseDouble(Convert.fromWei(Converter.convertHexToString(mTxData.gasPrice.substring(2)), Convert.EtherUnit.GWEI).toPlainString());
+            String s = Converter.convertHexToString(mTxData.gasPrice);
+            double aGas = Double.parseDouble(Convert.fromWei(s, Convert.EtherUnit.GWEI).toPlainString());
             mTvGasPrice.setText(getString(R.string.gwei, ((int) aGas)));
         }
     }

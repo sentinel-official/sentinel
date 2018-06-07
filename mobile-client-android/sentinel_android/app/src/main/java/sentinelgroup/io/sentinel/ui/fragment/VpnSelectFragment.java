@@ -40,6 +40,7 @@ public class VpnSelectFragment extends Fragment {
 
     private ViewPager mVpVpnSelect;
     private TabLayout mTabLayout;
+
     private VpnSelectPagerAdapter mAdapter;
 
     private boolean mIsPaymentPending;

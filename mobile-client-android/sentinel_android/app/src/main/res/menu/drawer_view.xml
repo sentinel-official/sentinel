@@ -20,7 +20,7 @@
             android:id="@+id/nav_help"
             android:title="@string/help" />
         <item
-            android:id="@+id/nav_about"
-            android:title="@string/about" />
+            android:id="@+id/nav_social_links"
+            android:title="@string/social_links" />
     </group>
 </menu>

@@ -81,8 +81,15 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        shouldShowHelper();
         initView();
         loadVpnFragment();
+    }
+
+    private void shouldShowHelper() {
+        if (!AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_HELPER_SHOWN)) {
+            onLoadNextActivity(new Intent(this, HelperActivity.class), AppConstants.REQ_HELPER_SCREENS);
+        }
     }
 
     @Override
@@ -166,10 +173,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 startActivityForResult(new Intent(this, ResetPinActivity.class), AppConstants.REQ_RESET_PIN);
                 break;
             case R.id.nav_help:
-//                startActivityForResult(new Intent(this, HelpActivity.class), AppConstants.REQ_HELP);
+                startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_HELP), AppConstants.REQ_CODE_NULL);
                 break;
-            case R.id.nav_about:
-//                startActivityForResult(new Intent(this, AboutActivity.class), AppConstants.REQ_ABOUT);
+            case R.id.nav_social_links:
+                startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_SOCIAL_LINKS), AppConstants.REQ_CODE_NULL);
                 break;
         }
     }
@@ -393,6 +400,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                     showSingleActionError(getString(R.string.init_vpn_pay_success_message));
                 }
                 break;
+            case AppConstants.REQ_HELPER_SCREENS:
+                if (resultCode == RESULT_OK) {
+                    AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_HELPER_SHOWN, true);
+                }
         }
     }
 

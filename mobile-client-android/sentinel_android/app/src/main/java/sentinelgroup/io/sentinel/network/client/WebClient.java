@@ -29,9 +29,9 @@ public class WebClient {
         ContentTypeInterceptor aContentTypeInterceptor = new ContentTypeInterceptor();
 
         OkHttpClient aClient = new OkHttpClient.Builder()
-                .connectTimeout(90, TimeUnit.SECONDS)
-                .readTimeout(90, TimeUnit.SECONDS)
-                .writeTimeout(90,TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30,TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
                 .addInterceptor(aLoggingInterceptor)
                 .addInterceptor(aContentTypeInterceptor)

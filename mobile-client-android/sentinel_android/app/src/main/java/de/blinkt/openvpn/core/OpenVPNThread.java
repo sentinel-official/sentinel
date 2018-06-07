@@ -68,7 +68,8 @@ public class OpenVPNThread implements Runnable {
         } finally {
             int exitvalue = 0;
             try {
-                if (mProcess != null) exitvalue = mProcess.waitFor();
+                if (mProcess != null)
+                    exitvalue = mProcess.waitFor();
             } catch (IllegalThreadStateException ite) {
                 VpnStatus.logError("Illegal Thread state: " + ite.getLocalizedMessage());
             } catch (InterruptedException ie) {

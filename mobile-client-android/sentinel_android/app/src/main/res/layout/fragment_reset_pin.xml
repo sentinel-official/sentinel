@@ -45,7 +45,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
         app:pinCharacterMask="*"
-        app:pinLineColors="@color/colorAccent" />
+        app:pinLineColors="@color/colorButtonBlue" />
 
 
     <TextView
@@ -73,7 +73,7 @@
         app:layout_constraintTop_toBottomOf="@+id/et_old_pin"
         app:layout_constraintVertical_chainStyle="packed"
         app:pinCharacterMask="*"
-        app:pinLineColors="@color/colorAccent" />
+        app:pinLineColors="@color/colorButtonBlue" />
 
     <TextView
         android:id="@+id/tv_re_enter_pin"
@@ -100,7 +100,7 @@
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
         app:layout_constraintTop_toBottomOf="@+id/et_enter_pin"
         app:pinCharacterMask="*"
-        app:pinLineColors="@color/colorAccent" />
+        app:pinLineColors="@color/colorButtonBlue" />
 
     <Button
         android:id="@+id/btn_reset"

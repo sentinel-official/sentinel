@@ -29,7 +29,7 @@
     <string name="help">Help</string>
     <string name="about">About</string>
     <string name="disconnect">Disconnect</string>
-    <string name="view_vpns">View VPNs</string>
+    <string name="view_vpns">VIEW VPNs</string>
     <string name="make_payment">Make Payment</string>
     <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN.\nIf you have already paid, Please wait for a couple of mins, or you can report the payment</string>
     <string name="view_list">View List</string>

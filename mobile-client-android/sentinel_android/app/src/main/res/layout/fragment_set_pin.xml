@@ -44,10 +44,10 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.100000024"
-        app:layout_constraintVertical_chainStyle="packed"
         app:pinCharacterMask="*"
-        app:pinLineColors="@color/colorAccent" />
+        app:pinLineColors="@color/colorButtonBlue"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/tv_re_enter_pin"
@@ -68,14 +68,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
+        app:pinCharacterMask="*"
+        app:pinLineColors="@color/colorButtonBlue"
         android:imeOptions="actionDone"
         app:layout_constraintBottom_toTopOf="@+id/btn_save"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
-        app:layout_constraintTop_toBottomOf="@+id/et_enter_pin"
-        app:pinCharacterMask="*"
-        app:pinLineColors="@color/colorAccent" />
+        app:layout_constraintTop_toBottomOf="@+id/et_enter_pin" />
 
     <Button
         android:id="@+id/btn_save"

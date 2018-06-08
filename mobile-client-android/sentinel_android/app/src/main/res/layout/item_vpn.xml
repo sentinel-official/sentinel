@@ -14,7 +14,7 @@
     app:cardBackgroundColor="@color/colorCardDark"
     app:cardCornerRadius="@dimen/margin_4"
     app:cardElevation="@dimen/margin_8"
-    app:cardPreventCornerOverlap="false">
+    app:cardPreventCornerOverlap="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

@@ -275,6 +275,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:enabled="false"
+        android:textAllCaps="false"
         android:text="@string/view_vpns"
         app:layout_constraintBottom_toBottomOf="@+id/btn_disconnect"
         app:layout_constraintEnd_toEndOf="parent"

@@ -73,8 +73,7 @@
                 <ImageButton
                     android:id="@+id/ib_scan"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
                     android:layout_marginRight="24dp"
                     android:layout_weight="1"
@@ -211,6 +210,8 @@
                     android:maxHeight="2dp"
                     android:minHeight="2dp"
                     android:progress="0"
+                    android:paddingTop="@dimen/margin_8"
+                    android:paddingBottom="@dimen/margin_8"
                     android:progressDrawable="@drawable/seekbar_progress_drawable"
                     android:thumbTint="@color/colorTextWhite"
                     app:layout_constraintBottom_toBottomOf="parent"

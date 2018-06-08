@@ -579,6 +579,31 @@ export function getSentValue(toAddr, value, cb) {
   }
 }
 
+export function swapPivx(account_addr, cb) {
+  try {
+    fetch(B_URL + '/tokens/swaps/new-address', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        account_addr: account_addr,
+        coin_name:'PIVX'
+      })
+    }).then(function (response) {
+      response.json().then(function (response) {
+        if (response.success) {
+          var address = response['address'];
+          cb(null, address);
+        } else cb({ message: response.message || 'Error occurred while swapping.' }, null);
+      });
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
 export function getEthTransactionHistory(account_addr, page, cb) {
   try {
     if (localStorage.getItem('config') === 'TEST')

@@ -212,7 +212,11 @@ export function transferAmount(net, data, cb) {
             cb(null, tx_hash);
           } else {
             sendError(response.error);
-            cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+            try {
+              cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+            } catch (expecErr) {
+              cb({ message: response.error || 'Error occurred while initiating transfer amount.' }, null);
+            }
           }
         })
       }
@@ -537,7 +541,11 @@ export function swapRawTransaction(data, cb) {
             cb(null, tx_hash);
           } else {
             sendError(response.error);
-            cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+            try {
+              cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+            } catch (expecErr) {
+              cb({ message: response.error || 'Error occurred while initiating transfer amount.' }, null);
+            }
           }
         })
       }
@@ -807,28 +815,28 @@ export function connectSocks(account_addr, vpn_addr, cb) {
       })
     }
     else if (remote.process.platform === 'win32') {
-      
-      exec("net start sentinelSocks",function(stderr, stdout, error){
-      if(stderr && stderr.toString().trim().split(" ")[9]==='already') {
-        nextStep();
-      } 
-      else if(stdout.toString().trim().split(" ")[8]==='started'){
+
+      exec("net start sentinelSocks", function (stderr, stdout, error) {
+        if (stderr && stderr.toString().trim().split(" ")[9] === 'already') {
           nextStep();
-       } else{
-         checkNssm(); 
-       }
+        }
+        else if (stdout.toString().trim().split(" ")[8] === 'started') {
+          nextStep();
+        } else {
+          checkNssm();
+        }
       });
     }
     else {
       nextStep();
     }
     async function checkNssm() {
-              let username = getUserHome();
-              exec(`${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\service.exe`, function (execErr, execOut, execStd) {
-                exec(`net start sentinelSocks`,function(stderr,stdout,error){
-                  nextStep();
-                });
-                });
+      let username = getUserHome();
+      exec(`${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\service.exe`, function (execErr, execOut, execStd) {
+        exec(`net start sentinelSocks`, function (stderr, stdout, error) {
+          nextStep();
+        });
+      });
     }
     function nextStep() {
       fetch(B_URL + '/client/vpn', {

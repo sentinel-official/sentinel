@@ -4,12 +4,15 @@ import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.bugsnag.android.Bugsnag;
+import com.google.android.gms.security.ProviderInstaller;
 
 import java.io.File;
 
@@ -20,6 +23,7 @@ import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
 public class SentinelApp extends MultiDexApplication {
+    public static final String TAG = SentinelApp.class.getSimpleName();
 
     private static SentinelApp sInstance;
     public static boolean isStart;
@@ -31,6 +35,10 @@ public class SentinelApp extends MultiDexApplication {
         Bugsnag.init(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannels();
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            /* enable SSL compatibility in pre-lollipop devices */
+            upgradeSecurityProvider();
         }
         StatusListener mStatus = new StatusListener();
         mStatus.init(getApplicationContext());
@@ -71,5 +79,23 @@ public class SentinelApp extends MultiDexApplication {
         mChannel.enableLights(true);
         mChannel.setLightColor(Color.BLUE);
         mNotificationManager.createNotificationChannel(mChannel);
+    }
+
+    private void upgradeSecurityProvider() {
+        try {
+            ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
+                @Override
+                public void onProviderInstalled() {
+                    Log.e(TAG, "New security provider installed.");
+                }
+
+                @Override
+                public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
+                    Log.e(TAG, "New security provider install failed.");
+                }
+            });
+        } catch (Exception ex) {
+            Log.e(TAG, "Unknown issue trying to install a new security provider", ex);
+        }
     }
 }

@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -55,6 +56,8 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     private boolean mIsVpnPay, mIsInit;
     private String mAmount, mSessionId;
+    private int mNormal, mFast, mFastest;
+    private boolean mTransactionSuccess = false;
 
     private SendViewModel mViewModel;
 
@@ -66,9 +69,9 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     private SeekBar mSbGasPrice;
     private TextView mTvGasPrice, mTvGasEstimate;
     private Button mBtnSend;
+    private ImageButton mIbScan;
+
     private MaterialSpinnerAdapter mAdapter;
-    private int mNormal, mFast, mFastest;
-    private boolean mTransactionSuccess = false;
 
     public SendFragment() {
         // Required empty public constructor
@@ -139,6 +142,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mTvGasPrice = iView.findViewById(R.id.tv_gas_price);
         mTvGasEstimate = iView.findViewById(R.id.tv_gas_estimate);
         mBtnSend = iView.findViewById(R.id.btn_send);
+        mIbScan = iView.findViewById(R.id.ib_scan);
         // set default values
         mTetGasLimit.setTransformationMethod(null);
         // set listeners
@@ -148,6 +152,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         mTetPassword.addTextChangedListener(this);
         mSbGasPrice.setOnSeekBarChangeListener(this);
         mBtnSend.setOnClickListener(this);
+        mIbScan.setOnClickListener(this);
     }
 
     private void setGasPrice(int iGasPrice) {
@@ -313,6 +318,10 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         return mTransactionSuccess;
     }
 
+    public void updateToAddress(String iToAddress) {
+        mTetToAddress.setText(iToAddress);
+    }
+
     // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
@@ -335,6 +344,12 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     public void showErrorDialog(String iError) {
         if (mListener != null) {
             mListener.onShowSingleActionDialog(iError);
+        }
+    }
+
+    public void startScanActivity() {
+        if (mListener != null) {
+            mListener.onLoadNextActivity(null, AppConstants.REQ_CODE_NULL);
         }
     }
 
@@ -399,7 +414,17 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     @Override
     public void onClick(View v) {
-        if (validateGasLimit())
-            offlineTransactionSigning();
+        switch (v.getId()) {
+            case R.id.btn_send:
+                if (validateGasLimit())
+                    offlineTransactionSigning();
+                break;
+
+            case R.id.ib_scan:
+                if (!mIsVpnPay) {
+                    startScanActivity();
+                }
+                break;
+        }
     }
 }

@@ -48,19 +48,16 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/til_to_address"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="24dp"
                     android:layout_marginLeft="24dp"
-                    android:layout_marginRight="24dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="4dp"
                     android:hint="@string/send_to_hint"
                     android:textColorHint="@color/colorTextWhiteWithAlpha50"
                     app:hintTextAppearance="@style/TextInputLayoutTheme"
                     app:layout_constraintBottom_toTopOf="@+id/til_amount"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintEnd_toStartOf="@+id/ib_scan"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cs_tokens">
 
@@ -72,6 +69,23 @@
                         android:inputType="text"
                         android:theme="@style/TextInputEditTextTheme" />
                 </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/ib_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_weight="1"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="@dimen/margin_8"
+                    app:layout_constraintBottom_toBottomOf="@+id/til_to_address"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/til_to_address"
+                    app:layout_constraintTop_toTopOf="@+id/til_to_address"
+                    app:srcCompat="@drawable/ic_qrcode_scan"
+                    tools:ignore="ContentDescription" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/til_amount"

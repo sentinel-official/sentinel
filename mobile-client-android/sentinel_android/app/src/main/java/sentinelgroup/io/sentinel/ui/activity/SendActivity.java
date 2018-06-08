@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.fragment.SendFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -105,11 +108,38 @@ public class SendActivity extends BaseActivity {
 
     @Override
     public void onLoadNextActivity(Intent iIntent, int iReqCode) {
-        // Unimplemented interface method
+        if (iIntent == null && iReqCode == AppConstants.REQ_CODE_NULL) {
+            IntentIntegrator aIntentIntegrator = new IntentIntegrator(this);
+            aIntentIntegrator.setBeepEnabled(true);
+            aIntentIntegrator.setOrientationLocked(true);
+            aIntentIntegrator.setCaptureActivity(ScanCodeActivity.class);
+            aIntentIntegrator.initiateScan();
+        }
     }
 
     @Override
     public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
         // Unimplemented interface method
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                showSingleActionError(getString(R.string.no_scan_results));
+            } else {
+                if (result.getContents().matches("0[xX][0-9a-fA-F]+") && result.getContents().length() == 42) {
+                    Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+                    if (aFragment instanceof SendFragment)
+                        ((SendFragment) aFragment).updateToAddress(result.getContents());
+                } else {
+                    showSingleActionError(getString(R.string.not_a_address));
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

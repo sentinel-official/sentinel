@@ -10,7 +10,7 @@ class SwapStatus(object):
     def on_get(self, req, resp):
         tx_hash = str(req.get_param('tx_hash'))
 
-        result = db.token_swaps.find_one({
+        result = db.erc20_swaps.find_one({
             'tx_hash_0': tx_hash
         }, {
             '_id': 0,

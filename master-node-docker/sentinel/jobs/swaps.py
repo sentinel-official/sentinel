@@ -6,6 +6,7 @@ from ..config import CENTRAL_WALLET
 from ..config import CENTRAL_WALLET_PRIVATE_KEY
 from ..db import db
 from ..helpers import eth_helper
+from ..helpers import pivx
 from ..helpers import tokens
 
 
@@ -15,25 +16,30 @@ class Swaps(object):
         self.stop_thread = False
         self.t = None
 
-    def transfer(self, from_address, to_address, token, value, tx_hash_0):
+    def transfer(self, from_address, to_address, token, value, p_key):
         if from_address == CENTRAL_WALLET:
             sents = tokens.calculate_sents(token, value)
-            error, tx_hash_1 = eth_helper.transfer_sents(CENTRAL_WALLET, to_address, sents, CENTRAL_WALLET_PRIVATE_KEY,
+            error, tx_hash_1 = eth_helper.transfer_sents(from_address, to_address, sents, CENTRAL_WALLET_PRIVATE_KEY,
                                                          'main')
             if error is None:
-                self.mark_tx(tx_hash_0, 1, 'Transaction is initiated successfully.', tx_hash_1)
+                self.mark_tx(p_key, 1, 'Transaction is initiated successfully.', tx_hash_1)
                 print('Transaction is initiated successfully.')
             else:
-                self.mark_tx(tx_hash_0, 0, 'Error occurred while initiating transaction.')
+                self.mark_tx(p_key, 0, 'Error occurred while initiating transaction.')
                 print('Error occurred while initiating transaction.')
         else:
-            self.mark_tx(tx_hash_0, -1, 'From address is not CENTRAL WALLET.')
+            self.mark_tx(p_key, -1, 'From address is not CENTRAL WALLET.')
             print('From address is not CENTRAL WALLET.')
 
-    def mark_tx(self, tx_hash_0, status, message, tx_hash_1=None):
-        _ = db.token_swaps.find_one_and_update({
-            'tx_hash_0': tx_hash_0
-        }, {
+    def mark_tx(self, p_key, status, message, tx_hash_1=None):
+        collection, find_key = None, None
+        if len(p_key) == 66:
+            collection = db.erc20_swaps
+            find_key = {'tx_hash_0': p_key}
+        elif len(p_key) == 34:
+            collection = db.btc_fork_swaps
+            find_key = {'address': p_key}
+        _ = collection.find_one_and_update(find_key, {
             '$set': {
                 'status': status,
                 'message': message,
@@ -51,7 +57,7 @@ class Swaps(object):
 
     def thread(self):
         while self.stop_thread is False:
-            transactions = db.token_swaps.find({
+            transactions = db.erc20_swaps.find({
                 'status': 0
             })
 
@@ -95,4 +101,15 @@ class Swaps(object):
                         print('Can\'t find the transaction receipt.')
                 except Exception as err:
                     print(err)
+
+            transactions = db.btc_fork_swaps.find({
+                'status': 0,
+                'coin_name': 'PIVX'
+            })
+            token = tokens.get_token(name='PIVX')
+            for transaction in transactions:
+                balance = pivx.get_balance(transaction['address'])
+                if balance is not None and balance > 0:
+                    self.transfer(CENTRAL_WALLET, transaction['eth_address'], token, balance, transaction['address'])
+
             time.sleep(self.interval)

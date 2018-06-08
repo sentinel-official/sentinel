@@ -32,7 +32,7 @@ class TokenSwapRawTransaction(object):
         if available_sents['main']['sents'] >= (requested_sents * DECIMALS):
             error, tx_hash = eth_helper.raw_transaction(tx_data, 'main')
             if error is None:
-                _ = db.token_swaps.insert_one({
+                _ = db.erc20_swaps.insert_one({
                     'tx_data': tx_data,
                     'tx_hash_0': tx_hash,
                     'status': 0,

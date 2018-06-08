@@ -48,6 +48,7 @@ from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
 from sentinel.tokens import GetAvailableTokens
+from sentinel.tokens import GetNewAddress
 from sentinel.tokens import GetSents
 from sentinel.tokens import SwapStatus
 from sentinel.tokens import TokenSwapRawTransaction
@@ -116,6 +117,7 @@ server.add_route('/tokens/available', GetAvailableTokens())
 server.add_route('/tokens/sents', GetSents())
 server.add_route('/tokens/swaps/raw-transaction', TokenSwapRawTransaction())
 server.add_route('/tokens/swaps/status', SwapStatus())
+server.add_route('/tokens/swaps/new-address', GetNewAddress())
 
 # Mixer
 server.add_route('/mixer', Up())

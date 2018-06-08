@@ -2,6 +2,8 @@
 import requests
 
 from ..config import DECIMALS
+from ..config import GAS_TOKENS
+from ..config import SWAP_PERCENTAGE
 from ..tokens_config import TOKENS
 
 
@@ -23,8 +25,8 @@ class Tokens(object):
         value = value / (1.0 * (10 ** token['decimals']))
         sent_usd = self.get_usd_price(self.get_token(name='SENTinel'))
         token_usd = self.get_usd_price(token)
-        sents = token_usd / sent_usd
-        sents = int((sents * value) * DECIMALS)
+        sents = max(0, (token_usd / sent_usd) - GAS_TOKENS)
+        sents = int(int((sents * value) * DECIMALS) * SWAP_PERCENTAGE)
         return sents
 
     def get_token(self, address=None, name=None):

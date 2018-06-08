@@ -9,17 +9,37 @@ import android.os.Build;
 import java.security.InvalidKeyException;
 
 public class NativeUtils {
-    static {
-        System.loadLibrary("opvpnutil");
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN)
-            System.loadLibrary("jbcrypto");
-    }
-
     public static native byte[] rsasign(byte[] input, int pkey) throws InvalidKeyException;
 
     public static native String[] getIfconfig() throws IllegalArgumentException;
 
     static native void jniclose(int fdint);
 
-    public static native String getNativeAPI();
+    public static String getNativeAPI() {
+        if (isRoboUnitTest())
+            return "ROBO";
+        else
+            return getJNIAPI();
+    }
+
+    private static native String getJNIAPI();
+
+
+    public final static int[] openSSLlengths = {
+            16, 64, 256, 1024, 8 * 1024, 16 * 1024
+    };
+
+    public static native double[] getOpenSSLSpeed(String algorithm, int testnum);
+
+    static {
+        if (!isRoboUnitTest()) {
+            System.loadLibrary("opvpnutil");
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN)
+                System.loadLibrary("jbcrypto");
+        }
+    }
+
+    public static boolean isRoboUnitTest() {
+        return "robolectric".equals(Build.FINGERPRINT);
+    }
 }

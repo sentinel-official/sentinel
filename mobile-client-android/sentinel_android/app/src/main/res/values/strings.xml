@@ -31,7 +31,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">VIEW VPNs</string>
     <string name="make_payment">Make Payment</string>
-    <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN.\nIf you have already paid, Please wait for a couple of mins, or you can report the payment</string>
+    <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN.\nIf you have already paid, Please wait for a couple of minutes, or you can report the payment</string>
     <string name="view_list">View List</string>
     <string name="view_map">View Map</string>
     <string name="connect_to_vpn">Connect to VPN</string>
@@ -57,7 +57,7 @@
     <string name="session_id">Session ID</string>
     <string name="received_data">Received Data</string>
     <string name="duration">Duration</string>
-    <string name="report">Report Payment</string>
+    <string name="report">Report</string>
     <string name="save">Save</string>
     <string name="reset">Reset</string>
     <string name="enter_old_pin">Enter Old PIN</string>

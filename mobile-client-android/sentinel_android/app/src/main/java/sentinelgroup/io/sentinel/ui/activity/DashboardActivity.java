@@ -46,6 +46,7 @@ import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
 import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Logger;
 
 import static sentinelgroup.io.sentinel.util.AppConstants.DOUBLE_ACTION_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
@@ -83,7 +84,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         setContentView(R.layout.activity_dashboard);
         shouldShowHelper();
         initView();
-        loadVpnFragment();
+        loadVpnFragment(null);
     }
 
     private void shouldShowHelper() {
@@ -105,7 +106,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             mIntentExtra = getIntent().getStringExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY);
         }
         if (mIntentExtra != null && mIntentExtra.equals(AppConstants.HOME)) {
-            loadVpnFragment();
+            loadVpnFragment(null);
         }
     }
 
@@ -257,7 +258,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
             case R.id.action_vpn:
                 if (!(aFragment instanceof VpnSelectFragment))
-                    loadVpnFragment();
+                    loadVpnFragment(null);
                 return true;
 
             case R.id.action_wallet:
@@ -295,9 +296,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
-    private void loadVpnFragment() {
+    private void loadVpnFragment(String iMessage) {
         activateTestNetForVpn();
-        loadFragment(VpnSelectFragment.newInstance());
+        loadFragment(VpnSelectFragment.newInstance(iMessage));
     }
 
     private void loadWalletFragment() {
@@ -377,7 +378,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case AppConstants.REQ_VPN_HISTORY:
                 if (resultCode == RESULT_OK) {
                     if (!(aFragment instanceof WalletFragment))
-                        loadVpnFragment();
+                        loadVpnFragment(null);
                 }
                 break;
             case AppConstants.REQ_RESET_PIN:
@@ -392,7 +393,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case AppConstants.REQ_VPN_PAY:
                 if (resultCode == RESULT_OK) {
-                    loadVpnFragment();
+                    loadVpnFragment(null);
                 }
                 break;
             case AppConstants.REQ_VPN_INIT_PAY:
@@ -477,6 +478,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void updateState(String state, String logMessage, int localizedResId, ConnectionStatus level) {
+        Logger.logError("VPN_STATE", state + " - " + logMessage + " : " + getString(localizedResId), null);
         runOnUiThread(() -> {
             Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
 
@@ -484,10 +486,12 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 SentinelApp.isStart = true;
             }
 
-            if (state.equals("NOPROCESS")) {
+            if (state.equals("NOPROCESS") || state.equals("USER_VPN_PERMISSION_CANCELLED")) {
+                if (state.equals("USER_VPN_PERMISSION_CANCELLED"))
+                    SentinelApp.isStart = true;
                 AppPreferences.getInstance().saveString(AppConstants.PREFS_SESSION_NAME, "");
                 if (!(aFragment instanceof WalletFragment) && !mHasActivityResult && SentinelApp.isStart) {
-                    loadVpnFragment();
+                    loadVpnFragment(getString(localizedResId));
                 }
                 SentinelApp.isStart = false;
             }

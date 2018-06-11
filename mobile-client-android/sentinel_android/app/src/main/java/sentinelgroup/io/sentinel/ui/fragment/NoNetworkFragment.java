@@ -66,7 +66,7 @@ public class NoNetworkFragment extends Fragment {
 
     private void checkForConnectivity() {
         if (NetworkUtil.isOnline())
-            loadNextFragment(VpnSelectFragment.newInstance());
+            loadNextFragment(VpnSelectFragment.newInstance(null));
     }
 
     @Override

@@ -250,7 +250,7 @@
     <string name="state_user_vpn_permission" translatable="false">Waiting for user permission to use VPN API</string>
     <string name="state_user_vpn_password" translatable="false">Waiting for user VPN password</string>
     <string name="state_user_vpn_password_cancelled" translatable="false">VPN password input dialog cancelled</string>
-    <string name="state_user_vpn_permission_cancelled" translatable="false">VPN API permission dialog cancelled</string>
+    <string name="state_user_vpn_permission_cancelled" translatable="false">VPN API permission dialog cancelled.\n\nPlease grant this permission to use VPN services</string>
     <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
     <string name="config_error_found">Error in Configuration</string>
     <string name="no_vpn_support_image">Your image does not support the VPNService API.</string>

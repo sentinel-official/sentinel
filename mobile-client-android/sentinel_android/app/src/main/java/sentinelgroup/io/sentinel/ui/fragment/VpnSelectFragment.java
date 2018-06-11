@@ -34,6 +34,7 @@ import sentinelgroup.io.sentinel.viewmodel.VpnSelectViewModelFactory;
  * create an instance of this fragment.
  */
 public class VpnSelectFragment extends Fragment {
+    private static final String ARG_MESSAGE = "message";
 
     private VpnSelectViewModel mViewModel;
 
@@ -52,15 +53,25 @@ public class VpnSelectFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment.
      *
+     * @param iMessage
      * @return A new instance of fragment VpnSelectFragment.
      */
-    public static VpnSelectFragment newInstance() {
-        return new VpnSelectFragment();
+    public static VpnSelectFragment newInstance(String iMessage) {
+        VpnSelectFragment fragment = new VpnSelectFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_MESSAGE, iMessage);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            String aMessage = getArguments().getString(ARG_MESSAGE);
+            if (aMessage != null && !aMessage.isEmpty())
+                showErrorDialog(aMessage);
+        }
     }
 
     @Override

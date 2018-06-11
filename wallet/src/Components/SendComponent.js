@@ -7,10 +7,11 @@ import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
   transferAmount, isOnline, payVPNUsage, getAvailableTokens, sendError, getTokenBalance,
-  getSentValue, getSentTransactionHistory, swapRawTransaction
+  getSentValue, getSentTransactionHistory, swapRawTransaction, swapPivx
 } from '../Actions/AccountActions';
 import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost, swapTransaction } from '../Actions/TransferActions';
 import ReactTooltip from 'react-tooltip';
+import CopyToClipboard from 'react-copy-to-clipboard';
 var config = require('../config');
 var lang = require('./language');
 
@@ -59,7 +60,16 @@ class SendComponent extends Component {
       swapAmount: 1,
       convertPass: '',
       converting: false,
-      logoUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'
+      logoUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
+      testDisabled: false,
+      eth_address: '',
+      pivxAmount: 0,
+      expectedEth: 0,
+      pivx_address: '',
+      send_address: '',
+      showAddress: false,
+      isPivxDisabled: false,
+      showTransPivxScreen: false
     };
   }
 
@@ -302,6 +312,17 @@ class SendComponent extends Component {
     }
   }
 
+  pivxAddressChange = (event, to_addr) => {
+    this.setState({ eth_address: to_addr })
+    let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
+    if (trueAddress !== null) {
+      this.setState({ isPivxDisabled: false })
+    }
+    else {
+      this.setState({ isPivxDisabled: true })
+    }
+  }
+
   getGasLimit = (amount, to, unit) => {
     var from = this.props.local_address;
     // if (unit === 'ETH') amount = amount * Math.pow(10, 18)
@@ -334,12 +355,16 @@ class SendComponent extends Component {
     this.setState({ showTransScreen: false });
   };
 
+  handleTransClose = () => {
+    this.setState({ showTransPivxScreen: false });
+  };
+
   getTokensList = () => {
     let self = this;
     getAvailableTokens(function (err, tokens) {
       if (err) { }
       else {
-        let tokensList = tokens.filter((token) => token.symbol !== 'SENT');
+        let tokensList = tokens.filter((token) => (token.symbol !== 'SENT' && token.symbol !== 'PIVX'));
         self.setState({ tokens: tokensList })
         tokensList.map((token) => {
           self.getUnitBalance(token);
@@ -398,6 +423,34 @@ class SendComponent extends Component {
     this.setState({ swapAmount: value });
     this.getCompareValue(this.state.selectedToken);
   }
+
+  pivxValueChange = (event, value) => {
+    this.setState({ pivxAmount: value, showAddress: false });
+    this.getPivxCompareValue(value);
+  }
+
+  getPivxCompareValue = (value) => {
+    let self = this;
+    getSentValue('PIVX', value, function (err, swapValue) {
+      if (err) { console.log("Err..", err) }
+      else {
+        self.setState({ expectedEth: (swapValue) });
+      }
+    })
+  }
+
+  onClickPivxConvert = () => {
+    let self = this;
+    swapPivx(this.state.eth_address, function (err, address) {
+      if (err) { console.log("ConErr..", err) }
+      else {
+        self.setState({
+          send_address: address, showAddress: true, pivx_address: '', eth_address: self.props.local_address, expectedEth: 0, isPivxDisabled: false
+        });
+      }
+    })
+  }
+
 
   onClickConvert = () => {
     let self = this;
@@ -530,13 +583,26 @@ class SendComponent extends Component {
                     </div>
                   }
                 </div>
+                <RaisedButton
+                  label="PIVX<=>SENT"
+                  primary={true}
+                  fullWidth={true}
+                  labelStyle={styles.buttonLabelStyle}
+                  onClick={() => { this.setState({ showTransPivxScreen: true, showAddress: false }) }}
+                  buttonStyle={{
+                    backgroundColor: '#3f486b',
+                    height: 48,
+                    lineHeight: '48px'
+                  }}
+                  style={{ height: 48, marginBottom: 5 }}
+                />
               </Col>
               <Col xs={8} style={{ padding: '3% 5% 0px' }}>
                 <div>
                   <span style={styles.formHeading}>{lang[language].SendTo}</span>
                   <span data-tip data-for="toField" style={styles.questionMark}>?</span>
                   <TextField
-                    hintText="Example: 0x6b6df9e25f7bf23343mfkr45"
+                    hintText="Ex:0x93186402811baa5b188a14122C11B41dA0099844"
                     hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
                     style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15 }}
                     underlineShow={false} fullWidth={true}
@@ -821,6 +887,74 @@ class SendComponent extends Component {
                 </Row>
               </div>
             </Dialog>
+            < Dialog
+              contentStyle={{ width: 700 }}
+              bodyStyle={{ padding: '5%' }}
+              open={this.state.showTransPivxScreen}
+              onRequestClose={this.handleTransClose}
+            >
+              {!this.state.showAddress ?
+                <div>
+                  <span style={styles.formHeading}>How Many PIVX Tokens?</span>
+                  <TextField
+                    type="number"
+                    underlineShow={false} fullWidth={true}
+                    inputStyle={styles.textInputStyle}
+                    style={styles.textStyle}
+                    onChange={this.pivxValueChange.bind(this)}
+                    value={this.state.pivxAmount}
+                    underlineShow={false} fullWidth={true}
+                  />
+                  <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins', marginTop: 10, marginBottom: 10 }}>
+                    <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>Expected {this.state.expectedEth}</span>
+                      <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}> SENT TOKENS</span>
+                    </p>
+                  </div>
+                  <span style={styles.formHeading}>SENT Address</span>
+                  <TextField
+                    hintText="Example: 0x93186402811baa5b188a14122C11B41dA0099844"
+                    hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
+                    style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15, marginBottom: 10 }}
+                    underlineShow={false} fullWidth={true}
+                    onChange={this.pivxAddressChange.bind(this)} Z
+                    value={this.state.eth_address}
+                    inputStyle={styles.textInputStyle}
+                  />
+                  <RaisedButton
+                    disabled={this.state.eth_address === '' || this.state.isPivxDisabled ? true : false}
+                    onClick={this.onClickPivxConvert.bind(this)}
+                    label="Swap"
+                    labelStyle={styles.buttonLabelStyle}
+                    fullWidth={true}
+                    buttonStyle={
+                      this.state.eth_address === '' || this.state.isPivxDisabled ?
+                        styles.disabledButtonStyle : styles.enabledButtonStyle
+                    }
+                    style={{ height: 48 }}
+                  />
+                </div>
+                :
+                <span style={{ fontWeight: 'bold' }}>Send {this.state.pivxAmount} PIVX Tokens to <span style={{ color: 'green' }}>{this.state.send_address}</span>
+                  <CopyToClipboard text={this.state.send_address}
+                    onCopy={() => this.setState({
+                      snackMessage: 'Copied to Clipboard Successfully',
+                      snackOpen: true
+                    })} >
+                    <img
+                      src={'../src/Images/download.jpeg'}
+                      data-tip data-for="copyImage"
+                      style={{
+                        height: 18,
+                        width: 18,
+                        cursor: 'pointer'
+                      }}
+                    />
+                  </CopyToClipboard>
+                  <ReactTooltip id="copyImage" place="bottom">
+                    <span>Copy</span>
+                  </ReactTooltip>
+                </span>}
+            </Dialog>
           </Grid>
         </div>
       </MuiThemeProvider>
@@ -853,7 +987,7 @@ const styles = {
     backgroundColor: '#ececf1',
     marginTop: '5%',
     overflow: 'auto',
-    height: 265
+    height: 210
   },
   questionMark: {
     marginLeft: 10,

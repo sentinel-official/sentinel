@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle, TextField, DropDownMenu, RaisedButton } from 'material-ui';
+import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle, DropDownMenu } from 'material-ui';
 import {
   getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline,
-  sendError, connectSocks, disconnectSocks, sendUsage, getSentValue, swapPivx
+  sendError, connectSocks, disconnectSocks, sendUsage
 } from '../Actions/AccountActions';
-import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import VPNComponent from './VPNComponent';
 import ReactTooltip from 'react-tooltip';
@@ -35,15 +34,7 @@ class Header extends Component {
       isTest: false,
       showPay: false,
       payAccount: '',
-      testDisabled: false,
-      showTransScreen: false,
-      eth_address: '',
-      pivxAmount: 0,
-      expectedEth: 0,
-      pivx_address: '',
-      send_address: '',
-      showAddress: false,
-      isDisabled: true
+      testDisabled: false
     }
   }
 
@@ -114,17 +105,6 @@ class Header extends Component {
     }
   }
 
-  addressChange = (event, to_addr) => {
-    this.setState({ eth_address: to_addr })
-    let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
-    if (trueAddress !== null) {
-      this.setState({ isDisabled: false })
-    }
-    else {
-      this.setState({ isDisabled: true })
-    }
-  }
-
   handleToggle = (event, toggle) => {
     if (this.state.isTest) {
       if (isOnline()) {
@@ -153,10 +133,6 @@ class Header extends Component {
     this.setState({ showPopUp: false, showPay: false });
   };
 
-  handleTransClose = () => {
-    this.setState({ showTransScreen: false });
-  };
-
   testChange = (event, toggle) => {
     let self = this;
     if (toggle) {
@@ -172,21 +148,6 @@ class Header extends Component {
       this.props.ontestChange(false);
       this.props.onsockChange(false);
     }
-  }
-
-  valueChange = (event, value) => {
-    this.setState({ pivxAmount: value, showAddress: false });
-    this.getCompareValue(value);
-  }
-
-  getCompareValue = (value) => {
-    let self = this;
-    getSentValue('PIVX', value, function (err, swapValue) {
-      if (err) { console.log("Err..", err) }
-      else {
-        self.setState({ expectedEth: (swapValue / (10 ** 8)) });
-      }
-    })
   }
 
   sockChange = (event, index, unit) => {
@@ -205,19 +166,6 @@ class Header extends Component {
         this.props.onsockChange(false);
       }
     }
-  }
-
-  onClickConvert = () => {
-    let self = this;
-    swapPivx(this.state.eth_address, function (err, address) {
-      if (err) { console.log("ConErr..", err) }
-      else {
-        self.setState({
-          send_address: address, showAddress: true, pivx_address: '',
-          pivxAmount: 0, eth_address: self.props.local_address, expectedEth: 0, isDisabled: true
-        });
-      }
-    })
   }
 
   closeInstruction = () => {
@@ -241,7 +189,7 @@ class Header extends Component {
                   <img src={'../src/Images/logo.svg'} alt="logo" style={{ width: 50, height: 50, marginLeft: 10 }} />
                 </div>
               </Col>
-              <Col xs={3} style={{
+              <Col xs={4} style={{
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
@@ -276,39 +224,20 @@ class Header extends Component {
                   </Col>
                 </Row>
               </Col>
-              <Col xs={4}>
-                <Row>
-                  <Col xs={7}>
-                    <div>
-                      <Col style={styles.sentBalance}>
-                        <span>{this.state.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
-                        <span style={styles.balanceText}>{this.props.balance.sents}</span>
-                      </Col>
-                      <Col style={styles.ethBalance}>
-                        <span>{this.state.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
-                        <span style={styles.balanceText}>{this.props.balance.eths === 'Loading'
-                          ? this.props.balance.eths :
-                          parseFloat(this.props.balance.eths).toFixed(8)
-                        }</span>
-                      </Col>
-                    </div>
+              <Col xs={3}>
+                <div>
+                  <Col style={styles.sentBalance}>
+                    <span>{this.state.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
+                    <span style={styles.balanceText}>{this.props.balance.sents}</span>
                   </Col>
-                  <Col xs={4}>
-                    <RaisedButton
-                      label="PIVX=ETH"
-                      primary={true}
-                      labelStyle={{
-                        color: '#FAFAFA',
-                        textTransform: 'none',
-                        fontWeight: 600,
-                        fontSize: 14
-                      }}
-                      onClick={() => { this.setState({ showTransScreen: true }) }}
-                      buttonStyle={{ backgroundColor: '#595d8f' }}
-                    // style={styles.buttonHeightStyle}
-                    />
+                  <Col style={styles.ethBalance}>
+                    <span>{this.state.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
+                    <span style={styles.balanceText}>{this.props.balance.eths === 'Loading'
+                      ? this.props.balance.eths :
+                      parseFloat(this.props.balance.eths).toFixed(8)
+                    }</span>
                   </Col>
-                </Row>
+                </div>
               </Col>
               <Col xs={1}>
                 <Col style={styles.columnStyle}>
@@ -349,6 +278,28 @@ class Header extends Component {
                 </Col>
               </Col>
               <Col xs={1} style={{ paddingLeft: 60 }}>
+                {/* <Col style={{
+                  fontSize: 12,
+                  fontWeight: '600',
+                }}>
+                  <FlatButton
+                    label="SOCKS"
+                    labelStyle={this.state.isTest ?
+                      { color: '#fafafa', textTransform: 'none', fontWeight: 600, fontSize: 14 } :
+                      { color: '#4b4e5d', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
+                    style={{ height: '18px', lineHeight: '18px' }}
+                    disabled={true}
+                  />
+                </Col>
+                <Col>
+                  <Toggle
+                    toggled={this.state.isSock}
+                    onToggle={this.sockChange}
+                    style={{ marginTop: 8, marginLeft: 20 }}
+                    thumbStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                    trackStyle={this.state.isTest ? null : { backgroundColor: '#4b4e5d' }}
+                  />
+                </Col> */}
                 <DropDownMenu
                   autoWidth={false}
                   disabled={(!this.state.isTest) || this.state.status}
@@ -399,51 +350,6 @@ class Header extends Component {
               />
             </Row>
           </Grid>
-          < Dialog
-            contentStyle={{ width: 700 }}
-            bodyStyle={{ padding: '5%' }}
-            open={this.state.showTransScreen}
-            onRequestClose={this.handleTransClose}
-          >
-            <span style={styles.formHeading}>How Much</span>
-            <TextField
-              type="number"
-              underlineShow={false} fullWidth={true}
-              inputStyle={styles.textInputStyle}
-              style={styles.textStyle}
-              onChange={this.valueChange.bind(this)}
-              value={this.state.pivxAmount}
-              underlineShow={false} fullWidth={true}
-            />
-            <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins' }}>
-              <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>Expected {this.state.expectedEth}</span>
-                <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}> SENT TOKENS</span>
-              </p>
-            </div>
-            <span style={styles.formHeading}>ETH Address</span>
-            <TextField
-              hintText="Example: 0x93186402811baa5b188a14122C11B41dA0099844"
-              hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
-              style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15 }}
-              underlineShow={false} fullWidth={true}
-              onChange={this.addressChange.bind(this)}
-              value={this.state.eth_address}
-              inputStyle={styles.textInputStyle}
-            />
-            <RaisedButton
-              disabled={this.state.eth_address === '' || this.state.isDisabled ? true : false}
-              onClick={this.onClickConvert.bind(this)}
-              label="Swap"
-              labelStyle={styles.buttonLabelStyle}
-              fullWidth={true}
-              buttonStyle={
-                this.state.eth_address === '' || this.state.isDisabled ?
-                  styles.disabledButtonStyle : styles.enabledButtonStyle
-              }
-              style={{ height: 48 }}
-            />
-            {this.state.showAddress ? <span>Send Pivx Tokens to {this.state.send_address}</span> : null}
-          </Dialog>
         </div>
       </div >
     )
@@ -485,18 +391,12 @@ const styles = {
     fontSize: 14,
     fontWeight: '600',
     color: '#FAFAFA',
-    marginTop: '3%',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap'
+    marginTop: '3%'
   },
   sentBalance: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FAFAFA',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap'
+    color: '#FAFAFA'
   },
   toggleLabelisTest: {
     color: '#FAFAFA',
@@ -521,39 +421,6 @@ const styles = {
   },
   thumbTrackStyle: {
     backgroundColor: '#4b4e5d'
-  },
-  formHeading: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: '#253245',
-    letterSpacing: 2
-  },
-  textInputStyle: {
-    padding: 10,
-    fontWeight: 'bold',
-    color: '#2f3245'
-  },
-  textStyle: {
-    backgroundColor: '#d4dae2',
-    height: 42,
-    marginTop: 12
-  },
-  buttonLabelStyle: {
-    textTransform: 'none',
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16
-  },
-  disabledButtonStyle: {
-    backgroundColor: '#bdbdbd',
-    height: 48,
-    lineHeight: '48px',
-    cursor: 'not-allowed'
-  },
-  enabledButtonStyle: {
-    backgroundColor: '#595d8f',
-    height: 48,
-    lineHeight: '48px'
   }
 }
 export default Header;

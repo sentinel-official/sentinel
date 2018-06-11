@@ -60,6 +60,7 @@ public class VpnRepository {
         aVpnListServerData.observeForever(vpnList -> {
             mAppExecutors.diskIO().execute(() -> {
                 if (vpnList != null && vpnList.size() > 0) {
+                    mListDao.deleteVpnListEntity();
                     mListDao.insertVpnListEntity(vpnList);
                 }
             });

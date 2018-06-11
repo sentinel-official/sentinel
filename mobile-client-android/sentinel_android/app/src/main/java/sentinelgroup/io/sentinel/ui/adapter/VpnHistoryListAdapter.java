@@ -106,7 +106,8 @@ public class VpnHistoryListAdapter extends RecyclerView.Adapter<VpnHistoryListAd
                             && aOldData.timestamp == aNewData.timestamp;
                 }
             });
-            mData = iData;
+            mData.clear();
+            mData.addAll(iData);
             aResult.dispatchUpdatesTo(this);
         }
     }

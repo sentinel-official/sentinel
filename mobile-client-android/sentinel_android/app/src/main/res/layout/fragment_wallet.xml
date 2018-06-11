@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/colorCardDark"
                 app:cardCornerRadius="@dimen/margin_4"
-                app:cardElevation="@dimen/margin_8"
+                app:cardElevation="@dimen/margin_4"
                 app:cardPreventCornerOverlap="false">
 
                 <android.support.constraint.ConstraintLayout

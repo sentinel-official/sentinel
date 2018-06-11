@@ -136,7 +136,8 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                             && aOldData.getNetSpeed().upload == aNewData.getNetSpeed().upload;
                 }
             });
-            mData = iData;
+            mData.clear();
+            mData.addAll(iData);
             aResult.dispatchUpdatesTo(this);
         }
     }

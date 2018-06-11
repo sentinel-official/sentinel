@@ -87,3 +87,7 @@ android {
         androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     }
 }
+
+dependencies {
+    implementation 'com.android.support:support-v4:27.+'
+}

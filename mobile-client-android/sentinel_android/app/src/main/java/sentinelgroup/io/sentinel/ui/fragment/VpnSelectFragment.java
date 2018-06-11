@@ -20,6 +20,7 @@ import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnSelectPagerAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.NetworkUtil;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.VpnSelectViewModel;
 import sentinelgroup.io.sentinel.viewmodel.VpnSelectViewModelFactory;
@@ -42,8 +43,6 @@ public class VpnSelectFragment extends Fragment {
     private TabLayout mTabLayout;
 
     private VpnSelectPagerAdapter mAdapter;
-
-    private boolean mIsPaymentPending;
 
     public VpnSelectFragment() {
         // Required empty public constructor
@@ -97,20 +96,25 @@ public class VpnSelectFragment extends Fragment {
             mViewModel = ViewModelProviders.of(this, aFactory).get(VpnSelectViewModel.class);
 
             mViewModel.getVpnUsageLiveEvent().observe(this, vpnUsageResource -> {
-                if (vpnUsageResource != null && !mIsPaymentPending)
+                if (vpnUsageResource != null)
                     if (vpnUsageResource.status.equals(Status.LOADING)) {
                         showProgressDialog(true, getString(R.string.generic_loading_message));
                     } else if (vpnUsageResource.data != null && vpnUsageResource.status.equals(Status.SUCCESS)) {
                         hideProgressDialog();
                         if (vpnUsageResource.data.usage != null && vpnUsageResource.data.usage.getDue() > 0L) {
-                            mIsPaymentPending = true;
                             loadNextFragment(VpnPayFragment.newInstance());
                         } else {
-                            setupViewPagerAndTabs();
+                            if (NetworkUtil.isOnline())
+                                setupViewPagerAndTabs();
+                            else
+                                loadNextFragment(NoNetworkFragment.newInstance());
                         }
                     } else if (vpnUsageResource.message != null && vpnUsageResource.status.equals(Status.ERROR)) {
                         hideProgressDialog();
-                        showErrorDialog(vpnUsageResource.message);
+                        if (!vpnUsageResource.message.equals(getString(R.string.no_internet)))
+                            showErrorDialog(vpnUsageResource.message);
+                        else
+                            loadNextFragment(NoNetworkFragment.newInstance());
                     }
             });
         }

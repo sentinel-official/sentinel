@@ -301,4 +301,5 @@
     <string name="got_it">Got it</string>
     <string name="no_scan_results">Scan results not found.</string>
     <string name="not_a_address">The scanned result is not an Account Address. Discarding scanned results.</string>
+    <string name="retry">Retry</string>
 </resources>

@@ -293,7 +293,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     public void updateState(String state, String logmessage, int localizedResId, ConnectionStatus level) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
-                updateStatus(getString(localizedResId));
+                updateStatus(getString(localizedResId, logmessage));
             });
         }
     }

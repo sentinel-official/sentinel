@@ -486,19 +486,16 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 SentinelApp.isStart = true;
             }
 
-            if (state.equals("NOPROCESS") || state.equals("USER_VPN_PERMISSION_CANCELLED")) {
-                if (state.equals("USER_VPN_PERMISSION_CANCELLED"))
-                    SentinelApp.isStart = true;
-                AppPreferences.getInstance().saveString(AppConstants.PREFS_SESSION_NAME, "");
-                if (!(aFragment instanceof WalletFragment) && !mHasActivityResult && SentinelApp.isStart) {
-                    loadVpnFragment(getString(localizedResId));
-                }
-                SentinelApp.isStart = false;
+            if(state.equals("USER_VPN_PERMISSION")){
+                SentinelApp.isStart = true;
             }
 
-            if (state.equals("AUTH_FAILED")) {
+            if (state.equals("NOPROCESS") || state.equals("USER_VPN_PERMISSION_CANCELLED")) {
+                AppPreferences.getInstance().saveString(AppConstants.PREFS_SESSION_NAME, "");
+                if (!(aFragment instanceof WalletFragment) && !mHasActivityResult && SentinelApp.isStart) {
+                    loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
+                }
                 SentinelApp.isStart = false;
-                Toast.makeText(getApplicationContext(), "Wrong Username or Password!", Toast.LENGTH_SHORT).show();
             }
 
             if (mHasActivityResult) {

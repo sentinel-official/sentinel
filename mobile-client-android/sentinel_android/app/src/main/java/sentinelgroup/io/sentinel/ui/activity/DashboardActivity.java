@@ -365,7 +365,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (aFragment instanceof WalletFragment) {
-            ((WalletFragment) aFragment).updateBalance();
+            ((WalletFragment) aFragment).updateBalance(isChecked);
         }
     }
 

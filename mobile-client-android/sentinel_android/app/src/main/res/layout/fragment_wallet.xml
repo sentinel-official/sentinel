@@ -1,202 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sr_reload"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/address"
-        style="@style/CustomTextAppearance.Text12.White50Normal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/address_desc"
-        app:layout_constraintBottom_toTopOf="@+id/tv_address"
-        app:layout_constraintEnd_toStartOf="@+id/ib_copy_address"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/tv_address"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/scroll_view"
-        app:layout_constraintEnd_toEndOf="@+id/address"
-        app:layout_constraintStart_toStartOf="@+id/address"
-        app:layout_constraintTop_toBottomOf="@+id/address" />
-
-    <ImageButton
-        android:id="@+id/ib_copy_address"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="@dimen/margin_8"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_address"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_address"
-        app:layout_constraintTop_toTopOf="@+id/address"
-        app:srcCompat="@drawable/ic_copy"
-        tools:ignore="ContentDescription" />
-
-    <ScrollView
-        android:id="@+id/scroll_view"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        android:scrollbars="none"
-        android:padding="@dimen/margin_8"
-        app:layout_constraintBottom_toTopOf="@+id/btn_send"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_address"
-        app:layout_constraintVertical_bias="0.0">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/address"
+            style="@style/CustomTextAppearance.Text12.White50Normal"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/address_desc"
+            app:layout_constraintBottom_toTopOf="@+id/tv_address"
+            app:layout_constraintEnd_toStartOf="@+id/ib_copy_address"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_chainStyle="packed" />
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/cardView"
+        <TextView
+            android:id="@+id/tv_address"
+            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/scroll_view"
+            app:layout_constraintEnd_toEndOf="@+id/address"
+            app:layout_constraintStart_toStartOf="@+id/address"
+            app:layout_constraintTop_toBottomOf="@+id/address" />
+
+        <ImageButton
+            android:id="@+id/ib_copy_address"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="@dimen/margin_8"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_address"
+            app:layout_constraintTop_toTopOf="@+id/address"
+            app:srcCompat="@drawable/ic_copy"
+            tools:ignore="ContentDescription" />
+
+        <ScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:padding="@dimen/margin_8"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/btn_send"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_address"
+            app:layout_constraintVertical_bias="0.0">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/colorCardDark"
-                app:cardCornerRadius="@dimen/margin_4"
-                app:cardElevation="@dimen/margin_4"
-                app:cardPreventCornerOverlap="false">
+                android:orientation="vertical">
 
-                <android.support.constraint.ConstraintLayout
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cardView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/colorCardDark"
+                    app:cardCornerRadius="@dimen/margin_4"
+                    app:cardElevation="@dimen/margin_4"
+                    app:cardPreventCornerOverlap="false">
 
-                    <TextView
-                        android:id="@+id/wallet"
-                        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                    <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/shape_state_blue"
-                        android:gravity="center"
-                        android:paddingBottom="@dimen/margin_4"
-                        android:paddingTop="@dimen/margin_4"
-                        android:text="@string/wallet_balance"
-                        app:layout_constraintBottom_toTopOf="@+id/tv_total_sent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_chainStyle="spread" />
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/tv_total_sent"
-                        style="@style/CustomTextAppearance.Text32"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:drawablePadding="@dimen/margin_4"
-                        android:drawableTop="@drawable/ic_app_icon_small"
-                        android:gravity="center"
-                        android:paddingLeft="@dimen/margin_8"
-                        android:paddingRight="@dimen/margin_8"
-                        android:text="@string/empty_token_value"
-                        app:layout_constraintBottom_toTopOf="@+id/tv_total_sent_desc"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/wallet" />
+                        <TextView
+                            android:id="@+id/wallet"
+                            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/shape_state_blue"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/margin_4"
+                            android:paddingTop="@dimen/margin_4"
+                            android:text="@string/wallet_balance"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_total_sent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="spread" />
 
-                    <TextView
-                        android:id="@+id/tv_total_sent_desc"
-                        style="@style/CustomTextAppearance.Text12.GrayNormal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginStart="8dp"
-                        android:text="@string/sent_desc"
-                        app:layout_constraintBottom_toTopOf="@+id/divider"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_total_sent" />
+                        <TextView
+                            android:id="@+id/tv_total_sent"
+                            style="@style/CustomTextAppearance.Text32"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:drawablePadding="@dimen/margin_4"
+                            android:drawableTop="@drawable/ic_app_icon_small"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/margin_8"
+                            android:paddingRight="@dimen/margin_8"
+                            android:text="@string/empty_token_value"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_total_sent_desc"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/wallet" />
 
-                    <ImageView
-                        android:id="@+id/divider"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/margin_1"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="16dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:src="@color/colorCardShadow"
-                        app:layout_constraintBottom_toTopOf="@+id/tv_total_ether"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_total_sent_desc"
-                        app:layout_constraintVertical_chainStyle="spread"
-                        tools:ignore="ContentDescription" />
+                        <TextView
+                            android:id="@+id/tv_total_sent_desc"
+                            style="@style/CustomTextAppearance.Text12.GrayNormal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/sent_desc"
+                            app:layout_constraintBottom_toTopOf="@+id/divider"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_total_sent" />
 
-                    <TextView
-                        android:id="@+id/tv_total_ether"
-                        style="@style/CustomTextAppearance.Text32"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/margin_4"
-                        android:drawableTop="@drawable/ic_ethereum"
-                        android:gravity="center"
-                        android:paddingLeft="@dimen/margin_8"
-                        android:paddingRight="@dimen/margin_8"
-                        android:text="@string/empty_token_value"
-                        app:layout_constraintBottom_toTopOf="@+id/tv_total_ether_desc"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/divider" />
+                        <ImageView
+                            android:id="@+id/divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/margin_1"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:src="@color/colorCardShadow"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_total_ether"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_total_sent_desc"
+                            app:layout_constraintVertical_chainStyle="spread"
+                            tools:ignore="ContentDescription" />
 
-                    <TextView
-                        android:id="@+id/tv_total_ether_desc"
-                        style="@style/CustomTextAppearance.Text12.GrayNormal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:text="@string/eth_desc"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_total_ether" />
-                </android.support.constraint.ConstraintLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-    </ScrollView>
+                        <TextView
+                            android:id="@+id/tv_total_ether"
+                            style="@style/CustomTextAppearance.Text32"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="@dimen/margin_4"
+                            android:drawableTop="@drawable/ic_ethereum"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/margin_8"
+                            android:paddingRight="@dimen/margin_8"
+                            android:text="@string/empty_token_value"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_total_ether_desc"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-    <Button
-        android:id="@+id/btn_send"
-        style="@style/CustomTextAppearance.OrangeButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_receive"
-        app:layout_constraintStart_toStartOf="parent" />
+                        <TextView
+                            android:id="@+id/tv_total_ether_desc"
+                            style="@style/CustomTextAppearance.Text12.GrayNormal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:text="@string/eth_desc"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_total_ether" />
+                    </android.support.constraint.ConstraintLayout>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+        </ScrollView>
 
-    <Button
-        android:id="@+id/btn_receive"
-        style="@style/CustomTextAppearance.BlueButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:text="@string/receive"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_send"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_send"
-        app:layout_constraintTop_toTopOf="@+id/btn_send" />
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/btn_send"
+            style="@style/CustomTextAppearance.OrangeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/send"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_receive"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btn_receive"
+            style="@style/CustomTextAppearance.BlueButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/receive"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_send"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_send"
+            app:layout_constraintTop_toTopOf="@+id/btn_send" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

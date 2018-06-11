@@ -52,9 +52,11 @@ public class InjectorModule {
         return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getVpnUsageEntryDao(), aWebService, aAppExecutors);
     }
 
-    private static WalletRepository provideWalletRepository() {
+    private static WalletRepository provideWalletRepository(Context iContext) {
+        AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         WebService aWebService = WebClient.get();
-        return WalletRepository.getInstance(aWebService);
+        AppExecutors aAppExecutors = AppExecutors.getInstance();
+        return WalletRepository.getInstance(aAppDatabase.getBalanceEntryDao(), aWebService, aAppExecutors);
     }
 
     private static SendRepository provideSendRepository(Context iContext) {
@@ -135,8 +137,8 @@ public class InjectorModule {
         return new VpnSessionViewModelFactory(aRepository);
     }
 
-    public static WalletViewModelFactory provideWalletViewModelFactory() {
-        WalletRepository aRepository = provideWalletRepository();
+    public static WalletViewModelFactory provideWalletViewModelFactory(Context iContext) {
+        WalletRepository aRepository = provideWalletRepository(iContext);
         return new WalletViewModelFactory(aRepository);
     }
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,12 @@ import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
-import sentinelgroup.io.sentinel.network.model.Balance;
+import sentinelgroup.io.sentinel.network.model.Chains;
 import sentinelgroup.io.sentinel.ui.activity.ReceiveActivity;
 import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
-import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.WalletViewModel;
 import sentinelgroup.io.sentinel.viewmodel.WalletViewModelFactory;
 
@@ -38,6 +38,7 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
 
     private OnGenericFragmentInteractionListener mListener;
 
+    private SwipeRefreshLayout mSrReload;
     private TextView mTvAddress, mTvTotalSent, mTvTotalEther, mTvTotalSentDesc, mTvTotalEtherDesc;
 
     public WalletFragment() {
@@ -80,6 +81,7 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(View iView) {
+        mSrReload = iView.findViewById(R.id.sr_reload);
         mTvAddress = iView.findViewById(R.id.tv_address);
         mTvTotalSent = iView.findViewById(R.id.tv_total_sent);
         mTvTotalEther = iView.findViewById(R.id.tv_total_ether);
@@ -91,23 +93,26 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
         iView.findViewById(R.id.ib_copy_address).setOnClickListener(this);
         iView.findViewById(R.id.btn_send).setOnClickListener(this);
         iView.findViewById(R.id.btn_receive).setOnClickListener(this);
+        // setup swipe to refresh layout
+        mSrReload.setOnRefreshListener(() -> {
+            mViewModel.reloadBalance();
+            mSrReload.setRefreshing(false);
+        });
     }
 
     private void initViewModel() {
-        WalletViewModelFactory aFactory = InjectorModule.provideWalletViewModelFactory();
+        WalletViewModelFactory aFactory = InjectorModule.provideWalletViewModelFactory(getContext());
         mViewModel = ViewModelProviders.of(this, aFactory).get(WalletViewModel.class);
 
-        mViewModel.getBalanceLiveData().observe(this, balanceResource -> {
-            if (balanceResource != null) {
-                if (balanceResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true,getString(R.string.fetching_balance));
-                } else if (balanceResource.data != null && balanceResource.status.equals(Status.SUCCESS)) {
-                    hideProgressDialog();
-                    setBalanceValue(balanceResource.data);
-                } else if (balanceResource.status.equals(Status.ERROR) && balanceResource.message != null) {
-                    hideProgressDialog();
-                    showErrorDialog(balanceResource.message);
-                }
+        mViewModel.getBalanceLiveData().observe(this, balance -> {
+            if (balance != null) {
+                setBalanceValue(balance);
+            }
+        });
+
+        mViewModel.getBalanceErrorLiveEvent().observe(this, balanceError -> {
+            if (balanceError != null) {
+                showErrorDialog(balanceError);
             }
         });
 
@@ -118,10 +123,10 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void setBalanceValue(Balance iData) {
+    private void setBalanceValue(Chains iData) {
         boolean aIsChecked = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-        mTvTotalEther.setText(mViewModel.getFormattedEthBalance(aIsChecked ? iData.balances.rinkeby.eths : iData.balances.main.eths));
-        mTvTotalSent.setText(mViewModel.getFormattedSentBalance(aIsChecked ? iData.balances.rinkeby.sents : iData.balances.main.sents));
+        mTvTotalEther.setText(mViewModel.getFormattedEthBalance(aIsChecked ? iData.getRinkeby().eths : iData.getMain().eths));
+        mTvTotalSent.setText(mViewModel.getFormattedSentBalance(aIsChecked ? iData.getRinkeby().sents : iData.getMain().sents));
         setTextDesc(aIsChecked);
     }
 
@@ -130,23 +135,15 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
         mTvTotalEtherDesc.setText(iIsChecked ? R.string.test_eth_desc : R.string.eth_desc);
     }
 
-    public void updateBalance() {
-        mViewModel.updateBalance();
+    public void updateBalance(boolean isChecked) {
+        setBalanceValue(mViewModel.updateBalance(isChecked));
+    }
+
+    public void reloadBalance(){
+        mViewModel.reloadBalance();
     }
 
     // Interface interaction methods
-    public void showProgressDialog(boolean isHalfDim, String iMessage) {
-        if (mListener != null) {
-            mListener.onShowProgressDialog(isHalfDim, iMessage);
-        }
-    }
-
-    public void hideProgressDialog() {
-        if (mListener != null) {
-            mListener.onHideProgressDialog();
-        }
-    }
-
     public void showErrorDialog(String iError) {
         if (mListener != null) {
             mListener.onShowSingleActionDialog(iError);
@@ -178,7 +175,6 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onDetach() {
-        hideProgressDialog();
         super.onDetach();
         mListener = null;
     }

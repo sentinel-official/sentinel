@@ -96,11 +96,9 @@ class SentTransaction extends Component {
                                     <span style={{ marginLeft: 5 }}>{new Date(parseInt(history.timeStamp) * 1000).toGMTString()}</span>
                                 </div>
                                 <div>
-                                    <span style={{
-                                        fontWeight: 'bold'
-                                    }}>{lang[language].To}:
+                                    <span style={styles.historyHeading}>{lang[language].To}:
                   </span>
-                                    <a style={{ cursor: 'pointer', marginLeft: 5 }}
+                                    <a style={styles.transactionLink}
                                         onClick={() => {
                                             statusUrl = this.getStatusUrl();
                                             this.openInExternalBrowser(`${statusUrl}/address/0x${history.topics[2].substring(26)}`)
@@ -115,9 +113,7 @@ class SentTransaction extends Component {
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard>
-                                    <span style={{
-                                        fontWeight: 'bold'
-                                    }}>
+                                    <span style={styles.historyHeading}>
                                         {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
@@ -135,12 +131,10 @@ class SentTransaction extends Component {
                                     <span style={{ marginLeft: 5 }}>{new Date(parseInt(history.timeStamp) * 1000).toGMTString()}</span>
                                 </div>
                                 <div>
-                                    <span style={{
-                                        fontWeight: 'bold'
-                                    }}>
+                                    <span style={styles.historyHeading}>
                                         {lang[language].From}:
                 </span>
-                                    <a style={{ cursor: 'pointer', marginLeft: 5 }}
+                                    <a style={styles.transactionLink}
                                         onClick={() => {
                                             statusUrl = this.getStatusUrl();
                                             this.openInExternalBrowser(`${statusUrl}/address/0x${history.topics[1].substring(26)}`)
@@ -155,9 +149,7 @@ class SentTransaction extends Component {
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard>
-                                    <span style={{
-                                        fontWeight: 'bold'
-                                    }}>
+                                    <span style={styles.historyHeading}>
                                         {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
@@ -167,11 +159,11 @@ class SentTransaction extends Component {
                             </div>
                         }
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
-                            <span style={{ fontWeight: 'bold' }}>{lang[language].Amount} : </span>
+                            <span style={styles.historyHeading}>{lang[language].Amount} : </span>
                             <span>{(parseInt(history.data) / (10 ** 8)).toFixed(3)} </span>
                             <span>SENTs</span>  |
-                            <span style={{ fontWeight: 'bold' }}> {lang[language].Status} : {lang[language].Success}</span> |
-                            <span style={{ fontWeight: 'bold' }}> Tx : </span>
+                            <span style={styles.historyHeading}> {lang[language].Status} : {lang[language].Success}</span> |
+                            <span style={styles.historyHeading}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
                                     statusUrl = this.getStatusUrl();
@@ -197,7 +189,7 @@ class SentTransaction extends Component {
             })
         }
         return (
-            <div style={this.props.isTest ? styles.testOutputDiv : styles.outputDiv}>
+            <div style={this.props.isTest ? (this.props.hasExtraDiv ? styles.testOuptutDivExtra : styles.testOutputDiv) : (this.props.hasExtraDiv ? styles.outputDivExtra : styles.outputDiv)}>
                 {
                     (txData && this.props.currentHash) ?
                         <div style={styles.wholeDiv}>
@@ -210,11 +202,9 @@ class SentTransaction extends Component {
                                 <span style={{ marginLeft: 5 }}>{new Date(parseInt(txData.date) * 1000).toGMTString()}</span>
                             </div>
                             <div>
-                                <span style={{
-                                    fontWeight: 'bold'
-                                }}>{lang[language].To}:
+                                <span style={styles.historyHeading}>{lang[language].To}:
                   </span>
-                                <a style={{ cursor: 'pointer', marginLeft: 5 }}
+                                <a style={styles.transactionLink}
                                     onClick={() => {
                                         statusUrl = this.getStatusUrl();
                                         this.openInExternalBrowser(`${statusUrl}/address/0x${txData.to}`)
@@ -229,9 +219,7 @@ class SentTransaction extends Component {
                                         data-tip data-for="copyImage"
                                         style={styles.clipBoard} />
                                 </CopyToClipboard>
-                                <span style={{
-                                    fontWeight: 'bold'
-                                }}>
+                                <span style={styles.historyHeading}>
                                     {lang[language].GasPrice}:
                 </span>
                                 <span style={{ marginLeft: 5 }}>
@@ -239,11 +227,11 @@ class SentTransaction extends Component {
                 </span>
                             </div>
                             <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
-                                <span style={{ fontWeight: 'bold' }}>{lang[language].Amount} : </span>
+                                <span style={styles.historyHeading}>{lang[language].Amount} : </span>
                                 <span>{txData.amount.toFixed(3)} </span>
                                 <span>SENTs</span>  |
-                            <span style={{ fontWeight: 'bold' }}> {lang[language].Status} : {this.state.txStatus}</span> |
-                            <span style={{ fontWeight: 'bold' }}> Tx : </span>
+                            <span style={styles.historyHeading}> {lang[language].Status} : {this.state.txStatus}</span> |
+                            <span style={styles.historyHeading}> Tx : </span>
                                 <a style={styles.anchorStyle} onClick={
                                     () => {
                                         statusUrl = this.getStatusUrl();
@@ -311,6 +299,25 @@ const styles = {
         overflowY: 'auto',
         marginTop: '2%',
         overflowX: 'hidden'
+    },
+    outputDivExtra: {
+        height: 395,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    testOutputDivExtra: {
+        height: 365,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    historyHeading: {
+        fontWeight: 'bold'
+    },
+    transactionLink: {
+        cursor: 'pointer',
+        marginLeft: 5
     }
 }
 

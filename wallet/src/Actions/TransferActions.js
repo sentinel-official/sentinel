@@ -118,16 +118,14 @@ export function getPrivateKey(password, language, cb) {
 export function setGas(from_addr, to_addr, amount, cb) {
     try {
         tokenGas = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
-        console.log("Token Gas", tokenGas);
     } catch (err) {
-        console.log("flkdkkdfksdf");
         tokenGas = 38119
     }
     cb(tokenGas);
 }
 
 function setSwapContract(contractAddr, cb) {
-    fetch('https://api-rinkeby.etherscan.io/api?module=contract&action=getabi&address=' + contractAddr, {
+    fetch('https://api.etherscan.io/api?module=contract&action=getabi&address=' + contractAddr, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -137,11 +135,9 @@ function setSwapContract(contractAddr, cb) {
         response.json().then(function (resp) {
             if (resp.status === '1') {
                 contract = web3.eth.contract(JSON.parse(resp['result'])).at(contractAddr);
-                console.log("Contract..", contract);
                 cb(contract);
             } else {
                 contract = null;
-                console.log("Error...")
                 cb(null);
             }
         });
@@ -150,49 +146,51 @@ function setSwapContract(contractAddr, cb) {
 
 export function swapTransaction(from_addr, ether_addr, contract_addr, amount, privateKey, unit, cb) {
     try {
-        console.log("Request..", from_addr, ether_addr, contract_addr, amount, privateKey, unit);
-        setWeb3();
-        if (unit === 'ETH') {
-            var txParams = {
-                nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-                gasPrice: 20 * (10 ** 9),
-                gasLimit: 21000,
-                from: from_addr,
-                to: ether_addr,
-                value: web3.toHex(amount),
-                data: ''
+        if (amount == 0) {
+            cb({ message: 'Please send amount for swapping' }, null)
+        } else {
+            setWeb3();
+            if (unit === 'ETH') {
+                var txParams = {
+                    nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
+                    gasPrice: 20 * (10 ** 9),
+                    gasLimit: 21000,
+                    from: from_addr,
+                    to: ether_addr,
+                    value: web3.toHex(amount),
+                    data: ''
+                }
+                var tx = new EthereumTx(txParams);
+                tx.sign(privateKey);
+                var serializedTx = '0x' + tx.serialize().toString('hex');
+                cb(null, serializedTx);
             }
-            var tx = new EthereumTx(txParams);
-            tx.sign(privateKey);
-            var serializedTx = '0x' + tx.serialize().toString('hex');
-            cb(serializedTx);
-        }
-        else {
-            setSwapContract(contract_addr, function (contract) {
-                if (contract) {
-                    setGas(from_addr, ether_addr, amount, function (gasValue) {
-                        var data = contract.transfer.getData(ether_addr, amount, { from: from_addr });
-                        var txParams = {
-                            nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-                            gasPrice: 20 * (10 ** 9),
-                            gasLimit: gasValue,
-                            from: from_addr,
-                            to: contract_addr,
-                            value: '0x00',
-                            data: data
-                        }
-                        console.log("Params..", txParams);
-                        var tx = new EthereumTx(txParams);
-                        tx.sign(privateKey);
-                        var serializedTx = '0x' + tx.serialize().toString('hex');
-                        cb(serializedTx);
-                    });
-                }
-                else {
-                    cb(null);
-                }
-            })
+            else {
+                setSwapContract(contract_addr, function (contract) {
+                    if (contract) {
+                        setGas(from_addr, ether_addr, amount, function (gasValue) {
+                            var data = contract.transfer.getData(ether_addr, amount, { from: from_addr });
+                            var txParams = {
+                                nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
+                                gasPrice: 20 * (10 ** 9),
+                                gasLimit: gasValue,
+                                from: from_addr,
+                                to: contract_addr,
+                                value: '0x00',
+                                data: data
+                            }
+                            var tx = new EthereumTx(txParams);
+                            tx.sign(privateKey);
+                            var serializedTx = '0x' + tx.serialize().toString('hex');
+                            cb(null, serializedTx);
+                        });
+                    }
+                    else {
+                        cb({ message: 'Problem in swapping. Please Try Later' }, null);
+                    }
+                })
 
+            }
         }
     } catch (Err) {
         sendError(Err);

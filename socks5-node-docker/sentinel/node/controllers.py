@@ -29,7 +29,8 @@ def register_node(node):
         'account_addr': node.config['account_addr'],
         'price_per_gb': node.config['price_per_gb'],
         'location': node.location,
-        'net_speed': node.net_speed
+        'net_speed': node.net_speed,
+        'vpn_type':'socks5'
     }
     url = urljoin(MASTER_NODE_URL, 'node/register')
     try:
@@ -61,30 +62,30 @@ def send_nodeinfo(node, info):
         print(err)
 
 
-def send_connections_info(account_addr, token, connections):
-    body = {
-        'account_addr': account_addr,
-        'token': token,
-        'connections': connections
-    }
-    url = urljoin(MASTER_NODE_URL, 'node/update-connections')
-    try:
-        res = fetch().post(url, json=body)
-        res = res.json()
-        return res['success']
-    except Exception as err:
-        print(err)
+# def send_connections_info(account_addr, token, connections):
+#     body = {
+#         'account_addr': account_addr,
+#         'token': token,
+#         'connections': connections
+#     }
+#     url = urljoin(MASTER_NODE_URL, 'node/update-connections')
+#     try:
+#         res = fetch().post(url, json=body)
+#         res = res.json()
+#         return res['success']
+#     except Exception as err:
+#         print(err)
 
 
-def deregister_node(node):
-    body = {
-        'account_addr': node.config['account_addr'],
-        'token': node.config['token']
-    }
-    url = urljoin(MASTER_NODE_URL, 'node/deregister')
-    try:
-        res = fetch().post(url, json=body)
-        res = res.json()
-        return res['success']
-    except Exception as err:
-        print(err)
+# def deregister_node(node):
+#     body = {
+#         'account_addr': node.config['account_addr'],
+#         'token': node.config['token']
+#     }
+#     url = urljoin(MASTER_NODE_URL, 'node/deregister')
+#     try:
+#         res = fetch().post(url, json=body)
+#         res = res.json()
+#         return res['success']
+#     except Exception as err:
+#         print(err)

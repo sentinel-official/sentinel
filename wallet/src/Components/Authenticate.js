@@ -59,14 +59,14 @@ class Authenticate extends Component {
                 label={lang[language].Close}
                 primary={true}
                 onClick={this.closeWindow}
-                style={{ border: '1px solid #00bcd4', borderRadius: 5 }}
+                style={styles.closeButton}
             />,
             <FlatButton
                 label={lang[language].Submit}
                 disabled={this.state.isDisabled}
                 primary={true}
                 onClick={this.submitPassword}
-                style={{ border: '1px solid #00bcd4', borderRadius: 5, margin: '0px 20px 0px 10px' }}
+                style={styles.submitButton}
             />
         ]
         return (
@@ -95,12 +95,12 @@ class Authenticate extends Component {
                         message={this.state.snackMessage}
                         autoHideDuration={2000}
                         onRequestClose={this.snackRequestClose}
-                        style={{ marginBottom: '2%' }}
+                        style={styles.snackBarStyle}
                     />
                     <Snackbar
                         open={this.state.statusSnack}
                         message={this.state.statusMessage}
-                        style={{ marginBottom: '2%' }}
+                        style={styles.snackBarStyle}
                     />
                 </div>
             </MuiThemeProvider>
@@ -115,6 +115,18 @@ const styles = {
         height: 40,
         lineHeight: '18px'
     },
+    closeButton: {
+        border: '1px solid #00bcd4',
+        borderRadius: 5
+    },
+    submitButton: {
+        border: '1px solid #00bcd4',
+        borderRadius: 5,
+        margin: '0px 20px 0px 10px'
+    },
+    snackBarStyle: {
+        marginBottom: '1%'
+    }
 }
 
 export default Authenticate;

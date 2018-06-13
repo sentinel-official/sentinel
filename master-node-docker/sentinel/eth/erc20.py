@@ -3,8 +3,9 @@ import rlp
 from ethereum.transactions import Transaction
 
 from .eth import eth_manager
+from ..config import MAIN_TOKENS
 from ..config import MAX_TX_TRY
-from ..config import TOKENS
+from ..config import RINKEBY_TOKENS
 
 
 class ERC20Manager(object):
@@ -57,9 +58,10 @@ erc20_manger = {
     'main': {},
     'rinkeby': {}
 }
-for symbol in TOKENS.keys():
-    token = TOKENS[symbol]
-    erc20_manger['main'][symbol] = ERC20Manager(
-        eth_manager['main'], token['name'], token['address'], token['abi'])
-    erc20_manger['rinkeby'][symbol] = ERC20Manager(
-        eth_manager['rinkeby'], token['name'], token['address'], token['abi'])
+for symbol in MAIN_TOKENS.keys():
+    token = MAIN_TOKENS[symbol]
+    erc20_manger['main'][symbol] = ERC20Manager(eth_manager['main'], token['name'], token['address'], token['abi'])
+for symbol in RINKEBY_TOKENS.keys():
+    token = RINKEBY_TOKENS[symbol]
+    erc20_manger['rinkeby'][symbol] = ERC20Manager(eth_manager['rinkeby'], token['name'], token['address'],
+                                                   token['abi'])

@@ -5,6 +5,8 @@ import time
 import falcon
 
 from ..db import db
+from ..helpers import btc_helper
+from ..helpers import tokens
 
 
 class GetNewAddress(object):
@@ -15,7 +17,7 @@ class GetNewAddress(object):
 
         from_address = btc_helper.get_new_address(from_token['symbol'])
 
-        if address is not None:
+        if from_address is not None:
             _ = db.btc_fork_swaps.insert_one({
                 'from_symbol': from_token['symbol'],
                 'to_symbol': to_token['symbol'],
@@ -31,7 +33,7 @@ class GetNewAddress(object):
         else:
             message = {
                 'success': False,
-                'message': 'Error occurred while getting {} address.'.format(coin_name)
+                'message': 'Error occurred while getting {} address.'.format(from_address['symbol'])
             }
 
         resp.status = falcon.HTTP_200

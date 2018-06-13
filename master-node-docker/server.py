@@ -112,12 +112,12 @@ server.add_route('/stats/payment/average-total-sents', GetAverageTotalSentsCount
 server.add_route('/stats/node', GetNodeStatistics())
 
 # Token Swaps
-server.add_route('/tokens', Up())
-server.add_route('/tokens/available', GetAvailableTokens())
-server.add_route('/tokens/exchange', GetExchangeValue())
-server.add_route('/tokens/swaps/raw-transaction', TokenSwapRawTransaction())
-server.add_route('/tokens/swaps/status', SwapStatus())
-server.add_route('/tokens/swaps/new-address', GetNewAddress())
+server.add_route('/swaps', Up())
+server.add_route('/swaps/available', GetAvailableTokens())
+server.add_route('/swaps/exchange', GetExchangeValue())
+server.add_route('/swaps/raw-transaction', TokenSwapRawTransaction())
+server.add_route('/swaps/status', SwapStatus())
+server.add_route('/swaps/new-address', GetNewAddress())
 
 # Mixer
 server.add_route('/mixer', Up())

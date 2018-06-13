@@ -40,6 +40,13 @@ TOKENS = [
     }
 ]
 
+BTC_BASED_COINS = {
+    'PIVX': {
+        'ip': '',
+        'port': 0
+    }
+}
+ETHEREUM_BASED_COINS = ['ETH', 'BNB', 'SENT']
 ADDRESS = ''.lower()
 PRIVATE_KEY = ''
 FEE_PERCENTAGE = 0.01

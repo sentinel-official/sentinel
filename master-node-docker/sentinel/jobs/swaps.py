@@ -2,9 +2,12 @@
 import time
 from _thread import start_new_thread
 
+from ..config import BTC_BASED_COINS
+from ..config import ETHEREUM_BASED_COINS
 from ..config import SWAP_ADDRESS
 from ..config import SWAP_PRIVATE_KEY
 from ..db import db
+from ..helpers import btc_helper
 from ..helpers import eth_helper
 from ..helpers import tokens
 from ..helpers.swaps import is_valid_ethereum_swap
@@ -18,9 +21,9 @@ class Swaps(object):
 
     def transfer(self, key, to_address, value, to_symbol):
         error, tx_hash_1 = None, None
-        if to_symbol in ETHEREUM_BASED:
+        if to_symbol in ETHEREUM_BASED_COINS:
             error, tx_hash_1 = eth_helper.transfer(SWAP_ADDRESS, to_address, value, to_symbol, SWAP_PRIVATE_KEY, 'main')
-        elif to_symbol in BTC_BASED:
+        elif to_symbol in BTC_BASED_COINS:
             error, tx_hash_1 = btc_helper.transfer(to_address, value, to_symbol)
         else:
             self.update_status(key, {
@@ -69,7 +72,7 @@ class Swaps(object):
             for swap in swaps:
                 try:
                     from_symbol, to_symbol = swap['from_symbol'], swap['to_symbol']
-                    if from_symbol in ETHEREUM_BASED:
+                    if from_symbol in ETHEREUM_BASED_COINS:
                         tx_hash_0 = swap['tx_hash_0']
                         error, details = is_valid_ethereum_swap(tx_hash_0)
                         if error is None:
@@ -79,7 +82,7 @@ class Swaps(object):
                             self.transfer(tx_hash_0, to_address, value, to_symbol)
                         else:
                             self.update_status(tx_hash_0, error)
-                    elif from_symbol in BTC_BASED:
+                    elif from_symbol in BTC_BASED_COINS:
                         from_address, to_address = swap['from_address'], swap['to_address']
                         from_token, to_token = tokens.get_token(from_symbol), tokens.get_token(to_symbol)
                         value = btc_helper.get_balance(from_address, from_symbol)

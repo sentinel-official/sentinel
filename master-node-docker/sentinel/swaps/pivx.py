@@ -18,7 +18,7 @@ class GetNewAddress(object):
         from_address = btc_helper.get_new_address(from_token['symbol'])
 
         if from_address is not None:
-            _ = db.btc_fork_swaps.insert_one({
+            _ = db.swaps.insert_one({
                 'from_symbol': from_token['symbol'],
                 'to_symbol': to_token['symbol'],
                 'from_address': from_address,

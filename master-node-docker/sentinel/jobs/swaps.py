@@ -65,7 +65,7 @@ class Swaps(object):
 
     def thread(self):
         while self.stop_thread is False:
-            swaps = db.erc20_swaps.find({
+            swaps = db.swaps.find({
                 'status': 0
             })
 

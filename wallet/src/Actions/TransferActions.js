@@ -154,7 +154,7 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
                 var txParams = {
                     nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
                     gasPrice: 20 * (10 ** 9),
-                    gasLimit: 21000,
+                    gasLimit: 100000,
                     from: from_addr,
                     to: ether_addr,
                     value: web3.toHex(amount),

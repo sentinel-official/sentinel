@@ -5,7 +5,7 @@ const remote = electron.remote;
 const { exec, execSync } = window.require('child_process');
 const os = window.require('os');
 const config = require('../config');
-const B_URL = 'https://api.sentinelgroup.io';
+const B_URL = 'http://54.36.46.16:8333';
 var ETH_BALANCE_URL;
 var SENT_BALANCE_URL;
 var ETH_TRANSC_URL;
@@ -420,7 +420,7 @@ export function reportPayment(data, cb) {
 
 export function getAvailableTokens(cb) {
   try {
-    fetch(B_URL + '/tokens/available', {
+    fetch(B_URL + '/swaps/available', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -520,9 +520,9 @@ export function getTokenBalance(contract, addr, decimals, cb) {
   }
 }
 
-export function swapRawTransaction(data, cb) {
+export function swapRawTransaction(data, toAddr, from, to, cb) {
   try {
-    fetch(B_URL + '/tokens/swaps/raw-transaction', {
+    fetch(B_URL + '/swaps/raw-transaction', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -530,7 +530,10 @@ export function swapRawTransaction(data, cb) {
         'Access-Control-Allow-Origin': '*'
       },
       body: JSON.stringify({
-        tx_data: data
+        tx_data: data,
+        account_addr: toAddr,
+        from: from,
+        to: to
       })
     }).then(function (response) {
       if (response.status === 200) {
@@ -558,9 +561,9 @@ export function swapRawTransaction(data, cb) {
   }
 }
 
-export function getSentValue(toAddr, value, cb) {
+export function getSentValue(from, to, value, decimals, cb) {
   try {
-    fetch(B_URL + '/tokens/sents?to_addr=' + toAddr + '&value=' + value, {
+    fetch(B_URL + '/swaps/exchange?from=' + from + '&to=' + to + '&value=' + value, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -569,8 +572,8 @@ export function getSentValue(toAddr, value, cb) {
     }).then(function (response) {
       response.json().then(function (resp) {
         if (resp.success === true) {
-          var sents = resp['sents'] / (10 ** 8);
-          cb(null, sents);
+          var tokens = resp['value'] / (10 ** decimals);
+          cb(null, tokens);
         } else cb({ message: 'Error occurred while getting balance.' }, null);
       });
     });
@@ -579,9 +582,9 @@ export function getSentValue(toAddr, value, cb) {
   }
 }
 
-export function swapPivx(account_addr, cb) {
+export function swapPivx(account_addr, from, to, cb) {
   try {
-    fetch(B_URL + '/tokens/swaps/new-address', {
+    fetch(B_URL + '/swaps/new-address', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -589,7 +592,8 @@ export function swapPivx(account_addr, cb) {
       },
       body: JSON.stringify({
         account_addr: account_addr,
-        coin_name:'PIVX'
+        from: from,
+        to: to
       })
     }).then(function (response) {
       response.json().then(function (response) {
@@ -1119,7 +1123,7 @@ export function disconnectSocks(cb) {
 
 export function getSwapTransactionStatus(tx_addr, cb) {
   try {
-    fetch(B_URL + '/tokens/swaps/status?tx_hash=' + tx_addr, {
+    fetch(B_URL + '/swaps/status?key=' + tx_addr, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

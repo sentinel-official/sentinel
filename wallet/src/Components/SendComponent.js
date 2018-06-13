@@ -62,14 +62,18 @@ class SendComponent extends Component {
       converting: false,
       logoUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
       testDisabled: false,
-      eth_address: '',
-      pivxAmount: 0,
-      expectedEth: 0,
-      pivx_address: '',
-      send_address: '',
+      pivxScreenToAddr: '',
+      pivxScreenAmount: 0,
+      pivxScreenExpctd: 0,
+      pivxTokenDetails: [],
+      pivxSendAddr: '',
       showAddress: false,
-      isPivxDisabled: false,
-      showTransPivxScreen: false
+      isPivxDisabled: true,
+      showTransPivxScreen: false,
+      pivxOption: 1,
+      isFromPivx: true,
+      isEthIn: false,
+      pivxScreenPwd: ''
     };
   }
 
@@ -313,13 +317,18 @@ class SendComponent extends Component {
   }
 
   pivxAddressChange = (event, to_addr) => {
-    this.setState({ eth_address: to_addr })
-    let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
-    if (trueAddress !== null) {
-      this.setState({ isPivxDisabled: false })
+    if (this.state.isFromPivx) {
+      this.setState({ pivxScreenToAddr: to_addr })
+      let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
+      if (trueAddress !== null) {
+        this.setState({ isPivxDisabled: false })
+      }
+      else {
+        this.setState({ isPivxDisabled: true })
+      }
     }
     else {
-      this.setState({ isPivxDisabled: true })
+      this.setState({ pivxScreenToAddr: to_addr })
     }
   }
 
@@ -365,7 +374,8 @@ class SendComponent extends Component {
       if (err) { }
       else {
         let tokensList = tokens.filter((token) => (token.symbol !== 'SENT' && token.symbol !== 'PIVX'));
-        self.setState({ tokens: tokensList })
+        let pivxToken = tokens.filter((token) => token.symbol === 'PIVX');
+        self.setState({ tokens: tokensList, pivxTokenDetails: pivxToken })
         tokensList.map((token) => {
           self.getUnitBalance(token);
         })
@@ -410,7 +420,7 @@ class SendComponent extends Component {
     if (token) {
       let self = this;
       let value = 10 ** token.decimals;
-      getSentValue(token.address, value, function (err, swapValue) {
+      getSentValue(token.symbol, 'SENT', value, 8, function (err, swapValue) {
         if (err) { }
         else {
           self.setState({ currentSentValue: swapValue });
@@ -425,32 +435,58 @@ class SendComponent extends Component {
   }
 
   pivxValueChange = (event, value) => {
-    this.setState({ pivxAmount: value, showAddress: false });
-    this.getPivxCompareValue(value);
+    this.setState({ pivxScreenAmount: value, showAddress: false });
+    if (this.state.isFromPivx) {
+      if (value !== '') this.getPivxCompareValue('PIVX', this.state.isEthIn ? 'ETH' : 'SENT', value, this.state.isEthIn ? 18 : 8);
+    } else {
+      if (value !== '') {
+        if (this.state.isEthIn) {
+          value = value * (10 ** 18);
+          this.getPivxCompareValue('ETH', 'PIVX', value, 0);
+        }
+        else {
+          value = value * (10 ** 8);
+          this.getPivxCompareValue('SENT', 'PIVX', value, 0);
+        }
+      };
+    }
   }
 
-  getPivxCompareValue = (value) => {
+  getPivxCompareValue = (from, to, value, decimals) => {
     let self = this;
-    getSentValue('PIVX', value, function (err, swapValue) {
-      if (err) { console.log("Err..", err) }
+    getSentValue(from, to, value, decimals, function (err, swapValue) {
+      if (err) { }
       else {
-        self.setState({ expectedEth: (swapValue) });
+        self.setState({ pivxScreenExpctd: (swapValue) });
       }
     })
   }
 
   onClickPivxConvert = () => {
     let self = this;
-    swapPivx(this.state.eth_address, function (err, address) {
-      if (err) { console.log("ConErr..", err) }
+    let to = this.state.isEthIn ? 'ETH' : 'SENT';
+    swapPivx(this.state.pivxScreenToAddr, 'PIVX', to, function (err, address) {
+      if (err) { }
       else {
         self.setState({
-          send_address: address, showAddress: true, pivx_address: '', eth_address: self.props.local_address, expectedEth: 0, isPivxDisabled: false
+          pivxSendAddr: address, showAddress: true, pivxScreenToAddr: self.props.local_address, pivxScreenExpctd: 0, isPivxDisabled: false
         });
       }
     })
   }
 
+  handlePivxMenuChange = (event, index, value) => {
+    if (value === 1 || value === 2)
+      this.setState({
+        pivxOption: value, isFromPivx: true, isEthIn: value === 2,
+        pivxScreenToAddr: '', pivxScreenAmount: 0, pivxScreenExpctd: 0, isPivxDisabled: true
+      });
+    else
+      this.setState({
+        pivxOption: value, isFromPivx: false, isEthIn: value === 4,
+        pivxScreenToAddr: '', pivxScreenAmount: 0, pivxScreenExpctd: 0, isPivxDisabled: true
+      });
+  }
 
   onClickConvert = () => {
     let self = this;
@@ -489,7 +525,7 @@ class SendComponent extends Component {
                     })
                   }
                   else if (data) {
-                    swapRawTransaction(data, function (err, txHash) {
+                    swapRawTransaction(data, self.props.local_address, token.symbol, 'SENT', function (err, txHash) {
                       if (err) {
                         self.setState({
                           snackOpen: true,
@@ -526,10 +562,76 @@ class SendComponent extends Component {
     }
   }
 
+  onClickPivxTrans = () => {
+    let self = this;
+    if (this.state.pivxScreenPwd === '') {
+      this.setState({ snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
+    }
+    else {
+      setTimeout(function () {
+        getPrivateKey(self.state.pivxScreenPwd, self.props.lang, function (err, privateKey) {
+          if (err) {
+            self.setState({
+              snackOpen: true,
+              snackMessage: err.message
+            })
+          }
+          else {
+            let from_addr = self.props.local_address;
+            let amount = self.state.pivxScreenAmount;
+            let gas_price = 20 * (10 ** 9)
+            let ether_address = (self.state.tokens.find(o => o.symbol === 'ETH'))['address'];
+            if (self.state.isEthIn) {
+              ethTransaction(from_addr, ether_address, amount * (10 ** 18), gas_price, 100000, privateKey, function (data) {
+                swapRawTransaction(data, self.state.pivxScreenToAddr, 'ETH', 'PIVX', function (err, txHash) {
+                  if (err) {
+                    self.setState({
+                      snackOpen: true,
+                      snackMessage: err.message
+                    })
+                  }
+                  else {
+                    self.props.getCurrentSwapHash(txHash);
+                    self.setState({
+                      pivxScreenPwd: '',
+                      openSnack: true,
+                      tx_addr: txHash
+                    })
+                  }
+                })
+              })
+            }
+            else {
+              tokenTransaction(from_addr, ether_address, amount * (10 ** 8), gas_price, 100000, privateKey, function (data) {
+                swapRawTransaction(data, self.state.pivxScreenToAddr, 'SENT', 'PIVX', function (err, txHash) {
+                  if (err) {
+                    self.setState({
+                      snackOpen: true,
+                      snackMessage: err.message
+                    })
+                  }
+                  else {
+                    self.props.getCurrentSwapHash(txHash);
+                    self.setState({
+                      pivxScreenPwd: '',
+                      openSnack: true,
+                      tx_addr: txHash
+                    })
+                  }
+                })
+              })
+            }
+          }
+        })
+      }, 500);
+    }
+  }
+
   render() {
     let self = this;
     if (!this.state.isGetBalanceCalled) {
       setInterval(function () {
+        self.getTokensList()
         self.getBalancesTokens()
       }, 10000);
 
@@ -582,8 +684,27 @@ class SendComponent extends Component {
                                             </p>
                     </div>
                   }
+                  {this.state.pivxTokenDetails.length !== 0 ?
+                    this.state.pivxTokenDetails.map((token) =>
+                      <Row style={{ cursor: 'pointer', backgroundColor: '#badee4', paddingTop: 5 }} onClick={() => { this.setState({ showTransPivxScreen: true, showAddress: false }) }}>
+                        <Col xs={4}>
+                          <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'} alt="logo" style={styles.otherBalanceLogo} />
+                        </Col>
+                        <Col xs={8}>
+                          {/* <p style={styles.otherBalanceBalc}>{this.state.tokenBalances[token.symbol] ? this.state.tokenBalances[token.symbol] : 0}</p> */}
+                          <p style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            letterSpacing: 3,
+                            wordBreak: 'break-all',
+                            marginTop: 10
+                          }}>{token.name} [{token.symbol}]</p>
+                        </Col>
+                      </Row>
+                    )
+                    : null}
                 </div>
-                <RaisedButton
+                {/* <RaisedButton
                   label="PIVX<=>SENT"
                   primary={true}
                   fullWidth={true}
@@ -595,7 +716,7 @@ class SendComponent extends Component {
                     lineHeight: '48px'
                   }}
                   style={{ height: 48, marginBottom: 5 }}
-                />
+                /> */}
               </Col>
               <Col xs={8} style={{ padding: '3% 5% 0px' }}>
                 <div>
@@ -893,67 +1014,141 @@ class SendComponent extends Component {
               open={this.state.showTransPivxScreen}
               onRequestClose={this.handleTransClose}
             >
-              {!this.state.showAddress ?
+              <div style={{ marginBottom: 10, display: this.state.showAddress ? 'none' : 'inline' }}>
+                <span style={{ fontWeight: 'bold', color: '#253245' }}>Swap on PIVX Tokens</span>
+                <DropDownMenu value={this.state.pivxOption}
+                  autoWidth={false}
+                  underlineStyle={{ border: 0 }}
+                  labelStyle={{ color: '#253245', fontWeight: 'bold' }}
+                  menuStyle={{ width: 'auto' }}
+                  style={{ position: 'absolute', right: 0, marginTop: -16 }}
+                  onChange={this.handlePivxMenuChange}>
+                  <MenuItem value={1} primaryText="PIVX To SENT" />
+                  <MenuItem value={2} primaryText="PIVX To ETH" />
+                  <MenuItem value={3} primaryText="SENT TO PIVX" />
+                  <MenuItem value={4} primaryText="ETH TO PIVX" />
+                </DropDownMenu>
+                <hr />
+              </div>
+              {this.state.isFromPivx ?
+                (!this.state.showAddress ?
+                  <div>
+                    <span style={styles.formHeading}>How Many PIVX Tokens?</span>
+                    <TextField
+                      type="number"
+                      underlineShow={false} fullWidth={true}
+                      inputStyle={styles.textInputStyle}
+                      style={styles.textStyle}
+                      onChange={this.pivxValueChange.bind(this)}
+                      value={this.state.pivxScreenAmount}
+                      underlineShow={false} fullWidth={true}
+                    />
+                    <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins', marginTop: 10, marginBottom: 10 }}>
+                      <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>Expected {this.state.pivxScreenExpctd}</span>
+                        <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}>{this.state.isEthIn ? ' ETH TOKENS' : ' SENT TOKENS'}</span>
+                      </p>
+                    </div>
+                    <span style={styles.formHeading}>{this.state.isEthIn ? 'ETH Address' : 'SENT Address'}</span>
+                    <TextField
+                      hintText="Example: 0x93186402811baa5b188a14122C11B41dA0099844"
+                      hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
+                      style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15, marginBottom: 10 }}
+                      underlineShow={false} fullWidth={true}
+                      onChange={this.pivxAddressChange.bind(this)}
+                      value={this.state.pivxScreenToAddr}
+                      inputStyle={styles.textInputStyle}
+                    />
+                    <RaisedButton
+                      disabled={this.state.pivxScreenToAddr === '' || this.state.isPivxDisabled ? true : false}
+                      onClick={this.onClickPivxConvert.bind(this)}
+                      label="Swap"
+                      labelStyle={styles.buttonLabelStyle}
+                      fullWidth={true}
+                      buttonStyle={
+                        this.state.pivxScreenToAddr === '' || this.state.isPivxDisabled ?
+                          styles.disabledButtonStyle : styles.enabledButtonStyle
+                      }
+                      style={{ height: 48 }}
+                    />
+                  </div>
+                  :
+                  <span style={{ fontWeight: 'bold' }}>Send {this.state.pivxScreenAmount} PIVX Tokens to <span style={{ color: 'green' }}>{this.state.pivxSendAddr}</span>
+                    <CopyToClipboard text={this.state.pivxSendAddr}
+                      onCopy={() => this.setState({
+                        snackMessage: 'Copied to Clipboard Successfully',
+                        snackOpen: true
+                      })} >
+                      <img
+                        src={'../src/Images/download.jpeg'}
+                        data-tip data-for="copyImage"
+                        style={{
+                          height: 18,
+                          width: 18,
+                          cursor: 'pointer'
+                        }}
+                      />
+                    </CopyToClipboard>
+                    <ReactTooltip id="copyImage" place="bottom">
+                      <span>Copy</span>
+                    </ReactTooltip>
+                  </span>
+                ) :
                 <div>
-                  <span style={styles.formHeading}>How Many PIVX Tokens?</span>
+                  <span style={styles.formHeading}>{this.state.isEthIn ? 'How Many ETH Tokens?' : 'How Many SENT Tokens?'}</span>
                   <TextField
                     type="number"
                     underlineShow={false} fullWidth={true}
                     inputStyle={styles.textInputStyle}
                     style={styles.textStyle}
                     onChange={this.pivxValueChange.bind(this)}
-                    value={this.state.pivxAmount}
+                    value={this.state.pivxScreenAmount}
                     underlineShow={false} fullWidth={true}
                   />
                   <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins', marginTop: 10, marginBottom: 10 }}>
-                    <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>Expected {this.state.expectedEth}</span>
-                      <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}> SENT TOKENS</span>
+                    <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>Expected {this.state.pivxScreenExpctd}</span>
+                      <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}> PIVX TOKENS</span>
                     </p>
                   </div>
-                  <span style={styles.formHeading}>SENT Address</span>
+                  <span style={styles.formHeading}>PIVX Address</span>
                   <TextField
-                    hintText="Example: 0x93186402811baa5b188a14122C11B41dA0099844"
+                    hintText="Enter pivx address"
                     hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
                     style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15, marginBottom: 10 }}
                     underlineShow={false} fullWidth={true}
-                    onChange={this.pivxAddressChange.bind(this)} Z
-                    value={this.state.eth_address}
+                    onChange={this.pivxAddressChange.bind(this)}
+                    value={this.state.pivxScreenToAddr}
                     inputStyle={styles.textInputStyle}
                   />
-                  <RaisedButton
-                    disabled={this.state.eth_address === '' || this.state.isPivxDisabled ? true : false}
-                    onClick={this.onClickPivxConvert.bind(this)}
-                    label="Swap"
-                    labelStyle={styles.buttonLabelStyle}
-                    fullWidth={true}
-                    buttonStyle={
-                      this.state.eth_address === '' || this.state.isPivxDisabled ?
-                        styles.disabledButtonStyle : styles.enabledButtonStyle
-                    }
-                    style={{ height: 48 }}
-                  />
+                  <Row>
+                    <Col xs={6}>
+                      <TextField
+                        type="password"
+                        hintText="KEYSTORE PASSWORD"
+                        hintStyle={{ fontSize: 16, bottom: 11, paddingLeft: 10 }}
+                        onChange={(event, password) => this.setState({ pivxScreenPwd: password })}
+                        value={this.state.pivxScreenPwd}
+                        underlineShow={false} fullWidth={true}
+                        inputStyle={styles.textInputStyle}
+                        style={{ height: 48, backgroundColor: '#d4dae2' }}
+                      />
+                    </Col>
+                    <Col xs={6}>
+                      <RaisedButton
+                        disabled={this.state.pivxScreenToAddr === '' ? true : false}
+                        onClick={this.onClickPivxTrans.bind(this)}
+                        label="SEND"
+                        labelStyle={styles.buttonLabelStyle}
+                        fullWidth={true}
+                        buttonStyle={
+                          this.state.pivxScreenToAddr === '' ?
+                            styles.disabledButtonStyle : styles.enabledButtonStyle
+                        }
+                        style={{ height: 48 }}
+                      />
+                    </Col>
+                  </Row>
                 </div>
-                :
-                <span style={{ fontWeight: 'bold' }}>Send {this.state.pivxAmount} PIVX Tokens to <span style={{ color: 'green' }}>{this.state.send_address}</span>
-                  <CopyToClipboard text={this.state.send_address}
-                    onCopy={() => this.setState({
-                      snackMessage: 'Copied to Clipboard Successfully',
-                      snackOpen: true
-                    })} >
-                    <img
-                      src={'../src/Images/download.jpeg'}
-                      data-tip data-for="copyImage"
-                      style={{
-                        height: 18,
-                        width: 18,
-                        cursor: 'pointer'
-                      }}
-                    />
-                  </CopyToClipboard>
-                  <ReactTooltip id="copyImage" place="bottom">
-                    <span>Copy</span>
-                  </ReactTooltip>
-                </span>}
+              }
             </Dialog>
           </Grid>
         </div>
@@ -987,7 +1182,7 @@ const styles = {
     backgroundColor: '#ececf1',
     marginTop: '5%',
     overflow: 'auto',
-    height: 210
+    height: 265
   },
   questionMark: {
     marginLeft: 10,

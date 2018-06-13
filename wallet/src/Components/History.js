@@ -70,7 +70,7 @@ class History extends Component {
       else if (result['status'] === 1) {
         if (showDivCount === 0) {
           showDivCount++;
-          self.setState({ txStatus: 'Success' })
+          self.setState({ txStatus: 'Success', showDiv: true })
         }
         if (showDivCount === 1) {
           self.props.removeSwapHash();
@@ -170,7 +170,7 @@ class History extends Component {
         </span>
         {this.state.isLoading === true ? this.renderProgress() :
           <div >
-            {this.state.showDiv ? <div style={styles.wholeDiv}>
+            {this.state.showDiv && !this.props.isTest ? <div style={styles.wholeDiv}>
               <span>Swap Transaction {this.props.swapHash} Status: <span style={{ fontWeight: 'bold' }}>{this.state.txStatus}</span></span>
             </div> : null}
             {this.state.ethActive ?

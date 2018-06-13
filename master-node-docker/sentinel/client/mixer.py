@@ -4,7 +4,7 @@ import json
 import falcon
 import requests
 
-from ..config import GAS
+from ..config import MIN_GAS
 from ..db import db
 from ..helpers import eth_helper
 
@@ -13,7 +13,7 @@ def get_mixer_nodes_list(eth=0, sent=0):
     _list = db.mixer_nodes.find({
         'mixer.status': 'up',
         'balances.eth': {
-            '$gte': eth + GAS
+            '$gte': eth + MIN_GAS
         },
         'balances.sent': {
             '$gte': sent

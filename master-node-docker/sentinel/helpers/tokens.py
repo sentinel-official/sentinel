@@ -1,41 +1,39 @@
 # coding=utf-8
 import requests
 
-from ..config import DECIMALS
-from ..config import GAS_TOKENS
-from ..config import SWAP_PERCENTAGE
-from ..tokens_config import TOKENS
+from ..config import SWAP_TOKENS
 
 
 class Tokens(object):
-    def __init__(self):
-        self.prices = {}
+    def __init__(self, swap_tokens):
+        self.tokens = {}
+        for token in swap_tokens:
+            self.tokens[token['symbol']] = token
 
-    def get_usd_price(self, token):
-        usd_price = self.prices[token['name']] if token['name'] in self.prices else None
+    def get_price(self, token):
+        price = None
         try:
-            res = requests.get(token['price_url']).json()
-            usd_price = float(res[0]['price_usd'])
-            self.prices[token['name']] = usd_price
+            res = requests.get(token['price_url'])
+            res = res.json()
+            price = float(res[0]['price_btc'])
         except Exception as error:
             print(error)
-        return usd_price
+        return price
 
-    def calculate_sents(self, token, value):
-        value = value / (1.0 * (10 ** token['decimals']))
-        sent_usd = self.get_usd_price(self.get_token(name='SENTinel'))
-        token_usd = self.get_usd_price(token)
-        sents = max(0, (token_usd / sent_usd) - GAS_TOKENS)
-        sents = int(int((sents * value) * DECIMALS) * SWAP_PERCENTAGE)
-        return sents
+    def exchange(self, from_token, to_token, value):
+        value = value / (1.0 * (10 ** from_token['decimals']))
+        from_price = self.get_price(from_token)
+        to_price = self.get_price(to_token)
+        return value * (from_price / to_price)
 
-    def get_token(self, address=None, name=None):
-        token = None
-        if address is not None:
-            token = [token for token in TOKENS if token['address'] == address]
-        elif name is not None:
-            token = [token for token in TOKENS if token['name'] == name]
-        return token[0] if ((token is not None) and (len(token) > 0)) else None
+    def get_token(self, symbol=None, address=None):
+        if symbol is not None:
+            return self.tokens[symbol]
+        elif address is not None:
+            for token in self.tokens:
+                if token['address'] == address:
+                    return token
+        return None
 
 
-tokens = Tokens()
+tokens = Tokens(SWAP_TOKENS)

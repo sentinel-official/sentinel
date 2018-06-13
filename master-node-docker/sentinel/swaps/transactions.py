@@ -4,8 +4,7 @@ import time
 
 import falcon
 
-from ..config import CENTRAL_WALLET
-from ..config import DECIMALS
+from ..config import SWAP_ADDRESS
 from ..db import db
 from ..helpers import eth_helper
 from ..helpers import tokens
@@ -23,20 +22,25 @@ class TokenSwapRawTransaction(object):
         @apiSuccess {String} tx_hash Transaction hash.
         """
         tx_data = str(req.body['tx_data'])
-        to_addr = str(req.get_param('to_addr'))
-        value = int(req.get_param('value'))
-        token = tokens.get_token(to_addr)
+        to_address = req.body['account_addr']
+        from_token = tokens.get_token(str(req.body['from']))
+        to_token = tokens.get_token(str(req.body['to']))
+        value = 0  # float(req.body['value'])
 
-        requested_sents = tokens.calculate_sents(token, value)
-        available_sents = eth_helper.get_balances(CENTRAL_WALLET)
-        if available_sents['main']['sents'] >= (requested_sents * DECIMALS):
+        # value = tokens.exchange(from_token, to_token, value)
+        # value = value * (1.0 * (10 ** to_token['decimals']))
+        balance = 1  # eth_helper.get_balance(CENTRAL_WALLET)
+        if balance >= value:
             error, tx_hash = eth_helper.raw_transaction(tx_data, 'main')
             if error is None:
-                _ = db.erc20_swaps.insert_one({
-                    'tx_data': tx_data,
-                    'tx_hash_0': tx_hash,
-                    'status': 0,
-                    'time_0': int(time.time())
+                _ = db.swaps.insert_one({
+                    'from_symbol': from_token['symbol'],
+                    'to_symbol': to_token['symbol'],
+                    'from_address': SWAP_ADDRESS,
+                    'to_address': to_address,
+                    'tx_hash_0': tx_hash,  # Only for ERC20 based
+                    'time_0': int(time.time()),
+                    'status': 0
                 })
                 message = {
                     'success': True,
@@ -52,7 +56,7 @@ class TokenSwapRawTransaction(object):
         else:
             message = {
                 'success': False,
-                'message': 'No enough SENTs in the Central wallet.'
+                'message': 'No enough coins in the Central wallet.'
             }
 
         resp.status = falcon.HTTP_200

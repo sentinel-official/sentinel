@@ -1,7 +1,7 @@
 # coding=utf-8
 import json
 import time
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 from uuid import uuid4
 
 import falcon

@@ -5,29 +5,28 @@ import time
 import falcon
 
 from ..db import db
-from ..helpers import pivx
 
 
 class GetNewAddress(object):
     def on_post(self, req, resp):
-        account_addr = req.body['account_addr']
-        coin_name = req.body['coin_name']
-        address = None
+        to_address = req.body['account_addr']
+        from_token = tokens.get_token(str(req.body['from']))
+        to_token = tokens.get_token(str(req.body['to']))
 
-        if coin_name == 'PIVX':
-            address = pivx.get_new_address()
+        from_address = btc_helper.get_new_address(from_token['symbol'])
 
         if address is not None:
             _ = db.btc_fork_swaps.insert_one({
-                'eth_address': account_addr,
-                'address': address,
-                'coin_name': coin_name,
-                'status': 0,
-                'time_0': int(time.time())
+                'from_symbol': from_token['symbol'],
+                'to_symbol': to_token['symbol'],
+                'from_address': from_address,
+                'to_address': to_address,
+                'time_0': int(time.time()),
+                'status': 0
             })
             message = {
                 'success': True,
-                'address': address
+                'address': from_address
             }
         else:
             message = {

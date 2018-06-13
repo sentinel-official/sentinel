@@ -1,9 +1,9 @@
 # coding=utf-8
-from .config import CENTRAL_WALLET
+from .eth import ADDRESS
 
 TOKENS = [
     {
-        'address': CENTRAL_WALLET,
+        'address': ADDRESS,
         'decimals': 18,
         'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
         'name': 'Ethereum',
@@ -39,3 +39,7 @@ TOKENS = [
         'coin_type': 'erc20'
     }
 ]
+
+ADDRESS = ''.lower()
+PRIVATE_KEY = ''
+FEE_PERCENTAGE = 0.01

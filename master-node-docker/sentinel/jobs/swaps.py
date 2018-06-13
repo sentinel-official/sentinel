@@ -2,12 +2,12 @@
 import time
 from _thread import start_new_thread
 
-from ..config import CENTRAL_WALLET
-from ..config import CENTRAL_WALLET_PRIVATE_KEY
+from ..config import SWAP_ADDRESS
+from ..config import SWAP_PRIVATE_KEY
 from ..db import db
 from ..helpers import eth_helper
-from ..helpers import pivx
 from ..helpers import tokens
+from ..helpers.swaps import is_valid_ethereum_swap
 
 
 class Swaps(object):
@@ -16,34 +16,39 @@ class Swaps(object):
         self.stop_thread = False
         self.t = None
 
-    def transfer(self, from_address, to_address, token, value, p_key):
-        if from_address == CENTRAL_WALLET:
-            sents = tokens.calculate_sents(token, value)
-            error, tx_hash_1 = eth_helper.transfer_sents(from_address, to_address, sents, CENTRAL_WALLET_PRIVATE_KEY,
-                                                         'main')
-            if error is None:
-                self.mark_tx(p_key, 1, 'Transaction is initiated successfully.', tx_hash_1)
-                print('Transaction is initiated successfully.')
-            else:
-                self.mark_tx(p_key, 0, 'Error occurred while initiating transaction.')
-                print('Error occurred while initiating transaction.')
+    def transfer(self, key, to_address, value, to_symbol):
+        error, tx_hash_1 = None, None
+        if to_symbol in ETHEREUM_BASED:
+            error, tx_hash_1 = eth_helper.transfer(SWAP_ADDRESS, to_address, value, to_symbol, SWAP_PRIVATE_KEY, 'main')
+        elif to_symbol in BTC_BASED:
+            error, tx_hash_1 = btc_helper.transfer(to_address, value, to_symbol)
         else:
-            self.mark_tx(p_key, -1, 'From address is not CENTRAL WALLET.')
-            print('From address is not CENTRAL WALLET.')
+            self.update_status(key, {
+                'status': -1,
+                'message': 'Invalid to token.'
+            })
+        if error is None and tx_hash_1 is not None:
+            self.update_status(key, {
+                'status': 1,
+                'message': 'Transaction is initiated successfully.',
+            }, tx_hash_1)
+        else:
+            self.update_status(key, {
+                'status': 0,
+                'message': 'Error occurred while initiating transaction.'
+            })
 
-    def mark_tx(self, p_key, status, message, tx_hash_1=None):
+    def update_status(self, key, status, tx_hash=None):
         collection, find_key = None, None
-        if len(p_key) == 66:
-            collection = db.erc20_swaps
-            find_key = {'tx_hash_0': p_key}
-        elif len(p_key) == 34:
-            collection = db.btc_fork_swaps
-            find_key = {'address': p_key}
-        _ = collection.find_one_and_update(find_key, {
+        if len(key) == 66:
+            find_key = {'tx_hash_0': key}
+        elif len(key) == 34:
+            find_key = {'address': key}
+        _ = db.swaps.find_one_and_update(find_key, {
             '$set': {
-                'status': status,
-                'message': message,
-                'tx_hash_1': tx_hash_1,
+                'status': status['status'],
+                'message': status['message'],
+                'tx_hash_1': tx_hash,
                 'time_1': int(time.time())
             }
         })
@@ -57,59 +62,30 @@ class Swaps(object):
 
     def thread(self):
         while self.stop_thread is False:
-            transactions = db.erc20_swaps.find({
+            swaps = db.erc20_swaps.find({
                 'status': 0
             })
 
-            for transaction in transactions:
+            for swap in swaps:
                 try:
-                    tx_hash_0 = transaction['tx_hash_0']
-                    error, receipt = eth_helper.get_tx_receipt(tx_hash_0, 'main')
-                    if (error is None) and (receipt is not None):
-                        if receipt['status'] == 1:
-                            error, tx = eth_helper.get_tx(tx_hash_0, 'main')
-                            if (error is None) and (tx is not None):
-                                from_address, to_address, tx_value, tx_input = str(tx['from']).lower(), str(
-                                    tx['to']).lower(), int(tx['value']), tx['input']
-                                if tx_value == 0 and len(tx_input) == 138:
-                                    token = tokens.get_token(to_address)
-                                    if (token is not None) and (token['name'] != 'SENTinel'):
-                                        if tx_input[:10] == '0xa9059cbb':
-                                            to_address = ('0x' + tx_input[10:74].lstrip('0').zfill(40)).lower()
-                                            token_value = int('0x' + tx_input[74:138].lstrip('0'), 0)
-                                            self.transfer(to_address, from_address, token, token_value, tx_hash_0)
-                                        else:
-                                            self.mark_tx(tx_hash_0, -1, 'Wrong transaction method.')
-                                            print('Wrong transaction method.')
-                                    else:
-                                        self.mark_tx(tx_hash_0, -1, 'No token found.')
-                                        print('No token found.')
-                                elif tx_value > 0 and len(tx_input) == 2:
-                                    token = tokens.get_token(to_address)
-                                    self.transfer(to_address, from_address, token, tx_value, tx_hash_0)
-                                else:
-                                    self.mark_tx(tx_hash_0, -1, 'Not a valid transaction.')
-                                    print('Not a valid transaction.')
-                            else:
-                                self.mark_tx(tx_hash_0, 0, 'Can\'t find the transaction.')
-                                print('Can\'t find the transaction.')
+                    from_symbol, to_symbol = swap['from_symbol'], swap['to_symbol']
+                    if from_symbol in ETHEREUM_BASED:
+                        tx_hash_0 = swap['tx_hash_0']
+                        error, details = is_valid_ethereum_swap(tx_hash_0)
+                        if error is None:
+                            to_address, value = details[0], details[1]
+                            from_token, to_token = details[2], tokens.get_token(to_symbol)
+                            value = tokens.exchange(from_token, to_token, value)
+                            self.transfer(tx_hash_0, to_address, value, to_symbol)
                         else:
-                            self.mark_tx(tx_hash_0, -1, 'Failed transaction.')
-                            print('Failed transaction.')
-                    else:
-                        self.mark_tx(tx_hash_0, 0, 'Can\'t find the transaction receipt.')
-                        print('Can\'t find the transaction receipt.')
-                except Exception as err:
-                    print(err)
-
-            transactions = db.btc_fork_swaps.find({
-                'status': 0,
-                'coin_name': 'PIVX'
-            })
-            token = tokens.get_token(name='PIVX')
-            for transaction in transactions:
-                balance = pivx.get_balance(transaction['address'])
-                if balance is not None and balance > 0:
-                    self.transfer(CENTRAL_WALLET, transaction['eth_address'], token, balance, transaction['address'])
-
+                            self.update_status(tx_hash_0, error)
+                    elif from_symbol in BTC_BASED:
+                        from_address, to_address = swap['from_address'], swap['to_address']
+                        from_token, to_token = tokens.get_token(from_symbol), tokens.get_token(to_symbol)
+                        value = btc_helper.get_balance(from_address, from_symbol)
+                        if value is not None and value > 0:
+                            value = tokens.exchange(from_token, to_token, value)
+                            self.transfer(from_address, to_address, value, to_symbol)
+                except Exception as error:
+                    print(error)
             time.sleep(self.interval)

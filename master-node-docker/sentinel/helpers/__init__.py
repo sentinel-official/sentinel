@@ -1,4 +1,4 @@
 # coding=utf-8
+from .btc import btc_helper
 from .eth import eth_helper
-from .pivx import pivx
 from .tokens import tokens

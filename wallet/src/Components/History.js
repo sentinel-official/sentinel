@@ -17,7 +17,6 @@ class History extends Component {
     this.state = {
       ethData: [],
       sentData: [],
-      isGetStatusCalled: false,
       isLoading: true,
       ethActive: false,
       openSnack: false,
@@ -135,12 +134,16 @@ class History extends Component {
       this.getSentHistory();
       this.setState({ isInitial: false });
     }
-    if (!this.state.isGetStatusCalled && this.props.swapHash) {
-      setInterval(function () {
-        self.getStatus();
+    if (!StatusInterval && this.props.swapHash) {
+      StatusInterval = setInterval(function () {
+        self.getStatus()
       }, 2000);
-
-      this.setState({ isGetStatusCalled: true });
+    }
+    if (!this.props.swapHash) {
+      if (StatusInterval) {
+        clearInterval(StatusInterval);
+        StatusInterval = null;
+      }
     }
     let language = this.props.lang;
     let ethOutput = <EtherTransaction

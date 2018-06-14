@@ -25,8 +25,7 @@ class Swaps(object):
             error, tx_hash_1 = eth_helper.transfer(SWAP_ADDRESS, to_address, value, to_symbol, SWAP_PRIVATE_KEY, 'main')
         elif to_symbol in BTC_BASED_COINS:
             tx_hash_1 = btc_helper.transfer(to_address, value, to_symbol)
-            if tx_hash_1 is None:
-                error = True
+            error = True if tx_hash_1 is None else None
         else:
             self.update_status(key, {
                 'status': -1,

@@ -32,11 +32,11 @@ class BTCHelper(object):
         try:
             server = self.coins[symbol]
             url = 'http://{}:{}/transfer'.format(server['ip'], server['port'])
-            res = requests.post(url, data={
-                'to_address': to_address,
+            res = requests.post(url, json={
+                'toAddress': to_address,
                 'value': value
             }).json()
-            return res['tx_hash'] if res['success'] else None
+            return res['txHash'] if res['success'] else None
         except Exception as error:
             print(error)
             return None

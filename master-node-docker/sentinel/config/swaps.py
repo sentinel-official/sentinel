@@ -1,6 +1,15 @@
 # coding=utf-8
-from .eth import ADDRESS
 
+BTC_BASED_COINS = {
+    'PIVX': {
+        'ip': '',
+        'port': 0
+    }
+}
+ETHEREUM_BASED_COINS = ['ETH', 'BNB', 'SENT']
+ADDRESS = ''.lower()
+PRIVATE_KEY = ''
+FEE_PERCENTAGE = 0.01
 TOKENS = [
     {
         'address': ADDRESS,
@@ -39,14 +48,3 @@ TOKENS = [
         'coin_type': 'erc20'
     }
 ]
-
-BTC_BASED_COINS = {
-    'PIVX': {
-        'ip': '',
-        'port': 0
-    }
-}
-ETHEREUM_BASED_COINS = ['ETH', 'BNB', 'SENT']
-ADDRESS = ''.lower()
-PRIVATE_KEY = ''
-FEE_PERCENTAGE = 0.01

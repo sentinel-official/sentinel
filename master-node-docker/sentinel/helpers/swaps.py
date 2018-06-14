@@ -12,7 +12,7 @@ def is_valid_ethereum_swap(tx_hash):
             if (error is None) and (tx is not None):
                 from_address, to_address, tx_value, tx_input = str(tx['from']).lower(), str(
                     tx['to']).lower(), int(tx['value']), str(tx['input'])
-                if tx_value > 0 and int(tx_input, 16) == 0:
+                if tx_value > 0 and (len(tx_input) == 2 or int(tx_input, 16) == 0):
                     if to_address == SWAP_ADDRESS:
                         return None, [from_address, tx_value, tokens.get_token('ETH')]
                     else:
@@ -20,7 +20,7 @@ def is_valid_ethereum_swap(tx_hash):
                                    'status': -1,
                                    'message': 'To address is not Swap address.'
                                }, None
-                elif tx_value == 0 and len(tx_input) == 136:
+                elif tx_value == 0 and len(tx_input) == 138:
                     token = tokens.get_token(address=to_address)
                     if token is not None:
                         if tx_input[:10] == '0xa9059cbb':

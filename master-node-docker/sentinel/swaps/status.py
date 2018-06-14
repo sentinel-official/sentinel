@@ -10,12 +10,13 @@ class SwapStatus(object):
     def on_get(self, req, resp):
         key = str(req.get_param('key'))
 
+        find_obj = None
         if len(key) == 66:
-            find_key = {'tx_hash_0': key}
+            find_obj = {'tx_hash_0': key}
         elif len(key) == 34:
-            find_key = {'address': key}
+            find_obj = {'from_address': key}
 
-        result = db.swaps.find_one(find_key, {
+        result = db.swaps.find_one(find_obj, {
             '_id': 0
         })
         if result is None:

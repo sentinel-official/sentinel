@@ -24,7 +24,9 @@ class Swaps(object):
         if to_symbol in ETHEREUM_BASED_COINS:
             error, tx_hash_1 = eth_helper.transfer(SWAP_ADDRESS, to_address, value, to_symbol, SWAP_PRIVATE_KEY, 'main')
         elif to_symbol in BTC_BASED_COINS:
-            error, tx_hash_1 = btc_helper.transfer(to_address, value, to_symbol)
+            tx_hash_1 = btc_helper.transfer(to_address, value, to_symbol)
+            if tx_hash_1 is None:
+                error = True
         else:
             self.update_status(key, {
                 'status': -1,
@@ -42,12 +44,13 @@ class Swaps(object):
             })
 
     def update_status(self, key, status, tx_hash=None):
-        collection, find_key = None, None
+        print(key, status, tx_hash)
+        find_obj = None
         if len(key) == 66:
-            find_key = {'tx_hash_0': key}
+            find_obj = {'tx_hash_0': key}
         elif len(key) == 34:
-            find_key = {'address': key}
-        _ = db.swaps.find_one_and_update(find_key, {
+            find_obj = {'from_address': key}
+        _ = db.swaps.find_one_and_update(find_obj, {
             '$set': {
                 'status': status['status'],
                 'message': status['message'],

@@ -11,7 +11,7 @@ from ..helpers import tokens
 
 class GetNewAddress(object):
     def on_post(self, req, resp):
-        to_address = req.body['account_addr']
+        to_address = str(req.body['account_addr'])
         from_token = tokens.get_token(str(req.body['from']))
         to_token = tokens.get_token(str(req.body['to']))
 

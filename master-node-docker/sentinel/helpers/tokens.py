@@ -2,6 +2,7 @@
 import requests
 
 from ..config import SWAP_TOKENS
+from ..config import FEE_PERCENTAGE
 
 
 class Tokens(object):
@@ -24,7 +25,9 @@ class Tokens(object):
         value = value / (1.0 * (10 ** from_token['decimals']))
         from_price = self.get_price(from_token)
         to_price = self.get_price(to_token)
-        return (value * (from_price / to_price)) * 10 ** to_token['decimals']
+        value = value * (from_price / to_price) * (1.0 - FEE_PERCENTAGE)
+        value = value * 10 ** to_token['decimals']
+        return value
 
     def get_token(self, symbol=None, address=None):
         if symbol is not None:

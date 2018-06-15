@@ -5,7 +5,7 @@ const remote = electron.remote;
 const { exec, execSync } = window.require('child_process');
 const os = window.require('os');
 const config = require('../config');
-const B_URL = 'http://54.36.46.16:8333';
+const B_URL = 'https://api.sentinelgroup.io';
 var ETH_BALANCE_URL;
 var SENT_BALANCE_URL;
 var ETH_TRANSC_URL;

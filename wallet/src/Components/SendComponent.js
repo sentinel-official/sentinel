@@ -473,7 +473,7 @@ class SendComponent extends Component {
       if (err) { isPivxSend: false }
       else {
         self.setState({
-          pivxSendAddr: address, showAddress: true, pivxScreenAmount: 0, isPivxSend: false,
+          pivxSendAddr: address, showAddress: true, isPivxSend: false,
           pivxScreenToAddr: self.props.local_address, pivxScreenExpctd: 0, isPivxDisabled: false
         });
       }

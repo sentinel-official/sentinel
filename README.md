@@ -26,7 +26,8 @@ Features of Sentinel
  
     - User identification data is stored on a separate chain. (AUID) This is discussed further down in the paper. 
     
-    - BFT based consensus using the TenderMint Consensus Engine; capability to work even with greater than 2/3<sup>rd</sup> of the nodes failing
+    - BFT based consensus using the TenderMint Consensus Engine; capability to work aned validate a service even with greater than 2/3<sup>rd</sup> of the nodes of the specific service fail
+    
 
     - Any attacks on the network will trigger auto-scaling, network relocation, and isolation of affected nodes.
 

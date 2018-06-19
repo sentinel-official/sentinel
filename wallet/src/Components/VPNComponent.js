@@ -66,9 +66,12 @@ class VPNComponent extends Component {
             selectedVPN: null,
             dueAmount: 0,
             dueSession: null,
+            isTor: false,
+            torIp: '',
             sessionName: '',
             startDownload: 0,
-            startUpload: 0
+            startUpload: 0,
+            showStatus: false
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -106,9 +109,11 @@ class VPNComponent extends Component {
             this.getVPNs()
         }
         if (nextProps.status === false)
-            this.setState({ status: nextProps.status, selectedVPN: null, usage: null });
+            this.setState({ status: nextProps.status, selectedVPN: null, usage: null, showStatus: false });
         else
             this.setState({ status: nextProps.status, selectedVPN: nextProps.vpnData ? nextProps.vpnData.vpn_addr : null });
+        if (nextProps.status && nextProps.status !== this.state.status)
+            this.checkTor();
     }
 
     getDueAmount() {
@@ -163,6 +168,22 @@ class VPNComponent extends Component {
         })
     }
 
+    checkTor = () => {
+        let self = this;
+        fetch('https://check.torproject.org/api/ip', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        }).then(function (response) {
+            response.json().then(function (resp) {
+                self.setState({ isTor: resp['IsTor'], torIp: resp['IP'], showStatus: true })
+            })
+        })
+    }
+
     _loadLatency(vpn) {
         let self = this;
         getLatency(vpn.ip, function (err, latency) {
@@ -214,7 +235,8 @@ class VPNComponent extends Component {
                             //that.returnVPN();
                             that.setState({
                                 selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false,
-                                openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}`, sessionName: data
+                                openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}`, sessionName: data,
+                                showStatus: true
                             })
                             that.props.changeTest(false)
                             that.calculateUsage(true);
@@ -241,10 +263,13 @@ class VPNComponent extends Component {
                             that.props.changeTest(false)
                         }
                         else {
-                            that.props.onChange();
-                            //that.returnVPN();
-                            that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}. ${message}` })
-                            that.props.changeTest(false)
+                            setTimeout(function () {
+                                that.checkTor();
+                                that.props.onChange();
+                                //that.returnVPN();
+                                that.setState({ selectedVPN: that.state.activeVpn.account_addr, status: true, statusSnack: false, showInstruct: false, openSnack: true, snackMessage: `${lang[that.props.lang].ConnectedVPN}. ${message}` })
+                                that.props.changeTest(false)
+                            }, 3000);
                         }
                     })
                 }
@@ -276,7 +301,7 @@ class VPNComponent extends Component {
                     that.props.onChange();
                     that.props.changeTest(false);
                     sendUsage(that.props.local_address, that.state.selectedVPN, null);
-                    that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+                    that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, showStatus: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
                 }
             });
         }
@@ -290,7 +315,7 @@ class VPNComponent extends Component {
                 else {
                     that.props.onChange();
                     that.props.changeTest(false);
-                    that.setState({ selectedVPN: null, usage: null, statusSnack: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
+                    that.setState({ selectedVPN: null, usage: null, statusSnack: false, showStatus: false, isTor: false, status: false, openSnack: true, snackMessage: lang[that.props.lang].DisconnectVPN })
                 }
             });
         }
@@ -299,15 +324,41 @@ class VPNComponent extends Component {
     calculateUsage = (value) => {
         let self = this;
         if (remote.process.platform === 'win32') {
-            let receivedOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.ReceivedBytes\"');
-            let receivedArr = receivedOut.toString().trim().split('\r\n');
-            let downCur;
+            const abspath = 'C:\\Windows\\System32\\wbem\\WMIC.exe'
+            const cmd = 'path Win32_PerfRawData_Tcpip_NetworkInterface Get name,BytesReceivedPersec,BytesSentPersec,BytesTotalPersec /value'
+            
+            let downCur = 0;
+            let upCur = 0;
             let usage;
-            downCur = parseInt(receivedArr[0]) + parseInt(receivedArr[1]);
-            let sendOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.SentBytes\"');
-            let sendArr = sendOut.toString().trim().split('\r\n');
-            let upCur;
-            upCur = parseInt(sendArr[0]) + parseInt(sendArr[1]);
+            let bwStats = {
+                iface: '',
+                down: 0,
+                up: 0
+            }
+            let data = execSync(`${abspath} ${cmd}`).toString()
+            data = data.trim().split(/\n\s*\n/)
+            let interfaces = os.networkInterfaces();
+
+           Object.keys(interfaces).map((key) => {
+                if(key === 'WiFi') {
+                    bwStats['iface'] = key;
+                    bwStats['down'] = data[1].split('\n')[0].split('=')[1].trim();
+                    bwStats['up'] = data[1].split('\n')[1].split('=')[1].trim();        
+                } else if ( key === 'Ethernet' ) {
+                    bwStats['iface'] = key;
+                    bwStats['down'] = data[0].split('\n')[0].split('=')[1].trim()
+                    bwStats['up'] = data[0].split('\n')[1].split('=')[1].trim()
+                }
+
+            })
+            downCur = parseInt(bwStats.down);
+            upCur = parseInt(bwStats.up);                 
+            console.log("statas>>>>>>>>>>", bwStats, downCur, upCur)
+            // downCur = parseInt(receivedArr[0]) + parseInt(receivedArr[1]);           
+            // let sendOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.SentBytes\"');
+            // let sendArr = sendOut.toString().trim().split('\r\n');
+            
+            // upCur = parseInt(sendArr[0]) + parseInt(sendArr[1]);
             if (value) {
                 usage = {
                     'down': 0,
@@ -325,8 +376,9 @@ class VPNComponent extends Component {
                 }
                 self.setState({ usage: usage })
             }
-            sendUsage(self.props.local_address, self.state.selectedVPN, usage);
-        } else {
+            sendUsage(self.props.local_address, self.state.selectedVPN, usage);           
+        } 
+        else {
             let loopStop = false;
             let interfaces = os.networkInterfaces();
             Object.keys(interfaces).map((key) => {
@@ -379,7 +431,6 @@ class VPNComponent extends Component {
             if (err) {
             }
             else {
-                console.log("Usage...", usage)
                 self.props.onChange();
                 self.setState({ usage: usage })
             }
@@ -795,9 +846,24 @@ class VPNComponent extends Component {
                 {!this.state.mapActive && !this.props.status && this.state.dueAmount === 0 ?
                     null :
                     <div style={styles.vpnDetails}>
-                        {this.props.status === true ?
+                        {this.props.status === true && this.state.showStatus ?
                             <div style={{ fontSize: 14 }}>
-                                <p>IP: {this.props.vpnData.ip}</p>
+                                {!this.state.isSock ?
+                                    <span>
+                                        <p style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 16, marginBottom: -10 }}>
+                                            {this.state.isTor ?
+                                                <span>
+                                                    <span style={{ color: '#1ce8bd' }}>Tor is Enabled </span>
+                                                    <img src={'../src/Images/tor-on.png'} alt="tor on" style={{ width: 20, height: 20, marginTop: -6 }} />
+                                                </span> :
+                                                <span>
+                                                    <span style={{ color: '#e88989' }}>Tor is not enabled </span>
+                                                    <img src={'../src/Images/tor-off.png'} alt="tor off" style={{ width: 20, height: 20, marginTop: -6 }} />
+                                                </span>
+                                            }</p>
+                                        <hr />
+                                    </span> : null}
+                                <p>IP: {this.state.isTor ? this.state.torIp : this.props.vpnData.ip}</p>
                                 <p>{lang[language].Location}: {this.props.vpnData.location}</p>
                                 <p>{lang[language].Speed}: {this.props.vpnData.speed}</p>
                                 <p>{lang[language].DownloadUsage}: {this.state.usage ? (parseInt(this.state.usage.down ? this.state.usage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB</p>
@@ -813,7 +879,7 @@ class VPNComponent extends Component {
                             :
                             <div>
                                 {this.state.dueAmount === 0 ?
-                                    lang[language].ClickVPN :
+                                    (this.props.status ? null : lang[language].ClickVPN) :
                                     <span>
                                         <span onClick={() => { this.payDue() }} data-tip data-for="payTip" style={{ cursor: 'pointer' }}>
                                             {lang[language].Uhave} {parseInt(this.state.dueAmount) / (10 ** 8)} SENTS {lang[language].Due}

@@ -212,7 +212,11 @@ export function transferAmount(net, data, cb) {
             cb(null, tx_hash);
           } else {
             sendError(response.error);
-            cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+            try {
+              cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+            } catch (expecErr) {
+              cb({ message: response.error || 'Error occurred while initiating transfer amount.' }, null);
+            }
           }
         })
       }
@@ -611,7 +615,11 @@ export function swapRawTransaction(data, cb) {
             cb(null, tx_hash);
           } else {
             sendError(response.error);
-            cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+            try {
+              cb({ message: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.' }, null);
+            } catch (expecErr) {
+              cb({ message: response.error || 'Error occurred while initiating transfer amount.' }, null);
+            }
           }
         })
       }
@@ -881,80 +889,28 @@ export function connectSocks(account_addr, vpn_addr, cb) {
       })
     }
     else if (remote.process.platform === 'win32') {
-      exec('cd c:\\ProgramData && IF EXIST chocolatey (echo "TRUE")', function (err, stdout, stderr) {
-        if (stdout.toString() === '') {
-          exec('IF EXIST Chocolatey (echo "TRUE")', function (error, stdout1, stderr1) {
-            if (stdout1.toString() === '') {
-              let cmd = `@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"`
-              exec(cmd, function (instErr, instOut, instStdErr) {
-                if (instErr) {
-                  cb({ message: 'Choco Installation failed. Please install manually' }, false, true, false, null);
-                }
-                else {
-                  checkNssm();
-                }
-              })
-            }
-            else {
-              checkNssm();
-            }
-          })
+
+      exec("net start sentinelSocks", function (stderr, stdout, error) {
+        if (stderr && stderr.toString().trim().split(" ")[9] === 'already') {
+          nextStep();
+        }
+        else if (stdout.toString().trim().split(" ")[8] === 'started') {
+          nextStep();
         } else {
           checkNssm();
         }
-      })
+      });
     }
     else {
       nextStep();
     }
-    function checkNssm() {
-      exec('choco install nssm -y', async function (instaErr, instaOut, instDerr) {
-        if (instaErr) {
-          cb({ message: 'Problem faced working with nssm. Please restart sentinel app once.' }, false, true, false, null);
-        }
-        else {
-          let cmd;
-          let output;
-          if (os.release().indexOf('10.') === 0) {
-            cmd = 'reg query "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\URLAssociations\\http\\UserChoice" | findstr "ProgId"'
-            output = execSync(`${cmd}`);
-            output = await output.toString().trim().replace(/\s\s+/g, ' ');
-            output = await output.split(' ')[2].toLowerCase();
-            if (output.indexOf('app') > -1) {
-              output = 'microsoftedge';
-            } else if (output.indexOf('ie.http') > -1) {
-              output = 'iexplore'
-            } else if (output.indexOf('chrome') > -1) {
-              output = 'chrome'
-            } else if (output.indexOf('firefox') > -1) {
-              output = 'firefox'
-            }
-          } else {
-            cmd = 'reg query "HKLM\\Software\\Clients\\StartMenuInternet" | findstr "REG_SZ"';
-            output = execSync(`${cmd}`);
-            output = await output.toString().trim().split(' ')[8].toLowerCase();
-            if (output.indexOf('iexplore') > -1) {
-              output = 'iexplore';
-            } else if (output.indexOf('google') > -1) {
-              output = 'chrome'
-            } else if (output.indexOf('firefox') > -1) {
-              output = 'firefox'
-            }
-          }
-          exec(`tasklist /v /fo csv | findstr /i ${output}`, function (stderr, stdout, error) {
-            if (stdout.toString() === '') {
-              let username = getUserHome();
-              exec(`nssm.exe install sentinelSocks ${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\socks5.exe`, function (execErr, execOut, execStd) {
-                nextStep();
-              });
-
-            }
-            else {
-              cb({ message: 'Your Default Browser is overriding proxy settings.Please close it if its running.' }, false, true, false, null);
-            }
-          });
-        }
-      })
+    async function checkNssm() {
+      let username = getUserHome();
+      exec(`${username}\\AppData\\Local\\Sentinel\\app-0.0.4\\resources\\extras\\socks5\\service.exe`, function (execErr, execOut, execStd) {
+        exec(`net start sentinelSocks`, function (stderr, stdout, error) {
+          nextStep();
+        });
+      });
     }
     function nextStep() {
       fetch(B_URL + '/client/vpn', {
@@ -1066,7 +1022,7 @@ export function connectSocks(account_addr, vpn_addr, cb) {
                       setTimeout(function () { checkWindows(); }, 5000);
                     }
                     if (count == 4 && CONNECTED === false) {
-                      cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
+                      cb({ message: 'Something went wrong. Please Try Again' }, false, false, false, null)
                     }
                   })
                 }
@@ -1133,7 +1089,6 @@ export function getSocksCreds(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, c
     if (response.status === 200) {
       response.json().then(function (response) {
         if (response.success === true) {
-          console.log("VPN Response..", response);
           SESSION_NAME = response['session_name'];
           CONNECTED_VPN = vpn_addr;
           IPGENERATED = response['node']['vpn']['config']['ip'];
@@ -1376,7 +1331,7 @@ export function connectVPN(account_addr, vpn_addr, cb) {
                   exec(command, function (err, stdout, stderr) {
                     OVPNDelTimer = setTimeout(function () {
                       fs.unlinkSync(OVPN_FILE);
-                    }, 5 * 1000);
+                    }, 1000);
                   });
                 }
                 var count = 0;
@@ -1504,7 +1459,6 @@ function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
         if (response.status === 200) {
           response.json().then(function (response) {
             if (response.success === true) {
-              console.log("VPN Response..", response);
               if (response['node'] === null) {
                 cb({ message: 'Something wrong. Please Try Later' })
               }

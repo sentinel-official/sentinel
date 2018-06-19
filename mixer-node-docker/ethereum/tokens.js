@@ -20,10 +20,11 @@ class Tokens {
   }
 
   balanceOf(address, tokenSymbol, cb) {
-    let balance = this[tokenSymbol].contract.balanceOf(address, (error, balance) => {
-      if(error) cb(error, null);
-      else cb(null, balance);
-    });
+    let balance = this[tokenSymbol].contract.balanceOf(address,
+      (error, balance) => {
+        if (error) cb(error, null);
+        else cb(null, balance);
+      });
   }
 
   balanceOfSync(address, tokenSymbol) {

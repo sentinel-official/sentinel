@@ -46,32 +46,33 @@ let getBalances = (req, res) => {
   async.waterfall([
     (next) => {
       accountDbo.getAllAccounts((error, accounts) => {
-        if(error) next({
+        if (error) next({
           status: 500,
           message: 'Error occurred while getting accounts.'
         }, null);
         else {
-          let addresses = lodash.pluck(accounts, 'address');
+          let addresses = lodash.map(accounts, 'address');
           next(null, addresses);
         }
       })
     }, (addresses, next) => {
-      accountHelper.getBalancesOfAllAddresses(addresses, (error, balancesOfAllAddresses) => {
-        if(error) next({
-          status: 500,
-          message: 'Error occurred while getting balances of accounts.'
-        }, null);
-        else {
-          let balances = {
-            eth: lodash.sum(lodash.pluck(balancesOfAllAddresses, 'eth')),
-            sent: lodash.sum(lodash.pluck(balancesOfAllAddresses, 'sent'))
-          };
-          next(null, {
-            status: 200,
-            balances: balances
-          });
-        }
-      });
+      accountHelper.getBalancesOfAllAddresses(addresses,
+        (error, balancesOfAllAddresses) => {
+          if (error) next({
+            status: 500,
+            message: 'Error occurred while getting balances of accounts.'
+          }, null);
+          else {
+            let balances = {
+              ETH: lodash.sum(lodash.map(balancesOfAllAddresses, 'ETH')),
+              SENT: lodash.sum(lodash.map(balancesOfAllAddresses, 'SENT'))
+            };
+            next(null, {
+              status: 200,
+              balances: balances
+            });
+          }
+        });
     }
   ], (error, success) => {
     let response = Object.assign({

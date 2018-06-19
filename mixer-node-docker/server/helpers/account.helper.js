@@ -21,35 +21,40 @@ let createAccount = (cb) => {
 
 let getBalancesOfAddress = (address, cb) => {
   let balances = {};
-  let coinSymbols = ['eth', 'sent'];
-  async.each(coinSymbols, (coinSymbol, next) => {
-    accounts.getBalance(address, coinSymbol, (error, balance) => {
-      if(error) next(error);
-      else {
-        balances[coinSymbol] = balance;
-        next(null);
-      }
+  let coinSymbols = ['ETH', 'SENT'];
+  async.each(coinSymbols,
+    (coinSymbol, next) => {
+      accounts.getBalance(address, coinSymbol,
+        (error, balance) => {
+          if (error) next(error);
+          else {
+            balances[coinSymbol] = balance;
+            next(null);
+          }
+        });
+    }, (error) => {
+      if (error) cb(error, null);
+      else cb(null, balances);
     });
-  }, (error) => {
-    if(error) cb(error, null);
-    else cb(null, balances);
-  });
 };
 
-let getBalancesOfAllAddresses = (addresses,  cb) => {
+let getBalancesOfAllAddresses = (addresses, cb) => {
   let allBalances = {};
-  async.each(addresses, (address, next) => {
-    getBalancesOfAddress(address, (error, balances) => {
-      if(error) next(error);
-      else {
-        allBalances[address] = balances;
-        next(null);
-      }
+  async.each(addresses,
+    (address, next) => {
+      getBalancesOfAddress(address,
+        (error, balances) => {
+          if (error) next(error);
+          else {
+            allBalances[address] = balances;
+            count += 1;
+            next(null);
+          }
+        });
+    }, (error) => {
+      if (error) cb(error, null);
+      else cb(null, allBalances);
     });
-  }, (error) => {
-    if(error) cb(error, null);
-    else cb(null, allBalances);
-  });
 };
 
 module.exports = {

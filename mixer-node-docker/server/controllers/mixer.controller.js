@@ -8,7 +8,7 @@ let insertMixDetails = (req, res) => {
     insertedOn: Math.round(Date.now() / Math.pow(10, 3)),
     lastUpdateOn: Math.round(Date.now() / Math.pow(10, 3)),
     tries: 0,
-    transactionStatuses: [],
+    txInfos: [],
     message: 'Mix details have been added successfully.'
   });
   waterfall([

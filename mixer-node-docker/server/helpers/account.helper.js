@@ -47,7 +47,6 @@ let getBalancesOfAllAddresses = (addresses, cb) => {
           if (error) next(error);
           else {
             allBalances[address] = balances;
-            count += 1;
             next(null);
           }
         });

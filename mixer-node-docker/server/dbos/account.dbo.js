@@ -34,6 +34,5 @@ let getAccount = (address, cb) => {
 module.exports = {
   insertAccount: insertAccount,
   getAllAccounts: getAllAccounts,
-  getAccount: getAccount,
-  getFromAddressesDetails: getFromAddressesDetails
+  getAccount: getAccount
 };

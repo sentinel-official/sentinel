@@ -16,7 +16,9 @@ class RegisterMixerNode(object):
         joined_on = int(time.time())
         token = uuid4().hex
 
-        node = db.mixer_nodes.find_one({'account_addr': account_addr})
+        node = db.mixer_nodes.find_one({
+            'account_addr': account_addr
+        })
         if node is None:
             _ = db.mixer_nodes.insert_one({
                 'account_addr': account_addr,

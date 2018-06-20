@@ -14,7 +14,6 @@
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "glob": "^7.1.2",
-    "input-validator": "^0.2.3",
     "joi": "^13.4.0",
     "keccak": "^1.4.0",
     "method-override": "^2.3.10",

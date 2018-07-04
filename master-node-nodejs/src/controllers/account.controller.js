@@ -1,5 +1,5 @@
 import async from 'async';
-import * as EthHelper from '../helpers/eth';
+import EthHelper from '../helpers/eth';
 
 /**
 * @api {post} /client/account Create new account for the Sentinel user.
@@ -11,7 +11,7 @@ import * as EthHelper from '../helpers/eth';
 * @apiSuccess {String} keystore Keystore file data of the account.
 */
 
-export const createAccount = (req, res) => {
+const createAccount = (req, res) => {
   let password = req.body['password'];
 
   async.waterfall([
@@ -50,7 +50,7 @@ export const createAccount = (req, res) => {
 * @apiSuccess {Object} balances Account balances.
 */
 
-export const getBalance = (req, res) => {
+const getBalance = (req, res) => {
   let accountAddr = req.body['account_addr'];
 
   EthHelper.getBalances(accountAddr, (err, balances) => {
@@ -66,4 +66,9 @@ export const getBalance = (req, res) => {
       })
     }
   })
+}
+
+export default {
+  createAccount,
+  getBalance
 }

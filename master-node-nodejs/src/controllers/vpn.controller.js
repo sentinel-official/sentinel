@@ -1,11 +1,15 @@
 import async from 'async';
 import request from 'request';
 import uuid from 'uuid'
+import axios from 'axios';
 
-import * as VpnManager from '../eth/vpn_contract'
-import * as EthHelper from '../helpers/eth';
+import { VpnServiceManager } from "../eth/vpn_contract";
+import EthHelper from '../helpers/eth';
 import { dbs } from '../db/db';
-import { SENT_BALANCE, VPNSERVICE_ADDRESS, DECIMALS, COINBASE_ADDRESS } from '../utils/config';
+import { DECIMALS } from '../config/vars';
+import { ADDRESS as COINBASE_ADDRESS } from '../config/eth';
+import { Nodes } from "../models";
+import { BTC_BASED_COINS } from '../config/swaps';
 
 /**
 * @api {get} /client/vpn/list Get all unoccupied VPN servers list.
@@ -19,23 +23,44 @@ const calculateAmount = (usedBytes, pricePerGB) => {
 }
 
 const getNodeList = (vpnType, cb) => {
-  global.db.collection('nodes').find({
+  Nodes.find({
     'vpn.status': 'up',
     'vpn_type': vpnType
-  }).project({
-    '_id': 0,
-    'account_addr': 1,
-    'ip': 1,
-    'price_per_GB': 1,
-    'price_per_gb': 1,
-    'location': 1,
-    'net_speed.upload': 1,
-    'latency': 1,
-    'net_speed.download': 1
-  }).toArray((err, list) => {
-    if (err) cb(err, null);
-    else cb(null, list);
-  })
+  }, {
+      '_id': 0,
+      'account_addr': 1,
+      'ip': 1,
+      'price_per_GB': 1,
+      'price_per_gb': 1,
+      'location': 1,
+      'net_speed.upload': 1,
+      'latency': 1,
+      'net_speed.download': 1
+    }, (err, resp) => {
+      if (err) cb(err, null)
+      else cb(null, resp)
+    })
+
+  /* 
+  
+    global.db.collection('nodes').find({
+      'vpn.status': 'up',
+      'vpn_type': vpnType
+    }).project({
+      '_id': 0,
+      'account_addr': 1,
+      'ip': 1,
+      'price_per_GB': 1,
+      'price_per_gb': 1,
+      'location': 1,
+      'net_speed.upload': 1,
+      'latency': 1,
+      'net_speed.download': 1
+    }).toArray((err, list) => {
+      if (err) cb(err, null);
+      else cb(null, list);
+    })
+   */
 }
 
 /**
@@ -45,7 +70,7 @@ const getNodeList = (vpnType, cb) => {
  * @apiSuccess {Object[]} list Details of all VPN servers.
  */
 
-export const getVpnsList = (req, res) => {
+const getVpnsList = (req, res) => {
   getNodeList('openvpn', (err, list) => {
     if (err) {
       res.send({
@@ -53,18 +78,18 @@ export const getVpnsList = (req, res) => {
         'message': 'error in getting vpn node list',
         'error': err
       })
-    }
-
-    async.eachSeries(list, (item, iterate) => {
-      item['price_per_GB'] = item['price_per_gb'];
-      delete item['price_per_gb'];
-      iterate();
-    }, () => {
-      res.send({
-        'success': true,
-        'list': list
+    } else {
+      async.each(list, (item, iterate) => {
+        item['price_per_GB'] = item['price_per_gb'];
+        delete item['price_per_gb'];
+        iterate();
+      }, () => {
+        res.send({
+          'success': true,
+          'list': list
+        })
       })
-    })
+    }
   })
 }
 
@@ -75,7 +100,7 @@ export const getVpnsList = (req, res) => {
  * @apiSuccess {Object[]} list Details of all Socks servers.
  */
 
-export const getSocksList = (req, res) => {
+const getSocksList = (req, res) => {
   getNodeList('socks5', (err, list) => {
     if (err) {
       res.send({
@@ -84,7 +109,7 @@ export const getSocksList = (req, res) => {
       })
     }
 
-    async.eachSeries(list, (item, iterate) => {
+    async.each(list, (item, iterate) => {
       item['price_per_GB'] = item['price_per_gb'];
       delete item['price_per_gb'];
       iterate();
@@ -106,7 +131,7 @@ export const getSocksList = (req, res) => {
 * @apiSuccess {Object} usage Current VPN usage.
 */
 
-export const getCurrentVpnUsage = (req, res) => {
+const getCurrentVpnUsage = (req, res) => {
   let accountAddr = req.body['account_addr']
   accountAddr = accountAddr.toLowerCase();
   let sessionName = req.body['session_name']
@@ -118,19 +143,22 @@ export const getCurrentVpnUsage = (req, res) => {
       _id: 0,
       server_usage: 1
     }, (err, result) => {
-      if (!result) res.send({
-        success: true,
-        usage: {
-          down: 0,
-          up: 0
-        }
-      })
-      else res.send({
-        success: true,
-        usage: result.server_usage
-      })
+      console.log('err, result', err, result)
+      if (!result && !result.usage) {
+        res.send({
+          success: true,
+          usage: {
+            down: 0,
+            up: 0
+          }
+        })
+      } else {
+        res.send({
+          success: true,
+          usage: result.server_usage || result.usage
+        })
+      }
     })
-
 }
 
 /**
@@ -145,9 +173,7 @@ export const getCurrentVpnUsage = (req, res) => {
 * @apiSuccess {String} vpnAddr VPN server account address.
 */
 
-export const getVpnCredentials = (req, res) => {
-
-
+const getVpnCredentials = (req, res) => {
   let accountAddr = req.body['account_addr'];
   let vpnAddr = req.body['vpn_addr'];
 
@@ -216,16 +242,17 @@ export const getVpnCredentials = (req, res) => {
             'message': 'Error occurred while cheking initial payment status.'
           }, null)
         } else if (isPayed) {
-          try {
-            let token = uuid.v4();
-            let ip = node.ip;
-            let port = 3000;
-            let body = {
-              account_addr: accountAddr,
-              token: token
-            };
-            let url = 'http://' + ip + ':' + port + '/token';
-            request.post({ url: url, body: JSON.stringify(body) }, (err, r, resp) => {
+          let token = uuid.v4();
+          let ip = node.ip;
+          let port = 3000;
+          let body = {
+            account_addr: accountAddr,
+            token: token
+          };
+          let url = 'http://' + ip + ':' + port + '/token';
+          // let url = 'http://localhost:3000'
+          axios.post(url, JSON.stringify(body))
+            .then((resp) => {
               next(null, {
                 'success': true,
                 'ip': ip,
@@ -235,13 +262,13 @@ export const getVpnCredentials = (req, res) => {
                 'message': 'Started VPN session.'
               });
             })
-          } catch (error) {
-            next({
-              'success': false,
-              'message': 'Connection timed out while connecting to VPN server.',
-              'error': error
-            }, null);
-          }
+            .catch((err) => {
+              next({
+                'success': false,
+                'message': 'Connection timed out while connecting to VPN server.',
+                'error': err
+              }, null);
+            })
         } else {
           next({
             'success': false,
@@ -252,10 +279,8 @@ export const getVpnCredentials = (req, res) => {
       })
     }
   ], (err, resp) => {
-    if (err)
-      res.send(err);
-    else
-      res.send(resp);
+    if (err) res.status(400).send(err);
+    else res.status(200).send(resp);
   })
 }
 
@@ -273,7 +298,7 @@ export const getVpnCredentials = (req, res) => {
 * @apiSuccess {String[]} txHashes Transaction hashes.
 */
 
-export const payVpnUsage = (req, res) => {
+const payVpnUsage = (req, res) => {
   let paymentType = req.body['payment_type']
   let txData = req.body['tx_data']
   let net = req.body['net']
@@ -313,26 +338,27 @@ export const payVpnUsage = (req, res) => {
  * @apiSuccess {String} tx_hash Transaction hash.
  */
 
-export const reportPayment = (req, res) => {
+const reportPayment = (req, res) => {
   let fromAddr = req.body['from_addr']
   let amount = parseInt(req.body['amount'])
   let sessionId = parseInt(req.body['session_id'])
 
-  VpnManager.payVpnSession(fromAddr, amount, sessionId, '', (error, txHash) => {
-    if (!error) {
-      res.status(200).send({
-        'success': true,
-        'tx_hash': txHash,
-        'message': 'Payment Done Successfully.'
-      })
-    } else {
-      res.status = 400
-      res.send({
-        'success': false,
-        'error': error,
-        'message': 'Vpn payment not successful.'
-      })
-    }
+  EthHelper.getValidNonce(COINBASE_ADDRESS, 'rinkeby', (nonce) => {
+    VpnServiceManager.payVpnSession(fromAddr, amount, sessionId, nonce, (error, txHash) => {
+      if (!error) {
+        res.status(200).send({
+          'success': true,
+          'tx_hash': txHash,
+          'message': 'Payment Done Successfully.'
+        })
+      } else {
+        res.status(200).send({
+          'success': false,
+          'error': error,
+          'message': 'Vpn payment not successful.'
+        })
+      }
+    })
   })
 }
 
@@ -344,7 +370,7 @@ export const reportPayment = (req, res) => {
 * @apiSuccess {Object[]} usage VPN usage details.
 */
 
-export const getVpnUsage = (req, res) => {
+const getVpnUsage = (req, res) => {
   let accountAddress = req.body['account_addr'];
   accountAddress = accountAddress.toLowerCase();
 
@@ -364,7 +390,7 @@ export const getVpnUsage = (req, res) => {
   });
 }
 
-export const updateConnection = (req, res) => {
+const updateConnection = (req, res) => {
 
   let accountAddr = req.body['account_addr'].toLowerCase()
   let connections = req.body['connections']
@@ -384,7 +410,7 @@ export const updateConnection = (req, res) => {
       })
     }, (next) => {
       if (node) {
-        async.eachSeries(connections, (connection, iterate) => {
+        async.each(connections, (connection, iterate) => {
           connection['vpn_addr'] = accountAddr;
           let address = connection['account_addr'] || null;
 
@@ -434,7 +460,7 @@ export const updateConnection = (req, res) => {
                         'end_time': endTime
                       }).toArray((err, endedCons) => {
                         endedConnections = endedCons
-                        async.eachSeries(endedConnections, (connection, iterate) => {
+                        async.each(endedConnections, (connection, iterate) => {
                           let toAddr = connection['client_addr'].toLowerCase()
                           let sentBytes = parseInt(connection['client_usage']['down'])
                           let sessionDuration = parseInt(connection['end_time']) - parseInt(connection['start_time'])
@@ -474,4 +500,15 @@ export const updateConnection = (req, res) => {
       if (err) res.send(err)
       else res.send(resp)
     })
+}
+
+export default {
+  getVpnsList,
+  getSocksList,
+  getCurrentVpnUsage,
+  getVpnCredentials,
+  payVpnUsage,
+  reportPayment,
+  getVpnUsage,
+  updateConnection
 }

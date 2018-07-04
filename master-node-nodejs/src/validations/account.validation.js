@@ -1,7 +1,7 @@
 import joi from 'joi';
-import * as utils from '../utils/validation';
+import utils from '../utils/validation';
 
-export const validateCreateAccount = (req, res, next) => {
+const validateCreateAccount = (req, res, next) => {
   let createSchema = joi.object().keys({
     password: joi.string().required()
   })
@@ -13,7 +13,7 @@ export const validateCreateAccount = (req, res, next) => {
   }
 }
 
-export const getBalance = (req, res, next) => {
+const getBalance = (req, res, next) => {
   let getBalanceSchema = joi.object().keys({
     accountAddr: joi.string().regex(/^0x[a-zA-Z0-9]{40}$/).required()
   })
@@ -25,7 +25,7 @@ export const getBalance = (req, res, next) => {
   }
 }
 
-export const rawTransaction = (req, res, next) => {
+const rawTransaction = (req, res, next) => {
   let rawTransactionSchema = joi.object().keys({
     tx_data: joi.string().required()
   })
@@ -35,4 +35,10 @@ export const rawTransaction = (req, res, next) => {
   } else {
     res.status(422).send(validation);
   }
+}
+
+export default {
+  validateCreateAccount,
+  getBalance,
+  rawTransaction
 }

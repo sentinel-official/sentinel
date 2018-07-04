@@ -5,10 +5,22 @@
 import express from 'express';
 import chalk from 'chalk';
 
-import './config/database';
 import middlewaresConfig from './config/middlewares';
 import constants from './config/constants';
 import ApiRoutes from './routes';
+
+import { dbs } from "./db/db";
+import { dbo } from './db/database'
+
+dbo()
+
+dbs(() => {
+  console.log(chalk.green.bold(
+    `
+      MongoDB is running
+    `
+  ))
+})
 
 const app = express();
 
@@ -16,8 +28,8 @@ const app = express();
 middlewaresConfig(app);
 
 // Add the apiRoutes stack to the server
-app.use(ApiRoutes);
-
+if (process.env.NODE_ENV !== 'test') app.use(ApiRoutes);
+else app.use('/api', ApiRoutes)
 // We need this to make sure we don't run a second instance
 if (!module.parent) {
   app.listen(constants.PORT, err => {

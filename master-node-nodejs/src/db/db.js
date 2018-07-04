@@ -1,8 +1,14 @@
-var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+import { MongoClient } from "mongodb";
+let url = "mongodb://localhost:27017/";
 
-const dbs = function (cb) {
-  MongoClient.connect(url, function (err, dbo) {
+
+export const dbs = (cb) => {
+  MongoClient.connect(url, {
+    socketTimeoutMS: 30000,
+    autoReconnect: true,
+    poolSize: 10,
+    connectTimeoutMS: 30000,
+  }, (err, dbo) => {
     if (err) throw err;
     else cb(null, dbo);
   });
@@ -10,8 +16,6 @@ const dbs = function (cb) {
 
 global.db = null;
 
-dbs(function (err, dbo) {
-  global.db = dbo.db('sentinel1')
+dbs((err, dbo) => {
+  global.db = dbo.db('sentinel')
 })
-
-exports.dbs = dbs;

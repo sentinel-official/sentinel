@@ -1,7 +1,7 @@
 import joi from 'joi';
-import * as utils from '../utils/validation';
+import utils from '../utils/validation';
 
-export const getVpnCredentials = (req, res, next) => {
+const getVpnCredentials = (req, res, next) => {
   let getVpnSchema = joi.object().keys({
     account_addr: joi.string().regex(/^0x[a-zA-Z0-9]{40}$/).required(),
     vpn_addr: joi.string().regex(/^0x[a-zA-Z0-9]{40}$/).required()
@@ -14,7 +14,7 @@ export const getVpnCredentials = (req, res, next) => {
   }
 }
 
-export const addVpnUsage = (req, res, next) => {
+const addVpnUsage = (req, res, next) => {
   let addVpnUsageSchema = joi.object().keys({
     from_addr: joi.string().required(),
     sent_bytes: joi.number().required(),
@@ -28,7 +28,7 @@ export const addVpnUsage = (req, res, next) => {
   }
 }
 
-export const payVpnUsage = (req, res, next) => {
+const payVpnUsage = (req, res, next) => {
   let payVpnUsageSchema = joi.object().keys({
     from_addr: joi.string().regex(/^0x[a-zA-Z0-9]{40}$/).required(),
     amount: joi.string().required(),
@@ -41,4 +41,10 @@ export const payVpnUsage = (req, res, next) => {
   } else {
     res.status(422).send(validation);
   }
+}
+
+export default {
+  getVpnCredentials,
+  addVpnUsage,
+  payVpnUsage
 }

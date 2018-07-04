@@ -1,63 +1,58 @@
-var schedule = require('node-schedule')
-var async = require('async')
-var dbo = require('../db/db')
+import { scheduleJob } from "node-schedule";
+import { waterfall } from "async";
+import { dbs } from "../db/db";
 
-var minutes = 21;
-var hours = 18;
+let minutes = 0;
+let hours = 0;
 
 export const stats = (message) => {
   if (message === 'start') {
-    var j = schedule.scheduleJob('*/45 * * * * *', function () {
-      var nodes = {};
-      var currentTime = new Date();
-      var db = null;
-      var timestamp = null
-
-      async.waterfall([
-        (next) => {
-          if (currentTime.getHours() == hours && currentTime.getMinutes() == minutes) {
-            dbo.dbs((err, dbo) => {
-              db = dbo.db('sentinel1');
+    let j = scheduleJob('*/45 * * * * *', () => {
+      let nodes = {};
+      let currentTime = new Date();
+      let db = null;
+      let timestamp = null
+      if (global.db) {
+        waterfall([
+          (next) => {
+            if (currentTime.getHours() == hours && currentTime.getMinutes() == minutes) {
+              db = global.db
               next()
-            })
-          } else {
-            next({}, null)
-          }
-        }, (next) => {
-          db.collection('nodes').find({ 'vpn.status': 'up' }).toArray(
-            (err, up) => {
-              nodes.up = up.length;
+            } else {
+              next({}, null)
             }
-          )
-          db.collection('nodes').find().toArray(
-            (err, total) => {
-              nodes.total = total.length;
-              next();
-            }
-          )
-
-        }, (next) => {
-          timestamp = currentTime;
-          timestamp.setHours(0);
-          timestamp.setMinutes(0);
-          timestamp.setSeconds(0);
-          timestamp = timestamp.getTime()/1000
-          db.collection('statistics').update({
-            timestamp: timestamp
-          }, {
-              '$set': { 'nodes': nodes }
+          }, (next) => {
+            db.collection('nodes').find({ 'vpn.status': 'up' }).toArray(
+              (err, up) => {
+                nodes.up = up.length;
+              }
+            )
+            db.collection('nodes').find().toArray(
+              (err, total) => {
+                nodes.total = total.length;
+                next();
+              }
+            )
+          }, (next) => {
+            timestamp = currentTime;
+            timestamp.setHours(0);
+            timestamp.setMinutes(0);
+            timestamp.setSeconds(0);
+            timestamp = timestamp.getTime() / 1000
+            db.collection('statistics').update({
+              timestamp: timestamp
             }, {
-              upsert: true
-            }, (err, resp) => {
-              next();
-            })
-        }
-      ], (err, resp) => {
-        console.log('statistics : ', timestamp)
-      })
+                '$set': { 'nodes': nodes }
+              }, {
+                upsert: true
+              }, (err, resp) => {
+                next();
+              })
+          }
+        ], (err, resp) => {
+          console.log('statistics : ', timestamp)
+        })
+      }
     })
-
-  } else if (message == 'stop') {
-    process.kill(process.pid)
   }
 }

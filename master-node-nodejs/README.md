@@ -23,21 +23,17 @@ This Boilerplate use webpack 3 to compile code.
 
 ## Installation
 
-1. Clone the project `git clone https://github.com/sentinel-official/sentinel.git`.
-2. Install dependencies `yarn install` or `npm install` after installing dependencies run `npm run build`
+1. Clone the project `git clone https://github.com/EQuimper/nodejs-api-boilerplate.git`.
+2. Install dependencies `yarn install` or `npm i`
 3. Create a `.env` file in the root like the `.env.example` file.
-4. For dev you need to have mongodb db locally. 
+4. For dev you need to have mongodb db locally. [How to?](https://github.com/EQuimper/nodejs-api-boilerplate#install-mongodb)
 
 ---
 
 ## Install Mongodb
-MAC
 
 With Homebrew you can just run `brew install mongodb` and after `brew services start mongodb`.
 
-UBUNTU
-
-With `apt-get update && apt-get install mongodb`
 ---
 
 ## Raven Log

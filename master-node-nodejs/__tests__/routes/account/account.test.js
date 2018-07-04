@@ -10,11 +10,10 @@ chai.use(chaiHttp);
 
 const accountRoute = '/api/client/account';
 const balanceRoute = '/api/client/account/balance';
-const rawTransactionRoute = '/api/client/raw-transaction';
 
 const correctDetails = {
   password: 'password',
-  wallet_address: '0xd16e64a4083bd4f973df66b75ab266987e509fe6'
+  account_addr: '0x6b6df9e25f7bf2e363ec1a52a7da4c4a64f5769e'
 }
 
 const rawTransactionDetails = {
@@ -23,37 +22,36 @@ const rawTransactionDetails = {
 }
 
 
-describe('Route creating account', () => {
-  describe('/POST ' + accountRoute, () => {
-    let wrongDetails = Object.assign({}, correctDetails);
+// describe('Route creating account', () => {
+//   describe('/POST ' + accountRoute, () => {
+//     let wrongDetails = Object.assign({}, correctDetails);
 
-    it('With correct details should return keystore', (done) => {
-      chai.request(server)
-        .post(accountRoute)
-        .send(correctDetails)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    })
-  });
-});
+//     it('With correct details should return keystore', (done) => {
+//       chai.request(server)
+//         .post(accountRoute)
+//         .send(correctDetails)
+//         .end((err, res) => {
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(4000)
+//   });
+// });
 
-describe('Route for checking balance', () => {
-  describe('/POST ' + balanceRoute, () => {
-    let wrongDetails = Object.assign({}, correctDetails);
+// describe('Route for checking balance', () => {
+//   describe('/POST ' + balanceRoute, () => {
+//     let wrongDetails = Object.assign({}, correctDetails);
 
-    it('With correct wallet address should return balance', (done) => {
-      chai.request(server)
-        .post(balanceRoute)
-        .send(correctDetails)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(5000);
-  });
-});
-
+//     it('With correct wallet address should return balance', (done) => {
+//       chai.request(server)
+//         .post(balanceRoute)
+//         .send(correctDetails)
+//         .end((err, res) => {
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(10000);
+//   });
+// });

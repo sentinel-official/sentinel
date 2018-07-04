@@ -1,6 +1,6 @@
-import { DECIMALS } from '../utils/config'
 import { dbs } from '../db/db'
-import * as ETHHelper from '../helpers/eth'
+import ETHHelper from '../helpers/eth'
+import { DECIMALS } from '../config/vars';
 
 let db = null;
 
@@ -19,7 +19,7 @@ const insertFree = (toAddr, cb) => {
   })
 }
 
-export const getFreeAmount = (req, res) => {
+const getFreeAmount = (req, res) => {
 
   let accountAddr = req.body['account_addr'];
   let eths = parseInt(0.25 * Math.pow(10, 18))
@@ -53,4 +53,8 @@ export const getFreeAmount = (req, res) => {
       })
     }
   })
+}
+
+export default {
+  getFreeAmount
 }

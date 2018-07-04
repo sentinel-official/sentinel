@@ -1,69 +1,13 @@
 {
-  "name": "nodejs-api-boilerplate",
-  "description": "A NodeJS server boilerplate for help you kickstart you futur node project. ES6/ES7 features.",
-  "version": "1.0.3",
-  "author": "Emanuel Quimper <quimperemanuel@gmail.com> <https://github.com/EQuimper>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/EQuimper/nodejs-api-boilerplate"
-  },
-  "bugs": {
-    "type": "git",
-    "url": "https://github.com/EQuimper/nodejs-api-boilerplate/issues"
-  },
-  "engines": {
-    "node": ">= 6.10",
-    "npm": ">= 3.10",
-    "yarn": ">=0.20.3"
-  },
+  "name": "sentinel",
+  "description": "A NodeJS server for SENTINEL with ES6/ES7 features.",
+  "version": "1.0.0",
+  "author": "",
   "main": "./src/index.js",
-  "keywords": [
-    "express",
-    "es6",
-    "es7",
-    "rest",
-    "api",
-    "boilerplate",
-    "mongodb",
-    "node",
-    "javascript",
-    "pm2",
-    "babel",
-    "nps",
-    "commitizen",
-    "semantic-release",
-    "prettier",
-    "lint-staged",
-    "webpack2"
-  ],
-  "license": "MIT",
-  "lint-staged": {
-    "src/**/*.js": [
-      "yarn prettier",
-      "git add"
-    ]
-  },
   "scripts": {
-    "build": "nps build",
-    "start": "nps",
-    "test": "nps test",
-    "test:watch": "nps test.watch",
-    "dev": "nps dev",
-    "dev:debug": "nps dev.debug",
-    "prettier": "prettier --single-quote --print-width 80 --trailing-comma all --write '{src,__{tests,mocks}__}/**/*.js'",
-    "precommit": "nps lintStaged && nps validate",
-    "checkCover": "nps test.checkCover",
-    "cover": "nps test.cover",
-    "db:seeds-user": "nps db.seedsUser",
-    "db:seeds-clear": "nps db.seedsClearUser",
-    "db:seeds-clear-user": "nps db.seedsClear",
-    "lint": "nps lint",
-    "lint:fix": "nps lint.fix",
-    "reportCoverage": "nps reportCoverage",
-    "doc": "nps doc",
-    "doc:deploy": "nps doc.deploy",
-    "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "start": "NODE_ENV=production nodemon src/index.js --exec babel-node --presets es2015,stage-2",
+    "test": "NODE_ENV=test mocha $(find __tests__ -name *.test.js) --colors --compilers js:babel-register",
+    "dev": "NODE_ENV=development nodemon src/index.js --exec babel-node --presets es2015,stage-2"
   },
   "devDependencies": {
     "ajv": "^6.0.0",
@@ -100,7 +44,9 @@
   },
   "dependencies": {
     "async": "^2.6.0",
+    "axios": "^0.18.0",
     "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "*",
     "chai-http": "*",

@@ -1,40 +1,38 @@
-var schedule = require('node-schedule')
-var async = require('async')
-var dbo = require('../db/db')
+import { scheduleJob } from "node-schedule";
+import { waterfall } from "async";
+import dbo from "../db/db";
 
 
-export const alive = function (data) {
-  var maxSecs = data.maxSecs || null;
-  var db = null
+export const alive = (data) => {
+  let maxSecs = data.maxSecs || null;
+  let db = null
+
   if (data.message == 'start') {
-    schedule.scheduleJob('*/5 * * * * *', function () {
-      var minTime = Date.now() / 1000 - maxSecs;
-
-      async.waterfall([
-        (next) => {
-          dbo.dbs((err, dbo) => {
-            db = dbo.db('sentinel1');
+    scheduleJob('*/5 * * * * *', function () {
+      let minTime = Date.now() / 1000 - maxSecs;
+      if (global.db) {
+        waterfall([
+          (next) => {
+            db = global.db
             next()
-          })
-        }, (next) => {
-          db.collection('nodes').updateMany({
-            'vpn.ping_on': {
-              '$lt': minTime
-            }
-          }, {
-              '$set': {
-                'vpn.status': 'down'
+          }, (next) => {
+            db.collection('nodes').updateMany({
+              'vpn.ping_on': {
+                '$lt': minTime
               }
-            }, (err, resp) => {
-              if (err) throw err
-              else next()
-            })
-        }
-      ], (err, resp) => {
-        console.log('alive')
-      })
+            }, {
+                '$set': {
+                  'vpn.status': 'down'
+                }
+              }, (err, resp) => {
+                if (err) throw err
+                else next()
+              })
+          }
+        ], (err, resp) => {
+          console.log('alive')
+        })
+      }
     })
-  } else if (data.message == 'stop') {
-    process.kill(process.id)
   }
 }

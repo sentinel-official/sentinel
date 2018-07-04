@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as NodeController from '../controllers/node.controller'
+import NodeController from '../controllers/node.controller'
 
 const routes = new Router();
 

@@ -8,6 +8,8 @@ import { ERC20Manager } from '../eth/erc20';
 import { VpnServiceManager } from '../eth/vpn_contract';
 import { LIMIT_10MB, LIMIT_100MB, SESSIONS_SALT } from '../config/vars';
 import { ADDRESS as COINBASE_ADDRESS, PRIVATE_KEY as COINBASE_PRIVATE_KEY } from '../config/eth';
+import { Usage } from '../models';
+import database from '../db/database';
 
 let redisClient = redis.createClient();
 
@@ -335,7 +337,7 @@ const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeS
         }
       })
     }, (next) => {
-      global.db.collection('usage').findOne({
+      Usage.findOne({
         'from_addr': fromAddr,
         'to_addr': toAddr
       }, (err, usage) => {
@@ -345,15 +347,21 @@ const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeS
     }, (next) => {
       if (!_usage) {
         if (sentBytes > LIMIT_10MB && sentBytes < LIMIT_100MB) {
-          global.db.collection('usage').insertOne({
+
+          let data = {
             'from_addr': fromAddr,
             'to_addr': toAddr,
             'sent_bytes': sentBytes,
             'session_duration': sessionDuration,
             'amount': amount,
             'timestamp': timeStamp
-          }, (err, resp) => {
-            next()
+          }
+
+          let usageData = new Usage(data)
+
+          database.insert(usageData, (err, resp) => {
+            if (err) { next(err, null) }
+            else { next() }
           })
         } else if (sentBytes >= LIMIT_100MB) {
           makeTx = true;
@@ -362,25 +370,28 @@ const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeS
           next()
         }
       } else if (parseInt(_usage['sent_bytes']) + sentBytes < LIMIT_100MB) {
-        global.db.collection('usage').findOneAndUpdate({
+
+        let findData = {
           'from_addr': fromAddr,
           'to_addr': toAddr
-        }, {
-            '$set': {
-              'sent_bytes': _usage['sent_bytes'] + sentBytes,
-              'session_duration': _usage['session_duration'] + sessionDuration,
-              'amount': _usage['amount'] + amount,
-              'timestamp': timeStamp
-            }
-          }, (err, resp) => {
-            next()
-          })
+        }
+
+        let updateData = {
+          'sent_bytes': _usage['sent_bytes'] + sentBytes,
+          'session_duration': _usage['session_duration'] + sessionDuration,
+          'amount': _usage['amount'] + amount,
+          'timestamp': timeStamp
+        }
+
+        database.update(Usage, findData, updateData, (err, resp) => {
+          next()
+        })
       } else {
         sentBytes = parseInt(_usage['sent_bytes']) + sentBytes;
         sessionDuration = parseInt(_usage['session_duration']) + sessionDuration;
-        amount = int(_usage['amount']) + amount;
+        amount = parseInt(_usage['amount']) + amount;
         make_tx = true;
-        global.db.collection('usage').findOneAndDelete({
+        Usage.findOneAndRemove({
           'from_addr': fromAddr,
           'to_addr': toAddr
         }, (err, resp) => {

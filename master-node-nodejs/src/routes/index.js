@@ -10,7 +10,6 @@ import ClientRoutes from './client.routes';
 import StatsRoutes from './stats.routes';
 import TokenRoutes from './token.routes';
 import ValidationRoutes from './nodeValidation.routes'
-import db from '../db/db'
 import { app } from '../app'
 
 import DevController from '../dev/free'

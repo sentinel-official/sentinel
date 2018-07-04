@@ -2,7 +2,7 @@ import async from 'async';
 import uuid from 'uuid';
 import { exec } from "child_process";
 
-import models from "../models";
+import { Node, Connection, Statistic, Payment } from "../models";
 import EthHelper from '../helpers/eth';
 import { DECIMALS } from '../config/vars';
 import dbo from "../db/database";
@@ -85,7 +85,6 @@ const registerNode = (req, res) => {
           'net_speed': netSpeed
         }
 
-        let { Node } = models
         let nodeData = new Node(data)
         database.insert(nodeData, (err, resp) => {
           if (err) {
@@ -103,32 +102,34 @@ const registerNode = (req, res) => {
           }
         })
       } else {
-        global.db.collection('nodes').findOneAndUpdate({
+        let findData = {
           'account_addr': accountAddr
-        }, {
-            '$set': {
+        }
+
+        let updateData = {
+          'token': token,
+          'ip': ip,
+          'price_per_gb': pricePerGB,
+          'latency': latency,
+          'vpn_type': vpnType,
+          'location': location,
+          'net_speed': netSpeed
+        }
+
+        database.update(Node, findData, updateData, (err, resp) => {
+          if (err) {
+            next({
+              'success': false,
+              'message': 'node not registered successfully'
+            }, null)
+          } else {
+            next(null, {
+              'success': true,
               'token': token,
-              'ip': ip,
-              'price_per_gb': pricePerGB,
-              'latency': latency,
-              'vpn_type': vpnType,
-              'location': location,
-              'net_speed': netSpeed
-            }
-          }, (err, resp) => {
-            if (err) {
-              next({
-                'success': false,
-                'message': 'node not registered successfully'
-              }, null)
-            } else {
-              next(null, {
-                'success': true,
-                'token': token,
-                'message': 'Node registered successfully.'
-              })
-            }
-          })
+              'message': 'Node registered successfully.'
+            })
+          }
+        })
       }
     }
   ], (err, result) => {
@@ -152,14 +153,20 @@ const updateNodeInfo = (req, res) => {
   let accountAddr = req.body['account_addr'];
   let info = req.body['info'];
 
+  let findData = {
+    'account_addr': accountAddr,
+    'token': token
+  }
+
   async.waterfall([
     (next) => {
       if (info['type'] == 'location') {
         let location = info['location'];
+        let updateData = {
+          'location': location
+        }
 
-        global.db.collection('nodes').findOneAndUpdate(
-          { 'account_addr': accountAddr, 'token': token },
-          { '$set': { 'location': location } },
+        database.update(Node, findData, updateData,
           (err, node) => {
             if (err) next(err, null);
             else next(null, node);
@@ -167,40 +174,36 @@ const updateNodeInfo = (req, res) => {
       } else if (info['type'] == 'net_speed') {
         let netSpeed = info['net_speed'];
 
-        global.db.collection('nodes').findOneAndUpdate(
-          { 'account_addr': accountAddr, 'token': token },
-          { '$set': { 'net_speed': netSpeed } },
+        let updateData = {
+          'location': netSpeed
+        }
+
+        database.update(Node, findData, updateData,
           (err, node) => {
             if (err) next(err, null);
             else next(null, node);
           })
       } else if (info['type'] == 'vpn') {
         let initOn = parseInt(Date.now() / 1000)
+        let updateData = {
+          'vpn.status': 'up',
+          'vpn.init_on': initOn,
+          'vpn.ping_on': initOn
+        }
 
-        global.db.collection('nodes').findOneAndUpdate(
-          { 'account_addr': accountAddr, 'token': token },
-          {
-            '$set': {
-              'vpn.status': 'up',
-              'vpn.init_on': initOn,
-              'vpn.ping_on': initOn
-            }
-          },
+        database.update(Node, findData, updateData,
           (err, node) => {
             if (err) next(err, null);
             else next(null, node);
           })
       } else if (info['type'] == 'alive') {
         let pingOn = parseInt(Date.now() / 1000)
+        let updateData = {
+          'vpn.status': 'up',
+          'vpn.ping_on': pingOn
+        }
 
-        global.db.collection('nodes').findOneAndUpdate(
-          { 'account_addr': accountAddr, 'token': token },
-          {
-            '$set': {
-              'vpn.status': 'up',
-              'vpn.ping_on': pingOn
-            }
-          },
+        database.update(Node, findData, updateData,
           (err, node) => {
             if (err) next(err, null);
             else next(null, node);
@@ -250,7 +253,7 @@ const updateConnections = (req, res) => {
 
   async.waterfall([
     (next) => {
-      global.db.collection('nodes').findOne({
+      Node.findOne({
         account_addr: accountAddr,
         token: token
       }, (err, resp) => {
@@ -269,14 +272,16 @@ const updateConnections = (req, res) => {
             delete connection['account_addr'];
           }
 
-          global.db.collection('connections').findOne({
+          Connection.findOne({
             'vpn_addr': connection['vpn_addr'],
             'session_name': connection['session_name']
           }, (err, data) => {
             if (!data) {
               connection['start_time'] = Date.now() / 1000;
               connection['end_time'] = null;
-              global.db.collection('connections').insertOne(connection, (err, resp) => {
+              let connectionData = new Connection(connection)
+
+              database.insert(connectionData, (err, resp) => {
                 sessionNames.push(connection['session_name'])
                 let endTime = connection['end_time'] || null
                 if (endTime)
@@ -284,23 +289,22 @@ const updateConnections = (req, res) => {
                 iterate()
               })
             } else {
-              global.db.collection('connections').findOneAndUpdate({
+              let findData = {
                 'vpn_addr': connection['vpn_addr'],
                 'session_name': connection['session_name'],
                 'end_time': null
-              }, {
-                  $set: {
-                    'server_usage': connection['usage']
-                  }
-                }, (err, resp) => {
-                  sessionNames.push(connection['session_name'])
-                  let endTime = connection['end_time'] || null
-                  if (endTime)
-                    cond = '$in'
-                  iterate()
-                })
+              }
+              let updateData = {
+                'server_usage': connection['usage']
+              }
+              database.update(Connection, findData, updateData, (err, resp) => {
+                sessionNames.push(connection['session_name'])
+                let endTime = connection['end_time'] || null
+                if (endTime)
+                  cond = '$in'
+                iterate()
+              })
             }
-
           })
         }, () => {
           next()
@@ -317,27 +321,29 @@ const updateConnections = (req, res) => {
       let sesName = {};
       sesName[cond] = sessionNames;
 
-      global.db.collection('connections').updateMany({
+      let findData = {
         'vpn_addr': accountAddr,
         'session_name': sesName,
         'end_time': null
-      }, {
-          '$set': {
+      }
+
+      let updateData = {
+        'end_time': endTime
+      }
+
+      database.updateMany(Connection, findData, updateData, (err, resp) => {
+        if (resp.modifiedCount > 0) {
+          Connection.find({
+            'vpn_addr': accountAddr,
+            'session_name': sesName,
             'end_time': endTime
-          }
-        }, (err, resp) => {
-          if (resp.modifiedCount > 0) {
-            global.db.collection('connections').find({
-              'vpn_addr': accountAddr,
-              'session_name': sesName,
-              'end_time': endTime
-            }).toArray((err, resp) => {
-              next(null, resp)
-            })
-          } else {
-            next(null, endedConnections);
-          }
-        })
+          }, (err, resp) => {
+            next(null, resp)
+          })
+        } else {
+          next(null, endedConnections);
+        }
+      })
     }, (endedConnections, next) => {
       async.eachSeries(endedConnections, (connection, iterate) => {
         let toAddr = (connection['client_addr']);
@@ -380,21 +386,23 @@ const deRegisterNode = (req, res) => {
 
   async.waterfall([
     (next) => {
-      global.db.collection('nodes').findOneAndDelete(
-        { 'account_addr': accountAddr, 'token': token },
-        (err, node) => {
-          if (!node.value) {
-            next({
-              'success': false,
-              'message': 'Node is not registered.'
-            }, null);
-          } else {
-            next(null, {
-              'success': true,
-              'message': 'Node deregistred successfully.'
-            })
-          }
-        })
+      Node.deleteOne({
+        'account_addr': accountAddr,
+        'token': token
+      }, (err, resp) => {
+        console.log('deleted data-----------------------------------------------', err, resp)
+        if (!resp.n) {
+          next({
+            'success': false,
+            'message': 'Node is not registered.'
+          }, null);
+        } else {
+          next(null, {
+            'success': true,
+            'message': 'Node deregistred successfully.'
+          })
+        }
+      })
     }
   ], (err, resp) => {
     if (err) res.send(err);
@@ -459,47 +467,39 @@ const addVpnUsage = (req, res) => {
 */
 
 const getDailyDataCount = (req, res) => {
-  let dailyCount = []
-  async.waterfall([
-    (next) => {
-      global.db.collection('connections').aggregate([{
-        "$project": {
-          "total": {
-            "$add": [
-              new Date(1970 - 1 - 1), {
-                "$multiply": ["$start_time", 1000]
-              }
-            ]
-          },
-          "data": "$server_usage.down"
-        }
-      }, {
-        "$group": {
-          "_id": {
-            "$dateToString": {
-              "format": "%d/%m/%Y",
-              "date": '$total'
-            }
-          },
-          "dataCount": {
-            "$sum": "$data"
+  Connection.aggregate([{
+    "$project": {
+      "total": {
+        "$add": [
+          new Date(1970 - 1 - 1), {
+            "$multiply": ["$start_time", 1000]
           }
-        }
-      }, {
-        "$sort": {
-          "_id": 1
-        }
-      }]).toArray((err, result) => {
-        dailyCount = result
-        next()
-      })
+        ]
+      },
+      "data": "$server_usage.down"
     }
-  ], (err, resp) => {
+  }, {
+    "$group": {
+      "_id": {
+        "$dateToString": {
+          "format": "%d/%m/%Y",
+          "date": '$total'
+        }
+      },
+      "dataCount": {
+        "$sum": "$data"
+      }
+    }
+  }, {
+    "$sort": {
+      "_id": 1
+    }
+  }], (err, result) => {
     if (err) res.send(err);
     else
       res.send({
         'success': true,
-        'stats': dailyCount
+        'stats': result
       });
   })
 }
@@ -512,15 +512,14 @@ const getDailyDataCount = (req, res) => {
 */
 
 const getTotalDataCount = (req, res) => {
-  let totalCount = []
-  global.db.collection('connections').aggregate([{
+  Connection.aggregate([{
     "$group": {
       "_id": null,
       "Total": {
         "$sum": "$server_usage.down"
       }
     }
-  }]).toArray((err, result) => {
+  }], (err, result) => {
     if (err) res.send(err)
     res.send({
       'success': true,
@@ -537,7 +536,7 @@ const getTotalDataCount = (req, res) => {
 */
 
 const getLastDataCount = (req, res) => {
-  global.db.collection('connections').aggregate([
+  Connection.aggregate([
     { '$match': { 'start_time': { '$gte': (Date.now() / 1000) - (24 * 60 * 60) } } },
     {
       '$group': {
@@ -546,7 +545,7 @@ const getLastDataCount = (req, res) => {
           '$sum': '$server_usage.down'
         }
       }
-    }]).toArray((err, resp) => {
+    }], (err, resp) => {
       if (err) {
         res.send({
           'success': false,
@@ -571,7 +570,7 @@ const getLastDataCount = (req, res) => {
 const getDailyNodeCount = (req, res) => {
   let dailyCount = []
 
-  global.db.collection('nodes').aggregate([{
+  Node.aggregate([{
     "$project": {
       "total": {
         "$add": [
@@ -597,11 +596,18 @@ const getDailyNodeCount = (req, res) => {
     "$sort": {
       "_id": 1
     }
-  }]).toArray((err, result) => {
-    res.send({
-      'success': true,
-      'stats': result
-    })
+  }], (err, result) => {
+    if (err) {
+      res.status(400).send({
+        'success': false,
+        'err': err
+      })
+    } else {
+      res.status(200).send({
+        'success': true,
+        'stats': result
+      })
+    }
   })
 }
 
@@ -613,7 +619,7 @@ const getDailyNodeCount = (req, res) => {
 */
 
 const getTotalNodeCount = (req, res) => {
-  global.db.collection('statistics').aggregate([{
+  Statistic.aggregate([{
     '$project': {
       'total': {
         '$add': [
@@ -640,14 +646,14 @@ const getTotalNodeCount = (req, res) => {
     '$sort': {
       '_id': 1
     }
-  }]).toArray((err, resp) => {
+  }], (err, resp) => {
     if (err) {
-      res.send({
+      res.status(400).send({
         'success': false,
         'err': err
       })
     } else {
-      res.send({
+      res.status(200).send({
         'success': true,
         'stats': resp
       })
@@ -663,7 +669,7 @@ const getTotalNodeCount = (req, res) => {
 */
 
 const getDailyActiveNodeCount = (req, res) => {
-  global.db.collection('statistics').aggregate([{
+  Statistic.aggregate([{
     '$project': {
       'total': {
         '$add': [
@@ -690,14 +696,14 @@ const getDailyActiveNodeCount = (req, res) => {
     '$sort': {
       '_id': 1
     }
-  }]).toArray((err, resp) => {
+  }], (err, resp) => {
     if (err) {
-      res.send({
+      res.status(400).send({
         'success': false,
         'err': err
       })
     } else {
-      res.send({
+      res.status(200).send({
         'success': true,
         'stats': resp
       })
@@ -713,7 +719,7 @@ const getDailyActiveNodeCount = (req, res) => {
 */
 
 const getAverageNodesCount = (req, res) => {
-  global.db.collection('nodes').aggregate([{
+  Node.aggregate([{
     '$group': {
       '_id': null,
       'olddate': {
@@ -739,14 +745,14 @@ const getAverageNodesCount = (req, res) => {
         ]
       }
     }
-  }]).toArray((err, resp) => {
+  }], (err, resp) => {
     if (err) {
-      res.send({
+      res.status(400).send({
         'success': false,
         'err': err
       })
     } else {
-      res.send({
+      res.status(200).send({
         'success': true,
         'average': resp
       })
@@ -762,14 +768,18 @@ const getAverageNodesCount = (req, res) => {
 */
 
 const getActiveNodeCount = (req, res) => {
-  global.db.collection('nodes').find({ "vpn.status": "up" }).toArray((err, data) => {
-    let count = data.length
-    if (err) res.send(err)
-    res.status = 200
-    res.send({
-      'success': true,
-      'count': count
-    })
+  Node.find({ "vpn.status": "up" }, (err, data) => {
+    if (err) {
+      res.status(400).send({
+        'success': false,
+        'err': err
+      })
+    } else {
+      res.status(200).send({
+        'success': true,
+        'average': data.length
+      })
+    }
   })
 }
 
@@ -781,8 +791,7 @@ const getActiveNodeCount = (req, res) => {
 */
 
 const getDailySessionCount = (req, res) => {
-  let dailyCount = []
-  global.db.collection('connections').aggregate([{
+  Connection.aggregate([{
     "$project": {
       "total": {
         "$add": [
@@ -808,11 +817,18 @@ const getDailySessionCount = (req, res) => {
     "$sort": {
       "_id": 1
     }
-  }]).toArray((err, dailyCount) => {
-    res.send({
-      'success': true,
-      'stats': dailyCount
-    });
+  }], (err, dailyCount) => {
+    if (err) {
+      res.status(400).send({
+        'success': false,
+        'err': err
+      })
+    } else {
+      res.status(200).send({
+        'success': true,
+        'stats': data.length
+      })
+    }
   })
 }
 
@@ -824,7 +840,7 @@ const getDailySessionCount = (req, res) => {
 */
 
 const getAverageSessionsCount = (req, res) => {
-  global.db.collection('connections').aggregate([{
+  Connection.aggregate([{
     '$group': {
       '_id': null,
       'olddate': {
@@ -850,14 +866,14 @@ const getAverageSessionsCount = (req, res) => {
         ]
       }
     }
-  }]).toArray((err, resp) => {
+  }], (err, resp) => {
     if (err) {
-      res.send({
+      res.status(400).send({
         'success': false,
         'err': err
       })
     } else {
-      res.send({
+      res.status(200).send({
         'success': true,
         'average': resp
       })
@@ -873,14 +889,18 @@ const getAverageSessionsCount = (req, res) => {
 */
 
 const getActiveSessionCount = (req, res) => {
-  global.db.collection('connections').find({ endTime: null }).toArray((err, data) => {
-    let count = data.length
-    if (err) res.send(err)
-    res.status = 200
-    res.send({
-      'success': true,
-      'count': count
-    })
+  Connection.find({ endTime: null }, (err, data) => {
+    if (err) {
+      res.status(400).send({
+        'success': false,
+        'err': err
+      })
+    } else {
+      res.status(200).send({
+        'success': true,
+        'count': data.length
+      })
+    }
   })
 }
 
@@ -892,8 +912,7 @@ const getActiveSessionCount = (req, res) => {
 */
 
 const getDailyDurationCount = (req, res) => {
-  let dailyCount = []
-  global.db.collection('connections').aggregate([{
+  Connection.aggregate([{
     "$project": {
       "total": {
         "$add": [
@@ -928,11 +947,18 @@ const getDailyDurationCount = (req, res) => {
     "$sort": {
       "_id": 1
     }
-  }]).toArray((err, dailyCount) => {
-    res.send({
-      'success': true,
-      'stats': dailyCount
-    })
+  }], (err, dailyCount) => {
+    if (err) {
+      res.status(400).send({
+        'success': false,
+        'err': err
+      })
+    } else {
+      res.status(200).send({
+        'success': true,
+        'count': dailyCount
+      })
+    }
   })
 }
 
@@ -944,7 +970,7 @@ const getDailyDurationCount = (req, res) => {
 */
 
 const getDailyAverageDuration = (req, res) => {
-  global.db.collection('connections').aggregate([{
+  Connection.aggregate([{
     '$project': {
       'total': {
         '$add': [new Date(1970 - 1 - 1), {
@@ -971,14 +997,14 @@ const getDailyAverageDuration = (req, res) => {
     }
   }, {
     '$sort': { '_id': 1 }
-  }]).toArray((err, resp) => {
+  }], (err, resp) => {
     if (err) {
-      res.send({
+      res.status(400).send({
         'success': false,
         'err': err
       })
     } else {
-      res.send({
+      res.status(200).send({
         'success': true,
         'average': resp
       })
@@ -995,7 +1021,7 @@ const getDailyAverageDuration = (req, res) => {
 
 const getAverageDuration = (req, res) => {
   let avgCount = []
-  global.db.collection('connections').aggregate([{
+  Connection.aggregate([{
     "$project": {
       "Sum": {
         "$sum": {
@@ -1015,12 +1041,18 @@ const getAverageDuration = (req, res) => {
         "$avg": "$Sum"
       }
     }
-  }]).toArray((err, avgCount) => {
-    if (err) res.send(err);
-    res.send({
-      'success': true,
-      'stats': avgCount
-    })
+  }], (err, avgCount) => {
+    if (err) {
+      res.status(400).send({
+        'success': false,
+        'err': err
+      })
+    } else {
+      res.status(200).send({
+        'success': true,
+        'average': avgCount
+      })
+    }
   })
 }
 
@@ -1032,7 +1064,7 @@ const getAverageDuration = (req, res) => {
 */
 
 const getLastAverageDuration = (req, res) => {
-  global.db.collection('connections').aggregate([
+  Connection.aggregate([
     { '$match': { 'start_time': { '$gte': Date.now() / 1000 - (24 * 60 * 60) } } },
     {
       '$project': {
@@ -1054,14 +1086,14 @@ const getLastAverageDuration = (req, res) => {
           '$avg': '$Sum'
         }
       }
-    }]).toArray((err, resp) => {
+    }], (err, resp) => {
       if (err) {
-        res.send({
+        res.status(400).send({
           'success': false,
           'err': err
         })
       } else {
-        res.send({
+        res.status(200).send({
           'success': true,
           'average': resp
         })
@@ -1080,7 +1112,7 @@ const getLastAverageDuration = (req, res) => {
 const getNodeStatistics = (req, res) => {
   let account_addr = req.query.addr;
 
-  global.db.collection('connections').aggregate([{
+  Connection.aggregate([{
     '$match': {
       'account_addr': account_addr
     }
@@ -1108,14 +1140,14 @@ const getNodeStatistics = (req, res) => {
         '$sum': '$server_usage.up'
       }
     }
-  }]).toArray((err, resp) => {
+  }], (err, resp) => {
     if (err) {
-      res.send({
+      res.status(400).send({
         'success': false,
         'err': err
       })
     } else {
-      res.send({
+      res.status(200).send({
         'success': true,
         'average': resp
       })
@@ -1124,7 +1156,7 @@ const getNodeStatistics = (req, res) => {
 }
 
 const getDailyPaidSentsCount = (req, res) => {
-  global.db.collection('statistics').aggregate([{
+  Statistic.aggregate([{
     '$project': {
       'total': {
         '$add': [
@@ -1151,14 +1183,14 @@ const getDailyPaidSentsCount = (req, res) => {
     '$sort': {
       '_id': 1
     }
-  }]).toArray((err, dailyCount) => {
-    if (err) { res.send({ success: false, message: "error getting daily paid session count" }) }
-    else { res.send({ success: true, stats: dailyCount }) }
+  }], (err, dailyCount) => {
+    if (err) { res.status(400).send({ success: false, message: "error getting daily paid session count" }) }
+    else { res.status(200).send({ success: true, stats: dailyCount }) }
   })
 }
 
 const getDailyTotalSentsUsed = () => {
-  global.db.collection('statistics').aggregate([{
+  Statistic.aggregate([{
     '$project': {
       'total': {
         '$add': [
@@ -1187,32 +1219,30 @@ const getDailyTotalSentsUsed = () => {
     '$sort': {
       '_id': 1
     }
-  }]).toArray((err, dailyCount) => {
-    if (err) { res.send({ success: false, message: "error getting daily sents used" }) }
-    else { res.send({ success: true, stats: dailyCount }) }
+  }], (err, dailyCount) => {
+    if (err) { res.status(400).send({ success: false, message: "error getting daily sents used" }) }
+    else { res.status(200).send({ success: true, stats: dailyCount }) }
   })
 }
 
 const getAveragePaidSentsCount = () => {
-  global.db.collection('payments').aggregate([{ '$group': { '_id': 0, 'AverageCount': { '$avg': '$paid_count' } } }])
-    .toArray((err, avgCount) => {
-      if (err) { res.send({ success: false, message: "error getting average paid sents count" }) }
-      else { res.send({ success: true, stats: avgCount }) }
+  Payment.aggregate([{ '$group': { '_id': 0, 'AverageCount': { '$avg': '$paid_count' } } }],
+    (err, avgCount) => {
+      if (err) { res.status(400).send({ success: false, message: "error getting average paid sents count" }) }
+      else { res.status(200).send({ success: true, stats: avgCount }) }
     })
 }
 
 const getAverageTotalSentsCount = () => {
-  global.db.collection('payments').aggregate([
-    {
-      '$project': {
-        'total': { '$add': ['$paid_count', '$unpaid_count'] }
-      }
-    }, {
-      '$group': { '_id': 0, 'Avg': { '$avg': '$total' } }
+  Payment.aggregate([{
+    '$project': {
+      'total': { '$add': ['$paid_count', '$unpaid_count'] }
     }
-  ]).toArray((err, avgCount) => {
-    if (err) { res.send({ success: false, message: "error getting average total sents count" }) }
-    else { res.send({ success: true, stats: avgCount }) }
+  }, {
+    '$group': { '_id': 0, 'Avg': { '$avg': '$total' } }
+  }], (err, avgCount) => {
+    if (err) { res.status(400).send({ success: false, message: "error getting average total sents count" }) }
+    else { res.status(200).send({ success: true, stats: avgCount }) }
   })
 }
 

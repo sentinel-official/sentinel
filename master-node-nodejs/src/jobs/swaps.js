@@ -3,7 +3,6 @@ import { each, waterfall } from "async";
 import ltrim from "ltrim";
 import zfill from "zfill";
 
-import { dbs } from "../db/db";
 import EthHelper from "../helpers/eth";
 import { tokens } from '../helpers/tokens';
 import { isValidEthereumSwap } from "../helpers/swaps";
@@ -14,6 +13,7 @@ import {
   ETHEREUM_BASED_COINS,
   PRIVATE_KEY as SWAP_PRIVATE_KEY
 } from "../config/swaps";
+import { Swap } from "../models";
 
 let db = null;
 
@@ -25,7 +25,8 @@ const updateStatus = (key, status, txHash = null, cb) => {
   } else if (key.length == 34) {
     findObj = { 'from_address': key }
   }
-  db.collection('swaps').findOneAndUpdate(findObj, {
+
+  Swap.findOneAndUpdate(findObj, {
     '$set': {
       'status': status['status'],
       'message': status['message'],
@@ -141,22 +142,20 @@ export const swaps = (data) => {
   if (data.message === 'start') {
 
     scheduleJob('0 * * * * *', () => {
-      if (global.db) {
-        waterfall([
-          (next) => {
-            db = global.db;
-            next()
-          }, (next) => {
-            db.collection('swaps').find({ status: 0 }).toArray((err, swaps) => {
-              checkTx(swaps, () => {
-                next()
-              })
+      waterfall([
+        (next) => {
+          next()
+        }, (next) => {
+          Swap.find({ status: 0 }, (err, swaps) => {
+            checkTx(swaps, () => {
+              next()
             })
-          }
-        ], (err, resp) => {
-          console.log('swaps');
-        })
-      }
+          })
+        }
+      ], (err, resp) => {
+        console.log('swaps');
+      })
+
     })
   }
 }

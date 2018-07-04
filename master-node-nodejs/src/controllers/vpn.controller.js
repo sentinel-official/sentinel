@@ -5,11 +5,11 @@ import axios from 'axios';
 
 import { VpnServiceManager } from "../eth/vpn_contract";
 import EthHelper from '../helpers/eth';
-import { dbs } from '../db/db';
 import { DECIMALS } from '../config/vars';
 import { ADDRESS as COINBASE_ADDRESS } from '../config/eth';
-import { Nodes } from "../models";
+import { Node, Connection } from "../models";
 import { BTC_BASED_COINS } from '../config/swaps';
+import database from '../db/database';
 
 /**
 * @api {get} /client/vpn/list Get all unoccupied VPN servers list.
@@ -23,7 +23,7 @@ const calculateAmount = (usedBytes, pricePerGB) => {
 }
 
 const getNodeList = (vpnType, cb) => {
-  Nodes.find({
+  Node.find({
     'vpn.status': 'up',
     'vpn_type': vpnType
   }, {
@@ -40,27 +40,6 @@ const getNodeList = (vpnType, cb) => {
       if (err) cb(err, null)
       else cb(null, resp)
     })
-
-  /* 
-  
-    global.db.collection('nodes').find({
-      'vpn.status': 'up',
-      'vpn_type': vpnType
-    }).project({
-      '_id': 0,
-      'account_addr': 1,
-      'ip': 1,
-      'price_per_GB': 1,
-      'price_per_gb': 1,
-      'location': 1,
-      'net_speed.upload': 1,
-      'latency': 1,
-      'net_speed.download': 1
-    }).toArray((err, list) => {
-      if (err) cb(err, null);
-      else cb(null, list);
-    })
-   */
 }
 
 /**
@@ -84,7 +63,7 @@ const getVpnsList = (req, res) => {
         delete item['price_per_gb'];
         iterate();
       }, () => {
-        res.send({
+        res.status(200).send({
           'success': true,
           'list': list
         })
@@ -114,7 +93,7 @@ const getSocksList = (req, res) => {
       delete item['price_per_gb'];
       iterate();
     }, () => {
-      res.send({
+      res.status(200).send({
         'success': true,
         'list': list
       })
@@ -136,14 +115,13 @@ const getCurrentVpnUsage = (req, res) => {
   accountAddr = accountAddr.toLowerCase();
   let sessionName = req.body['session_name']
 
-  global.db.collection('connections').findOne({
+  Connection.findOne({
     client_addr: accountAddr,
     session_name: sessionName
   }, {
       _id: 0,
       server_usage: 1
     }, (err, result) => {
-      console.log('err, result', err, result)
       if (!result && !result.usage) {
         res.send({
           success: true,
@@ -195,7 +173,7 @@ const getVpnCredentials = (req, res) => {
             }, null)
           } else if (dueAmount <= 0) {
             if (vpnAddr) {
-              global.db.collection('nodes').findOne(
+              Node.findOne(
                 { 'account_addr': vpnAddr, 'vpn.status': 'up' },
                 { '_id': 0, 'token': 0 },
                 (err, node) => {
@@ -203,7 +181,7 @@ const getVpnCredentials = (req, res) => {
                   else next(null, node);
                 })
             } else {
-              global.db.collection('nodes').findOne(
+              Node.findOne(
                 { 'vpn.status': 'up' },
                 { '_id': 0, 'token': 0 },
                 (err, node) => {
@@ -401,7 +379,7 @@ const updateConnection = (req, res) => {
 
   async.waterfall([
     (next) => {
-      global.db.collection('nodes').findOne({
+      Node.findOne({
         account_addr: accountAddr,
       }, (err, resp) => {
         if (err) next(err, null);
@@ -419,67 +397,72 @@ const updateConnection = (req, res) => {
             delete connection['account_addr'];
           }
 
-          global.db.collection('connections').findOne({
+          Connection.findOne({
             'vpn_addr': connection['vpn_addr'],
             'session_name': connection['session_name']
           }, (err, data) => {
             if (!data) {
               connection['start_time'] = Date.now() / 1000;
               connection['end_time'] = null;
-              global.db.collection('connections').insertOne(connection, (err, resp) => {
+              let ConnectionData = new Connection(connection);
+
+              database.insert(ConnectionData, (err, resp) => {
                 iterate()
               })
             } else {
               if (connection['usage']) {
-                global.db.collection('connections').findOneAndUpdate({
+                let findData = {
                   'vpn_addr': connection['vpn_addr'],
                   'session_name': connection['session_name'],
                   'end_time': null
-                }, {
-                    '$set': {
-                      'client_usage': connection['usage']
-                    }
-                  }, (err, resp) => {
-                    iterate()
-                  })
+                }
+
+                let updateData = {
+                  'client_usage': connection['usage']
+                }
+
+                database.update(Connection, findData, updateData, (err, resp) => {
+                  iterate()
+                })
               } else {
-                let endTime = parseInt(Date.now() / 1000);
-                global.db.collection('connections').updateMany({
+                let findData = {
                   'vpn_addr': connection['vpn_addr'],
                   'session_name': connection['session_name'],
                   'end_time': null
-                }, {
-                    '$set': {
+                }
+
+                let updateData = {
+                  'end_time': parseInt(Date.now() / 1000)
+                }
+
+                database.updateMany(Connection, findData, updateData, (err, resp) => {
+                  if (resp.modifiedCount > 0) {
+                    Connection.find({
+                      'vpn_addr': connection['vpn_addr'],
+                      'session_name': connection['session_name'],
                       'end_time': endTime
-                    }
-                  }, (err, resp) => {
-                    if (resp.modifiedCount > 0) {
-                      db.collection('connections').find({
-                        'vpn_addr': connection['vpn_addr'],
-                        'session_name': connection['session_name'],
-                        'end_time': endTime
-                      }).toArray((err, endedCons) => {
-                        endedConnections = endedCons
-                        async.each(endedConnections, (connection, iterate) => {
-                          let toAddr = connection['client_addr'].toLowerCase()
-                          let sentBytes = parseInt(connection['client_usage']['down'])
-                          let sessionDuration = parseInt(connection['end_time']) - parseInt(connection['start_time'])
-                          let amount = parseInt(calculateAmount(sentBytes, node['price_per_gb']) * DECIMALS);
-                          let timeStamp = parseInt(Date.now() / 1000)
+                    }, (err, endedCons) => {
+                      endedConnections = endedCons
+                      async.each(endedConnections, (connection, iterate) => {
+                        let toAddr = connection['client_addr'].toLowerCase()
+                        let sentBytes = parseInt(connection['client_usage']['down'])
+                        let sessionDuration = parseInt(connection['end_time']) - parseInt(connection['start_time'])
+                        let amount = parseInt(calculateAmount(sentBytes, node['price_per_gb']) * DECIMALS);
+                        let timeStamp = parseInt(Date.now() / 1000)
 
-                          EthHelper.addVpnUsage(accountAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, (err, txHash) => {
-                            if (err) txHashes.push(error)
-                            else txHashes.push(txHash)
-                            iterate()
-                          })
-                        }, () => {
-
+                        EthHelper.addVpnUsage(accountAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, (err, txHash) => {
+                          if (err) txHashes.push(error)
+                          else txHashes.push(txHash)
+                          iterate()
                         })
+                      }, () => {
+
                       })
-                    } else {
-                      iterate()
-                    }
-                  })
+                    })
+                  } else {
+                    iterate()
+                  }
+                })
               }
             }
           })

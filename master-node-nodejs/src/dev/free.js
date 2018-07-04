@@ -1,20 +1,23 @@
-import { dbs } from '../db/db'
 import ETHHelper from '../helpers/eth'
 import { DECIMALS } from '../config/vars';
+import { Free } from '../models';
+import database from '../db/database';
 
 let db = null;
 
 const checkFree = (toAddr, cb) => {
-  global.db.collection('free').findOne({ to_addr: toAddr }, (err, tx) => {
+  Free.findOne({ to_addr: toAddr }, (err, tx) => {
     if (!tx) cb(false)
     else cb(true)
   })
 }
 
 const insertFree = (toAddr, cb) => {
-  global.db.collection('free').insertOne({
+  let data = {
     to_addr: toAddr
-  }, (err, resp) => {
+  }
+  let freeData = new Free(data)
+  database.insert(freeData, (err, resp) => {
     cb(err, resp)
   })
 }

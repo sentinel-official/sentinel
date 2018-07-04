@@ -8,7 +8,7 @@ import { Swap } from "./swaps";
 import { Usage } from "./usage";
 import { Validation } from "./validations";
 
-export default {
+export {
   Connection,
   Free,
   Log,

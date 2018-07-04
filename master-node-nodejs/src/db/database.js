@@ -25,6 +25,23 @@ const insert = (Obj, cb) => {
   })
 }
 
+const update = (Obj, findData, updateData, cb) => {
+  Obj.update(findData, updateData, (err, resp) => {
+    if (err) cb(err, null)
+    else cb(null, resp)
+  })
+}
+
+const updateMany = (Obj, findData, updateData, cb) => {
+  Obj.updateMany(findData, updateData, (err, resp) => {
+    if (err) cb(err, null)
+    else cb(null, resp)
+  })
+}
+
 export default {
-  dbo, insert
+  dbo,
+  insert,
+  update,
+  updateMany
 }

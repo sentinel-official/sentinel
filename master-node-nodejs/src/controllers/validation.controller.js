@@ -1,11 +1,13 @@
 import async from "async";
+import { Validation, Node } from "../models";
+import database from "../db/database";
 
 const updateCount = (req, res) => {
   let data = req.body;
   let count = parseInt(data.invalidCount);
   async.waterfall([
     (next) => {
-      global.db.collection('validations').findOne({ nodeID: data.nodeID }, (err, resp) => {
+      Validation.findOne({ nodeID: data.nodeID }, (err, resp) => {
         if (err) {
           next({
             success: false,
@@ -19,11 +21,9 @@ const updateCount = (req, res) => {
         }
       })
     }, (next) => {
-      console.log('count is', count);
       if (count > 5) {
-        global.db.collection('nodes').findOneAndDelete({ ip: data.ipAddr }, (err, resp) => {
-          console.log('result', err, resp)
-          if (!err && resp.value) {
+        Node.findOneAndRemove({ ip: data.ipAddr }, (err, resp) => {
+          if (!err && resp) {
             next()
           } else {
             next({
@@ -36,7 +36,14 @@ const updateCount = (req, res) => {
         next()
       }
     }, (next) => {
-      global.db.collection('validations').update({ nodeID: data.nodeID }, data, { upsert: true }, (err, resp) => {
+      let findData = {
+        nodeID: data.nodeID
+      }
+      let options = {
+        upsert: true
+      }
+
+      database.update(findData, data, options, (err, resp) => {
         if (!err) {
           next(null, {
             success: true,
@@ -57,8 +64,7 @@ const updateCount = (req, res) => {
 }
 
 const getActiveNodes = (req, res) => {
-  global.db.collection('nodes').find({ 'vpn.status': 'up' }).toArray((err, resp) => {
-    console.log('err, resp', err, resp)
+  Node.find({ 'vpn.status': 'up' }, (err, resp) => {
     if (!err) {
       res.send({
         success: true,

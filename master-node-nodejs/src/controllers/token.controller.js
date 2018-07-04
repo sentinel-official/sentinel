@@ -4,6 +4,8 @@ import ETHHelper from '../helpers/eth'
 import { ADDRESS as SWAP_ADDRESS, TOKENS } from '../config/swaps';
 import { DECIMALS } from '../config/vars';
 import { BTCHelper } from '../helpers/btc'
+import { Swap } from '../models';
+import database from '../db/database';
 
 const getAvailableTokens = (req, res) => {
   let dailyCount = [];
@@ -55,7 +57,7 @@ const tokenSwapRawTransaction = (req, res) => {
       if (balance >= value) {
         ETHHelper.rawTransaction(txData, 'main', (err, txHash) => {
           if (!err) {
-            global.db.collection('swaps').insertOne({
+            let data = {
               'from_symbol': fromToken['symbol'],
               'to_symbol': toToken['symbol'],
               'from_address': SWAP_ADDRESS,
@@ -63,7 +65,10 @@ const tokenSwapRawTransaction = (req, res) => {
               'tx_hash_0': txHash,
               'time_0': parseInt(Date.now() / 1000),
               'status': 0
-            }, (err, resp) => {
+            }
+
+            let swapData = new Swap(data);
+            database.insert(swapData, (err, resp) => {
               if (err) next(err, null);
               else next(null, {
                 'success': true,
@@ -120,20 +125,18 @@ const swapStatus = (req, res) => {
   else if (key.length == 34)
     findObj = { 'from_address': key }
 
-  global.db.collection('swaps').findOne({ findObj }, { _id: 0 }, (err, result) => {
-    let message = {}
+  Swap.findOne(findObj, { _id: 0 }, (err, result) => {
     if (!result) {
-      message = {
+      res.status(400).send({
         'success': false,
         'message': 'No transaction found.'
-      }
+      })
     } else {
-      message = {
+      res.status(200).send({
         'success': true,
         'result': result
-      }
+      })
     }
-    res.status(200).send(message)
   })
 }
 
@@ -141,30 +144,43 @@ const getNewAddress = (req, res) => {
   let toAddress = req.body['account_addr']
   let fromToken = tokens.getToken(req.body['from'])
   let toToken = tokens.getToken(req.body['to'])
-  let message = {}
 
   BTCHelper.getNewAddress(fromToken['symbol'], (fromAddress) => {
     if (fromAddress) {
-      global.db.collection('swaps').insertOne({
+      let data = {
         'from_symbol': fromToken['symbol'],
         'to_symbol': toToken['symbol'],
         'from_address': fromAddress,
         'to_address': toAddress,
         'time_0': Date.now() / 1000,
         'status': 0
-      }, (err, resp) => {
-        message = {
-          'success': true,
-          'address': fromAddress
+      }
+
+      let swapData = new Swap(data)
+
+      database.insert(swapData, (err, resp) => {
+        if (err) {
+          res.status(400).send({
+            'success': false,
+            'err': err
+          })
+        } else if (!result) {
+          res.status(400).send({
+            'success': false,
+            'message': 'No transaction found.'
+          })
+        } else {
+          res.status(200).send({
+            'success': true,
+            'result': resp
+          })
         }
-        res.status(200).send(message)
       })
     } else {
-      message = {
+      res.status(400).send({
         'success': false,
         'message': `Error occurred while getting ${fromAddress['symbol']} address.`
-      }
-      res.status(400).send(message)
+      })
     }
   })
 }

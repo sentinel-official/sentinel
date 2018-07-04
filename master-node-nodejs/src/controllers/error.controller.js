@@ -1,4 +1,4 @@
-import models from "../models";
+import { Log } from "../models";
 import database from "../db/database"
 
 const logTheError = (req, res) => {
@@ -13,9 +13,8 @@ const logTheError = (req, res) => {
     error_str: errorStr,
     log_type: logType
   }
-  let { Log } = models
   let logData = new Log(data);
-  
+
   database.insert(logData, (err, resp) => {
     if (err) res.status(400).send({ success: false, message: 'error in logging error data' })
     else res.status(200).send({ success: true, message: 'error reported successfully' })

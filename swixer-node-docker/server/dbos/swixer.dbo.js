@@ -9,6 +9,17 @@ let insertSwixDetails = (swixDetails, cb) => {
   });
 };
 
+let getSwix = (swixHash, cb) => {
+  SwixDetailsModel.findOne({
+    swixHash
+  }, {
+    _id: 0
+  }, (error, result) => {
+    if(error) cb(error, null);
+    else cb(null, result);
+  });
+};
+
 let getValidSwixes = (cb) => {
   SwixDetailsModel.find({
     $or: [
@@ -79,6 +90,7 @@ let updateSwixTransactionStatus = (toAddress, txInfo, remainingAmount, cb) => {
 
 module.exports = {
   insertSwixDetails,
+  getSwix,
   getValidSwixes,
   updateSwixStatus,
   increaseTries,

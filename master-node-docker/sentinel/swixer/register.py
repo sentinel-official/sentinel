@@ -8,7 +8,7 @@ import falcon
 from ..db import db
 
 
-class RegisterMixerNode(object):
+class RegisterSwixerNode(object):
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
         ip = str(req.body['ip'])
@@ -16,11 +16,11 @@ class RegisterMixerNode(object):
         joined_on = int(time.time())
         token = uuid4().hex
 
-        node = db.mixer_nodes.find_one({
+        node = db.swixer_nodes.find_one({
             'account_addr': account_addr
         })
         if node is None:
-            _ = db.mixer_nodes.insert_one({
+            _ = db.swixer_nodes.insert_one({
                 'account_addr': account_addr,
                 'token': token,
                 'ip': ip,
@@ -28,7 +28,7 @@ class RegisterMixerNode(object):
                 'joined_on': joined_on
             })
         else:
-            _ = db.mixer_nodes.find_one_and_update({
+            _ = db.swixer_nodes.find_one_and_update({
                 'account_addr': account_addr
             }, {
                 '$set': {
@@ -47,12 +47,12 @@ class RegisterMixerNode(object):
         resp.body = json.dumps(message)
 
 
-class DeRegisterMixerNode(object):
+class DeRegisterSwixerNode(object):
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
         token = req.body['token']
 
-        node = db.mixer_nodes.find_one_and_delete({
+        node = db.swixer_nodes.find_one_and_delete({
             'account_addr': account_addr,
             'token': token
         })

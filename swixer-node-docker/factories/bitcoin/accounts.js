@@ -26,6 +26,7 @@ let getBalance = (address, coinSymbol, cb) => {
   let url = `${gateways[coinSymbol].server}/balance?address=${address}`;
   axios.get(url)
     .then((response) => {
+      console.log(response.data);
       if (response.status === 200 &&
         response.data.success === true) {
         let balance = response.data.balance;
@@ -35,6 +36,7 @@ let getBalance = (address, coinSymbol, cb) => {
       }, null);
     })
     .catch((error) => {
+      console.log(error);
       cb(error, null);
     });
 };

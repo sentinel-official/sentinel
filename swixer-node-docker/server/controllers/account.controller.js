@@ -75,16 +75,17 @@ let createAccount = (req, res) => {
 let getBalances = (req, res) => {
   async.waterfall([
     (next) => {
-      accountDbo.getAccounts(['ETH', 'BTC'], (error, accounts) => {
-        if (error) next({
-          status: 500,
-          message: 'Error occurred while getting accounts.'
-        }, null);
-        else {
-          let addresses = lodash.map(accounts, 'address');
-          next(null, addresses);
-        }
-      });
+      accountDbo.getAccounts(['ETH', 'BTC'],
+        (error, accounts) => {
+          if (error) next({
+            status: 500,
+            message: 'Error occurred while getting accounts.'
+          }, null);
+          else {
+            let addresses = lodash.map(accounts, 'address');
+            next(null, addresses);
+          }
+        });
     }, (addresses, next) => {
       accountHelper.getBalancesOfAccounts(addresses,
         (error, balancesOfAddresses) => {

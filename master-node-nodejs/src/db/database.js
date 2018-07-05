@@ -11,7 +11,7 @@ export const dbo = () => {
       console.log(
         chalk.green.bold(
           `
-          MongoDB connected Successfully`
+        MongoDB connected Successfully`
         )
       );
     }

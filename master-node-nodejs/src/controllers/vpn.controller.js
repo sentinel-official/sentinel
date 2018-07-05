@@ -436,7 +436,7 @@ const updateConnection = (req, res) => {
                 }
 
                 database.updateMany(Connection, findData, updateData, (err, resp) => {
-                  if (resp.modifiedCount > 0) {
+                  if (resp.nModified > 0) {
                     Connection.find({
                       'vpn_addr': connection['vpn_addr'],
                       'session_name': connection['session_name'],

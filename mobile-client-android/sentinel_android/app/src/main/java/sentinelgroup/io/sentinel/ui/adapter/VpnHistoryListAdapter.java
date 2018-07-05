@@ -93,14 +93,14 @@ public class VpnHistoryListAdapter extends RecyclerView.Adapter<VpnHistoryListAd
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                     Session aOldData = mData.get(oldItemPosition);
-                    Session aNewData = mData.get(newItemPosition);
+                    Session aNewData = iData.get(newItemPosition);
                     return aOldData.sessionId.equals(aNewData.sessionId);
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     Session aOldData = mData.get(oldItemPosition);
-                    Session aNewData = mData.get(newItemPosition);
+                    Session aNewData = iData.get(newItemPosition);
                     return aOldData.isPaid == aNewData.isPaid
                             && aOldData.amount == aNewData.amount
                             && aOldData.timestamp == aNewData.timestamp;

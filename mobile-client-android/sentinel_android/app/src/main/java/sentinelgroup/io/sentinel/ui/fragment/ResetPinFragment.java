@@ -33,7 +33,7 @@ import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
  * Use the {@link ResetPinFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryEditText.OnPinEnteredListener, View.OnClickListener {
+public class ResetPinFragment extends Fragment implements TextWatcher, View.OnClickListener {
 
     private ResetPinViewModel mViewModel;
 
@@ -94,8 +94,6 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
         mEtOldPin.addTextChangedListener(this);
         mEtEnterPin.addTextChangedListener(this);
         mEtReEnterPin.addTextChangedListener(this);
-        mEtEnterPin.setOnPinEnteredListener(this);
-        mEtReEnterPin.setOnPinEnteredListener(this);
         mBtnReset.setOnClickListener(this);
     }
 
@@ -204,26 +202,22 @@ public class ResetPinFragment extends Fragment implements TextWatcher, PinEntryE
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
+        }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
     }
 
     @Override
     public void afterTextChanged(Editable s) {
+        // Toggle visibility of the hint texts
         mTvOldPin.setVisibility(mEtOldPin.getText().toString().trim().isEmpty() ? View.VISIBLE : View.INVISIBLE);
         mTvEnterPin.setVisibility(mEtEnterPin.getText().toString().trim().isEmpty() ? View.VISIBLE : View.INVISIBLE);
         mTvReEnterPin.setVisibility(mEtReEnterPin.getText().toString().trim().isEmpty() ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    @Override
-    public void onPinEntered(CharSequence str) {
-        mBtnReset.setEnabled(!mEtOldPin.getText().toString().trim().isEmpty()
-                && !mEtEnterPin.getText().toString().trim().isEmpty()
-                && !mEtReEnterPin.getText().toString().trim().isEmpty());
+        // Toggle enable/disable state of the button
+        mBtnReset.setEnabled(mEtOldPin.getText().toString().trim().length() == 4
+                && mEtEnterPin.getText().toString().trim().length() == 4
+                && mEtReEnterPin.getText().toString().trim().length() == 4);
     }
 
     @Override

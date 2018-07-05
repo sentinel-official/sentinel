@@ -34,7 +34,7 @@ import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
  * Use the {@link ForgotPinFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntryEditText.OnPinEnteredListener, View.OnClickListener {
+public class ForgotPinFragment extends Fragment implements TextWatcher, View.OnClickListener {
 
     private ForgotPinViewModel mViewModel;
 
@@ -95,8 +95,6 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
         mTetPassword.addTextChangedListener(this);
         mEtEnterPin.addTextChangedListener(this);
         mEtReEnterPin.addTextChangedListener(this);
-        mEtEnterPin.setOnPinEnteredListener(this);
-        mEtReEnterPin.setOnPinEnteredListener(this);
         mBtnReset.setOnClickListener(this);
     }
 
@@ -202,13 +200,6 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
     }
 
     @Override
-    public void onPinEntered(CharSequence str) {
-        mBtnReset.setEnabled(!mTetPassword.getText().toString().isEmpty()
-                && !mEtEnterPin.getText().toString().isEmpty()
-                && !mEtReEnterPin.getText().toString().isEmpty());
-    }
-
-    @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
     }
@@ -220,8 +211,13 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, PinEntry
 
     @Override
     public void afterTextChanged(Editable s) {
+        // Toggle visibility of hint texts
         mTvEnterPin.setVisibility(mEtEnterPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
         mTvReEnterPin.setVisibility(mEtReEnterPin.getText().toString().isEmpty() ? View.VISIBLE : View.INVISIBLE);
+        // Toggle enable/disable state of the button
+        mBtnReset.setEnabled(!mTetPassword.getText().toString().isEmpty()
+                && mEtEnterPin.getText().toString().trim().length() == 4
+                && mEtReEnterPin.getText().toString().trim().length() == 4);
     }
 
     @Override

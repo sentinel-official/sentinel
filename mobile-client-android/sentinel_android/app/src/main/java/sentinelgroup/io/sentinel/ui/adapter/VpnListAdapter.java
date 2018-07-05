@@ -122,14 +122,14 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
                     VpnListEntity aOldData = mData.get(oldItemPosition);
-                    VpnListEntity aNewData = mData.get(newItemPosition);
+                    VpnListEntity aNewData = iData.get(newItemPosition);
                     return aOldData.getAccountAddress().equals(aNewData.getAccountAddress());
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     VpnListEntity aOldData = mData.get(oldItemPosition);
-                    VpnListEntity aNewData = mData.get(newItemPosition);
+                    VpnListEntity aNewData = iData.get(newItemPosition);
                     return aOldData.getLatency() == aNewData.getLatency()
                             && aOldData.getPricePerGb() == aNewData.getPricePerGb()
                             && aOldData.getNetSpeed().download == aNewData.getNetSpeed().download

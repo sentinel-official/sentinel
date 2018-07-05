@@ -51,7 +51,7 @@ public class TxHistoryListAdapter extends RecyclerView.Adapter<TxHistoryListAdap
             String aValue = Convert.fromWei(aTxResult.value, Convert.EtherUnit.ETHER).toPlainString();
             holder.mTvSourceEarnings.setText(isReceivedTransaction
                     ? mContext.getString(R.string.earning_positive, aValue)
-                    : mContext.getString(R.string.earning_neagtive, aValue));
+                    : aValue.equals("0") ? aValue : mContext.getString(R.string.earning_neagtive, aValue));
             holder.mTvDateTime.setText(Converter.convertEpochToDate(Long.parseLong(aTxResult.timeStamp)));
             holder.mTvTxStatus.setText(aTxResult.txReceiptStatus.equals("1") ? R.string.status_success : R.string.status_fail);
         } else {

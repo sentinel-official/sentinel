@@ -7,7 +7,7 @@ let hours = 0;
 
 export const stats = (message) => {
   if (message === 'start') {
-    let j = scheduleJob('*/45 * * * * *', () => {
+    let j = scheduleJob('0 * * * * *', () => {
       let nodes = {};
       let currentTime = new Date();
       let db = null;

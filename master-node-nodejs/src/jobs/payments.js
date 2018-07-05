@@ -8,12 +8,11 @@ import database from "../db/database";
 export const payments = (message) => {
   let hour = 0;
   let minute = 0;
-  let db = null;
   let paidCount = 0;
   let unPaidCount = 0;
 
   if (message === 'start') {
-    let j = scheduleJob('*/45 * * * * *', () => {
+    let j = scheduleJob('0 * * * * *', () => {
       let currentTime = new Date()
       let timestamp = Date.now() / 1000
 

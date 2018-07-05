@@ -6,7 +6,6 @@ import database from "../db/database";
 
 export const alive = (data) => {
   let maxSecs = data.maxSecs || null;
-  let db = null
 
   if (data.message == 'start') {
     scheduleJob('*/5 * * * * *', () => {

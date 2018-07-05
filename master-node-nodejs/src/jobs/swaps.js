@@ -15,8 +15,6 @@ import {
 } from "../config/swaps";
 import { Swap } from "../models";
 
-let db = null;
-
 const updateStatus = (key, status, txHash = null, cb) => {
   console.log(key, status, txHash)
   let findObj = null;

@@ -10,7 +10,7 @@
         style="@style/CustomTextAppearance.Text14.White70Normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_32"
+        android:layout_gravity="center"
         android:gravity="center"
         android:padding="@dimen/margin_16" />
 

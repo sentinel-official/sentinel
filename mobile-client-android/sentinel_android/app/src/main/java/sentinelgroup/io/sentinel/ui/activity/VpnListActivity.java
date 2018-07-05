@@ -15,6 +15,8 @@ import sentinelgroup.io.sentinel.util.AppConstants;
 
 public class VpnListActivity extends BaseActivity implements OnVpnConnectionListener {
 
+    private VpnListEntity mVpnListData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +25,17 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
 
     private void getIntentExtras() {
         if (getIntent().getExtras() != null) {
-            VpnListEntity aVpnListData = (VpnListEntity) getIntent().getSerializableExtra(AppConstants.EXTRA_VPN_LIST);
-            loadFragment(VpnDetailsFragment.newInstance(aVpnListData));
+            mVpnListData = (VpnListEntity) getIntent().getSerializableExtra(AppConstants.EXTRA_VPN_LIST);
+            loadFragment(VpnDetailsFragment.newInstance(mVpnListData));
         } else {
             loadFragment(VpnListFragment.newInstance());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        disableTestNetSwitch(mVpnListData == null);
     }
 
     @Override

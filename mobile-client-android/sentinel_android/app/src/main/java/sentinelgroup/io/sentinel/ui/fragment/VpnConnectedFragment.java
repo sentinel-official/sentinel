@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import com.haipq.android.flagkit.FlagImageView;
 
+import java.util.Objects;
+
 import de.blinkt.openvpn.core.ConnectionStatus;
 import de.blinkt.openvpn.core.OpenVPNManagement;
 import de.blinkt.openvpn.core.VpnStatus;
@@ -184,7 +186,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
             // Construct and set - Download Speed SpannableString
             String aDownloadSubString = iDownloadSpeed.substring(iDownloadSpeed.indexOf(' '));
             SpannableString aDownloadSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iDownloadSpeed, aDownloadSubString)
-                    .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
+                    .color(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
             mTvDownloadSpeed.setText(aDownloadSpannable);

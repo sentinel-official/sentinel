@@ -20,6 +20,7 @@ import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnSelectPagerAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.NetworkUtil;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.VpnSelectViewModel;
@@ -112,14 +113,18 @@ public class VpnSelectFragment extends Fragment {
                         showProgressDialog(true, getString(R.string.generic_loading_message));
                     } else if (vpnUsageResource.data != null && vpnUsageResource.status.equals(Status.SUCCESS)) {
                         hideProgressDialog();
-                        if (vpnUsageResource.data.usage != null && vpnUsageResource.data.usage.getDue() > 0L) {
-                            loadNextFragment(VpnPayFragment.newInstance());
-                        } else {
-                            if (NetworkUtil.isOnline())
-                                setupViewPagerAndTabs();
-                            else
-                                loadNextFragment(NoNetworkFragment.newInstance());
-                        }
+                        boolean aIsTextNetActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+                        if (aIsTextNetActive)
+                            if (vpnUsageResource.data.usage != null && vpnUsageResource.data.usage.getDue() > 0L) {
+                                loadNextFragment(VpnPayFragment.newInstance());
+                            } else {
+                                if (NetworkUtil.isOnline())
+                                    setupViewPagerAndTabs();
+                                else
+                                    loadNextFragment(NoNetworkFragment.newInstance());
+                            }
+                        else
+                            loadNextFragment(EmptyFragment.newInstance(getString(R.string.vpn_main_net_unavailable), getString(R.string.app_name)));
                     } else if (vpnUsageResource.message != null && vpnUsageResource.status.equals(Status.ERROR)) {
                         hideProgressDialog();
                         if (!vpnUsageResource.message.equals(getString(R.string.no_internet)))

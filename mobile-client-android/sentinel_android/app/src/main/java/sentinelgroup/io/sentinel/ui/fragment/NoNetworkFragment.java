@@ -56,25 +56,14 @@ public class NoNetworkFragment extends Fragment {
     }
 
     private void initView(View iView) {
-        iView.findViewById(R.id.btn_retry).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkForConnectivity();
-            }
-        });
+        iView.findViewById(R.id.btn_retry).setOnClickListener(v -> checkForConnectivity());
     }
 
     private void checkForConnectivity() {
         if (NetworkUtil.isOnline())
             loadNextFragment(VpnSelectFragment.newInstance(null));
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        checkForConnectivity();
-    }
-
+    
     // Interface interaction methods
     public void loadNextFragment(Fragment iFragment) {
         if (mListener != null) {

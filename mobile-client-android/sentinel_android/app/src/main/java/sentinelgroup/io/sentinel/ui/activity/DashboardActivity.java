@@ -110,6 +110,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
         // setup testnet switch
         setupTestNetSwitch();
+        // toggle switch state when returning from other activity
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        toggleTestNetSwitch(!(aFragment instanceof VpnConnectedFragment));
     }
 
     private void setupTestNetSwitch() {
@@ -244,7 +247,16 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
 
     private void loadFragment(Fragment iFragment) {
+        toggleTestNetSwitch(!(iFragment instanceof VpnConnectedFragment));
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+    }
+
+    private void toggleTestNetSwitch(boolean isEnabled) {
+        mSwitchNet.setEnabled(isEnabled);
+        if (!isEnabled) {
+            mSwitchNet.setChecked(true);
+            AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, true);
+        }
     }
 
     @Override
@@ -367,7 +379,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (aFragment instanceof WalletFragment) {
             ((WalletFragment) aFragment).updateBalance(isChecked);
-        }
+        } else if (!(aFragment instanceof VpnConnectedFragment))
+            loadVpnFragment(null);
     }
 
     @Override

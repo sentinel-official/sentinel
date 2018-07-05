@@ -1,6 +1,7 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +31,6 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
 
     private PinEntryEditText mEtPin;
     private TextView mTvPin;
-    private Button mBtnVerify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +43,39 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
     private void initView() {
         mEtPin = findViewById(R.id.et_enter_pin);
         mTvPin = findViewById(R.id.tv_enter_pin);
-        mBtnVerify = findViewById(R.id.btn_verify);
         Button aBtnForgotPin = findViewById(R.id.btn_forgot_pin);
         // Set Listeners
         mEtPin.setOnPinEnteredListener(this);
         mEtPin.addTextChangedListener(this);
         mEtPin.setOnEditorActionListener(this);
-        mBtnVerify.setOnClickListener(this);
         aBtnForgotPin.setOnClickListener(this);
+        // Give focus to PinEntryEditText
+        showKeyboard();
+    }
+
+    private void showKeyboard() {
+        if (mEtPin != null) {
+            mEtPin.setFocusable(true);
+            mEtPin.setFocusableInTouchMode(true);
+            mEtPin.requestFocus();
+        }
+        InputMethodManager aInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (aInputMethodManager != null) {
+            aInputMethodManager.showSoftInput(mEtPin, InputMethodManager.SHOW_FORCED);
+        }
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager aInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        if (aInputMethodManager != null) {
+            aInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private void initViewModel() {
@@ -84,7 +110,7 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
 
     private void verifyPin() {
         String aPinString = mEtPin.getText().toString().trim();
-        if(!aPinString.isEmpty()){
+        if (!aPinString.isEmpty()) {
             int aPin = Integer.parseInt(aPinString);
             String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
             mViewModel.verifyAppPin(aPin, aAccountAddress);
@@ -95,7 +121,8 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onPinEntered(CharSequence str) {
-        mBtnVerify.setEnabled(!mEtPin.getText().toString().trim().isEmpty());
+        hideKeyboard();
+        verifyPin();
     }
 
     @Override
@@ -116,9 +143,6 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_verify:
-                verifyPin();
-                break;
             case R.id.btn_forgot_pin:
                 clearInput();
                 startActivityForResult(new Intent(VerifyPinActivity.this, ForgotPinActivity.class), AppConstants.REQ_CODE_FORGOT_PIN);

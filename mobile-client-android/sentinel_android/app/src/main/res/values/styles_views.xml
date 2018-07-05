@@ -124,7 +124,6 @@
 
     <!-- EditText Themes -->
     <style name="CustomTextAppearance.PinEditText">
-        <item name="android:imeOptions">actionNext</item>
         <item name="android:textIsSelectable">false</item>
         <item name="android:cursorVisible">false</item>
         <item name="android:digits">1234567890</item>

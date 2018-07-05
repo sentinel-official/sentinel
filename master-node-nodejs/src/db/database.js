@@ -4,7 +4,7 @@ import chalk from "chalk";
 let uri = `mongodb://localhost:27017/sentinel`;
 
 export const dbo = () => {
-  mongoose.connect(uri, (err, db) => {
+  mongoose.connect(uri, { useNewUrlParser: true }, (err, db) => {
     if (err) {
       throw err
     } else {

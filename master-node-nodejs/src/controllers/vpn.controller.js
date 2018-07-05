@@ -122,7 +122,7 @@ const getCurrentVpnUsage = (req, res) => {
       _id: 0,
       server_usage: 1
     }, (err, result) => {
-      if (!result && !result.usage) {
+      if (!result || !result.usage) {
         res.send({
           success: true,
           usage: {
@@ -229,24 +229,25 @@ const getVpnCredentials = (req, res) => {
           };
           let url = 'http://' + ip + ':' + port + '/token';
           // let url = 'http://localhost:3000'
-          axios.post(url, JSON.stringify(body))
-            .then((resp) => {
-              next(null, {
-                'success': true,
-                'ip': ip,
-                'port': port,
-                'token': token,
-                'vpn_addr': vpnAddr,
-                'message': 'Started VPN session.'
-              });
-            })
-            .catch((err) => {
-              next({
-                'success': false,
-                'message': 'Connection timed out while connecting to VPN server.',
-                'error': err
-              }, null);
-            })
+          try {
+            axios.post(url, JSON.stringify(body))
+              .then((resp) => {
+                next(null, {
+                  'success': true,
+                  'ip': ip,
+                  'port': port,
+                  'token': token,
+                  'vpn_addr': vpnAddr,
+                  'message': 'Started VPN session.'
+                });
+              })
+          } catch (error) {
+            next({
+              'success': false,
+              'message': 'Connection timed out while connecting to VPN server.',
+              'error': error
+            }, null);
+          }
         } else {
           next({
             'success': false,

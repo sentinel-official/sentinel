@@ -4,11 +4,15 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.ui.fragment.EmptyFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnHistoryFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 
 public class VpnHistoryActivity extends BaseActivity {
 
@@ -17,13 +21,14 @@ public class VpnHistoryActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadFragment(VpnHistoryFragment.newInstance());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        disableTestNetSwitch(true);
+        boolean aIsTextNetActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+        loadFragment(aIsTextNetActive ? VpnHistoryFragment.newInstance() :
+                EmptyFragment.newInstance(getString(R.string.vpn_history_main_net_unavailable), getString(R.string.vpn_history)));
     }
 
     @Override
@@ -33,6 +38,14 @@ public class VpnHistoryActivity extends BaseActivity {
 
     public void addFragment(Fragment iFragment) {
         getSupportFragmentManager().beginTransaction().add(R.id.fl_container, iFragment).addToBackStack(null).commit();
+    }
+
+    public void removeAllFragments() {
+        FragmentManager aFragManager = getSupportFragmentManager();
+        for (int i = 0; i < aFragManager.getBackStackEntryCount(); ++i) {
+            aFragManager.popBackStack();
+        }
+        loadFragment(EmptyFragment.newInstance(getString(R.string.vpn_history_main_net_unavailable), getString(R.string.vpn_history)));
     }
 
     @Override
@@ -105,5 +118,15 @@ public class VpnHistoryActivity extends BaseActivity {
     @Override
     public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
         // Unimplemented interface method
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        super.onCheckedChanged(buttonView, isChecked);
+        if (isChecked)
+            loadFragment(VpnHistoryFragment.newInstance());
+        else
+            removeAllFragments();
+
     }
 }

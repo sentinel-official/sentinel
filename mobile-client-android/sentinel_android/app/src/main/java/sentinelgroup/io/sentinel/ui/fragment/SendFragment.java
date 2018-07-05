@@ -48,7 +48,6 @@ import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
  * create an instance of this fragment.
  */
 public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-
     private static final String ARG_IS_VPN_PAY = "is_vpn_pay";
     private static final String ARG_IS_INIT = "is_init";
     private static final String ARG_AMOUNT = "arg_amount";

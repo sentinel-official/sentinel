@@ -31,12 +31,6 @@ public class ResetPinActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        disableTestNetSwitch(true);
-    }
-
-    @Override
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         finish();

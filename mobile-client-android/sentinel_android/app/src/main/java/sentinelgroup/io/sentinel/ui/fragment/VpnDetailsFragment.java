@@ -25,6 +25,7 @@ import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Convert;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.VpnListViewModel;
@@ -249,10 +250,14 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_connect) {
-            if (!SentinelApp.isStart)
-                mViewModel.getVpnServerCredentials(mVpnListData.getAccountAddress());
-            else
-                showErrorDialog(getString(R.string.vpn_already_connected));
+            boolean aIsTextNetActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+            if (aIsTextNetActive) {
+                if (!SentinelApp.isStart)
+                    mViewModel.getVpnServerCredentials(mVpnListData.getAccountAddress());
+                else
+                    showErrorDialog(getString(R.string.vpn_already_connected));
+            } else
+                showErrorDialog(getString(R.string.vpn_main_net_unavailable));
         }
     }
 }

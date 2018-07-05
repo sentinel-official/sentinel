@@ -24,6 +24,7 @@ import sentinelgroup.io.sentinel.ui.adapter.VpnListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.VpnListViewModel;
 import sentinelgroup.io.sentinel.viewmodel.VpnListViewModelFactory;
@@ -84,7 +85,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fragmentLoaded(getString(R.string.app_name));
+        fragmentLoaded(getString(R.string.vpn_connections));
         initViewModel();
     }
 
@@ -239,9 +240,13 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
 
     @Override
     public void onConnectClicked(String iVpnAddress) {
-        if (!SentinelApp.isStart)
-            mViewModel.getVpnServerCredentials(iVpnAddress);
-        else
-            showErrorDialog(getString(R.string.vpn_already_connected));
+        boolean aIsTextNetActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+        if (aIsTextNetActive) {
+            if (!SentinelApp.isStart)
+                mViewModel.getVpnServerCredentials(iVpnAddress);
+            else
+                showErrorDialog(getString(R.string.vpn_already_connected));
+        } else
+            showErrorDialog(getString(R.string.vpn_main_net_unavailable));
     }
 }

@@ -108,18 +108,20 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         if (mIntentExtra != null && mIntentExtra.equals(AppConstants.HOME)) {
             loadVpnFragment(null);
         }
+        // setup testnet switch
+        setupTestNetSwitch();
+    }
+
+    private void setupTestNetSwitch() {
+        boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+        mSwitchNet.setChecked(isActive);
+        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unbindService(mConnection);
-    }
-
-    @Override
-    protected void onStop() {
-        VpnStatus.removeStateListener(this);
-        super.onStop();
     }
 
     private void initView() {
@@ -146,6 +148,12 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                     mDrawerLayout.closeDrawers();
                     return true;
                 });
+    }
+
+    @Override
+    protected void onStop() {
+        VpnStatus.removeStateListener(this);
+        super.onStop();
     }
 
     private void setupToolbar() {
@@ -183,14 +191,14 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     private void showProgressDialog(boolean isHalfDim, String iMessage) {
-        ToggleProgressDialogState(true, isHalfDim, iMessage == null ? getString(R.string.generic_loading_message) : iMessage);
+        toggleProgressDialogState(true, isHalfDim, iMessage == null ? getString(R.string.generic_loading_message) : iMessage);
     }
 
     private void hideProgressDialog() {
-        ToggleProgressDialogState(false, false, null);
+        toggleProgressDialogState(false, false, null);
     }
 
-    private void ToggleProgressDialogState(boolean isShow, boolean isHalfDim, String iMessage) {
+    private void toggleProgressDialogState(boolean isShow, boolean isHalfDim, String iMessage) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(PROGRESS_DIALOG_TAG);
         if (isShow) {
             if (aFragment == null) {
@@ -281,12 +289,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
-    private void activateTestNetForVpn() {
-        mSwitchNet.setChecked(true);
-        mSwitchNet.setEnabled(false);
-        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, mSwitchNet.isChecked());
-    }
-
     private void copyToClipboard(String iCopyString, int iToastTextId) {
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
@@ -297,12 +299,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     private void loadVpnFragment(String iMessage) {
-        activateTestNetForVpn();
         loadFragment(VpnSelectFragment.newInstance(iMessage));
     }
 
     private void loadWalletFragment() {
-        mSwitchNet.setEnabled(true);
         loadFragment(WalletFragment.newInstance());
     }
 
@@ -486,7 +486,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 SentinelApp.isStart = true;
             }
 
-            if(state.equals("USER_VPN_PERMISSION")){
+            if (state.equals("USER_VPN_PERMISSION")) {
                 SentinelApp.isStart = true;
             }
 

@@ -65,6 +65,7 @@ public class SendActivity extends BaseActivity {
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        super.onCheckedChanged(buttonView, isChecked);
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (aFragment instanceof SendFragment) {
             ((SendFragment) aFragment).updateAdapterData(isChecked);

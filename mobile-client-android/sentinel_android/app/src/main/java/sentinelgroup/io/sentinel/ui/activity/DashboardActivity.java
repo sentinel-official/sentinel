@@ -257,7 +257,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 return true;
 
             case R.id.action_vpn:
-                if (!(aFragment instanceof VpnSelectFragment))
+                if ((aFragment instanceof WalletFragment))
                     loadVpnFragment(null);
                 return true;
 

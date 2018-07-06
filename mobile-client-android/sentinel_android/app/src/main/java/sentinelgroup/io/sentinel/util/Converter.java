@@ -68,7 +68,7 @@ public class Converter {
         String[] isoCountryCodes = Locale.getISOCountries();
         for (String code : isoCountryCodes) {
             Locale locale = new Locale("", code);
-            if (iCountryName.equalsIgnoreCase(locale.getDisplayCountry())) {
+            if (iCountryName.equalsIgnoreCase(locale.getDisplayCountry(Locale.US))) {
                 return code;
             }
         }

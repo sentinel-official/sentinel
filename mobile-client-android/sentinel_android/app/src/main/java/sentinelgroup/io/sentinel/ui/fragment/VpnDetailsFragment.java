@@ -27,6 +27,7 @@ import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Convert;
+import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.VpnListViewModel;
 import sentinelgroup.io.sentinel.viewmodel.VpnListViewModelFactory;
@@ -106,7 +107,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         mTvPrice = iView.findViewById(R.id.tv_price);
         mBtnConnect = iView.findViewById(R.id.btn_connect);
         // set default value
-        mFvFlag.setCountryCode(getCountryCode(mVpnListData.getLocation().country));
+        mFvFlag.setCountryCode(Converter.getCountryCode(mVpnListData.getLocation().country));
         mTvLocation.setText(getString(R.string.vpn_location, mVpnListData.getLocation().city, mVpnListData.getLocation().country));
         mTvCity.setText(getString(R.string.city, mVpnListData.getLocation().city));
         mTvCountry.setText(getString(R.string.country, mVpnListData.getLocation().country));
@@ -121,17 +122,6 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         mTvPrice.setText(aPrice);
         // Set listener
         mBtnConnect.setOnClickListener(this);
-    }
-
-    private String getCountryCode(String iCountryName) {
-        String[] isoCountryCodes = Locale.getISOCountries();
-        for (String code : isoCountryCodes) {
-            Locale locale = new Locale("", code);
-            if (iCountryName.equalsIgnoreCase(locale.getDisplayCountry())) {
-                return code;
-            }
-        }
-        return "";
     }
 
     private void initViewModel() {

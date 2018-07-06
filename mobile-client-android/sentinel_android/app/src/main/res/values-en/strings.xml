@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Sentinel</string>
     <string name="app_sub_name">Open source wallet and secure VPN platform</string>
     <string name="enter_pin">Enter PIN</string>
     <string name="verify">Verify</string>
@@ -184,7 +183,6 @@
     <string name="upload_keystore_desc">Tap here to upload you Keystore file</string>
     <string name="logout">Logout</string>
     <string name="logout_desc">Logging out will clear your keystore file, make sure you have saved it.</string>
-    <string name="default_language">en</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>
@@ -305,10 +303,4 @@
     <string name="pkcs12_file_encryption_key">PKCS12 File Encryption Key</string>
     <string name="private_key_password">Private Key Password</string>
     <string name="error_rsa_sign">Error signing with Android keystore key %1$s: %2$s</string>
-    <string name="language">Language</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="lang_english">English</string>
-    <string name="lang_code_english">en</string>
 </resources>

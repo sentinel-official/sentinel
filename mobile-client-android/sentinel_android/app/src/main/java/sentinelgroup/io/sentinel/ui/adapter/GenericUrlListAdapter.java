@@ -6,21 +6,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
+import android.widget.TextView;
 
 import java.util.List;
 
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.network.model.GenericListItem;
+import sentinelgroup.io.sentinel.network.model.GenericUrlListItem;
 
-public class GenericListAdapter extends RecyclerView.Adapter<GenericListAdapter.ViewHolder> {
+public class GenericUrlListAdapter extends RecyclerView.Adapter<GenericUrlListAdapter.ViewHolder> {
 
     private OnItemClickListener mItemClickListener;
 
-    private List<GenericListItem> mData;
+    private List<GenericUrlListItem> mData;
     private final Context mContext;
 
-    public GenericListAdapter(OnItemClickListener iListener, Context iContext) {
+    public GenericUrlListAdapter(OnItemClickListener iListener, Context iContext) {
         mItemClickListener = iListener;
         mContext = iContext;
     }
@@ -29,15 +29,15 @@ public class GenericListAdapter extends RecyclerView.Adapter<GenericListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_generic_checked, parent, false));
+                .inflate(R.layout.item_generic, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        GenericListItem aItemData = mData.get(position);
-        holder.mTvItem.setChecked(aItemData.isSelected());
+        GenericUrlListItem aItemData = mData.get(position);
+        holder.mTvItem.setCompoundDrawablesWithIntrinsicBounds(aItemData.getIconId(), 0, 0, 0);
         holder.mTvItem.setText(aItemData.getItemTextId());
-        holder.mTvItem.setOnClickListener(v -> onRootViewClick(aItemData.getItemCode()));
+        holder.mTvItem.setOnClickListener(v -> onRootViewClick(aItemData.getUrl()));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class GenericListAdapter extends RecyclerView.Adapter<GenericListAdapter.
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        CheckedTextView mTvItem;
+        TextView mTvItem;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -55,7 +55,7 @@ public class GenericListAdapter extends RecyclerView.Adapter<GenericListAdapter.
         }
     }
 
-    public void loadData(List<GenericListItem> iData) {
+    public void loadData(List<GenericUrlListItem> iData) {
         if (mData == null)
             mData = iData;
         notifyDataSetChanged();
@@ -69,6 +69,6 @@ public class GenericListAdapter extends RecyclerView.Adapter<GenericListAdapter.
     }
 
     public interface OnItemClickListener {
-        void onRootViewClicked(String iLanguageCode);
+        void onRootViewClicked(String iUrl);
     }
 }

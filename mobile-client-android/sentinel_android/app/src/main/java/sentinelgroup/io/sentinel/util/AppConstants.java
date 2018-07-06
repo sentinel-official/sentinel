@@ -17,6 +17,7 @@ public class AppConstants {
     public static final String PREFS_GAS_FAST = "prefs_fast";
     public static final String PREFS_GAS_FASTEST = "prefs_fastest";
     public static final String PREFS_IS_HELPER_SHOWN = "is_helper_shown";
+    public static final String PREFS_SELECTED_LANGUAGE = "selected_language";
 
     // Request codes
     public static final int REQ_CODE_NULL = -1;
@@ -25,6 +26,7 @@ public class AppConstants {
     public static final int REQ_RESET_PIN = 102;
     public static final int REQ_HELP = 103;
     public static final int REQ_SOCIAL_LINKS = 104;
+    public static final int REQ_LANGUAGE = 105;
     public static final int REQ_CODE_FORGOT_PIN = 105;
     public static final int REQ_VPN_CONNECT = 106;
     public static final int REQ_VPN_PAY = 107;

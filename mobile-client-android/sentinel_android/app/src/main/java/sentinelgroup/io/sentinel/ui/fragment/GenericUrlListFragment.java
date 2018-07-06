@@ -3,6 +3,7 @@ package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,15 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.network.model.GenericListItem;
-import sentinelgroup.io.sentinel.ui.adapter.GenericListAdapter;
+import sentinelgroup.io.sentinel.network.model.GenericUrlListItem;
+import sentinelgroup.io.sentinel.ui.adapter.GenericUrlListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Use the {@link GenericUrlListFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
-public class GenericListFragment extends Fragment implements GenericListAdapter.OnItemClickListener {
+public class GenericUrlListFragment extends Fragment implements GenericUrlListAdapter.OnItemClickListener {
     private static final String ARG_REQ_CODE = "req_code";
 
     private int mReqCode;
@@ -35,9 +38,9 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
 
     private SwipeRefreshLayout mSrReload;
     private RecyclerView mRvList;
-    private GenericListAdapter mAdapter;
+    private GenericUrlListAdapter mAdapter;
 
-    public GenericListFragment() {
+    public GenericUrlListFragment() {
         // Required empty public constructor
     }
 
@@ -47,8 +50,8 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
      *
      * @return A new instance of fragment GenericUrlListFragment.
      */
-    public static GenericListFragment newInstance(int iReqCode) {
-        GenericListFragment aFragment = new GenericListFragment();
+    public static GenericUrlListFragment newInstance(int iReqCode) {
+        GenericUrlListFragment aFragment = new GenericUrlListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_REQ_CODE, iReqCode);
         aFragment.setArguments(args);
@@ -56,7 +59,7 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mReqCode = getArguments().getInt(ARG_REQ_CODE);
@@ -79,14 +82,20 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fragmentLoaded(getString(R.string.language));
+        fragmentLoaded(getString(mReqCode == AppConstants.REQ_HELP ? R.string.help : R.string.social_links));
         mAdapter.loadData(getListData());
     }
 
-    private List<GenericListItem> getListData() {
-        List<GenericListItem> aItem = new ArrayList<>();
-        if (mReqCode == AppConstants.REQ_LANGUAGE) {
-            aItem.add(new GenericListItem(R.string.lang_english, true, getString(R.string.lang_code_english)));
+    private List<GenericUrlListItem> getListData() {
+        List<GenericUrlListItem> aItem = new ArrayList<>();
+        if (mReqCode == AppConstants.REQ_SOCIAL_LINKS) {
+            aItem.add(new GenericUrlListItem(R.drawable.ic_telegram, R.string.telegram, getString(R.string.telegram_url)));
+            aItem.add(new GenericUrlListItem(R.drawable.ic_medium, R.string.medium, getString(R.string.medium_url)));
+            aItem.add(new GenericUrlListItem(R.drawable.ic_twitter, R.string.twitter, getString(R.string.twitter_url)));
+            aItem.add(new GenericUrlListItem(R.drawable.ic_website, R.string.website, getString(R.string.website_url)));
+        } else if (mReqCode == AppConstants.REQ_HELP) {
+            aItem.add(new GenericUrlListItem(R.drawable.ic_faq, R.string.faq, ""));
+            aItem.add(new GenericUrlListItem(R.drawable.ic_check_updates, R.string.check_for_updates, ""));
         }
         return aItem;
     }
@@ -94,14 +103,13 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     private void initView(View iView) {
         mSrReload = iView.findViewById(R.id.sr_reload);
         mRvList = iView.findViewById(R.id.rv_list);
-        // Setup Recyclerview
+        // Setup RecyclerView
         mRvList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mAdapter = new GenericListAdapter(this, getContext());
+        mAdapter = new GenericUrlListAdapter(this, getContext());
         mRvList.setAdapter(mAdapter);
         // disable swipe to refresh layout
         mSrReload.setEnabled(false);
     }
-
 
     // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
@@ -159,7 +167,11 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     }
 
     @Override
-    public void onRootViewClicked(String iLanguageCode) {
-
+    public void onRootViewClicked(String iUrl) {
+        if (iUrl != null && !iUrl.isEmpty() && (iUrl.startsWith("http://") || iUrl.startsWith("https://"))) {
+            Intent aIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(iUrl));
+            loadNextActivity(aIntent, AppConstants.REQ_CODE_NULL);
+        } else
+            showErrorDialog(getString(R.string.link_coming_soon));
     }
 }

@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.multidex.MultiDex;
@@ -14,7 +15,7 @@ import android.util.Log;
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.security.ProviderInstaller;
 
-import java.io.File;
+import java.util.Locale;
 
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.PRNGFixes;
@@ -27,6 +28,7 @@ public class SentinelApp extends MultiDexApplication {
 
     private static SentinelApp sInstance;
     public static boolean isStart;
+    public Locale mLocale = null;
 
     @Override
     public void onCreate() {
@@ -44,6 +46,29 @@ public class SentinelApp extends MultiDexApplication {
         mStatus.init(getApplicationContext());
         sInstance = this;
         MultiDex.install(this);
+        setupAppLanguage();
+    }
+
+    private void setupAppLanguage() {
+        if (getLang().isEmpty())
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE, getString(R.string.default_language));
+        changeLanguage(getLang());
+
+    }
+
+    public void changeLanguage(String iLanguage) {
+        if(iLanguage!=null && !iLanguage.isEmpty()){
+            Configuration aConfig = getBaseContext().getResources().getConfiguration();
+            mLocale = new Locale(iLanguage);
+            Locale.setDefault(mLocale);
+            Configuration aNewConfig = new Configuration(aConfig);
+            aNewConfig.locale = mLocale;
+            getBaseContext().getResources().updateConfiguration(aNewConfig, getBaseContext().getResources().getDisplayMetrics());
+        }
+    }
+
+    public String getLang() {
+        return AppPreferences.getInstance().getString(AppConstants.PREFS_SELECTED_LANGUAGE);
     }
 
     public static Context getAppContext() {

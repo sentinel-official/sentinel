@@ -3,37 +3,37 @@ package sentinelgroup.io.sentinel.network.model;
 import java.io.Serializable;
 
 public class GenericListItem implements Serializable {
-    private int mIconId;
     private int mItemTextId;
-    private String mUrl;
+    private boolean mIsSelected;
+    private String mItemCode;
 
-    public GenericListItem(int iIconId, int iItemTextId, String iUrl) {
-        this.mIconId = iIconId;
+    public GenericListItem(int iItemTextId, boolean iIsSet, String iItemCode) {
         this.mItemTextId = iItemTextId;
-        this.mUrl = iUrl;
-    }
-
-    public int getIconId() {
-        return mIconId;
-    }
-
-    public void setIconId(int mIconId) {
-        this.mIconId = mIconId;
+        this.mIsSelected = iIsSet;
+        this.mItemCode = iItemCode;
     }
 
     public int getItemTextId() {
         return mItemTextId;
     }
 
-    public void setItemTextId(int mItemTextId) {
-        this.mItemTextId = mItemTextId;
+    public void setItemTextId(int iItemTextId) {
+        this.mItemTextId = iItemTextId;
     }
 
-    public String getUrl() {
-        return mUrl;
+    public String getItemCode() {
+        return mItemCode;
     }
 
-    public void setUrl(String mUrl) {
-        this.mUrl = mUrl;
+    public void setItemCode(String iItemCode) {
+        this.mItemCode = iItemCode;
+    }
+
+    public boolean isSelected() {
+        return mIsSelected;
+    }
+
+    public void setIsSet(boolean iIsSet) {
+        this.mIsSelected = iIsSet;
     }
 }

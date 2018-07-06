@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.fragment.GenericListFragment;
+import sentinelgroup.io.sentinel.ui.fragment.GenericUrlListFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 
 public class GenericListActivity extends BaseActivity {
@@ -21,7 +22,8 @@ public class GenericListActivity extends BaseActivity {
     private void getIntentExtras() {
         Bundle aExtras = getIntent().getExtras();
         if (aExtras != null) {
-            loadFragment(GenericListFragment.newInstance(aExtras.getInt(AppConstants.EXTRA_REQ_CODE)));
+            int aReqCode = aExtras.getInt(AppConstants.EXTRA_REQ_CODE);
+            loadFragment(aReqCode == AppConstants.REQ_LANGUAGE ? GenericListFragment.newInstance(aReqCode) : GenericUrlListFragment.newInstance(aReqCode));
         } else
             onBackPressed();
     }

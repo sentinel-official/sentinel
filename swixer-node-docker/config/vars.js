@@ -8,7 +8,10 @@ let mongoDb = {
   dbName: 'sentinelSwixer'
 };
 
+let master = '';
+
 module.exports = {
   server,
-  mongoDb
+  mongoDb,
+  master
 };

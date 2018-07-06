@@ -6,7 +6,7 @@ let { generatePrivateKey,
 
 
 let getTransactionCount = (address, cb) => {
-  web3.eth.getTransactionCount(address,
+  web3.eth.getTransactionCount(address, 'pending',
     (error, count) => {
       if (error) cb(error, null);
       else {

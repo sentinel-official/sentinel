@@ -9,6 +9,7 @@ let coins = require('../config/coins');
 
 let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) => {
   let coinType = coins[coinSymbol].type;
+  let remainingAmount = totalAmount;
   async.waterfall([
     (l0Next) => {
       accountDbo.getAccounts([coinType],
@@ -21,7 +22,8 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
         });
     }, (accounts, l0Next) => {
       let addresses = lodash.map(accounts, 'address');
-      addresses.splice(addresses.indexOf(toAddress), 1);
+      let index = addresses.indexOf(toAddress);
+      if(index >= 0) addresses.splice(index, 1);
       accountHelper.getBalancesOfAccounts(addresses,
         (error, balances) => {
           if (error) l0Next({
@@ -31,7 +33,6 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
           else l0Next(null, accounts, addresses, balances);
         });
     }, (accounts, addresses, balances, l0Next) => {
-      let remainingAmount = totalAmount;
       async.eachLimit(addresses, 1,
         (address, l1Next) => {
           let account = accounts[address];
@@ -39,6 +40,7 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
           if ((coinType === 'BTC' && _balances[coinSymbol] > 0) ||
             (coinType === 'ETH' && _balances.ETH > 20e9 * 50e3 && _balances[coinSymbol] > 0)) {
             let value = Math.min(_balances[coinSymbol], remainingAmount);
+            if(coinType === 'ETH') value = Math.round(value);
             async.waterfall([
               (l2Next) => {
                 transfer(account.privateKey, destinationAddress, value, coinSymbol,
@@ -48,7 +50,7 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
                       value,
                       txHash,
                       fromAddress: address,
-                      timestamp: Math.round(Date.now() / Math.pow(10, 3))
+                      timestamp: Date.now()
                     }, remainingAmount);
                   });
               }, (txInfo, remainingAmount, l2Next) => {
@@ -66,7 +68,11 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
         });
     }
   ], (error) => {
-    cb(error);
+    let message = remainingAmount > 0 ? 'Swix is in progress.' : 'Swix is complete.';
+    swixerDbo.updateSwixStatus(toAddress, message, false,
+      (error, result) => {
+        cb(error);
+      });
   });
 };
 

@@ -22,6 +22,7 @@ let getSwix = (swixHash, cb) => {
 
 let getValidSwixes = (cb) => {
   SwixDetailsModel.find({
+    isScheduled: false,
     $or: [
       {
         'remainingAmount': {
@@ -45,13 +46,14 @@ let getValidSwixes = (cb) => {
     });
 };
 
-let updateSwixStatus = (toAddress, message, cb) => {
+let updateSwixStatus = (toAddress, message, isScheduled, cb) => {
   SwixDetailsModel.findOneAndUpdate({
     toAddress
   }, {
       $set: {
+        isScheduled,
         message,
-        'lastUpdateOn': Math.round(Date.now() / Math.pow(10, 3))
+        'lastUpdateOn': Date.now()
       }
     }, (error, result) => {
       if (error) cb(error, null);

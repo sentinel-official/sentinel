@@ -39,6 +39,10 @@ let swixDetailsSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  isScheduled: {
+    type: Boolean,
+    default: false,
+  },
   remainingAmount: Number,
   lastUpdateOn: {
     type: Date,

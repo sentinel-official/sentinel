@@ -1,6 +1,7 @@
 let async = require('async');
 let swixerDbo = require('../server/dbos/swixer.dbo');
 let { getBalance } = require('../factories/accounts');
+let { getExchangeRate } = require('../factories/exchange');
 let { scheduleSwixTransfer } = require('./scheduler');
 
 
@@ -23,11 +24,12 @@ let start = (cb) => {
             swix = swix.toObject();
             let address = swix.toAddress;
             let coinSymbol = swix.fromSymbol;
+            let { fromSymbol,
+            toSymbol } = swix;
             async.waterfall([
               (l2Next) => {
                 getBalance(address, coinSymbol,
                   (error, balance) => {
-                    balance = 1.0;
                     if (error) l2Next({
                       status: 3001,
                       message: 'Error occurred while checking balance.'
@@ -36,32 +38,48 @@ let start = (cb) => {
                   });
               }, (amount, l2Next) => {
                 if (amount > 0) {
-                  swix.transferAmount = swix.remainingAmount ? swix.remainingAmount : amount;
-                  swix.delayInSeconds = swix.remainingAmount ? 30 : swix.delayInSeconds;
                   async.waterfall([
                     (l3Next) => {
-                      scheduleSwixTransfer(swix,
-                        (error) => {
-                          if (error) l3Next(null, {
+                      getExchangeRate(amount, fromSymbol, toSymbol,
+                        (error, amount) => {
+                          if(error) l3Next({
                             status: 4001,
-                            message: 'Error occurred while scheduling.'
+                            message: 'Error occurred while getting exchange rate.'
                           });
-                          else l3Next(null, {
-                            status: 4000,
-                            message: 'Scheduled successfully.'
-                          });
-                        });
-                    }, (statusObject, l3Next) => {
-                      let { message } = statusObject;
-                      swixerDbo.updateSwixStatus(address, message,
-                        (error, result) => {
-                          l3Next(null, statusObject.status === 4000);
+                          else l3Next(null, amount);
                         });
                     }
-                  ], (error, isScheduled) => {
-                    if (isScheduled) succeeded.push(address);
-                    else failed.push(address);
-                    l2Next(null);
+                  ], (error, amount) => {
+                    if(error) l2Next(error);
+                    else {
+                      swix.transferAmount = swix.remainingAmount ? swix.remainingAmount : amount;
+                      swix.delayInSeconds = swix.remainingAmount ? Math.min(15, swix.delayInSeconds) : swix.delayInSeconds;
+                      async.waterfall([
+                        (l4Next) => {
+                          scheduleSwixTransfer(swix,
+                            (error) => {
+                              if (error) l4Next(null, {
+                                status: 4001,
+                                message: 'Error occurred while scheduling.'
+                              });
+                              else l4Next(null, {
+                                status: 4000,
+                                message: 'Scheduled successfully.'
+                              });
+                            });
+                        }, (statusObject, l4Next) => {
+                          let { message } = statusObject;
+                          swixerDbo.updateSwixStatus(address, message, statusObject.status === 4000, 
+                            (error, result) => {
+                              l4Next(null, statusObject.status === 4000);
+                            });
+                        }
+                      ], (error, isScheduled) => {
+                        if (isScheduled) succeeded.push(address);
+                        else failed.push(address);
+                        l2Next(null);
+                      });
+                    }
                   });
                 } else l2Next(null);
               }

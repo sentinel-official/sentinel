@@ -4,7 +4,7 @@ let mongoDbConfig = require('./config/vars').mongoDb;
 
 
 let mongoDbUrl = `mongodb://${mongoDbConfig.address}:${mongoDbConfig.port}/${mongoDbConfig.dbName}`;
-let startSwix = (error, list) => {
+let startSwix = () => {
   swixer.start((error, list) => {
     setTimeout(() => {
       startSwix();

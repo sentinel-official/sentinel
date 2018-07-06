@@ -3,7 +3,10 @@ import mongoose from "mongoose";
 let Schema = mongoose.Schema
 
 let nodeSchema = new Schema({
-  account_addr: String,
+  account_addr: {
+    type: String,
+    unique: true
+  },
   token: String,
   ip: String,
   price_per_gb: Number,

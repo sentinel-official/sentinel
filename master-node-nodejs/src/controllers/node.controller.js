@@ -62,7 +62,7 @@ const registerNode = (req, res) => {
         next();
       })
     }, (next) => {
-      models.Nodes.findOne({ "account_addr": accountAddr },
+      Node.findOne({ "account_addr": accountAddr },
         (err, node) => {
           if (!err) {
             next(null, node)
@@ -168,6 +168,7 @@ const updateNodeInfo = (req, res) => {
 
         database.update(Node, findData, updateData,
           (err, node) => {
+
             if (err) next(err, null);
             else next(null, node);
           })
@@ -217,7 +218,7 @@ const updateNodeInfo = (req, res) => {
         err: 'Error in finding node'
       })
     }
-    if (!node.value) {
+    if (!node.n) {
       res.send({
         'success': false,
         'message': 'Node is not registered.'
@@ -390,7 +391,6 @@ const deRegisterNode = (req, res) => {
         'account_addr': accountAddr,
         'token': token
       }, (err, resp) => {
-        console.log('deleted data-----------------------------------------------', err, resp)
         if (!resp.n) {
           next({
             'success': false,
@@ -817,7 +817,7 @@ const getDailySessionCount = (req, res) => {
     "$sort": {
       "_id": 1
     }
-  }], (err, dailyCount) => {
+  }], (err, data) => {
     if (err) {
       res.status(400).send({
         'success': false,
@@ -889,7 +889,7 @@ const getAverageSessionsCount = (req, res) => {
 */
 
 const getActiveSessionCount = (req, res) => {
-  Connection.find({ endTime: null }, (err, data) => {
+  Connection.find({ end_time: null }, (err, data) => {
     if (err) {
       res.status(400).send({
         'success': false,
@@ -1189,7 +1189,7 @@ const getDailyPaidSentsCount = (req, res) => {
   })
 }
 
-const getDailyTotalSentsUsed = () => {
+const getDailyTotalSentsUsed = (req, res) => {
   Statistic.aggregate([{
     '$project': {
       'total': {
@@ -1225,7 +1225,7 @@ const getDailyTotalSentsUsed = () => {
   })
 }
 
-const getAveragePaidSentsCount = () => {
+const getAveragePaidSentsCount = (req, res) => {
   Payment.aggregate([{ '$group': { '_id': 0, 'AverageCount': { '$avg': '$paid_count' } } }],
     (err, avgCount) => {
       if (err) { res.status(400).send({ success: false, message: "error getting average paid sents count" }) }
@@ -1233,7 +1233,7 @@ const getAveragePaidSentsCount = () => {
     })
 }
 
-const getAverageTotalSentsCount = () => {
+const getAverageTotalSentsCount = (req, res) => {
   Payment.aggregate([{
     '$project': {
       'total': { '$add': ['$paid_count', '$unpaid_count'] }

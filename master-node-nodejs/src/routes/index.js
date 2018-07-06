@@ -43,7 +43,7 @@ routes.use('/client', ClientRoutes);
 routes.use('/node', NodeRoutes);
 routes.use('/stats', StatsRoutes);
 routes.use('/swaps', TokenRoutes);
-routes.use('/validations', ValidationRoutes)
+routes.use('/validations', ValidationRoutes);
 
 routes.post('/logs/error', ErrorController.logTheError);
 routes.post('/dev/free', DevController.getFreeAmount);

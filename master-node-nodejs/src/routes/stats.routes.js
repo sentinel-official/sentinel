@@ -18,10 +18,10 @@ routes.get('/time/daily-stats', NodeController.getDailyDurationCount);
 routes.get('/time/average-duration', NodeController.getAverageDuration);
 routes.get('/time/average-daily', NodeController.getDailyAverageDuration);
 routes.get('/time/last-average', NodeController.getLastAverageDuration);
-routes.get('/stats/payment/paid-sents-count', NodeController.getDailyPaidSentsCount);
-routes.get('/stats/payment/total-sents-used', NodeController.getDailyTotalSentsUsed);
-routes.get('/stats/payment/average-paid-sents', NodeController.getAveragePaidSentsCount);
-routes.get('/stats/payment/average-total-sents', NodeController.getAverageTotalSentsCount);
+routes.get('/payment/paid-sents-count', NodeController.getDailyPaidSentsCount);
+routes.get('/payment/total-sents-used', NodeController.getDailyTotalSentsUsed);
+routes.get('/payment/average-paid-sents', NodeController.getAveragePaidSentsCount);
+routes.get('/payment/average-total-sents', NodeController.getAverageTotalSentsCount);
 routes.get('/node', NodeController.getNodeStatistics);
 
 export default routes;

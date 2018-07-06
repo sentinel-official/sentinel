@@ -792,7 +792,7 @@ public class ConfigParser {
             return null;
         for (Vector<String> optionline : args)
             if (optionline.size() < (minarg + 1) || optionline.size() > maxarg + 1) {
-                String err = String.format(Locale.getDefault(), "Option %s has %d parameters, expected between %d and %d",
+                String err = String.format(Locale.US, "Option %s has %d parameters, expected between %d and %d",
                         option, optionline.size() - 1, minarg, maxarg);
                 throw new ConfigParseError(err);
             }

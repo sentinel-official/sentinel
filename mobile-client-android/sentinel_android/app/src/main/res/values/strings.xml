@@ -272,9 +272,6 @@
     <string name="reporting_payment">Reporting VPN payment…</string>
     <string name="fetching_balance">Fetching your balance…</string>
     <string name="pay">Pay</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="loading_tx_history">Loading Transaction History…</string>
     <string name="send_eth">Send ETH</string>
     <string name="receive_eth">Receive ETH</string>
@@ -303,5 +300,5 @@
     <string name="not_a_address">The scanned result is not an Account Address. Discarding scanned results.</string>
     <string name="retry">Retry</string>
     <string name="vpn_history_main_net_unavailable">VPN history in only available in TESTNET.</string>
-    <string name="vpn_main_net_unavailable">No VPN nodes available in Mainnet, switch to Testnet</string>
+    <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET</string>
 </resources>

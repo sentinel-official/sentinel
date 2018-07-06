@@ -54,14 +54,14 @@ public class Converter {
     public static String convertEpochToDate(long iEpochTimeInSeconds) {
         // Thu 11 May 2018    10:30:47 GMT
         String formatString = "EEE, dd MMM yyyy   HH:mm:ss z";
-        SimpleDateFormat format = new SimpleDateFormat(formatString, Locale.getDefault());
+        SimpleDateFormat format = new SimpleDateFormat(formatString, Locale.US);
         return format.format(new Date(iEpochTimeInSeconds * 1000));
 
     }
 
     public static String getSentString(double iSentValue) {
         iSentValue /= Math.pow(10, 8);
-        return String.format(Locale.getDefault(), iSentValue % 1 == 0 ? "%.0f" : "%.7f", iSentValue);
+        return String.format(Locale.US, iSentValue % 1 == 0 ? "%.0f" : "%.7f", iSentValue);
     }
 
     public static String getCountryCode(String iCountryName) {
@@ -98,6 +98,6 @@ public class Converter {
 
     public static String getFormattedSentBalance(double iSentValue) {
         iSentValue /= Math.pow(10, 8);
-        return String.format(Locale.getDefault(), iSentValue % 1 == 0 ? "%.0f" : "%.7f", iSentValue);
+        return String.format(Locale.US, iSentValue % 1 == 0 ? "%.0f" : "%.7f", iSentValue);
     }
 }

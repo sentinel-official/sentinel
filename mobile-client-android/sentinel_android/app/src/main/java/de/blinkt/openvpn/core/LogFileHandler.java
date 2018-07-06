@@ -203,7 +203,7 @@ class LogFileHandler extends Handler {
         if (li.verify()) {
             VpnStatus.newLogItem(li, true);
         } else {
-            VpnStatus.logError(String.format(Locale.getDefault(),
+            VpnStatus.logError(String.format(Locale.US,
                     "Could not read log item from file: %d: %s",
                     len, bytesToHex(buf, Math.max(len, 80))));
         }

@@ -7,11 +7,10 @@
 
     <TextView
         android:id="@+id/tv_empty_message"
-        style="@style/CustomTextAppearance.Text14.White70Normal"
+        style="@style/CustomTextAppearance.Text14"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="@dimen/margin_16" />
-
 </LinearLayout>

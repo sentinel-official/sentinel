@@ -284,9 +284,9 @@ public class VpnRepository {
 
             private void reportErrorResponse(String iThrowableLocalMessage) {
                 if (iThrowableLocalMessage != null)
-                    mVpnConfigLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                    mReportPaymentLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
-                    mVpnConfigLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+                    mReportPaymentLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
             }
         });
     }

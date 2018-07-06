@@ -46,7 +46,7 @@ class CIDRIP {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%s/%d", mIp, len);
+        return String.format(Locale.US, "%s/%d", mIp, len);
     }
 
     public boolean normalise() {

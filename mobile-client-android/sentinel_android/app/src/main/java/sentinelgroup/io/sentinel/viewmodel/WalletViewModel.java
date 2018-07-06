@@ -51,12 +51,12 @@ public class WalletViewModel extends ViewModel {
 
     public String getFormattedEthBalance(double iEthValue) {
         BigDecimal aEth = Convert.fromWei(BigDecimal.valueOf(iEthValue), Convert.EtherUnit.ETHER);
-        return String.format(Locale.getDefault(), "%.8f", aEth);
+        return String.format(Locale.US, "%.8f", aEth);
     }
 
     public String getFormattedSentBalance(double iSentValue) {
         iSentValue /= Math.pow(10, 8);
-        return String.format(Locale.getDefault(), iSentValue % 1 == 0 ? "%.0f" : "%.7f", iSentValue);
+        return String.format(Locale.US, iSentValue % 1 == 0 ? "%.0f" : "%.7f", iSentValue);
     }
 
     public void reloadBalance() {

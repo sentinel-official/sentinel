@@ -131,6 +131,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
                 } else if (reportPayResource.data != null && reportPayResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     Toast.makeText(getContext(), reportPayResource.data.message, Toast.LENGTH_SHORT).show();
+                    loadNextFragment(VpnSelectFragment.newInstance(null));
                 } else if (reportPayResource.message != null && reportPayResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     showErrorDialog(reportPayResource.message);

@@ -231,7 +231,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             @Override
             public void run() {
                 if (mlastToast != null) mlastToast.cancel();
-                String toastText = String.format(Locale.getDefault(), "%s - %s", mProfile.mConnections[0].mServerName, msg);
+                String toastText = String.format(Locale.US, "%s - %s", mProfile.mConnections[0].mServerName, msg);
                 mlastToast = Toast.makeText(getBaseContext(), toastText, Toast.LENGTH_SHORT);
                 mlastToast.show();
             }

@@ -9,7 +9,7 @@ let { generatePublicKey,
 
 let transfer = (fromPrivateKey, toAddress, value, coinSymbol, cb) => {
   fromPrivateKey = Buffer.from(fromPrivateKey, 'hex');
-  let fromAddress = '0x' + generateAddress(generatePublicKey(fromPrivateKey)).toString('hex');
+  let fromAddress = '0x' + generateAddress(generatePublicKey(fromPrivateKey, false)).toString('hex');
   async.waterfall([
     (next) => {
       getTransactionCount(fromAddress,

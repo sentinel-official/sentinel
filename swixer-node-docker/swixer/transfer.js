@@ -10,6 +10,7 @@ let coins = require('../config/coins');
 let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) => {
   let coinType = coins[coinSymbol].type;
   let remainingAmount = totalAmount;
+  if(coinType === 'ETH') remainingAmount = Math.round(remainingAmount);
   async.waterfall([
     (l0Next) => {
       accountDbo.getAccounts([coinType],
@@ -35,12 +36,11 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
     }, (accounts, addresses, balances, l0Next) => {
       async.eachLimit(addresses, 1,
         (address, l1Next) => {
-          let account = accounts[address];
+          let account = lodash.filter(accounts, item => item.address === address)[0];
           let _balances = balances[address];
           if ((coinType === 'BTC' && _balances[coinSymbol] > 0) ||
             (coinType === 'ETH' && _balances.ETH > 20e9 * 50e3 && _balances[coinSymbol] > 0)) {
             let value = Math.min(_balances[coinSymbol], remainingAmount);
-            if(coinType === 'ETH') value = Math.round(value);
             async.waterfall([
               (l2Next) => {
                 transfer(account.privateKey, destinationAddress, value, coinSymbol,

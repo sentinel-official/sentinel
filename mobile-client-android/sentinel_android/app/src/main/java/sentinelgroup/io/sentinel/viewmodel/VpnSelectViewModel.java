@@ -13,10 +13,12 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 public class VpnSelectViewModel extends ViewModel {
     private final VpnRepository mRepository;
     private final SingleLiveEvent<Resource<VpnUsage>> mVpnUsageLiveEvent;
+    private final SingleLiveEvent<Boolean> mTokenAlertLiveEvent;
 
     VpnSelectViewModel(VpnRepository iRepository) {
         mRepository = iRepository;
         mVpnUsageLiveEvent = iRepository.getVpnUsageLiveEvent(getRequestBody());
+        mTokenAlertLiveEvent = iRepository.getTokenAlertLiveEvent(getRequestBody());
     }
 
     private GenericRequestBody getRequestBody() {
@@ -26,5 +28,9 @@ public class VpnSelectViewModel extends ViewModel {
 
     public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent() {
         return mVpnUsageLiveEvent;
+    }
+
+    public SingleLiveEvent<Boolean> getTokenAlertLiveEvent() {
+        return mTokenAlertLiveEvent;
     }
 }

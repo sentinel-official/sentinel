@@ -115,12 +115,6 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
                 showErrorDialog(balanceError);
             }
         });
-
-        mViewModel.getTokenAlertLiveEvent().observe(this, isTokenRequested -> {
-            if (isTokenRequested != null && isTokenRequested) {
-                showErrorDialog(getString(R.string.free_token_requested));
-            }
-        });
     }
 
     private void setBalanceValue(Chains iData) {

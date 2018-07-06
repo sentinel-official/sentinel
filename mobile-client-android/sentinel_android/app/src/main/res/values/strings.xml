@@ -299,7 +299,8 @@
     <string name="no_scan_results">Scan results not found.</string>
     <string name="not_a_address">The scanned result is not an Account Address. Discarding scanned results.</string>
     <string name="retry">Retry</string>
-    <string name="vpn_history_main_net_unavailable">VPN history in only available in TESTNET.</string>
-    <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET</string>
-    <string name="tx_history_main_net_unavailable">No Transaction History found in MAINNET</string>
+    <string name="vpn_history_main_net_unavailable">No VPN history found in MAINNET.</string>
+    <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET.</string>
+    <string name="tx_history_main_net_unavailable">No Transaction History found in MAINNET.</string>
+    <string name="upload_keystore_desc">Tap here to upload you Keystore file</string>
 </resources>

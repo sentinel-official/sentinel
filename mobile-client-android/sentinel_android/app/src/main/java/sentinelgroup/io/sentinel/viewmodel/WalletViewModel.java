@@ -18,7 +18,6 @@ public class WalletViewModel extends ViewModel {
     private final WalletRepository mRepository;
     private final LiveData<Chains> mBalanceLiveData;
     private final SingleLiveEvent<String> mBalanceErrorLiveEvent;
-    private final SingleLiveEvent<Boolean> mTokenAlertLiveEvent;
     private final GenericRequestBody mBody;
 
     WalletViewModel(WalletRepository iRepository) {
@@ -26,7 +25,6 @@ public class WalletViewModel extends ViewModel {
         mBody = new GenericRequestBody.GenericRequestBodyBuilder().accountAddress(getAddress()).build();
         mBalanceLiveData = iRepository.getBalanceLiveData(mBody);
         mBalanceErrorLiveEvent = iRepository.getBalanceErrorLiveEvent();
-        mTokenAlertLiveEvent = iRepository.getTokenAlertLiveEvent();
     }
 
     public LiveData<Chains> getBalanceLiveData() {
@@ -35,10 +33,6 @@ public class WalletViewModel extends ViewModel {
 
     public SingleLiveEvent<String> getBalanceErrorLiveEvent() {
         return mBalanceErrorLiveEvent;
-    }
-
-    public SingleLiveEvent<Boolean> getTokenAlertLiveEvent() {
-        return mTokenAlertLiveEvent;
     }
 
     public String getAddress() {

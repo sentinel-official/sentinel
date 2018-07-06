@@ -29,14 +29,12 @@ public class WalletRepository {
     private final AppExecutors mAppExecutors;
     private final MutableLiveData<Balance> mBalanceMutableLiveData;
     private final SingleLiveEvent<String> mBalanceErrorLiveEvent;
-    private final SingleLiveEvent<Boolean> mTokenAlertLiveEvent;
 
     private WalletRepository(BalanceEntryDao iDao, WebService iWebService, AppExecutors iAppExecutors) {
         mDao = iDao;
         mWebService = iWebService;
         mAppExecutors = iAppExecutors;
         mBalanceMutableLiveData = new MutableLiveData<>();
-        mTokenAlertLiveEvent = new SingleLiveEvent<>();
         mBalanceErrorLiveEvent = new SingleLiveEvent<>();
 
         MutableLiveData<Balance> aBalanceLiveData = getBalanceMutableLiveData();
@@ -65,17 +63,11 @@ public class WalletRepository {
     // public getter methods for LiveData & SingleLiveEvent
     public LiveData<Chains> getBalanceLiveData(GenericRequestBody iBody) {
         getAccountBalance(iBody);
-        if (!AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_FIRST_TIME))
-            getFreeTokens(iBody);
         return mDao.getBalanceEntity();
     }
 
     public SingleLiveEvent<String> getBalanceErrorLiveEvent() {
         return mBalanceErrorLiveEvent;
-    }
-
-    public SingleLiveEvent<Boolean> getTokenAlertLiveEvent() {
-        return mTokenAlertLiveEvent;
     }
 
     public void updateBalance(GenericRequestBody iBody) {
@@ -109,26 +101,6 @@ public class WalletRepository {
                     mBalanceErrorLiveEvent.postValue(iThrowableLocalMessage);
                 else
                     mBalanceErrorLiveEvent.postValue(AppConstants.GENERIC_ERROR);
-            }
-        });
-    }
-
-    private void getFreeTokens(GenericRequestBody iBody) {
-        mWebService.getFreeTokens(iBody).enqueue(new Callback<Tokens>() {
-            @Override
-            public void onResponse(Call<Tokens> call, Response<Tokens> response) {
-                reportSuccessResponse(response);
-            }
-
-            @Override
-            public void onFailure(Call<Tokens> call, Throwable t) {
-            }
-
-            private void reportSuccessResponse(Response<Tokens> response) {
-                if (response != null && response.body() != null) {
-                    mTokenAlertLiveEvent.postValue(response.body().success);
-                    AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_FIRST_TIME, true);
-                }
             }
         });
     }

@@ -107,6 +107,12 @@ public class VpnSelectFragment extends Fragment {
             VpnSelectViewModelFactory aFactory = InjectorModule.provideVpnSelectViewModelFactory(getContext());
             mViewModel = ViewModelProviders.of(this, aFactory).get(VpnSelectViewModel.class);
 
+            mViewModel.getTokenAlertLiveEvent().observe(this, isTokenRequested -> {
+                if (isTokenRequested != null && isTokenRequested) {
+                    showErrorDialog(getString(R.string.free_token_requested));
+                }
+            });
+
             mViewModel.getVpnUsageLiveEvent().observe(this, vpnUsageResource -> {
                 if (vpnUsageResource != null)
                     if (vpnUsageResource.status.equals(Status.LOADING)) {

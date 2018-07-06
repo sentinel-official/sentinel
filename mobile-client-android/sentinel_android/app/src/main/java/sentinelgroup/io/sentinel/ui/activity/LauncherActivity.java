@@ -17,6 +17,7 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_launcher);
         initView();
         checkUserLoginState();
+        switchOnTestnet();
     }
 
     private void initView() {
@@ -27,9 +28,12 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
     private void checkUserLoginState() {
         String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
         if (!aAccountAddress.isEmpty()) {
-            AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, true);
             startCreateAccountActivity();
         }
+    }
+
+    private void switchOnTestnet() {
+        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, true);
     }
 
     @Override

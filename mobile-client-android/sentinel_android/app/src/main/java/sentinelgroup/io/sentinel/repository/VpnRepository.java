@@ -13,6 +13,7 @@ import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.ReportPay;
+import sentinelgroup.io.sentinel.network.model.Tokens;
 import sentinelgroup.io.sentinel.network.model.Vpn;
 import sentinelgroup.io.sentinel.network.model.VpnConfig;
 import sentinelgroup.io.sentinel.network.model.VpnCredentials;
@@ -21,6 +22,7 @@ import sentinelgroup.io.sentinel.network.model.VpnUsage;
 import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -42,6 +44,7 @@ public class VpnRepository {
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
     private final SingleLiveEvent<Resource<ReportPay>> mReportPaymentLiveEvent;
+    private final SingleLiveEvent<Boolean> mTokenAlertLiveEvent;
 
     private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, WebService iWebService, AppExecutors iAppExecutors) {
         mListDao = iListDao;
@@ -55,6 +58,7 @@ public class VpnRepository {
         mVpnServerCredentialsLiveEvent = new SingleLiveEvent<>();
         mVpnConfigLiveEvent = new SingleLiveEvent<>();
         mReportPaymentLiveEvent = new SingleLiveEvent<>();
+        mTokenAlertLiveEvent = new SingleLiveEvent<>();
 
         LiveData<List<VpnListEntity>> aVpnListServerData = getVpnListMutableLiveData();
         aVpnListServerData.observeForever(vpnList -> {
@@ -126,6 +130,12 @@ public class VpnRepository {
 
     public SingleLiveEvent<Resource<ReportPay>> getReportPaymentLiveEvent() {
         return mReportPaymentLiveEvent;
+    }
+
+    public SingleLiveEvent<Boolean> getTokenAlertLiveEvent(GenericRequestBody iBody) {
+        if (!AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_FREE_TOKEN_RECEIVED))
+            getFreeTokens(iBody);
+        return mTokenAlertLiveEvent;
     }
 
     // Network call
@@ -287,6 +297,26 @@ public class VpnRepository {
                     mReportPaymentLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
                     mReportPaymentLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+            }
+        });
+    }
+
+    private void getFreeTokens(GenericRequestBody iBody) {
+        mWebService.getFreeTokens(iBody).enqueue(new Callback<Tokens>() {
+            @Override
+            public void onResponse(Call<Tokens> call, Response<Tokens> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<Tokens> call, Throwable t) {
+            }
+
+            private void reportSuccessResponse(Response<Tokens> response) {
+                if (response != null && response.body() != null) {
+                    mTokenAlertLiveEvent.postValue(response.body().success);
+                    AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_FREE_TOKEN_RECEIVED, true);
+                }
             }
         });
     }

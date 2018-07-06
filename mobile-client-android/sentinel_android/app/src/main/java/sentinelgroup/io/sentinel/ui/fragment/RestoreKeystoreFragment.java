@@ -16,8 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.angads25.filepicker.model.DialogConfigs;
@@ -50,7 +50,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
     private TextInputEditText mTetPassword;
     private Button mBtnRestore;
-    private ImageButton mIbUpload;
+    private TextView mTvUpload;
     private ImageView mIvUploaded;
 
     private String mKeystorePath = "";
@@ -94,11 +94,11 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     private void initView(View iView) {
         mTetPassword = iView.findViewById(R.id.tet_password);
         mBtnRestore = iView.findViewById(R.id.btn_restore);
-        mIbUpload = iView.findViewById(R.id.ib_upload_file);
+        mTvUpload = iView.findViewById(R.id.tv_upload_file);
         mIvUploaded = iView.findViewById(R.id.iv_uploaded);
         // Set Listeners
         mTetPassword.addTextChangedListener(this);
-        mIbUpload.setOnClickListener(this);
+        mTvUpload.setOnClickListener(this);
         mBtnRestore.setOnClickListener(this);
     }
 
@@ -141,7 +141,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
     private void performAction(int iButtonId) {
         switch (iButtonId) {
-            case R.id.ib_upload_file:
+            case R.id.tv_upload_file:
                 uploadFile();
                 break;
             case R.id.btn_restore:
@@ -167,6 +167,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
             if (files.length == 1) {
                 mKeystorePath = files[0];
                 mIvUploaded.setVisibility(View.VISIBLE);
+                mTvUpload.setText("");
                 Toast.makeText(getContext(), R.string.uploaded_success, Toast.LENGTH_SHORT).show();
                 Logger.logDebug("KEYSTOREPATH", mKeystorePath);
                 mBtnRestore.setEnabled(!mTetPassword.getText().toString().isEmpty() && !mKeystorePath.isEmpty());

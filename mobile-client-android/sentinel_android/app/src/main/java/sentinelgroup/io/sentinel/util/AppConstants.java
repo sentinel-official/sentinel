@@ -9,7 +9,7 @@ public class AppConstants {
     public static final String PREFS_FILE_PATH = "prefs_file_path";
     public static final String PREFS_CONFIG_PATH = "prefs_config_path";
     public static final String PREFS_IS_APP_PIN_SET = "prefs_is_app_pin_set";
-    public static final String PREFS_IS_FIRST_TIME = "prefs_is_first_time";
+    public static final String PREFS_IS_FREE_TOKEN_RECEIVED = "prefs_is_free_token_received";
     public static final String PREFS_IS_TEST_NET_ACTIVE = "prefs_is_test_net_active";
     public static final String PREFS_VPN_ADDRESS = "prefs_vpn_address";
     public static final String PREFS_SESSION_NAME = "prefs_session_name";

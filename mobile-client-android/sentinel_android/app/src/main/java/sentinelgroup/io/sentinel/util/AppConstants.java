@@ -41,6 +41,10 @@ public class AppConstants {
     public static final String EXTRA_CONFIG_PATH = "config_path";
     public static final String EXTRA_REQ_CODE = "req_code";
 
+    // Tag
+    public static final String TAG_INIT_PAY = "INIT_PAY";
+    public static final String TAG_LOGOUT = "LOGOUT";
+
     // Other app constants
     public static final String FOLDER_NAME = "Sentinel";
     public static final String FILE_NAME = "keystore.file";

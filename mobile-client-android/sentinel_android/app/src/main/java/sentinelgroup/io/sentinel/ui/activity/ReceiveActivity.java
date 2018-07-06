@@ -70,7 +70,7 @@ public class ReceiveActivity extends BaseActivity {
     }
 
     @Override
-    public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
-        iDialog.dismiss();
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+        // Unimplemented interface method
     }
 }

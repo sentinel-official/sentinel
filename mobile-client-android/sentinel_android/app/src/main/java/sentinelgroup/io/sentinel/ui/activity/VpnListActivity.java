@@ -77,7 +77,7 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
 
     @Override
     public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-        showDoubleActionError(R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
+        showDoubleActionError(AppConstants.TAG_INIT_PAY, R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
     }
 
     @Override
@@ -121,10 +121,10 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
     }
 
     @Override
-    public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (isPositiveButton) {
-            if (aFragment instanceof VpnDetailsFragment)
+            if (aFragment instanceof VpnDetailsFragment && iTag.equals(AppConstants.TAG_INIT_PAY))
                 ((VpnDetailsFragment) aFragment).loadNextActivity(getIntent());
         }
         iDialog.dismiss();

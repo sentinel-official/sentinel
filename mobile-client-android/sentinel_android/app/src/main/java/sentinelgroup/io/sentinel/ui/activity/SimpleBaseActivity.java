@@ -98,11 +98,11 @@ public abstract class SimpleBaseActivity extends AppCompatActivity implements On
                     .show(getSupportFragmentManager(), SINGLE_ACTION_DIALOG_TAG);
     }
 
-//    protected void showDoubleActionError(String iMessage) {
-//        showDoubleActionError(-1, iMessage, -1, -1);
+//    protected void showDoubleActionDialog(String iMessage) {
+//        showDoubleActionDialog(-1, iMessage, -1, -1);
 //    }
 //
-//    protected void showDoubleActionError(int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+//    protected void showDoubleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
 //        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);
 //        int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
 //        int aPositiveOptionText = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.ok;

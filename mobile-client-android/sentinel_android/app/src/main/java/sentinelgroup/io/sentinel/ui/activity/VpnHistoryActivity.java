@@ -116,7 +116,7 @@ public class VpnHistoryActivity extends BaseActivity {
     }
 
     @Override
-    public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
         // Unimplemented interface method
     }
 

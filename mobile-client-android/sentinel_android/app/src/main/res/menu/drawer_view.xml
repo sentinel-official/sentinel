@@ -22,5 +22,8 @@
         <item
             android:id="@+id/nav_social_links"
             android:title="@string/social_links" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="@string/logout" />
     </group>
 </menu>

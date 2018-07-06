@@ -115,17 +115,17 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
                     .show(getSupportFragmentManager(), SINGLE_ACTION_DIALOG_TAG);
     }
 
-    protected void showDoubleActionError(String iMessage) {
-        showDoubleActionError(-1, iMessage, -1, -1);
+    protected void showDoubleActionError(String iTag, String iMessage) {
+        showDoubleActionError(iTag,-1, iMessage, -1, -1);
     }
 
-    protected void showDoubleActionError(int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+    protected void showDoubleActionError(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);
         int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
         int aPositiveOptionId = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.ok;
         int aNegativeOptionId = iNegativeOptionId != -1 ? iNegativeOptionId : android.R.string.cancel;
         if (aFragment == null)
-            DoubleActionDialogFragment.newInstance(aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
+            DoubleActionDialogFragment.newInstance(iTag, aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
                     .show(getSupportFragmentManager(), DOUBLE_ACTION_DIALOG_TAG);
     }
 

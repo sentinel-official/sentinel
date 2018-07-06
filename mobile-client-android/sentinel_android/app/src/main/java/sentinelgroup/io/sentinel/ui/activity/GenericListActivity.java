@@ -81,7 +81,7 @@ public class GenericListActivity extends BaseActivity {
     }
 
     @Override
-    public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
         // Unimplemented method
     }
 }

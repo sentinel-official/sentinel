@@ -190,6 +190,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case R.id.nav_social_links:
                 startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_SOCIAL_LINKS), AppConstants.REQ_CODE_NULL);
                 break;
+            case R.id.nav_logout:
+                showDoubleActionDialog(AppConstants.TAG, -1, getString(R.string.logout_desc), R.string.logout, android.R.string.cancel);
         }
     }
 
@@ -231,17 +233,17 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                     .show(getSupportFragmentManager(), SINGLE_ACTION_DIALOG_TAG);
     }
 
-    protected void showDoubleActionError(String iMessage) {
-        showDoubleActionError(-1, iMessage, -1, -1);
+    protected void showDoubleActionDialog(String iTag, String iMessage) {
+        showDoubleActionDialog(iTag, -1, iMessage, -1, -1);
     }
 
-    protected void showDoubleActionError(int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+    protected void showDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);
         int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
         int aPositiveOptionId = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.ok;
         int aNegativeOptionId = iNegativeOptionId != -1 ? iNegativeOptionId : android.R.string.cancel;
         if (aFragment == null)
-            DoubleActionDialogFragment.newInstance(aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
+            DoubleActionDialogFragment.newInstance(iTag, aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
                     .show(getSupportFragmentManager(), DOUBLE_ACTION_DIALOG_TAG);
     }
 
@@ -445,7 +447,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-        showDoubleActionError(R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
+        showDoubleActionDialog(AppConstants.TAG_INIT_PAY, R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
     }
 
     @Override
@@ -480,13 +482,21 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     @Override
-    public void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (isPositiveButton) {
-            if (aFragment instanceof VpnSelectFragment)
+            if (iTag.equals(AppConstants.TAG_INIT_PAY) && aFragment instanceof VpnSelectFragment)
                 ((VpnSelectFragment) aFragment).makeInitPayment();
+            else if (iTag.equals(AppConstants.TAG_LOGOUT))
+                logoutUser();
         }
         iDialog.dismiss();
+    }
+
+    private void logoutUser() {
+        AppPreferences.getInstance().clearSavedData(this);
+        startActivity(new Intent(this, LauncherActivity.class));
+        finish();
     }
 
     @Override

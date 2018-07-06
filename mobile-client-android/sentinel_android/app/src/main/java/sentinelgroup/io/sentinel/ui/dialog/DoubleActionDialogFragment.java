@@ -28,13 +28,14 @@ import sentinelgroup.io.sentinel.R;
  * create an instance of this fragment.
  */
 public class DoubleActionDialogFragment extends DialogFragment {
+    public static final String ARG_TAG = "tag";
     private static final String ARG_TITLE = "title_id";
     private static final String ARG_MESSAGE = "message";
     private static final String ARG_POSITIVE_OPTION = "positive_option_id";
     private static final String ARG_NEGATIVE_OPTION = "negative_option_id";
 
     private int mTitleId, mPositiveOptionId, mNegativeOptionId;
-    private String mMessage;
+    private String mTag, mMessage;
 
     private OnDialogActionListener mListener;
 
@@ -46,15 +47,17 @@ public class DoubleActionDialogFragment extends DialogFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
+     * @param iTag              tag
      * @param iTitleId          title id
      * @param iMessage          message text
      * @param iPositiveOptionId positive option id
      * @param iNegativeOptionId negative option id
      * @return A new instance of fragment DoubleActionDialogFragment.
      */
-    public static DoubleActionDialogFragment newInstance(int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+    public static DoubleActionDialogFragment newInstance(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         DoubleActionDialogFragment fragment = new DoubleActionDialogFragment();
         Bundle args = new Bundle();
+        args.getString(ARG_TAG, iTag);
         args.putInt(ARG_TITLE, iTitleId);
         args.putString(ARG_MESSAGE, iMessage);
         args.putInt(ARG_POSITIVE_OPTION, iPositiveOptionId);
@@ -67,6 +70,7 @@ public class DoubleActionDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mTag = getArguments().getString(ARG_TAG);
             mTitleId = getArguments().getInt(ARG_TITLE);
             mMessage = getArguments().getString(ARG_MESSAGE);
             mPositiveOptionId = getArguments().getInt(ARG_POSITIVE_OPTION);
@@ -125,7 +129,7 @@ public class DoubleActionDialogFragment extends DialogFragment {
 
     public void onActionButtonClick(boolean iIsPositiveButton) {
         if (mListener != null) {
-            mListener.onActionButtonClicked(getDialog(), iIsPositiveButton);
+            mListener.onActionButtonClicked(mTag, getDialog(), iIsPositiveButton);
         }
     }
 
@@ -157,6 +161,6 @@ public class DoubleActionDialogFragment extends DialogFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDialogActionListener {
-        void onActionButtonClicked(Dialog iDialog, boolean isPositiveButton);
+        void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton);
     }
 }

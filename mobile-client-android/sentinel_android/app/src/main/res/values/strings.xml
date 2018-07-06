@@ -301,4 +301,5 @@
     <string name="retry">Retry</string>
     <string name="vpn_history_main_net_unavailable">VPN history in only available in TESTNET.</string>
     <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET</string>
+    <string name="tx_history_main_net_unavailable">No Transaction History found in MAINNET</string>
 </resources>

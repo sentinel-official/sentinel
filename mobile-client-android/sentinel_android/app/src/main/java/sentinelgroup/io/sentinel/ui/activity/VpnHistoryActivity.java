@@ -127,6 +127,5 @@ public class VpnHistoryActivity extends BaseActivity {
             loadFragment(VpnHistoryFragment.newInstance());
         else
             removeAllFragments();
-
     }
 }

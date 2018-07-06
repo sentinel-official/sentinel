@@ -9,12 +9,14 @@
 
     <application
         android:name=".SentinelApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:allowBackup">
         <activity
             android:name=".ui.activity.LauncherActivity"
             android:screenOrientation="portrait">
@@ -32,8 +34,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.VerifyPinActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name=".ui.activity.DashboardActivity"
             android:launchMode="singleTop"

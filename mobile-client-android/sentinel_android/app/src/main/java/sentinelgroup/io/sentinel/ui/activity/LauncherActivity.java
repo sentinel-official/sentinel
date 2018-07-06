@@ -27,7 +27,7 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
     private void checkUserLoginState() {
         String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
         if (!aAccountAddress.isEmpty()) {
-            AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, false);
+            AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, true);
             startCreateAccountActivity();
         }
     }

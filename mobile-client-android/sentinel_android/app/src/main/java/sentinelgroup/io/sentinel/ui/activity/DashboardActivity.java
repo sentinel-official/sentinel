@@ -191,7 +191,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_SOCIAL_LINKS), AppConstants.REQ_CODE_NULL);
                 break;
             case R.id.nav_logout:
-                showDoubleActionDialog(AppConstants.TAG, -1, getString(R.string.logout_desc), R.string.logout, android.R.string.cancel);
+                showDoubleActionDialog(AppConstants.TAG_LOGOUT, -1, getString(R.string.logout_desc), R.string.logout, android.R.string.cancel);
         }
     }
 

@@ -57,7 +57,7 @@ public class DoubleActionDialogFragment extends DialogFragment {
     public static DoubleActionDialogFragment newInstance(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         DoubleActionDialogFragment fragment = new DoubleActionDialogFragment();
         Bundle args = new Bundle();
-        args.getString(ARG_TAG, iTag);
+        args.putString(ARG_TAG, iTag);
         args.putInt(ARG_TITLE, iTitleId);
         args.putString(ARG_MESSAGE, iMessage);
         args.putInt(ARG_POSITIVE_OPTION, iPositiveOptionId);

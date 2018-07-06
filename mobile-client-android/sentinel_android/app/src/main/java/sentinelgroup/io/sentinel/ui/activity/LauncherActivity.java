@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import java.io.File;
+
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
@@ -15,9 +17,21 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+        initializePathIfNeeded();
         initView();
         checkUserLoginState();
         switchOnTestnet();
+    }
+
+    private void initializePathIfNeeded() {
+        if (AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH).isEmpty()) {
+            String aFilePath = new File(getFilesDir(), AppConstants.FILE_NAME).getAbsolutePath();
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_FILE_PATH, aFilePath);
+        }
+        if (AppPreferences.getInstance().getString(AppConstants.PREFS_CONFIG_PATH).isEmpty()) {
+            String aConfigPath = new File(getFilesDir(), AppConstants.CONFIG_NAME).getAbsolutePath();
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_CONFIG_PATH, aConfigPath);
+        }
     }
 
     private void initView() {

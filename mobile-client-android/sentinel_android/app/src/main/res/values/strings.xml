@@ -185,6 +185,10 @@
     <string name="logout">Logout</string>
     <string name="logout_desc">Logging out will clear your keystore file, make sure you have saved it.</string>
     <string name="default_language">en</string>
+    <string name="language">Language</string>
+    <string name="select_language">Select Language</string>
+    <string name="lang_english">English</string>
+    <string name="lang_code_english">en</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>
@@ -193,6 +197,20 @@
     <string-array name="spinner_test_list">
         <item>Test SENT</item>
         <item>Test ETH</item>
+    </string-array>
+    <string-array name="language">
+        <item>Chinese</item>
+        <item>English</item>
+        <item>Japanese</item>
+        <item>Russian</item>
+        <item>Spanish</item>
+    </string-array>
+    <string-array name="language_code">
+        <item>zh</item>
+        <item>en</item>
+        <item>ja</item>
+        <item>ru</item>
+        <item>es</item>
     </string-array>
 
     <!-- ics_openVPN strings -->
@@ -305,10 +323,4 @@
     <string name="pkcs12_file_encryption_key">PKCS12 File Encryption Key</string>
     <string name="private_key_password">Private Key Password</string>
     <string name="error_rsa_sign">Error signing with Android keystore key %1$s: %2$s</string>
-    <string name="language">Language</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="lang_english">English</string>
-    <string name="lang_code_english">en</string>
 </resources>

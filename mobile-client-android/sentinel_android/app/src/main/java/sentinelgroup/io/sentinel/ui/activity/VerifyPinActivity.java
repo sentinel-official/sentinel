@@ -161,10 +161,6 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
-            verifyPin();
-            return true;
-        }
-        return false;
+        return actionId == EditorInfo.IME_ACTION_DONE;
     }
 }

@@ -25,7 +25,7 @@ public class GenericListActivity extends BaseActivity {
             int aReqCode = aExtras.getInt(AppConstants.EXTRA_REQ_CODE);
             loadFragment(aReqCode == AppConstants.REQ_LANGUAGE ? GenericListFragment.newInstance(aReqCode) : GenericUrlListFragment.newInstance(aReqCode));
         } else
-            onBackPressed();
+            finish();
     }
 
     @Override
@@ -34,6 +34,12 @@ public class GenericListActivity extends BaseActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override

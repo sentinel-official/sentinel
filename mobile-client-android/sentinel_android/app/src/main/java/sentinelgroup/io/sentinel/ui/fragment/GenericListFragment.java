@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,8 +17,10 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.network.model.GenericListItem;
 import sentinelgroup.io.sentinel.ui.adapter.GenericListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
@@ -79,14 +82,19 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fragmentLoaded(getString(R.string.language));
+        fragmentLoaded(getString(R.string.select_language));
         mAdapter.loadData(getListData());
     }
 
     private List<GenericListItem> getListData() {
         List<GenericListItem> aItem = new ArrayList<>();
         if (mReqCode == AppConstants.REQ_LANGUAGE) {
-            aItem.add(new GenericListItem(R.string.lang_english, true, getString(R.string.lang_code_english)));
+            String aSelectedLanguage = SentinelApp.getSelectedLanguage();
+            String[] aLanguageText = getContext().getResources().getStringArray(R.array.language);
+            String[] aLanguageCode = getContext().getResources().getStringArray(R.array.language_code);
+            for (int i = 0; i < aLanguageCode.length; i++) {
+                aItem.add(new GenericListItem(aLanguageText[i], aLanguageCode[i], aLanguageCode[i].equals(aSelectedLanguage)));
+            }
         }
         return aItem;
     }
@@ -96,6 +104,7 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
         mRvList = iView.findViewById(R.id.rv_list);
         // Setup Recyclerview
         mRvList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mRvList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         mAdapter = new GenericListAdapter(this, getContext());
         mRvList.setAdapter(mAdapter);
         // disable swipe to refresh layout
@@ -160,6 +169,7 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
 
     @Override
     public void onRootViewClicked(String iLanguageCode) {
-
+        SentinelApp.changeLanguage(getContext(), iLanguageCode);
+        Objects.requireNonNull(getActivity()).onBackPressed();
     }
 }

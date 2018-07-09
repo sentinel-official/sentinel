@@ -191,7 +191,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_SOCIAL_LINKS), AppConstants.REQ_CODE_NULL);
                 break;
             case R.id.nav_language:
-                startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_LANGUAGE), AppConstants.REQ_CODE_NULL);
+                startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_LANGUAGE), AppConstants.REQ_LANGUAGE);
                 break;
             case R.id.nav_logout:
                 showDoubleActionDialog(AppConstants.TAG_LOGOUT, -1, getString(R.string.logout_desc), R.string.logout, android.R.string.cancel);
@@ -422,6 +422,13 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case AppConstants.REQ_HELPER_SCREENS:
                 if (resultCode == RESULT_OK) {
                     AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_HELPER_SHOWN, true);
+                }
+            case AppConstants.REQ_LANGUAGE:
+                if (resultCode == RESULT_OK) {
+                    if (!(aFragment instanceof WalletFragment))
+                        loadVpnFragment(null);
+                    else
+                        loadWalletFragment();
                 }
         }
     }

@@ -8,19 +8,30 @@ import android.view.View;
 import java.io.File;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+
+import static sentinelgroup.io.sentinel.SentinelApp.changeLanguage;
 
 public class LauncherActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Set default Language
+        setupAppLanguage();
         setContentView(R.layout.activity_launcher);
         initializePathIfNeeded();
         initView();
         checkUserLoginState();
         switchOnTestnet();
+    }
+
+    private void setupAppLanguage() {
+        if (SentinelApp.getSelectedLanguage().isEmpty())
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, getString(R.string.default_language));
+        changeLanguage(this, SentinelApp.getSelectedLanguage());
     }
 
     private void initializePathIfNeeded() {

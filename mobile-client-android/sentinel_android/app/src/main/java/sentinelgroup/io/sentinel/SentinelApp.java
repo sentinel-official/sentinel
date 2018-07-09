@@ -28,7 +28,7 @@ public class SentinelApp extends MultiDexApplication {
 
     private static SentinelApp sInstance;
     public static boolean isStart;
-    public Locale mLocale = null;
+    public static Locale sLocale = null;
 
     @Override
     public void onCreate() {
@@ -46,33 +46,28 @@ public class SentinelApp extends MultiDexApplication {
         mStatus.init(getApplicationContext());
         sInstance = this;
         MultiDex.install(this);
-        setupAppLanguage();
     }
 
-    private void setupAppLanguage() {
-        if (getLang().isEmpty())
-            AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE, getString(R.string.default_language));
-        changeLanguage(getLang());
-
-    }
-
-    public void changeLanguage(String iLanguage) {
-        if(iLanguage!=null && !iLanguage.isEmpty()){
-            Configuration aConfig = getBaseContext().getResources().getConfiguration();
-            mLocale = new Locale(iLanguage);
-            Locale.setDefault(mLocale);
+    public static void changeLanguage(Context iContext, String iLanguageCode) {
+        if(iLanguageCode!=null && !iLanguageCode.isEmpty()){
+            // save it in prefs
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, iLanguageCode);
+            // change/update config
+            Configuration aConfig = iContext.getResources().getConfiguration();
+            sLocale = new Locale(iLanguageCode);
+            Locale.setDefault(sLocale);
             Configuration aNewConfig = new Configuration(aConfig);
-            aNewConfig.locale = mLocale;
-            getBaseContext().getResources().updateConfiguration(aNewConfig, getBaseContext().getResources().getDisplayMetrics());
+            aNewConfig.locale = sLocale;
+            iContext.getResources().updateConfiguration(aNewConfig, iContext.getResources().getDisplayMetrics());
         }
     }
 
-    public String getLang() {
-        return AppPreferences.getInstance().getString(AppConstants.PREFS_SELECTED_LANGUAGE);
+    public static String getSelectedLanguage() {
+        return AppPreferences.getInstance().getString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE);
     }
 
     public static Context getAppContext() {
-        return sInstance.getApplicationContext();
+        return sInstance;
     }
 
     public static boolean isDebugEnabled() {

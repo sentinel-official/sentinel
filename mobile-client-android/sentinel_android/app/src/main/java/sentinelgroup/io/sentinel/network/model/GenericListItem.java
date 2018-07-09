@@ -3,22 +3,22 @@ package sentinelgroup.io.sentinel.network.model;
 import java.io.Serializable;
 
 public class GenericListItem implements Serializable {
-    private int mItemTextId;
-    private boolean mIsSelected;
+    private String mItemDisplayText;
     private String mItemCode;
+    private boolean mSelected;
 
-    public GenericListItem(int iItemTextId, boolean iIsSet, String iItemCode) {
-        this.mItemTextId = iItemTextId;
-        this.mIsSelected = iIsSet;
-        this.mItemCode = iItemCode;
+    public GenericListItem(String iItemDisplayText, String iItemCode, boolean iSelected) {
+        mItemDisplayText = iItemDisplayText;
+        mItemCode = iItemCode;
+        mSelected = iSelected;
     }
 
-    public int getItemTextId() {
-        return mItemTextId;
+    public String getItemDisplayText() {
+        return mItemDisplayText;
     }
 
-    public void setItemTextId(int iItemTextId) {
-        this.mItemTextId = iItemTextId;
+    public void setItemDisplayText(String iItemDisplayText) {
+        this.mItemDisplayText = iItemDisplayText;
     }
 
     public String getItemCode() {
@@ -30,10 +30,10 @@ public class GenericListItem implements Serializable {
     }
 
     public boolean isSelected() {
-        return mIsSelected;
+        return mSelected;
     }
 
-    public void setIsSet(boolean iIsSet) {
-        this.mIsSelected = iIsSet;
+    public void setSelected(boolean iSelected) {
+        this.mSelected = iSelected;
     }
 }

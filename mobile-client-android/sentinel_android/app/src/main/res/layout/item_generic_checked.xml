@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_4">
+    android:layout_height="wrap_content">
 
     <CheckedTextView
         android:id="@+id/tv_item"
@@ -11,6 +10,7 @@
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:checkMark="@null"
+        android:textColor="@color/selector_checked_text_white"
         android:drawableLeft="@drawable/selector_checked_view"
         android:drawablePadding="@dimen/margin_16"
         android:drawableStart="@drawable/selector_checked_view"

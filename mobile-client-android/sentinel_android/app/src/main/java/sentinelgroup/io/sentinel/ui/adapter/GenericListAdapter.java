@@ -36,8 +36,17 @@ public class GenericListAdapter extends RecyclerView.Adapter<GenericListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GenericListItem aItemData = mData.get(position);
         holder.mTvItem.setChecked(aItemData.isSelected());
-        holder.mTvItem.setText(aItemData.getItemTextId());
-        holder.mTvItem.setOnClickListener(v -> onRootViewClick(aItemData.getItemCode()));
+        holder.mTvItem.setText(aItemData.getItemDisplayText());
+        holder.mTvItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < mData.size(); i++) {
+                    mData.get(i).setSelected(holder.getAdapterPosition() == i);
+                }
+                notifyDataSetChanged();
+                onRootViewClick(aItemData.getItemCode());
+            }
+        });
     }
 
     @Override

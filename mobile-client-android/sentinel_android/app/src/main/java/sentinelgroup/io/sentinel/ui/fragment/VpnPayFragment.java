@@ -106,9 +106,8 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
         mBtnViewVpn.setOnClickListener(this);
         // setup swipe to refresh layout
         mSrReload.setOnRefreshListener(() -> {
-            toggleButtonState(false);
-            mViewModel.reloadVpnUsage();
             mSrReload.setRefreshing(false);
+            loadNextFragment(VpnSelectFragment.newInstance(null));
         });
     }
 

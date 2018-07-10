@@ -114,7 +114,7 @@ public class VpnSessionDetailsFragment extends Fragment implements View.OnClickL
         mTvDateTime.setText(Converter.convertEpochToDate(mSessionData.timestamp));
         mTvReceivedData.setText(Converter.getFileSize(mSessionData.receivedBytes));
         mTvDuration.setText(Converter.getLongDuration(mSessionData.sessionDuration));
-        mTvSessionCost.setText(Converter.getSentString(mSessionData.amount));
+        mTvSessionCost.setText(getString(R.string.sents, Converter.getSentString(mSessionData.amount)));
         mBtnMakePayment.setVisibility(mSessionData.isPaid ? View.GONE : View.VISIBLE);
         mBtnReportPayment.setVisibility(mSessionData.isPaid ? View.GONE : View.VISIBLE);
     }

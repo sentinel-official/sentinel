@@ -61,7 +61,7 @@ public class Converter {
 
     public static String getSentString(double iSentValue) {
         iSentValue /= Math.pow(10, 8);
-        return String.format(Locale.US, iSentValue % 1 == 0 ? "%.0f" : "%.7f", iSentValue);
+        return String.format(Locale.US, iSentValue % 1 == 0 ? "%.0f" : "%.8f", iSentValue);
     }
 
     public static String getCountryCode(String iCountryName) {

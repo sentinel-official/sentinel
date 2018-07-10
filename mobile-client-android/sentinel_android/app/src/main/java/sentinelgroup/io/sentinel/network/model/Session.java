@@ -13,7 +13,7 @@ public class Session implements Serializable {
     public long receivedBytes;
     @SerializedName("session_duration")
     public long sessionDuration;
-    public double amount;
+    public long amount;
     public long timestamp;
     @SerializedName("is_paid")
     public boolean isPaid;

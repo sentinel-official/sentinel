@@ -3,11 +3,12 @@ import { Validation, Node } from "../models";
 import database from "../db/database";
 
 const updateCount = (req, res) => {
+  console.log('body', req.body)
   let data = req.body;
   let count = parseInt(data.invalidCount);
   async.waterfall([
     (next) => {
-      Validation.findOne({ nodeID: data.nodeID }, (err, resp) => {
+      Validation.findOne({ nodeId: data.nodeId }, (err, resp) => {
         if (err) {
           next({
             success: false,
@@ -22,7 +23,8 @@ const updateCount = (req, res) => {
       })
     }, (next) => {
       if (count > 5) {
-        Node.findOneAndRemove({ ip: data.ipAddr }, (err, resp) => {
+        data.isBlocked = true;
+        Node.findOneAndRemove({ ip: data.nodeId }, (err, resp) => {
           if (!err && resp) {
             next()
           } else {
@@ -37,15 +39,16 @@ const updateCount = (req, res) => {
       }
     }, (next) => {
       let findData = {
-        nodeID: data.nodeID
+        nodeId: data.nodeId
       }
       let options = {
         upsert: true
       }
 
-      data.isBlocked = true;
+      data.invalidCount = count
 
-      Validation.update(findData, { $set: { data } }, options, (err, resp) => {
+      Validation.update(findData, { $set: data }, options, (err, resp) => {
+
         if (!err) {
           next(null, {
             success: true,

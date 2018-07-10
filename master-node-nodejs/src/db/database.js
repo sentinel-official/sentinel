@@ -26,14 +26,14 @@ const insert = (Obj, cb) => {
 }
 
 const update = (Obj, findData, updateData, cb) => {
-  Obj.update(findData, updateData, (err, resp) => {
+  Obj.update(findData, { $set: updateData }, (err, resp) => {
     if (err) cb(err, null)
     else cb(null, resp)
   })
 }
 
 const updateMany = (Obj, findData, updateData, cb) => {
-  Obj.updateMany(findData, updateData, (err, resp) => {
+  Obj.updateMany(findData, { $set: updateData }, (err, resp) => {
     if (err) cb(err, null)
     else cb(null, resp)
   })

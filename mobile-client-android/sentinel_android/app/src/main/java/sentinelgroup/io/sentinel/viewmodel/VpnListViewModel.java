@@ -10,10 +10,10 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Locale;
 
+import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.VpnConfig;
 import sentinelgroup.io.sentinel.network.model.VpnCredentials;
-import sentinelgroup.io.sentinel.network.model.VpnFile;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.repository.VpnRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -88,7 +88,6 @@ public class VpnListViewModel extends ViewModel {
 
     public void saveCurrentVpnSessionConfig(VpnConfig data) {
         mVpnConfigSaveLiveEvent.postValue(Resource.loading(null));
-        AppPreferences.getInstance().saveString(AppConstants.PREFS_SESSION_NAME, data.sessionName);
         String aConfigPath = AppPreferences.getInstance().getString(AppConstants.PREFS_CONFIG_PATH);
         mAppExecutors.diskIO().execute(() -> {
             // Create config file
@@ -105,6 +104,7 @@ public class VpnListViewModel extends ViewModel {
                 aInternalFileWriter.close();
                 aInternalFileStream.close();
 
+                SentinelApp.isVpnInitiated = true;
                 mVpnConfigSaveLiveEvent.postValue(Resource.success(aConfigPath));
             } catch (IOException e) {
                 mVpnConfigSaveLiveEvent.postValue(Resource.error(e.getLocalizedMessage(), null));

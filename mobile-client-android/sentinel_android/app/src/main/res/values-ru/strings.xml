@@ -97,6 +97,7 @@
     <string name="eths">%1s ETH</string>
     <string name="pay_sents">Заплатить %1s SENTs</string>
     <string name="vpn_location">%1s, %2s</string>
+    <string name="vpn_ip">IP \t %1s</string>
     <string name="vpn_bandwidth">Трафик \t %s</string>
     <string name="vpn_price">Цена (SENT/ГБ) \t %s</string>
     <string name="vpn_latency">Задержка \t %s</string>
@@ -179,12 +180,13 @@
     <string name="vpn_history_main_net_unavailable">В Основной Сети нет истории VPN.</string>
     <string name="vpn_main_net_unavailable">Нет доступных  узлов VPN в Основной Сети, переключитесь на Тестовую Сеть.</string>
     <string name="tx_history_main_net_unavailable">В Основной Сети нет транзакций.</string>
-
     <string name="upload_keystore_desc">Нажмите здесь для загрузки файла хранилища</string>
     <string name="logout">Выход</string>
     <string name="logout_desc">Убедитесь в сохранности файла хранилища перед выходом из приложения</string>
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
+    <string name="view_tx_history_for">История транзакций для</string>
+    <string name="payment_done_success">Платеж прошел успешно</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

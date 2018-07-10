@@ -27,7 +27,7 @@ public class SentinelApp extends MultiDexApplication {
     public static final String TAG = SentinelApp.class.getSimpleName();
 
     private static SentinelApp sInstance;
-    public static boolean isStart;
+    public static boolean isVpnInitiated, isVpnConnected;
     public static Locale sLocale = null;
 
     @Override
@@ -49,7 +49,7 @@ public class SentinelApp extends MultiDexApplication {
     }
 
     public static void changeLanguage(Context iContext, String iLanguageCode) {
-        if(iLanguageCode!=null && !iLanguageCode.isEmpty()){
+        if (iLanguageCode != null && !iLanguageCode.isEmpty()) {
             // save it in prefs
             AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, iLanguageCode);
             // change/update config

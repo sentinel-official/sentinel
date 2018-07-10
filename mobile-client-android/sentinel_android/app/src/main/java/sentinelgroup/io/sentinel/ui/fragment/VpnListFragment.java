@@ -242,7 +242,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     public void onConnectClicked(String iVpnAddress) {
         boolean aIsTextNetActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
         if (aIsTextNetActive) {
-            if (!SentinelApp.isStart)
+            if (!SentinelApp.isVpnConnected)
                 mViewModel.getVpnServerCredentials(iVpnAddress);
             else
                 showErrorDialog(getString(R.string.vpn_already_connected));

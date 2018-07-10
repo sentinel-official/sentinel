@@ -64,7 +64,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.0"
-                        app:layout_constraintVertical_chainStyle="spread_inside" />
+                        app:layout_constraintVertical_chainStyle="spread" />
 
                     <com.haipq.android.flagkit.FlagImageView
                         android:id="@+id/fv_flag"
@@ -72,9 +72,9 @@
                         android:layout_height="@dimen/margin_24"
                         android:paddingLeft="@dimen/margin_8"
                         android:paddingRight="@dimen/margin_8"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_ip"
                         app:layout_constraintEnd_toStartOf="@+id/tv_location"
-                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/tv_location" />
 
@@ -83,14 +83,27 @@
                         style="@style/CustomTextAppearance.Text18"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/margin_16"
                         android:paddingLeft="@dimen/margin_8"
                         android:paddingRight="@dimen/margin_8"
                         android:paddingTop="@dimen/margin_16"
-                        app:layout_constraintBottom_toTopOf="@+id/tv_download_speed"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_ip"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/fv_flag"
                         app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
+
+                    <TextView
+                        android:id="@+id/tv_ip"
+                        style="@style/CustomTextAppearance.Text10.Gray"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/margin_16"
+                        android:paddingLeft="@dimen/margin_8"
+                        android:paddingRight="@dimen/margin_8"
+                        android:paddingTop="@dimen/margin_4"
+                        app:layout_constraintBottom_toTopOf="@+id/divider"
+                        app:layout_constraintEnd_toEndOf="@+id/tv_location"
+                        app:layout_constraintStart_toStartOf="@+id/tv_location"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_location" />
 
                     <ImageView
                         android:id="@+id/divider"
@@ -104,7 +117,7 @@
                         app:layout_constraintBottom_toTopOf="@+id/tv_download_speed"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_location"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_ip"
                         tools:ignore="ContentDescription" />
 
                     <TextView
@@ -208,7 +221,7 @@
                         app:layout_constraintBottom_toTopOf="@+id/tv_price"
                         app:layout_constraintEnd_toStartOf="@+id/tv_latency"
                         app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
+                        app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_download_speed" />
 
@@ -243,29 +256,11 @@
                         android:paddingRight="@dimen/margin_4"
                         android:paddingStart="@dimen/margin_8"
                         android:paddingTop="@dimen/margin_8"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/tv_duration"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_bandwidth"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_bandwidth" />
-
-                    <TextView
-                        android:id="@+id/tv_duration"
-                        style="@style/CustomTextAppearance.Text10.Gray"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:background="@color/colorCardShadow"
-                        android:paddingBottom="@dimen/margin_16"
-                        android:paddingEnd="@dimen/margin_8"
-                        android:paddingLeft="@dimen/margin_4"
-                        android:paddingRight="@dimen/margin_8"
-                        android:paddingStart="@dimen/margin_4"
-                        android:paddingTop="@dimen/margin_8"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_price"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/tv_price"
-                        app:layout_constraintTop_toTopOf="@+id/tv_price" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>

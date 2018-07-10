@@ -15,7 +15,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="24dp"
-        android:text="View Tx History for"
+        android:text="@string/view_tx_history_for"
         android:gravity="center"
         app:layout_constraintBaseline_toBaselineOf="@+id/cs_tokens"
         app:layout_constraintEnd_toStartOf="@+id/cs_tokens"

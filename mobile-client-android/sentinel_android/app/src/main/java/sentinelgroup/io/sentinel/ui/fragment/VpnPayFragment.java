@@ -129,7 +129,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
                     showProgressDialog(true, getString(R.string.reporting_payment));
                 } else if (reportPayResource.data != null && reportPayResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
-                    Toast.makeText(getContext(), reportPayResource.data.message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.payment_done_success, Toast.LENGTH_SHORT).show();
                     loadNextFragment(VpnSelectFragment.newInstance(null));
                 } else if (reportPayResource.message != null && reportPayResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
@@ -141,7 +141,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
 
     private void setupVpnUsageData(Session iSession) {
         // Construct and set - Sent Due SpannableString
-        String aSentDue = getString(R.string.sents, Converter.getSentString(iSession.amount));
+        String aSentDue = getString(R.string.sents, Converter.getFormattedSentBalance(iSession.amount));
         String aSentDueSubString = aSentDue.substring(aSentDue.indexOf(' '));
         SpannableString aStyledSentDue = new SpannableStringUtil.SpannableStringUtilBuilder(aSentDue, aSentDueSubString)
                 .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
@@ -168,7 +168,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
         mTvSessionId.setText(iSession.sessionId);
         mTvDateTime.setText(Converter.convertEpochToDate(iSession.timestamp));
         // store values for making payment
-        mValue = Converter.getSentString(iSession.amount);
+        mValue = Converter.getFormattedSentBalance(iSession.amount);
         mSessionId = iSession.sessionId;
         // enable pay button
         toggleButtonState(true);

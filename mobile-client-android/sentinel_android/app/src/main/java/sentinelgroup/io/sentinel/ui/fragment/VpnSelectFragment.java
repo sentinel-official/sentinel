@@ -101,7 +101,7 @@ public class VpnSelectFragment extends Fragment {
     }
 
     private void initViewModel() {
-        if (SentinelApp.isStart)
+        if (SentinelApp.isVpnInitiated)
             loadNextFragment(VpnConnectedFragment.newInstance());
         else {
             VpnSelectViewModelFactory aFactory = InjectorModule.provideVpnSelectViewModelFactory(getContext());

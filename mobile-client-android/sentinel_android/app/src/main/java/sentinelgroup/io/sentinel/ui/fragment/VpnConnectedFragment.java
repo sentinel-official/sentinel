@@ -26,6 +26,7 @@ import de.blinkt.openvpn.core.ConnectionStatus;
 import de.blinkt.openvpn.core.OpenVPNManagement;
 import de.blinkt.openvpn.core.VpnStatus;
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.ui.activity.VpnListActivity;
@@ -59,7 +60,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     private OnVpnConnectionListener mVpnListener;
 
     private FlagImageView mFvFlag;
-    private TextView mTvVpnState, mTvLocation, mTvDownloadSpeed, mTvUploadSpeed, mtvDataUsed,
+    private TextView mTvVpnState, mTvLocation, mTvIp, mTvDownloadSpeed, mTvUploadSpeed, mtvDataUsed,
             mTvBandwidth, mTvLatency, mTvPrice;
     private Button mBtnDisconnect, mBtnViewVpn;
 
@@ -105,9 +106,13 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     @Override
     public void onStart() {
         super.onStart();
-        // setup VPN listeners
-        VpnStatus.addStateListener(this);
-        VpnStatus.addByteCountListener(this);
+        if (!SentinelApp.isVpnInitiated) {
+            loadNextFragment(VpnSelectFragment.newInstance(null));
+        } else {
+            // setup VPN listeners
+            VpnStatus.addStateListener(this);
+            VpnStatus.addByteCountListener(this);
+        }
     }
 
     @Override
@@ -121,6 +126,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mFvFlag = iView.findViewById(R.id.fv_flag);
         mTvVpnState = iView.findViewById(R.id.tv_vpn_state);
         mTvLocation = iView.findViewById(R.id.tv_location);
+        mTvIp = iView.findViewById(R.id.tv_ip);
         mTvDownloadSpeed = iView.findViewById(R.id.tv_download_speed);
         mTvUploadSpeed = iView.findViewById(R.id.tv_upload_speed);
         mtvDataUsed = iView.findViewById(R.id.tv_data_used);
@@ -147,6 +153,14 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
 
     private void setupVpnData(VpnListEntity iVpnEntity) {
         mTvLocation.setText(getString(R.string.vpn_location, iVpnEntity.getLocation().city, iVpnEntity.getLocation().country));
+        // Construct and set - IP SpannableString
+        String aIp = getString(R.string.vpn_ip, iVpnEntity.getIp());
+        SpannableString aStyledIp = new SpannableStringUtil.SpannableStringUtilBuilder(aIp, iVpnEntity.getIp())
+                .color(Color.WHITE)
+                .relativeSize(1.2f)
+                .customStyle(Typeface.BOLD)
+                .build();
+        mTvIp.setText(aStyledIp);
         // Set country flag
         mFvFlag.setCountryCode(Converter.getCountryCode(iVpnEntity.getLocation().country));
         // Construct and set - Bandwidth SpannableString

@@ -16,8 +16,6 @@ import android.widget.TextView;
 
 import com.haipq.android.flagkit.FlagImageView;
 
-import java.util.Locale;
-
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
@@ -242,7 +240,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         if (v.getId() == R.id.btn_connect) {
             boolean aIsTextNetActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
             if (aIsTextNetActive) {
-                if (!SentinelApp.isStart)
+                if (!SentinelApp.isVpnConnected)
                     mViewModel.getVpnServerCredentials(mVpnListData.getAccountAddress());
                 else
                     showErrorDialog(getString(R.string.vpn_already_connected));

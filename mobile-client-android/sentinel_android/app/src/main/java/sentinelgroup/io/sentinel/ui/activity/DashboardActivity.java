@@ -326,7 +326,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     void setupProfile(String iPath) {
-        if (!SentinelApp.isStart) {
+        if (!SentinelApp.isVpnConnected) {
             profileAsync = new ProfileAsync(this, iPath, new ProfileAsync.OnProfileLoadListener() {
                 @Override
                 public void onProfileLoadSuccess() {
@@ -348,7 +348,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             VpnProfile profile = pm.getProfileByName(Build.MODEL);//
             startVPNConnection(profile);
         } catch (Exception ex) {
-            SentinelApp.isStart = false;
+            SentinelApp.isVpnConnected = false;
         }
     }
 
@@ -510,7 +510,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onVpnDisconnectionInitiated() {
-        SentinelApp.isStart = true;
+        SentinelApp.isVpnConnected = true;
         stopVPNConnection();
     }
 
@@ -539,19 +539,21 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
 
             if (state.equals("CONNECTED")) {
-                SentinelApp.isStart = true;
+                SentinelApp.isVpnConnected = true;
             }
 
             if (state.equals("USER_VPN_PERMISSION")) {
-                SentinelApp.isStart = true;
+                SentinelApp.isVpnConnected = true;
             }
 
+            // Called when the VPN connection terminates
             if (state.equals("NOPROCESS") || state.equals("USER_VPN_PERMISSION_CANCELLED")) {
-                AppPreferences.getInstance().saveString(AppConstants.PREFS_SESSION_NAME, "");
-                if (!(aFragment instanceof WalletFragment) && !mHasActivityResult && SentinelApp.isStart) {
-                    loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
+                if (SentinelApp.isVpnConnected && !mHasActivityResult) {
+                    SentinelApp.isVpnInitiated = false;
+                    SentinelApp.isVpnConnected = false;
+                    if (!(aFragment instanceof WalletFragment))
+                        loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
                 }
-                SentinelApp.isStart = false;
             }
 
             if (mHasActivityResult) {

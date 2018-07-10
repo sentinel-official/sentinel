@@ -118,7 +118,7 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
     }
 
     private void setTotalUsageDetails(Stats iUsageStats) {
-        mTvSentPaid.setText(Converter.getSentString(iUsageStats.amount));
+        mTvSentPaid.setText(Converter.getFormattedSentBalance(iUsageStats.amount));
         // Construct and set - Duration SpannableString
         String aDuration = Converter.getDuration(iUsageStats.duration);
         String aDurationSubString = aDuration.substring(aDuration.indexOf(' '));

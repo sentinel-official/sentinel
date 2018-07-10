@@ -70,6 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     private void setupTestNetSwitch() {
         boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
         mSwitchNet.setChecked(isActive);
+        mSwitchNet.setText(R.string.test_net);
         mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
     }
 
@@ -116,7 +117,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     }
 
     protected void showDoubleActionError(String iTag, String iMessage) {
-        showDoubleActionError(iTag,-1, iMessage, -1, -1);
+        showDoubleActionError(iTag, -1, iMessage, -1, -1);
     }
 
     protected void showDoubleActionError(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {

@@ -187,8 +187,6 @@
     <string name="default_language">en</string>
     <string name="language">Language</string>
     <string name="select_language">Select Language</string>
-    <string name="lang_english">English</string>
-    <string name="lang_code_english">en</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

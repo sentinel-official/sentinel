@@ -38,13 +38,13 @@
             android:background="@color/colorCardShadow"
             android:gravity="center_vertical"
             android:paddingBottom="@dimen/margin_8"
-            android:paddingEnd="@dimen/margin_8"
+            android:paddingEnd="@dimen/margin_16"
             android:paddingLeft="@dimen/margin_16"
-            android:paddingRight="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_16"
             android:paddingStart="@dimen/margin_16"
             android:paddingTop="@dimen/margin_8"
             android:text="@string/test_net"
-            app:switchPadding="@dimen/margin_16"
+            app:switchPadding="@dimen/margin_4"
             app:trackTint="@color/colorTextWhiteWithAlpha50" />
 
         <TextView
@@ -57,9 +57,9 @@
             android:gravity="end|center_vertical"
             android:paddingBottom="@dimen/margin_8"
             android:paddingEnd="@dimen/margin_16"
-            android:paddingLeft="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_1"
             android:paddingRight="@dimen/margin_16"
-            android:paddingStart="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_1"
             android:paddingTop="@dimen/margin_8" />
     </LinearLayout>
 </android.support.design.widget.AppBarLayout>

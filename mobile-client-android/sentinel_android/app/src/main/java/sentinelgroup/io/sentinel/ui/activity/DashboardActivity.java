@@ -59,6 +59,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private boolean mHasActivityResult;
 
     private DrawerLayout mDrawerLayout;
+    private NavigationView mNavView;
     private Toolbar mToolbar;
     private SwitchCompat mSwitchNet;
     private TextView mSwitchState;
@@ -118,6 +119,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private void setupTestNetSwitch() {
         boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
         mSwitchNet.setChecked(isActive);
+        mSwitchNet.setText(R.string.test_net);
         mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
     }
 
@@ -133,15 +135,15 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mSwitchState = findViewById(R.id.switch_state);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
-        NavigationView aNavView = findViewById(R.id.navigation_view);
+        mNavView = findViewById(R.id.navigation_view);
         //setup toolbar
         setupToolbar();
         // set drawer scrim color
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         // set click listeners
         mSwitchNet.setOnCheckedChangeListener(this);
-        aNavView.getHeaderView(0).findViewById(R.id.ib_back).setOnClickListener(v -> mDrawerLayout.closeDrawers());
-        aNavView.setNavigationItemSelectedListener(
+        mNavView.getHeaderView(0).findViewById(R.id.ib_back).setOnClickListener(v -> mDrawerLayout.closeDrawers());
+        mNavView.setNavigationItemSelectedListener(
                 menuItem -> {
                     // set item as selected to persist highlight
                     menuItem.setChecked(true);
@@ -423,14 +425,35 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 if (resultCode == RESULT_OK) {
                     AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_HELPER_SHOWN, true);
                 }
+                break;
             case AppConstants.REQ_LANGUAGE:
                 if (resultCode == RESULT_OK) {
+                    refreshMenuTitles();
                     if (!(aFragment instanceof WalletFragment))
                         loadVpnFragment(null);
                     else
                         loadWalletFragment();
                 }
+                break;
         }
+    }
+
+    private void refreshMenuTitles() {
+        Menu aMenu = mNavView.getMenu();
+        MenuItem aMenuTxHistory = aMenu.findItem(R.id.nav_tx_history);
+        aMenuTxHistory.setTitle(R.string.transaction_history);
+        MenuItem aMenuVpnHistory = aMenu.findItem(R.id.nav_vpn_history);
+        aMenuVpnHistory.setTitle(R.string.vpn_history);
+        MenuItem aMenuResetPin = aMenu.findItem(R.id.nav_reset_pin);
+        aMenuResetPin.setTitle(R.string.reset_pin);
+        MenuItem aMenuHelp = aMenu.findItem(R.id.nav_help);
+        aMenuHelp.setTitle(R.string.help);
+        MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_social_links);
+        aMenuSocialLinks.setTitle(R.string.social_links);
+        MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
+        aMenuLanguage.setTitle(R.string.language);
+        MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);
+        aMenuLogout.setTitle(R.string.logout);
     }
 
     @Override

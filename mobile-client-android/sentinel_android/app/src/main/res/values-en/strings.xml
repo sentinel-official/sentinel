@@ -183,6 +183,8 @@
     <string name="upload_keystore_desc">Tap here to upload you Keystore file</string>
     <string name="logout">Logout</string>
     <string name="logout_desc">Logging out will clear your keystore file, make sure you have saved it.</string>
+    <string name="language">Language</string>
+    <string name="select_language">Select Language</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

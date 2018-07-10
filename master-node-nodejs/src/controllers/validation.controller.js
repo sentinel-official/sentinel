@@ -43,7 +43,9 @@ const updateCount = (req, res) => {
         upsert: true
       }
 
-      database.update(findData, data, options, (err, resp) => {
+      data.isBlocked = true;
+
+      Validation.update(findData, { $set: { data } }, options, (err, resp) => {
         if (!err) {
           next(null, {
             success: true,
@@ -68,7 +70,7 @@ const getActiveNodes = (req, res) => {
     if (!err) {
       res.send({
         success: true,
-        count: resp.length
+        count: resp
       })
     } else {
       res.send({
@@ -79,7 +81,24 @@ const getActiveNodes = (req, res) => {
   })
 }
 
+const getBlockedUsers = (req, res) => {
+  Validation.find({ 'isBlocked': true }, (err, resp) => {
+    if (!err) {
+      res.send({
+        success: true,
+        count: resp
+      })
+    } else {
+      res.send({
+        success: false,
+        message: 'err in getting blocked nodes'
+      })
+    }
+  })
+}
+
 export default {
   updateCount,
-  getActiveNodes
+  getActiveNodes,
+  getBlockedUsers
 }

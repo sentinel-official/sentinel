@@ -15,7 +15,7 @@
     <string name="key_copied_agree">Да, я сохранил ключи в безопасном месте.</string>
     <string name="re_enter_pin">Повторите PIN</string>
     <string name="restore">Восстановить</string>
-    <string name="restore_password_hint">Введите пароль для хранилища</string>
+    <string name="restore_password_hint">Введите пароль от хранилища</string>
     <string name="vpn">VPN</string>
     <string name="test_net">Тестовая Сеть</string>
     <string name="test_net_state">Тестовый режим %1s</string>
@@ -44,8 +44,8 @@
     <string name="enter_amount_hint">Ввести количество</string>
     <string name="gas_limit_hint">Лимит Газа</string>
     <string name="select_token_hint">Выбрать Токен</string>
-    <string name="from">От</string>
-    <string name="to">Кому</string>
+    <string name="from">Отправитель</string>
+    <string name="to">Получатель</string>
     <string name="tx_hash">Хэш транзакции</string>
     <string name="amount">Количество</string>
     <string name="gas_price">Цена Газа</string>

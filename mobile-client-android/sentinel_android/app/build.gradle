@@ -9,6 +9,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // Enable Vector drawable
+        vectorDrawables.useSupportLibrary = true
         // Enabling multidex support.
         multiDexEnabled true
         // Enable ndk abi filters

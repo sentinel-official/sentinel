@@ -101,7 +101,7 @@
     <string name="vpn_location">%1s, %2s</string>
     <string name="vpn_ip">IP \t %1s</string>
     <string name="vpn_bandwidth">Bandwidth \t %s</string>
-    <string name="vpn_price">Price(SENTs / GB) \t %s</string>
+    <string name="vpn_price">Price(SENTs/GB) \t %s</string>
     <string name="vpn_latency">Latency \t %s</string>
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_price_value">%.0f SENTs</string>
@@ -201,18 +201,18 @@
         <item>Test ETH</item>
     </string-array>
     <string-array name="language">
-        <item>Chinese</item>
+        <!--<item>Chinese</item>-->
         <item>English</item>
-        <item>Japanese</item>
+        <!--<item>Japanese</item>-->
         <item>Russian</item>
-        <item>Spanish</item>
+        <!--<item>Spanish</item>-->
     </string-array>
     <string-array name="language_code">
-        <item>zh</item>
+        <!--<item>zh</item>-->
         <item>en</item>
-        <item>ja</item>
+        <!--<item>ja</item>-->
         <item>ru</item>
-        <item>es</item>
+        <!--<item>es</item>-->
     </string-array>
 
     <!-- ics_openVPN strings -->

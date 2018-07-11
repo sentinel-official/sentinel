@@ -129,7 +129,7 @@
     <string name="country">Country: %1s</string>
     <string name="bandwidth">Bandwidth: %1s</string>
     <string name="latency">Latency: %1s</string>
-    <string name="price">Price(SENTs / GB): %1s</string>
+    <string name="price">Price (SENTs / GB): %1s</string>
     <string name="coming_soon">Coming soon…</string>
     <string name="fetching_config">Fetching VPN configurations…</string>
     <string name="saving_config">Saving VPN configurations…</string>

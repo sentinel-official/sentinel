@@ -74,11 +74,11 @@ const refund = () => {
           clientAddress: 1,
           toAddress: 1,
           remainingAmount: 1,
-          time: { $multiply: [{ $add: ["$insertedOn", "$delayInSeconds"] }, 3600] }
+          day: { $add: ["$insertedOn", "$delayInSeconds", 60 * 60 * 1] }
         }
       }, {
         $match: {
-          $and: [{ "time": { $lte: parseInt(Date.now() / 1000) } }, { "isScheduled": { $eq: false } }, { "remainingAmount": { $exists: false } }]
+          $and: [{ "day": { $lte: parseInt(Date.now() / 1000) } }, { "isScheduled": { $eq: false } }, { "remainingAmount": { $exists: false } }]
         }
       }
     ], (err, list) => {

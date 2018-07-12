@@ -115,16 +115,3 @@ Terms and Conditions
 5. The headings used in this Agreement are intended for reference purposes only and do not limit, interpret, define or describe the scope and meaning of each section.
 
 USING THE WEBSITE, YOU AGREE TO THE TERMS OF USE. IF YOU DO NOT AGREE WITH THE TERMS, DO NOT USE THE WEB SITE.
-
-3.19. Jammers or devices that are designed to block, jam or interfere with cellular and personal communication devise/signals (e.g., GPS);
-
-    3.20. Decryption and descrambler products including mod chips, spy devises / services / software.
-
-    And any other services that violate the Terms of use of the BestMixer service.
-
-4. If you use the Swixer service in violation of this Agreement and the Terms of Use, including all categories described above, you are fully responsible for your actions and obligations imposed on the Swixer project by a third party due to your violation of this Agreement.
-
-5. The headings used in this Agreement are intended for reference purposes only and do not limit, interpret, define or describe the scope and meaning of each section.
-
-USING THE WEBSITE, YOU AGREE TO THE TERMS OF USE. IF YOU DO NOT AGREE WITH THE TERMS, DO NOT USE THE WEB SITE.
-

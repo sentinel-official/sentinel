@@ -185,7 +185,7 @@
     <string name="logout_desc">Убедитесь в сохранности файла хранилища перед выходом из приложения.</string>
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
-    <string name="view_tx_history_for">История транзакций для</string>
+    <string name="view_tx_history_for">История транзакций</string>
     <string name="payment_done_success">Платеж прошел успешно</string>
 
     <string-array name="spinner_list">

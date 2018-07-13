@@ -17,6 +17,6 @@ routes.get('/list', swixerController.getSwixerNodesList);
 routes.get('/status', swixerController.getSwixStatus);
 routes.post('/register', swixerController.registerSwixerNode);
 routes.post('/deregister', swixerController.deRegisterSwixerNode);
-routes.post('/update-nodeinfo', swixerController.updateSwixerNodeInfo)
+routes.post('/update-nodeinfo', swixerController.updateSwixerNodeInfo);
 
 export default routes

@@ -29,8 +29,7 @@ if (!isTest)
   app();
 
 routes.get('/', (req, res) => {
-  res.status = 200
-  res.send({
+  res.status(200).send({
     'status': 'UP'
   })
 })
@@ -46,7 +45,7 @@ routes.use('/node', NodeRoutes);
 routes.use('/stats', StatsRoutes);
 routes.use('/swaps', TokenRoutes);
 routes.use('/validations', ValidationRoutes);
-routes.use('/swix', SwixerRoutes)
+routes.use('/swix', SwixerRoutes);
 
 routes.post('/logs/error', ErrorController.logTheError);
 routes.post('/dev/free', DevController.getFreeAmount);

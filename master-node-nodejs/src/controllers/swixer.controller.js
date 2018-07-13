@@ -14,9 +14,8 @@ const getSwixerList = (cb) => {
         success: false,
         message: 'error in getting nodes list'
       }, null)
-    }
-    else {
-      cb(list, null);
+    } else {
+      cb(null, list);
     }
   })
 }
@@ -34,8 +33,8 @@ const getAccount = (ip, fromSymbol, toSymbol, clientAddress, destinationAddress,
       let data = resp.data
       if (data['success']) {
         cb(null, {
-          swixHash: data['swixHash'],
-          address: data['address']
+          address: data['address'],
+          swixHash: data['swixHash']
         })
       } else {
         cb({
@@ -54,9 +53,10 @@ const apiGetSwixStatus = (ip, swixHash, cb) => {
     let url = `http://${ip}:3000/status?swixHash=${swixHash}`
     axios.get(url)
       .then((resp) => {
+        console.log('resp', resp.data);
         let data = resp.data
         if (data['success']) {
-          cb({
+          cb(null, {
             'status': data['swixStatus'],
             'txInfos': data['txInfos'],
             'remainingAmount': data['remianingAmount'] || null
@@ -64,6 +64,7 @@ const apiGetSwixStatus = (ip, swixHash, cb) => {
         }
       })
   } catch (error) {
+    console.log('error', error);
     cb(null, null)
   }
 }
@@ -72,6 +73,7 @@ const getSwixStatus = (req, res) => {
   let swixHash = req.query['hash'];
   let swix = null;
   let node = null;
+
 
   async.waterfall([
     (next) => {
@@ -110,7 +112,7 @@ const getSwixStatus = (req, res) => {
       })
     }, (next) => {
       apiGetSwixStatus(node['ip'], swixHash, (err, details) => {
-        if (err || !resp) {
+        if (err || !details) {
           next({
             'success': false,
             'message': 'Error occured while getting swix status.'
@@ -148,7 +150,6 @@ const getSwixerNodesList = (req, res) => {
 }
 
 const getSwixDetails = (req, res) => {
-  let data = req.body;
   let nodeAddress = req.body['node_address'];
   let fromSymbol = req.body['from_symbol'];
   let toSymbol = req.body['to_symbol']
@@ -182,13 +183,22 @@ const getSwixDetails = (req, res) => {
             'message': 'Error occured while getting account.'
           }, null)
         } else {
-          let swixerNodeData = new SwixerNodes(data);
-          swixerNodeData.save((err) => {
+          let swixData = new Swixes({
+            node_address: nodeAddress,
+            from_symbol: fromSymbol,
+            to_symbol: toSymbol,
+            client_address: clientAddress,
+            destination_address: destinationAddress,
+            delay_in_seconds: delayInSeconds,
+            address: account['address'],
+            swix_hash: account['swixHash']
+          });
+          swixData.save((err) => {
             if (err) {
               next({
                 success: false,
                 message: 'error in inserting swixer node details'
-              })
+              }, null)
             } else {
               next(null, {
                 'success': true,
@@ -210,7 +220,7 @@ const getExchangeValue = (req, res) => {
   let node = req.query['node']
   let fromToken = tokens.getToken(req.query['from'])
   let toToken = tokens.getToken(req.query['to'])
-  let val = req.query['value'];
+  let val = parseInt(req.query['value']);
 
   async.waterfall([
     (next) => {
@@ -337,7 +347,7 @@ const updateSwixerNodeInfo = (req, res) => {
   let info = req.body['info'];
 
   let node = null
-  let initOn = parseInt(Date.now()/1000);
+  let initOn = parseInt(Date.now() / 1000);
 
   if (info['type'] === 'swixer') {
     SwixerNodes.findOneAndUpdate({

@@ -88,12 +88,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         loadVpnFragment(null);
     }
 
-    private void shouldShowHelper() {
-        if (!AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_HELPER_SHOWN)) {
-            onLoadNextActivity(new Intent(this, HelperActivity.class), AppConstants.REQ_HELPER_SCREENS);
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -102,25 +96,17 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         Intent intent = new Intent(this, OpenVPNService.class);
         intent.setAction(OpenVPNService.START_SERVICE);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        // check intent
+        // check intent and take necessary actions
         if (getIntent().getExtras() != null) {
             mIntentExtra = getIntent().getStringExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY);
         }
         if (mIntentExtra != null && mIntentExtra.equals(AppConstants.HOME)) {
             loadVpnFragment(null);
         }
-        // setup testnet switch
+        // initialize/update the TESTNET switch
         setupTestNetSwitch();
-        // toggle switch state when returning from other activity
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        toggleTestNetSwitch(!(aFragment instanceof VpnConnectedFragment));
-    }
-
-    private void setupTestNetSwitch() {
-        boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-        mSwitchNet.setChecked(isActive);
-        mSwitchNet.setText(R.string.test_net);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
+        // check and toggle TESTNET switch state (if needed) when returning from other activity
+        toggleTestNetSwitch(!(getSupportFragmentManager().findFragmentById(R.id.fl_container) instanceof VpnConnectedFragment));
     }
 
     @Override
@@ -129,6 +115,43 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         unbindService(mConnection);
     }
 
+    @Override
+    protected void onStop() {
+        VpnStatus.removeStateListener(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START))
+            mDrawerLayout.closeDrawers();
+        else
+            super.onBackPressed();
+    }
+
+    /*
+     *  Show the Helper screens when the user is opening the app for the first time
+     */
+    private void shouldShowHelper() {
+        if (!AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_HELPER_SHOWN)) {
+            onLoadNextActivity(new Intent(this, HelperActivity.class), AppConstants.REQ_HELPER_SCREENS);
+        }
+    }
+
+    /*
+     * Set the TESTNET switch state, switch text and the state text based on the TESTNET state
+     * value stored in the shared preferences.
+     */
+    private void setupTestNetSwitch() {
+        boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+        mSwitchNet.setChecked(isActive);
+        mSwitchNet.setText(R.string.test_net);
+        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
+    }
+
+    /*
+     * Instantiate all the views used in the XML and perform other instantiation steps (if needed)
+     */
     private void initView() {
         mToolbar = findViewById(R.id.toolbar);
         mSwitchNet = findViewById(R.id.switch_net);
@@ -136,11 +159,11 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         mNavView = findViewById(R.id.navigation_view);
-        //setup toolbar
-        setupToolbar();
         // set drawer scrim color
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
-        // set click listeners
+        // instantiate toolbar
+        setupToolbar();
+        // add listeners
         mSwitchNet.setOnCheckedChangeListener(this);
         mNavView.getHeaderView(0).findViewById(R.id.ib_back).setOnClickListener(v -> mDrawerLayout.closeDrawers());
         mNavView.setNavigationItemSelectedListener(
@@ -155,12 +178,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 });
     }
 
-    @Override
-    protected void onStop() {
-        VpnStatus.removeStateListener(this);
-        super.onStop();
-    }
-
+    /*
+     * Set the toolbar as the default actionbar and set the home indicator
+     */
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -171,6 +191,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
+    /*
+     * Handle click action on the Navigation items
+     */
     private void handleNavigationItemClick(int itemItemId) {
         switch (itemItemId) {
             case R.id.nav_tx_history:
@@ -179,10 +202,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case R.id.nav_vpn_history:
                 startActivityForResult(new Intent(this, VpnHistoryActivity.class), AppConstants.REQ_VPN_HISTORY);
                 break;
-//            case R.id.nav_nw_stats:
-//                break;
-//            case R.id.nav_usage_stats:
-//                break;
             case R.id.nav_reset_pin:
                 startActivityForResult(new Intent(this, ResetPinActivity.class), AppConstants.REQ_RESET_PIN);
                 break;
@@ -200,14 +219,28 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
+    /**
+     * Initialize the Progress Dialog which needs to be shown while loading a screen
+     *
+     * @param isHalfDim [boolean] Denotes whether the dialog's background should be transparent or
+     *                  dimmed
+     * @param iMessage  [String] The message text which needs to be shown as Loading message
+     */
     private void showProgressDialog(boolean isHalfDim, String iMessage) {
         toggleProgressDialogState(true, isHalfDim, iMessage == null ? getString(R.string.generic_loading_message) : iMessage);
     }
 
+    /**
+     * Hide the Progress Dialog window if it is currently being displayed
+     */
     private void hideProgressDialog() {
         toggleProgressDialogState(false, false, null);
     }
 
+    /*
+     * Helper method to initialize & update the attributes of the Progress Dialog and to toggle
+     * it's visibility
+     */
     private void toggleProgressDialogState(boolean isShow, boolean isHalfDim, String iMessage) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(PROGRESS_DIALOG_TAG);
         if (isShow) {
@@ -225,10 +258,22 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
+    /**
+     * Shows an Error dialog with a Single button
+     *
+     * @param iMessage [String] The error message to be displayed
+     */
     protected void showSingleActionError(String iMessage) {
         showSingleActionError(-1, iMessage, -1);
     }
 
+    /**
+     * Shows an Error dialog with a Single button
+     *
+     * @param iTitleId          [int] The resource id of the title to be displayed
+     * @param iMessage          [String] The error message to be displayed
+     * @param iPositiveOptionId [int] The resource id of the button text
+     */
     protected void showSingleActionError(int iTitleId, String iMessage, int iPositiveOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(SINGLE_ACTION_DIALOG_TAG);
         int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
@@ -238,10 +283,25 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                     .show(getSupportFragmentManager(), SINGLE_ACTION_DIALOG_TAG);
     }
 
+    /**
+     * Shows an Error dialog with a Two buttons
+     *
+     * @param iTag     [String] The Tag assigned to the fragment when it's added to the container
+     * @param iMessage [String] The error message to be displayed
+     */
     protected void showDoubleActionDialog(String iTag, String iMessage) {
         showDoubleActionDialog(iTag, -1, iMessage, -1, -1);
     }
 
+    /**
+     * Shows an Error dialog with a Two buttons
+     *
+     * @param iTag              [String] The Tag assigned to the fragment when it's added to the container
+     * @param iTitleId          [int] The resource id of the title to be displayed
+     * @param iMessage          [String] The error message to be displayed
+     * @param iPositiveOptionId [int] The resource id of the positive button text
+     * @param iNegativeOptionId [int] The resource id of the negative button text
+     */
     protected void showDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);
         int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
@@ -252,12 +312,34 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                     .show(getSupportFragmentManager(), DOUBLE_ACTION_DIALOG_TAG);
     }
 
-
+    /**
+     * Replace the existing fragment in the container with the new fragment passed in this method's
+     * parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
     private void loadFragment(Fragment iFragment) {
         toggleTestNetSwitch(!(iFragment instanceof VpnConnectedFragment));
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
     }
 
+    /*
+     * Replaces the existing fragment in the container with VpnSelectFragment
+     */
+    private void loadVpnFragment(String iMessage) {
+        loadFragment(VpnSelectFragment.newInstance(iMessage));
+    }
+
+    /*
+     * Replaces the existing fragment in the container with WalletFragment
+     */
+    private void loadWalletFragment() {
+        loadFragment(WalletFragment.newInstance());
+    }
+
+    /*
+     * Toggles the state of the TESTNET switch
+     */
     private void toggleTestNetSwitch(boolean isEnabled) {
         mSwitchNet.setEnabled(isEnabled);
         if (!isEnabled) {
@@ -277,20 +359,23 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        toggleItemState(item.getItemId());
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
 
             case R.id.action_vpn:
-                if ((aFragment instanceof WalletFragment))
+                if ((aFragment instanceof WalletFragment)) {
+                    toggleItemState(item.getItemId());
                     loadVpnFragment(null);
+                }
                 return true;
 
             case R.id.action_wallet:
-                if (!(aFragment instanceof WalletFragment))
+                if (!(aFragment instanceof WalletFragment)) {
+                    toggleItemState(item.getItemId());
                     loadWalletFragment();
+                }
                 return true;
 
             default:
@@ -298,16 +383,20 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
+    /*
+     * Update the Options Menu icon when a menu is clicked
+     */
     private void toggleItemState(int iItemId) {
-        if (iItemId == R.id.action_vpn) {
-            mMenuVpn.setIcon(R.drawable.menu_vpn_selected);
-            mMenuWallet.setIcon(R.drawable.menu_wallet_unselected);
-        } else if (iItemId == R.id.action_wallet) {
-            mMenuVpn.setIcon(R.drawable.menu_vpn_unselected);
-            mMenuWallet.setIcon(R.drawable.menu_wallet_selected);
-        }
+        mMenuVpn.setIcon(iItemId == R.id.action_vpn ? R.drawable.menu_vpn_selected : R.drawable.menu_vpn_unselected);
+        mMenuWallet.setIcon(iItemId == R.id.action_wallet ? R.drawable.menu_wallet_selected : R.drawable.menu_wallet_unselected);
     }
 
+    /**
+     * Copies the string to the clipboard and shows a Toast on completing it
+     *
+     * @param iCopyString  [String] The text which needs to be copied to the clipboard
+     * @param iToastTextId [int] The resource id of the toast message.
+     */
     private void copyToClipboard(String iCopyString, int iToastTextId) {
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
@@ -317,15 +406,11 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
-    private void loadVpnFragment(String iMessage) {
-        loadFragment(VpnSelectFragment.newInstance(iMessage));
-    }
-
-    private void loadWalletFragment() {
-        loadFragment(WalletFragment.newInstance());
-    }
-
-    void setupProfile(String iPath) {
+    /*
+     * Load the VPN profile to which connection is to be established, observe it's load state and
+     * perform the necessary action
+     */
+    private void setupProfile(String iPath) {
         if (!SentinelApp.isVpnConnected) {
             profileAsync = new ProfileAsync(this, iPath, new ProfileAsync.OnProfileLoadListener() {
                 @Override
@@ -334,14 +419,17 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 }
 
                 @Override
-                public void onProfileLoadFailed(String msg) {
-                    Toast.makeText(DashboardActivity.this, "Init Fail" + msg, Toast.LENGTH_SHORT).show();
+                public void onProfileLoadFailed(String iMessage) {
+                    Toast.makeText(DashboardActivity.this, "Init Fail" + iMessage, Toast.LENGTH_SHORT).show();
                 }
             });
             profileAsync.execute();
         }
     }
 
+    /*
+     * Start VPN connection after the VPN profile is loaded successfully
+     */
     private void startVPN() {
         try {
             ProfileManager pm = ProfileManager.getInstance(this);
@@ -352,6 +440,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
+    /*
+     * Launch the activity which handles the VPN connection by passing it the VPN profile
+     */
     private void startVPNConnection(VpnProfile profile) {
         Intent intent = new Intent(getApplicationContext(), LaunchVPN.class);
         intent.putExtra(LaunchVPN.EXTRA_KEY, profile.getUUID().toString());
@@ -359,6 +450,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         startActivity(intent);
     }
 
+    /*
+     * Stop the VPN service and delete the last used VPN profile
+     */
     private void stopVPNConnection() {
         ProfileManager.setConntectedVpnProfileDisconnected(this);
         if (mService != null) {
@@ -368,26 +462,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 VpnStatus.logException(e);
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START))
-            mDrawerLayout.closeDrawers();
-        else
-            super.onBackPressed();
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isChecked ? R.string.active : R.string.deactive)));
-
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (aFragment instanceof WalletFragment) {
-            ((WalletFragment) aFragment).updateBalance(isChecked);
-        } else if (!(aFragment instanceof VpnConnectedFragment))
-            loadVpnFragment(null);
     }
 
     @Override
@@ -438,6 +512,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     }
 
+    /*
+     * Refresh the navigation menu titles after a new language is set
+     */
     private void refreshMenuTitles() {
         Menu aMenu = mNavView.getMenu();
         MenuItem aMenuTxHistory = aMenu.findItem(R.id.nav_tx_history);
@@ -456,8 +533,33 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         aMenuLogout.setTitle(R.string.logout);
     }
 
+    /*
+     * Logout user by clearing all the values in shared preferences and reloading the
+     * LauncherActivity
+     */
+    private void logoutUser() {
+        AppPreferences.getInstance().clearSavedData(this);
+        startActivity(new Intent(this, LauncherActivity.class));
+        finish();
+    }
+
+    // Listener implementations
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
+        mSwitchState.setText(getString(R.string.test_net_state, getString(isChecked ? R.string.active : R.string.deactive)));
+
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        if (aFragment instanceof WalletFragment) {
+            ((WalletFragment) aFragment).updateBalance(isChecked);
+        } else if (!(aFragment instanceof VpnConnectedFragment))
+            loadVpnFragment(null);
+    }
+
+
     @Override
     public void onFragmentLoaded(String iTitle) {
+        // Unimplemented interface method
     }
 
     @Override
@@ -526,26 +628,14 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         iDialog.dismiss();
     }
 
-    private void logoutUser() {
-        AppPreferences.getInstance().clearSavedData(this);
-        startActivity(new Intent(this, LauncherActivity.class));
-        finish();
-    }
-
     @Override
     public void updateState(String state, String logMessage, int localizedResId, ConnectionStatus level) {
         Logger.logError("VPN_STATE", state + " - " + logMessage + " : " + getString(localizedResId), null);
         runOnUiThread(() -> {
             Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-
-            if (state.equals("CONNECTED")) {
+            if (state.equals("CONNECTED") || (state.equals("USER_VPN_PERMISSION"))) {
                 SentinelApp.isVpnConnected = true;
             }
-
-            if (state.equals("USER_VPN_PERMISSION")) {
-                SentinelApp.isVpnConnected = true;
-            }
-
             // Called when the VPN connection terminates
             if (state.equals("NOPROCESS") || state.equals("USER_VPN_PERMISSION_CANCELLED")) {
                 if (SentinelApp.isVpnConnected && !mHasActivityResult) {
@@ -555,7 +645,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                         loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
                 }
             }
-
+            // Called when user connects to a VPN node from other activity
             if (mHasActivityResult) {
                 onVpnConnectionInitiated(AppPreferences.getInstance().getString(AppConstants.PREFS_CONFIG_PATH));
                 mHasActivityResult = false;

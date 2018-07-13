@@ -141,7 +141,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
 
     private void setupVpnUsageData(Session iSession) {
         // Construct and set - Sent Due SpannableString
-        String aSentDue = getString(R.string.sents, Converter.getFormattedSentBalance(iSession.amount));
+        String aSentDue = getString(R.string.sents, Converter.getFormattedTokenString(iSession.amount));
         String aSentDueSubString = aSentDue.substring(aSentDue.indexOf(' '));
         SpannableString aStyledSentDue = new SpannableStringUtil.SpannableStringUtilBuilder(aSentDue, aSentDueSubString)
                 .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
@@ -168,7 +168,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
         mTvSessionId.setText(iSession.sessionId);
         mTvDateTime.setText(Converter.convertEpochToDate(iSession.timestamp));
         // store values for making payment
-        mValue = Converter.getFormattedSentBalance(iSession.amount);
+        mValue = Converter.getFormattedTokenString(iSession.amount);
         mSessionId = iSession.sessionId;
         // enable pay button
         toggleButtonState(true);

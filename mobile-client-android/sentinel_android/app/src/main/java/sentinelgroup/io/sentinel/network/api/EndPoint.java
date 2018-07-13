@@ -1,5 +1,8 @@
 package sentinelgroup.io.sentinel.network.api;
 
+/**
+ * Contains all the API endpoints used in the app.
+ */
 public class EndPoint {
     public static final String CREATE_NEW_ACCOUNT = "client/account";
     public static final String GET_ACCOUNT_BALANCE = "client/account/balance";

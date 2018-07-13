@@ -10,16 +10,28 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Converter {
+    /**
+     * Convert file size in bytes to other units on the go depending on the file size
+     *
+     * @param iSizeInBytes [long] The file size in bytes
+     * @return The file size along with the unit as a String
+     */
     public static String getFileSize(long iSizeInBytes) {
         if (iSizeInBytes <= 0)
             return "0 B";
-        final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
-        int digitGroups = (int) (Math.log10(iSizeInBytes) / Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(iSizeInBytes / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        final String[] aUnits = new String[]{"B", "KB", "MB", "GB", "TB"};
+        int aDigitGroups = (int) (Math.log10(iSizeInBytes) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(iSizeInBytes / Math.pow(1024, aDigitGroups)) + " " + aUnits[aDigitGroups];
     }
 
+    /**
+     * Convert the input duration in seconds to hours/minutes/seconds format
+     *
+     * @param iSeconds [long] The input duration in seconds
+     * @return A string which is represented in hours/minutes/seconds format
+     */
     public static String getDuration(long iSeconds) {
-        DecimalFormat df2 = new DecimalFormat(".##");
+        DecimalFormat df2 = new DecimalFormat(".#");
         double hours = iSeconds / (double) (60 * 60);
         double minutes = iSeconds / (double) 60;
         if (hours >= 1)
@@ -30,6 +42,12 @@ public class Converter {
             return String.valueOf(iSeconds) + (iSeconds == 1 ? " sec" : " secs");
     }
 
+    /**
+     * Convert the input duration in seconds to days-hours-minutes-seconds format
+     *
+     * @param iSeconds [long] The input duration in seconds
+     * @return A string which is represented in days-hours-minutes-seconds format
+     */
     public static String getLongDuration(long iSeconds) {
         long day = TimeUnit.SECONDS.toDays(iSeconds);
         long hours = TimeUnit.SECONDS.toHours(iSeconds) - (day * 24);
@@ -51,34 +69,41 @@ public class Converter {
             return second + (second == 1 ? " sec" : " secs");
     }
 
+    /**
+     * Converts epoch time in seconds to a formatted date string
+     *
+     * @param iEpochTimeInSeconds [long] Epoch time in seconds
+     * @return Formatted date string such as - Thu 11 May 2018    10:30:47 GMT
+     */
     public static String convertEpochToDate(long iEpochTimeInSeconds) {
-        // Thu 11 May 2018    10:30:47 GMT
-        String formatString = "EEE, dd MMM yyyy   HH:mm:ss z";
-        SimpleDateFormat format = new SimpleDateFormat(formatString, Locale.getDefault());
-        return format.format(new Date(iEpochTimeInSeconds * 1000));
-
+        String aFormatString = "EEE, dd MMM yyyy   HH:mm:ss z";
+        SimpleDateFormat aFormat = new SimpleDateFormat(aFormatString, Locale.getDefault());
+        return aFormat.format(new Date(iEpochTimeInSeconds * 1000));
     }
 
-//    public static String getSentString(double iSentValue) {
-//        iSentValue /= Math.pow(10, 8);
-//        return String.format(Locale.US, iSentValue % 1 == 0 ? "%.0f" : "%.8f", iSentValue);
-//    }
-
+    /**
+     * Extracts the ISO country code from the country name
+     *
+     * @param iCountryName [String] Country name (in English)
+     * @return ISO country code
+     */
     public static String getCountryCode(String iCountryName) {
         String[] isoCountryCodes = Locale.getISOCountries();
-        for (String code : isoCountryCodes) {
-            Locale locale = new Locale("", code);
+        for (String aCode : isoCountryCodes) {
+            Locale locale = new Locale("", aCode);
             if (iCountryName.equalsIgnoreCase(locale.getDisplayCountry(Locale.US))) {
-                return code;
+                return aCode;
             }
         }
         return "";
     }
 
-    public static BigInteger getTokenValue(String iValue) {
-        return BigInteger.valueOf((long) (Double.parseDouble(iValue) * Math.pow(10, 8)));
-    }
-
+    /**
+     * Convert the Wallet address to a 64 bit address
+     *
+     * @param iAddress [String] The wallet address
+     * @return 64bit Wallet address with zeros padded to its front
+     */
     public static String get64bitAddress(String iAddress) {
         int requiredLength = 64;
         char padChar = '0';
@@ -90,13 +115,35 @@ public class Converter {
         }
     }
 
+    /**
+     * Convert the hex data to a String
+     *
+     * @param iData [String] The hex data
+     * @return Formatted String data
+     */
     public static String convertHexToString(@NonNull String iData) {
         String s = iData.substring(2).replaceFirst("^0+(?!$)", "");
         return String.valueOf(Long.parseLong(s, 16));
     }
 
+    /**
+     * Converts the token value to a BigInteger which is required to process token transaction
+     *
+     * @param iValue [String] The token value
+     * @return BigInteger token value which can be passed to the contract function for further
+     * processing
+     */
+    public static BigInteger getTokenValue(String iValue) {
+        return BigInteger.valueOf((long) (Double.parseDouble(iValue) * Math.pow(10, 8)));
+    }
 
-    public static String getFormattedSentBalance(double iSentValue) {
+    /**
+     * Converts the token value to a formatted string which can be displayed
+     *
+     * @param iSentValue [double] The token value
+     * @return Formatted string
+     */
+    public static String getFormattedTokenString(double iSentValue) {
         iSentValue /= Math.pow(10, 8);
         return String.format(Locale.US, iSentValue % 1 == 0 ? "%.0f" : "%.8f", iSentValue);
     }

@@ -11,7 +11,6 @@ import android.widget.ListAdapter;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 public class CustomSpinner extends MaterialBetterSpinner {
-
     @Nullable
     private OnDismissListener onDismissListener;
     @Nullable

@@ -18,7 +18,7 @@ import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
 
 /**
- * {@link AppDatabase} database for the application containing tables and their respective DAO.
+ * Room Database for storing all the essential application data in it's table defined by the various DAO's.
  */
 @Database(entities = {Chains.class, GasEstimateEntity.class, PinEntity.class, VpnListEntity.class, VpnUsageEntity.class},
         version = 6,

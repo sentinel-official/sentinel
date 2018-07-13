@@ -24,6 +24,10 @@ import static sentinelgroup.io.sentinel.util.AppConstants.DOUBLE_ACTION_DIALOG_T
 import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.SINGLE_ACTION_DIALOG_TAG;
 
+/**
+ * All the Activities in the app which needs to show the toolbar and the TESTNET switch must extend
+ * this BaseActivity
+ */
 public abstract class BaseActivity extends AppCompatActivity implements OnGenericFragmentInteractionListener,
         CompoundButton.OnCheckedChangeListener, DoubleActionDialogFragment.OnDialogActionListener {
     private Toolbar mToolbar;
@@ -41,23 +45,40 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     @Override
     protected void onResume() {
         super.onResume();
-        // setup testnet switch
         setupTestNetSwitch();
     }
 
+    /*
+     * Instantiate all the views used in the XML and perform other instantiation steps (if needed)
+     */
     private void initView() {
-        // Instantiate
         mToolbar = findViewById(R.id.toolbar);
         mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
         mSwitchNet = findViewById(R.id.switch_net);
         mSwitchState = findViewById(R.id.switch_state);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
+        // instantiate toolbar
         setupToolbar();
+        // add listeners
         mSwitchNet.setOnCheckedChangeListener(this);
     }
 
+
+    /*
+     * Set the TESTNET switch state, switch text and the state text based on the TESTNET state
+     * value stored in the shared preferences.
+     */
+    private void setupTestNetSwitch() {
+        boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+        mSwitchNet.setChecked(isActive);
+        mSwitchNet.setText(R.string.test_net);
+        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
+    }
+
+    /*
+     * Set the toolbar as the default actionbar and set the home indicator
+     */
     private void setupToolbar() {
-        // setSupportActionBar and set its props
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -67,25 +88,37 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
         }
     }
 
-    private void setupTestNetSwitch() {
-        boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-        mSwitchNet.setChecked(isActive);
-        mSwitchNet.setText(R.string.test_net);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
-    }
-
+    /**
+     * Set the toolbar title
+     *
+     * @param iTitle [String] The title to be shown in the toolbar
+     */
     protected void setToolbarTitle(String iTitle) {
         mToolbarTitle.setText(iTitle);
     }
 
+    /**
+     * Initialize the Progress Dialog which needs to be shown while loading a screen
+     *
+     * @param isHalfDim [boolean] Denotes whether the dialog's background should be transparent or
+     *                  dimmed
+     * @param iMessage  [String] The message text which needs to be shown as Loading message
+     */
     protected void showProgressDialog(boolean isHalfDim, String iMessage) {
         toggleProgressDialogState(true, isHalfDim, iMessage == null ? getString(R.string.generic_loading_message) : iMessage);
     }
 
+    /**
+     * Hide the Progress Dialog window if it is currently being displayed
+     */
     protected void hideProgressDialog() {
         toggleProgressDialogState(false, false, null);
     }
 
+    /*
+     * Helper method to initialize & update the attributes of the Progress Dialog and to toggle
+     * it's visibility
+     */
     private void toggleProgressDialogState(boolean isShow, boolean isHalfDim, String iMessage) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(PROGRESS_DIALOG_TAG);
         if (isShow) {
@@ -103,10 +136,22 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
         }
     }
 
+    /**
+     * Shows an Error dialog with a Single button
+     *
+     * @param iMessage [String] The error message to be displayed
+     */
     protected void showSingleActionError(String iMessage) {
         showSingleActionError(-1, iMessage, -1);
     }
 
+    /**
+     * Shows an Error dialog with a Single button
+     *
+     * @param iTitleId          [int] The resource id of the title to be displayed
+     * @param iMessage          [String] The error message to be displayed
+     * @param iPositiveOptionId [int] The resource id of the button text
+     */
     protected void showSingleActionError(int iTitleId, String iMessage, int iPositiveOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(SINGLE_ACTION_DIALOG_TAG);
         int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
@@ -116,10 +161,25 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
                     .show(getSupportFragmentManager(), SINGLE_ACTION_DIALOG_TAG);
     }
 
+    /**
+     * Shows an Error dialog with a Two buttons
+     *
+     * @param iTag     [String] The Tag assigned to the fragment when it's added to the container
+     * @param iMessage [String] The error message to be displayed
+     */
     protected void showDoubleActionError(String iTag, String iMessage) {
         showDoubleActionError(iTag, -1, iMessage, -1, -1);
     }
 
+    /**
+     * Shows an Error dialog with a Two buttons
+     *
+     * @param iTag              [String] The Tag assigned to the fragment when it's added to the container
+     * @param iTitleId          [int] The resource id of the title to be displayed
+     * @param iMessage          [String] The error message to be displayed
+     * @param iPositiveOptionId [int] The resource id of the positive button text
+     * @param iNegativeOptionId [int] The resource id of the negative button text
+     */
     protected void showDoubleActionError(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);
         int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
@@ -130,6 +190,12 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
                     .show(getSupportFragmentManager(), DOUBLE_ACTION_DIALOG_TAG);
     }
 
+    /**
+     * Copies the string to the clipboard and shows a Toast on completing it
+     *
+     * @param iCopyString  [String] The text which needs to be copied to the clipboard
+     * @param iToastTextId [int] The resource id of the toast message
+     */
     protected void copyToClipboard(String iCopyString, int iToastTextId) {
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
         if (clipboard != null) {
@@ -139,17 +205,26 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
         }
     }
 
+    /**
+     * Toggle the enabled state of the TESTNET switch
+     *
+     * @param isVpnFunction [boolean] enable/disable
+     */
     protected void disableTestNetSwitch(boolean isVpnFunction) {
         mSwitchNet.setEnabled(!isVpnFunction);
     }
 
-    // abstract
+    /**
+     * Implement this method and add your logic to load the fragment into the container
+     *
+     * @param iFragment [Fragment] The new fragment to be loaded
+     */
     public abstract void loadFragment(Fragment iFragment);
 
+    // Listener implementations
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
         mSwitchState.setText(getString(R.string.test_net_state, getString(isChecked ? R.string.active : R.string.deactive)));
     }
-
 }

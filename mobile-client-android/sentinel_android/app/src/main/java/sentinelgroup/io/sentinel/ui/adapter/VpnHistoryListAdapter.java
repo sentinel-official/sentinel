@@ -45,9 +45,9 @@ public class VpnHistoryListAdapter extends RecyclerView.Adapter<VpnHistoryListAd
         holder.mTvDateTime.setText(Converter.convertEpochToDate(aSession.timestamp));
         holder.mTvPayValue.setVisibility(aSession.isPaid ? View.GONE : View.VISIBLE);
         if (!aSession.isPaid) {
-            holder.mTvPayValue.setText(mContext.getString(R.string.pay_sents, Converter.getFormattedSentBalance(aSession.amount)));
+            holder.mTvPayValue.setText(mContext.getString(R.string.pay_sents, Converter.getFormattedTokenString(aSession.amount)));
         }
-        holder.mTvPayValue.setOnClickListener(v -> onPayClick(Converter.getFormattedSentBalance(aSession.amount), aSession.sessionId));
+        holder.mTvPayValue.setOnClickListener(v -> onPayClick(Converter.getFormattedTokenString(aSession.amount), aSession.sessionId));
         holder.mRootView.setOnClickListener(v -> onRootViewClick(aSession));
     }
 

@@ -7,22 +7,37 @@ import java.io.File;
 
 public class DataCleanManager {
 
-    public static void cleanCache(Context context) {
-        deleteFilesByDirectory(context.getCacheDir());
-        cleanExternalCache(context);
+    /**
+     * Cleans the cache directory
+     *
+     * @param iContext [Context] Context
+     */
+    public static void cleanCache(Context iContext) {
+        deleteFilesByDirectory(iContext.getCacheDir());
+        cleanExternalCache(iContext);
     }
 
-    private static void deleteFilesByDirectory(File directory) {
-        if (directory != null && directory.exists() && directory.isDirectory()) {
-            for (File item : directory.listFiles()) {
-                item.delete();
-            }
+    /**
+     * Cleans the external cache directory
+     *
+     * @param iContext [Context] Context
+     */
+    private static void cleanExternalCache(Context iContext) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            deleteFilesByDirectory(iContext.getExternalCacheDir());
         }
     }
 
-    private static void cleanExternalCache(Context context) {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            deleteFilesByDirectory(context.getExternalCacheDir());
+    /**
+     * Deletes the file
+     *
+     * @param iFile [File] The file which is to be deleted
+     */
+    private static void deleteFilesByDirectory(File iFile) {
+        if (iFile != null && iFile.exists() && iFile.isDirectory()) {
+            for (File aItem : iFile.listFiles()) {
+                aItem.delete();
+            }
         }
     }
 }

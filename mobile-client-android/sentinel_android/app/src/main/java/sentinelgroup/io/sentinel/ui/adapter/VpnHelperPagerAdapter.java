@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import sentinelgroup.io.sentinel.R;
 
 public class VpnHelperPagerAdapter extends PagerAdapter {
+
     private LayoutInflater mLayoutInflater;
     private final int[] mResources;
 

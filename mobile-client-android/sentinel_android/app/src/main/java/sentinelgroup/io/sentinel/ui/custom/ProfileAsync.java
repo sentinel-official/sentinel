@@ -1,8 +1,6 @@
 package sentinelgroup.io.sentinel.ui.custom;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 
@@ -18,16 +16,12 @@ import java.util.Collection;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.ConfigParser;
 import de.blinkt.openvpn.core.ProfileManager;
+import sentinelgroup.io.sentinel.util.NetworkUtil;
 
 /**
- * ==================================================
- * Created by wang on 2017/11/15. gentlewxy@163.com
- * Description:
- * ==================================================
+ * An AsyncTask to create a VPN profile from the VPN config file with callback
  */
-
 public class ProfileAsync extends AsyncTask<Void, Void, Boolean> {
-
     private WeakReference<Context> context;
     private String mPath;
     private OnProfileLoadListener onProfileLoadListener;
@@ -44,7 +38,7 @@ public class ProfileAsync extends AsyncTask<Void, Void, Boolean> {
         Context context = this.context.get();
         if (context == null || onProfileLoadListener == null) {
             cancel(true);
-        } else if (!isNetworkAvailable(context)) {
+        } else if (!NetworkUtil.isOnline()) {
             cancel(true);
             onProfileLoadListener.onProfileLoadFailed("No Network");
         }
@@ -97,17 +91,16 @@ public class ProfileAsync extends AsyncTask<Void, Void, Boolean> {
     }
 
     public interface OnProfileLoadListener {
+        /**
+         * This method notifies the observer that the VPN profile has been loaded successfully
+         */
         void onProfileLoadSuccess();
 
-        void onProfileLoadFailed(String msg);
-    }
-
-    private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) {
-            return false;
-        }
-        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        return info != null && info.isAvailable() && info.isConnected();
+        /**
+         * This method notifies the observer that the VPN profile loading failed
+         *
+         * @param iMessage [String] Error message to describe the cause for profile loading failure
+         */
+        void onProfileLoadFailed(String iMessage);
     }
 }

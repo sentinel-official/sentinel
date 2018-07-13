@@ -10,6 +10,9 @@ import okhttp3.Response;
 import sentinelgroup.io.sentinel.util.NetworkUtil;
 import sentinelgroup.io.sentinel.util.NoConnectivityException;
 
+/**
+ * Modifies the request header and observes the response for NoConnectivity exception.
+ */
 public class ContentTypeInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {

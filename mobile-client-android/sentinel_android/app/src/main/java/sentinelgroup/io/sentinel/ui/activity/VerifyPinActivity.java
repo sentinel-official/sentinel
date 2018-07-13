@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +24,8 @@ import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.viewmodel.VerifyPinViewModel;
 import sentinelgroup.io.sentinel.viewmodel.VerifyPinViewModelFactory;
 
-public class VerifyPinActivity extends AppCompatActivity implements View.OnClickListener, PinEntryEditText.OnPinEnteredListener, TextWatcher, TextView.OnEditorActionListener {
-
+public class VerifyPinActivity extends AppCompatActivity implements View.OnClickListener,
+        PinEntryEditText.OnPinEnteredListener, TextWatcher, TextView.OnEditorActionListener {
     private VerifyPinViewModel mViewModel;
 
     private PinEntryEditText mEtPin;
@@ -40,19 +39,24 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
         initViewModel();
     }
 
+    /*
+     * Instantiate all the views used in the XML and perform other instantiation steps (if needed)
+     */
     private void initView() {
         mEtPin = findViewById(R.id.et_enter_pin);
         mTvPin = findViewById(R.id.tv_enter_pin);
-        Button aBtnForgotPin = findViewById(R.id.btn_forgot_pin);
-        // Set Listeners
+        // add listeners
         mEtPin.setOnPinEnteredListener(this);
         mEtPin.addTextChangedListener(this);
         mEtPin.setOnEditorActionListener(this);
-        aBtnForgotPin.setOnClickListener(this);
+        findViewById(R.id.btn_forgot_pin).setOnClickListener(this);
         // Give focus to PinEntryEditText
         showKeyboard();
     }
 
+    /*
+     * Show on screen keyboard
+     */
     private void showKeyboard() {
         if (mEtPin != null) {
             mEtPin.setFocusable(true);
@@ -65,6 +69,9 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /*
+     * Hide on screen keyboard
+     */
     public void hideKeyboard() {
         InputMethodManager aInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
@@ -78,6 +85,9 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /*
+     * Instantiate the ViewModel and observe the LiveData returned by it
+     */
     private void initViewModel() {
         VerifyPinViewModelFactory aFactory = InjectorModule.provideVerifyPinViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VerifyPinViewModel.class);
@@ -94,20 +104,35 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    /*
+     * Launch the DashboardActivity
+     */
     private void loadDashboardActivity() {
         startActivity(new Intent(this, DashboardActivity.class));
         finish();
     }
 
+    /*
+     * Clear the wrong PIN entered in the PinEntryEditText
+     */
     private void clearInput() {
         mEtPin.setText("");
     }
 
+    /**
+     * Construct a new instance of SingleActionDialogFragment and display the Error Message
+     *
+     * @param iMessage [String] The error message to be displayed
+     */
     private void showSingleActionDialog(String iMessage) {
         SingleActionDialogFragment.newInstance(R.string.please_note, iMessage, android.R.string.ok)
                 .show(getSupportFragmentManager(), AppConstants.SINGLE_ACTION_DIALOG_TAG);
     }
 
+    /*
+     * Verify the app PIN entered by the user and take him to the DashboardActivity if it was
+     * entered correctly else show an error
+     */
     private void verifyPin() {
         String aPinString = mEtPin.getText().toString().trim();
         if (!aPinString.isEmpty()) {
@@ -120,6 +145,16 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstants.REQ_CODE_FORGOT_PIN) {
+            if (resultCode == RESULT_OK)
+                Toast.makeText(VerifyPinActivity.this, getString(R.string.reset_pin_success), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Listener implementations
+    @Override
     public void onPinEntered(CharSequence str) {
         hideKeyboard();
         verifyPin();
@@ -127,12 +162,10 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
     }
 
     @Override
@@ -147,15 +180,6 @@ public class VerifyPinActivity extends AppCompatActivity implements View.OnClick
                 clearInput();
                 startActivityForResult(new Intent(VerifyPinActivity.this, ForgotPinActivity.class), AppConstants.REQ_CODE_FORGOT_PIN);
                 break;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AppConstants.REQ_CODE_FORGOT_PIN) {
-            if (resultCode == RESULT_OK)
-                Toast.makeText(VerifyPinActivity.this, getString(R.string.reset_pin_success), Toast.LENGTH_SHORT).show();
         }
     }
 

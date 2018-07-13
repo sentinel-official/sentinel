@@ -19,15 +19,6 @@ public class GenericListActivity extends BaseActivity {
         getIntentExtras();
     }
 
-    private void getIntentExtras() {
-        Bundle aExtras = getIntent().getExtras();
-        if (aExtras != null) {
-            int aReqCode = aExtras.getInt(AppConstants.EXTRA_REQ_CODE);
-            loadFragment(aReqCode == AppConstants.REQ_LANGUAGE ? GenericListFragment.newInstance(aReqCode) : GenericUrlListFragment.newInstance(aReqCode));
-        } else
-            finish();
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -42,11 +33,30 @@ public class GenericListActivity extends BaseActivity {
         finish();
     }
 
+    /*
+     * Get intent extras passed to it from the calling activity
+     */
+    private void getIntentExtras() {
+        Bundle aExtras = getIntent().getExtras();
+        if (aExtras != null) {
+            int aReqCode = aExtras.getInt(AppConstants.EXTRA_REQ_CODE);
+            loadFragment(aReqCode == AppConstants.REQ_LANGUAGE ? GenericListFragment.newInstance(aReqCode) : GenericUrlListFragment.newInstance(aReqCode));
+        } else
+            finish();
+    }
+
+    /**
+     * Replace the existing fragment in the container with the new fragment passed in this method's
+     * parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
     @Override
     public void loadFragment(Fragment iFragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
     }
 
+    // Listener implementations
     @Override
     public void onFragmentLoaded(String iTitle) {
         setToolbarTitle(iTitle);

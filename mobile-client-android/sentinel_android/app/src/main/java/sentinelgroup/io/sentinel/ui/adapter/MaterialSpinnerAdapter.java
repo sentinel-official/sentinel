@@ -18,10 +18,10 @@ public class MaterialSpinnerAdapter extends ArrayAdapter<String> {
     private Context mContext;
     private List<String> mItems;
 
-    public MaterialSpinnerAdapter(@NonNull Context context, @NonNull List<String> items) {
-        super(context, 0, items);
-        mContext = context;
-        mItems = items;
+    public MaterialSpinnerAdapter(@NonNull Context iContext, @NonNull List<String> iItems) {
+        super(iContext, 0, iItems);
+        mContext = iContext;
+        mItems = iItems;
     }
 
     @NonNull
@@ -30,12 +30,9 @@ public class MaterialSpinnerAdapter extends ArrayAdapter<String> {
         View aView = convertView;
         if (aView == null)
             aView = LayoutInflater.from(mContext).inflate(R.layout.item_material_spinner, parent, false);
-
         String aItemValue = mItems.get(position);
-
         TextView aTvItemTitle = aView.findViewById(R.id.tv_item_title);
         aTvItemTitle.setText(aItemValue);
-
         return aView;
     }
 }

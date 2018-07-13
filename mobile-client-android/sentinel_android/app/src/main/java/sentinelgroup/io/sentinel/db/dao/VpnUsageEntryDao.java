@@ -12,6 +12,9 @@ import sentinelgroup.io.sentinel.network.model.Session;
 import sentinelgroup.io.sentinel.network.model.VpnUsage;
 import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
 
+/**
+ * DAO to do CRUD operation related to VPN usage.
+ */
 @Dao
 public interface VpnUsageEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

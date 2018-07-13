@@ -17,11 +17,6 @@ public class ForgotPinActivity extends SimpleBaseActivity {
     }
 
     @Override
-    public void loadFragment(Fragment iFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
@@ -35,6 +30,18 @@ public class ForgotPinActivity extends SimpleBaseActivity {
         finish();
     }
 
+    /**
+     * Replace the existing fragment in the container with the new fragment passed in this method's
+     * parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
+    @Override
+    public void loadFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+    }
+
+    // Listener implementations
     @Override
     public void onFragmentLoaded(String iTitle) {
         setToolbarTitle(iTitle);

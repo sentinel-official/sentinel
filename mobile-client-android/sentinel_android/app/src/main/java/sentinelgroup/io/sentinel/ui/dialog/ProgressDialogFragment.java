@@ -66,6 +66,22 @@ public class ProgressDialogFragment extends DialogFragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        final Context aContext = new ContextThemeWrapper(getActivity(), R.style.CustomDialogFragmentNoDimTheme);
+        LayoutInflater aLayoutInflater = inflater.cloneInContext(aContext);
+        return aLayoutInflater.inflate(R.layout.fragment_progress_dialog, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initDialog();
+        initView(view);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         setBackgroundDim();
@@ -83,42 +99,41 @@ public class ProgressDialogFragment extends DialogFragment {
         resizeDialog();
     }
 
+    /*
+     * Set the text which is to be displayed by this dialog
+     */
     private void setLoadingText() {
         mTvLoadingMessage.setText(mLoadingMessage);
     }
 
+    /*
+     * Show the Custom loader
+     */
     private void showLoader() {
         if (mAvlLoader != null)
             mAvlLoader.show();
     }
 
+    /*
+     * Hide the Custom loader
+     */
     private void hideLoader() {
         if (mAvlLoader != null)
             mAvlLoader.hide();
     }
 
+    /*
+     * Resize the dialog's width
+     */
     private void resizeDialog() {
         WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         getDialog().getWindow().setAttributes(params);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final Context aContext = new ContextThemeWrapper(getActivity(), R.style.CustomDialogFragmentNoDimTheme);
-        LayoutInflater aLayoutInflater = inflater.cloneInContext(aContext);
-        return aLayoutInflater.inflate(R.layout.fragment_progress_dialog, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initDialog();
-        initView(view);
-    }
-
+    /*
+     * Initialize/Update the dialog's window paramaters
+     */
     private void setBackgroundDim() {
         Window aWindow = getDialog().getWindow();
         WindowManager.LayoutParams windowParams;
@@ -130,6 +145,9 @@ public class ProgressDialogFragment extends DialogFragment {
         }
     }
 
+    /*
+     * Initialize the dialog's properties
+     */
     private void initDialog() {
         Drawable aDrawable = new ColorDrawable(Color.TRANSPARENT);
         Window aWindow = getDialog().getWindow();
@@ -141,19 +159,35 @@ public class ProgressDialogFragment extends DialogFragment {
         getDialog().setCancelable(false);
     }
 
+    /*
+     * Instantiate all the views used in the XML and perform other instantiation steps (if needed)
+     */
     private void initView(View iView) {
         mAvlLoader = iView.findViewById(R.id.avl_loader);
         mTvLoadingMessage = iView.findViewById(R.id.tv_loading_message);
     }
 
+    /**
+     * Setter method: To set the dim amount
+     */
     public void setNoDim() {
         mDimAmount = NO_DIM;
     }
 
+    /**
+     * Setter method: To set the loading message
+     *
+     * @param iMessage [String] The loading message to be displayed
+     */
     public void setLoadingMessage(String iMessage) {
         mLoadingMessage = iMessage;
     }
 
+    /**
+     * To update the existing loading message
+     *
+     * @param iMessage [String] The new loading message to be displayed
+     */
     public void updateLoadingMessage(String iMessage) {
         setLoadingMessage(iMessage);
         setLoadingText();

@@ -171,7 +171,7 @@
     <string name="vpn_history_main_net_unavailable">No VPN history found in MAINNET.</string>
     <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET.</string>
     <string name="tx_history_main_net_unavailable">No Transaction History found in MAINNET.</string>
-    <string name="upload_keystore_desc">Tap here to upload you Keystore file</string>
+    <string name="upload_keystore_desc">Tap here to upload your Keystore file</string>
     <string name="logout">Logout</string>
     <string name="logout_desc">Logging out will clear your keystore file, make sure you have saved it.</string>
     <string name="default_language">en</string>

@@ -30,24 +30,6 @@ public class TxHistoryActivity extends BaseActivity {
     }
 
     @Override
-    public void loadFragment(Fragment iFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
-    }
-
-    public void addFragment(Fragment iFragment) {
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_container, iFragment).addToBackStack(null).commit();
-    }
-
-
-    public void removeAllFragments() {
-        FragmentManager aFragManager = getSupportFragmentManager();
-        for (int i = 0; i < aFragManager.getBackStackEntryCount(); ++i) {
-            aFragManager.popBackStack();
-        }
-        loadFragment(EmptyFragment.newInstance(getString(R.string.tx_history_main_net_unavailable), getString(R.string.transaction_history)));
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
@@ -55,6 +37,38 @@ public class TxHistoryActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Add the fragment to the container which is passed in this method's parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
+    private void addFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_container, iFragment).addToBackStack(null).commit();
+    }
+
+    /*
+     * Remove all the fragments from the container and load the default fragment
+     */
+    private void removeAllFragments() {
+        FragmentManager aFragManager = getSupportFragmentManager();
+        for (int i = 0; i < aFragManager.getBackStackEntryCount(); ++i) {
+            aFragManager.popBackStack();
+        }
+        loadFragment(EmptyFragment.newInstance(getString(R.string.tx_history_main_net_unavailable), getString(R.string.transaction_history)));
+    }
+
+    /**
+     * Replace the existing fragment in the container with the new fragment passed in this method's
+     * parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
+    @Override
+    public void loadFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+    }
+
+    // Listener implementations
     @Override
     public void onFragmentLoaded(String iTitle) {
         setToolbarTitle(iTitle);

@@ -7,6 +7,9 @@ import android.arch.persistence.room.Query;
 
 import sentinelgroup.io.sentinel.network.model.PinEntity;
 
+/**
+ * DAO to do CRUD operation related to App PIN.
+ */
 @Dao
 public interface PinEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

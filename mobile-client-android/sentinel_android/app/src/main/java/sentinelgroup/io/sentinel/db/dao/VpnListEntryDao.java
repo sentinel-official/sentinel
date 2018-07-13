@@ -10,6 +10,9 @@ import java.util.List;
 
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 
+/**
+ * DAO to do CRUD operation related to VPN List.
+ */
 @Dao
 public interface VpnListEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

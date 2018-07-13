@@ -114,7 +114,7 @@ public class VpnSessionDetailsFragment extends Fragment implements View.OnClickL
         mTvDateTime.setText(Converter.convertEpochToDate(mSessionData.timestamp));
         mTvReceivedData.setText(Converter.getFileSize(mSessionData.receivedBytes));
         mTvDuration.setText(Converter.getLongDuration(mSessionData.sessionDuration));
-        mTvSessionCost.setText(getString(R.string.sents, Converter.getFormattedSentBalance(mSessionData.amount)));
+        mTvSessionCost.setText(getString(R.string.sents, Converter.getFormattedTokenString(mSessionData.amount)));
         mBtnMakePayment.setVisibility(mSessionData.isPaid ? View.GONE : View.VISIBLE);
         mBtnReportPayment.setVisibility(mSessionData.isPaid ? View.GONE : View.VISIBLE);
     }
@@ -207,7 +207,7 @@ public class VpnSessionDetailsFragment extends Fragment implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        String aValue = Converter.getFormattedSentBalance(mSessionData.amount);
+        String aValue = Converter.getFormattedTokenString(mSessionData.amount);
         switch (v.getId()) {
             case R.id.btn_make_payment:
                 loadNextActivity(constructSendActivityIntent(aValue, mSessionData.sessionId), AppConstants.REQ_VPN_PAY);

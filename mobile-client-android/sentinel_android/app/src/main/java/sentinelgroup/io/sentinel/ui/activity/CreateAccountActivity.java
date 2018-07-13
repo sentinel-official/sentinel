@@ -20,27 +20,6 @@ public class CreateAccountActivity extends SimpleBaseActivity {
     }
 
     @Override
-    public void loadFragment(Fragment iFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
-    }
-
-    private void checkUserLoginState() {
-        String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
-        if (aAccountAddress.isEmpty()) {
-            // User logging in for the first time
-            loadFragment(CreateAuidFragment.newInstance());
-        } else {
-            // User has already used the app
-            if (AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_APP_PIN_SET)) { // Verify PIN
-                startActivity(new Intent(this, VerifyPinActivity.class));
-                finish();
-            } else { // Set PIN
-                loadFragment(SetPinFragment.newInstance(aAccountAddress));
-            }
-        }
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
@@ -57,6 +36,39 @@ public class CreateAccountActivity extends SimpleBaseActivity {
         }
     }
 
+    /*
+     * Check the user's login state and show the appropriate screen
+     */
+    private void checkUserLoginState() {
+        String aAccountAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
+        if (aAccountAddress.isEmpty()) {
+            // User logging in for the first time
+            loadFragment(CreateAuidFragment.newInstance());
+        } else {
+            // User has already used the app
+            if (AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_APP_PIN_SET)) {
+                // Verify PIN
+                startActivity(new Intent(this, VerifyPinActivity.class));
+                finish();
+            } else {
+                // Set PIN
+                loadFragment(SetPinFragment.newInstance(aAccountAddress));
+            }
+        }
+    }
+
+    /**
+     * Replace the existing fragment in the container with the new fragment passed in this method's
+     * parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
+    @Override
+    public void loadFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+    }
+
+    // Listener implementations
     @Override
     public void onFragmentLoaded(String iTitle) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);

@@ -25,26 +25,9 @@ public class SendActivity extends BaseActivity {
     }
 
     @Override
-    public void loadFragment(Fragment iFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         disableTestNetSwitch(mIsVpnPay);
-    }
-
-    private void getIntentExtras() {
-        Bundle aBundle = getIntent().getExtras();
-        if (aBundle != null) {
-            mIsVpnPay = aBundle.getBoolean(AppConstants.EXTRA_IS_VPN_PAY);
-            mIsInit = aBundle.getBoolean(AppConstants.EXTRA_IS_INIT);
-            mAmount = aBundle.getString(AppConstants.EXTRA_AMOUNT);
-            if (mIsVpnPay && !mIsInit)
-                mSessionId = aBundle.getString(AppConstants.EXTRA_SESSION_ID);
-        }
-        loadFragment(SendFragment.newInstance(mIsVpnPay, mIsInit, mAmount, mSessionId));
     }
 
     @Override
@@ -63,15 +46,54 @@ public class SendActivity extends BaseActivity {
         finish();
     }
 
+    /*
+     * Get intent extras passed to it from the calling activity
+     */
+    private void getIntentExtras() {
+        Bundle aBundle = getIntent().getExtras();
+        if (aBundle != null) {
+            mIsVpnPay = aBundle.getBoolean(AppConstants.EXTRA_IS_VPN_PAY);
+            mIsInit = aBundle.getBoolean(AppConstants.EXTRA_IS_INIT);
+            mAmount = aBundle.getString(AppConstants.EXTRA_AMOUNT);
+            if (mIsVpnPay && !mIsInit)
+                mSessionId = aBundle.getString(AppConstants.EXTRA_SESSION_ID);
+        }
+        loadFragment(SendFragment.newInstance(mIsVpnPay, mIsInit, mAmount, mSessionId));
+    }
+
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        super.onCheckedChanged(buttonView, isChecked);
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (aFragment instanceof SendFragment) {
-            ((SendFragment) aFragment).updateAdapterData(isChecked);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                showSingleActionError(getString(R.string.no_scan_results));
+            } else {
+                if (result.getContents().matches("0[xX][0-9a-fA-F]+") && result.getContents().length() == 42) {
+                    Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+                    if (aFragment instanceof SendFragment)
+                        ((SendFragment) aFragment).updateToAddress(result.getContents());
+                } else {
+                    showSingleActionError(getString(R.string.not_a_address));
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
+    /**
+     * Replace the existing fragment in the container with the new fragment passed in this method's
+     * parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
+    @Override
+    public void loadFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+    }
+
+    // Listener implementations
     @Override
     public void onFragmentLoaded(String iTitle) {
         setToolbarTitle(iTitle);
@@ -119,28 +141,16 @@ public class SendActivity extends BaseActivity {
     }
 
     @Override
-    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
-        // Unimplemented interface method
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        super.onCheckedChanged(buttonView, isChecked);
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        if (aFragment instanceof SendFragment) {
+            ((SendFragment) aFragment).updateAdapterData(isChecked);
+        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                showSingleActionError(getString(R.string.no_scan_results));
-            } else {
-                if (result.getContents().matches("0[xX][0-9a-fA-F]+") && result.getContents().length() == 42) {
-                    Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-                    if (aFragment instanceof SendFragment)
-                        ((SendFragment) aFragment).updateToAddress(result.getContents());
-                } else {
-                    showSingleActionError(getString(R.string.not_a_address));
-                }
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+        // Unimplemented interface method
     }
 }

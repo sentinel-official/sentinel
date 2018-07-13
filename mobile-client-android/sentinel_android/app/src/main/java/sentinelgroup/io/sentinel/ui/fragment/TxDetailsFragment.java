@@ -145,7 +145,7 @@ public class TxDetailsFragment extends Fragment implements View.OnClickListener 
             String aTo = aToAddress.substring(2).replaceFirst("^0+(?!$)", "");
             mTvTo.setText(String.format("0x%s", aTo));
             mTvTxHash.setText(mTxData.transactionHash);
-            String aValue = Converter.getFormattedSentBalance(Double.parseDouble(Converter.convertHexToString(mTxData.data)));
+            String aValue = Converter.getFormattedTokenString(Double.parseDouble(Converter.convertHexToString(mTxData.data)));
             mTvAmount.setText(getString(R.string.sents, aValue));
             String s = Converter.convertHexToString(mTxData.gasPrice);
             double aGas = Double.parseDouble(Convert.fromWei(s, Convert.EtherUnit.GWEI).toPlainString());

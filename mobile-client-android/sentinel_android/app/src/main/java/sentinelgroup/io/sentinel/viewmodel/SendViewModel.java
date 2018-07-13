@@ -122,7 +122,7 @@ public class SendViewModel extends ViewModel {
                 byte[] signedMessage = TransactionEncoder.signMessage(aRawTransaction, aCredentials);
                 String aTxData = Numeric.toHexString(signedMessage);
                 mTxDataCreationLiveEvent.postValue(Resource.success(aTxData));
-            } catch (IOException | CipherException | InterruptedException | ExecutionException e) {
+            } catch (IOException | CipherException | InterruptedException | ExecutionException | NumberFormatException e) {
                 mTxDataCreationLiveEvent.postValue(Resource.error(e.getLocalizedMessage(), null));
             }
         });

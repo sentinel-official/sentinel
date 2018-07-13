@@ -23,6 +23,9 @@ import sentinelgroup.io.sentinel.BuildConfig;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.util.Logger;
 
+/**
+ * Retrofit client.
+ */
 public class WebClient {
     private static final String BASE_URL = "https://api.sentinelgroup.io/";
 

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * Conversion functions - Ether, Network Data Rates
+ * Conversion functions - Ether & Network Data Rates
  */
 public final class Convert {
     private Convert() {

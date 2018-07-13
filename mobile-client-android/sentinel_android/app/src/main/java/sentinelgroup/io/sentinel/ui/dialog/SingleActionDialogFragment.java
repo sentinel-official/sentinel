@@ -88,18 +88,28 @@ public class SingleActionDialogFragment extends DialogFragment {
         resizeDialog();
     }
 
+    /*
+     * Resize the dialog's width
+     */
     private void resizeDialog() {
         WindowManager.LayoutParams params = Objects.requireNonNull(getDialog().getWindow()).getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         getDialog().getWindow().setAttributes(params);
     }
 
+    /*
+     * Initialize the dialog's properties
+     */
     private void initDialog() {
         Objects.requireNonNull(getDialog().getWindow()).requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().setCanceledOnTouchOutside(false);
         getDialog().setCancelable(false);
     }
 
+    /*
+     * Instantiate all the views used in the XML, perform other instantiation steps (if needed)
+     * and initialize these views
+     */
     private void initView(View iView) {
         TextView aTvDialogTitle = iView.findViewById(R.id.tv_dialog_title);
         TextView aTvDialogBody = iView.findViewById(R.id.tv_dialog_body);

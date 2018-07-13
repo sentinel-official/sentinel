@@ -8,6 +8,9 @@ import android.arch.persistence.room.Query;
 
 import sentinelgroup.io.sentinel.network.model.GasEstimateEntity;
 
+/**
+ * DAO to do CRUD operation related to GAS Estimate.
+ */
 @Dao
 public interface GasEstimateEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

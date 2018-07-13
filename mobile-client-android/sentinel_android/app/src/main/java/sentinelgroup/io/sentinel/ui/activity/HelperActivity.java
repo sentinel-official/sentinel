@@ -14,7 +14,6 @@ import sentinelgroup.io.sentinel.ui.adapter.VpnHelperPagerAdapter;
 import sentinelgroup.io.sentinel.ui.custom.PageFadeTransformer;
 
 public class HelperActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
-
     private ViewPager mVpHelper;
     private ViewPagerIndicator mVpiIndicator;
     private Button mBtnNext;
@@ -31,19 +30,27 @@ public class HelperActivity extends AppCompatActivity implements ViewPager.OnPag
 
     @Override
     public void onBackPressed() {
-        // disable back press
+        // disables back press
     }
 
+    /*
+     * Instantiate all the views used in the XML and perform other instantiation steps (if needed)
+     */
     private void initView() {
         mVpHelper = findViewById(R.id.vp_helper);
         mVpiIndicator = findViewById(R.id.vpi_indicator);
         mBtnNext = findViewById(R.id.btn_next);
+        // instantiate ViewPager and ViewPager Indicator
+        setupViewPager();
+        // add listeners
         mBtnNext.setOnClickListener(this);
-        setupViewPagerAndTabs();
     }
 
-    private void setupViewPagerAndTabs() {
-        // Setup ViewPager and VPI
+    /*
+     * Instantiate the ViewPager and set an adapter to it. Also, add the ViewPagerIndicator to the
+     * ViewPager
+     */
+    private void setupViewPager() {
         mAdapter = new VpnHelperPagerAdapter(this);
         mVpHelper.setAdapter(mAdapter);
         mVpHelper.setOffscreenPageLimit(2);
@@ -52,13 +59,12 @@ public class HelperActivity extends AppCompatActivity implements ViewPager.OnPag
         mVpiIndicator.addOnPageChangeListener(this);
     }
 
+    // Listener implementations
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    }
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
     @Override
-    public void onPageScrollStateChanged(int state) {
-    }
+    public void onPageScrollStateChanged(int state) {}
 
     @Override
     public void onPageSelected(int position) {

@@ -11,6 +11,9 @@ import java.util.List;
 
 import sentinelgroup.io.sentinel.network.model.Session;
 
+/**
+ * TypeConverter to store a custom object (List<Session>) in the database.
+ */
 public class SessionListTypeConverter {
     private static Gson gson = new Gson();
 

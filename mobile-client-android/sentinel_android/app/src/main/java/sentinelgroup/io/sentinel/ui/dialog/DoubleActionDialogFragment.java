@@ -102,18 +102,28 @@ public class DoubleActionDialogFragment extends DialogFragment {
         resizeDialog();
     }
 
+    /*
+     * Resize the dialog's width
+     */
     private void resizeDialog() {
         WindowManager.LayoutParams params = Objects.requireNonNull(getDialog().getWindow()).getAttributes();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         getDialog().getWindow().setAttributes(params);
     }
 
+    /*
+     * Initialize the dialog's properties
+     */
     private void initDialog() {
         Objects.requireNonNull(getDialog().getWindow()).requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().setCanceledOnTouchOutside(false);
         getDialog().setCancelable(false);
     }
 
+    /*
+     * Instantiate all the views used in the XML, perform other instantiation steps (if needed)
+     * and initialize these views
+     */
     private void initView(View iView) {
         TextView aTvDialogTitle = iView.findViewById(R.id.tv_dialog_title);
         TextView aTvDialogBody = iView.findViewById(R.id.tv_dialog_body);
@@ -127,6 +137,7 @@ public class DoubleActionDialogFragment extends DialogFragment {
         aBtnNegative.setOnClickListener(v -> onActionButtonClick(false));
     }
 
+    // Interface interaction method
     public void onActionButtonClick(boolean iIsPositiveButton) {
         if (mListener != null) {
             mListener.onActionButtonClicked(mTag, getDialog(), iIsPositiveButton);
@@ -161,6 +172,15 @@ public class DoubleActionDialogFragment extends DialogFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDialogActionListener {
+        /**
+         * Notifies the observer when the dialog's button is clicked
+         *
+         * @param iTag             [String] The Tag assigned to the fragment when it's added to the
+         *                         container
+         * @param iDialog          [Dialog] The instance of this dialog
+         * @param isPositiveButton [boolean] Indicates if the button pressed in positive button or
+         *                         negative button
+         */
         void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton);
     }
 }

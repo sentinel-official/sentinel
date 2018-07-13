@@ -7,8 +7,10 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import sentinelgroup.io.sentinel.network.model.Chains;
-import sentinelgroup.io.sentinel.network.model.Net;
 
+/**
+ * DAO to do CRUD operation related to Wallet Balance.
+ */
 @Dao
 public interface BalanceEntryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

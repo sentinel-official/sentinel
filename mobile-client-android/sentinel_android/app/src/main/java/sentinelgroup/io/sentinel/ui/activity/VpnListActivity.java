@@ -8,13 +8,11 @@ import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
-import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.ui.fragment.VpnDetailsFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnListFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 
-public class VpnListActivity extends BaseActivity implements OnVpnConnectionListener {
-
+public class VpnListActivity extends BaseActivity {
     private VpnListEntity mVpnListData;
 
     @Override
@@ -23,28 +21,10 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
         getIntentExtras();
     }
 
-    private void getIntentExtras() {
-        if (getIntent().getExtras() != null) {
-            mVpnListData = (VpnListEntity) getIntent().getSerializableExtra(AppConstants.EXTRA_VPN_LIST);
-            loadFragment(VpnDetailsFragment.newInstance(mVpnListData));
-        } else {
-            loadFragment(VpnListFragment.newInstance());
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         disableTestNetSwitch(mVpnListData == null);
-    }
-
-    @Override
-    public void loadFragment(Fragment iFragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
-    }
-
-    private void addFragment(Fragment iNextFragment) {
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_container, iNextFragment).addToBackStack(null).commit();
     }
 
     @Override
@@ -55,6 +35,55 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+    }
+
+    /*
+     * Get intent extras passed to it from the calling activity
+     */
+    private void getIntentExtras() {
+        if (getIntent().getExtras() != null) {
+            mVpnListData = (VpnListEntity) getIntent().getSerializableExtra(AppConstants.EXTRA_VPN_LIST);
+            loadFragment(VpnDetailsFragment.newInstance(mVpnListData));
+        } else {
+            loadFragment(VpnListFragment.newInstance());
+        }
+    }
+
+    /**
+     * Add the fragment to the container which is passed in this method's parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
+    private void addFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_container, iFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstants.REQ_VPN_INIT_PAY) {
+            if (resultCode == RESULT_OK) {
+                showSingleActionError(getString(R.string.init_vpn_pay_success_message));
+            }
+        }
+    }
+
+    /**
+     * Replace the existing fragment in the container with the new fragment passed in this method's
+     * parameters
+     *
+     * @param iFragment [Fragment] The fragment which needs to be displayed
+     */
+    @Override
+    public void loadFragment(Fragment iFragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+    }
+
+    // Listener implementations
     @Override
     public void onFragmentLoaded(String iTitle) {
         setToolbarTitle(iTitle);
@@ -98,26 +127,6 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
             setResult(RESULT_OK);
             finish();
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AppConstants.REQ_VPN_INIT_PAY) {
-            if (resultCode == RESULT_OK) {
-                showSingleActionError(getString(R.string.init_vpn_pay_success_message));
-            }
-        }
-    }
-
-    @Override
-    public void onVpnConnectionInitiated(String iVpnConfigFilePath) {
-        // Unimplemented interface method
-    }
-
-    @Override
-    public void onVpnDisconnectionInitiated() {
-        // Unimplemented interface method
     }
 
     @Override

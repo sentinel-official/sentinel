@@ -60,7 +60,7 @@ public class TxHistoryListAdapter extends RecyclerView.Adapter<TxHistoryListAdap
             boolean isReceivedTransaction = aReceivedAddress.equalsIgnoreCase(aMyAddress);
             holder.mIvSource.setImageDrawable(ContextCompat.getDrawable(mContext, isReceivedTransaction ? R.drawable.shape_state_blue : R.drawable.shape_state_grey));
             holder.mTvSource.setText(isReceivedTransaction ? R.string.receive_sent : R.string.send_sent);
-            String aValue = Converter.getFormattedSentBalance(Double.parseDouble(Converter.convertHexToString(aTxResult.data)));
+            String aValue = Converter.getFormattedTokenString(Double.parseDouble(Converter.convertHexToString(aTxResult.data)));
             holder.mTvSourceEarnings.setText(isReceivedTransaction
                     ? mContext.getString(R.string.earning_positive, aValue)
                     : mContext.getString(R.string.earning_neagtive, aValue));

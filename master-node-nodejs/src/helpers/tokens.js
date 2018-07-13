@@ -37,59 +37,26 @@ class Tokens {
         console.log('err', err);
       });
   }
-  /* Tokens.prototype.calculateSents = function (token, value, cb) {
-    let sentUsd = null;
-    let tokenUsd = null;
-    let that = this;
-    let sents = null;
-    let name = null;
   
-    value = value / (1.0 * Math.pow(10, token['decimals']))
-  
-    async.waterfall([
-      (next) => {
-        name = that.getToken(null, 'SENTinel')
-        next()
-      }, (next) => {
-        that.getPrice(name, (resp) => {
-          sentUsd = resp;
-          next()
-        })
-      }, (next) => {
-        that.getPrice(token, (resp) => {
-          tokenUsd = resp
-          next()
-        })
-      }, (next) => {
-        sents = tokenUsd / sentUsd;
-        sents = parseInt((sents * value) * DECIMALS);
-        next();
-      }
-    ], (err, resp) => {
-      console.log('sents', sents)
-      return cb(sents)
-    })
-  }
-   */
-  exchange(fromToken, toToken, value, cb) {
+  exchange(fromToken, toToken, value, serviceCharge, cb) {
     value = value / (1.0 * (Math.pow(10, fromToken['decimals'])));
-    let that = this;
+    let self = this;
     let fromPrice = null;
     let toPrice = null;
     async.waterfall([
       (next) => {
-        that.getPrice(fromToken, (price) => {
+        self.getPrice(fromToken, (price) => {
           fromPrice = price;
           next();
         });
       }, (next) => {
-        that.getPrice(toToken, (price) => {
+        self.getPrice(toToken, (price) => {
           toPrice = price;
           next();
         });
       }
     ], (err, resp) => {
-      value = value * (fromPrice / toPrice) * (1.0 - FEE_PERCENTAGE);
+      value = value * (fromPrice / toPrice) * (1.0 - (serviceCharge * 0.01));
       value = value * Math.pow(10, toToken['decimals']);
       cb(value);
     });

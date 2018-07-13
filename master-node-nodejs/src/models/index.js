@@ -7,6 +7,8 @@ import { Statistic } from "./statistics";
 import { Swap } from "./swaps";
 import { Usage } from "./usage";
 import { Validation } from "./validations";
+import { SwixerNodes } from "./swixer.nodes";
+import { Swixes } from "./swixes";
 
 export {
   Connection,
@@ -17,5 +19,7 @@ export {
   Statistic,
   Swap,
   Usage,
-  Validation
+  Validation,
+  SwixerNodes,
+  Swixes
 }

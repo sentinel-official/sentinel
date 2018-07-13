@@ -10,6 +10,8 @@ import ClientRoutes from './client.routes';
 import StatsRoutes from './stats.routes';
 import TokenRoutes from './token.routes';
 import ValidationRoutes from './nodeValidation.routes'
+import SwixerRoutes from './swixer.routes';
+
 import { app } from '../app'
 
 import DevController from '../dev/free'
@@ -44,13 +46,14 @@ routes.use('/node', NodeRoutes);
 routes.use('/stats', StatsRoutes);
 routes.use('/swaps', TokenRoutes);
 routes.use('/validations', ValidationRoutes);
+routes.use('/swix', SwixerRoutes)
 
 routes.post('/logs/error', ErrorController.logTheError);
 routes.post('/dev/free', DevController.getFreeAmount);
 
 routes.all('*', (req, res, next) => {
   console.log('404 api not found')
-  next()
+  res.status(404).send({ message: 'wrong api' })
 });
 
 routes.use(logErrorService);

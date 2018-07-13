@@ -11,7 +11,8 @@ import {
   ADDRESS as SWAP_ADDRESS,
   BTC_BASED_COINS,
   ETHEREUM_BASED_COINS,
-  PRIVATE_KEY as SWAP_PRIVATE_KEY
+  PRIVATE_KEY as SWAP_PRIVATE_KEY,
+  FEE_PERCENTAGE
 } from "../config/swaps";
 import { Swap } from "../models";
 
@@ -93,7 +94,7 @@ const checkTx = (swaps, cb) => {
             let value = details.tokenValue;
             let fromToken = details.token;
             let toToken = tokens.getToken(toSymbol)
-            tokens.exchange(fromToken, toToken, value, (val) => {
+            tokens.exchange(fromToken, toToken, value, FEE_PERCENTAGE, (val) => {
               value = val
               if (BTC_BASED_COINS[toSymbol]) {
                 toAddr = swap['to_address']
@@ -116,7 +117,7 @@ const checkTx = (swaps, cb) => {
         let toToken = tokens.getToken(toSymbol)
         BTCHelper.getBalance(fromAddr, fromSymbol, (val) => {
           if (val && val > 0) {
-            tokens.exchange(fromToken, toToken, val, (value) => {
+            tokens.exchange(fromToken, toToken, val, FEE_PERCENTAGE, (value) => {
               transfer(fromAddr, toAddr, value, toSymbol, () => {
                 console.log('swapped BTC')
                 iterate()

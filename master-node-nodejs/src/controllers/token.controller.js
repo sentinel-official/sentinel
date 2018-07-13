@@ -1,7 +1,7 @@
 import async from 'async'
 import { tokens } from '../helpers/tokens'
 import ETHHelper from '../helpers/eth'
-import { ADDRESS as SWAP_ADDRESS, TOKENS } from '../config/swaps';
+import { ADDRESS as SWAP_ADDRESS, TOKENS, FEE_PERCENTAGE } from '../config/swaps';
 import { DECIMALS } from '../config/vars';
 import { BTCHelper } from '../helpers/btc'
 import { Swap } from '../models';
@@ -108,7 +108,7 @@ const getExchangeValue = (req, res) => {
     message.message = 'From token OR To token is not found.'
     res.status(400).send(message)
   } else {
-    tokens.exchange(fromToken, toToken, value, (value) => {
+    tokens.exchange(fromToken, toToken, value, FEE_PERCENTAGE, (value) => {
       message.success = true;
       message.value = value;
       res.status(200).send(message)

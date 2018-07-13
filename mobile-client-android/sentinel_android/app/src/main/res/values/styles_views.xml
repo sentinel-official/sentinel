@@ -64,10 +64,6 @@
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="CustomTextAppearance.Text12.White70">
-        <item name="android:textColor">@color/colorTextWhiteWithAlpha70</item>
-    </style>
-
     <style name="CustomTextAppearance.Text12.Black">
         <item name="android:textColor">@color/colorTextBlack</item>
     </style>
@@ -84,11 +80,6 @@
 
     <style name="CustomTextAppearance.Text12.GrayNormal">
         <item name="android:textColor">@color/colorTextGray</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="CustomTextAppearance.Text12.OrangeNormal">
-        <item name="android:textColor">@color/colorButtonOrange</item>
         <item name="android:textStyle">normal</item>
     </style>
 

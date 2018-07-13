@@ -366,8 +366,8 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     @Override
     public void onDetach() {
         hideProgressDialog();
-        super.onDetach();
         mListener = null;
+        super.onDetach();
     }
 
     @Override

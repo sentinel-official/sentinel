@@ -21,11 +21,8 @@
     <string name="test_net_state">Тестовый режим %1s</string>
     <string name="transaction_history">История Транзакций</string>
     <string name="vpn_history">История VPN</string>
-    <string name="network_stats">Статистика Сети</string>
-    <string name="usage_stats">Статистика Использования</string>
     <string name="reset_pin">Сбросить PIN</string>
     <string name="help">Помощь</string>
-    <string name="about">О Нас</string>
     <string name="disconnect">Отключиться</string>
     <string name="view_vpns">Список VPN</string>
     <string name="make_payment">Оплатить</string>
@@ -39,7 +36,6 @@
     <string name="eth_desc">Баланс ETH</string>
     <string name="test_eth_desc">Баланс Тестовых ETH</string>
     <string name="send">Отправить</string>
-    <string name="select_token">Выбрать Токен</string>
     <string name="send_to_hint">Адрес отправки</string>
     <string name="enter_amount_hint">Ввести количество</string>
     <string name="gas_limit_hint">Лимит Газа</string>
@@ -84,7 +80,6 @@
     <string name="free_token_requested">Бесплатные тестовые токены SENT скоро будут доступны. Вы скоро их получите.</string>
     <string name="yay">Ура!</string>
     <string name="thanks">Спасибо</string>
-    <string name="ok">ОК</string>
     <string name="empty_token_value">-</string>
     <string name="forgot_pin">Забыли PIN?</string>
     <string name="reset_pin_success">Вы успешно сбросили PIN</string>
@@ -114,8 +109,6 @@
     <string name="gas_limit_eth">21000</string>
     <string name="sending">Отправка…</string>
     <string name="signing_transaction">Проверка и подпись транзакции. Подождите…</string>
-    <string name="empty_vpn_list">Все серверы заняты. Попробуйте позже.</string>
-    <string name="loading_vpn_list">Загрузка списка VPN…</string>
     <string name="init_vpn_pay">100</string>
     <string name="init_vpn_pay_title">Напоминание о платеже</string>
     <string name="init_vpn_pay_success_message">Платеж обрабатывается, подождите пару минут перед подключением к VPN</string>
@@ -132,12 +125,10 @@
     <string name="coming_soon">Скоро добавим…</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
     <string name="saving_config">Сохранение конфигураций VPN…</string>
-    <string name="vpn_requires_testnet">Активировать тестовую сеть для использования VPN-сервисов.</string>
     <string name="download_speed">Скорость входящих данных</string>
     <string name="data_used">Использовано данных</string>
     <string name="upload_speed">Скорость исходящих данных</string>
     <string name="vpn_status">Статус VPN: %1s</string>
-    <string name="duration_value">Длительность %1s</string>
     <string name="vpn_already_connected">Вы уже подключены к VPN-серверу. Перед подключением к новому VPN-серверу отключите старый.</string>
     <string name="pending_payment_desc">Ожидание оплаты за предыдущий сеанс</string>
     <string name="amount_owed">Сумма долга</string>
@@ -148,7 +139,6 @@
     <string name="session_cost">Стоимость сеанса</string>
     <string name="vpn_session_details">Детали сеанса VPN</string>
     <string name="reporting_payment">Подтверждение платежа за VPN…</string>
-    <string name="fetching_balance">Получение вашего баланса…</string>
     <string name="pay">Оплатить</string>
     <string name="loading_tx_history">Загрузка последних транзакций…</string>
     <string name="send_eth">Отправление ETH</string>
@@ -294,7 +284,6 @@
     <string name="shortcut_profile_notfound">Профиль указанный в ярлыке не найден</string>
     <string name="state_user_vpn_permission" translatable="false">Ожжидание разрешения от пользователя для VPN API</string>
     <string name="state_user_vpn_password" translatable="false">Ожидание пароля от VPN пользователя</string>
-    <string name="state_user_vpn_password_cancelled" translatable="false">Диалог ввода пароля VPN отменен</string>
     <string name="state_user_vpn_permission_cancelled" translatable="false">Диалог разрешения API VPN отменен.\n\nПредоставьте разрешение для использования служб VPN</string>
     <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
     <string name="config_error_found">Ошибка в конфигурации</string>

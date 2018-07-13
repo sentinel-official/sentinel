@@ -1,7 +1,6 @@
 <resources>
     <string name="app_sub_name">Open source wallet and secure VPN platform</string>
     <string name="enter_pin">Enter PIN</string>
-    <string name="verify">Verify</string>
     <string name="create_account_desc">Anonymous User ID (AUID) generates a unique identity to users</string>
     <string name="create_account">Create your AUID</string>
     <string name="or">OR</string>
@@ -22,11 +21,8 @@
     <string name="test_net_state">Test Mode %1s</string>
     <string name="transaction_history">Transaction History</string>
     <string name="vpn_history">VPN History</string>
-    <string name="network_stats">Network Stats</string>
-    <string name="usage_stats">Usage Stats</string>
     <string name="reset_pin">Reset PIN</string>
     <string name="help">Help</string>
-    <string name="about">About</string>
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">VIEW VPNs</string>
     <string name="make_payment">Make Payment</string>
@@ -40,7 +36,6 @@
     <string name="eth_desc">Total ETH</string>
     <string name="test_eth_desc">Total Test ETH</string>
     <string name="send">Send</string>
-    <string name="select_token">Select Token</string>
     <string name="send_to_hint">Send To</string>
     <string name="enter_amount_hint">Enter Amount</string>
     <string name="gas_limit_hint">Gas Limit</string>
@@ -85,7 +80,6 @@
     <string name="free_token_requested">Free test SENT tokens getting mined. You will receive them in your wallet soon.</string>
     <string name="yay">Yay!</string>
     <string name="thanks">Thanks</string>
-    <string name="ok">OK</string>
     <string name="empty_token_value">-</string>
     <string name="forgot_pin">Forgot PIN?</string>
     <string name="reset_pin_success">PIN reset successful</string>
@@ -115,8 +109,6 @@
     <string name="gas_limit_eth">21000</string>
     <string name="sending">Sending…</string>
     <string name="signing_transaction">Validating &amp; signing transaction. Please wait…</string>
-    <string name="empty_vpn_list">All the servers are occupied. Please try later.</string>
-    <string name="loading_vpn_list">Loading the VPN list…</string>
     <string name="init_vpn_pay">100</string>
     <string name="init_vpn_pay_title">Initial Payment Reminder</string>
     <string name="init_vpn_pay_success_message">Payment is being processed, please wait a couple of minutes before you connect to the VPN</string>
@@ -133,12 +125,10 @@
     <string name="coming_soon">Coming soon…</string>
     <string name="fetching_config">Fetching VPN configurations…</string>
     <string name="saving_config">Saving VPN configurations…</string>
-    <string name="vpn_requires_testnet">Activate Testnet to use VPN services.</string>
     <string name="download_speed">Download Speed</string>
     <string name="data_used">Data Used</string>
     <string name="upload_speed">Upload Speed</string>
     <string name="vpn_status">VPN Status: %1s</string>ring>
-    <string name="duration_value">Duration %1s</string>
     <string name="vpn_already_connected">You have already connected to a VPN server. Please disconnect from it before connecting to a new VPN server.</string>
     <string name="pending_payment_desc">Pending payment for previous session</string>
     <string name="amount_owed">Amount Owed</string>
@@ -149,7 +139,6 @@
     <string name="session_cost">Session Cost</string>
     <string name="vpn_session_details">VPN Session Details</string>
     <string name="reporting_payment">Reporting VPN payment…</string>
-    <string name="fetching_balance">Fetching your balance…</string>
     <string name="pay">Pay</string>
     <string name="loading_tx_history">Loading Transaction History…</string>
     <string name="send_eth">Send ETH</string>
@@ -295,7 +284,6 @@
     <string name="shortcut_profile_notfound">Profile specified in shortcut not found</string>
     <string name="state_user_vpn_permission" translatable="false">Waiting for user permission to use VPN API</string>
     <string name="state_user_vpn_password" translatable="false">Waiting for user VPN password</string>
-    <string name="state_user_vpn_password_cancelled" translatable="false">VPN password input dialog cancelled</string>
     <string name="state_user_vpn_permission_cancelled" translatable="false">VPN API permission dialog cancelled.\n\nPlease grant this permission to use VPN services</string>
     <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
     <string name="config_error_found">Error in Configuration</string>

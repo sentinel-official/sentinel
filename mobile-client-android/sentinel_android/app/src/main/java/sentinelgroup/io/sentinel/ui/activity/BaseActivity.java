@@ -79,14 +79,14 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     }
 
     protected void showProgressDialog(boolean isHalfDim, String iMessage) {
-        ToggleProgressDialogState(true, isHalfDim, iMessage == null ? getString(R.string.generic_loading_message) : iMessage);
+        toggleProgressDialogState(true, isHalfDim, iMessage == null ? getString(R.string.generic_loading_message) : iMessage);
     }
 
     protected void hideProgressDialog() {
-        ToggleProgressDialogState(false, false, null);
+        toggleProgressDialogState(false, false, null);
     }
 
-    private void ToggleProgressDialogState(boolean isShow, boolean isHalfDim, String iMessage) {
+    private void toggleProgressDialogState(boolean isShow, boolean isHalfDim, String iMessage) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(PROGRESS_DIALOG_TAG);
         if (isShow) {
             if (aFragment == null) {

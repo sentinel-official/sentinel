@@ -80,7 +80,7 @@ describe('Route for register swixer node', () => {
           res.body.should.be.a('object');
           done();
         });
-    }).timeout(4000)
+    }).timeout(10000)
   });
 });
 
@@ -108,7 +108,7 @@ describe('Route for update swixer node ', () => {
           res.body.should.be.a('object');
           done();
         });
-    }).timeout(4000)
+    }).timeout(10000)
   });
 });
 
@@ -135,7 +135,7 @@ describe('Route for update swixer node', () => {
           res.body.should.be.a('object');
           done();
         });
-    }).timeout(4000)
+    }).timeout(10000)
   });
 });
 
@@ -151,7 +151,7 @@ describe('Route for get swixer nodes list', () => {
           res.body.should.be.a('object');
           done();
         });
-    }).timeout(4000)
+    }).timeout(10000)
   });
 });
 
@@ -168,7 +168,7 @@ describe('Route for get swix rate', () => {
           res.body.should.be.a('object');
           done();
         });
-    }).timeout(4000)
+    }).timeout(10000)
   });
 });
 
@@ -193,7 +193,7 @@ describe('Route for get swix details', () => {
           res.body.should.be.a('object');
           done();
         });
-    }).timeout(4000)
+    }).timeout(10000)
   });
 });
 
@@ -239,6 +239,6 @@ describe('Route for deregister swixer node', () => {
           res.body.should.be.a('object');
           done();
         });
-    }).timeout(4000)
+    }).timeout(10000)
   });
 });

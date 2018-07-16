@@ -17,15 +17,21 @@ const resend = (list, cb) => {
 
     waterfall([
       (next) => {
-        getBalance(address, coinSymbol, (err, balance) => {
-          if (err) {
-            console.log('error at getBalance in resend job');
-            next({}, null)
-          } else {
-            refundingBalance = balance;
-            next()
-          }
-        })
+        if (!item.remainingAmount) {
+          getBalance(address, coinSymbol, (err, balance) => {
+            if (err) {
+              console.log('error at getBalance in resend job');
+              next({}, null)
+            } else {
+              refundingBalance = balance;
+              next()
+            }
+          })
+        } else {
+          refundingBalance = item.remainingAmount;
+          next();
+        }
+
       }, (next) => {
         getAccount(address, (err, details) => {
           if (err) {
@@ -78,7 +84,7 @@ const refund = () => {
         }
       }, {
         $match: {
-          $and: [{ "time": { $lte: parseInt(Date.now() / 1000) } }, { "isScheduled": { $eq: false } }, { "remainingAmount": { $exists: false } }]
+          $and: [{ "time": { $lte: parseInt(Date.now() / 1000) } }, { "isScheduled": { $eq: false } }, { $or: [{ 'remainingAmount': { $exists: false } }, { 'remainingAmount': { $gt: 0 } }] }]
         }
       }
     ], (err, list) => {
@@ -96,3 +102,8 @@ const refund = () => {
 module.exports = {
   refund
 }
+
+
+/* 
+[{'remainingAmount': {$exists: false}},{'remainingAmount': {$gt: 0}}]
+*/

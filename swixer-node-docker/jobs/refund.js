@@ -93,7 +93,7 @@ const refund = () => {
 
         })
       } else {
-        console.log('error occured in resed job')
+        console.log('error occured in resend job')
       }
     })
   })

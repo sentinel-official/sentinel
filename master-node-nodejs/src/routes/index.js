@@ -52,7 +52,6 @@ routes.post('/dev/free', DevController.getFreeAmount);
 
 routes.all('*', (req, res, next) => {
   console.log('404 api not found')
-  res.status(404).send({ message: 'wrong api' })
 });
 
 routes.use(logErrorService);

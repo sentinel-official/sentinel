@@ -87,13 +87,13 @@ const registerNode = (req, res) => {
 
         let nodeData = new Node(data)
         database.insert(nodeData, (err, resp) => {
+          console.log('err, resp', err, resp)
           if (err) {
             next({
               'success': false,
               'message': 'Error occurred while registering the node.'
             }, null)
-          }
-          else if (resp.ops[0]._id) {
+          } else if (resp) {
             next(null, {
               'success': true,
               'token': token,

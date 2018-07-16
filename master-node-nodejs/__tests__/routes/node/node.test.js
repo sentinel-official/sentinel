@@ -106,6 +106,7 @@ const nodeInfoAlive = {
 //         .post(accountRoute)
 //         .send(correctDetails)
 //         .end((err, res) => {
+//           console.log('err, resp', err, res.body)
 //           res.should.have.status(200);
 //           res.body.should.be.a('object');
 //           done();

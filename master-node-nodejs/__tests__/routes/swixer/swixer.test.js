@@ -67,178 +67,178 @@ const updateAliveNodeDetails = {
 
 let token = null
 
-describe('Route for register swixer node', () => {
-  describe('/POST ' + registerSwixerNodeRoute, () => {
+// describe('Route for register swixer node', () => {
+//   describe('/POST ' + registerSwixerNodeRoute, () => {
 
-    it('should create the swixer node', (done) => {
-      chai.request(server)
-        .post(registerSwixerNodeRoute)
-        .send(registerDetails)
-        .end((err, res) => {
-          console.log('err, res', err, res.body)
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(10000)
-  });
-});
+//     it('should create the swixer node', (done) => {
+//       chai.request(server)
+//         .post(registerSwixerNodeRoute)
+//         .send(registerDetails)
+//         .end((err, res) => {
+//           console.log('err, res', err, res.body)
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(10000)
+//   });
+// });
 
-describe('Route for update swixer node ', () => {
+// describe('Route for update swixer node ', () => {
 
-  before(() => {
-    SwixerNodes.findOne({
-      account_addr: registerDetails['account_addr']
-    }, (err, resp) => {
-      console.log('resp update', resp)
-      updateSwixerNodeDetails.token = resp.token
-    })
-  });
+//   before(() => {
+//     SwixerNodes.findOne({
+//       account_addr: registerDetails['account_addr']
+//     }, (err, resp) => {
+//       console.log('resp update', resp)
+//       updateSwixerNodeDetails.token = resp.token
+//     })
+//   });
 
-  describe('/POST ' + updateSwixerNodeInfoRoute, () => {
+//   describe('/POST ' + updateSwixerNodeInfoRoute, () => {
 
-    it('should date the swixer node', (done) => {
-      console.log('data', updateSwixerNodeDetails)
-      chai.request(server)
-        .post(updateSwixerNodeInfoRoute)
-        .send(updateSwixerNodeDetails)
-        .end((err, res) => {
-          console.log('err, res update', err, res.body)
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(10000)
-  });
-});
+//     it('should date the swixer node', (done) => {
+//       console.log('data', updateSwixerNodeDetails)
+//       chai.request(server)
+//         .post(updateSwixerNodeInfoRoute)
+//         .send(updateSwixerNodeDetails)
+//         .end((err, res) => {
+//           console.log('err, res update', err, res.body)
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(10000)
+//   });
+// });
 
-describe('Route for update swixer node', () => {
-  before(() => {
-    SwixerNodes.findOne({
-      account_addr: registerDetails['account_addr']
-    }, (err, resp) => {
-      console.log('resp update', resp.token)
-      updateAliveNodeDetails.token = resp.token
-    })
-  });
+// describe('Route for update swixer node', () => {
+//   before(() => {
+//     SwixerNodes.findOne({
+//       account_addr: registerDetails['account_addr']
+//     }, (err, resp) => {
+//       console.log('resp update', resp.token)
+//       updateAliveNodeDetails.token = resp.token
+//     })
+//   });
 
-  describe('/POST ' + updateSwixerNodeInfoRoute, () => {
+//   describe('/POST ' + updateSwixerNodeInfoRoute, () => {
 
-    it('should create the swixer node', (done) => {
-      console.log('data', updateAliveNodeDetails)
-      chai.request(server)
-        .post(updateSwixerNodeInfoRoute)
-        .send(updateAliveNodeDetails)
-        .end((err, res) => {
-          console.log('err, res', err, res.body)
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(10000)
-  });
-});
+//     it('should create the swixer node', (done) => {
+//       console.log('data', updateAliveNodeDetails)
+//       chai.request(server)
+//         .post(updateSwixerNodeInfoRoute)
+//         .send(updateAliveNodeDetails)
+//         .end((err, res) => {
+//           console.log('err, res', err, res.body)
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(10000)
+//   });
+// });
 
-describe('Route for get swixer nodes list', () => {
-  describe('/GET ' + getSwixerNodesListRoute, () => {
+// describe('Route for get swixer nodes list', () => {
+//   describe('/GET ' + getSwixerNodesListRoute, () => {
 
-    it('should return list of swixer nodes', (done) => {
-      chai.request(server)
-        .get(getSwixerNodesListRoute)
-        .end((err, res) => {
-          console.log('err, res', err, res.body)
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(10000)
-  });
-});
+//     it('should return list of swixer nodes', (done) => {
+//       chai.request(server)
+//         .get(getSwixerNodesListRoute)
+//         .end((err, res) => {
+//           console.log('err, res', err, res.body)
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(10000)
+//   });
+// });
 
-describe('Route for get swix rate', () => {
-  describe('/GET ' + getExchangeValueRoute, () => {
+// describe('Route for get swix rate', () => {
+//   describe('/GET ' + getExchangeValueRoute, () => {
 
-    it('should return exchange price', (done) => {
-      chai.request(server)
-        .get(getExchangeValueRoute)
-        .query(exchangeData)
-        .end((err, res) => {
-          console.log('err, res', err, res.body)
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(10000)
-  });
-});
+//     it('should return exchange price', (done) => {
+//       chai.request(server)
+//         .get(getExchangeValueRoute)
+//         .query(exchangeData)
+//         .end((err, res) => {
+//           console.log('err, res', err, res.body)
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(10000)
+//   });
+// });
 
-describe('Route for get swix details', () => {
+// describe('Route for get swix details', () => {
 
-  describe('/POST ' + getSwixDetailsRoute, () => {
-    after(() => {
-      Swixes.findOneAndRemove({
-        client_address: getSwixDetails.client_address
-      }, (err, resp) => {
+//   describe('/POST ' + getSwixDetailsRoute, () => {
+//     after(() => {
+//       Swixes.findOneAndRemove({
+//         client_address: getSwixDetails.client_address
+//       }, (err, resp) => {
 
-      })
-    })
+//       })
+//     })
 
-    it('it should return swix details on success ', (done) => {
-      chai.request(server)
-        .post(getSwixDetailsRoute)
-        .send(getSwixDetails)
-        .end((err, res) => {
-          console.log('err, res', err, res.body)
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(10000)
-  });
-});
+//     it('it should return swix details on success ', (done) => {
+//       chai.request(server)
+//         .post(getSwixDetailsRoute)
+//         .send(getSwixDetails)
+//         .end((err, res) => {
+//           console.log('err, res', err, res.body)
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(10000)
+//   });
+// });
 
-describe('Route for get swix status', () => {
+// describe('Route for get swix status', () => {
 
-  describe('/GET ' + getSwixStatusRoute, () => {
+//   describe('/GET ' + getSwixStatusRoute, () => {
 
-    it('should return status of the swix', (done) => {
-      chai.request(server)
-        .get(getSwixStatusRoute)
-        .query(swixStatusData)
-        .end((err, res) => {
-          console.log('err, res', err, res.body)
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(20000)
-  });
-});
+//     it('should return status of the swix', (done) => {
+//       chai.request(server)
+//         .get(getSwixStatusRoute)
+//         .query(swixStatusData)
+//         .end((err, res) => {
+//           console.log('err, res', err, res.body)
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(20000)
+//   });
+// });
 
-describe('Route for deregister swixer node', () => {
+// describe('Route for deregister swixer node', () => {
 
-  before(() => {
-    SwixerNodes.findOne({
-      account_addr: registerDetails['account_addr']
-    }, (err, resp) => {
-      console.log('resp deregister', resp.token)
-      registerDetails.token = resp.token
-    })
-  });
+//   before(() => {
+//     SwixerNodes.findOne({
+//       account_addr: registerDetails['account_addr']
+//     }, (err, resp) => {
+//       console.log('resp deregister', resp.token)
+//       registerDetails.token = resp.token
+//     })
+//   });
 
-  describe('/POST ' + deRegisterSwixerNodeRoute, () => {
-    console.log('data', registerDetails)
+//   describe('/POST ' + deRegisterSwixerNodeRoute, () => {
+//     console.log('data', registerDetails)
 
-    it('should remove the swix node', (done) => {
-      chai.request(server)
-        .post(deRegisterSwixerNodeRoute)
-        .send(registerDetails)
-        .end((err, res) => {
-          console.log('err, res', err, res.body)
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          done();
-        });
-    }).timeout(10000)
-  });
-});
+//     it('should remove the swix node', (done) => {
+//       chai.request(server)
+//         .post(deRegisterSwixerNodeRoute)
+//         .send(registerDetails)
+//         .end((err, res) => {
+//           console.log('err, res', err, res.body)
+//           res.should.have.status(200);
+//           res.body.should.be.a('object');
+//           done();
+//         });
+//     }).timeout(10000)
+//   });
+// });

@@ -326,7 +326,7 @@ class VPNComponent extends Component {
         if (remote.process.platform === 'win32') {
             const abspath = 'C:\\Windows\\System32\\wbem\\WMIC.exe'
             const cmd = 'path Win32_PerfRawData_Tcpip_NetworkInterface Get name,BytesReceivedPersec,BytesSentPersec,BytesTotalPersec /value'
-            
+
             let downCur = 0;
             let upCur = 0;
             let usage;
@@ -339,12 +339,12 @@ class VPNComponent extends Component {
             data = data.trim().split(/\n\s*\n/)
             let interfaces = os.networkInterfaces();
 
-           Object.keys(interfaces).map((key) => {
-                if(key === 'WiFi') {
+            Object.keys(interfaces).map((key) => {
+                if (key === 'WiFi') {
                     bwStats['iface'] = key;
                     bwStats['down'] = data[1].split('\n')[0].split('=')[1].trim();
-                    bwStats['up'] = data[1].split('\n')[1].split('=')[1].trim();        
-                } else if ( key === 'Ethernet' ) {
+                    bwStats['up'] = data[1].split('\n')[1].split('=')[1].trim();
+                } else if (key === 'Ethernet') {
                     bwStats['iface'] = key;
                     bwStats['down'] = data[0].split('\n')[0].split('=')[1].trim()
                     bwStats['up'] = data[0].split('\n')[1].split('=')[1].trim()
@@ -352,12 +352,12 @@ class VPNComponent extends Component {
 
             })
             downCur = parseInt(bwStats.down);
-            upCur = parseInt(bwStats.up);                 
+            upCur = parseInt(bwStats.up);
             console.log("statas>>>>>>>>>>", bwStats, downCur, upCur)
             // downCur = parseInt(receivedArr[0]) + parseInt(receivedArr[1]);           
             // let sendOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.SentBytes\"');
             // let sendArr = sendOut.toString().trim().split('\r\n');
-            
+
             // upCur = parseInt(sendArr[0]) + parseInt(sendArr[1]);
             if (value) {
                 usage = {
@@ -376,8 +376,8 @@ class VPNComponent extends Component {
                 }
                 self.setState({ usage: usage })
             }
-            sendUsage(self.props.local_address, self.state.selectedVPN, usage);           
-        } 
+            sendUsage(self.props.local_address, self.state.selectedVPN, usage);
+        }
         else {
             let loopStop = false;
             let interfaces = os.networkInterfaces();
@@ -715,7 +715,7 @@ class VPNComponent extends Component {
                                         <Col xs={1}>
                                             <p style={{ fontWeight: 'bold' }}>{lang[language].Flag}</p>
                                         </Col>
-                                        <Col xs={4}>
+                                        <Col xs={3}>
                                             <p style={styles.columnHeadStyle}>
                                                 <a style={styles.columnSortStyle}
                                                     onClick={() => {
@@ -774,7 +774,13 @@ class VPNComponent extends Component {
                                                     </span>
                                                     : <span></span>}</p>
                                         </Col>
-                                        <Col xs={3}>
+                                        <Col xs={2}>
+                                            <p style={styles.columnHeadStyle}>
+                                                Algorithm
+                                            </p>
+                                        </Col>
+
+                                        <Col xs={2}>
                                             <p style={styles.columnHeadStyle}>
                                                 <a style={styles.columnSortStyle}
                                                     onClick={() => {
@@ -808,7 +814,7 @@ class VPNComponent extends Component {
                                                         <Col xs={1}>
                                                             <Flag code={Country.getCode(vpn.location.country)} height="16" />
                                                         </Col>
-                                                        <Col xs={4}>
+                                                        <Col xs={3}>
                                                             <p style={styles.fieldValueStyle}>{vpn.location.city}, {vpn.location.country}</p>
                                                         </Col>
                                                         <Col xs={2}>
@@ -818,7 +824,14 @@ class VPNComponent extends Component {
                                                             <p style={styles.fieldValueStyle}>{vpn.latency ? vpn.latency : 'None'}
                                                                 {vpn.latency ? (vpn.latency === 'Loading...' ? null : ' ms') : null}</p>
                                                         </Col>
-                                                        <Col xs={3}>
+                                                        <Col xs={2}>
+                                                            <p style={{
+                                                                textAlign: 'center', wordBreak: 'break-all',
+                                                                padding: 5, backgroundColor: '#31b0d5', marginTop: -4,
+                                                                color: 'white', borderRadius: 25
+                                                            }}>{vpn.enc_method ? vpn.enc_method : 'None'}</p>
+                                                        </Col>
+                                                        <Col xs={2}>
                                                             <p style={styles.fieldValueStyle}>{vpn.price_per_GB ? vpn.price_per_GB : 100}</p>
                                                         </Col>
                                                         <ReactTooltip id="listOver" place="bottom">

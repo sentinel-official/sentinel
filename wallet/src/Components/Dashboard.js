@@ -150,7 +150,8 @@ class Dashboard extends Component {
   }
 
   onTestChange = (value) => {
-    if (value === false && (this.state.value === 'vpn' || this.state.value === 'vpn_history'))
+    if ((value === false && (this.state.value === 'vpn' || this.state.value === 'vpn_history'))
+      || (value === true && this.state.value === 'swixer'))
       this.setState({ isTest: value, value: 'send' })
     else
       this.setState({ isTest: value })
@@ -263,6 +264,13 @@ class Dashboard extends Component {
               <Tab style={this.state.isTest ? styles.enabledTabStyle : styles.disabledTabStyle}
                 label={lang[language].VpnHistory} value="vpn_history" disabled={!this.state.isTest}>
                 <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} lang={this.props.lang} />
+              </Tab>
+              <Tab style={this.state.isTest ? styles.disabledTabStyle : styles.enabledTabStyle}
+                label="Swixer" value="swixer" disabled={this.state.isTest}>
+                <div>
+                  <iframe src="https://swixer.sentinelgroup.io" style={{ width: 1000, height: 525, border: 0 }}>
+                  </iframe>
+                </div>
               </Tab>
             </Tabs>
           </div>

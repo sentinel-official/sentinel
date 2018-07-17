@@ -517,6 +517,8 @@ class VPNComponent extends Component {
                 event.target.value.toLowerCase()
             ) !== -1) || (item.location.country.toLowerCase().search(
                 event.target.value.toLowerCase()
+            ) !== -1) || (item.enc_method.toLowerCase().search(
+                event.target.value.toLowerCase()
             ) !== -1);
         })
         this.setState({ vpnUpdatedList: list });
@@ -781,7 +783,7 @@ class VPNComponent extends Component {
                                         </Col>
 
                                         <Col xs={2}>
-                                            <p style={styles.columnHeadStyle}>
+                                            <p style={{ 'marginLeft': -5, fontWeight: 'bold', textAlign: 'center' }}>
                                                 <a style={styles.columnSortStyle}
                                                     onClick={() => {
                                                         this.setState({
@@ -825,11 +827,7 @@ class VPNComponent extends Component {
                                                                 {vpn.latency ? (vpn.latency === 'Loading...' ? null : ' ms') : null}</p>
                                                         </Col>
                                                         <Col xs={2}>
-                                                            <p style={{
-                                                                textAlign: 'center', wordBreak: 'break-all',
-                                                                padding: 5, backgroundColor: '#31b0d5', marginTop: -4,
-                                                                color: 'white', borderRadius: 25
-                                                            }}>{vpn.enc_method ? vpn.enc_method : 'None'}</p>
+                                                            <p style={styles.algoTextStyle}>{vpn.enc_method ? vpn.enc_method : 'None'}</p>
                                                         </Col>
                                                         <Col xs={2}>
                                                             <p style={styles.fieldValueStyle}>{vpn.price_per_GB ? vpn.price_per_GB : 100}</p>
@@ -1018,7 +1016,7 @@ class VPNComponent extends Component {
                         </span>
                         :
                         <span style={{ fontSize: 14, letterSpacing: 1 }}>
-                            OpenVPN Not Installed. Please go to C://Users/"your-user-name"/AppData/Local/Sentinel/app-0.0.32/resources/extras and run openvpn-install-2.3.18-I602-x86_64.exe
+                            OpenVPN Not Installed. Please go to C://Users/"your-user-name"/AppData/Local/Sentinel/app-0.0.42/resources/extras and run openvpn-install-2.3.18-I602-x86_64.exe
                             <br />
                             Just Install Openvpn without changing installation directory.
                         </span>
@@ -1096,6 +1094,16 @@ const styles = {
     columnSortStyle: {
         color: '#373a3c',
         cursor: 'pointer'
+    },
+    algoTextStyle: {
+        textAlign: 'center',
+        wordBreak: 'break-all',
+        padding: 5,
+        backgroundColor: '#35778a',
+        marginTop: -4,
+        color: 'white',
+        borderRadius: 20,
+        fontSize: 13
     }
 }
 

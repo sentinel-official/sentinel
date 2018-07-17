@@ -14,7 +14,6 @@ import ReactTooltip from 'react-tooltip';
 import CopyToClipboard from 'react-copy-to-clipboard';
 var config = require('../config');
 var lang = require('./language');
-let scientificToDec = require('scientific-to-decimal');
 
 let statusUrl;
 let shell = window
@@ -100,6 +99,7 @@ class SendComponent extends Component {
     shell.openExternal(url);
     this.setState({ tx_addr: null })
   };
+
 
   getStatusUrl() {
     if (localStorage.getItem('config') === 'TEST')
@@ -444,11 +444,12 @@ class SendComponent extends Component {
       this.setState({ pivxScreenAmount: value, showAddress: false });
       if (value !== '') {
         if (this.state.isEthIn) {
-          value = scientificToDec(value * (10 ** 18));
+          value = (value * (10 ** 18)).noExponents();
+          console.log("Value....",value)
           this.getPivxCompareValue('ETH', 'PIVX', value, 0);
         }
         else {
-          value = scientificToDec(value * (10 ** 8));
+          value = (value * (10 ** 8)).noExponents();
           this.getPivxCompareValue('SENT', 'PIVX', value, 0);
         }
       };
@@ -1032,7 +1033,7 @@ class SendComponent extends Component {
               {this.state.isFromPivx ?
                 (!this.state.showAddress ?
                   <div>
-                    <span style={styles.formHeading}>How Many PIVX Tokens?</span>
+                    <span style={styles.formHeading}>Total PIVX Tokens to be swapped</span>
                     <TextField
                       type="number"
                       underlineShow={false} fullWidth={true}
@@ -1093,7 +1094,7 @@ class SendComponent extends Component {
                   </span>
                 ) :
                 <div>
-                  <span style={styles.formHeading}>{this.state.isEthIn ? 'How Many ETH Tokens?' : 'How Many SENT Tokens?'}</span>
+                  <span style={styles.formHeading}>{this.state.isEthIn ? 'Total ETH Tokens to be swapped' : 'Total SENT Tokens to be swapped'}</span>
                   <TextField
                     type="number"
                     underlineShow={false} fullWidth={true}
@@ -1242,3 +1243,21 @@ const styles = {
 }
 
 export default SendComponent;
+
+Number.prototype.noExponents = function () {
+  var data = String(this).split(/[eE]/);
+  if (data.length == 1) return data[0];
+
+  var z = '', sign = this < 0 ? '-' : '',
+    str = data[0].replace('.', ''),
+    mag = Number(data[1]) + 1;
+
+  if (mag < 0) {
+    z = sign + '0.';
+    while (mag++) z += '0';
+    return z + str.replace(/^\-/, '');
+  }
+  mag -= str.length;
+  while (mag--) z += '0';
+  return str + z;
+}

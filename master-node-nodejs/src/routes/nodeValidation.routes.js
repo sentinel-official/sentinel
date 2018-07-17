@@ -16,7 +16,7 @@ routes.post('/', (req, res) => {
 })
 
 routes.get('/active', ValidationController.getActiveNodes);
-routes.get('/blocked', ValidationController.getBlockedUsers);
+routes.get('/list', ValidationController.getBlockedUsers);
 routes.post('/count', ValidationController.updateCount);
 
 export default routes

@@ -4,6 +4,7 @@
  */
 import express from 'express';
 import chalk from 'chalk';
+import RateLimit from 'express-rate-limit';
 
 import middlewaresConfig from './config/middlewares';
 import constants from './config/constants';
@@ -13,12 +14,19 @@ import { dbo } from './db/database'
 
 dbo()
 
-
+let limiter = new RateLimit({
+  windowMs: 60 * 60 * 1000, // 60 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  delayMs: 0 // disable delaying - full speed until the max limit is reached
+});
 
 const app = express();
 
 // Wrap all the middlewares with the server
 middlewaresConfig(app);
+
+app.enable('trust proxy');
+app.use(limiter);
 
 // Add the apiRoutes stack to the server
 if (process.env.NODE_ENV !== 'test') app.use(ApiRoutes);

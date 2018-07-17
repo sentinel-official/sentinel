@@ -85,11 +85,16 @@ const getActiveNodes = (req, res) => {
 }
 
 const getBlockedUsers = (req, res) => {
-  Validation.find({ 'isBlocked': true }, (err, resp) => {
+  Validation.find((err, resp) => {
     if (!err) {
-      res.send({
-        success: true,
-        count: resp
+      async.each(resp, (item, iterate) => {
+        if (!resp.isBlocked)
+          resp.isBlocked = false
+      }, () => {
+        res.send({
+          success: true,
+          count: resp
+        })
       })
     } else {
       res.send({

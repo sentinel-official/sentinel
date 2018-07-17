@@ -38,10 +38,10 @@ class DailySentsCount(object):
                     if addr['_id'] is not None:
                         error, usage = eth_helper.get_vpn_usage(addr['_id'])
                         if error is not None:
-                            for obj in usage['usage']['sessions']:
+                            for obj in usage['sessions']:
                                 if obj['timestamp'] >= (timestamp -
                                                         (24 * 60 * 60)):
-                                    if obj['is_payed']:
+                                    if obj['is_paid']:
                                         paid_count = paid_count + (
                                                 float(obj['amount']) / (10 ** 8))
                                     else:

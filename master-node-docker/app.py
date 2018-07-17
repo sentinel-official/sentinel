@@ -16,4 +16,5 @@ daily_sent_count.start()
 update_nodes_status.start()
 swaps.start()
 
-time.sleep(int(9.223372 * 1e9))
+while True:
+    time.sleep(int(9.223372 * 1e9))

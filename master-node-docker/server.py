@@ -6,29 +6,39 @@ from falcon_cors import CORS
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
+from sentinel.client import GetMixerNodessList
+from sentinel.client import GetMixerToAddress
 from sentinel.client import GetSocksList
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnCurrentUsage
 from sentinel.client import GetVpnUsage
 from sentinel.client import GetVpnsList
+from sentinel.client import InitiateMix
 from sentinel.client import PayVpnUsage
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.client import UpdateConnection
 from sentinel.dev import GetFreeAmount
 from sentinel.logs import LogTheError
+from sentinel.mixer import DeRegisterMixerNode
+from sentinel.mixer import RegisterMixerNode
+from sentinel.mixer import UpdateMixerNodeInfo
 from sentinel.node import DeRegisterNode
 from sentinel.node import GetActiveNodeCount
 from sentinel.node import GetActiveSessionCount
 from sentinel.node import GetAverageDuration
 from sentinel.node import GetAverageNodesCount
+from sentinel.node import GetAveragePaidSentsCount
 from sentinel.node import GetAverageSessionsCount
+from sentinel.node import GetAverageTotalSentsCount
 from sentinel.node import GetDailyActiveNodeCount
 from sentinel.node import GetDailyAverageDuration
 from sentinel.node import GetDailyDataCount
 from sentinel.node import GetDailyDurationCount
 from sentinel.node import GetDailyNodeCount
+from sentinel.node import GetDailyPaidSentsCount
 from sentinel.node import GetDailySessionCount
+from sentinel.node import GetDailyTotalSentsUsed
 from sentinel.node import GetLastAverageDuration
 from sentinel.node import GetLastDataCount
 from sentinel.node import GetNodeStatistics
@@ -37,12 +47,9 @@ from sentinel.node import GetTotalNodeCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
-from sentinel.node import GetDailyPaidSentsCount
-from sentinel.node import GetDailyTotalSentsUsed
-from sentinel.node import GetAveragePaidSentsCount
-from sentinel.node import GetAverageTotalSentsCount
 from sentinel.tokens import GetAvailableTokens
 from sentinel.tokens import GetSents
+from sentinel.tokens import SwapStatus
 from sentinel.tokens import TokenSwapRawTransaction
 from sentinel.utils import JSONTranslator
 
@@ -108,6 +115,16 @@ server.add_route('/tokens', Up())
 server.add_route('/tokens/available', GetAvailableTokens())
 server.add_route('/tokens/sents', GetSents())
 server.add_route('/tokens/swaps/raw-transaction', TokenSwapRawTransaction())
+server.add_route('/tokens/swaps/status', SwapStatus())
+
+# Mixer
+server.add_route('/mixer', Up())
+server.add_route('/mixer/list', GetMixerNodessList())
+server.add_route('/mixer/to', GetMixerToAddress())
+server.add_route('/mixer/init', InitiateMix())
+server.add_route('/mixer/register', RegisterMixerNode())
+server.add_route('/mixer/deregister', DeRegisterMixerNode())
+server.add_route('/mixer/update-nodeinfo', UpdateMixerNodeInfo())
 
 # Logs
 server.add_route('/logs/error', LogTheError())

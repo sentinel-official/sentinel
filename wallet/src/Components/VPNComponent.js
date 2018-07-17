@@ -324,15 +324,41 @@ class VPNComponent extends Component {
     calculateUsage = (value) => {
         let self = this;
         if (remote.process.platform === 'win32') {
-            let receivedOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.ReceivedBytes\"');
-            let receivedArr = receivedOut.toString().trim().split('\r\n');
-            let downCur;
+            const abspath = 'C:\\Windows\\System32\\wbem\\WMIC.exe'
+            const cmd = 'path Win32_PerfRawData_Tcpip_NetworkInterface Get name,BytesReceivedPersec,BytesSentPersec,BytesTotalPersec /value'
+            
+            let downCur = 0;
+            let upCur = 0;
             let usage;
-            downCur = parseInt(receivedArr[0]) + parseInt(receivedArr[1]);
-            let sendOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.SentBytes\"');
-            let sendArr = sendOut.toString().trim().split('\r\n');
-            let upCur;
-            upCur = parseInt(sendArr[0]) + parseInt(sendArr[1]);
+            let bwStats = {
+                iface: '',
+                down: 0,
+                up: 0
+            }
+            let data = execSync(`${abspath} ${cmd}`).toString()
+            data = data.trim().split(/\n\s*\n/)
+            let interfaces = os.networkInterfaces();
+
+           Object.keys(interfaces).map((key) => {
+                if(key === 'WiFi') {
+                    bwStats['iface'] = key;
+                    bwStats['down'] = data[1].split('\n')[0].split('=')[1].trim();
+                    bwStats['up'] = data[1].split('\n')[1].split('=')[1].trim();        
+                } else if ( key === 'Ethernet' ) {
+                    bwStats['iface'] = key;
+                    bwStats['down'] = data[0].split('\n')[0].split('=')[1].trim()
+                    bwStats['up'] = data[0].split('\n')[1].split('=')[1].trim()
+                }
+
+            })
+            downCur = parseInt(bwStats.down);
+            upCur = parseInt(bwStats.up);                 
+            console.log("statas>>>>>>>>>>", bwStats, downCur, upCur)
+            // downCur = parseInt(receivedArr[0]) + parseInt(receivedArr[1]);           
+            // let sendOut = execSync('powershell.exe -command \"$stat=Get-NetAdapterStatistics;$stat.SentBytes\"');
+            // let sendArr = sendOut.toString().trim().split('\r\n');
+            
+            // upCur = parseInt(sendArr[0]) + parseInt(sendArr[1]);
             if (value) {
                 usage = {
                     'down': 0,
@@ -350,8 +376,9 @@ class VPNComponent extends Component {
                 }
                 self.setState({ usage: usage })
             }
-            sendUsage(self.props.local_address, self.state.selectedVPN, usage);
-        } else {
+            sendUsage(self.props.local_address, self.state.selectedVPN, usage);           
+        } 
+        else {
             let loopStop = false;
             let interfaces = os.networkInterfaces();
             Object.keys(interfaces).map((key) => {

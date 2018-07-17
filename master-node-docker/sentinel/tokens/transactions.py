@@ -14,8 +14,8 @@ from ..helpers import tokens
 class TokenSwapRawTransaction(object):
     def on_post(self, req, resp):
         """
-        @api {post} /swaps/transaction Send raw transaction to specific chain.
-        @apiName RawTransaction
+        @api {post} /tokens/swaps/raw-transaction Send raw transaction to specific chain.
+        @apiName TokenSwapRawTransaction
         @apiGroup Transactions
         @apiParam {String} tx_data Hex code of the transaction.
         @apiParam {String} to_addr To address. Either contract address or central wallet address.

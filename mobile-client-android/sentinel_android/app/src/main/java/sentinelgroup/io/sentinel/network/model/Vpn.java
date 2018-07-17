@@ -4,5 +4,5 @@ import java.util.List;
 
 public class Vpn {
     public boolean success;
-    public List<VpnList> list = null;
+    public List<VpnListEntity> list = null;
 }

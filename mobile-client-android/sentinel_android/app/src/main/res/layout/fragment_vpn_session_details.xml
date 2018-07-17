@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/colorWindowDark"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_session_id"
+        android:id="@+id/session_id"
         style="@style/CustomTextAppearance.Text10.Gray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,7 +17,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/session_id"
-        app:layout_constraintBottom_toTopOf="@+id/tv_session_id_value"
+        app:layout_constraintBottom_toTopOf="@+id/tv_session_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,17 +25,17 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/tv_session_id_value"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:id="@+id/tv_session_id"
+        style="@style/CustomTextAppearance.Text12.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
-        android:text="ad3thdbu67yhjo83bh0cbd683vc732b7h7cv34u2"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tv_date_time"
-        app:layout_constraintEnd_toEndOf="@+id/tv_session_id"
-        app:layout_constraintStart_toStartOf="@+id/tv_session_id"
-        app:layout_constraintTop_toBottomOf="@+id/tv_session_id" />
+        app:layout_constraintEnd_toEndOf="@+id/session_id"
+        app:layout_constraintStart_toStartOf="@+id/session_id"
+        app:layout_constraintTop_toBottomOf="@+id/session_id" />
 
     <TextView
         android:id="@+id/tv_date_time"
@@ -42,14 +43,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Thu 11 May 2018    10:30:47 GMT"
-        app:layout_constraintBottom_toTopOf="@+id/iv_divider"
-        app:layout_constraintEnd_toEndOf="@+id/tv_session_id_value"
-        app:layout_constraintStart_toStartOf="@+id/tv_session_id_value"
-        app:layout_constraintTop_toBottomOf="@+id/tv_session_id_value" />
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="@+id/tv_session_id"
+        app:layout_constraintStart_toStartOf="@+id/tv_session_id"
+        app:layout_constraintTop_toBottomOf="@+id/tv_session_id" />
 
     <ImageView
-        android:id="@+id/iv_divider"
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_1"
         android:layout_marginBottom="16dp"
@@ -58,55 +58,15 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_tx_hash"
+        app:layout_constraintBottom_toTopOf="@+id/received_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_date_time"
-        app:srcCompat="@color/colorCardDark"
+        app:srcCompat="@color/colorTextWhiteWithAlpha50"
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/tv_tx_hash"
-        style="@style/CustomTextAppearance.Text10.Gray"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:text="@string/tx_hash"
-        app:layout_constraintBottom_toTopOf="@+id/tv_tx_hash_value"
-        app:layout_constraintEnd_toStartOf="@+id/ib_copy_tx_hash"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
-
-    <TextView
-        android:id="@+id/tv_tx_hash_value"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
-        app:layout_constraintBottom_toTopOf="@+id/tv_received_data"
-        app:layout_constraintEnd_toEndOf="@+id/tv_tx_hash"
-        app:layout_constraintStart_toStartOf="@+id/tv_tx_hash"
-        app:layout_constraintTop_toBottomOf="@+id/tv_tx_hash" />
-
-    <ImageButton
-        android:id="@+id/ib_copy_tx_hash"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="@dimen/margin_8"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_tx_hash_value"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_tx_hash"
-        app:layout_constraintTop_toTopOf="@+id/tv_tx_hash"
-        app:srcCompat="@drawable/ic_copy"
-        tools:ignore="ContentDescription" />
-
-    <TextView
-        android:id="@+id/tv_received_data"
+        android:id="@+id/received_data"
         style="@style/CustomTextAppearance.Text10.Gray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -114,27 +74,25 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:text="@string/received_data"
-        app:layout_constraintBottom_toTopOf="@+id/tv_received_data_value"
+        app:layout_constraintBottom_toTopOf="@+id/tv_received_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_tx_hash_value" />
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <TextView
-        android:id="@+id/tv_received_data_value"
+        android:id="@+id/tv_received_data"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="212.497 MB"
-        app:layout_constraintBottom_toTopOf="@+id/tv_duration"
-        app:layout_constraintEnd_toEndOf="@+id/tv_received_data"
-        app:layout_constraintStart_toStartOf="@+id/tv_received_data"
-        app:layout_constraintTop_toBottomOf="@+id/tv_received_data" />
+        app:layout_constraintBottom_toTopOf="@+id/duration"
+        app:layout_constraintEnd_toEndOf="@+id/received_data"
+        app:layout_constraintStart_toStartOf="@+id/received_data"
+        app:layout_constraintTop_toBottomOf="@+id/received_data" />
 
     <TextView
-        android:id="@+id/tv_duration"
+        android:id="@+id/duration"
         style="@style/CustomTextAppearance.Text10.Gray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -144,25 +102,24 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/duration"
-        app:layout_constraintBottom_toTopOf="@+id/tv_duration_value"
+        app:layout_constraintBottom_toTopOf="@+id/tv_duration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_received_data_value" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_received_data" />
 
     <TextView
-        android:id="@+id/tv_duration_value"
+        android:id="@+id/tv_duration"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="223 secs"
-        app:layout_constraintBottom_toTopOf="@+id/tv_session_cost"
-        app:layout_constraintEnd_toEndOf="@+id/tv_duration"
-        app:layout_constraintStart_toStartOf="@+id/tv_duration"
-        app:layout_constraintTop_toBottomOf="@+id/tv_duration" />
+        app:layout_constraintBottom_toTopOf="@+id/session_cost"
+        app:layout_constraintEnd_toEndOf="@+id/duration"
+        app:layout_constraintStart_toStartOf="@+id/duration"
+        app:layout_constraintTop_toBottomOf="@+id/duration" />
 
     <TextView
-        android:id="@+id/tv_session_cost"
+        android:id="@+id/session_cost"
         style="@style/CustomTextAppearance.Text10.Gray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -171,24 +128,23 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Session Cost"
-        app:layout_constraintBottom_toTopOf="@+id/tv_session_cost_value"
+        android:text="@string/session_cost"
+        app:layout_constraintBottom_toTopOf="@+id/tv_session_cost"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_duration_value" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_duration" />
 
     <TextView
-        android:id="@+id/tv_session_cost_value"
+        android:id="@+id/tv_session_cost"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="4dp"
-        android:text="20.33659845 SENTs"
         app:layout_constraintBottom_toTopOf="@+id/btn_make_payment"
-        app:layout_constraintEnd_toEndOf="@+id/tv_session_cost"
-        app:layout_constraintStart_toStartOf="@+id/tv_session_cost"
-        app:layout_constraintTop_toBottomOf="@+id/tv_session_cost" />
+        app:layout_constraintEnd_toEndOf="@+id/session_cost"
+        app:layout_constraintStart_toStartOf="@+id/session_cost"
+        app:layout_constraintTop_toBottomOf="@+id/session_cost" />
 
     <Button
         android:id="@+id/btn_make_payment"

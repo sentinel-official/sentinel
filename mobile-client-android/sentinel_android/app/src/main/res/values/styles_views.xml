@@ -13,7 +13,7 @@
     <!-- Toolbar Themes -->
     <style name="CustomTextAppearance.Toolbar">
         <item name="android:layout_gravity">center</item>
-        <item name="android:textSize">@dimen/text_18</item>
+        <item name="android:textSize">@dimen/margin_18</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textStyle">bold</item>
@@ -43,6 +43,10 @@
         <item name="android:textSize">@dimen/text_18</item>
     </style>
 
+    <style name="CustomTextAppearance.Text24">
+        <item name="android:textSize">@dimen/text_24</item>
+    </style>
+
     <style name="CustomTextAppearance.Text32">
         <item name="android:textSize">@dimen/text_32</item>
     </style>
@@ -60,8 +64,13 @@
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="CustomTextAppearance.Text12.White70">
-        <item name="android:textColor">@color/colorTextWhiteWithAlpha70</item>
+    <style name="CustomTextAppearance.Text12.Black">
+        <item name="android:textColor">@color/colorTextBlack</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text12.BlackNormal">
+        <item name="android:textColor">@color/colorWindowDark</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="CustomTextAppearance.Text12.BlueNormal">
@@ -74,13 +83,13 @@
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="CustomTextAppearance.Text12.OrangeNormal">
-        <item name="android:textColor">@color/colorButtonOrange</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
     <style name="CustomTextAppearance.Text14.Orange">
         <item name="android:textColor">@color/colorButtonOrange</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text14.White70Normal">
+        <item name="android:textColor">@color/colorTextWhiteWithAlpha70</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <!-- Navigation Drawer Item Theme -->
@@ -93,7 +102,8 @@
 
     <!-- TextInputLayout And TextInputEditText Theme -->
     <style name="TextInputLayoutTheme" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/colorTextGray</item>
+        <item name="android:textColor">@color/colorButtonOrange</item>
+        <item name="android:textSize">@dimen/text_10</item>
         <item name="android:fontFamily">@font/bangla_sangam_mn</item>
     </style>
 
@@ -108,14 +118,17 @@
         <item name="android:textIsSelectable">false</item>
         <item name="android:cursorVisible">false</item>
         <item name="android:digits">1234567890</item>
-        <item name="android:inputType">number</item>
+        <item name="android:inputType">numberPassword</item>
         <item name="android:maxLength">4</item>
+        <item name="android:maxLines">1</item>
         <item name="android:textSize">@dimen/text_20</item>
     </style>
 
     <!-- Button Themes -->
     <style name="CustomTextAppearance.OrangeButton">
+        <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/selector_button_text_white</item>
         <item name="android:paddingRight">@dimen/margin_16</item>
         <item name="android:paddingLeft">@dimen/margin_16</item>
         <item name="android:paddingTop">@dimen/margin_8</item>
@@ -125,6 +138,8 @@
 
     <style name="CustomTextAppearance.BlueButton">
         <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/selector_button_text_white</item>
         <item name="android:paddingRight">@dimen/margin_16</item>
         <item name="android:paddingLeft">@dimen/margin_16</item>
         <item name="android:paddingTop">@dimen/margin_8</item>
@@ -134,14 +149,19 @@
 
     <style name="CustomTextAppearance.BlackButton">
         <item name="android:textSize">@dimen/text_10</item>
+        <item name="android:minHeight">@dimen/margin_32</item>
+        <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/colorButtonOrange</item>
-        <item name="android:paddingRight">@dimen/margin_16</item>
-        <item name="android:paddingLeft">@dimen/margin_16</item>
-        <item name="android:paddingTop">@dimen/margin_8</item>
-        <item name="android:paddingBottom">@dimen/margin_8</item>
         <item name="android:background">@drawable/shape_button_black</item>
     </style>
 
+    <style name="CustomTextAppearance.HelperButton">
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">@dimen/margin_48</item>
+        <item name="android:minWidth">@dimen/margin_128</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@drawable/shape_helper_button</item>
+    </style>
 
     <style name="CustomTextAppearance.TransparentOrangeButton">
         <item name="android:textStyle">bold</item>

@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
@@ -17,10 +16,11 @@
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/colorCardDark"
         app:cardCornerRadius="@dimen/margin_4"
-        app:cardElevation="@dimen/margin_8"
+        app:cardElevation="@dimen/margin_4"
         app:cardPreventCornerOverlap="false"
+        app:layout_constraintBottom_toTopOf="@+id/sr_reload"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -29,8 +29,8 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tv_sent_paid"
-                style="@style/CustomTextAppearance.Text32"
+                android:id="@+id/tv_total_sent_paid"
+                style="@style/CustomTextAppearance.Text24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -38,20 +38,19 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:drawableLeft="@drawable/ic_app_icon"
+                android:drawableLeft="@drawable/ic_app_icon_small"
                 android:drawablePadding="@dimen/margin_8"
-                android:drawableStart="@drawable/ic_app_icon"
-                android:gravity=""
+                android:drawableStart="@drawable/ic_app_icon_small"
+                android:gravity="center_vertical"
                 android:paddingLeft="@dimen/margin_8"
                 android:paddingRight="@dimen/margin_8"
-                android:text="893,678.25"
-                app:layout_constraintBottom_toTopOf="@+id/tv_sent_paid_desc"
+                app:layout_constraintBottom_toTopOf="@+id/sent_paid"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_sent_paid_desc"
+                android:id="@+id/sent_paid"
                 style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,13 +59,13 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:text="@string/sent_paid_desc"
-                app:layout_constraintBottom_toTopOf="@+id/iv_divider"
+                app:layout_constraintBottom_toTopOf="@+id/divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sent_paid" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_sent_paid" />
 
             <ImageView
-                android:id="@+id/iv_divider"
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_1"
                 android:layout_marginBottom="16dp"
@@ -75,17 +74,17 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:src="@color/colorTextGray"
+                android:src="@color/colorCardShadow"
                 app:layout_constraintBottom_toTopOf="@+id/tv_total_duration"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_sent_paid_desc"
+                app:layout_constraintTop_toBottomOf="@+id/sent_paid"
                 app:layout_constraintVertical_chainStyle="spread"
                 tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tv_total_duration"
-                style="@style/CustomTextAppearance.Text32"
+                style="@style/CustomTextAppearance.Text24"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
@@ -95,14 +94,14 @@
                 android:gravity="center"
                 android:paddingLeft="@dimen/margin_8"
                 android:paddingRight="@dimen/margin_8"
-                android:text="221"
-                app:layout_constraintBottom_toTopOf="@+id/tv_total_duration_desc"
+                app:layout_constraintBottom_toTopOf="@+id/total_duration"
                 app:layout_constraintEnd_toStartOf="@+id/tv_total_received_data"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_divider" />
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <TextView
-                android:id="@+id/tv_total_duration_desc"
+                android:id="@+id/total_duration"
                 style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -116,9 +115,9 @@
 
             <TextView
                 android:id="@+id/tv_total_received_data"
-                style="@style/CustomTextAppearance.Text32"
+                style="@style/CustomTextAppearance.Text24"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="8dp"
@@ -126,32 +125,37 @@
                 android:gravity="center"
                 android:paddingLeft="@dimen/margin_8"
                 android:paddingRight="@dimen/margin_8"
-                android:text="212.2"
-                app:layout_constraintBottom_toTopOf="@+id/tv_total_received_data_desc"
+                app:layout_constraintBottom_toTopOf="@+id/total_duration"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_total_duration"
                 app:layout_constraintTop_toTopOf="@+id/tv_total_duration" />
 
             <TextView
-                android:id="@+id/tv_total_received_data_desc"
+                android:id="@+id/total_received_data"
                 style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:gravity="center"
                 android:text="@string/total_received_data"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_total_duration_desc"
+                app:layout_constraintBottom_toBottomOf="@+id/total_duration"
                 app:layout_constraintEnd_toEndOf="@+id/tv_total_received_data"
                 app:layout_constraintStart_toStartOf="@+id/tv_total_received_data"
-                app:layout_constraintTop_toBottomOf="@+id/tv_total_received_data" />
+                app:layout_constraintTop_toTopOf="@+id/total_duration" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.RecyclerView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sr_reload"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_vpn_history"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

@@ -1,203 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editText"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:drawableEnd="@drawable/ic_arrow_down"
-        android:drawableRight="@drawable/ic_arrow_down"
-        android:fontFamily="@font/bangla_sangam_mn"
-        android:hint="@string/select_token_hint"
-        android:inputType="none"
-        android:textColor="@color/colorTextWhite"
-        android:textColorHint="@color/colorTextGray"
-        android:textSize="@dimen/text_14"
-        android:theme="@style/TextInputEditTextTheme"
-        app:layout_constraintBottom_toTopOf="@+id/til_send_to"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:ignore="LabelFor" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_send_to"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="4dp"
-        android:hint="@string/send_to_hint"
-        android:textColorHint="@color/colorTextWhiteWithAlpha50"
-        app:hintTextAppearance="@style/TextInputLayoutTheme"
-        app:layout_constraintBottom_toTopOf="@+id/til_amount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_send_to"
-            style="@style/CustomTextAppearance"
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <sentinelgroup.io.sentinel.ui.custom.CustomSpinner
+                    android:id="@+id/cs_tokens"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:drawableRight="@drawable/ic_arrow_down"
+                    android:hint="@string/select_token_hint"
+                    android:textSize="@dimen/text_14"
+                    app:layout_constraintBottom_toTopOf="@+id/til_to_address"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:met_floatingLabel="none"
+                    app:met_primaryColor="@color/colorPrimary"
+                    app:met_textColor="@color/colorTextWhite"
+                    app:met_textColorHint="@color/colorTextGray"
+                    app:met_underlineColor="@color/colorControlNormal" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_to_address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="4dp"
+                    android:hint="@string/send_to_hint"
+                    android:textColorHint="@color/colorTextWhiteWithAlpha50"
+                    app:hintTextAppearance="@style/TextInputLayoutTheme"
+                    app:layout_constraintBottom_toTopOf="@+id/til_amount"
+                    app:layout_constraintEnd_toStartOf="@+id/ib_scan"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cs_tokens">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/tet_to_address"
+                        style="@style/CustomTextAppearance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:theme="@style/TextInputEditTextTheme" />
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/ib_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_weight="1"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="@dimen/margin_8"
+                    app:layout_constraintBottom_toBottomOf="@+id/til_to_address"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/til_to_address"
+                    app:layout_constraintTop_toTopOf="@+id/til_to_address"
+                    app:srcCompat="@drawable/ic_qrcode_scan"
+                    tools:ignore="ContentDescription" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="4dp"
+                    android:hint="@string/enter_amount_hint"
+                    android:textColorHint="@color/colorTextWhiteWithAlpha50"
+                    app:hintTextAppearance="@style/TextInputLayoutTheme"
+                    app:layout_constraintBottom_toTopOf="@+id/til_gas_limit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/til_to_address">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/tet_amount"
+                        style="@style/CustomTextAppearance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:theme="@style/TextInputEditTextTheme" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_gas_limit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="4dp"
+                    android:hint="@string/gas_limit_hint"
+                    android:textColorHint="@color/colorTextWhiteWithAlpha50"
+                    app:hintTextAppearance="@style/TextInputLayoutTheme"
+                    app:layout_constraintBottom_toTopOf="@+id/til_password"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/til_amount">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/tet_gas_limit"
+                        style="@style/CustomTextAppearance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberPassword"
+                        android:maxLength="7"
+                        android:theme="@style/TextInputEditTextTheme" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="4dp"
+                    android:hint="@string/restore_password_hint"
+                    android:textColorHint="@color/colorTextWhiteWithAlpha50"
+                    app:hintTextAppearance="@style/TextInputLayoutTheme"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_gas_estimate"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/til_gas_limit">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/tet_password"
+                        style="@style/CustomTextAppearance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:theme="@style/TextInputEditTextTheme" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/gas_price"
+                    style="@style/CustomTextAppearance.Text12.GrayNormal"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="24dp"
+                    android:paddingEnd="@dimen/margin_4"
+                    android:paddingLeft="@dimen/margin_4"
+                    android:paddingRight="@dimen/margin_4"
+                    android:paddingStart="@dimen/margin_4"
+                    android:text="@string/gas_price"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_gas_estimate"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_gas_estimate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_gas_estimate" />
+
+                <TextView
+                    android:id="@+id/tv_gas_estimate"
+                    style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/sb_gas_price"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/til_password" />
+
+                <SeekBar
+                    android:id="@+id/sb_gas_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp"
+                    android:max="98"
+                    android:maxHeight="2dp"
+                    android:minHeight="2dp"
+                    android:progress="0"
+                    android:paddingTop="@dimen/margin_8"
+                    android:paddingBottom="@dimen/margin_8"
+                    android:progressDrawable="@drawable/seekbar_progress_drawable"
+                    android:thumbTint="@color/colorTextWhite"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_gas_price"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="@+id/gas_price"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_gas_estimate"
+                    tools:targetApi="lollipop" />
+
+                <TextView
+                    android:id="@+id/tv_gas_price"
+                    style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/sb_gas_price"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_gas_estimate"
+                    app:layout_constraintStart_toEndOf="@+id/sb_gas_price"
+                    app:layout_constraintTop_toTopOf="@+id/sb_gas_price" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btn_send"
+            style="@style/CustomTextAppearance.OrangeButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:theme="@style/TextInputEditTextTheme" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_amount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="4dp"
-        android:hint="@string/enter_amount_hint"
-        android:textColorHint="@color/colorTextWhiteWithAlpha50"
-        app:hintTextAppearance="@style/TextInputLayoutTheme"
-        app:layout_constraintBottom_toTopOf="@+id/til_gas_limit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_send_to">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_amount"
-            style="@style/CustomTextAppearance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:theme="@style/TextInputEditTextTheme" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_gas_limit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="4dp"
-        android:hint="@string/gas_limit_hint"
-        android:textColorHint="@color/colorTextWhiteWithAlpha50"
-        app:hintTextAppearance="@style/TextInputLayoutTheme"
-        app:layout_constraintBottom_toTopOf="@+id/til_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_amount">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_gas_limit"
-            style="@style/CustomTextAppearance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:theme="@style/TextInputEditTextTheme" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="4dp"
-        android:hint="@string/restore_password_hint"
-        android:textColorHint="@color/colorTextWhiteWithAlpha50"
-        app:hintTextAppearance="@style/TextInputLayoutTheme"
-        app:layout_constraintBottom_toTopOf="@+id/tv_gas_price"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_gas_limit">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_password"
-            style="@style/CustomTextAppearance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:theme="@style/TextInputEditTextTheme" />
-    </android.support.design.widget.TextInputLayout>
-
-    <TextView
-        android:id="@+id/tv_gas_price"
-        style="@style/CustomTextAppearance.Text12.GrayNormal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:paddingEnd="@dimen/margin_4"
-        android:paddingLeft="@dimen/margin_4"
-        android:paddingRight="@dimen/margin_4"
-        android:paddingStart="@dimen/margin_4"
-        android:text="@string/gas_price"
-        app:layout_constraintBottom_toTopOf="@+id/sb_gas_price"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_password" />
-
-    <SeekBar
-        android:id="@+id/sb_gas_price"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:maxHeight="2dp"
-        android:minHeight="2dp"
-        android:progress="34"
-        android:progressDrawable="@drawable/seekbar_progress_drawable"
-        android:thumbTint="@color/colorTextWhite"
-        app:layout_constraintBottom_toTopOf="@+id/btn_send"
-        app:layout_constraintEnd_toStartOf="@+id/tv_gas_price_value"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@+id/tv_gas_price"
-        app:layout_constraintTop_toBottomOf="@+id/tv_gas_price"
-        tools:targetApi="lollipop" />
-
-    <TextView
-        android:id="@+id/tv_gas_price_value"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:text="35 Gwei"
-        app:layout_constraintBottom_toBottomOf="@+id/sb_gas_price"
-        app:layout_constraintEnd_toEndOf="@+id/tv_gas_price"
-        app:layout_constraintStart_toEndOf="@+id/sb_gas_price"
-        app:layout_constraintTop_toTopOf="@+id/sb_gas_price" />
-
-    <Button
-        android:id="@+id/btn_send"
-        style="@style/CustomTextAppearance.OrangeButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</android.support.constraint.ConstraintLayout>
+            android:enabled="false"
+            android:text="@string/send"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

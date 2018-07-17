@@ -2,31 +2,33 @@ package sentinelgroup.io.sentinel.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.math.BigInteger;
+
 public class GenericRequestBody {
     @SerializedName("password")
-    private String password = null;
+    private String password;
     @SerializedName("account_addr")
-    private String accountAddress = null;
+    private String accountAddress;
     @SerializedName("vpn_addr")
-    private String vpnAddress = null;
+    private String vpnAddress;
     @SerializedName("session_name")
-    private String sessionName = null;
+    private String sessionName;
     @SerializedName("token")
-    private String token = null;
+    private String token;
     @SerializedName("info")
-    private String info = null;
+    private String info;
     @SerializedName("payment_type")
-    private String paymentType = null;
+    private String paymentType;
     @SerializedName("tx_data")
-    private String txData = null;
+    private String txData;
     @SerializedName("net")
-    private String net = null;
+    private String net;
     @SerializedName("from_addr")
-    private String fromAddress = null;
+    private String fromAddress;
     @SerializedName("amount")
-    private String amount = null;
+    private BigInteger amount;
     @SerializedName("session_id")
-    private String sessionId = null;
+    private String sessionId;
 
     private GenericRequestBody(GenericRequestBodyBuilder iBuilder) {
         password = iBuilder.password;
@@ -84,7 +86,7 @@ public class GenericRequestBody {
         return fromAddress;
     }
 
-    public String getAmount() {
+    public BigInteger getAmount() {
         return amount;
     }
 
@@ -114,7 +116,7 @@ public class GenericRequestBody {
         @SerializedName("from_addr")
         private String fromAddress = null;
         @SerializedName("amount")
-        private String amount = null;
+        private BigInteger amount = null;
         @SerializedName("session_id")
         private String sessionId = null;
 
@@ -168,7 +170,7 @@ public class GenericRequestBody {
             return this;
         }
 
-        public GenericRequestBodyBuilder amount(String amount) {
+        public GenericRequestBodyBuilder amount(BigInteger amount) {
             this.amount = amount;
             return this;
         }
@@ -178,8 +180,40 @@ public class GenericRequestBody {
             return this;
         }
 
-        public GenericRequestBody build(){
+        public GenericRequestBody build() {
             return new GenericRequestBody(this);
+        }
+    }
+
+    public enum NetUnit {
+        MAIN("main"),
+        RINKEBY("rinkeby");
+
+        private String name;
+
+        NetUnit(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    public enum PaymentType {
+        INIT("init"),
+        NORMAL("normal");
+
+        private String name;
+
+        PaymentType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 }

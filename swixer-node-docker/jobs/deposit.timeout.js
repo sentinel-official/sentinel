@@ -7,11 +7,7 @@ const depositTimeout = () => {
     SwixerModel.aggregate([
       {
         $project: {
-          isScheduled: 1,
-          fromSymbol: 1,
-          clientAddress: 1,
           toAddress: 1,
-          remainingAmount: 1,
           isMoneyDeposited: 1,
           isRefunded: 1,
           time: { $add: ["$insertedOn", 60 * 60 * 1] }
@@ -44,8 +40,3 @@ const depositTimeout = () => {
 module.exports = {
   depositTimeout
 }
-
-
-/* 
-[{'remainingAmount': {$exists: false}},{'remainingAmount': {$gt: 0}}]
-*/

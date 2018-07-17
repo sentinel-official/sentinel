@@ -222,7 +222,7 @@ class GetDailyActiveNodeCount(object):
 class GetDailyPaidSentsCount(object):
     def on_get(self, req, resp):
         daily_count = []
-        result = db.statistics.aggregate([{
+        result = db.payments.aggregate([{
             '$project': {
                 'total': {
                     '$add': [
@@ -299,7 +299,7 @@ class GetAverageTotalSentsCount(object):
 class GetDailyTotalSentsUsed(object):
     def on_get(self, req, resp):
         daily_count = []
-        result = db.statistics.aggregate([{
+        result = db.payments.aggregate([{
             '$project': {
                 'total': {
                     '$add': [

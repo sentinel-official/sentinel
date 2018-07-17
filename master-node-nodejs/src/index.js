@@ -16,8 +16,9 @@ dbo()
 
 let limiter = new RateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  delayMs: 0 // disable delaying - full speed until the max limit is reached
+  max: 20, // limit each IP to 100 requests per windowMs
+  delayMs: 0, // disable delaying - full speed until the max limit is reached
+  message: "Too many requests maid from this IP, please try again after an hour"
 });
 
 const app = express();

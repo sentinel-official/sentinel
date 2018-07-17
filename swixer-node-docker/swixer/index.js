@@ -25,7 +25,7 @@ let start = (cb) => {
             let address = swix.toAddress;
             let coinSymbol = swix.fromSymbol;
             let { fromSymbol,
-            toSymbol } = swix;
+              toSymbol } = swix;
             async.waterfall([
               (l2Next) => {
                 getBalance(address, coinSymbol,
@@ -39,10 +39,21 @@ let start = (cb) => {
               }, (amount, l2Next) => {
                 if (amount > 0) {
                   async.waterfall([
-                    (l3Next) => {
+                    (l3next) => {
+                      swixerDbo.updateSwix({ toAddress: address }, { isMoneyDeposited: true }, (err, resp) => {
+                        if (err) {
+                          l3next({
+                            status: 4001,
+                            message: 'error occured while changing money deposited'
+                          }, null)
+                        } else {
+                          l3next(null)
+                        }
+                      })
+                    }, (l3Next) => {
                       getExchangeRate(amount, fromSymbol, toSymbol,
                         (error, amount) => {
-                          if(error) l3Next({
+                          if (error) l3Next({
                             status: 4001,
                             message: 'Error occurred while getting exchange rate.'
                           });
@@ -50,7 +61,7 @@ let start = (cb) => {
                         });
                     }
                   ], (error, amount) => {
-                    if(error) l2Next(error);
+                    if (error) l2Next(error);
                     else {
                       swix.transferAmount = swix.remainingAmount ? swix.remainingAmount : amount;
                       swix.delayInSeconds = swix.remainingAmount ? Math.min(15, swix.delayInSeconds) : swix.delayInSeconds;
@@ -69,7 +80,7 @@ let start = (cb) => {
                             });
                         }, (statusObject, l4Next) => {
                           let { message } = statusObject;
-                          swixerDbo.updateSwixStatus(address, message, statusObject.status === 4000, 
+                          swixerDbo.updateSwixStatus(address, message, statusObject.status === 4000,
                             (error, result) => {
                               l4Next(null, statusObject.status === 4000);
                             });

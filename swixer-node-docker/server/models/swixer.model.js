@@ -48,6 +48,18 @@ let swixDetailsSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  isMoneyDeposited: {
+    type: Boolean,
+    default: false
+  },
+  isTimeout: {
+    type: Boolean,
+    default: false
+  },
+  isRefunded: {
+    type: Boolean,
+    default: false
+  },
   message: {
     type: String,
     default: 'Swix added successfully.'

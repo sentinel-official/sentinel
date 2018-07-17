@@ -13,11 +13,11 @@ let getSwix = (swixHash, cb) => {
   SwixDetailsModel.findOne({
     swixHash
   }, {
-    _id: 0
-  }, (error, result) => {
-    if(error) cb(error, null);
-    else cb(null, result);
-  });
+      _id: 0
+    }, (error, result) => {
+      if (error) cb(error, null);
+      else cb(null, result);
+    });
 };
 
 let getValidSwixes = (cb) => {
@@ -37,7 +37,8 @@ let getValidSwixes = (cb) => {
     ],
     'tries': {
       $lt: 10
-    }
+    },
+    'isTimeout': false
   }, {
       '_id': 0
     }, (error, result) => {
@@ -90,11 +91,23 @@ let updateSwixTransactionStatus = (toAddress, txInfo, remainingAmount, cb) => {
     });
 };
 
+let updateSwix = (findData, updateData, cb) => {
+  SwixDetailsModel.findOneAndUpdate({
+    findData
+  }, {
+      $set: { updateData }
+    }, (err, resp) => {
+      if (err) cb(err, null)
+      else cb(null, resp)
+    })
+}
+
 module.exports = {
   insertSwixDetails,
   getSwix,
   getValidSwixes,
   updateSwixStatus,
   increaseTries,
-  updateSwixTransactionStatus
+  updateSwixTransactionStatus,
+  updateSwix
 };

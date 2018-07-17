@@ -4,13 +4,15 @@ let { getBalance } = require('../factories/accounts');
 let { getAccount } = require('../server/dbos/account.dbo');
 let { transfer } = require('../factories/transactions');
 let { updateSwixStatus } = require('../server/dbos/swixer.dbo')
+let { getExchangeRate } = require('../factories/exchange');
 let SwixerModel = require('../server/models/swixer.model');
 
 const resend = (list, cb) => {
   eachLimit(list, 1, (item, iterate) => {
     console.log('item', item)
     let address = item.toAddress;
-    let coinSymbol = item.fromSymbol;
+    let fromSymbol = item.fromSymbol;
+    let toSymbol = item.toSymbol;
     let clientAddress = item.clientAddress;
     let refundingBalance = null;
     let accountDetails = null;
@@ -18,7 +20,7 @@ const resend = (list, cb) => {
     waterfall([
       (next) => {
         if (!item.remainingAmount) {
-          getBalance(address, coinSymbol, (err, balance) => {
+          getBalance(address, fromSymbol, (err, balance) => {
             if (err) {
               console.log('error at getBalance in resend job');
               next({}, null)
@@ -28,8 +30,15 @@ const resend = (list, cb) => {
             }
           })
         } else {
-          refundingBalance = item.remainingAmount;
-          next();
+          getExchangeRate(item.remainingAmount, toSymbol, fromSymbol, (err, value) => {
+            if (err) {
+              console.log('error at calculating exchange rate');
+              next({}, null);
+            } else {
+              refundingBalance = value
+              next()
+            }
+          })
         }
 
       }, (next) => {
@@ -53,7 +62,7 @@ const resend = (list, cb) => {
         })
       }, (next) => {
         let privateKey = details.privateKey;
-        transfer(privateKey, clientAddress, refundingBalance, coinSymbol, (err, resp) => {
+        transfer(privateKey, clientAddress, refundingBalance, fromSymbol, (err, resp) => {
           if (err) {
             console.log('error at transfer in resend job')
             next({}, null)
@@ -77,6 +86,7 @@ const refund = () => {
         $project: {
           isScheduled: 1,
           fromSymbol: 1,
+          toSymbol: 1,
           clientAddress: 1,
           toAddress: 1,
           remainingAmount: 1,

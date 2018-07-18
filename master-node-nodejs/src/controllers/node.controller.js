@@ -43,16 +43,18 @@ const registerNode = (req, res) => {
   let netSpeed = req.body['net_speed']
   let vpnType = req.body['vpn_type'] || 'openvpn'
   let token = uuid.v4();
-  let db = null;
   let joinedOn = Date.now() / 1000;
   let latency = null;
+  let method = 'AES-128-CBC'
+  if (vpnType == 'socks5')
+    method = 'aes-256-cfb'
+
+  let encMethod = req.body['enc_method'] || method
 
   accountAddr = accountAddr.toString();
   pricePerGB = parseFloat(pricePerGB);
   ip = ip.toString();
-  if (vpnType) {
-    vpnType = vpnType.toString();
-  }
+  vpnType = vpnType.toString();
 
   async.waterfall([
     (next) => {
@@ -72,6 +74,9 @@ const registerNode = (req, res) => {
           }, null)
         })
     }, (node, next) => {
+      if (!location['city']) {
+        location['city'] = 'Unknown'
+      }
       if (!node) {
         let data = {
           'account_addr': accountAddr,
@@ -82,7 +87,8 @@ const registerNode = (req, res) => {
           'vpn_type': vpnType,
           'joined_on': joinedOn,
           'location': location,
-          'net_speed': netSpeed
+          'net_speed': netSpeed,
+          'enc_method': encMethod
         }
 
         let nodeData = new Node(data)
@@ -113,7 +119,8 @@ const registerNode = (req, res) => {
           'latency': latency,
           'vpn_type': vpnType,
           'location': location,
-          'net_speed': netSpeed
+          'net_speed': netSpeed,
+          'enc_method': encMethod
         }
 
         database.update(Node, findData, updateData, (err, resp) => {

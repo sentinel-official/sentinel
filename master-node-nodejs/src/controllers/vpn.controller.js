@@ -35,7 +35,8 @@ const getNodeList = (vpnType, cb) => {
       'location': 1,
       'net_speed.upload': 1,
       'latency': 1,
-      'net_speed.download': 1
+      'net_speed.download': 1,
+      'enc_method': 1
     }, (err, resp) => {
       if (err) cb(err, null)
       else cb(null, resp)
@@ -61,15 +62,12 @@ const getVpnsList = (req, res) => {
       async.eachLimit(_list, 1, (item, iterate) => {
         var obj = item._doc;
         if (obj.price_per_gb) {
-          console.log('in if', obj.price_per_gb)
           obj.price_per_GB = obj.price_per_gb
         }
         obj.price_per_gb = undefined;
-        console.log('item', item)
         list.push(obj);
         iterate();
       }, () => {
-        console.log('list', list)
         res.status(200).send({
           'success': true,
           'list': list

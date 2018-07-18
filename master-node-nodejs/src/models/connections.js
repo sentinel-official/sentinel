@@ -6,7 +6,7 @@ let connectionSchema = new Schema({
   session_name: String,
   start_time: Number,
   client_addr: String,
-  account_addr: String,
+  vpn_addr: String,
   end_time: Number
 });
 

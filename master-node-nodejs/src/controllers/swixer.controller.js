@@ -126,8 +126,8 @@ const getSwixStatus = (req, res) => {
           next(null, {
             'success': true,
             'status': details['status'],
-            'txInfos': details['tx_infos'],
-            'remainingAmount': details['remaining_amount']
+            'tx_infos': details['txInfos'],
+            'remaining_amount': details['remainingAmount']
           })
         }
       })

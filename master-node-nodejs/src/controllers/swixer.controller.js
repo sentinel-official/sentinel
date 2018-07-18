@@ -9,6 +9,7 @@ const getSwixerList = (cb) => {
   SwixerNodes.find({
     'swixer.status': 'up'
   }, {
+      _id: 0,
       account_addr: 1,
       ip: 1,
       service_charge: 1

@@ -208,7 +208,7 @@ const getSwixDetails = (req, res) => {
               next(null, {
                 'success': true,
                 'address': account['address'],
-                'swixHash': account['swixHash'],
+                'swix_hash': account['swixHash'],
               })
             }
           })

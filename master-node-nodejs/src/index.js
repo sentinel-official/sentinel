@@ -16,7 +16,7 @@ dbo()
 
 let limiter = new RateLimit({
   windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 200, // limit each IP to 100 requests per windowMs
+  max: 2000000, // limit each IP to 100 requests per windowMs
   delayMs: 0, // disable delaying - full speed until the max limit is reached
   message: "Too many requests maid from this IP, please try again after an hour"
 });

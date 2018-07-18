@@ -228,7 +228,6 @@ const getVpnCredentials = (req, res) => {
             token: token
           };
           let url = 'http://' + ip + ':' + port + '/token';
-          // let url = 'http://localhost:3000'
           try {
             axios.post(url, JSON.stringify(body))
               .then((resp) => {

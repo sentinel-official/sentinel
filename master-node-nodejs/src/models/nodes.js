@@ -13,6 +13,7 @@ let nodeSchema = new Schema({
   latency: Number,
   vpn_type: String,
   joined_on: Number,
+  enc_method: String,
   location: {
     lattitude: Number,
     longitude: Number,

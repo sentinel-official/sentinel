@@ -22,34 +22,34 @@ const devFreeDetails = {
   "account_addr": "0x6b6df9e25f7bf2e363ec1a52a7da4c4a64f5769e",
 }
 
-// describe('Route for log error route', () => {
-//   describe('/POST' + logErrorRoute, () => {
+describe('Route for log error route', () => {
+  describe('/POST' + logErrorRoute, () => {
 
-//     it('return success status on success', (done) => {
-//       chai.request(server)
-//         .post(logErrorRoute)
-//         .send(logErrorDetails)
-//         .end((err, res) => {
-//           res.should.have.status(200);
-//           res.body.should.be.a('object');
-//           done()
-//         })
-//     }).timeout(20000)
-//   })
-// })
+    it('return success status on success', (done) => {
+      chai.request(server)
+        .post(logErrorRoute)
+        .send(logErrorDetails)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          done()
+        })
+    }).timeout(20000)
+  })
+})
 
-// describe('Route for free sents', () => {
-//   describe('/POST' + devFreeRoute, () => {
+describe('Route for free sents', () => {
+  describe('/POST' + devFreeRoute, () => {
 
-//     it('return success status on success', (done) => {
-//       chai.request(server)
-//         .post(devFreeRoute)
-//         .send(devFreeDetails)
-//         .end((err, res) => {
-//           res.should.have.status(200);
-//           res.body.should.be.a('object');
-//           done()
-//         })
-//     }).timeout(20000)
-//   })
-// })
+    it('return success status on success', (done) => {
+      chai.request(server)
+        .post(devFreeRoute)
+        .send(devFreeDetails)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          done()
+        })
+    }).timeout(20000)
+  })
+})

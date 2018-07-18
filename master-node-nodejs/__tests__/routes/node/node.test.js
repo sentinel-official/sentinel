@@ -98,127 +98,129 @@ const nodeInfoAlive = {
   }
 }
 
-// describe('Route creating account', () => {
-//   describe('/POST ' + accountRoute, () => {
+describe('Route creating account', () => {
+  describe('/POST ' + accountRoute, () => {
 
-//     it('With correct details should return keystore', (done) => {
-//       chai.request(server)
-//         .post(accountRoute)
-//         .send(correctDetails)
-//         .end((err, res) => {
-//           console.log('err, resp', err, res.body)
-//           res.should.have.status(200);
-//           res.body.should.be.a('object');
-//           done();
-//         });
-//     }).timeout(4000)
-//   });
-// });
+    it('With correct details should return keystore', (done) => {
+      chai.request(server)
+        .post(accountRoute)
+        .send(correctDetails)
+        .end((err, res) => {
+          console.log('err, resp', err, res.body)
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          done();
+        });
+    }).timeout(4000)
+  });
+});
 
-// describe('Route for checking balance', () => {
-//   describe('/POST ' + balanceRoute, () => {
+describe('Route for checking balance', () => {
+  describe('/POST ' + balanceRoute, () => {
 
-//     it('With correct wallet address should return balance', (done) => {
-//       chai.request(server)
-//         .post(balanceRoute)
-//         .send(correctDetails)
-//         .end((err, res) => {
-//           res.should.have.status(200);
-//           res.body.should.be.a('object');
-//           done();
-//         });
-//     }).timeout(10000);
-//   });
-// });
+    it('With correct wallet address should return balance', (done) => {
+      chai.request(server)
+        .post(balanceRoute)
+        .send(correctDetails)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          done();
+        });
+    }).timeout(10000);
+  });
+});
 
-// describe('route for register user', () => {
-//   describe('/POST ' + registerRoute, () => {
-//     it('with correct details should return success true', (done) => {
-//       chai.request(server)
-//         .post(registerRoute)
-//         .send(registerUserDetails)
-//         .end((err, res) => {
-//           res.should.have.status(200);
-//           res.body.should.have.property('success').eql(true);
-//           done()
-//         })
-//     }).timeout(10000)
-//   })
-// })
+describe('route for register user', () => {
+  describe('/POST ' + registerRoute, () => {
+    it('with correct details should return success true', (done) => {
+      chai.request(server)
+        .post(registerRoute)
+        .send(registerUserDetails)
+        .end((err, res) => {
+          console.log('err, res', err, res.body)
 
-// describe('route for deregister user', () => {
-//   describe('/POST ' + deregisterRoute, () => {
-//     it('with correct details should return success true', (done) => {
-//       chai.request(server)
-//         .post(deregisterRoute)
-//         .send(correctDetails)
-//         .end((err, res) => {
-//           res.should.have.status(200);
-//           res.body.should.have.property('success').eql(true);
-//           done()
-//         })
-//     }).timeout(10000)
-//   })
-// })
+          res.should.have.status(200);
+          res.body.should.have.property('success').eql(true);
+          done()
+        })
+    }).timeout(10000)
+  })
+})
 
-// describe('route for update node-info', () => {
-//   describe('/POST ' + updateNodeRoute, () => {
-//     it('with correct details should return success true', (done) => {
-//       chai.request(server)
-//         .post(updateNodeRoute)
-//         .send(nodeInfoLocation)
-//         .end((err, res) => {
-//           res.should.have.status(200);
-//           res.body.should.have.property('success').eql(true);
-//           done()
-//         })
-//     }).timeout(10000)
-//   })
-// })
+describe('route for deregister user', () => {
+  describe('/POST ' + deregisterRoute, () => {
+    it('with correct details should return success true', (done) => {
+      chai.request(server)
+        .post(deregisterRoute)
+        .send(correctDetails)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.have.property('success').eql(true);
+          done()
+        })
+    }).timeout(10000)
+  })
+})
 
-// describe('route for update node-info', () => {
-//   describe('/POST ' + updateNodeRoute, () => {
-//     it('with correct details should return success true', (done) => {
-//       chai.request(server)
-//         .post(updateNodeRoute)
-//         .send(nodeInfoNetspeed)
-//         .end((err, res) => {
-//           res.should.have.status(200);
-//           res.body.should.have.property('success').eql(true);
-//           done()
-//         })
-//     }).timeout(10000)
-//   })
-// })
+describe('route for update node-info', () => {
+  describe('/POST ' + updateNodeRoute, () => {
+    it('with correct details should return success true', (done) => {
+      chai.request(server)
+        .post(updateNodeRoute)
+        .send(nodeInfoLocation)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.have.property('success').eql(true);
+          done()
+        })
+    }).timeout(10000)
+  })
+})
 
-// describe('route for update node-info', () => {
-//   describe('/POST ' + updateNodeRoute, () => {
-//     it('with correct details should return success true', (done) => {
-//       chai.request(server)
-//         .post(updateNodeRoute)
-//         .send(nodeInfoVpn)
-//         .end((err, res) => {
-//           console.log(err, res.body)
-//           res.should.have.status(200);
-//           res.body.should.have.property('success').eql(true);
-//           done()
-//         })
-//     }).timeout(10000)
-//   })
-// })
+describe('route for update node-info', () => {
+  describe('/POST ' + updateNodeRoute, () => {
+    it('with correct details should return success true', (done) => {
+      chai.request(server)
+        .post(updateNodeRoute)
+        .send(nodeInfoNetspeed)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.have.property('success').eql(true);
+          done()
+        })
+    }).timeout(10000)
+  })
+})
 
-// describe('route for update node-info', () => {
-//   describe('/POST ' + updateNodeRoute, () => {
-//     it('with correct details should return success true', (done) => {
-//       chai.request(server)
-//         .post(updateNodeRoute)
-//         .send(nodeInfoAlive)
-//         .end((err, res) => {
-//           console.log(err, res.body)
-//           res.should.have.status(200);
-//           res.body.should.have.property('success').eql(true);
-//           done()
-//         })
-//     }).timeout(10000)
-//   })
-// })
+describe('route for update node-info', () => {
+  describe('/POST ' + updateNodeRoute, () => {
+    it('with correct details should return success true', (done) => {
+      chai.request(server)
+        .post(updateNodeRoute)
+        .send(nodeInfoVpn)
+        .end((err, res) => {
+          console.log(err, res.body)
+          res.should.have.status(200);
+          res.body.should.have.property('success').eql(true);
+          done()
+        })
+    }).timeout(10000)
+  })
+})
+
+describe('route for update node-info', () => {
+  describe('/POST ' + updateNodeRoute, () => {
+    it('with correct details should return success true', (done) => {
+      chai.request(server)
+        .post(updateNodeRoute)
+        .send(nodeInfoAlive)
+        .end((err, res) => {
+          console.log(err, res.body)
+          res.should.have.status(200);
+          res.body.should.have.property('success').eql(true);
+          done()
+        })
+    }).timeout(10000)
+  })
+})

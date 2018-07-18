@@ -24,8 +24,6 @@ public class AppConstants {
     public static final int REQ_TX_HISTORY = 100;
     public static final int REQ_VPN_HISTORY = 101;
     public static final int REQ_RESET_PIN = 102;
-    public static final int REQ_HELP = 103;
-    public static final int REQ_SOCIAL_LINKS = 104;
     public static final int REQ_LANGUAGE = 105;
     public static final int REQ_CODE_FORGOT_PIN = 105;
     public static final int REQ_VPN_CONNECT = 106;

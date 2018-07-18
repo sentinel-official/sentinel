@@ -48,7 +48,7 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
      * Use this factory method to create a new instance of
      * this fragment.
      *
-     * @return A new instance of fragment GenericUrlListFragment.
+     * @return A new instance of fragment GenericListFragment.
      */
     public static GenericListFragment newInstance(int iReqCode) {
         GenericListFragment aFragment = new GenericListFragment();
@@ -102,7 +102,7 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     private void initView(View iView) {
         mSrReload = iView.findViewById(R.id.sr_reload);
         mRvList = iView.findViewById(R.id.rv_list);
-        // Setup Recyclerview
+        // Setup RecyclerView
         mRvList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRvList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         mAdapter = new GenericListAdapter(this, getContext());

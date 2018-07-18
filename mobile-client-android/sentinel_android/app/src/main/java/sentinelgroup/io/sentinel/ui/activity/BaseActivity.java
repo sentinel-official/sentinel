@@ -55,7 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
         mToolbar = findViewById(R.id.toolbar);
         mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
         mSwitchNet = findViewById(R.id.switch_net);
-        mSwitchState = findViewById(R.id.switch_state);
+        mSwitchState=findViewById(R.id.tv_switch_state);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         // instantiate toolbar
         setupToolbar();
@@ -71,8 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     private void setupTestNetSwitch() {
         boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
         mSwitchNet.setChecked(isActive);
-        mSwitchNet.setText(R.string.test_net);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
+        mSwitchState.setText(getString(R.string.test_net, getString(isActive ? R.string.on : R.string.off)));
     }
 
     /*
@@ -225,6 +224,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isChecked ? R.string.active : R.string.deactive)));
+        mSwitchState.setText(getString(R.string.test_net, getString(isChecked ? R.string.on : R.string.off)));
     }
 }

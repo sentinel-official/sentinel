@@ -3,6 +3,7 @@
     android:color="@color/colorRippleMaskLight">
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
+            <corners android:radius="@dimen/margin_4" />
             <solid android:color="@color/colorCardShadow" />
             <corners android:radius="@dimen/margin_2" />
 
@@ -10,6 +11,7 @@
     </item>
     <item>
         <shape android:shape="rectangle">
+            <corners android:radius="@dimen/margin_4" />
             <solid android:color="@color/colorCardShadow" />
             <corners android:radius="@dimen/margin_2" />
         </shape>

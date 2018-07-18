@@ -51,7 +51,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     private TextInputEditText mTetPassword;
     private Button mBtnRestore;
     private TextView mTvUpload;
-    private ImageView mIvUploaded;
+    private ImageView mIvUpload, mIvUploaded;
 
     private String mKeystorePath = "";
     private int mButtonId;
@@ -95,10 +95,11 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         mTetPassword = iView.findViewById(R.id.tet_password);
         mBtnRestore = iView.findViewById(R.id.btn_restore);
         mTvUpload = iView.findViewById(R.id.tv_upload_file);
+        mIvUpload = iView.findViewById(R.id.iv_upload_file);
         mIvUploaded = iView.findViewById(R.id.iv_uploaded);
         // Set Listeners
         mTetPassword.addTextChangedListener(this);
-        mTvUpload.setOnClickListener(this);
+        mIvUpload.setOnClickListener(this);
         mBtnRestore.setOnClickListener(this);
     }
 
@@ -141,7 +142,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
     private void performAction(int iButtonId) {
         switch (iButtonId) {
-            case R.id.tv_upload_file:
+            case R.id.iv_upload_file:
                 uploadFile();
                 break;
             case R.id.btn_restore:
@@ -167,8 +168,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
             if (files.length == 1) {
                 mKeystorePath = files[0];
                 mIvUploaded.setVisibility(View.VISIBLE);
-                mTvUpload.setText("");
-                Toast.makeText(getContext(), R.string.uploaded_success, Toast.LENGTH_SHORT).show();
+                mTvUpload.setText(R.string.uploaded_keystore_desc);
                 Logger.logDebug("KEYSTOREPATH", mKeystorePath);
                 mBtnRestore.setEnabled(!mTetPassword.getText().toString().isEmpty() && !mKeystorePath.isEmpty());
                 aDialog.dismiss();

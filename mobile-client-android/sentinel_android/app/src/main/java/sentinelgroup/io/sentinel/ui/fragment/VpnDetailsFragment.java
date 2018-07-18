@@ -107,17 +107,14 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         // set default value
         mFvFlag.setCountryCode(Converter.getCountryCode(mVpnListData.getLocation().country));
         mTvLocation.setText(getString(R.string.vpn_location, mVpnListData.getLocation().city, mVpnListData.getLocation().country));
-        mTvCity.setText(getString(R.string.city, mVpnListData.getLocation().city));
-        mTvCountry.setText(getString(R.string.country, mVpnListData.getLocation().country));
+        mTvCity.setText(mVpnListData.getLocation().city);
+        mTvCountry.setText(mVpnListData.getLocation().country);
         String aBandwidthValue = getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(mVpnListData.getNetSpeed().download, Convert.DataUnit.MBPS));
-        String aBandwidth = getString(R.string.bandwidth, aBandwidthValue);
-        mTvBandwidth.setText(aBandwidth);
+        mTvBandwidth.setText(aBandwidthValue);
         String aLatencyValue = getString(R.string.vpn_latency_value, mVpnListData.getLatency());
-        String aLatency = getString(R.string.latency, aLatencyValue);
-        mTvLatency.setText(aLatency);
+        mTvLatency.setText(aLatencyValue);
         String aPriceValue = getString(R.string.vpn_price_value, mVpnListData.getPricePerGb());
-        String aPrice = getString(R.string.price, aPriceValue);
-        mTvPrice.setText(aPrice);
+        mTvPrice.setText(aPriceValue);
         // Set listener
         mBtnConnect.setOnClickListener(this);
     }

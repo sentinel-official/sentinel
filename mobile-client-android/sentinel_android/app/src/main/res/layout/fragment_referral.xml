@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.ReferralFragment">
+
+
+    <TextView
+        android:id="@+id/tv_referral_desc"
+        style="@style/CustomTextAppearance.Text14.White70Normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/referral_code"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/referral_code"
+        style="@style/CustomTextAppearance.Text14.White70Normal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/referrals"
+        app:layout_constraintBottom_toTopOf="@+id/tv_referral_code"
+        app:layout_constraintEnd_toEndOf="@+id/tv_referral_desc"
+        app:layout_constraintStart_toStartOf="@+id/tv_referral_desc"
+        app:layout_constraintTop_toBottomOf="@+id/tv_referral_desc" />
+
+    <TextView
+        android:id="@+id/tv_referral_code"
+        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@+id/btn_invite_friends"
+        app:layout_constraintEnd_toEndOf="@+id/referral_code"
+        app:layout_constraintStart_toStartOf="@+id/referral_code"
+        app:layout_constraintTop_toBottomOf="@+id/referral_code" />
+
+    <Button
+        android:id="@+id/btn_invite_friends"
+        style="@style/CustomTextAppearance.OrangeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Invite Friends"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

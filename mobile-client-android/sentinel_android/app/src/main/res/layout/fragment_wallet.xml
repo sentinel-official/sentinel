@@ -87,7 +87,7 @@
 
                         <TextView
                             android:id="@+id/wallet"
-                            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                            style="@style/CustomTextAppearance.Text14.WhiteNormal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/shape_state_blue"
@@ -106,7 +106,7 @@
                             style="@style/CustomTextAppearance.Text32"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="24dp"
                             android:drawablePadding="@dimen/margin_4"
                             android:drawableTop="@drawable/ic_app_icon_small"
                             android:gravity="center"
@@ -120,7 +120,7 @@
 
                         <TextView
                             android:id="@+id/tv_total_sent_desc"
-                            style="@style/CustomTextAppearance.Text12.GrayNormal"
+                            style="@style/CustomTextAppearance.Text12.Gray"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
@@ -170,10 +170,10 @@
 
                         <TextView
                             android:id="@+id/tv_total_ether_desc"
-                            style="@style/CustomTextAppearance.Text12.GrayNormal"
+                            style="@style/CustomTextAppearance.Text12.Gray"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
+                            android:layout_marginBottom="24dp"
                             android:text="@string/eth_desc"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"

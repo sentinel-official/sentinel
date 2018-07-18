@@ -8,11 +8,12 @@ import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
+import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.ui.fragment.VpnDetailsFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnListFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 
-public class VpnListActivity extends BaseActivity {
+public class VpnListActivity extends BaseActivity implements OnVpnConnectionListener {
     private VpnListEntity mVpnListData;
 
     @Override
@@ -137,5 +138,15 @@ public class VpnListActivity extends BaseActivity {
                 ((VpnDetailsFragment) aFragment).loadNextActivity(getIntent());
         }
         iDialog.dismiss();
+    }
+
+    @Override
+    public void onVpnConnectionInitiated(String iVpnConfigFilePath) {
+        // Unimplemented interface method
+    }
+
+    @Override
+    public void onVpnDisconnectionInitiated() {
+        // Unimplemented interface method
     }
 }

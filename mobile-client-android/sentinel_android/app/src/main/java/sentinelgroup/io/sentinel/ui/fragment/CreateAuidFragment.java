@@ -41,7 +41,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     private OnGenericFragmentInteractionListener mListener;
 
-    private TextInputEditText mTetPassword, mTetConfirmPassword;
+    private TextInputEditText mTetPassword, mTetConfirmPassword, mTetReferral;
     private Button mBtnNext;
     private boolean mIsRequested;
 
@@ -82,6 +82,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     private void initView(View iView) {
         mTetPassword = iView.findViewById(R.id.tet_password);
         mTetConfirmPassword = iView.findViewById(R.id.tet_confirm_password);
+        mTetReferral = iView.findViewById(R.id.tet_referral);
         mBtnNext = iView.findViewById(R.id.btn_next);
         // Set listeners
         mTetPassword.addTextChangedListener(this);

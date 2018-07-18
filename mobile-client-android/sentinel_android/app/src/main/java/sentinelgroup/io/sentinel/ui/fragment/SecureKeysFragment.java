@@ -9,9 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
+import android.widget.CheckedTextView;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
@@ -25,7 +24,7 @@ import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
  * Use the {@link SecureKeysFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SecureKeysFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class SecureKeysFragment extends Fragment implements View.OnClickListener {
 
     private static final String ARG_ACC_ADDRESS = "account_address";
     private static final String ARG_PRIVATE_KEY = "private key";
@@ -37,6 +36,8 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
 
     private Button mBtnNext;
     private TextView mTvPrivateKey;
+    private CheckedTextView mCtvKeyCopied;
+    private static boolean mIsKeyCopied;
 
     public SecureKeysFragment() {
         // Required empty public constructor
@@ -95,14 +96,14 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
         mTvPrivateKey = iView.findViewById(R.id.tv_private_key);
         TextView aTvKeystore = iView.findViewById(R.id.tv_keystore);
         ImageButton aIbCopyKey = iView.findViewById(R.id.ib_copy_key);
-        RadioButton aRbKeyCopied = iView.findViewById(R.id.rb_key_copied);
+        mCtvKeyCopied = iView.findViewById(R.id.ctv_key_copied);
         mBtnNext = iView.findViewById(R.id.btn_next);
         // set view initial value
         aTvAddress.setText(mAccountAddress);
         mTvPrivateKey.setText(mPrivateKey);
         aTvKeystore.setText(mKeyStoreFilePath);
         // set listeners
-        aRbKeyCopied.setOnCheckedChangeListener(this);
+        mCtvKeyCopied.setOnClickListener(this);
         aIbCopyKey.setOnClickListener(this);
         mBtnNext.setOnClickListener(this);
     }
@@ -111,6 +112,12 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
+        }
+    }
+
+    public void showSingleActionDialog(String iMessage) {
+        if (mListener != null) {
+            mListener.onShowSingleActionDialog(iMessage);
         }
     }
 
@@ -146,18 +153,20 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.ib_copy_key:
+                mIsKeyCopied = true;
+                copyToClipboard(mTvPrivateKey.getText().toString(), R.string.key_copied);
+                break;
+            case R.id.ctv_key_copied:
+                if (mIsKeyCopied) {
+                    mBtnNext.setEnabled(true);
+                    mCtvKeyCopied.setChecked(true);
+                } else
+                    showSingleActionDialog(getString(R.string.key_not_copied_alert));
+                break;
             case R.id.btn_next:
                 loadNextFragment();
                 break;
-            case R.id.ib_copy_key:
-                copyToClipboard(mTvPrivateKey.getText().toString(), R.string.key_copied);
-        }
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (buttonView.getId() == R.id.rb_key_copied) {
-            mBtnNext.setEnabled(isChecked);
         }
     }
 }

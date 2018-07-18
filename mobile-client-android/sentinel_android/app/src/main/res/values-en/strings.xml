@@ -5,7 +5,6 @@
     <string name="create_account">Create your AUID</string>
     <string name="or">OR</string>
     <string name="restore_account_desc">Already have an account?\nRestore your Keystore File</string>
-    <string name="password_hint">Enter Password to Create AUID</string>
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="next">Next</string>
     <string name="secure_key_desc">Copy your private key and keystore file to some secured place.\n<b>We do not store any of your keys in our databases.</b>\nIf you lose them, you would not be able to access your account.</string>
@@ -17,8 +16,6 @@
     <string name="restore">Restore</string>
     <string name="restore_password_hint">Enter Keystore Password</string>
     <string name="vpn">VPN</string>
-    <string name="test_net">TESTNET</string>
-    <string name="test_net_state">Test Mode %1s</string>
     <string name="transaction_history">Transaction History</string>
     <string name="vpn_history">VPN History</string>
     <string name="reset_pin">Reset PIN</string>
@@ -36,7 +33,6 @@
     <string name="eth_desc">Total ETH</string>
     <string name="test_eth_desc">Total Test ETH</string>
     <string name="send">Send</string>
-    <string name="send_to_hint">Send To</string>
     <string name="enter_amount_hint">Enter Amount</string>
     <string name="gas_limit_hint">Gas Limit</string>
     <string name="select_token_hint">Select Token</string>
@@ -61,7 +57,7 @@
     <string name="no_internet">No internet connectivity. Please try again.</string>
     <string name="password_mismatch">Password and Confirm Password did not match</string>
     <string name="please_note">Please Note</string>
-    <string name="secure_keys">Secure Keys</string>
+    <string name="secure_keys">Secure Your Keys</string>
     <string name="storage_permission_denied">Storage permission not granted.</string>
     <string name="key_copied">Private Key copied to clipboard</string>
     <string name="address_copied">Address copied to clipboard</string>
@@ -71,11 +67,8 @@
     <string name="invalid_pin">Invalid PIN. Please try again.</string>
     <string name="restore_keystore">Restore Keystore File</string>
     <string name="select_file">Select a File</string>
-    <string name="uploaded_success">File uploaded successfully</string>
     <string name="wallet">Wallet</string>
     <string name="pin_empty">Please enter the app PIN</string>
-    <string name="active">Activated</string>
-    <string name="deactive">Deactivated</string>
     <string name="wallet_balance">Wallet Balance</string>
     <string name="free_token_requested">Free test SENT tokens getting mined. You will receive them in your wallet soon.</string>
     <string name="yay">Yay!</string>
@@ -117,11 +110,11 @@
     <string name="check_status">Check status</string>
     <string name="select_vpn">Select VPN</string>
     <string name="vpn_connections">VPN Connections</string>
-    <string name="city">City: %1s</string>
-    <string name="country">Country: %1s</string>
-    <string name="bandwidth">Bandwidth: %1s</string>
-    <string name="latency">Latency: %1s</string>
-    <string name="price">Price (SENTs / GB): %1s</string>
+    <string name="city">City:</string>
+    <string name="country">Country:</string>
+    <string name="bandwidth">Bandwidth:</string>
+    <string name="latency">Latency:</string>
+    <string name="price">Price (SENTs / GB):</string>
     <string name="coming_soon">Coming soon…</string>
     <string name="fetching_config">Fetching VPN configurations…</string>
     <string name="saving_config">Saving VPN configurations…</string>
@@ -170,13 +163,22 @@
     <string name="vpn_history_main_net_unavailable">No VPN history found in MAINNET.</string>
     <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET.</string>
     <string name="tx_history_main_net_unavailable">No Transaction History found in MAINNET.</string>
-    <string name="upload_keystore_desc">Tap here to upload your Keystore file</string>
     <string name="logout">Logout</string>
     <string name="logout_desc">Logging out will clear your keystore file, make sure you have saved it.</string>
     <string name="language">Language</string>
     <string name="select_language">Select Language</string>
     <string name="view_tx_history_for">View Tx History for</string>
     <string name="payment_done_success">Payment Done Successfully</string>
+    <string name="send_to_hint">Send To or Scan To Send</string>
+    <string name="referrals">Referrals</string>
+    <string name="send_to">Send to…</string>
+    <string name="password_hint">Enter Password to Create User ID</string>
+    <string name="key_not_copied_alert">You have not copied your Private Key.\nPlease copy your Private key to proceed.</string>
+    <string name="test_net">TESTNET %1s</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="upload_keystore_desc">Upload Keystore file</string>
+    <string name="uploaded_keystore_desc">Keystore File Uploaded</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

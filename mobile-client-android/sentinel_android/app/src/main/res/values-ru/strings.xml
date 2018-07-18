@@ -5,7 +5,6 @@
     <string name="create_account"> Создать свой AUID</string>
     <string name="or">ИЛИ</string>
     <string name="restore_account_desc">Уже есть аккаунт?\nВосстановите его с помощью файла хранилища.</string>
-    <string name="password_hint">Введите пароль для создания AUID</string>
     <string name="confirm_password_hint">Подтвердить пароль</string>
     <string name="next">Дальше</string>
     <string name="secure_key_desc">Сохраните ваш приватный ключ и файл хранилища в безопасное место.\n<b>Мы не храним ваши пароли в датабазе.</b>Если вы потеряете ваши данные, доступ к аккаунту будет утерян.</string>
@@ -17,8 +16,6 @@
     <string name="restore">Восстановить</string>
     <string name="restore_password_hint">Введите пароль от хранилища</string>
     <string name="vpn">VPN</string>
-    <string name="test_net">Тестовая Сеть</string>
-    <string name="test_net_state">Тестовый режим %1s</string>
     <string name="transaction_history">История Транзакций</string>
     <string name="vpn_history">История VPN</string>
     <string name="reset_pin">Сбросить PIN</string>
@@ -36,7 +33,6 @@
     <string name="eth_desc">Баланс ETH</string>
     <string name="test_eth_desc">Баланс Тестовых ETH</string>
     <string name="send">Отправить</string>
-    <string name="send_to_hint">Адрес отправки</string>
     <string name="enter_amount_hint">Ввести количество</string>
     <string name="gas_limit_hint">Лимит Газа</string>
     <string name="select_token_hint">Выбрать Токен</string>
@@ -71,11 +67,8 @@
     <string name="invalid_pin">Неверный PIN. Попробуйте еще раз.</string>
     <string name="restore_keystore">Восстановить файл хранилища</string>
     <string name="select_file">Выбрать файл</string>
-    <string name="uploaded_success">Файл успешно загружен</string>
     <string name="wallet">Кошелек</string>
     <string name="pin_empty">Введите PIN</string>
-    <string name="active">активен</string>
-    <string name="deactive">не активен</string>
     <string name="wallet_balance">Баланс кошелька</string>
     <string name="free_token_requested">Бесплатные тестовые токены SENT скоро будут доступны. Вы скоро их получите.</string>
     <string name="yay">Ура!</string>
@@ -117,11 +110,11 @@
     <string name="check_status">Проверить статус</string>
     <string name="select_vpn">Выбрать VPN</string>
     <string name="vpn_connections">VPN Подключения</string>
-    <string name="city">Город: %1s</string>
-    <string name="country">Страна: %1s</string>
-    <string name="bandwidth">Скорость: %1s</string>
-    <string name="latency">Задержка: %1s</string>
-    <string name="price">Цена (SENT/ГБ): %1s</string>
+    <string name="city">Город:</string>
+    <string name="country">Страна:</string>
+    <string name="bandwidth">Скорость:</string>
+    <string name="latency">Задержка:</string>
+    <string name="price">Цена (SENT/ГБ):</string>
     <string name="coming_soon">Скоро добавим…</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
     <string name="saving_config">Сохранение конфигураций VPN…</string>
@@ -170,13 +163,22 @@
     <string name="vpn_history_main_net_unavailable">В Основной Сети нет истории VPN.</string>
     <string name="vpn_main_net_unavailable">Нет доступных  узлов VPN в Основной Сети, переключитесь на Тестовую Сеть.</string>
     <string name="tx_history_main_net_unavailable">В Основной Сети нет транзакций.</string>
-    <string name="upload_keystore_desc">Нажмите здесь для загрузки файла хранилища</string>
     <string name="logout">Выход</string>
     <string name="logout_desc">Убедитесь в сохранности файла хранилища перед выходом из приложения.</string>
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
     <string name="view_tx_history_for">История транзакций</string>
     <string name="payment_done_success">Платеж прошел успешно</string>
+    <string name="send_to_hint">Send To or Scan To Send</string>
+    <string name="referrals">Referrals</string>
+    <string name="send_to">Send to…</string>
+    <string name="password_hint">Enter Password to Create User ID</string>
+    <string name="key_not_copied_alert">You have not copied your Private Key.\nPlease copy your Private key to proceed.</string>
+    <string name="test_net">TESTNET %1s</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="upload_keystore_desc">Tap here to upload your Keystore file</string>
+    <string name="uploaded_keystore_desc">Keystore File Uploaded</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

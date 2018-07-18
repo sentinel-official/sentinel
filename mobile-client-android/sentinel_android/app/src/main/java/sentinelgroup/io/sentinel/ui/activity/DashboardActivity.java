@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -59,7 +60,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private boolean mHasActivityResult;
 
     private DrawerLayout mDrawerLayout;
-    private NavigationView mNavView;
+    private NavigationView mNavMenuView, mNavFooter;
     private Toolbar mToolbar;
     private SwitchCompat mSwitchNet;
     private TextView mSwitchState;
@@ -145,8 +146,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private void setupTestNetSwitch() {
         boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
         mSwitchNet.setChecked(isActive);
-        mSwitchNet.setText(R.string.test_net);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
+        mSwitchState.setText(getString(R.string.test_net, getString(isActive ? R.string.on : R.string.off)));
     }
 
     /*
@@ -155,18 +155,20 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private void initView() {
         mToolbar = findViewById(R.id.toolbar);
         mSwitchNet = findViewById(R.id.switch_net);
-        mSwitchState = findViewById(R.id.switch_state);
+        mSwitchState = findViewById(R.id.tv_switch_state);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
-        mNavView = findViewById(R.id.navigation_view);
+        mNavMenuView = findViewById(R.id.nav_menu_view);
+        mNavFooter = findViewById(R.id.nav_footer_view);
         // set drawer scrim color
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         // instantiate toolbar
         setupToolbar();
         // add listeners
         mSwitchNet.setOnCheckedChangeListener(this);
-        mNavView.getHeaderView(0).findViewById(R.id.ib_back).setOnClickListener(v -> mDrawerLayout.closeDrawers());
-        mNavView.setNavigationItemSelectedListener(
+        mNavMenuView.setItemIconTintList(null);
+        mNavMenuView.getHeaderView(0).findViewById(R.id.ib_back).setOnClickListener(v -> mDrawerLayout.closeDrawers());
+        mNavMenuView.setNavigationItemSelectedListener(
                 menuItem -> {
                     // set item as selected to persist highlight
                     menuItem.setChecked(true);
@@ -176,6 +178,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                     mDrawerLayout.closeDrawers();
                     return true;
                 });
+        mNavFooter.getHeaderView(0).findViewById(R.id.ib_telegram).setOnClickListener(v -> openUrl(getString(R.string.telegram_url)));
+        mNavFooter.getHeaderView(0).findViewById(R.id.ib_medium).setOnClickListener(v -> openUrl(getString(R.string.medium_url)));
+        mNavFooter.getHeaderView(0).findViewById(R.id.ib_twitter).setOnClickListener(v -> openUrl(getString(R.string.twitter_url)));
+        mNavFooter.getHeaderView(0).findViewById(R.id.ib_website).setOnClickListener(v -> openUrl(getString(R.string.website_url)));
     }
 
     /*
@@ -205,17 +211,28 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case R.id.nav_reset_pin:
                 startActivityForResult(new Intent(this, ResetPinActivity.class), AppConstants.REQ_RESET_PIN);
                 break;
-            case R.id.nav_help:
-                startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_HELP), AppConstants.REQ_CODE_NULL);
-                break;
-            case R.id.nav_social_links:
-                startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_SOCIAL_LINKS), AppConstants.REQ_CODE_NULL);
-                break;
             case R.id.nav_language:
                 startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_LANGUAGE), AppConstants.REQ_LANGUAGE);
                 break;
+            case R.id.nav_referral:
+                startActivity(new Intent(this, ReferralActivity.class));
+                break;
+            case R.id.nav_faq:
+                openUrl(getString(R.string.link_coming_soon));
+                break;
             case R.id.nav_logout:
                 showDoubleActionDialog(AppConstants.TAG_LOGOUT, -1, getString(R.string.logout_desc), R.string.logout, android.R.string.cancel);
+        }
+    }
+
+    /*
+     * Open url in chrome or other web viewer
+     */
+    private void openUrl(String iUrl) {
+        if (iUrl != null && !iUrl.isEmpty() && (iUrl.startsWith("http://") || iUrl.startsWith("https://"))) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(iUrl)));
+        } else {
+            showSingleActionError(iUrl);
         }
     }
 
@@ -516,19 +533,19 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
      * Refresh the navigation menu titles after a new language is set
      */
     private void refreshMenuTitles() {
-        Menu aMenu = mNavView.getMenu();
+        Menu aMenu = mNavMenuView.getMenu();
         MenuItem aMenuTxHistory = aMenu.findItem(R.id.nav_tx_history);
         aMenuTxHistory.setTitle(R.string.transaction_history);
         MenuItem aMenuVpnHistory = aMenu.findItem(R.id.nav_vpn_history);
         aMenuVpnHistory.setTitle(R.string.vpn_history);
         MenuItem aMenuResetPin = aMenu.findItem(R.id.nav_reset_pin);
         aMenuResetPin.setTitle(R.string.reset_pin);
-        MenuItem aMenuHelp = aMenu.findItem(R.id.nav_help);
-        aMenuHelp.setTitle(R.string.help);
-        MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_social_links);
-        aMenuSocialLinks.setTitle(R.string.social_links);
         MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
         aMenuLanguage.setTitle(R.string.language);
+        MenuItem aMenuHelp = aMenu.findItem(R.id.nav_referral);
+        aMenuHelp.setTitle(R.string.referrals);
+        MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
+        aMenuSocialLinks.setTitle(R.string.faq);
         MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);
         aMenuLogout.setTitle(R.string.logout);
     }
@@ -547,7 +564,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isChecked ? R.string.active : R.string.deactive)));
+        mSwitchState.setText(getString(R.string.test_net, getString(isChecked ? R.string.on : R.string.off)));
 
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (aFragment instanceof WalletFragment) {

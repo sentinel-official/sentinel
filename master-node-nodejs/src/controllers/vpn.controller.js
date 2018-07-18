@@ -57,19 +57,25 @@ const getVpnsList = (req, res) => {
         'success': false,
         'error': err
       })
-    }
-
-    async.each(_list, (item, iterate) => {
-      item['price_per_GB'] = item['price_per_GB'] || item['price_per_gb'];
-      delete item['price_per_gb'];
-      list.push(item);
-      iterate();
-    }, () => {
-      res.status(200).send({
-        'success': true,
-        'list': list
+    } else {
+      async.eachLimit(_list, 1, (item, iterate) => {
+        var obj = item._doc;
+        if (obj.price_per_gb) {
+          console.log('in if', obj.price_per_gb)
+          obj.price_per_GB = obj.price_per_gb
+        }
+        obj.price_per_gb = undefined;
+        console.log('item', item)
+        list.push(obj);
+        iterate();
+      }, () => {
+        console.log('list', list)
+        res.status(200).send({
+          'success': true,
+          'list': list
+        })
       })
-    })
+    }
   })
 }
 
@@ -82,25 +88,28 @@ const getVpnsList = (req, res) => {
 
 const getSocksList = (req, res) => {
   let list = []
-  getNodeList('socks5', (err, _list) => {
+  getNodeList('socks', (err, _list) => {
     if (err) {
       res.send({
         'success': false,
         'error': err
       })
-    }
-
-    async.each(_list, (item, iterate) => {
-      item['price_per_GB'] = item['price_per_GB'] || item['price_per_gb'];
-      delete item['price_per_gb'];
-      list.push(item);
-      iterate();
-    }, () => {
-      res.status(200).send({
-        'success': true,
-        'list': list
+    } else {
+      async.eachLimit(_list, 1, (item, iterate) => {
+        var obj = item._doc;
+        if (obj.price_per_gb) {
+          obj.price_per_GB = obj.price_per_gb
+        }
+        obj.price_per_gb = undefined;
+        list.push(obj);
+        iterate();
+      }, () => {
+        res.status(200).send({
+          'success': true,
+          'list': list
+        })
       })
-    })
+    }
   })
 }
 

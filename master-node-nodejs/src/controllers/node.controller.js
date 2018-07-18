@@ -115,7 +115,7 @@ const registerNode = (req, res) => {
         let updateData = {
           'token': token,
           'ip': ip,
-          'price_per_gb': pricePerGB,
+          'price_per_GB': pricePerGB,
           'latency': latency,
           'vpn_type': vpnType,
           'location': location,

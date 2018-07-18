@@ -390,7 +390,7 @@ const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeS
         sentBytes = parseInt(_usage['sent_bytes']) + sentBytes;
         sessionDuration = parseInt(_usage['session_duration']) + sessionDuration;
         amount = parseInt(_usage['amount']) + amount;
-        make_tx = true;
+        makeTx = true;
         Usage.findOneAndRemove({
           'from_addr': fromAddr,
           'to_addr': toAddr

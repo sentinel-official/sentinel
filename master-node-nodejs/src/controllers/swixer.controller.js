@@ -64,7 +64,7 @@ const apiGetSwixStatus = (ip, swixHash, cb) => {
           cb(null, {
             'status': data['swixStatus'],
             'txInfos': data['txInfos'],
-            'remainingAmount': data['remainingAmount'] || null
+            'remainingAmount': data.hasOwnProperty('remainingAmount') ? data['remainingAmount'] : null
           })
         }
       })

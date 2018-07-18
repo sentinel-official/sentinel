@@ -8,16 +8,20 @@ import { tokens } from "../helpers/tokens";
 const getSwixerList = (cb) => {
   SwixerNodes.find({
     'swixer.status': 'up'
-  }, (err, list) => {
-    if (err) {
-      cb({
-        success: false,
-        message: 'error in getting nodes list'
-      }, null)
-    } else {
-      cb(null, list);
-    }
-  })
+  }, {
+      account_addr: 1,
+      ip: 1,
+      service_charge: 1
+    }, (err, list) => {
+      if (err) {
+        cb({
+          success: false,
+          message: 'error in getting nodes list'
+        }, null)
+      } else {
+        cb(null, list);
+      }
+    })
 }
 
 const getAccount = (ip, fromSymbol, toSymbol, clientAddress, destinationAddress, delayInSeconds, cb) => {

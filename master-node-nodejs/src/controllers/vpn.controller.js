@@ -50,25 +50,26 @@ const getNodeList = (vpnType, cb) => {
  */
 
 const getVpnsList = (req, res) => {
-  getNodeList('openvpn', (err, list) => {
+  let list = []
+  getNodeList('openvpn', (err, _list) => {
     if (err) {
       res.send({
         'success': false,
-        'message': 'error in getting vpn node list',
         'error': err
       })
-    } else {
-      async.each(list, (item, iterate) => {
-        item['price_per_GB'] = item['price_per_gb'];
-        delete item['price_per_gb'];
-        iterate();
-      }, () => {
-        res.status(200).send({
-          'success': true,
-          'list': list
-        })
-      })
     }
+
+    async.each(_list, (item, iterate) => {
+      item['price_per_GB'] = item['price_per_GB'] || item['price_per_gb'];
+      delete item['price_per_gb'];
+      list.push(item);
+      iterate();
+    }, () => {
+      res.status(200).send({
+        'success': true,
+        'list': list
+      })
+    })
   })
 }
 
@@ -80,7 +81,8 @@ const getVpnsList = (req, res) => {
  */
 
 const getSocksList = (req, res) => {
-  getNodeList('socks5', (err, list) => {
+  let list = []
+  getNodeList('socks5', (err, _list) => {
     if (err) {
       res.send({
         'success': false,
@@ -88,9 +90,10 @@ const getSocksList = (req, res) => {
       })
     }
 
-    async.each(list, (item, iterate) => {
-      item['price_per_GB'] = item['price_per_gb'];
+    async.each(_list, (item, iterate) => {
+      item['price_per_GB'] = item['price_per_GB'] || item['price_per_gb'];
       delete item['price_per_gb'];
+      list.push(item);
       iterate();
     }, () => {
       res.status(200).send({

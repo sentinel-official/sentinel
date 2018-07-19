@@ -1,28 +1,42 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
-
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link OnGenericFragmentInteractionListener} interface
+ * to handle interaction events.
  * Use the {@link SecureKeysFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SecureKeysFragment extends Fragment {
+public class SecureKeysFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+
     private static final String ARG_ACC_ADDRESS = "account_address";
     private static final String ARG_PRIVATE_KEY = "private key";
     private static final String ARG_KEYSTORE_FILE_PATH = "keystore_file_path";
 
     private String mAccountAddress, mPrivateKey, mKeyStoreFilePath;
 
-    private CreateAuidFragment.OnFragmentInteractionListener mListener;
+    private OnGenericFragmentInteractionListener mListener;
+
+    private Button mBtnNext;
+    private TextView mTvPrivateKey;
 
     public SecureKeysFragment() {
         // Required empty public constructor
@@ -32,9 +46,9 @@ public class SecureKeysFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param iAccountAddress   Parameter 1.
-     * @param iPrivateKey       Parameter 2.
-     * @param iKeystoreFilePath Parameter 3.
+     * @param iAccountAddress   Account Address.
+     * @param iPrivateKey       Private Key.
+     * @param iKeystoreFilePath Keystore File Path.
      * @return A new instance of fragment SecureKeysFragment.
      */
     public static SecureKeysFragment newInstance(String iAccountAddress, String iPrivateKey, String iKeystoreFilePath) {
@@ -64,15 +78,86 @@ public class SecureKeysFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_secure_keys, container, false);
     }
 
-    public void onFragmentLoaded(String iTitle) {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        fragmentLoaded(getString(R.string.secure_keys));
+    }
+
+    private void initView(View iView) {
+        TextView aTvAddress = iView.findViewById(R.id.tv_address);
+        mTvPrivateKey = iView.findViewById(R.id.tv_private_key);
+        TextView aTvKeystore = iView.findViewById(R.id.tv_keystore);
+        ImageButton aIbCopyKey = iView.findViewById(R.id.ib_copy_key);
+        RadioButton aRbKeyCopied = iView.findViewById(R.id.rb_key_copied);
+        mBtnNext = iView.findViewById(R.id.btn_next);
+        // set view initial value
+        aTvAddress.setText(mAccountAddress);
+        mTvPrivateKey.setText(mPrivateKey);
+        aTvKeystore.setText(mKeyStoreFilePath);
+        // set listeners
+        aRbKeyCopied.setOnCheckedChangeListener(this);
+        aIbCopyKey.setOnClickListener(this);
+        mBtnNext.setOnClickListener(this);
+    }
+
+    // Interface interaction methods
+    public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
         }
     }
 
-    public void onLoadNextFragmentClicked(String iAccountAddress) {
+    public void copyToClipboard(String iCopyString, int iToastTextId) {
         if (mListener != null) {
-            mListener.onLoadNextFragmentClicked(SetPinFragment.newInstance(iAccountAddress));
+            mListener.onCopyToClipboardClicked(iCopyString, iToastTextId);
+        }
+    }
+
+    public void loadNextFragment() {
+        if (mListener != null) {
+            mListener.onLoadNextFragment(SetPinFragment.newInstance(mAccountAddress));
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnGenericFragmentInteractionListener) {
+            mListener = (OnGenericFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnGenericFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_next:
+                loadNextFragment();
+                break;
+            case R.id.ib_copy_key:
+                copyToClipboard(mTvPrivateKey.getText().toString(), R.string.key_copied);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (buttonView.getId() == R.id.rb_key_copied) {
+            mBtnNext.setEnabled(isChecked);
         }
     }
 }

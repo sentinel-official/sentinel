@@ -10,7 +10,8 @@ public class Account {
     @SerializedName("private_key")
     public String privateKey;
     @SerializedName("keystore")
-    public String keyStoreString;
+    public String keystoreString;
     @SerializedName("message")
     public String message;
+    public String keystoreFilePath;
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorCardDark">
@@ -22,40 +23,43 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorCardShadow"
-        android:orientation="horizontal">
+        android:background="@color/colorTextBlack"
+        android:elevation="@dimen/margin_8"
+        android:orientation="horizontal"
+        android:translationZ="@dimen/margin_8"
+        tools:ignore="UnusedAttribute">
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switch_net"
             style="@style/CustomTextAppearance.Text12.WhiteNormal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:background="@color/colorCardShadow"
             android:gravity="center_vertical"
             android:paddingBottom="@dimen/margin_8"
-            android:paddingEnd="@dimen/margin_8"
+            android:paddingEnd="@dimen/margin_16"
             android:paddingLeft="@dimen/margin_16"
-            android:paddingRight="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_16"
             android:paddingStart="@dimen/margin_16"
             android:paddingTop="@dimen/margin_8"
             android:text="@string/test_net"
-            app:switchPadding="@dimen/margin_16"
+            app:switchPadding="@dimen/margin_4"
             app:trackTint="@color/colorTextWhiteWithAlpha50" />
 
         <TextView
-            android:id="@+id/tv_switch_state"
+            android:id="@+id/switch_state"
             style="@style/CustomTextAppearance.Text12.WhiteNormal"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorCardShadow"
             android:gravity="end|center_vertical"
             android:paddingBottom="@dimen/margin_8"
             android:paddingEnd="@dimen/margin_16"
-            android:paddingLeft="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_1"
             android:paddingRight="@dimen/margin_16"
-            android:paddingStart="@dimen/margin_8"
-            android:paddingTop="@dimen/margin_8"
-            android:text="@string/test_net_state" />
+            android:paddingStart="@dimen/margin_1"
+            android:paddingTop="@dimen/margin_8" />
     </LinearLayout>
 </android.support.design.widget.AppBarLayout>

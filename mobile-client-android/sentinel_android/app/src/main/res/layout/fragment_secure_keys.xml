@@ -17,10 +17,10 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/description"
                 style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="77dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -28,7 +28,7 @@
                 android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:text="@string/secure_key_desc"
-                app:layout_constraintBottom_toTopOf="@+id/tv_address"
+                app:layout_constraintBottom_toTopOf="@+id/address"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -37,57 +37,56 @@
                 app:layout_constraintVertical_chainStyle="packed" />
 
             <TextView
-                android:id="@+id/tv_address"
+                android:id="@+id/address"
                 style="@style/CustomTextAppearance.Text10.Gray"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="@string/address_desc"
-                app:layout_constraintBottom_toTopOf="@+id/tv_address_value"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintBottom_toTopOf="@+id/tv_address"
+                app:layout_constraintEnd_toEndOf="@+id/description"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintStart_toStartOf="@+id/description"
+                app:layout_constraintTop_toBottomOf="@+id/description"
+                app:layout_constraintVertical_chainStyle="packed" />
 
             <TextView
-                android:id="@+id/tv_address_value"
+                android:id="@+id/tv_address"
                 style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
-                app:layout_constraintBottom_toTopOf="@+id/tv_private_key"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintBottom_toTopOf="@+id/private_key"
+                app:layout_constraintEnd_toEndOf="@+id/description"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/tv_address" />
+                app:layout_constraintStart_toStartOf="@+id/description"
+                app:layout_constraintTop_toBottomOf="@+id/address" />
 
             <TextView
-                android:id="@+id/tv_private_key"
+                android:id="@+id/private_key"
                 style="@style/CustomTextAppearance.Text10.Gray"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/private_key_desc"
-                app:layout_constraintBottom_toTopOf="@+id/tv_private_key_value"
+                app:layout_constraintBottom_toTopOf="@+id/tv_private_key"
                 app:layout_constraintEnd_toStartOf="@+id/ib_copy_key"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/tv_address_value" />
+                app:layout_constraintStart_toStartOf="@+id/description"
+                app:layout_constraintTop_toBottomOf="@+id/tv_address" />
 
             <TextView
-                android:id="@+id/tv_private_key_value"
+                android:id="@+id/tv_private_key"
                 style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
-                app:layout_constraintBottom_toTopOf="@+id/tv_keystore"
-                app:layout_constraintEnd_toEndOf="@+id/tv_private_key"
+                app:layout_constraintBottom_toTopOf="@+id/keystore"
+                app:layout_constraintEnd_toEndOf="@+id/private_key"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/tv_private_key"
-                app:layout_constraintTop_toBottomOf="@+id/tv_private_key" />
+                app:layout_constraintStart_toStartOf="@+id/private_key"
+                app:layout_constraintTop_toBottomOf="@+id/private_key" />
 
             <ImageButton
                 android:id="@+id/ib_copy_key"
@@ -97,40 +96,39 @@
                 android:layout_marginRight="8dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="@dimen/margin_8"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_private_key_value"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_private_key"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_private_key"
-                app:layout_constraintTop_toTopOf="@+id/tv_private_key"
+                app:layout_constraintStart_toEndOf="@+id/private_key"
+                app:layout_constraintTop_toTopOf="@+id/private_key"
                 app:srcCompat="@drawable/ic_copy"
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:id="@+id/tv_keystore"
+                android:id="@+id/keystore"
                 style="@style/CustomTextAppearance.Text12.White50Normal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/keystore_desc"
-                app:layout_constraintBottom_toTopOf="@+id/textView7"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/tv_private_key_value" />
+                app:layout_constraintBottom_toTopOf="@+id/tv_keystore"
+                app:layout_constraintEnd_toEndOf="@+id/description"
+                app:layout_constraintStart_toStartOf="@+id/description"
+                app:layout_constraintTop_toBottomOf="@+id/tv_private_key" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/tv_keystore"
                 style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="/Users/adminAdmin/.sentinal/keystore"
-                app:layout_constraintBottom_toTopOf="@+id/rb_key_coped"
-                app:layout_constraintEnd_toEndOf="@+id/tv_keystore"
+                app:layout_constraintBottom_toTopOf="@+id/rb_key_copied"
+                app:layout_constraintEnd_toEndOf="@+id/keystore"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/tv_keystore"
-                app:layout_constraintTop_toBottomOf="@+id/tv_keystore" />
+                app:layout_constraintStart_toStartOf="@+id/keystore"
+                app:layout_constraintTop_toBottomOf="@+id/keystore" />
 
             <RadioButton
-                android:id="@+id/rb_key_coped"
+                android:id="@+id/rb_key_copied"
                 style="@style/CustomTextAppearance.AgreeRadioButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -138,15 +136,16 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/key_copied_agree"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintEnd_toEndOf="@+id/description"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                app:layout_constraintStart_toStartOf="@+id/description"
+                app:layout_constraintTop_toBottomOf="@+id/tv_keystore" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
     <Button
         android:id="@+id/btn_next"
+        android:enabled="false"
         style="@style/CustomTextAppearance.OrangeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

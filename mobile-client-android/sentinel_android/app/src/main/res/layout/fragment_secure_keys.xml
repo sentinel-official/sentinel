@@ -21,6 +21,7 @@
                 style="@style/CustomTextAppearance.Text14.WhiteNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -41,7 +42,7 @@
                 style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/address_desc"
                 app:layout_constraintBottom_toTopOf="@+id/tv_address"
                 app:layout_constraintEnd_toEndOf="@+id/description"
@@ -52,7 +53,7 @@
 
             <TextView
                 android:id="@+id/tv_address"
-                style="@style/CustomTextAppearance.Text14.WhiteNormal"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -67,7 +68,7 @@
                 style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/private_key_desc"
                 app:layout_constraintBottom_toTopOf="@+id/tv_private_key"
                 app:layout_constraintEnd_toStartOf="@+id/ib_copy_key"
@@ -78,7 +79,7 @@
 
             <TextView
                 android:id="@+id/tv_private_key"
-                style="@style/CustomTextAppearance.Text14.WhiteNormal"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -106,7 +107,7 @@
                 style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/keystore_desc"
                 app:layout_constraintBottom_toTopOf="@+id/tv_keystore"
                 app:layout_constraintEnd_toEndOf="@+id/description"
@@ -115,7 +116,7 @@
 
             <TextView
                 android:id="@+id/tv_keystore"
-                style="@style/CustomTextAppearance.Text14.WhiteNormal"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -131,7 +132,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/key_copied_agree"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/description"
@@ -143,9 +144,9 @@
 
     <Button
         android:id="@+id/btn_next"
-        android:enabled="false"
         style="@style/CustomTextAppearance.OrangeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/next" />
 </LinearLayout>

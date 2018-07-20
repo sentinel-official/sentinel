@@ -39,7 +39,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
                 android:drawableLeft="@drawable/ic_app_icon_small"
-                android:drawablePadding="@dimen/margin_8"
+                android:drawablePadding="@dimen/margin_16"
                 android:drawableStart="@drawable/ic_app_icon_small"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/margin_8"

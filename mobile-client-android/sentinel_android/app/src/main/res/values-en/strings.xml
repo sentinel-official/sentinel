@@ -19,7 +19,6 @@
     <string name="transaction_history">Transaction History</string>
     <string name="vpn_history">VPN History</string>
     <string name="reset_pin">Reset PIN</string>
-    <string name="help">Help</string>
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">VIEW VPNs</string>
     <string name="make_payment">Make Payment</string>
@@ -85,10 +84,14 @@
     <string name="eths">%1s ETH</string>
     <string name="pay_sents">Pay %1s SENTs</string>
     <string name="vpn_location">%1s, %2s</string>
-    <string name="vpn_ip">IP \t %1s</string>
-    <string name="vpn_bandwidth">Bandwidth \t %s</string>
-    <string name="vpn_price">Price(SENTs/GB) \t %s</string>
-    <string name="vpn_latency">Latency \t %s</string>
+    <string name="vpn_ip">IP %1s</string>
+    <string name="vpn_bandwidth">Bandwidth %s</string>
+    <string name="vpn_bandwidth_connected">Bandwidth\n%s</string>
+    <string name="vpn_price">Price (SENTs/GB) %s</string>
+    <string name="vpn_price_connected">Price (SENTs/GB)\n%s</string>
+    <string name="vpn_latency">Latency %s</string>
+    <string name="vpn_latency_connected">Latency\n%s</string>
+    <string name="vpn_duration_connected">Duration\n%s</string>
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_price_value">%.0f SENTs</string>
     <string name="vpn_latency_value">%.3f ms</string>
@@ -170,6 +173,7 @@
     <string name="view_tx_history_for">View Tx History for</string>
     <string name="payment_done_success">Payment Done Successfully</string>
     <string name="send_to_hint">Send To or Scan To Send</string>
+    <string name="referral_code">Referral code</string>
     <string name="referrals">Referrals</string>
     <string name="send_to">Send to…</string>
     <string name="password_hint">Enter Password to Create User ID</string>
@@ -179,6 +183,17 @@
     <string name="off">OFF</string>
     <string name="upload_keystore_desc">Upload Keystore file</string>
     <string name="uploaded_keystore_desc">Keystore File Uploaded</string>
+    <string name="referral_desc">This address is your referral code.\nShare this to receive tokens for every new Sign Up.</string>
+    <string name="referral_code_desc">Your referral tokens can be claimed when you make your first VPN payment.</string>
+    <string name="no_of_referrals">No. of referrals</string>
+    <string name="reward_earned">Total reward tokens earned</string>
+    <string name="address">Address</string>
+    <string name="share_address">Share your address</string>
+    <string name="share_string">Hey, check out this new dVPN android app. Use my referral code to get free tokens when you sign up.\nReferral code: %s</string>
+    <string name="info_title_1">Share your Referral Code to earn tokens for every Sign Up</string>
+    <string name="info_title_2">Open source wallet and secure VPN platform</string>
+    <string name="disconnect_vpn_to_logout">You are connected to a VPN.\nDisconnect the VPN to logout.</string>
+    <string name="referral_claimed">You have claimed your free referral tokens.\nView the updated token balance in your wallet.</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

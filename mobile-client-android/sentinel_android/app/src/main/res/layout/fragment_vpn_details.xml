@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/city"
-        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        style="@style/CustomTextAppearance.Text14.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -53,7 +53,7 @@
 
     <TextView
         android:id="@+id/tv_city"
-        style="@style/CustomTextAppearance.Text14.WhiteNormal"
+        style="@style/CustomTextAppearance.Text16.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -70,7 +70,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:background="@color/colorCardShadow"
+        android:background="@color/colorCardDark"
         app:layout_constraintBottom_toTopOf="@id/country"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +78,7 @@
 
     <TextView
         android:id="@+id/country"
-        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        style="@style/CustomTextAppearance.Text14.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -90,7 +90,7 @@
 
     <TextView
         android:id="@+id/tv_country"
-        style="@style/CustomTextAppearance.Text14.WhiteNormal"
+        style="@style/CustomTextAppearance.Text16.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBaseline_toBaselineOf="@+id/country"
@@ -105,7 +105,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:background="@color/colorCardShadow"
+        android:background="@color/colorCardDark"
         app:layout_constraintBottom_toTopOf="@id/bandwidth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -113,7 +113,7 @@
 
     <TextView
         android:id="@+id/bandwidth"
-        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        style="@style/CustomTextAppearance.Text14.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -125,7 +125,7 @@
 
     <TextView
         android:id="@+id/tv_bandwidth"
-        style="@style/CustomTextAppearance.Text14.WhiteNormal"
+        style="@style/CustomTextAppearance.Text16.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBaseline_toBaselineOf="@+id/bandwidth"
@@ -140,15 +140,17 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:background="@color/colorCardShadow"
+        android:background="@color/colorCardDark"
         app:layout_constraintBottom_toTopOf="@id/latency"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bandwidth" />
+        app:layout_constraintTop_toBottomOf="@id/bandwidth"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/latency"
-        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        style="@style/CustomTextAppearance.Text14.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -160,7 +162,7 @@
 
     <TextView
         android:id="@+id/tv_latency"
-        style="@style/CustomTextAppearance.Text14.WhiteNormal"
+        style="@style/CustomTextAppearance.Text16.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBaseline_toBaselineOf="@+id/latency"
@@ -175,7 +177,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:background="@color/colorCardShadow"
+        android:background="@color/colorCardDark"
         app:layout_constraintBottom_toTopOf="@id/price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -183,7 +185,7 @@
 
     <TextView
         android:id="@+id/price"
-        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        style="@style/CustomTextAppearance.Text14.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
@@ -195,7 +197,7 @@
 
     <TextView
         android:id="@+id/tv_price"
-        style="@style/CustomTextAppearance.Text14.WhiteNormal"
+        style="@style/CustomTextAppearance.Text16.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBaseline_toBaselineOf="@+id/price"
@@ -211,7 +213,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:background="@color/colorCardShadow"
+        android:background="@color/colorCardDark"
         app:layout_constraintBottom_toTopOf="@+id/btn_connect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -232,6 +234,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
+        app:layout_constraintGuide_percent="0.45" />
 
 </android.support.constraint.ConstraintLayout>

@@ -8,7 +8,7 @@
     tools:context=".ui.activity.VerifyPinActivity">
 
     <android.support.constraint.Guideline
-        android:id="@+id/horizontal_guideline"
+        android:id="@+id/horizontal_guideline1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -73,7 +73,7 @@
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="@string/app_sub_name"
-        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
         app:layout_constraintTop_toBottomOf="@+id/app_name" />
@@ -103,7 +103,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_forgot_pin"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
-        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline"
+        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintVertical_bias="0.8"
         app:layout_constraintVertical_chainStyle="packed"
         app:pinCharacterMask="*"

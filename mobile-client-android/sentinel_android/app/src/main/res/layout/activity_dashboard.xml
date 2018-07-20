@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_marginBottom="?android:attr/actionBarSize"
+            android:layout_marginBottom="@dimen/margin_64"
             android:background="@color/colorDrawerBackground"
             android:isScrollContainer="true"
             android:scrollbarAlwaysDrawVerticalTrack="true"
@@ -42,7 +42,7 @@
         <android.support.design.widget.NavigationView
             android:id="@+id/nav_footer_view"
             android:layout_width="wrap_content"
-            android:layout_height="?android:attr/actionBarSize"
+            android:layout_height="@dimen/margin_64"
             android:layout_gravity="bottom"
             android:background="@color/colorDrawerBackground"
             app:headerLayout="@layout/layout_footer" />

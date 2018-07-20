@@ -63,15 +63,15 @@
         android:id="@+id/til_referral"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginStart="24dp"
-        android:hint="@string/referrals"
+        android:hint="@string/referral_code"
         android:textColorHint="@color/colorTextWhiteWithAlpha50"
         app:hintTextAppearance="@style/TextInputLayoutTheme"
-        app:layout_constraintBottom_toTopOf="@+id/btn_next"
+        app:layout_constraintBottom_toTopOf="@+id/referral_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/til_confirm_password">
@@ -96,4 +96,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/referral_desc"
+        style="@style/CustomTextAppearance.Text12.OrangeNormal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginStart="4dp"
+        android:text="@string/referral_code_desc"
+        app:layout_constraintBottom_toTopOf="@+id/btn_next"
+        app:layout_constraintEnd_toEndOf="@+id/til_referral"
+        app:layout_constraintStart_toStartOf="@+id/til_referral"
+        app:layout_constraintTop_toBottomOf="@+id/til_referral" />
 </android.support.constraint.ConstraintLayout>

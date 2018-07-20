@@ -5,6 +5,8 @@ public class AppConstants {
     public static final String TAG = "SENTINEL_DEBUG";
 
     // Keys used in SharedPreference
+    public static final String PREFS_CLEAR_DB = "prefs_clear_db";
+    public static final String PREFS_IS_INFO_SHOWN = "prefs_is_info_shown";
     public static final String PREFS_ACCOUNT_ADDRESS = "prefs_account_address";
     public static final String PREFS_FILE_PATH = "prefs_file_path";
     public static final String PREFS_CONFIG_PATH = "prefs_config_path";
@@ -12,7 +14,7 @@ public class AppConstants {
     public static final String PREFS_IS_FREE_TOKEN_RECEIVED = "prefs_is_free_token_received";
     public static final String PREFS_IS_TEST_NET_ACTIVE = "prefs_is_test_net_active";
     public static final String PREFS_VPN_ADDRESS = "prefs_vpn_address";
-    public static final String PREFS_SESSION_NAME = "prefs_session_name";
+    public static final String PREFS_CONNECTION_START_TIME = "prefs_connection_start_time_in_millis";
     public static final String PREFS_GAS_NORMAL = "prefs_standard";
     public static final String PREFS_GAS_FAST = "prefs_fast";
     public static final String PREFS_GAS_FASTEST = "prefs_fastest";
@@ -38,7 +40,6 @@ public class AppConstants {
     public static final String EXTRA_SESSION_ID = "session_id";
     public static final String EXTRA_VPN_LIST = "vpn_list";
     public static final String EXTRA_NOTIFICATION_ACTIVITY = "notification_activity";
-    public static final String EXTRA_CONFIG_PATH = "config_path";
     public static final String EXTRA_REQ_CODE = "req_code";
 
     // Fragment Tags

@@ -91,8 +91,14 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     }
 
     private void initViewModel() {
-        CreateAuidViewModelFactory aFactory = InjectorModule.provideCreateAccountViewModelFactory();
+        CreateAuidViewModelFactory aFactory = InjectorModule.provideCreateAccountViewModelFactory(getContext());
         mViewModel = ViewModelProviders.of(this, aFactory).get(CreateAuidViewModel.class);
+
+        mViewModel.getSessionClearedLiveEvent().observe(this, sessionCleared -> {
+            if (sessionCleared != null && sessionCleared) {
+                AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_CLEAR_DB, false);
+            }
+        });
 
         mViewModel.getAccountLiveEvent().observe(this, accountResource -> {
             if (accountResource != null) {

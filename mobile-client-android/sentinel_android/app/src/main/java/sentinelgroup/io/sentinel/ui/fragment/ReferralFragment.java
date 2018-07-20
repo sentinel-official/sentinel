@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
@@ -27,8 +28,11 @@ public class ReferralFragment extends Fragment implements View.OnClickListener {
 
     private OnGenericFragmentInteractionListener mListener;
 
-    private TextView mTvReferralDesc, mTvReferralCode;
+    private TextView mTvReferralCode, mtvReferralCount, mTvRewardsEarned;
+    private ImageButton mIbCopyReferral;
     private Button mBtnInviteFriends;
+
+    private String mShareString;
 
     public ReferralFragment() {
         // Required empty public constructor
@@ -70,27 +74,37 @@ public class ReferralFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(View iView) {
-        mTvReferralDesc = iView.findViewById(R.id.tv_referral_desc);
         mTvReferralCode = iView.findViewById(R.id.tv_referral_code);
-        mBtnInviteFriends = iView.findViewById(R.id.btn_invite_friends);
+        mtvReferralCount = iView.findViewById(R.id.tv_referral_count);
+        mTvRewardsEarned = iView.findViewById(R.id.tv_rewards_earned);
+        mIbCopyReferral = iView.findViewById(R.id.ib_copy_referral);
+        mBtnInviteFriends = iView.findViewById(R.id.btn_share_code);
         // Set listeners
+        mIbCopyReferral.setOnClickListener(this);
         mBtnInviteFriends.setOnClickListener(this);
     }
 
     private void setValue() {
-        mTvReferralDesc.setText("Provide description for the referral program...");
         String aReferralCode = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
         mTvReferralCode.setText(aReferralCode);
+        mtvReferralCount.setText("0");
+        mTvRewardsEarned.setText("0");
+        mShareString = getString(R.string.share_string, aReferralCode);
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_invite_friends) {
-            Intent aIntent = new Intent();
-            aIntent.setAction(Intent.ACTION_SEND);
-            aIntent.putExtra(Intent.EXTRA_TEXT, AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
-            aIntent.setType("text/plain");
-            startShareActivity(aIntent);
+        switch (v.getId()) {
+            case R.id.btn_share_code:
+                Intent aIntent = new Intent();
+                aIntent.setAction(Intent.ACTION_SEND);
+                aIntent.putExtra(Intent.EXTRA_TEXT, mShareString);
+                aIntent.setType("text/plain");
+                startShareActivity(aIntent);
+                break;
+            case R.id.ib_copy_referral:
+                copyToClipboard(mTvReferralCode.getText().toString(), R.string.address_copied);
+                break;
         }
     }
 
@@ -98,6 +112,12 @@ public class ReferralFragment extends Fragment implements View.OnClickListener {
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
+        }
+    }
+
+    public void copyToClipboard(String iCopyString, int iToastTextId) {
+        if (mListener != null) {
+            mListener.onCopyToClipboardClicked(iCopyString, iToastTextId);
         }
     }
 

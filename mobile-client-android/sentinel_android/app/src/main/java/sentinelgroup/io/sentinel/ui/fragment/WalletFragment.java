@@ -118,10 +118,12 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setBalanceValue(Chains iData) {
-        boolean aIsChecked = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
-        mTvTotalEther.setText(mViewModel.getFormattedEthBalance(aIsChecked ? iData.getRinkeby().eths : iData.getMain().eths));
-        mTvTotalSent.setText(mViewModel.getFormattedSentBalance(aIsChecked ? iData.getRinkeby().sents : iData.getMain().sents));
-        setTextDesc(aIsChecked);
+        if (iData != null) {
+            boolean aIsChecked = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
+            mTvTotalEther.setText(mViewModel.getFormattedEthBalance(aIsChecked ? iData.getRinkeby().eths : iData.getMain().eths));
+            mTvTotalSent.setText(mViewModel.getFormattedSentBalance(aIsChecked ? iData.getRinkeby().sents : iData.getMain().sents));
+            setTextDesc(aIsChecked);
+        }
     }
 
     private void setTextDesc(boolean iIsChecked) {
@@ -129,11 +131,11 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
         mTvTotalEtherDesc.setText(iIsChecked ? R.string.test_eth_desc : R.string.eth_desc);
     }
 
-    public void updateBalance(boolean isChecked) {
-        setBalanceValue(mViewModel.updateBalance(isChecked));
+    public void updateBalance() {
+        setBalanceValue(mViewModel.updateBalance());
     }
 
-    public void reloadBalance(){
+    public void reloadBalance() {
         mViewModel.reloadBalance();
     }
 

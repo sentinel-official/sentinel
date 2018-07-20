@@ -221,7 +221,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 openUrl(getString(R.string.link_coming_soon));
                 break;
             case R.id.nav_logout:
-                showDoubleActionDialog(AppConstants.TAG_LOGOUT, -1, getString(R.string.logout_desc), R.string.logout, android.R.string.cancel);
+                if (!SentinelApp.isVpnInitiated)
+                    showDoubleActionDialog(AppConstants.TAG_LOGOUT, -1, getString(R.string.logout_desc), R.string.logout, android.R.string.cancel);
+                else
+                    showSingleActionError(getString(R.string.disconnect_vpn_to_logout));
         }
     }
 
@@ -271,7 +274,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             }
         } else {
             if (aFragment != null)
-                mPrgDialog.dismiss();
+                mPrgDialog.dismissAllowingStateLoss();
         }
     }
 
@@ -556,6 +559,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
      */
     private void logoutUser() {
         AppPreferences.getInstance().clearSavedData(this);
+        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_CLEAR_DB, true);
         startActivity(new Intent(this, LauncherActivity.class));
         finish();
     }
@@ -568,7 +572,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (aFragment instanceof WalletFragment) {
-            ((WalletFragment) aFragment).updateBalance(isChecked);
+            ((WalletFragment) aFragment).updateBalance();
         } else if (!(aFragment instanceof VpnConnectedFragment))
             loadVpnFragment(null);
     }
@@ -651,6 +655,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         runOnUiThread(() -> {
             Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
             if (state.equals("CONNECTED") || (state.equals("USER_VPN_PERMISSION"))) {
+                if (AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME) == 0L && state.equals("CONNECTED"))
+                    AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, System.currentTimeMillis());
                 SentinelApp.isVpnConnected = true;
             }
             // Called when the VPN connection terminates
@@ -658,6 +664,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 if (SentinelApp.isVpnConnected && !mHasActivityResult) {
                     SentinelApp.isVpnInitiated = false;
                     SentinelApp.isVpnConnected = false;
+                    AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
                     if (!(aFragment instanceof WalletFragment))
                         loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
                 }

@@ -114,7 +114,7 @@ public abstract class SimpleBaseActivity extends AppCompatActivity implements On
             }
         } else {
             if (aFragment != null)
-                mPrgDialog.dismiss();
+                mPrgDialog.dismissAllowingStateLoss();
         }
     }
 

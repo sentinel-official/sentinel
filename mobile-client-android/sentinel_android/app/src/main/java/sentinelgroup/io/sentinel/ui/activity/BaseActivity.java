@@ -55,7 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
         mToolbar = findViewById(R.id.toolbar);
         mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
         mSwitchNet = findViewById(R.id.switch_net);
-        mSwitchState=findViewById(R.id.tv_switch_state);
+        mSwitchState = findViewById(R.id.tv_switch_state);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         // instantiate toolbar
         setupToolbar();
@@ -131,7 +131,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
             }
         } else {
             if (aFragment != null)
-                mPrgDialog.dismiss();
+                mPrgDialog.dismissAllowingStateLoss();
         }
     }
 

@@ -193,7 +193,7 @@
     <string name="info_title_1">Делись своим реферальным кодом для получения токенов за каждого нового пользователя</string>
     <string name="info_title_2">Кошелек с открытым исходным кодом и защищенным VPN-сервисом</string>
     <string name="disconnect_vpn_to_logout">Вы подключены к VPN.\nОтключите VPN для выхода.</string>
-    <string name="referral_claimed">You have claimed your free referral tokens.\nView the updated token balance in your wallet.</string>
+    <string name="referral_claimed">Вы получили ваши реферальные токены.\nПосмотрите на обновленный баланс в вашем кошельке.</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

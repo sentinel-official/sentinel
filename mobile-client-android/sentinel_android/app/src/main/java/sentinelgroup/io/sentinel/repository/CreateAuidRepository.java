@@ -1,16 +1,16 @@
 package sentinelgroup.io.sentinel.repository;
 
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.db.dao.DeleteTableDao;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.model.Account;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -21,18 +21,24 @@ public class CreateAuidRepository {
     // For Singleton instantiation
     private static final Object LOCK = new Object();
     private static CreateAuidRepository sInstance;
+    private final DeleteTableDao mDao;
     private final WebService mWebService;
+    private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<Account>> mAccountLiveEvent;
+    private final SingleLiveEvent<Boolean> mSessionClearedLiveEvent;
 
-    private CreateAuidRepository(WebService iWebService) {
+    private CreateAuidRepository(DeleteTableDao iDao, WebService iWebService, AppExecutors iAppExecutors) {
+        mDao = iDao;
         mWebService = iWebService;
+        mAppExecutors = iAppExecutors;
         mAccountLiveEvent = new SingleLiveEvent<>();
+        mSessionClearedLiveEvent = new SingleLiveEvent<>();
     }
 
-    public static CreateAuidRepository getInstance(WebService iWebService) {
+    public static CreateAuidRepository getInstance(DeleteTableDao iDao, WebService iWebService, AppExecutors iAppExecutors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new CreateAuidRepository(iWebService);
+                sInstance = new CreateAuidRepository(iDao, iWebService, iAppExecutors);
             }
         }
         return sInstance;
@@ -40,6 +46,22 @@ public class CreateAuidRepository {
 
     public SingleLiveEvent<Resource<Account>> getAccountLiveEvent() {
         return mAccountLiveEvent;
+    }
+
+
+    public SingleLiveEvent<Boolean> getmSessionClearedLiveEvent() {
+        clearUserSession();
+        return mSessionClearedLiveEvent;
+    }
+
+    // Database call
+    private void clearUserSession() {
+        mAppExecutors.diskIO().execute(() -> {
+            mDao.deletePinEntities();
+            mDao.deleteBalanceEntities();
+            mDao.deleteVpnUsageEntities();
+            mSessionClearedLiveEvent.postValue(true);
+        });
     }
 
     // Network call

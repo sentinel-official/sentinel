@@ -315,8 +315,7 @@ public class VpnRepository {
             private void reportSuccessResponse(Response<Tokens> response) {
                 if (response != null && response.body() != null) {
                     mTokenAlertLiveEvent.postValue(response.body().success);
-                    if (response.body().success)
-                        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_FREE_TOKEN_RECEIVED, true);
+                    AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_FREE_TOKEN_RECEIVED, true);
                 }
             }
         });

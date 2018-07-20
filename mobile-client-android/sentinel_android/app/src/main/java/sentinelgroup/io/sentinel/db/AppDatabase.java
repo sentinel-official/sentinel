@@ -7,6 +7,7 @@ import android.content.Context;
 import android.util.Log;
 
 import sentinelgroup.io.sentinel.db.dao.BalanceEntryDao;
+import sentinelgroup.io.sentinel.db.dao.DeleteTableDao;
 import sentinelgroup.io.sentinel.db.dao.GasEstimateEntryDao;
 import sentinelgroup.io.sentinel.db.dao.PinEntryDao;
 import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
@@ -55,4 +56,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract VpnUsageEntryDao getVpnUsageEntryDao();
 
     public abstract BalanceEntryDao getBalanceEntryDao();
+
+    public abstract DeleteTableDao deleteTableDao();
 }

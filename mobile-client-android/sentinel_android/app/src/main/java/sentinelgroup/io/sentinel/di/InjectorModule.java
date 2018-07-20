@@ -3,6 +3,7 @@ package sentinelgroup.io.sentinel.di;
 import android.content.Context;
 
 import sentinelgroup.io.sentinel.db.AppDatabase;
+import sentinelgroup.io.sentinel.db.dao.DeleteTableDao;
 import sentinelgroup.io.sentinel.network.api.WebService;
 import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
@@ -34,9 +35,11 @@ import sentinelgroup.io.sentinel.viewmodel.WalletViewModelFactory;
  */
 public class InjectorModule {
     /* Static private getter methods for Repository classes. */
-    private static CreateAuidRepository provideCreateAccountRepository() {
+    private static CreateAuidRepository provideCreateAccountRepository(Context iContext) {
+        DeleteTableDao aDao = AppDatabase.getInstance(iContext).deleteTableDao();
         WebService aWebService = WebClient.get();
-        return CreateAuidRepository.getInstance(aWebService);
+        AppExecutors aAppExecutors = AppExecutors.getInstance();
+        return CreateAuidRepository.getInstance(aDao, aWebService, aAppExecutors);
     }
 
     private static PinRepository providePinRepository(Context iContext) {
@@ -74,8 +77,8 @@ public class InjectorModule {
     }
 
     /* Static private getter methods for ViewModelFactory classes */
-    public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory() {
-        CreateAuidRepository aRepository = provideCreateAccountRepository();
+    public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory(Context iContext) {
+        CreateAuidRepository aRepository = provideCreateAccountRepository(iContext);
         AppExecutors aAppExecutors = AppExecutors.getInstance();
         return new CreateAuidViewModelFactory(aRepository, aAppExecutors);
     }

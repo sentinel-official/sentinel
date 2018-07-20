@@ -7,7 +7,7 @@ import android.view.View;
 /**
  * A custom page transformer for the helper screens (Alpha + Translation)
  */
-public class PageFadeTransformer implements ViewPager.PageTransformer {
+public class FadePageTransformer implements ViewPager.PageTransformer {
 
     @Override
     public void transformPage(@NonNull View view, float position) {

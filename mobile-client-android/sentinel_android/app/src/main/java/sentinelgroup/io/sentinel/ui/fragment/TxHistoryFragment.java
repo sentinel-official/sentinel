@@ -104,7 +104,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
             mSrReload.setRefreshing(false);
         });
         // setup adapter for custom spinner
-        List<String> input = Arrays.asList(Objects.requireNonNull(getContext()).getResources().getStringArray(R.array.spinner_list));
+        List<String> input = Arrays.asList(Objects.requireNonNull(getContext()).getResources().getStringArray(R.array.spinner_test_list));
         mSpinnerAdapter = new MaterialSpinnerAdapter(getContext(), input);
         mCsTokens.setAdapter(mSpinnerAdapter);
         mCsTokens.setSelectedPosition(0);
@@ -201,7 +201,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
 
     @Override
     public void afterTextChanged(Editable s) {
-        mIsEthHistory = s.toString().equalsIgnoreCase("eth");
+        mIsEthHistory = s.toString().toLowerCase().contains("eth");
         mViewModel.reloadTxHistory(mIsEthHistory);
     }
 }

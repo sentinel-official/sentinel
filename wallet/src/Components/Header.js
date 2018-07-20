@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Snackbar, FlatButton, Dialog, SelectField, MenuItem, Toggle, DropDownMenu } from 'material-ui';
+import { Snackbar, FlatButton, Dialog, SelectField, TextField, MenuItem, Toggle, DropDownMenu } from 'material-ui';
 import {
-  getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline,
-  sendError, connectSocks, disconnectSocks, sendUsage
+  getVPNList, connectVPN, disconnectVPN, isVPNConnected, isOnline, isPrivate, getMasterUrl,
+  sendError, connectSocks, disconnectSocks, sendUsage, checkGateway, getGatewayUrl, setMaster
 } from '../Actions/AccountActions';
 import DownArrow from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import VPNComponent from './VPNComponent';
@@ -34,7 +34,9 @@ class Header extends Component {
       isTest: false,
       showPay: false,
       payAccount: '',
-      testDisabled: false
+      testDisabled: false,
+      isPrivate: false,
+      authcode: ''
     }
   }
 
@@ -51,9 +53,13 @@ class Header extends Component {
     localStorage.setItem('config', 'MAIN')
     localStorage.setItem('vpnType', 'OpenVPN')
     isVPNConnected(function (err, data) {
-      if (err) { }
+      if (err) { getMasterUrl() }
       else if (data) {
         that.setState({ status: true });
+        isPrivate(function (isPrivate, authcode) {
+          that.setState({ isPrivate, authcode })
+          that.props.privateChange(isPrivate)
+        })
       }
       else {
         that.setState({ status: false });
@@ -106,21 +112,26 @@ class Header extends Component {
   }
 
   handleToggle = (event, toggle) => {
+    let self = this;
     if (this.state.isTest) {
       if (isOnline()) {
         if (toggle) {
-          // let that = this;
-          // getVPNList(function (err, data) {
-          //   if (err) console.log('Error', err);
-          //   else {
-          //     that.setState({ vpnList: data, showPopUp: true });
-          //   }
-          // })
-          this.props.moveToList();
-          this.setState({ openSnack: true, snackMessage: lang[this.props.lang].SelectNode })
+          checkGateway(function (err, data, url) {
+            if (err) {
+              self.setState({ showPopUp: true })
+            }
+            else {
+              self.setState({ authcode: data, isPrivate: true, openSnack: true, snackMessage: 'Private Net is Enabled with ' + url })
+              self.props.privateChange(true)
+            }
+          })
+          // this.setState({ openSnack: true, snackMessage: lang[this.props.lang].SelectNode })
         }
         else {
-          this._disconnectVPN();
+          setMaster(function (data) {
+            self.setState({ isPrivate: false, authcode: '' })
+            self.props.privateChange(true)
+          })
         }
       }
       else {
@@ -129,8 +140,21 @@ class Header extends Component {
     }
   };
 
+  getGatewayAddr = () => {
+    let self = this;
+    getGatewayUrl(this.state.authcode, function (err, data, url) {
+      if (err) {
+        self.setState({ isPrivate: false, showPopUp: false, openSnack: true, snackMessage: err.message || 'Problem in enabling private net' })
+      }
+      else {
+        self.setState({ isPrivate: true, showPopUp: false, openSnack: true, snackMessage: 'Private Net is Enabled with ' + url })
+        self.props.privateChange(true)
+      }
+    })
+  }
+
   handleClose = () => {
-    this.setState({ showPopUp: false, showPay: false });
+    this.setState({ isPrivate: false, showPopUp: false });
   };
 
   testChange = (event, toggle) => {
@@ -147,6 +171,11 @@ class Header extends Component {
       localStorage.setItem('config', 'MAIN')
       this.props.ontestChange(false);
       this.props.onsockChange(false);
+      if (this.state.isPrivate) {
+        setMaster(function (data) {
+          self.setState({ isPrivate: false, authcode: '' })
+        })
+      }
     }
   }
 
@@ -177,8 +206,22 @@ class Header extends Component {
       openSnack: false
     });
   };
+
   render() {
     let language = this.props.lang;
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        disabled={this.state.authcode === '' ? true : false}
+        onClick={this.getGatewayAddr.bind(this)}
+      />,
+    ];
     return (
       <div style={{ height: 70, background: 'linear-gradient(to right,#2f3245 65%,#3d425c 35%)' }}>
         <div>
@@ -260,16 +303,16 @@ class Header extends Component {
               <Col xs={1} style={{ paddingLeft: 40 }}>
                 <Col style={styles.columnStyle}>
                   <FlatButton
-                    label="VPN"
+                    label="Private Net"
                     labelStyle={this.state.isTest ? styles.toggleLabelisTest :
-                      { color: '#4b4e5d', textTransform: 'none', fontWeight: 600, fontSize: 14 }}
+                      { color: '#4b4e5d', textTransform: 'none', padding: 0, fontWeight: 600, fontSize: 14 }}
                     style={styles.buttonHeightStyle}
                     disabled={true}
                     onClick={() => { this.setState({ showPopUp: !this.state.status }) }} />
                 </Col>
                 <Col>
                   <Toggle
-                    toggled={this.state.status}
+                    toggled={this.state.isPrivate}
                     onToggle={this.handleToggle}
                     style={styles.toggleStyle}
                     thumbStyle={this.state.isTest ? null : styles.thumbTrackStyle}
@@ -348,6 +391,23 @@ class Header extends Component {
                 message={this.state.statusMessage}
                 style={{ marginBottom: '1%' }}
               />
+              <Dialog
+                title='Get Private Gateway URL'
+                titleStyle={{ fontSize: 16 }}
+                actions={actions}
+                modal={true}
+                open={this.state.showPopUp}
+              >
+                <TextField
+                  autoFocus={true}
+                  hintText='Enter Authcode'
+                  hintStyle={{ fontSize: 14 }}
+                  onChange={(event, authcode) => { this.setState({ authcode }) }}
+                  onKeyPress={(ev) => { if (ev.key === 'Enter') this.getGatewayAddr() }}
+                  value={this.state.authcode}
+                  style={styles.textFieldCreate}
+                />
+              </Dialog>
             </Row>
           </Grid>
         </div>
@@ -421,6 +481,12 @@ const styles = {
   },
   thumbTrackStyle: {
     backgroundColor: '#4b4e5d'
+  },
+  textFieldCreate: {
+    width: '85%',
+    paddingLeft: '5%',
+    height: 40,
+    lineHeight: '18px'
   }
 }
 export default Header;

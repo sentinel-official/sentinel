@@ -71,7 +71,8 @@ class VPNComponent extends Component {
             sessionName: '',
             startDownload: 0,
             startUpload: 0,
-            showStatus: false
+            showStatus: false,
+            isPrivate: false
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -114,6 +115,10 @@ class VPNComponent extends Component {
             this.setState({ status: nextProps.status, selectedVPN: nextProps.vpnData ? nextProps.vpnData.vpn_addr : null });
         if (nextProps.status && nextProps.status !== this.state.status)
             this.checkTor();
+        if (nextProps.isPrivate !== this.state.isPrivate) {
+            this.setState({ isPrivate: nextProps.isPrivate })
+            this.getVPNs()
+        }
     }
 
     getDueAmount() {
@@ -1016,7 +1021,7 @@ class VPNComponent extends Component {
                         </span>
                         :
                         <span style={{ fontSize: 14, letterSpacing: 1 }}>
-                            OpenVPN Not Installed. Please go to C://Users/"your-user-name"/AppData/Local/Sentinel/app-0.0.42/resources/extras and run openvpn-install-2.3.18-I602-x86_64.exe
+                            OpenVPN Not Installed. Please go to C://Users/"your-user-name"/AppData/Local/Sentinel/app-0.0.43/resources/extras and run openvpn-install-2.3.18-I602-x86_64.exe
                             <br />
                             Just Install Openvpn without changing installation directory.
                         </span>

@@ -23,12 +23,14 @@ public class CreateAuidViewModel extends ViewModel {
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<Account>> mAccountLiveEvent;
     private final SingleLiveEvent<Resource<Account>> mKeystoreFileLiveEvent;
+    private final SingleLiveEvent<Boolean> mSessionClearedLiveEvent;
 
     CreateAuidViewModel(CreateAuidRepository iRepository, AppExecutors iAppExecutors) {
         mRepository = iRepository;
         mAppExecutors = iAppExecutors;
         mAccountLiveEvent = iRepository.getAccountLiveEvent();
         mKeystoreFileLiveEvent = new SingleLiveEvent<>();
+        mSessionClearedLiveEvent = iRepository.getmSessionClearedLiveEvent();
     }
 
     public SingleLiveEvent<Resource<Account>> getAccountLiveEvent() {
@@ -37,6 +39,10 @@ public class CreateAuidViewModel extends ViewModel {
 
     public SingleLiveEvent<Resource<Account>> getKeystoreFileLiveEvent() {
         return mKeystoreFileLiveEvent;
+    }
+
+    public SingleLiveEvent<Boolean> getSessionClearedLiveEvent() {
+        return mSessionClearedLiveEvent;
     }
 
     public void createNewAccount(String iPassword) {

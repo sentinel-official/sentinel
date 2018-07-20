@@ -4,7 +4,6 @@ package sentinelgroup.io.sentinel.ui.fragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -60,9 +59,11 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     private OnVpnConnectionListener mVpnListener;
 
     private FlagImageView mFvFlag;
-    private TextView mTvVpnState, mTvLocation, mTvIp, mTvDownloadSpeed, mTvUploadSpeed, mtvDataUsed,
-            mTvBandwidth, mTvLatency, mTvPrice;
+    private TextView mTvVpnState, mTvLocation, mTvIp, mTvDownloadSpeed, mTvUploadSpeed, mTvDataUsed,
+            mTvBandwidth, mTvLatency, mTvPrice, mTvDuration;
     private Button mBtnDisconnect, mBtnViewVpn;
+
+    private Long mConnectionTime = 0L;
 
     public VpnConnectedFragment() {
         // Required empty public constructor
@@ -129,10 +130,11 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mTvIp = iView.findViewById(R.id.tv_ip);
         mTvDownloadSpeed = iView.findViewById(R.id.tv_download_speed);
         mTvUploadSpeed = iView.findViewById(R.id.tv_upload_speed);
-        mtvDataUsed = iView.findViewById(R.id.tv_data_used);
+        mTvDataUsed = iView.findViewById(R.id.tv_data_used);
         mTvBandwidth = iView.findViewById(R.id.tv_bandwidth);
         mTvLatency = iView.findViewById(R.id.tv_latency);
         mTvPrice = iView.findViewById(R.id.tv_price);
+        mTvDuration = iView.findViewById(R.id.tv_duration);
         mBtnDisconnect = iView.findViewById(R.id.btn_disconnect);
         mBtnViewVpn = iView.findViewById(R.id.btn_view_vpn);
         // set listeners
@@ -156,7 +158,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         // Construct and set - IP SpannableString
         String aIp = getString(R.string.vpn_ip, iVpnEntity.getIp());
         SpannableString aStyledIp = new SpannableStringUtil.SpannableStringUtilBuilder(aIp, iVpnEntity.getIp())
-                .color(Color.WHITE)
+                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
                 .relativeSize(1.2f)
                 .customStyle(Typeface.BOLD)
                 .build();
@@ -165,25 +167,25 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mFvFlag.setCountryCode(Converter.getCountryCode(iVpnEntity.getLocation().country));
         // Construct and set - Bandwidth SpannableString
         String aBandwidthValue = getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(iVpnEntity.getNetSpeed().download, Convert.DataUnit.MBPS));
-        String aBandwidth = getString(R.string.vpn_bandwidth, aBandwidthValue);
+        String aBandwidth = getString(R.string.vpn_bandwidth_connected, aBandwidthValue);
         SpannableString aStyledBandwidth = new SpannableStringUtil.SpannableStringUtilBuilder(aBandwidth, aBandwidthValue)
-                .color(Color.WHITE)
+                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
                 .customStyle(Typeface.BOLD)
                 .build();
         mTvBandwidth.setText(aStyledBandwidth);
         // Construct and set - Price SpannableString
         String aPriceValue = getString(R.string.vpn_price_value, iVpnEntity.getPricePerGb());
-        String aPrice = getString(R.string.vpn_price, aPriceValue);
+        String aPrice = getString(R.string.vpn_price_connected, aPriceValue);
         SpannableString aStyledPrice = new SpannableStringUtil.SpannableStringUtilBuilder(aPrice, aPriceValue)
-                .color(Color.WHITE)
+                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
                 .customStyle(Typeface.BOLD)
                 .build();
         mTvPrice.setText(aStyledPrice);
         // Construct and set - Latency SpannableString
         String aLatencyValue = getString(R.string.vpn_latency_value, iVpnEntity.getLatency());
-        String aLatency = getString(R.string.vpn_latency, aLatencyValue);
+        String aLatency = getString(R.string.vpn_latency_connected, aLatencyValue);
         SpannableString aStyleLatency = new SpannableStringUtil.SpannableStringUtilBuilder(aLatency, aLatencyValue)
-                .color(Color.WHITE)
+                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
                 .customStyle(Typeface.BOLD)
                 .build();
         mTvLatency.setText(aStyleLatency);
@@ -196,7 +198,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     }
 
     public void updateByteCount(String iDownloadSpeed, String iUploadSpeed, String iTotalDataUsed) {
-        if (mTvDownloadSpeed != null && mTvUploadSpeed != null && mtvDataUsed != null) {
+        if (mTvDownloadSpeed != null && mTvUploadSpeed != null && mTvDataUsed != null) {
             // Construct and set - Download Speed SpannableString
             String aDownloadSubString = iDownloadSpeed.substring(iDownloadSpeed.indexOf(' '));
             SpannableString aDownloadSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iDownloadSpeed, aDownloadSubString)
@@ -217,7 +219,23 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
                     .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
-            mtvDataUsed.setText(aDataUsedSpannable);
+            mTvDataUsed.setText(aDataUsedSpannable);
+            // Construct and set - Duration SpannableString
+            if (mConnectionTime == 0L) {
+                // Store the VPN connection initiated time
+                mConnectionTime = AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME);
+            }
+            String aDurationValue = mConnectionTime == 0 ? "" : Converter.getLongDuration((long) (((double) (System.currentTimeMillis() - mConnectionTime)) / 1000));
+            String aDuration = getString(R.string.vpn_duration_connected, aDurationValue);
+            if (mConnectionTime != 0L) {
+                SpannableString aStyleDuration = new SpannableStringUtil.SpannableStringUtilBuilder(aDuration, aDurationValue)
+                        .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
+                        .customStyle(Typeface.BOLD)
+                        .build();
+                mTvDuration.setText(aStyleDuration);
+            } else {
+                mTvDuration.setText(aDuration);
+            }
         }
     }
 

@@ -8,12 +8,13 @@ let { generatePublicKey,
 
 
 let transfer = (fromPrivateKey, toAddress, value, coinSymbol, cb) => {
+  console.log(fromPrivateKey)
   fromPrivateKey = Buffer.from(fromPrivateKey, 'hex');
-  let fromAddress = '0x' + generateAddress(generatePublicKey(fromPrivateKey)).toString('hex');
+  let fromAddress = '0x' + generateAddress(generatePublicKey(fromPrivateKey, false)).toString('hex');
   async.waterfall([
-    (next) => {
+    (next) => { console.log(fromAddress);
       getTransactionCount(fromAddress,
-        (error, count) => {
+        (error, count) => { console.log(error, count);
           if (error) next(error, null);
           else next(null, count);
         });
@@ -21,15 +22,17 @@ let transfer = (fromPrivateKey, toAddress, value, coinSymbol, cb) => {
       try {
         let rawTx = {
           nonce,
-          gasPrice: '0x04a817c800',
+          gasPrice: web3.toHex(web3.toDecimal(web3.eth.gasPrice)), //'0x9502F9000', // '0x4E3B29200', // '0x04a817c800',
           gasLimit: '0xf4240',
-          to: toAddress,
+          to: coinSymbol === 'ETH' ? toAddress : tokens[coinSymbol].address,
           value: coinSymbol === 'ETH' ? web3.toHex(value) : '0x',
           data: coinSymbol === 'ETH' ? '0x' : tokens[coinSymbol].contract.transfer.getData(toAddress, value)
         };
+        console.log(rawTx);
         let tx = new Tx(rawTx);
         tx.sign(fromPrivateKey);
         let serializedTx = '0x' + tx.serialize().toString('hex');
+        console.log(serializedTx);
         next(null, serializedTx);
       } catch (error) {
         next(error, null);

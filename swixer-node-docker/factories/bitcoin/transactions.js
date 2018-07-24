@@ -11,7 +11,7 @@ let transfer = (toAddress, value, coinSymbol, cb) => {
     if (response.status === 200 &&
       response.data.success === true) {
       let txHash = response.data.txHash;
-      cb(error, txHash);
+      cb(null, txHash);
     }
     else cb({
       message: 'Unsuccessful request.'

@@ -48,14 +48,30 @@ let swixDetailsSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  receivedTime: {
+    type: Number
+  },
+  receivedValue: {
+    type: Number
+  },
+  rate: {
+    type: Number
+  },
+  refundAddress: {
+    type: String
+  },
+  status: {
+    type: String,
+    default: 'init'
+  },
   message: {
     type: String,
     default: 'Swix added successfully.'
   },
   txInfos: Array
 }, {
-    strict: true,
-    versionKey: false
-  });
+  strict: true,
+  versionKey: false
+});
 
 module.exports = mongoose.model('SwixDetails', swixDetailsSchema);

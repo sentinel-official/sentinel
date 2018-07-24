@@ -1,5 +1,5 @@
 let PIVX = {
-  server: ''
+  server: 'https://pivx-api.sentinelgroup.io'
 };
 
 module.exports = {

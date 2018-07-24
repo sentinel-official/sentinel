@@ -7,7 +7,9 @@ let createAccount = (req, res, next) => {
     toSymbol: joi.string().required(),
     clientAddress: joi.string().regex(/^0x[a-fA-F0-9]{40}$/).required(),
     destinationAddress: joi.string().required(),
-    delayInSeconds: joi.number().required()
+    delayInSeconds: joi.number().required(),
+    refundAddress: joi.string().required(),
+    rate: joi.number().required()
   });
   let { error } = joi.validate(req.body, createAccountSchema);
   if (error) res.status(422).send({

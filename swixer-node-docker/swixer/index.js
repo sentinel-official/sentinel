@@ -1,8 +1,14 @@
 let async = require('async');
 let swixerDbo = require('../server/dbos/swixer.dbo');
-let { getBalance } = require('../factories/accounts');
-let { getExchangeRate } = require('../factories/exchange');
-let { scheduleSwixTransfer } = require('./scheduler');
+let {
+  getBalance
+} = require('../factories/accounts');
+let {
+  getExchangeRate
+} = require('../factories/exchange');
+let {
+  scheduleSwixTransfer
+} = require('./scheduler');
 
 
 let start = (cb) => {
@@ -24,8 +30,10 @@ let start = (cb) => {
             swix = swix.toObject();
             let address = swix.toAddress;
             let coinSymbol = swix.fromSymbol;
-            let { fromSymbol,
-            toSymbol } = swix;
+            let {
+              fromSymbol,
+              toSymbol
+            } = swix;
             async.waterfall([
               (l2Next) => {
                 getBalance(address, coinSymbol,
@@ -39,21 +47,32 @@ let start = (cb) => {
               }, (amount, l2Next) => {
                 if (amount > 0) {
                   async.waterfall([
-                    (l3Next) => {
-                      getExchangeRate(amount, fromSymbol, toSymbol,
-                        (error, amount) => {
-                          if(error) l3Next({
+                    (l3next) => {
+                      swixerDbo.updateSwix({
+                        swxiHash: swix.swxiHash
+                      }, {
+                        receivedTime: Date.now(),
+                        receivedValue: amount,
+                        status: 'gotFunds'
+                      }, (error, resp) => {
+                        if (error) {
+                          l3Next({
                             status: 4001,
-                            message: 'Error occurred while getting exchange rate.'
+                            message: 'Error occurred while getting updating swix.'
                           });
-                          else l3Next(null, amount);
-                        });
-                    }
+                        } else {
+                          amount = amount * swix.rate
+                          l3Next(null, amount);
+                        }
+                      })
+
+                    },
                   ], (error, amount) => {
-                    if(error) l2Next(error);
+                    if (error) l2Next(error);
                     else {
                       swix.transferAmount = swix.remainingAmount ? swix.remainingAmount : amount;
                       swix.delayInSeconds = swix.remainingAmount ? Math.min(15, swix.delayInSeconds) : swix.delayInSeconds;
+                      console.log(swix);
                       async.waterfall([
                         (l4Next) => {
                           scheduleSwixTransfer(swix,
@@ -68,8 +87,10 @@ let start = (cb) => {
                               });
                             });
                         }, (statusObject, l4Next) => {
-                          let { message } = statusObject;
-                          swixerDbo.updateSwixStatus(address, message, statusObject.status === 4000, 
+                          let {
+                            message
+                          } = statusObject;
+                          swixerDbo.updateSwixStatus(address, message, statusObject.status === 4000,
                             (error, result) => {
                               l4Next(null, statusObject.status === 4000);
                             });

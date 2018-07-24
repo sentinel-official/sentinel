@@ -90,11 +90,19 @@ let updateSwixTransactionStatus = (toAddress, txInfo, remainingAmount, cb) => {
     });
 };
 
+const updateSwix = (findObj, updateObj, cb) => {
+  SwixDetailsModel.update(findObj, { $set:updateObj }, (err, resp) => {
+    if(err) cb(err, null)
+    else cb(null, resp)
+  })
+}
+
 module.exports = {
   insertSwixDetails,
   getSwix,
   getValidSwixes,
   updateSwixStatus,
   increaseTries,
-  updateSwixTransactionStatus
+  updateSwixTransactionStatus,
+  updateSwix
 };

@@ -74,4 +74,4 @@ let swixDetailsSchema = new mongoose.Schema({
   versionKey: false
 });
 
-module.exports = mongoose.model('SwixDetails', swixDetailsSchema);
+module.exports = mongoose.model('SwixDetails1', swixDetailsSchema);

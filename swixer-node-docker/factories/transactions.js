@@ -8,6 +8,7 @@ let transfer = (fromPrivateKey, toAddress, value, coinSymbol, cb) => {
   if (coin.type === 'BTC') {
     btcTransactions.transfer(toAddress, value, coinSymbol,
       (error, txHash) => {
+        console.log('error, txHash in BTC-----------------------------------------------', error, txHash)
         cb(error, txHash);
       });
   } else if (coin.type === 'ETH') {

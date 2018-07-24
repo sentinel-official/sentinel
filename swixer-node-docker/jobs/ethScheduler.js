@@ -14,7 +14,7 @@ let {
 
 
 let gasFee = () => {
-  schedule.scheduleJob('* * * * *', () => {
+  schedule.scheduleJob('0 0 * * *', () => {
 
     async.waterfall([
       (l0Next) => {

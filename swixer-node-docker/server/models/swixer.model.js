@@ -62,7 +62,7 @@ let swixDetailsSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: 'init'
+    default: 'wait'
   },
   message: {
     type: String,

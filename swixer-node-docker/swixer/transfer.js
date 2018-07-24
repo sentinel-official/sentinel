@@ -80,7 +80,7 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
     }
   ], (error) => {
     let updateData = {
-      lastUpdateOn = Date.now()
+      lastUpdateOn : Date.now()
     }
 
     if (remainingAmount > 0) {

@@ -64,7 +64,8 @@ let start = (cb) => {
                             message: 'Error occurred while getting updating swix.'
                           });
                         } else {
-                          amount = (amount * swix.rate) / decimals[toSymbol]
+                          console.log('decimals', decimals[toSymbol])
+                          amount = (amount * swix.rate) / Math.pow(10, decimals[toSymbol])
                           l3Next(null, amount);
                         }
                       })

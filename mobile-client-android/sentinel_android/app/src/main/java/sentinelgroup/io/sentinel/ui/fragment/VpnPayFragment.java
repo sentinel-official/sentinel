@@ -133,7 +133,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
                     loadNextFragment(VpnSelectFragment.newInstance(null));
                 } else if (reportPayResource.message != null && reportPayResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(reportPayResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, reportPayResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -211,9 +211,9 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

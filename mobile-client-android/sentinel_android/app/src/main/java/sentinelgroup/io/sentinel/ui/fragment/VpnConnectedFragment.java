@@ -258,12 +258,6 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    public void showErrorDialog(String iError) {
-        if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
-        }
-    }
-
     public void loadNextFragment(Fragment iFragment) {
         if (mListener != null) {
             mListener.onLoadNextFragment(iFragment);
@@ -273,12 +267,6 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     public void loadNextActivity(Intent iIntent, int iReqCode) {
         if (mListener != null) {
             mListener.onLoadNextActivity(iIntent, iReqCode);
-        }
-    }
-
-    public void initiateVpnConnection(String iVpnConfigFilePath) {
-        if (mVpnListener != null) {
-            mVpnListener.onVpnConnectionInitiated(iVpnConfigFilePath);
         }
     }
 

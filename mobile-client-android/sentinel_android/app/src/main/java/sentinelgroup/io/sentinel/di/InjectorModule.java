@@ -3,11 +3,12 @@ package sentinelgroup.io.sentinel.di;
 import android.content.Context;
 
 import sentinelgroup.io.sentinel.db.AppDatabase;
-import sentinelgroup.io.sentinel.db.dao.DeleteTableDao;
-import sentinelgroup.io.sentinel.network.api.WebService;
+import sentinelgroup.io.sentinel.network.api.GenericWebService;
+import sentinelgroup.io.sentinel.network.api.ReferralWebService;
 import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.repository.PinRepository;
+import sentinelgroup.io.sentinel.repository.ReferralRepository;
 import sentinelgroup.io.sentinel.repository.SendRepository;
 import sentinelgroup.io.sentinel.repository.TxHistoryRepository;
 import sentinelgroup.io.sentinel.repository.VpnRepository;
@@ -16,6 +17,7 @@ import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.viewmodel.CreateAuidViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.ReferralViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
@@ -36,10 +38,11 @@ import sentinelgroup.io.sentinel.viewmodel.WalletViewModelFactory;
 public class InjectorModule {
     /* Static private getter methods for Repository classes. */
     private static CreateAuidRepository provideCreateAccountRepository(Context iContext) {
-        DeleteTableDao aDao = AppDatabase.getInstance(iContext).deleteTableDao();
-        WebService aWebService = WebClient.get();
+        AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
+        GenericWebService aGenericWebService = WebClient.getGenericWebService();
+        ReferralWebService aReferralWebService = WebClient.getReferralWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return CreateAuidRepository.getInstance(aDao, aWebService, aAppExecutors);
+        return CreateAuidRepository.getInstance(aAppDatabase.deleteTableDao(), aGenericWebService, aReferralWebService, aAppExecutors);
     }
 
     private static PinRepository providePinRepository(Context iContext) {
@@ -50,30 +53,37 @@ public class InjectorModule {
 
     private static VpnRepository provideVpnRepository(Context iContext) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
-        WebService aWebService = WebClient.get();
+        GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getVpnUsageEntryDao(), aWebService, aAppExecutors);
+        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getVpnUsageEntryDao(), aGenericWebService, aAppExecutors);
     }
 
     private static WalletRepository provideWalletRepository(Context iContext) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
-        WebService aWebService = WebClient.get();
+        GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return WalletRepository.getInstance(aAppDatabase.getBalanceEntryDao(), aWebService, aAppExecutors);
+        return WalletRepository.getInstance(aAppDatabase.getBalanceEntryDao(), aGenericWebService, aAppExecutors);
     }
 
     private static SendRepository provideSendRepository(Context iContext) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
-        WebService aWebService = WebClient.get();
+        GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return SendRepository.getInstance(aAppDatabase.getGasEstimateEntryDao(), aWebService, aAppExecutors);
+        return SendRepository.getInstance(aAppDatabase.getGasEstimateEntryDao(), aGenericWebService, aAppExecutors);
     }
 
     private static TxHistoryRepository provideTxHistoryRepository(Context iContext) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
-        WebService aWebService = WebClient.get();
+        GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return TxHistoryRepository.getInstance(aWebService, aAppExecutors);
+        return TxHistoryRepository.getInstance(aGenericWebService, aAppExecutors);
+    }
+
+    private static ReferralRepository provideReferralRepository(Context iContext) {
+        AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
+        ReferralWebService aReferralWebService = WebClient.getReferralWebService();
+        AppExecutors aAppExecutors = AppExecutors.getInstance();
+        return ReferralRepository.getInstance(aAppDatabase.getReferralInfoEntryDao(), aReferralWebService, aAppExecutors);
     }
 
     /* Static private getter methods for ViewModelFactory classes */
@@ -159,5 +169,10 @@ public class InjectorModule {
     public static TxHistoryViewModelFactory provideTxHistoryViewModelFactory(Context iContext) {
         TxHistoryRepository aRepository = provideTxHistoryRepository(iContext);
         return new TxHistoryViewModelFactory(aRepository);
+    }
+
+    public static ReferralViewModelFactory provideReferralViewModelFactory(Context iContext) {
+        ReferralRepository aRepository = provideReferralRepository(iContext);
+        return new ReferralViewModelFactory(aRepository);
     }
 }

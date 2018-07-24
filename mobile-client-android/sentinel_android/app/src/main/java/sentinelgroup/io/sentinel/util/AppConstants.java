@@ -43,10 +43,12 @@ public class AppConstants {
     public static final String EXTRA_REQ_CODE = "req_code";
 
     // Fragment Tags
+    public static final String TAG_ADD_REFERRAL = "ADD_REFERRAL";
     public static final String TAG_INIT_PAY = "INIT_PAY";
     public static final String TAG_LOGOUT = "LOGOUT";
 
     // Other app constants
+    public static final int VALUE_DEFAULT = -1;
     public static final String FOLDER_NAME = "Sentinel";
     public static final String FILE_NAME = "keystore.file";
     public static final String CONFIG_NAME = "client.ovpn";
@@ -61,7 +63,8 @@ public class AppConstants {
     public static final String DOUBLE_ACTION_DIALOG_TAG = "sentinelgroup.io.sentinel.double_action_dialog";
     public static final String SENT = "SENT";
     public static final String ETH = "ETH";
-    public static final String GENERIC_ERROR = "Something went wrong. Please try again.";
+    public static final String GENERIC_ERROR = "generic_error";
+    public static final String STORAGE_ERROR = "storage_error";
     public static final String INIT_PAY_ERROR = "Initial VPN payment is not done.";
     public static final String URL_BUILDER = "http://%1s:%d/ovpn";
     public static final String GAS_PRICE_ESTIMATE_URL = "https://www.etherchain.org/api/gasPriceOracle";

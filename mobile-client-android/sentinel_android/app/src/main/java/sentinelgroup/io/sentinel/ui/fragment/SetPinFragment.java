@@ -138,7 +138,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Te
     private boolean validatePin(int iPin, int iPin2) {
         if (iPin != iPin2) {
             mEtReEnterPin.setText("");
-            showErrorDialog(getString(R.string.pin_mismatch));
+            showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.pin_mismatch), AppConstants.VALUE_DEFAULT);
             return false;
         } else {
             return true;
@@ -164,9 +164,9 @@ public class SetPinFragment extends Fragment implements View.OnClickListener, Te
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

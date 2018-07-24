@@ -107,7 +107,7 @@ public class ResetPinFragment extends Fragment implements TextWatcher, View.OnCl
                     resetAppPin();
                 } else {
                     clearInput();
-                    showErrorDialog(getString(R.string.wrong_old_pin));
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.wrong_old_pin), AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -144,7 +144,7 @@ public class ResetPinFragment extends Fragment implements TextWatcher, View.OnCl
     private boolean validatePin(int iPin, int iPin2) {
         if (iPin != iPin2) {
             mEtReEnterPin.setText("");
-            showErrorDialog(getString(R.string.pin_mismatch));
+            showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.pin_mismatch), AppConstants.VALUE_DEFAULT);
             return false;
         } else {
             return true;
@@ -170,9 +170,9 @@ public class ResetPinFragment extends Fragment implements TextWatcher, View.OnCl
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 
@@ -202,7 +202,7 @@ public class ResetPinFragment extends Fragment implements TextWatcher, View.OnCl
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+    }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {

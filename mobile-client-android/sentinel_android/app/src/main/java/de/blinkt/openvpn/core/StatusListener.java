@@ -45,7 +45,7 @@ public class StatusListener {
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            // We've bound to LocalService, cast the IBinder and getGenericWebService LocalService instance
             IServiceStatus serviceStatus = IServiceStatus.Stub.asInterface(service);
             try {
                 /* Check if this a local service ... */

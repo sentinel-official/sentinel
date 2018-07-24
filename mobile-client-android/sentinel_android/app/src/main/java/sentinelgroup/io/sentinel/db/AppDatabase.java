@@ -10,19 +10,21 @@ import sentinelgroup.io.sentinel.db.dao.BalanceEntryDao;
 import sentinelgroup.io.sentinel.db.dao.DeleteTableDao;
 import sentinelgroup.io.sentinel.db.dao.GasEstimateEntryDao;
 import sentinelgroup.io.sentinel.db.dao.PinEntryDao;
+import sentinelgroup.io.sentinel.db.dao.ReferralInfoDao;
 import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
 import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
 import sentinelgroup.io.sentinel.network.model.Chains;
 import sentinelgroup.io.sentinel.network.model.GasEstimateEntity;
 import sentinelgroup.io.sentinel.network.model.PinEntity;
+import sentinelgroup.io.sentinel.network.model.ReferralInfoEntity;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
 
 /**
  * Room Database for storing all the essential application data in it's table defined by the various DAO's.
  */
-@Database(entities = {Chains.class, GasEstimateEntity.class, PinEntity.class, VpnListEntity.class, VpnUsageEntity.class},
-        version = 6,
+@Database(entities = {Chains.class, GasEstimateEntity.class, PinEntity.class, VpnListEntity.class, VpnUsageEntity.class, ReferralInfoEntity.class},
+        version = 7,
         exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();
@@ -56,6 +58,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract VpnUsageEntryDao getVpnUsageEntryDao();
 
     public abstract BalanceEntryDao getBalanceEntryDao();
+
+    public abstract ReferralInfoDao getReferralInfoEntryDao();
 
     public abstract DeleteTableDao deleteTableDao();
 }

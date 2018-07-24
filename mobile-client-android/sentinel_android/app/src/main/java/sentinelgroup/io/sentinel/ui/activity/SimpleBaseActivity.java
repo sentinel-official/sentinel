@@ -121,18 +121,9 @@ public abstract class SimpleBaseActivity extends AppCompatActivity implements On
     /**
      * Shows an Error dialog with a Single button
      *
-     * @param iMessage [String] The error message to be displayed
-     */
-    protected void showSingleActionError(String iMessage) {
-        showSingleActionError(-1, iMessage, -1);
-    }
-
-    /**
-     * Shows an Error dialog with a Single button
-     *
-     * @param iTitleId          [int] The resource id of the title to be displayed
+     * @param iTitleId          [int] The resource id of the title to be displayed (default - "Please Note")
      * @param iMessage          [String] The error message to be displayed
-     * @param iPositiveOptionId [int] The resource id of the button text
+     * @param iPositiveOptionId [int] The resource id of the button text (default - "Ok")
      */
     protected void showSingleActionError(int iTitleId, String iMessage, int iPositiveOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(SINGLE_ACTION_DIALOG_TAG);
@@ -146,21 +137,11 @@ public abstract class SimpleBaseActivity extends AppCompatActivity implements On
     /**
      * Shows an Error dialog with a Two buttons
      *
-     * @param iTag     [String] The Tag assigned to the fragment when it's added to the container
-     * @param iMessage [String] The error message to be displayed
-     */
-    protected void showDoubleActionError(String iTag, String iMessage) {
-        showDoubleActionError(iTag, -1, iMessage, -1, -1);
-    }
-
-    /**
-     * Shows an Error dialog with a Two buttons
-     *
      * @param iTag              [String] The Tag assigned to the fragment when it's added to the container
-     * @param iTitleId          [int] The resource id of the title to be displayed
+     * @param iTitleId          [int] The resource id of the title to be displayed (default - "Please Note")
      * @param iMessage          [String] The error message to be displayed
-     * @param iPositiveOptionId [int] The resource id of the positive button text
-     * @param iNegativeOptionId [int] The resource id of the negative button text
+     * @param iPositiveOptionId [int] The resource id of the positive button text (default - "Ok")
+     * @param iNegativeOptionId [int] The resource id of the negative button text (default - "Cancel")
      */
     protected void showDoubleActionError(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);

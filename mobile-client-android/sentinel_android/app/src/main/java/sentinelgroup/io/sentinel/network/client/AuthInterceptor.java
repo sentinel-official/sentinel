@@ -13,14 +13,14 @@ import sentinelgroup.io.sentinel.util.NoConnectivityException;
 /**
  * Modifies the request header and observes the response for NoConnectivity exception.
  */
-public class ContentTypeInterceptor implements Interceptor {
+public class AuthInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         if (!NetworkUtil.isOnline()) {
             throw new NoConnectivityException();
         }
-        Request.Builder requestBuilder = chain.request().newBuilder();
-        requestBuilder.header("Content-Type", "application/json");
-        return chain.proceed(requestBuilder.build());
+        Request.Builder aRequestBuilder = chain.request().newBuilder();
+        aRequestBuilder.header("Content-Type", "application/json");
+        return chain.proceed(aRequestBuilder.build());
     }
 }

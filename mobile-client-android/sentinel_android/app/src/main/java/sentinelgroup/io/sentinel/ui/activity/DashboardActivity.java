@@ -224,7 +224,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 if (!SentinelApp.isVpnInitiated)
                     showDoubleActionDialog(AppConstants.TAG_LOGOUT, -1, getString(R.string.logout_desc), R.string.logout, android.R.string.cancel);
                 else
-                    showSingleActionError(getString(R.string.disconnect_vpn_to_logout));
+                    showSingleActionError(AppConstants.VALUE_DEFAULT, getString(R.string.disconnect_vpn_to_logout), AppConstants.VALUE_DEFAULT);
         }
     }
 
@@ -235,7 +235,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         if (iUrl != null && !iUrl.isEmpty() && (iUrl.startsWith("http://") || iUrl.startsWith("https://"))) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(iUrl)));
         } else {
-            showSingleActionError(iUrl);
+            showSingleActionError(AppConstants.VALUE_DEFAULT, iUrl, AppConstants.VALUE_DEFAULT);
         }
     }
 
@@ -281,15 +281,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     /**
      * Shows an Error dialog with a Single button
      *
-     * @param iMessage [String] The error message to be displayed
-     */
-    protected void showSingleActionError(String iMessage) {
-        showSingleActionError(-1, iMessage, -1);
-    }
-
-    /**
-     * Shows an Error dialog with a Single button
-     *
      * @param iTitleId          [int] The resource id of the title to be displayed
      * @param iMessage          [String] The error message to be displayed
      * @param iPositiveOptionId [int] The resource id of the button text
@@ -301,16 +292,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         if (aFragment == null)
             SingleActionDialogFragment.newInstance(aTitleId, iMessage, aPositiveOptionText)
                     .show(getSupportFragmentManager(), SINGLE_ACTION_DIALOG_TAG);
-    }
-
-    /**
-     * Shows an Error dialog with a Two buttons
-     *
-     * @param iTag     [String] The Tag assigned to the fragment when it's added to the container
-     * @param iMessage [String] The error message to be displayed
-     */
-    protected void showDoubleActionDialog(String iTag, String iMessage) {
-        showDoubleActionDialog(iTag, -1, iMessage, -1, -1);
     }
 
     /**
@@ -512,7 +493,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case AppConstants.REQ_VPN_INIT_PAY:
                 if (resultCode == RESULT_OK) {
-                    showSingleActionError(getString(R.string.init_vpn_pay_success_message));
+                    showSingleActionError(R.string.yay, getString(R.string.init_vpn_pay_success_message), R.string.thanks);
                 }
                 break;
             case AppConstants.REQ_HELPER_SCREENS:
@@ -594,17 +575,20 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     @Override
-    public void onShowSingleActionDialog(String iMessage) {
-        if (iMessage.equals(getString(R.string.free_token_requested)))
-            showSingleActionError(R.string.yay, iMessage, R.string.thanks);
-        else
-            showSingleActionError(iMessage);
+    public void onShowSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
+        showSingleActionError(iTitleId, iMessage, iPositiveOptionId);
     }
 
     @Override
-    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-        showDoubleActionDialog(AppConstants.TAG_INIT_PAY, R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
+    public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        showDoubleActionDialog(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
     }
+
+    // TODO delete the below lines later
+//    @Override
+//    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+//        showDoubleActionDialog(AppConstants.TAG_INIT_PAY, R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
+//    }
 
     @Override
     public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {

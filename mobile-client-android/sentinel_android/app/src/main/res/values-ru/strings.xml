@@ -194,6 +194,15 @@
     <string name="info_title_2">Кошелек с открытым исходным кодом и защищенным VPN-сервисом</string>
     <string name="disconnect_vpn_to_logout">Вы подключены к VPN.\nОтключите VPN для выхода.</string>
     <string name="referral_claimed">Вы получили ваши реферальные токены.\nПосмотрите на обновленный баланс в вашем кошельке.</string>
+    <string name="generic_error">Something went wrong. Please try again.</string>
+    <string name="storage_error">Storage not found. Unable to store keystore file.</string>
+    <string name="adding_referral">Adding referral details. Please wait…</string>
+    <string name="referral_address_missing">You have not entered a referral address.\n\nDo you wish to continue without applying a referral address?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="claiming_referral_bonus">Claiming referral bonus. Please wait…</string>
+    <string name="claim_bonus">Claim Bonus</string>
+
 
     <string-array name="spinner_list">
         <item>SENT</item>

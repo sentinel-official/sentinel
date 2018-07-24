@@ -28,6 +28,7 @@ import sentinelgroup.io.sentinel.ui.adapter.MaterialSpinnerAdapter;
 import sentinelgroup.io.sentinel.ui.adapter.TxHistoryListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.CustomSpinner;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.TxHistoryViewModel;
 import sentinelgroup.io.sentinel.viewmodel.TxHistoryViewModelFactory;
@@ -120,12 +121,12 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
         mViewModel.getTxHistoryLiveEvent().observe(this, txListResource -> {
             if (txListResource != null) {
                 if (txListResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true,getString(R.string.loading_tx_history));
+                    showProgressDialog(true, getString(R.string.loading_tx_history));
                 } else if (txListResource.data != null && txListResource.data.size() > 0 && txListResource.status.equals(Status.SUCCESS)) {
                     mAdapter.loadData(txListResource.data);
                     hideProgressDialog();
                 } else if (txListResource.message != null && txListResource.status.equals(Status.ERROR)) {
-                    showErrorDialog(txListResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, txListResource.message, AppConstants.VALUE_DEFAULT);
                     hideProgressDialog();
                 }
             }
@@ -151,9 +152,9 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

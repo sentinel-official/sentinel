@@ -92,12 +92,12 @@ public class VpnHistoryActivity extends BaseActivity {
     }
 
     @Override
-    public void onShowSingleActionDialog(String iMessage) {
-        showSingleActionError(iMessage);
+    public void onShowSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
+        showSingleActionError(iTitleId, iMessage, iPositiveOptionId);
     }
 
     @Override
-    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+    public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         // Unimplemented interface method
     }
 

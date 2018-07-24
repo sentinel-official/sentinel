@@ -9,7 +9,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import sentinelgroup.io.sentinel.db.dao.GasEstimateEntryDao;
-import sentinelgroup.io.sentinel.network.api.WebService;
+import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.model.GasEstimateEntity;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.PayError;
@@ -27,14 +27,14 @@ public class SendRepository {
     private static final Object LOCK = new Object();
     private static SendRepository sInstance;
     private final GasEstimateEntryDao mDao;
-    private final WebService mWebService;
+    private final GenericWebService mGenericWebService;
     private final AppExecutors mAppExecutors;
     private final MutableLiveData<GasEstimateEntity> mGasEstimateMutableLieData;
     private final SingleLiveEvent<Resource<PayResponse>> mTransactionLiveEvent;
 
-    private SendRepository(GasEstimateEntryDao iDao, WebService iWebService, AppExecutors iAppExecutors) {
+    private SendRepository(GasEstimateEntryDao iDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
         mDao = iDao;
-        mWebService = iWebService;
+        mGenericWebService = iGenericWebService;
         mAppExecutors = iAppExecutors;
         mTransactionLiveEvent = new SingleLiveEvent<>();
         mGasEstimateMutableLieData = new MutableLiveData<>();
@@ -42,16 +42,17 @@ public class SendRepository {
         LiveData<GasEstimateEntity> aGasEstimateServerData = getGasEstimateMutableLieData();
         aGasEstimateServerData.observeForever(gas -> {
             mAppExecutors.diskIO().execute(() -> {
-                if (gas != null)
+                if (gas != null) {
                     mDao.insertGasEstimateEntity(gas);
+                }
             });
         });
     }
 
-    public static SendRepository getInstance(GasEstimateEntryDao iDao, WebService iWebService, AppExecutors iAppExecutors) {
+    public static SendRepository getInstance(GasEstimateEntryDao iDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new SendRepository(iDao, iWebService, iAppExecutors);
+                sInstance = new SendRepository(iDao, iGenericWebService, iAppExecutors);
             }
         }
         return sInstance;
@@ -70,10 +71,12 @@ public class SendRepository {
         return mTransactionLiveEvent;
     }
 
-    // Network Call
+    /*
+     * Network Call
+     */
     public void makeRawTransaction(GenericRequestBody iRequestBody) {
         mTransactionLiveEvent.postValue(Resource.loading(null));
-        mWebService.makeRawTransaction(iRequestBody).enqueue(new Callback<PayResponse>() {
+        mGenericWebService.makeRawTransaction(iRequestBody).enqueue(new Callback<PayResponse>() {
             @Override
             public void onResponse(Call<PayResponse> call, Response<PayResponse> response) {
                 reportSuccessResponse(response);
@@ -111,7 +114,7 @@ public class SendRepository {
 
     public void makeVpnPayment(GenericRequestBody iRequestBody) {
         mTransactionLiveEvent.postValue(Resource.loading(null));
-        mWebService.makeVpnUsagePayment(iRequestBody).enqueue(new Callback<PayResponse>() {
+        mGenericWebService.makeVpnUsagePayment(iRequestBody).enqueue(new Callback<PayResponse>() {
             @Override
             public void onResponse(Call<PayResponse> call, Response<PayResponse> response) {
                 reportSuccessResponse(response);
@@ -152,7 +155,7 @@ public class SendRepository {
     }
 
     private void getGasPriceEstimate(String iUrl) {
-        mWebService.getGasPriceEstimate(iUrl).enqueue(new Callback<GasEstimateEntity>() {
+        mGenericWebService.getGasPriceEstimate(iUrl).enqueue(new Callback<GasEstimateEntity>() {
             @Override
             public void onResponse(Call<GasEstimateEntity> call, Response<GasEstimateEntity> response) {
                 reportSuccessResponse(response);

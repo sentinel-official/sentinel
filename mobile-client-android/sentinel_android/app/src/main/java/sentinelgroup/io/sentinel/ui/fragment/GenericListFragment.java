@@ -131,12 +131,6 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
         }
     }
 
-    public void showErrorDialog(String iError) {
-        if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
-        }
-    }
-
     public void loadNextFragment(Fragment iFragment) {
         if (mListener != null) {
             mListener.onLoadNextFragment(iFragment);

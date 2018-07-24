@@ -80,16 +80,20 @@
 
     <TextView
         android:id="@+id/app_sub_name"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        style="@style/CustomTextAppearance.Text14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="@string/app_sub_name"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
-        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
-        app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
+        app:layout_constraintStart_toEndOf="@+id/vertical_guideline3"
         app:layout_constraintTop_toBottomOf="@+id/app_name" />
 
     <TextView

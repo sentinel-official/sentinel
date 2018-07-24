@@ -68,7 +68,7 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AppConstants.REQ_VPN_INIT_PAY) {
             if (resultCode == RESULT_OK) {
-                showSingleActionError(getString(R.string.init_vpn_pay_success_message));
+                showSingleActionError(AppConstants.VALUE_DEFAULT, getString(R.string.init_vpn_pay_success_message), AppConstants.VALUE_DEFAULT);
             }
         }
     }
@@ -101,13 +101,13 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
     }
 
     @Override
-    public void onShowSingleActionDialog(String iMessage) {
-        showSingleActionError(iMessage);
+    public void onShowSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
+        showSingleActionError(iTitleId, iMessage, iPositiveOptionId);
     }
 
     @Override
-    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-        showDoubleActionError(AppConstants.TAG_INIT_PAY, R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
+    public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        showDoubleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
     }
 
     @Override

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -115,9 +116,9 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    public void showSingleActionDialog(String iMessage) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iMessage);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 
@@ -162,7 +163,7 @@ public class SecureKeysFragment extends Fragment implements View.OnClickListener
                     mBtnNext.setEnabled(true);
                     mCtvKeyCopied.setChecked(true);
                 } else
-                    showSingleActionDialog(getString(R.string.key_not_copied_alert));
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.key_not_copied_alert), AppConstants.VALUE_DEFAULT);
                 break;
             case R.id.btn_next:
                 loadNextFragment();

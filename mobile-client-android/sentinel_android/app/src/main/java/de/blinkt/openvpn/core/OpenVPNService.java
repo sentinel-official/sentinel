@@ -372,7 +372,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         if (intent != null && intent.hasExtra(getPackageName() + ".profileUUID")) {
             String profileUUID = intent.getStringExtra(getPackageName() + ".profileUUID");
             int profileVersion = intent.getIntExtra(getPackageName() + ".profileVersion", 0);
-            // Try for 10s to get current version of the profile
+            // Try for 10s to getGenericWebService current version of the profile
             mProfile = ProfileManager.get(this, profileUUID, profileVersion, 100);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 updateShortCutUsage(mProfile);
@@ -800,7 +800,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         mRemoteGW = null;
         long netMaskAsInt = CIDRIP.getInt(netmask);
         if (mLocalIP.len == 32 && !netmask.equals("255.255.255.255")) {
-            // get the netmask as IP
+            // getGenericWebService the netmask as IP
             int masklen;
             long mask;
             if ("net30".equals(mode)) {

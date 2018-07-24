@@ -168,12 +168,6 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
         }
     }
 
-    public void showErrorDialog(String iError) {
-        if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
-        }
-    }
-
     public void loadNextFragment(Fragment iNextFragment) {
         if (mListener != null) {
             mListener.onLoadNextFragment(iNextFragment);

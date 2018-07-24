@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 
 import sentinelgroup.io.sentinel.network.model.Account;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.network.model.GenericResponse;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
@@ -23,6 +24,7 @@ public class CreateAuidViewModel extends ViewModel {
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<Account>> mAccountLiveEvent;
     private final SingleLiveEvent<Resource<Account>> mKeystoreFileLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mReferralLiveEvent;
     private final SingleLiveEvent<Boolean> mSessionClearedLiveEvent;
 
     CreateAuidViewModel(CreateAuidRepository iRepository, AppExecutors iAppExecutors) {
@@ -30,9 +32,13 @@ public class CreateAuidViewModel extends ViewModel {
         mAppExecutors = iAppExecutors;
         mAccountLiveEvent = iRepository.getAccountLiveEvent();
         mKeystoreFileLiveEvent = new SingleLiveEvent<>();
-        mSessionClearedLiveEvent = iRepository.getmSessionClearedLiveEvent();
+        mReferralLiveEvent = iRepository.getReferralLiveEvent();
+        mSessionClearedLiveEvent = iRepository.getSessionClearedLiveEvent();
     }
 
+    /*
+     * Getters
+     */
     public SingleLiveEvent<Resource<Account>> getAccountLiveEvent() {
         return mAccountLiveEvent;
     }
@@ -41,21 +47,37 @@ public class CreateAuidViewModel extends ViewModel {
         return mKeystoreFileLiveEvent;
     }
 
+    public SingleLiveEvent<Resource<GenericResponse>> getReferralLiveEvent() {
+        return mReferralLiveEvent;
+    }
+
     public SingleLiveEvent<Boolean> getSessionClearedLiveEvent() {
         return mSessionClearedLiveEvent;
     }
 
+    /*
+     * Other functions
+     */
     public void createNewAccount(String iPassword) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
-                .password(iPassword).build();
+                .password(iPassword)
+                .build();
         mRepository.createNewAccount(aBody);
+    }
+
+    public void addReferralAddress(String iClientAddress, String iReferralAddress) {
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .clientAddress(iClientAddress)
+                .referralAddress(iReferralAddress)
+                .build();
+        mRepository.addReferralAddress(aBody);
     }
 
     public void saveAccount(Account iData) {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             saveKeystoreFile(iData, AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH));
         } else {
-            mKeystoreFileLiveEvent.postValue(Resource.error("Storage not found. Unable to store keystore file.", null));
+            mKeystoreFileLiveEvent.postValue(Resource.error(AppConstants.STORAGE_ERROR, null));
         }
     }
 

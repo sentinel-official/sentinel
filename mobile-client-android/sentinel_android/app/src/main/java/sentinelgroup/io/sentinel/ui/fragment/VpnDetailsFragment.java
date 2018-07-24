@@ -20,7 +20,6 @@ import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
-import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
@@ -132,10 +131,11 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                 } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     if (vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR))
-                        // TODO show double action dialog here
-                        showDoubleActionDialog(getString(R.string.init_vpn_pay_pending_message));
+                        showDoubleActionDialog(AppConstants.TAG_INIT_PAY, AppConstants.VALUE_DEFAULT,
+                                getString(R.string.init_vpn_pay_pending_message),
+                                R.string.pay, AppConstants.VALUE_DEFAULT);
                     else
-                        showErrorDialog(vpnCredentialsResource.message);
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnCredentialsResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -147,7 +147,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                     mViewModel.saveCurrentVpnSessionConfig(vpnConfigResource.data);
                 } else if (vpnConfigResource.message != null && vpnConfigResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(vpnConfigResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -160,24 +160,13 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                     loadNextActivity(null);
                 } else if (vpnConfigSaveResource.message != null && vpnConfigSaveResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(vpnConfigSaveResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigSaveResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
     }
 
-    public Intent constructSendActivityIntent() {
-        Intent aIntent = new Intent(getActivity(), SendActivity.class);
-        Bundle aBundle = new Bundle();
-        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
-        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
-        aBundle.putString(AppConstants.EXTRA_AMOUNT, getString(R.string.init_vpn_pay));
-        aIntent.putExtras(aBundle);
-        return aIntent;
-    }
-
     // Interface interaction methods
-
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
             mListener.onFragmentLoaded(iTitle);
@@ -196,15 +185,15 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 
-    private void showDoubleActionDialog(String iMessage) {
+    private void showDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         if (mListener != null) {
-            mListener.onShowDoubleActionDialog(iMessage, R.string.pay, android.R.string.cancel);
+            mListener.onShowDoubleActionDialog(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
         }
     }
 
@@ -240,9 +229,9 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                 if (!SentinelApp.isVpnConnected)
                     mViewModel.getVpnServerCredentials(mVpnListData.getAccountAddress());
                 else
-                    showErrorDialog(getString(R.string.vpn_already_connected));
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_already_connected), AppConstants.VALUE_DEFAULT);
             } else
-                showErrorDialog(getString(R.string.vpn_main_net_unavailable));
+                showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_main_net_unavailable), AppConstants.VALUE_DEFAULT);
         }
     }
 }

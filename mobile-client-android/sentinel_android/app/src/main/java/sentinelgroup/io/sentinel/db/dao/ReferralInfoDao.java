@@ -6,16 +6,16 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import sentinelgroup.io.sentinel.network.model.GasEstimateEntity;
+import sentinelgroup.io.sentinel.network.model.ReferralInfoEntity;
 
 /**
- * DAO to do CRUD operation related to GAS Estimate.
+ * DAO to do CRUD operation related to Referral Info.
  */
 @Dao
-public interface GasEstimateEntryDao {
+public interface ReferralInfoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertGasEstimateEntity(GasEstimateEntity iEntity);
+    void insertReferralInfoEntity(ReferralInfoEntity iEntity);
 
-    @Query("SELECT * FROM gas_estimate_entity")
-    LiveData<GasEstimateEntity> getGasEstimateEntity();
+    @Query("SELECT * FROM referral_info_entity")
+    LiveData<ReferralInfoEntity> getReferralInfoEntity();
 }

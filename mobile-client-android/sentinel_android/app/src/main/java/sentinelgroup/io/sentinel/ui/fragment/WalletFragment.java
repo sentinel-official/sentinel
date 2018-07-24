@@ -112,7 +112,7 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
 
         mViewModel.getBalanceErrorLiveEvent().observe(this, balanceError -> {
             if (balanceError != null) {
-                showErrorDialog(balanceError);
+                showSingleActionDialog(AppConstants.VALUE_DEFAULT, balanceError, AppConstants.VALUE_DEFAULT);
             }
         });
     }
@@ -140,9 +140,9 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
     }
 
     // Interface interaction methods
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

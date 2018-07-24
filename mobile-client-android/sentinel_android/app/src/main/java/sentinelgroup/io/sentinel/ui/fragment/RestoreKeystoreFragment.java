@@ -29,6 +29,7 @@ import java.io.File;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModel;
@@ -117,7 +118,8 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                 } else if (keystoreResource.message != null && keystoreResource.status.equals(Status.ERROR)) {
                     mTetPassword.setText("");
                     hideProgressDialog();
-                    showErrorDialog(keystoreResource.message);
+                    clearPassword();
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, keystoreResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -182,6 +184,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         mViewModel.restoreKeystoreFile(aPassword, mKeystorePath);
     }
 
+    private void clearPassword() {
+        mTetPassword.setText("");
+    }
+
     // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
@@ -201,10 +207,9 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mTetPassword.setText("");
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

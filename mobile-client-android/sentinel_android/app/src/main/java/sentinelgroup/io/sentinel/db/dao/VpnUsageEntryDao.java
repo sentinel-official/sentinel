@@ -22,7 +22,4 @@ public interface VpnUsageEntryDao {
 
     @Query("SELECT * FROM vpn_usage_entity")
     LiveData<VpnUsageEntity> getVpnUsageEntity();
-
-    @Query("DELETE FROM vpn_usage_entity")
-    void deleteVpnUsageEntity();
 }

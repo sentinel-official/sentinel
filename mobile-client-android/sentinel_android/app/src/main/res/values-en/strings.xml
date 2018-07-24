@@ -188,12 +188,21 @@
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
     <string name="address">Address</string>
-    <string name="share_address">Share your address</string>
+    <string name="share_address">Share address</string>
     <string name="share_string">Hey, check out this new dVPN android app. Use my referral code to get free tokens when you sign up.\nReferral code: %s</string>
     <string name="info_title_1">Share your Referral Code to earn tokens for every Sign Up</string>
     <string name="info_title_2">Open source wallet and secure VPN platform</string>
     <string name="disconnect_vpn_to_logout">You are connected to a VPN.\nDisconnect the VPN to logout.</string>
     <string name="referral_claimed">You have claimed your free referral tokens.\nView the updated token balance in your wallet.</string>
+    <string name="generic_error">Something went wrong. Please try again.</string>
+    <string name="storage_error">Storage not found. Unable to store keystore file.</string>
+    <string name="adding_referral">Adding referral details. Please wait…</string>
+    <string name="referral_address_missing">You have not entered a referral address.\n\nDo you wish to continue without applying a referral address?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="claiming_referral_bonus">Claiming referral bonus. Please wait…</string>
+    <string name="claim_bonus">Claim Bonus</string>
+
 
     <string-array name="spinner_list">
         <item>SENT</item>

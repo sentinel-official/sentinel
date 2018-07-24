@@ -44,7 +44,6 @@ public class SendViewModel extends ViewModel {
     private final SingleLiveEvent<Resource<String>> mTxDataCreationLiveEvent;
     private final SingleLiveEvent<Resource<PayResponse>> mTransactionLiveEvent;
 
-
     SendViewModel(SendRepository iRepository, AppExecutors iAppExecutors) {
         mRepository = iRepository;
         mAppExecutors = iAppExecutors;
@@ -74,16 +73,16 @@ public class SendViewModel extends ViewModel {
             try {
                 // verify password and keystore file
                 Credentials aCredentials = WalletUtils.loadCredentials(iPassword, AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH));
-                // get Nonce
+                // getGenericWebService Nonce
                 EthGetTransactionCount aCount = aWeb3j.ethGetTransactionCount(aCredentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
                 BigInteger aNonce = aCount.getTransactionCount();
-                // get GasPrice
+                // getGenericWebService GasPrice
                 BigInteger aGasPrice = Convert.toWei(iGasPrice, Convert.EtherUnit.GWEI).toBigInteger();
-                // get GasLimit
+                // getGenericWebService GasLimit
                 BigInteger aGasLimit = BigInteger.valueOf(Long.valueOf(iGasLimit));
-                // get Value
+                // getGenericWebService Value
                 BigInteger aValue = Convert.toWei(iValue, Convert.EtherUnit.ETHER).toBigInteger();
-                // get TxData
+                // getGenericWebService TxData
                 RawTransaction aRawTransaction = RawTransaction.createEtherTransaction(aNonce, aGasPrice, aGasLimit, iToAddress, aValue);
                 byte[] signedMessage = TransactionEncoder.signMessage(aRawTransaction, aCredentials);
                 String aTxData = Numeric.toHexString(signedMessage);
@@ -104,20 +103,20 @@ public class SendViewModel extends ViewModel {
             try {
                 // verify password and keystore file
                 Credentials aCredentials = WalletUtils.loadCredentials(iPassword, AppPreferences.getInstance().getString(AppConstants.PREFS_FILE_PATH));
-                // get Nonce
+                // getGenericWebService Nonce
                 EthGetTransactionCount aCount = aWeb3j.ethGetTransactionCount(aCredentials.getAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
                 BigInteger aNonce = aCount.getTransactionCount();
-                // get GasPrice
+                // getGenericWebService GasPrice
                 BigInteger aGasPrice = Convert.toWei(iGasPrice, Convert.EtherUnit.GWEI).toBigInteger();
-                // get GasLimit
+                // getGenericWebService GasLimit
                 BigInteger aGasLimit = BigInteger.valueOf(Long.valueOf(iGasLimit));
-                // get Value
+                // getGenericWebService Value
                 BigInteger aValue = BigInteger.ZERO;
-                // get EncodedFunction
+                // getGenericWebService EncodedFunction
                 BigInteger aTokenValue = Converter.getTokenValue(iValue);
                 Sentinel aSentinel = Sentinel.load(aSentinelAddress, aWeb3j, aCredentials, aGasPrice, aGasLimit);
                 String aData = FunctionEncoder.encode(aSentinel.transferSent(iToAddress, aTokenValue));
-                // get TxData
+                // getGenericWebService TxData
                 RawTransaction aRawTransaction = RawTransaction.createTransaction(aNonce, aGasPrice, aGasLimit, aSentinelAddress, aValue, aData);
                 byte[] signedMessage = TransactionEncoder.signMessage(aRawTransaction, aCredentials);
                 String aTxData = Numeric.toHexString(signedMessage);

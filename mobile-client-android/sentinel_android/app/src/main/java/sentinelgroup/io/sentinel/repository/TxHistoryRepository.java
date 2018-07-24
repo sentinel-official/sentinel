@@ -6,7 +6,7 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import sentinelgroup.io.sentinel.network.api.WebService;
+import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.model.TxHistory;
 import sentinelgroup.io.sentinel.network.model.TxResult;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -21,21 +21,21 @@ public class TxHistoryRepository {
     private static final Object LOCK = new Object();
     private static TxHistoryRepository sInstance;
     // TODO declare dao
-    private final WebService mWebService;
+    private final GenericWebService mGenericWebService;
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<List<TxResult>>> mTxHistoryLiveEvent;
 
 
-    private TxHistoryRepository(WebService iWebService, AppExecutors iAppExecutors) {
-        mWebService = iWebService;
+    private TxHistoryRepository(GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
+        mGenericWebService = iGenericWebService;
         mAppExecutors = iAppExecutors;
         mTxHistoryLiveEvent = new SingleLiveEvent<>();
     }
 
-    public static TxHistoryRepository getInstance(WebService iWebService, AppExecutors iAppExecutors) {
+    public static TxHistoryRepository getInstance(GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new TxHistoryRepository(iWebService, iAppExecutors);
+                sInstance = new TxHistoryRepository(iGenericWebService, iAppExecutors);
             }
         }
         return sInstance;
@@ -65,7 +65,7 @@ public class TxHistoryRepository {
     // Network call
     private void getTxHistory(boolean isEthTransaction, String iUrl) {
         mTxHistoryLiveEvent.postValue(Resource.loading(null));
-        mWebService.getTransactionHistory(iUrl).enqueue(new Callback<TxHistory>() {
+        mGenericWebService.getTransactionHistory(iUrl).enqueue(new Callback<TxHistory>() {
             @Override
             public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
                 reportSuccessResponse(response);

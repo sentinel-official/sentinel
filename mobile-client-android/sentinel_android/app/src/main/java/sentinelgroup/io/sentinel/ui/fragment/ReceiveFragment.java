@@ -16,6 +16,7 @@ import android.widget.TextView;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModel;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
@@ -93,7 +94,7 @@ public class ReceiveFragment extends Fragment implements View.OnClickListener {
                 if (bitmapResource.data != null && bitmapResource.status.equals(Status.SUCCESS)) {
                     mIvQrCode.setImageBitmap(bitmapResource.data);
                 } else if (bitmapResource.message != null && bitmapResource.status.equals(Status.ERROR)) {
-                    showErrorDialog(bitmapResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, bitmapResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -108,9 +109,9 @@ public class ReceiveFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

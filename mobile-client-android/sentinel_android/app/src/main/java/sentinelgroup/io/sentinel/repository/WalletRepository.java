@@ -7,14 +7,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import sentinelgroup.io.sentinel.db.dao.BalanceEntryDao;
-import sentinelgroup.io.sentinel.network.api.WebService;
+import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.model.Balance;
 import sentinelgroup.io.sentinel.network.model.Chains;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
-import sentinelgroup.io.sentinel.network.model.Tokens;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
-import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
 /**
@@ -25,14 +23,14 @@ public class WalletRepository {
     private static final Object LOCK = new Object();
     private static WalletRepository sInstance;
     private final BalanceEntryDao mDao;
-    private final WebService mWebService;
+    private final GenericWebService mGenericWebService;
     private final AppExecutors mAppExecutors;
     private final MutableLiveData<Balance> mBalanceMutableLiveData;
     private final SingleLiveEvent<String> mBalanceErrorLiveEvent;
 
-    private WalletRepository(BalanceEntryDao iDao, WebService iWebService, AppExecutors iAppExecutors) {
+    private WalletRepository(BalanceEntryDao iDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
         mDao = iDao;
-        mWebService = iWebService;
+        mGenericWebService = iGenericWebService;
         mAppExecutors = iAppExecutors;
         mBalanceMutableLiveData = new MutableLiveData<>();
         mBalanceErrorLiveEvent = new SingleLiveEvent<>();
@@ -47,10 +45,10 @@ public class WalletRepository {
         });
     }
 
-    public static WalletRepository getInstance(BalanceEntryDao iDao, WebService iWebService, AppExecutors iAppExecutors) {
+    public static WalletRepository getInstance(BalanceEntryDao iDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new WalletRepository(iDao, iWebService, iAppExecutors);
+                sInstance = new WalletRepository(iDao, iGenericWebService, iAppExecutors);
             }
         }
         return sInstance;
@@ -76,7 +74,7 @@ public class WalletRepository {
 
     // Network call
     private void getAccountBalance(GenericRequestBody iBody) {
-        mWebService.getAccountBalance(iBody).enqueue(new Callback<Balance>() {
+        mGenericWebService.getAccountBalance(iBody).enqueue(new Callback<Balance>() {
             @Override
             public void onResponse(Call<Balance> call, Response<Balance> response) {
                 reportSuccessResponse(response);

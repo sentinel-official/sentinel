@@ -19,9 +19,9 @@ import sentinelgroup.io.sentinel.network.model.VpnCredentials;
 import sentinelgroup.io.sentinel.network.model.VpnUsage;
 
 /**
- * REST API access points
+ * REST API access points for VPN and wallet flow
  */
-public interface WebService {
+public interface GenericWebService {
     @POST(EndPoint.CREATE_NEW_ACCOUNT)
     Call<Account> createNewAccount(@Body GenericRequestBody iBody);
 

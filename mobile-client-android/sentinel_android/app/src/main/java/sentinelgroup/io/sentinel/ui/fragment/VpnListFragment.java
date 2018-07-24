@@ -111,9 +111,9 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
             if (vpnList != null && vpnList.size() > 0)
                 mAdapter.loadData(vpnList);
         });
-        mViewModel.getVpnListErrorLiveEvent().observe(this, error -> {
-            if (error != null && !error.isEmpty() && mAdapter.getItemCount() != 0)
-                showErrorDialog(error);
+        mViewModel.getVpnListErrorLiveEvent().observe(this, iMessage -> {
+            if (iMessage != null && !iMessage.isEmpty() && mAdapter.getItemCount() != 0)
+                showSingleActionDialog(AppConstants.VALUE_DEFAULT, iMessage, AppConstants.VALUE_DEFAULT);
         });
         mViewModel.getVpnGetServerCredentials().observe(this, vpnCredentialsResource -> {
             if (vpnCredentialsResource != null) {
@@ -124,10 +124,11 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                 } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     if (vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR))
-                        // TODO show double action dialog here
-                        showDoubleActionDialog(getString(R.string.init_vpn_pay_pending_message));
+                        showDoubleActionDialog(AppConstants.TAG_INIT_PAY, AppConstants.VALUE_DEFAULT,
+                                getString(R.string.init_vpn_pay_pending_message),
+                                R.string.pay, AppConstants.VALUE_DEFAULT);
                     else
-                        showErrorDialog(vpnCredentialsResource.message);
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnCredentialsResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -139,7 +140,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                     mViewModel.saveCurrentVpnSessionConfig(vpnConfigResource.data);
                 } else if (vpnConfigResource.message != null && vpnConfigResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(vpnConfigResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -152,7 +153,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                     initiateVpnConnection(vpnConfigSaveResource.data);
                 } else if (vpnConfigSaveResource.message != null && vpnConfigSaveResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(vpnConfigSaveResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigSaveResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -177,15 +178,15 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 
-    private void showDoubleActionDialog(String iMessage) {
+    private void showDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         if (mListener != null) {
-            mListener.onShowDoubleActionDialog(iMessage, R.string.pay, android.R.string.cancel);
+            mListener.onShowDoubleActionDialog(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
         }
     }
 
@@ -245,8 +246,8 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
             if (!SentinelApp.isVpnConnected)
                 mViewModel.getVpnServerCredentials(iVpnAddress);
             else
-                showErrorDialog(getString(R.string.vpn_already_connected));
+                showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_already_connected), AppConstants.VALUE_DEFAULT);
         } else
-            showErrorDialog(getString(R.string.vpn_main_net_unavailable));
+            showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_main_net_unavailable), AppConstants.VALUE_DEFAULT);
     }
 }

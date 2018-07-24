@@ -53,6 +53,9 @@ def get_swix_status(ip, swix_hash):
             return {
                 'status': res['swixStatus'],
                 'tx_infos': res['txInfos'],
+                'from_token': res['fromToken'],
+                'to_token': res['toToken'],
+                'destination_address': res['destAddr'],
                 'remaining_amount': res['remainingAmount'] if 'remainingAmount' in res else None
             }
         else:
@@ -93,6 +96,9 @@ class GetSwixStatus(object):
                 else:
                     message = {
                         'success': True,
+                        'from_symbol': details['from_token'],
+                        'to_symbol': details['to_token'],
+                        'dest_addr': details['destination_address'],
                         'status': details['status'],
                         'tx_infos': details['tx_infos'],
                         'remaining_amount': details['remaining_amount']

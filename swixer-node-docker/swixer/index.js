@@ -12,6 +12,9 @@ let {
 let {
   decimals
 } = require('../config/vars')
+let {
+  sendGasPrice
+} = require('../swixer/sendGasPrice')
 
 
 let start = (cb) => {
@@ -51,6 +54,17 @@ let start = (cb) => {
                 if (amount > 0) {
                   async.waterfall([
                     (l3Next) => {
+                      sendGasPrice(address, (error, resp) => {
+                        if (error) {
+                          l3Next({
+                            status: 4001,
+                            message: 'Error occurred while sending gas price'
+                          });
+                        } else {
+                          l3Next(null)
+                        }
+                      })
+                    }, (l3Next) => {
                       swixerDbo.updateSwix({
                         swxiHash: swix.swxiHash
                       }, {

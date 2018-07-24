@@ -57,13 +57,6 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
                       timestamp: Date.now()
                     }, remainingAmount);
                   });
-                /* remainingAmount -= value;
-                   l2Next(null, {
-                     value,
-                     txHash: null,
-                     fromAddress: address,
-                     timestamp: Date.now()
-                   }, remainingAmount); */
               }, (txInfo, remainingAmount, l2Next) => {
                 swixerDbo.updateSwixTransactionStatus(toAddress, txInfo, remainingAmount,
                   (error, result) => {

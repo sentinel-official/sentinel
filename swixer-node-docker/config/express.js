@@ -8,6 +8,9 @@ let compression = require('compression');
 let mongoose = require('mongoose');
 let utils = require('./utils');
 let mongoDbConfig = require('./vars').mongoDb;
+let {
+  jobs
+} = require('../jobs/index')
 
 
 let initServer = () => {
@@ -42,6 +45,8 @@ let initServer = () => {
         status: 'up'
       });
     });
+
+  jobs();
 
   utils.getGlobbedFiles('./server/routes/*.js').forEach((routePath) => {
     console.log('routePath', routePath);

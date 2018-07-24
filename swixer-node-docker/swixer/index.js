@@ -9,6 +9,9 @@ let {
 let {
   scheduleSwixTransfer
 } = require('./scheduler');
+let {
+  decimals
+} = require('../config/vars')
 
 
 let start = (cb) => {
@@ -47,7 +50,7 @@ let start = (cb) => {
               }, (amount, l2Next) => {
                 if (amount > 0) {
                   async.waterfall([
-                    (l3next) => {
+                    (l3Next) => {
                       swixerDbo.updateSwix({
                         swxiHash: swix.swxiHash
                       }, {
@@ -61,11 +64,10 @@ let start = (cb) => {
                             message: 'Error occurred while getting updating swix.'
                           });
                         } else {
-                          amount = amount * swix.rate
+                          amount = (amount * swix.rate) / decimals[toSymbol]
                           l3Next(null, amount);
                         }
                       })
-
                     },
                   ], (error, amount) => {
                     if (error) l2Next(error);

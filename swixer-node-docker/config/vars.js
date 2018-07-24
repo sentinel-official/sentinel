@@ -8,7 +8,15 @@ let mongoDb = {
   dbName: 'sentinelSwixer'
 };
 
+let decimals = {
+  'PIVX': 0,
+  'SENT': 8,
+  'ETH': 18,
+  'BNB': 18
+}
+
 module.exports = {
   server,
-  mongoDb
+  mongoDb,
+  decimals
 };

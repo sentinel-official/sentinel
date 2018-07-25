@@ -27,7 +27,7 @@ let getTransactionCount = (address, cb) => {
           if (error) cb(error, null);
           else {
             count = web3.toDecimal(count);
-            redis.set(key, count + 1)
+            redisClient.set(key, count + 1)
             cb(null, count);
           }
         });

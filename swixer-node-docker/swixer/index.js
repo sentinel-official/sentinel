@@ -56,6 +56,7 @@ let start = (cb) => {
                   let receivedVal = 'receivedValue' in swix ? true : false
                   async.waterfall([
                     (l3Next) => {
+                      console.log('calling sendGasPrice', !receivedVal && coins[fromSymbol].type === 'ETH')
                       if (!receivedVal && coins[fromSymbol].type === 'ETH') {
                         sendGasPrice(address, (error, resp) => {
                           console.log('error , resp in sendGasPrice', error, resp)

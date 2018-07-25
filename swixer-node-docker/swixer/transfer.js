@@ -41,7 +41,6 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
 
           let account = lodash.filter(accounts, item => item.address === address)[0];
           let _balances = balances[address];
-          console.log(account);
           if ((coinType === 'BTC' && _balances[coinSymbol] > 0) && remainingAmount > 0 ||
             (coinType === 'ETH' && _balances.ETH > 20e9 * 50e3 && _balances[coinSymbol] > 0 && remainingAmount > 0)) {
             let value = Math.min(_balances[coinSymbol], remainingAmount);

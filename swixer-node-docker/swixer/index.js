@@ -58,8 +58,8 @@ let start = (cb) => {
                     (l3Next) => {
                       if (!receivedVal && coins[fromSymbol].type === 'ETH') {
                         sendGasPrice(address, (error, resp) => {
+                          console.log('error , resp in sendGasPrice', error, resp)
                           if (error) {
-                            console.log('error , resp in sendGasPrice', error, resp)
                             l3Next({
                               status: 4001,
                               message: 'Error occurred while sending gas price'

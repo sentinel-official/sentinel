@@ -117,7 +117,52 @@ let getBalances = (req, res) => {
   });
 }
 
+let getETHBalances = (req, res) => {
+  async.waterfall([
+    (next) => {
+      accountDbo.getAccounts(['ETH'],
+        (error, accounts) => {
+          if (error) next({
+            status: 500,
+            message: 'Error occurred while getting accounts.'
+          }, null);
+          else {
+            let addresses = lodash.map(accounts, 'address');
+            next(null, addresses);
+          }
+        });
+    }, (addresses, next) => {
+      accountHelper.getBalancesOfAccounts(addresses,
+        (error, balancesOfAddresses) => {
+          if (error) next({
+            status: 500,
+            message: 'Error occurred while getting balances of accounts.'
+          }, null);
+          else {
+            let balances = {
+              ETH: lodash.sum(lodash.map(balancesOfAddresses, 'ETH')),
+              BNB: lodash.sum(lodash.map(balancesOfAddresses, 'BNB')),
+              SENT: lodash.sum(lodash.map(balancesOfAddresses, 'SENT'))
+            };
+            next(null, {
+              status: 200,
+              balances
+            });
+          }
+        });
+    }
+  ], (error, success) => {
+    let response = Object.assign({
+      success: !error
+    }, error || success);
+    let status = response.status;
+    delete (response.status);
+    res.status(status).send(response);
+  });
+}
+
 module.exports = {
   createAccount,
-  getBalances
+  getBalances,
+  getETHBalances
 };

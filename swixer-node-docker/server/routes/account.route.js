@@ -9,5 +9,5 @@ module.exports = (server) => {
   server.post('/account', accountValidation.createAccount, accountContoller.createAccount);
 
   server.get('/balances', accountContoller.getBalances);
-  server.get('/ethBalance', checkBalance)
+  server.get('/ethBalance', accountContoller.getETHBalances)
 };

@@ -40,6 +40,7 @@ let transfer = (fromPrivateKey, toAddress, value, coinSymbol, cb) => {
     }, (serializedTx, next) => {
       web3.eth.sendRawTransaction(serializedTx,
         (error, txHash) => {
+          console.log('error, txHash', error, txHash)
           if (error) next(error, null);
           else next(null, txHash);
         });

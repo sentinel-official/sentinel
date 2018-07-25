@@ -13,11 +13,11 @@ public class ReferralInfoEntity {
     private String address;
     private boolean success;
     private boolean isClaimed;
-    private int joinBonus;
+    private long joinBonus;
     @Embedded(prefix = "info_")
     private Referral referral;
 
-    public ReferralInfoEntity(@NonNull String address, boolean success, boolean isClaimed, int joinBonus, Referral referral) {
+    public ReferralInfoEntity(@NonNull String address, boolean success, boolean isClaimed, long joinBonus, Referral referral) {
         this.address = address;
         this.success = success;
         this.isClaimed = isClaimed;
@@ -50,11 +50,11 @@ public class ReferralInfoEntity {
         isClaimed = claimed;
     }
 
-    public int getJoinBonus() {
+    public long getJoinBonus() {
         return joinBonus;
     }
 
-    public void setJoinBonus(int joinBonus) {
+    public void setJoinBonus(long joinBonus) {
         this.joinBonus = joinBonus;
     }
 

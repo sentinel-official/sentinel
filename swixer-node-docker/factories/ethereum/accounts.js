@@ -1,21 +1,38 @@
 let web3 = require('../web3');
 let tokens = require('./tokens');
-let { generatePrivateKey,
+let {
+  generatePrivateKey,
   generatePublicKey,
-  generateAddress } = require('../keys');
+  generateAddress
+} = require('../keys');
+let redis = require('redis');
+let redisClient = redis.createClient();
 
 
 let getTransactionCount = (address, cb) => {
-  console.log(address);
-  web3.eth.getTransactionCount(address, 'pending',
-    (error, count) => {
-      console.log(error, count);
-      if (error) cb(error, null);
-      else {
-        count = web3.toDecimal(count);
-        cb(null, count);
-      }
-    });
+
+  let key = address
+  let previousNonce = redisClient.get(key);
+  let error = null;
+  let nonce = 0;
+
+  if (previousNonce) {
+    previousNonce = parseInt(previousNonce);
+    redisClient.set(address, previousNonce + 1);
+    cb(null, previousNonce);
+  } else {
+    console.log(address);
+    web3.eth.getTransactionCount(address, 'pending',
+      (error, count) => {
+        console.log(error, count);
+        if (error) cb(error, null);
+        else {
+          redis.set(key, count+1)
+          count = web3.toDecimal(count);
+          cb(null, count);
+        }
+      });
+  }
 };
 
 let getBalance = (address, coinSymbol, cb) => {

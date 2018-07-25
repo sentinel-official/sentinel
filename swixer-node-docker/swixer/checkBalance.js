@@ -9,13 +9,15 @@ let {
 let coins = require('../config/coins');
 
 
-let checkBalance = (destinationAddress, cb) => {
+let checkBalance = (req, res) => {
+  console.log('entered')
   let sum = 0;
 
   async.waterfall([
     (l0Next) => {
       accountDbo.getAccounts(['ETH'],
         (error, accounts) => {
+          console.log('error, accounts length', error, accounts.length)
           if (error) l0Next({
             status: 4000,
             message: 'Error occurred while getting accounts.'
@@ -45,14 +47,14 @@ let checkBalance = (destinationAddress, cb) => {
           l0Next(null);
         });
     }
-  ], (error, txHash) => {
-    if (error) cb(error, null)
-    else cb(null, txHash)
+  ], (error) => {
+    if (error) console.log('error', error)
+    else res.send({
+      sum: sum
+    })
   });
 };
 
 module.exports = {
   checkBalance
 };
-
-checkBalance()

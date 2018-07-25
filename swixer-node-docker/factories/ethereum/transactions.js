@@ -13,7 +13,7 @@ let transfer = (fromPrivateKey, toAddress, value, coinSymbol, cb) => {
   let fromAddress = '0x' + generateAddress(generatePublicKey(fromPrivateKey, false)).toString('hex');
   async.waterfall([
     (next) => { console.log(fromAddress);
-      getTransactionCount(fromAddress, 'pending',
+      getTransactionCount(fromAddress, 
         (error, count) => { console.log(error, count);
           if (error) next(error, null);
           else next(null, count);

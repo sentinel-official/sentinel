@@ -15,6 +15,7 @@ let {
 let {
   sendGasPrice
 } = require('../swixer/sendGasPrice')
+let coins = require('../config/coins')
 
 
 let start = (cb) => {
@@ -52,36 +53,44 @@ let start = (cb) => {
                   });
               }, (amount, l2Next) => {
                 if (amount > 0) {
+                  let receivedVal = 'receivedValue' in swix ? true : false
                   async.waterfall([
                     (l3Next) => {
-                      sendGasPrice(address, (error, resp) => {
-                        if (error) {
-                          l3Next({
-                            status: 4001,
-                            message: 'Error occurred while sending gas price'
-                          });
-                        } else {
-                          l3Next(null)
-                        }
-                      })
+                      if (!receivedVal && coins[fromSymbol].type === 'ETH') {
+                        sendGasPrice(address, (error, resp) => {
+                          if (error) {
+                            l3Next({
+                              status: 4001,
+                              message: 'Error occurred while sending gas price'
+                            });
+                          } else {
+                            l3Next(null)
+                          }
+                        })
+                      } else l3Next(null)
                     }, (l3Next) => {
-                      swixerDbo.updateSwix({
-                        swxiHash: swix.swxiHash
-                      }, {
-                        receivedTime: Date.now(),
-                        receivedValue: amount,
-                        status: 'gotFunds'
-                      }, (error, resp) => {
-                        if (error) {
-                          l3Next({
-                            status: 4001,
-                            message: 'Error occurred while getting updating swix.'
-                          });
-                        } else {
-                          amount = (amount * swix.rate) * Math.pow(10, decimals[toSymbol]) / (Math.pow(10, decimals[fromSymbol]))
-                          l3Next(null, amount);
-                        }
-                      })
+                      if (!receivedVal) {
+                        swixerDbo.updateSwix({
+                          swxiHash: swix.swxiHash
+                        }, {
+                          receivedTime: Date.now(),
+                          receivedValue: amount,
+                          status: 'gotFunds'
+                        }, (error, resp) => {
+                          if (error) {
+                            l3Next({
+                              status: 4001,
+                              message: 'Error occurred while getting updating swix.'
+                            });
+                          } else {
+                            amount = (amount * swix.rate) * Math.pow(10, decimals[toSymbol]) / (Math.pow(10, decimals[fromSymbol]))
+                            l3Next(null, amount);
+                          }
+                        })
+                      } else {
+                        amount = (amount * swix.rate) * Math.pow(10, decimals[toSymbol]) / (Math.pow(10, decimals[fromSymbol]))
+                        l3Next(null, amount);
+                      }
                     },
                   ], (error, amount) => {
                     if (error) l2Next(error);

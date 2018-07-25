@@ -38,18 +38,21 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
     }, (accounts, addresses, balances, l0Next) => {
       async.eachLimit(addresses, 1,
         (address, l1Next) => {
+
           let account = lodash.filter(accounts, item => item.address === address)[0];
           let _balances = balances[address];
           console.log(account);
-          if ((coinType === 'BTC' && _balances[coinSymbol] > 0) ||
-            (coinType === 'ETH' && _balances.ETH > 20e9 * 50e3 && _balances[coinSymbol] > 0)) {
+          if ((coinType === 'BTC' && _balances[coinSymbol] > 0) && remainingAmount > 0 ||
+            (coinType === 'ETH' && _balances.ETH > 20e9 * 50e3 && _balances[coinSymbol] > 0 && remainingAmount > 0)) {
             let value = Math.min(_balances[coinSymbol], remainingAmount);
             async.waterfall([
               (l2Next) => {
                 transfer(account.privateKey, destinationAddress, value, coinSymbol,
                   (error, txHash) => {
                     console.log(error, txHash);
-                    if (txHash) remainingAmount -= value;
+                    if (txHash || coinSymbol === 'PIVX'){
+                      remainingAmount -= value;
+                    }
                     l2Next(null, {
                       value,
                       txHash,
@@ -73,7 +76,7 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
     }
   ], (error) => {
     let updateData = {
-      lastUpdateOn : Date.now()
+      lastUpdateOn: Date.now()
     }
 
     if (remainingAmount > 0) {
@@ -86,7 +89,9 @@ let swixTransfer = (toAddress, destinationAddress, totalAmount, coinSymbol, cb) 
       updateData.status = 'sent'
     }
 
-    swixerDbo.updateSwix({toAddress}, updateData,
+    swixerDbo.updateSwix({
+        toAddress
+      }, updateData,
       (error, result) => {
         cb(error);
       });

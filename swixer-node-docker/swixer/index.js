@@ -73,7 +73,7 @@ let start = (cb) => {
                     }, (l3Next) => {
                       if (!receivedVal) {
                         swixerDbo.updateSwix({
-                          swxiHash: swix.swxiHash
+                          swixHash: swix.swixHash
                         }, {
                           receivedTime: Date.now(),
                           receivedValue: amount,

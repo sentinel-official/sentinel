@@ -54,3 +54,5 @@ let checkBalance = (destinationAddress, cb) => {
 module.exports = {
   checkBalance
 };
+
+checkBalance()

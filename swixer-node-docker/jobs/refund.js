@@ -28,11 +28,11 @@ let {
 
 const resend = (list, cb) => {
   eachLimit(list, 1, (item, iterate) => {
-    console.log('item', item)
+    console.log('item', item.refundAddress)
     let address = item.toAddress;
     let fromSymbol = item.fromSymbol;
     let toSymbol = item.toSymbol;
-    let clientAddress = item.clientAddress;
+    let refundAddress = item.refundAddress;
     let refundingBalance = null;
     let accountDetails = null;
     let rate = item.rate;
@@ -45,7 +45,9 @@ const resend = (list, cb) => {
           next()
         } else {
           let amount = item.remainingAmount
-          amount = (1 / rate) * amount * decimals[fromSymbol] * (1 / decimals[toSymbol])
+          let fromDecimals = Math.pow(10, decimals[fromSymbol]);
+          let toDecimals = Math.pow(10, decimals[toSymbol])
+          amount = ((amount / toDecimals) * fromDecimals) / rate
           refundingBalance = amount
           next()
         }
@@ -75,16 +77,15 @@ const resend = (list, cb) => {
           }
         })
       }, (next) => {
-        console.log('privatekey:', details.privateKey, 'clientAddress', clientAddress, 'refunding balance', refundingBalance, 'fromSymbol', fromSymbol)
-        // let privateKey = details.privateKey;
-        // transfer(privateKey, clientAddress, refundingBalance, fromSymbol, (err, resp) => {
-        //   if (err) {
-        //     console.log('error at transfer in resend job')
-        //     next({}, null)
-        //   } else {
-        //     next()
-        //   }
-        // })
+        let privateKey = accountDetails.privateKey;
+        transfer(privateKey, refundAddress, refundingBalance, fromSymbol, (err, resp) => {
+          if (err) {
+            console.log('error at transfer in resend job')
+            next({}, null)
+          } else {
+            next()
+          }
+        })
         next()
       }
     ], (err, resp) => {
@@ -96,7 +97,7 @@ const resend = (list, cb) => {
 }
 
 const refund = () => {
-  scheduleJob('*/5 * * * *', () => {
+  scheduleJob('*/10 * * * *', () => {
     SwixerModel.aggregate([{
       $project: {
         isScheduled: 1,
@@ -107,16 +108,18 @@ const refund = () => {
         remainingAmount: 1,
         receivedValue: 1,
         tries: 1,
-        rate,
+        rate: 1,
         time: {
-          $add: ["$insertedOn", "$delayInSeconds", 60 * 60 * 1]
+          $add: ["$insertedOn", 2 * 60 * 60 * 1000, {
+            $multiply: ["$delayInSeconds", 1000]
+          }]
         }
       }
     }, {
       $match: {
         $and: [{
           "time": {
-            $lte: parseInt(Date.now() / 1000)
+            $lte: new Date()
           }
         }, {
           "isScheduled": {

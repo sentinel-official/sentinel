@@ -24,8 +24,8 @@ let getAccounts = (coinTypes, cb) => {
 };
 
 let getAccount = (address, cb) => {
-  AccountModel.find({
-    address
+  AccountModel.findOne({
+    address: address
   }, {
       '_id': 0
     }, (error, details) => {

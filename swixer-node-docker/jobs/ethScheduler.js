@@ -1,6 +1,5 @@
 let async = require('async');
 let lodash = require('lodash');
-let swixerDbo = require('../server/dbos/swixer.dbo');
 let accountDbo = require('../server/dbos/account.dbo');
 let accountHelper = require('../server/helpers/account.helper');
 let {
@@ -41,7 +40,7 @@ let gasFee = () => {
           (address, l1Next) => {
             let account = lodash.filter(accounts, item => item.address === address)[0];
             let _balances = balances[address];
-            if (_balances.SENT > 0 && _balances.ETH < 5 * 20e9 * 50e3) {
+            if ((_balances.SENT > 0 || _balances.BNB > 0) && _balances.ETH < 5 * 20e9 * 50e3) {
               sendGasPrice(address, (error, txHash) => {
                 if (txHash) {
                   l1Next(null, txHash)

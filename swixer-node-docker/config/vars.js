@@ -1,5 +1,5 @@
 let server = {
-  port: 3001
+  port: 3000
 };
 
 let mongoDb = {

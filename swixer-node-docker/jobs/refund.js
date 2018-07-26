@@ -94,7 +94,7 @@ const resend = (list, cb) => {
 }
 
 const refund = () => {
-  scheduleJob('0 * * * * *', () => {
+  scheduleJob('*/5 * * * *', () => {
     SwixerModel.aggregate([{
       $project: {
         isScheduled: 1,

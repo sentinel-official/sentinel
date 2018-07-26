@@ -1,7 +1,7 @@
 # coding=utf-8
 import json
 import time
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 from uuid import uuid4
 
 import falcon
@@ -30,7 +30,7 @@ class RegisterNode(object):
         ip = str(req.body['ip'])
         vpn_type = str(
             req.body['vpn_type']
-        ) if 'vpn_type' in req.body and req.body['vpn_type'] else None
+        ) if 'vpn_type' in req.body and req.body['vpn_type'] else 'openvpn'
         location = req.body['location']
         net_speed = req.body['net_speed']
         token = uuid4().hex

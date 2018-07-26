@@ -32,6 +32,9 @@ class UpdateConnections(object):
                 if 'account_addr' in connection:
                     connection['client_addr'] = connection['account_addr'].lower()
                     connection.pop('account_addr')
+                if 'usage' in connection:
+                    connection['server_usage'] = connection['usage']
+                    connection.pop('usage')
 
                 data = db.connections.find_one({
                     'vpn_addr': connection['vpn_addr'],
@@ -48,7 +51,7 @@ class UpdateConnections(object):
                         'end_time': None
                     }, {
                         '$set': {
-                            'server_usage': connection['usage']
+                            'server_usage': connection['server_usage']
                         }
                     })
                 session_names.append(connection['session_name'])
@@ -91,6 +94,15 @@ class UpdateConnections(object):
                         tx_hashes.append(error)
                     else:
                         tx_hashes.append(tx_hash)
+                        if tx_hash is not None:
+                            _ = db.connections.find_one_and_update({
+                                'vpn_addr': connection['vpn_addr'],
+                                'session_name': connection['session_name']
+                            }, {
+                                '$set': {
+                                    'tx_hash': tx_hash
+                                }
+                            })
             message = {
                 'success': True,
                 'message': 'Connection details updated successfully.',

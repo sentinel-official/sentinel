@@ -1,77 +1,68 @@
+let async = require('async');
 let accountDbo = require('../server/dbos/account.dbo');
 let mixerDbo = require('../server/dbos/mixer.dbo');
-let { getBalance } = require('../ethereum/accounts');
+let { getBalanceSync } = require('../ethereum/accounts');
 let { scheduleMixTransfer } = require('./mixScheduler');
 
 
 let start = (cb) => {
-  mixerDbo.getMixDetails((error, mixDetails) => {
-    if (error) {
-      console.log(error);
-      cb();
-    } else {
-      if (mixDetails.length === 0) cb();
-      mixDetails.forEach((details, index) => {
-        let { toAddress,
-          destinationAddress,
-          delayInSeconds,
-          coinSymbol,
-          remainingAmount } = details;
-        let balance = getBalance(toAddress, coinSymbol, 'main');
-        // let balance = 1e8;
-        if (balance > 0) {
-          accountDbo.updateAccountBalance(toAddress, balance, coinSymbol,
-            (error, result) => {
-              if (error) {
-                mixerDbo.updateMixStatus(toAddress, 'Error occurred while updating balance.',
-                  (error, result) => {
-                    if (error) {
-                      console.log(error);
-                      if (index === mixDetails.length - 1) cb();
-                    } else {
-                      if (index === mixDetails.length - 1) cb();
-                    }
-                  });
-              } else {
-                if (!remainingAmount) remainingAmount = balance;
-                if (remainingAmount > 0) {
-                  if (remainingAmount !== balance) delayInSeconds = 15;
-                  scheduleMixTransfer(toAddress, destinationAddress, delayInSeconds, remainingAmount, coinSymbol,
+  async.waterfall([
+    (l0Next) => {
+      mixerDbo.getAllValidMixDetails((error, allDetails) => {
+        if (error) l0Next({
+          status: 2001,
+          message: 'Error occurred while getting all mix details.'
+        }, null);
+        else l0Next(null, allDetails);
+      });
+    }, (allDetails, l0Next) => {
+      let failed = [];
+      let succeeded = [];
+      if (allDetails.length > 0) {
+        async.eachLimit(allDetails, 1,
+          (details, l1Next) => {
+            let amount = getBalanceSync(details.toAddress, coinSymbol);
+            if (amount > 0) {
+              details.transferAmount = details.remainingAmount ? details.remainingAmount : amount;
+              details.delayInSeconds = details.remainingAmount ? 15 : details.delayInSeconds;
+              async.waterfall([
+                (l2Next) => {
+                  scheduleMixTransfer(details,
                     (error) => {
-                      if (error) {
-                        mixerDbo.updateMixStatus(toAddress, 'Error occurred while scheduling mix.',
-                          (error, result) => {
-                            if (error) {
-                              console.log(error);
-                              if (index === mixDetails.length - 1) cb();
-                            } else {
-                              if (index === mixDetails.length - 1) cb();
-                            }
-                          });
-
-                      } else {
-                        mixerDbo.updateMixStatus(toAddress, 'Mix scheduled successfully.',
-                          (error, result) => {
-                            if (error) {
-                              console.log(error);
-                              if (index === mixDetails.length - 1) cb();
-                            }
-                            else {
-                              if (index === mixDetails.length - 1) cb();
-                            }
-                          });
-                      }
+                      if (error) l2Next(null, {
+                        status: 3001,
+                        message: 'Error occurred while scheduling.'
+                      });
+                      else l2Next(null, {
+                        status: 3000,
+                        message: 'Scheduled successfully.'
+                      });
                     });
-                } else {
-                  if (index === mixDetails.length - 1) cb();
+                }, (statusObject, l2Next) => {
+                  mixerDbo.updateMixStatus(details.toAddress, statusObject,
+                    (error, result) => {
+                      l2Next(null, statusObject.status === 3000);
+                    });
                 }
-              }
+              ], (error, isScheduled) => {
+                if (isScheduled) succeeded.push(details.toAddress);
+                else failed.push(details.toAddress);
+                l1Next(null);
+              });
+            } else l1Next(null);
+          }, () => {
+            l0Next(null, {
+              failed,
+              succeeded
             });
-        } else {
-          if (index === mixDetails.length - 1) cb();
-        }
+          });
+      } else l0Next(null, {
+        failed,
+        succeeded
       });
     }
+  ], (error, info) => {
+    cb(null, info);
   });
 };
 

@@ -6,23 +6,21 @@ from falcon_cors import CORS
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
-from sentinel.client import GetMixerNodessList
-from sentinel.client import GetMixerToAddress
+from sentinel.client import GetExchangeValue
 from sentinel.client import GetSocksList
+from sentinel.client import GetSwixDetails
+from sentinel.client import GetSwixStatus
+from sentinel.client import GetSwixerNodesList
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnCurrentUsage
 from sentinel.client import GetVpnUsage
 from sentinel.client import GetVpnsList
-from sentinel.client import InitiateMix
 from sentinel.client import PayVpnUsage
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.client import UpdateConnection
 from sentinel.dev import GetFreeAmount
 from sentinel.logs import LogTheError
-from sentinel.mixer import DeRegisterMixerNode
-from sentinel.mixer import RegisterMixerNode
-from sentinel.mixer import UpdateMixerNodeInfo
 from sentinel.node import DeRegisterNode
 from sentinel.node import GetActiveNodeCount
 from sentinel.node import GetActiveSessionCount
@@ -47,10 +45,9 @@ from sentinel.node import GetTotalNodeCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
-from sentinel.tokens import GetAvailableTokens
-from sentinel.tokens import GetSents
-from sentinel.tokens import SwapStatus
-from sentinel.tokens import TokenSwapRawTransaction
+from sentinel.swixer import DeRegisterSwixerNode
+from sentinel.swixer import RegisterSwixerNode
+from sentinel.swixer import UpdateSwixerNodeInfo
 from sentinel.utils import JSONTranslator
 
 
@@ -110,21 +107,14 @@ server.add_route('/stats/payment/average-paid-sents', GetAveragePaidSentsCount()
 server.add_route('/stats/payment/average-total-sents', GetAverageTotalSentsCount())
 server.add_route('/stats/node', GetNodeStatistics())
 
-# Token Swaps
-server.add_route('/tokens', Up())
-server.add_route('/tokens/available', GetAvailableTokens())
-server.add_route('/tokens/sents', GetSents())
-server.add_route('/tokens/swaps/raw-transaction', TokenSwapRawTransaction())
-server.add_route('/tokens/swaps/status', SwapStatus())
-
-# Mixer
-server.add_route('/mixer', Up())
-server.add_route('/mixer/list', GetMixerNodessList())
-server.add_route('/mixer/to', GetMixerToAddress())
-server.add_route('/mixer/init', InitiateMix())
-server.add_route('/mixer/register', RegisterMixerNode())
-server.add_route('/mixer/deregister', DeRegisterMixerNode())
-server.add_route('/mixer/update-nodeinfo', UpdateMixerNodeInfo())
+# Swixer
+server.add_route('/swix', GetSwixDetails())
+server.add_route('/swix/rate', GetExchangeValue())
+server.add_route('/swix/list', GetSwixerNodesList())
+server.add_route('/swix/status', GetSwixStatus())
+server.add_route('/swix/register', RegisterSwixerNode())
+server.add_route('/swix/deregister', DeRegisterSwixerNode())
+server.add_route('/swix/update-nodeinfo', UpdateSwixerNodeInfo())
 
 # Logs
 server.add_route('/logs/error', LogTheError())

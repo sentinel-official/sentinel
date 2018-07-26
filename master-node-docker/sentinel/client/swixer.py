@@ -21,7 +21,7 @@ def get_swixer_nodes_list():
     return list(_list)
 
 
-def get_account(ip, from_symbol, to_symbol, client_address, destination_address, delay_in_seconds):
+def get_account(ip, from_symbol, to_symbol, client_address, destination_address, delay_in_seconds,rate,refund_address):
     try:
         url = 'http://{}:3000/account'.format(ip)
         res = requests.post(url, json={
@@ -29,7 +29,9 @@ def get_account(ip, from_symbol, to_symbol, client_address, destination_address,
             'toSymbol': to_symbol,
             'clientAddress': client_address,
             'destinationAddress': destination_address,
-            'delayInSeconds': delay_in_seconds
+            'delayInSeconds': delay_in_seconds,
+            'rate':rate,
+            'refundAddress':refund_address
         })
         res = res.json()
         if res['success']:
@@ -122,6 +124,9 @@ class GetSwixDetails(object):
         client_address = str(req.body['client_address'])
         destination_address = str(req.body['destination_address'])
         delay_in_seconds = int(req.body['delay_in_seconds'])
+        from_token = tokens.get_token(from_symbol)
+        to_token = tokens.get_token(to_symbol)
+        value = 1.0 * (10 ** from_token['decimals'])
 
         node = db.swixer_nodes.find_one({
             'account_addr': node_address,
@@ -133,8 +138,10 @@ class GetSwixDetails(object):
                 'message': 'No swixer node found.'
             }
         else:
+            rate = tokens.exchange(from_token, to_token, value, node['service_charge'])
+            rate = rate / (1.0 * (10 ** to_token['decimals']))
             account = get_account(node['ip'], from_symbol, to_symbol, client_address, destination_address,
-                                  delay_in_seconds)
+                                  delay_in_seconds,rate,client_address)
             if account is None:
                 message = {
                     'success': False,

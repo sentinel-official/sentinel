@@ -75,15 +75,17 @@ const resend = (list, cb) => {
           }
         })
       }, (next) => {
-        let privateKey = details.privateKey;
-        transfer(privateKey, clientAddress, refundingBalance, fromSymbol, (err, resp) => {
-          if (err) {
-            console.log('error at transfer in resend job')
-            next({}, null)
-          } else {
-            next()
-          }
-        })
+        console.log('privatekey:', details.privateKey, 'clientAddress', clientAddress, 'refunding balance', refundingBalance, 'fromSymbol', fromSymbol)
+        // let privateKey = details.privateKey;
+        // transfer(privateKey, clientAddress, refundingBalance, fromSymbol, (err, resp) => {
+        //   if (err) {
+        //     console.log('error at transfer in resend job')
+        //     next({}, null)
+        //   } else {
+        //     next()
+        //   }
+        // })
+        next()
       }
     ], (err, resp) => {
       iterate();

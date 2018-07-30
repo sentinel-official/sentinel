@@ -66,3 +66,4 @@ class DailySentsCount(object):
 
     def stop(self):
         self.stop_thread = True
+

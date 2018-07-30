@@ -4,12 +4,12 @@ import json
 
 import falcon
 
-from ..tokens_config import TOKENS
+from ..config import SWAP_TOKENS
 
 
 class GetAvailableTokens(object):
     def on_get(self, req, resp):
-        tokens = copy.deepcopy(TOKENS)
+        tokens = copy.deepcopy(SWAP_TOKENS)
         for token in tokens:
             token.pop('price_url')
 

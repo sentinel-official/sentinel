@@ -47,10 +47,11 @@ from sentinel.node import GetTotalNodeCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
-from sentinel.tokens import GetAvailableTokens
-from sentinel.tokens import GetSents
-from sentinel.tokens import SwapStatus
-from sentinel.tokens import TokenSwapRawTransaction
+from sentinel.swaps import GetAvailableTokens
+from sentinel.swaps import GetExchangeValue
+from sentinel.swaps import GetNewAddress
+from sentinel.swaps import SwapStatus
+from sentinel.swaps import TokenSwapRawTransaction
 from sentinel.utils import JSONTranslator
 
 
@@ -111,11 +112,12 @@ server.add_route('/stats/payment/average-total-sents', GetAverageTotalSentsCount
 server.add_route('/stats/node', GetNodeStatistics())
 
 # Token Swaps
-server.add_route('/tokens', Up())
-server.add_route('/tokens/available', GetAvailableTokens())
-server.add_route('/tokens/sents', GetSents())
-server.add_route('/tokens/swaps/raw-transaction', TokenSwapRawTransaction())
-server.add_route('/tokens/swaps/status', SwapStatus())
+server.add_route('/swaps', Up())
+server.add_route('/swaps/available', GetAvailableTokens())
+server.add_route('/swaps/exchange', GetExchangeValue())
+server.add_route('/swaps/raw-transaction', TokenSwapRawTransaction())
+server.add_route('/swaps/status', SwapStatus())
+server.add_route('/swaps/new-address', GetNewAddress())
 
 # Mixer
 server.add_route('/mixer', Up())

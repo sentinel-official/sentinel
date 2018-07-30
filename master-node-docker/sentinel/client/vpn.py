@@ -25,7 +25,7 @@ def get_vpns_list(vpn_type):
         'net_speed.upload': 1,
         'latency': 1,
         'net_speed.download': 1,
-        'enc_method':1
+        'enc_method': 1
     })
     return list(_list)
 
@@ -197,7 +197,7 @@ class ReportPayment(object):
         amount = int(req.body['amount'])
         session_id = str(req.body['session_id'])
 
-        error, nonce = eth_helper.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
+        nonce = eth_helper.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
         error, tx_hash = vpn_service_manager.pay_vpn_session(
             from_addr, amount, session_id, nonce)
 

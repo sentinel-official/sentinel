@@ -30,7 +30,7 @@ class RegisterNode(object):
         ip = str(req.body['ip'])
         vpn_type = str(
             req.body['vpn_type']
-        ) if 'vpn_type' in req.body and req.body['vpn_type'] else None
+        ) if 'vpn_type' in req.body and req.body['vpn_type'] else 'openvpn'
         location = req.body['location']
         net_speed = req.body['net_speed']
         token = uuid4().hex
@@ -101,3 +101,4 @@ class DeRegisterNode(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+

@@ -687,3 +687,4 @@ class GetNodeStatistics(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+

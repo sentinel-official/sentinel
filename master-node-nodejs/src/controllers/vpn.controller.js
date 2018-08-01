@@ -3,20 +3,31 @@ import request from 'request';
 import uuid from 'uuid'
 import axios from 'axios';
 
-import { VpnServiceManager } from "../eth/vpn_contract";
+import {
+  VpnServiceManager
+} from "../eth/vpn_contract";
 import EthHelper from '../helpers/eth';
-import { DECIMALS } from '../config/vars';
-import { ADDRESS as COINBASE_ADDRESS } from '../config/eth';
-import { Node, Connection } from "../models";
-import { BTC_BASED_COINS } from '../config/swaps';
+import {
+  DECIMALS
+} from '../config/vars';
+import {
+  ADDRESS as COINBASE_ADDRESS
+} from '../config/eth';
+import {
+  Node,
+  Connection
+} from "../models";
+import {
+  BTC_BASED_COINS
+} from '../config/swaps';
 import database from '../db/database';
 
 /**
-* @api {get} /client/vpn/list Get all unoccupied VPN servers list.
-* @apiName GetVpnsList
-* @apiGroup VPN
-* @apiSuccess {Object[]} list Details of all VPN servers.
-*/
+ * @api {get} /client/vpn/list Get all unoccupied VPN servers list.
+ * @apiName GetVpnsList
+ * @apiGroup VPN
+ * @apiSuccess {Object[]} list Details of all VPN servers.
+ */
 
 const calculateAmount = (usedBytes, pricePerGB) => {
   return (usedBytes / (1024 * 1024 * 1024)) * pricePerGB;
@@ -27,20 +38,20 @@ const getNodeList = (vpnType, cb) => {
     'vpn.status': 'up',
     'vpn_type': vpnType
   }, {
-      '_id': 0,
-      'account_addr': 1,
-      'ip': 1,
-      'price_per_GB': 1,
-      'price_per_gb': 1,
-      'location': 1,
-      'net_speed.upload': 1,
-      'latency': 1,
-      'net_speed.download': 1,
-      'enc_method': 1
-    }, (err, resp) => {
-      if (err) cb(err, null)
-      else cb(null, resp)
-    })
+    '_id': 0,
+    'account_addr': 1,
+    'ip': 1,
+    'price_per_GB': 1,
+    'price_per_gb': 1,
+    'location': 1,
+    'net_speed.upload': 1,
+    'latency': 1,
+    'net_speed.download': 1,
+    'enc_method': 1
+  }, (err, resp) => {
+    if (err) cb(err, null)
+    else cb(null, resp)
+  })
 }
 
 /**
@@ -112,13 +123,13 @@ const getSocksList = (req, res) => {
 }
 
 /**
-* @api {post} /client/vpn/current Get current VPN usage.
-* @apiName GetVpnCurrentUsage
-* @apiGroup VPN
-* @apiParam {String} accountAddr Account address.
-* @apiParam {String} sessionName Session name of the VPN connection.
-* @apiSuccess {Object} usage Current VPN usage.
-*/
+ * @api {post} /client/vpn/current Get current VPN usage.
+ * @apiName GetVpnCurrentUsage
+ * @apiGroup VPN
+ * @apiParam {String} accountAddr Account address.
+ * @apiParam {String} sessionName Session name of the VPN connection.
+ * @apiSuccess {Object} usage Current VPN usage.
+ */
 
 const getCurrentVpnUsage = (req, res) => {
   let accountAddr = req.body['account_addr']
@@ -129,37 +140,37 @@ const getCurrentVpnUsage = (req, res) => {
     client_addr: accountAddr,
     session_name: sessionName
   }, {
-      _id: 0,
-      server_usage: 1
-    }, (err, result) => {
-      if (!result || !result.usage) {
-        res.send({
-          success: true,
-          usage: {
-            down: 0,
-            up: 0
-          }
-        })
-      } else {
-        res.send({
-          success: true,
-          usage: result.server_usage || result.usage
-        })
-      }
-    })
+    _id: 0,
+    server_usage: 1
+  }, (err, result) => {
+    if (!result || !result.usage) {
+      res.send({
+        success: true,
+        usage: {
+          down: 0,
+          up: 0
+        }
+      })
+    } else {
+      res.send({
+        success: true,
+        usage: result.server_usage || result.usage
+      })
+    }
+  })
 }
 
 /**
-* @api {post} /client/vpn Get VPN server credentials.
-* @apiName GetVpnCredentials
-* @apiGroup VPN
-* @apiParam {String} accountAddr Account address.
-* @apiParam {String} vpnAddr Account address of the VPN server.
-* @apiSuccess {String} ip IP address of the VPN server.
-* @apiSuccess {Number} port Port number of the VPN server.
-* @apiSuccess {String} token Unique token for validation.
-* @apiSuccess {String} vpnAddr VPN server account address.
-*/
+ * @api {post} /client/vpn Get VPN server credentials.
+ * @apiName GetVpnCredentials
+ * @apiGroup VPN
+ * @apiParam {String} accountAddr Account address.
+ * @apiParam {String} vpnAddr Account address of the VPN server.
+ * @apiSuccess {String} ip IP address of the VPN server.
+ * @apiSuccess {Number} port Port number of the VPN server.
+ * @apiSuccess {String} token Unique token for validation.
+ * @apiSuccess {String} vpnAddr VPN server account address.
+ */
 
 const getVpnCredentials = (req, res) => {
   let accountAddr = req.body['account_addr'];
@@ -183,17 +194,24 @@ const getVpnCredentials = (req, res) => {
             }, null)
           } else if (dueAmount <= 0) {
             if (vpnAddr) {
-              Node.findOne(
-                { 'account_addr': vpnAddr, 'vpn.status': 'up' },
-                { '_id': 0, 'token': 0 },
+              Node.findOne({
+                  'account_addr': vpnAddr,
+                  'vpn.status': 'up'
+                }, {
+                  '_id': 0,
+                  'token': 0
+                },
                 (err, node) => {
                   if (err) next(err, null);
                   else next(null, node);
                 })
             } else {
-              Node.findOne(
-                { 'vpn.status': 'up' },
-                { '_id': 0, 'token': 0 },
+              Node.findOne({
+                  'vpn.status': 'up'
+                }, {
+                  '_id': 0,
+                  'token': 0
+                },
                 (err, node) => {
                   if (err) next(err, null);
                   else next(null, node);
@@ -273,18 +291,18 @@ const getVpnCredentials = (req, res) => {
 }
 
 /**
-* @api {post} /client/vpn/pay VPN usage payment.
-* @apiName PayVpnUsage
-* @apiGroup VPN
-* @apiParam {String} paymentType mode of payment {init | normal}
-* @apiParam {String} txData Hex code of the transaction.
-* @apiParam {String} net Ethereum chain name {main | rinkeby}.
-* @apiParam {String} fromAddr Account address.
-* @apiParam {Number} amount Amount to be payed to VPN server.
-* @apiParam {Number} sessionId Session ID of the VPN connection.
-* @apiSuccess {String[]} errors Errors if any.
-* @apiSuccess {String[]} txHashes Transaction hashes.
-*/
+ * @api {post} /client/vpn/pay VPN usage payment.
+ * @apiName PayVpnUsage
+ * @apiGroup VPN
+ * @apiParam {String} paymentType mode of payment {init | normal}
+ * @apiParam {String} txData Hex code of the transaction.
+ * @apiParam {String} net Ethereum chain name {main | rinkeby}.
+ * @apiParam {String} fromAddr Account address.
+ * @apiParam {Number} amount Amount to be payed to VPN server.
+ * @apiParam {Number} sessionId Session ID of the VPN connection.
+ * @apiSuccess {String[]} errors Errors if any.
+ * @apiSuccess {String[]} txHashes Transaction hashes.
+ */
 
 const payVpnUsage = (req, res) => {
   let paymentType = req.body['payment_type']
@@ -292,7 +310,7 @@ const payVpnUsage = (req, res) => {
   let net = req.body['net']
   let fromAddr = req.body['from_addr']
   let amount = req.body['amount'] || null
-  let sessionId = req.body['session_id']|| null
+  let sessionId = req.body['session_id'] || null
 
   if (sessionId)
     sessionId = sessionId.toString();
@@ -351,12 +369,12 @@ const reportPayment = (req, res) => {
 }
 
 /**
-* @api {post} /client/vpn/usage Get VPN user details of specific account.
-* @apiName GetVpnUsage
-* @apiGroup VPN
-* @apiParam {String} accountAddr Account address.
-* @apiSuccess {Object[]} usage VPN usage details.
-*/
+ * @api {post} /client/vpn/usage Get VPN user details of specific account.
+ * @apiName GetVpnUsage
+ * @apiGroup VPN
+ * @apiParam {String} accountAddr Account address.
+ * @apiSuccess {Object[]} usage VPN usage details.
+ */
 
 const getVpnUsage = (req, res) => {
   let accountAddress = req.body['account_addr'];
@@ -380,12 +398,16 @@ const getVpnUsage = (req, res) => {
 
 const updateConnection = (req, res) => {
 
-  let accountAddr = req.body['account_addr'].toLowerCase()
+  let accountAddr = req.body['account_addr']
   let connections = req.body['connections']
   let txHashes = []
   let sessionNames = []
   let node = null
   let endedConnections = []
+
+  if (accountAddr)
+    accountAddr = accountAddr.toLowerCase()
+
 
   async.waterfall([
     (next) => {
@@ -489,10 +511,11 @@ const updateConnection = (req, res) => {
           'message': 'Can\'t find node with given details.'
         }, null)
       }
-    }], (err, resp) => {
-      if (err) res.send(err)
-      else res.send(resp)
-    })
+    }
+  ], (err, resp) => {
+    if (err) res.send(err)
+    else res.send(resp)
+  })
 }
 
 export default {

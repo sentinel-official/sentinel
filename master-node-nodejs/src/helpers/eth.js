@@ -119,10 +119,6 @@ const getValidNonce = (accountAddr, net, cb) => {
       })
     }
   });
-
-
-
-
 }
 
 const getBalances = (accountAddr, cb) => {
@@ -445,7 +441,7 @@ const free = (toAddr, eths, sents, cb) => {
   transferEths(COINBASE_ADDRESS, toAddr, eths, PRIVATE_KEY, 'rinkeby', (err, txHash) => {
     if (!err) {
       txHashes.push(txHash);
-      transferSents(COINBASE_ADDRESS, toAddr, eths, PRIVATE_KEY, 'rinkeby', (err, txHash) => {
+      transferErc20(COINBASE_ADDRESS, toAddr, sents, 'SENT', PRIVATE_KEY, 'rinkeby', (err, txHash) => {
         if (!err) {
           txHashes.push(txHash);
           cb(errors, txHashes);

@@ -12,7 +12,6 @@ import EthHelper from '../helpers/eth';
 const rawTransaction = (req, res) => {
   let txData = req.body['tx_data'];
   let net = req.body['net'];
-
   EthHelper.rawTransaction(txData, net, (err, txHash) => {
     if (err) {
       res.status(400).send({

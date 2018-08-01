@@ -33,7 +33,7 @@ class VpnService_Manager {
       gasLimit: this.net.web3.toHex(500000),
       to: this.address,
       value: '0x0',
-      data: this.contract.setInitialPaymentOf.getData(accountAddr, isPayed)
+      data: this.contract.setInitialPaymentStatusOf.getData(accountAddr, isPayed)
     };
     let tx = new Tx(rawTx);
     tx.sign(Buffer.from(COINBASE_PRIVATE_KEY, 'hex'));

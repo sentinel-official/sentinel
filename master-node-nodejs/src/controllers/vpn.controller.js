@@ -291,8 +291,8 @@ const payVpnUsage = (req, res) => {
   let txData = req.body['tx_data']
   let net = req.body['net']
   let fromAddr = req.body['from_addr']
-  let amount = req.body['amount'].toString() || null
-  let sessionId = req.body['session_id'].toString() || null
+  let amount = req.body['amount'] || null
+  let sessionId = req.body['session_id']|| null
 
   if (sessionId)
     sessionId = sessionId.toString();

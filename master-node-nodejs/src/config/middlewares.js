@@ -25,14 +25,14 @@ export default app => {
     app.use(morgan('dev'));
     expressWinston.requestWhitelist.push('body');
     expressWinston.responseWhitelist.push('body');
-    app.use(
-      expressWinston.logger({
-        winstonInstance,
-        meta: true,
-        msg:
-          'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
-        colorStatus: true,
-      }),
-    );
+    // app.use(
+    //   expressWinston.logger({
+    //     winstonInstance,
+    //     meta: true,
+    //     msg:
+    //       'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
+    //     colorStatus: true,
+    //   }),
+    // );
   }
 };

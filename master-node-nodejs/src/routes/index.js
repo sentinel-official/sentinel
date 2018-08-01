@@ -48,9 +48,9 @@ routes.use('/swix', SwixerRoutes);
 routes.post('/logs/error', ErrorController.logTheError);
 routes.post('/dev/free', DevController.getFreeAmount);
 
-routes.all('*', (req, res, next) => {
-  console.log('404 api not found')
-});
+// routes.all('*', (req, res, next) => {
+//   console.log('404 api not found')
+// });
 
 routes.use(logErrorService);
 

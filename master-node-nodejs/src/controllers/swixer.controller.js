@@ -2,27 +2,32 @@ import async from 'async';
 import axios from "axios";
 import uuidv4 from 'uuid/v4'
 
-import { SwixerNodes, Swixes } from '../models'
-import { tokens } from "../helpers/tokens";
+import {
+  SwixerNodes,
+  Swixes
+} from '../models'
+import {
+  tokens
+} from "../helpers/tokens";
 
 const getSwixerList = (cb) => {
   SwixerNodes.find({
     'swixer.status': 'up'
   }, {
-      _id: 0,
-      account_addr: 1,
-      ip: 1,
-      service_charge: 1
-    }, (err, list) => {
-      if (err) {
-        cb({
-          success: false,
-          message: 'error in getting nodes list'
-        }, null)
-      } else {
-        cb(null, list);
-      }
-    })
+    _id: 0,
+    account_addr: 1,
+    ip: 1,
+    service_charge: 1
+  }, (err, list) => {
+    if (err) {
+      cb({
+        success: false,
+        message: 'error in getting nodes list'
+      }, null)
+    } else {
+      cb(null, list);
+    }
+  })
 }
 
 const getAccount = (ip, fromSymbol, toSymbol, clientAddress, destinationAddress, delayInSeconds, cb) => {
@@ -161,8 +166,10 @@ const getSwixDetails = (req, res) => {
   let clientAddress = req.body['client_address']
   let destinationAddress = req.body['destination_address']
   let delayInSeconds = req.body['delay_in_seconds']
+  let refundAddress = 'refund_address' in req.body ? req.refund_address : clientAddress
 
   let node = null
+  let rate = 0
 
   async.waterfall([
     (next) => {
@@ -181,7 +188,14 @@ const getSwixDetails = (req, res) => {
         }
       })
     }, (next) => {
-      getAccount(node['ip'], fromSymbol, toSymbol, clientAddress, destinationAddress, delayInSeconds, (err, account) => {
+      let fromToken = tokens.getToken(fromSymbol)
+      let toToken = tokens.getToken(toSymbol)
+      let val = 1 * Math.pow(10, fromToken['decimals'])
+      tokens.exchange(fromToken, toToken, val, node['service_charge'], (err, _rate) => {
+        rate = _rate
+      })
+    }, (next) => {
+      getAccount(node['ip'], fromSymbol, toSymbol, clientAddress, destinationAddress, delayInSeconds, rate, refundAddress, (err, account) => {
         if (err || !account) {
           next({
             'success': false,
@@ -268,7 +282,9 @@ const registerSwixerNode = (req, res) => {
 
   async.waterfall([
     (next) => {
-      SwixerNodes.findOne({ account_addr: accountAddr }, (err, node) => {
+      SwixerNodes.findOne({
+        account_addr: accountAddr
+      }, (err, node) => {
         if (err) {
           next({
             'success': false,
@@ -297,7 +313,11 @@ const registerSwixerNode = (req, res) => {
           }
         })
       } else {
-        SwixerNodes.findOneAndUpdate({ account_addr: accountAddr }, { '$set': data }, (err, resp) => {
+        SwixerNodes.findOneAndUpdate({
+          account_addr: accountAddr
+        }, {
+          '$set': data
+        }, (err, resp) => {
           if (err) {
             next({
               'success': false,
@@ -359,46 +379,46 @@ const updateSwixerNodeInfo = (req, res) => {
       'account_addr': accountAddr,
       'token': token
     }, {
-        '$set': {
-          'swixer.status': 'up',
-          'swixer.init_on': initOn,
-          'swixer.ping_on': initOn
-        }
-      }, (err, node) => {
-        if (err || !node) {
-          res.status(400).send({
-            'success': false,
-            'message': 'Node is not registered.'
-          })
-        } else {
-          res.status(200).send({
-            'success': true,
-            'message': 'Node info updated successfully.'
-          })
-        }
-      })
+      '$set': {
+        'swixer.status': 'up',
+        'swixer.init_on': initOn,
+        'swixer.ping_on': initOn
+      }
+    }, (err, node) => {
+      if (err || !node) {
+        res.status(400).send({
+          'success': false,
+          'message': 'Node is not registered.'
+        })
+      } else {
+        res.status(200).send({
+          'success': true,
+          'message': 'Node info updated successfully.'
+        })
+      }
+    })
   } else if (info['type'] === 'alive') {
     SwixerNodes.findOneAndUpdate({
       'account_addr': accountAddr,
       'token': token
     }, {
-        '$set': {
-          'swixer.status': 'up',
-          'swixer.ping_on': initOn
-        }
-      }, (err, node) => {
-        if (err || !node) {
-          res.status(400).send({
-            'success': false,
-            'message': 'Node is not registered.'
-          })
-        } else {
-          res.status(200).send({
-            'success': true,
-            'message': 'Node info updated successfully.'
-          })
-        }
-      })
+      '$set': {
+        'swixer.status': 'up',
+        'swixer.ping_on': initOn
+      }
+    }, (err, node) => {
+      if (err || !node) {
+        res.status(400).send({
+          'success': false,
+          'message': 'Node is not registered.'
+        })
+      } else {
+        res.status(200).send({
+          'success': true,
+          'message': 'Node info updated successfully.'
+        })
+      }
+    })
   }
 }
 

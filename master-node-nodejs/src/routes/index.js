@@ -8,7 +8,6 @@ import HTTPStatus from 'http-status';
 import NodeRoutes from './node.routes';
 import ClientRoutes from './client.routes';
 import StatsRoutes from './stats.routes';
-import TokenRoutes from './token.routes';
 import ValidationRoutes from './nodeValidation.routes'
 import SwixerRoutes from './swixer.routes';
 
@@ -43,7 +42,6 @@ routes.post('/', (req, res) => {
 routes.use('/client', ClientRoutes);
 routes.use('/node', NodeRoutes);
 routes.use('/stats', StatsRoutes);
-routes.use('/swaps', TokenRoutes);
 routes.use('/validations', ValidationRoutes);
 routes.use('/swix', SwixerRoutes);
 

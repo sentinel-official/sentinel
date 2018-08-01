@@ -1,10 +1,13 @@
 import mongoose from "mongoose";
 import chalk from "chalk";
-
-let uri = `mongodb://localhost:27017/sentinel`;
+import {
+  MONGO_URI
+} from '../config/vars'
 
 export const dbo = () => {
-  mongoose.connect(uri, { useNewUrlParser: true }, (err, db) => {
+  mongoose.connect(MONGO_URI, {
+    useNewUrlParser: true
+  }, (err, db) => {
     if (err) {
       throw err
     } else {
@@ -26,14 +29,18 @@ const insert = (Obj, cb) => {
 }
 
 const update = (Obj, findData, updateData, cb) => {
-  Obj.update(findData, { $set: updateData }, (err, resp) => {
+  Obj.update(findData, {
+    $set: updateData
+  }, (err, resp) => {
     if (err) cb(err, null)
     else cb(null, resp)
   })
 }
 
 const updateMany = (Obj, findData, updateData, cb) => {
-  Obj.updateMany(findData, { $set: updateData }, (err, resp) => {
+  Obj.updateMany(findData, {
+    $set: updateData
+  }, (err, resp) => {
     if (err) cb(err, null)
     else cb(null, resp)
   })

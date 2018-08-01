@@ -1,8 +1,15 @@
 import Tx from 'ethereumjs-tx';
 
-import { Eth_manager } from './eth'
-import { VPN_SERVICE } from '../config/services';
-import { ADDRESS as COINBASE_ADDRESS, PRIVATE_KEY as COINBASE_PRIVATE_KEY } from '../config/eth';
+import {
+  Eth_manager
+} from './eth'
+import {
+  VPN_SERVICE
+} from '../config/services';
+import {
+  ADDRESS as COINBASE_ADDRESS,
+  PRIVATE_KEY as COINBASE_PRIVATE_KEY
+} from '../config/eth';
 
 class VpnService_Manager {
   constructor(net, name, address, abi) {
@@ -26,7 +33,8 @@ class VpnService_Manager {
       cb(err, txHash);
     });
   }
-  setInitialPayment(accountAddr, nonce, isPayed = true) {
+  setInitialPayment(accountAddr, nonce, cb) {
+    let isPayed = true
     let rawTx = {
       nonce: nonce,
       gasPrice: this.net.web3.toHex(this.net.web3.eth.gasPrice),
@@ -43,25 +51,33 @@ class VpnService_Manager {
     });
   }
   getDueAmount(accountAddr, cb) {
-    this.contract.getDueAmountOf(accountAddr, { from: COINBASE_ADDRESS }, (err, rawDueAmount) => {
+    this.contract.getDueAmountOf(accountAddr, {
+      from: COINBASE_ADDRESS
+    }, (err, rawDueAmount) => {
       let dueAmount = parseInt(rawDueAmount);
       dueAmount = dueAmount / Math.pow(10, 18);
       cb(err, dueAmount);
     });
   }
   getVpnSessionCount(accountAddr, cb) {
-    this.contract.getVpnSessionsCountOf(accountAddr, { from: COINBASE_ADDRESS }, (err, rawSessions) => {
+    this.contract.getVpnSessionsCountOf(accountAddr, {
+      from: COINBASE_ADDRESS
+    }, (err, rawSessions) => {
       let sessions = parseInt(rawSessions);
       cb(err, sessions);
     });
   }
   getInitialPayment(account_addr, cb) {
-    this.contract.getInitialPaymentStatusOf(account_addr, { from: COINBASE_ADDRESS }, (err, isPayed) => {
+    this.contract.getInitialPaymentStatusOf(account_addr, {
+      from: COINBASE_ADDRESS
+    }, (err, isPayed) => {
       cb(null, isPayed);
     });
   }
   getVpnUsage(accountAddr, index, cb) {
-    this.contract.getVpnUsageOf(accountAddr, index, { from: COINBASE_ADDRESS }, (err, usage) => {
+    this.contract.getVpnUsageOf(accountAddr, index, {
+      from: COINBASE_ADDRESS
+    }, (err, usage) => {
       cb(err, usage);
     });
   }
@@ -84,8 +100,7 @@ class VpnService_Manager {
         else
           cb(null, txHash);
       });
-    }
-    catch (error) {
+    } catch (error) {
       cb(error, null);
     }
   }

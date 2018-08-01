@@ -99,10 +99,10 @@ const getValidNonce = (accountAddr, net, cb) => {
       Eth_manager['main'].getTransactionCount(accountAddr, (err, nonce) => {
         if ((err === null) && (previousNonce === null || nonce > previousNonce)) {
           redisClient.set(key, nonce)
-          return cb(nonce)
+          cb(nonce)
         } else {
           setTimeout(() => {
-            return getValidNonce(accountAddr, net, cb)
+            getValidNonce(accountAddr, net, cb)
           }, 1000);
         }
       })
@@ -110,10 +110,10 @@ const getValidNonce = (accountAddr, net, cb) => {
       Eth_manager['rinkeby'].getTransactionCount(accountAddr, (err, nonce) => {
         if ((err === null) && (previousNonce === null || nonce > previousNonce)) {
           redisClient.set(key, nonce)
-          return cb(nonce)
+          cb(nonce)
         } else {
           setTimeout(() => {
-            return getValidNonce(accountAddr, net, cb)
+            getValidNonce(accountAddr, net, cb)
           }, 1000);
         }
       })

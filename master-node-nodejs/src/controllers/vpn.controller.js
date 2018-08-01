@@ -302,14 +302,14 @@ const payVpnUsage = (req, res) => {
       res.send({
         'success': false,
         'errors': errors,
-        'txHashes': txHashes,
+        'tx_hashes': txHashes,
         'message': 'Error occurred while paying VPN usage.'
       })
     } else {
       res.send({
         'success': true,
         'errors': errors,
-        'txHashes': txHashes,
+        'tx_hashes': txHashes,
         'message': 'VPN payment is completed successfully.'
       })
     }

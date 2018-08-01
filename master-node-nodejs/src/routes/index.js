@@ -10,6 +10,7 @@ import ClientRoutes from './client.routes';
 import StatsRoutes from './stats.routes';
 import ValidationRoutes from './nodeValidation.routes'
 import SwixerRoutes from './swixer.routes';
+import TokenRoutes from './token.routes';
 
 import { app } from '../app'
 
@@ -39,6 +40,7 @@ routes.post('/', (req, res) => {
   })
 })
 
+routes.use('/swaps', TokenRoutes);
 routes.use('/client', ClientRoutes);
 routes.use('/node', NodeRoutes);
 routes.use('/stats', StatsRoutes);

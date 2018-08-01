@@ -1,0 +1,4 @@
+FROM williamsjennings/api-gateway:latest
+
+ADD src/helpers/eth.js /root/sentinel/src/helpers/eth.js
+COPY run.sh /root/

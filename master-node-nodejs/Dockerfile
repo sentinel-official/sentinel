@@ -6,7 +6,7 @@ ADD . /root/sentinel
 
 ADD run.sh /root/
 
-RUN npm install nodemon -g && apk update && apk upgrade && apk add bash g++ gcc gmp-dev libffi-dev make python2 python3 mongodb redis nano git  && mkdir -p /data/db
+RUN npm install nodemon -g && apk update && apk upgrade && apk add bash g++ gcc gmp-dev libffi-dev make python2 python3 redis nano git 
 
 CMD [ "sh", "run.sh" ]
 

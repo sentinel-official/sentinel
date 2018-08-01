@@ -3,12 +3,27 @@ import redis from 'redis'
 import sleep from 'sleep'
 import async from 'async'
 
-import { Eth_manager } from '../eth/eth';
-import { ERC20Manager } from '../eth/erc20';
-import { VpnServiceManager } from '../eth/vpn_contract';
-import { LIMIT_10MB, LIMIT_100MB, SESSIONS_SALT } from '../config/vars';
-import { ADDRESS as COINBASE_ADDRESS, PRIVATE_KEY as COINBASE_PRIVATE_KEY } from '../config/eth';
-import { Usage } from '../models';
+import {
+  Eth_manager
+} from '../eth/eth';
+import {
+  ERC20Manager
+} from '../eth/erc20';
+import {
+  VpnServiceManager
+} from '../eth/vpn_contract';
+import {
+  LIMIT_10MB,
+  LIMIT_100MB,
+  SESSIONS_SALT
+} from '../config/vars';
+import {
+  ADDRESS as COINBASE_ADDRESS,
+  PRIVATE_KEY as COINBASE_PRIVATE_KEY
+} from '../config/eth';
+import {
+  Usage
+} from '../models';
 import database from '../db/database';
 
 let redisClient = redis.createClient();
@@ -40,8 +55,7 @@ const getTxReceipt = (txHash, net, cb) => {
     Eth_manager['main'].getTransactionReceipt(txHash, (err, receipt) => {
       cb(err, receipt)
     })
-  }
-  else if (net === 'rinkeby') {
+  } else if (net === 'rinkeby') {
     Eth_manager['rinkeby'].getTransactionReceipt(txHash, (err, receipt) => {
       cb(err, receipt)
     })
@@ -53,8 +67,7 @@ const getTx = (txHash, net, cb) => {
     Eth_manager['main'].getTransaction(txHash, (err, receipt) => {
       cb(err, receipt)
     })
-  }
-  else if (net === 'rinkeby') {
+  } else if (net === 'rinkeby') {
     Eth_manager['rinkeby'].getTransaction(txHash, (err, receipt) => {
       cb(err, receipt)
     })
@@ -75,34 +88,41 @@ const getTxCount = (accountAddr, net, cb) => {
 
 const getValidNonce = (accountAddr, net, cb) => {
   let key = accountAddr + '_' + net;
-  let previousNonce = redisClient.get(key);
   let error = null;
   let nonce = 0;
 
-  if (previousNonce)
-    previousNonce = parseInt(previousNonce);
+  redisClient.get(key, (error, previousNonce) => {
+    if (previousNonce)
+      previousNonce = parseInt(previousNonce);
 
-  if (net == 'main') {
-    Eth_manager['main'].getTransactionCount(accountAddr, (err, nonce) => {
-      if (!err && (!previousNonce || nonce > previousNonce)) {
-        redisClient.set(key, nonce)
-        return cb(nonce)
-      } else {
-        sleep.sleep(1)
-        return getValidNonce(accountAddr, net, cb)
-      }
-    })
-  } else if (net == 'rinkeby') {
-    Eth_manager['rinkeby'].getTransactionCount(accountAddr, (err, nonce) => {
-      if (!err && (!previousNonce || nonce > previousNonce)) {
-        redisClient.set(key, nonce)
-        return cb(nonce)
-      } else {
-        sleep.sleep(1)
-        return getValidNonce(accountAddr, net, cb)
-      }
-    })
-  }
+    if (net == 'main') {
+      Eth_manager['main'].getTransactionCount(accountAddr, (err, nonce) => {
+        if ((err === null) && (previousNonce === null || nonce > previousNonce)) {
+          redisClient.set(key, nonce)
+          return cb(nonce)
+        } else {
+          setTimeout(() => {
+            return getValidNonce(accountAddr, net, cb)
+          }, 1000);
+        }
+      })
+    } else if (net == 'rinkeby') {
+      Eth_manager['rinkeby'].getTransactionCount(accountAddr, (err, nonce) => {
+        if ((err === null) && (previousNonce === null || nonce > previousNonce)) {
+          redisClient.set(key, nonce)
+          return cb(nonce)
+        } else {
+          setTimeout(() => {
+            return getValidNonce(accountAddr, net, cb)
+          }, 1000);
+        }
+      })
+    }
+  });
+
+
+
+
 }
 
 const getBalances = (accountAddr, cb) => {
@@ -176,8 +196,7 @@ const rawTransaction = (txData, net, cb) => {
       (err, txHash) => {
         cb(err, txHash);
       })
-  }
-  else if (net == 'rinkeby') {
+  } else if (net == 'rinkeby') {
     Eth_manager['rinkeby'].sendRawTransaction(txData,
       (err, txHash) => {
         cb(err, txHash);
@@ -360,8 +379,11 @@ const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeS
           let usageData = new Usage(data)
 
           database.insert(usageData, (err, resp) => {
-            if (err) { next(err, null) }
-            else { next() }
+            if (err) {
+              next(err, null)
+            } else {
+              next()
+            }
           })
         } else if (sentBytes >= LIMIT_100MB) {
           makeTx = true;
@@ -416,7 +438,8 @@ const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeS
 }
 
 const free = (toAddr, eths, sents, cb) => {
-  let errors = [], txHashes = []
+  let errors = [],
+    txHashes = []
 
   let PRIVATE_KEY = Buffer.from(COINBASE_PRIVATE_KEY, 'hex');
   transferEths(COINBASE_ADDRESS, toAddr, eths, PRIVATE_KEY, 'rinkeby', (err, txHash) => {

@@ -1,11 +1,19 @@
 import mongoose from "mongoose";
 import chalk from "chalk";
 import {
-  MONGO_URI
+  MONGO_HOST,
+  MONGO_USER,
+  MONGO_PASS
 } from '../config/vars'
 
+
+let pass = encodeURIComponent(MONGO_PASS)
+let host = MONGO_HOST
+let user = MONGO_USER
+let url = "mongodb://" + user + ":" + pass.toString() + "@" + host + ":27017/sentinel";
+
 export const dbo = () => {
-  mongoose.connect(MONGO_URI, {
+  mongoose.connect(url, {
     useNewUrlParser: true
   }, (err, db) => {
     if (err) {

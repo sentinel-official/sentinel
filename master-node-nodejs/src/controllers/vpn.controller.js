@@ -86,7 +86,7 @@ const getVpnsList = (req, res) => {
 
 const getSocksList = (req, res) => {
   let list = []
-  getNodeList('socks', (err, _list) => {
+  getNodeList('socks5', (err, _list) => {
     if (err) {
       res.send({
         'success': false,
@@ -450,7 +450,7 @@ const updateConnection = (req, res) => {
                     Connection.find({
                       'vpn_addr': connection['vpn_addr'],
                       'session_name': connection['session_name'],
-                      'end_time': endTime
+                      'end_time': updateData['end_time']
                     }, (err, endedCons) => {
                       endedConnections = endedCons
                       async.each(endedConnections, (connection, iterate) => {

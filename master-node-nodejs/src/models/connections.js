@@ -8,7 +8,8 @@ let connectionSchema = new Schema({
   client_addr: String,
   vpn_addr: String,
   end_time: Number,
-  server_usage: { down: Number, up: Number }  
+  server_usage: { down: Number, up: Number } , 
+  client_usage: { down: Number, up: Number }  
 });
 
 export const Connection = mongoose.model('Connection', connectionSchema);

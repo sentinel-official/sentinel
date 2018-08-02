@@ -30,7 +30,7 @@ const getSwixerList = (cb) => {
   })
 }
 
-const getAccount = (ip, fromSymbol, toSymbol, clientAddress, destinationAddress, delayInSeconds, cb) => {
+const getAccount = (ip, fromSymbol, toSymbol, clientAddress, destinationAddress, delayInSeconds, rate, refundAddress, cb) => {
   try {
     let url = `http://${ip}:3000/account`
     axios.post(url, {
@@ -38,7 +38,9 @@ const getAccount = (ip, fromSymbol, toSymbol, clientAddress, destinationAddress,
       'toSymbol': toSymbol,
       'clientAddress': clientAddress,
       'destinationAddress': destinationAddress,
-      'delayInSeconds': delayInSeconds
+      'delayInSeconds': delayInSeconds,
+      'rate': rate,
+      'refundAddress': refundAddress
     }).then((resp) => {
       let data = resp.data
       if (data['success']) {
@@ -69,7 +71,7 @@ const apiGetSwixStatus = (ip, swixHash, cb) => {
           cb(null, {
             'status': data['swixStatus'],
             'txInfos': data['txInfos'],
-            'remainingAmount': data.hasOwnProperty('remainingAmount') ? data['remainingAmount'] : null
+            'remainingAmount': 'remainingAmount' in data ? data['remainingAmount'] : null
           })
         }
       })

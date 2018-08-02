@@ -243,7 +243,7 @@ const getExchangeValue = (req, res) => {
   let node = req.query['node']
   let fromToken = tokens.getToken(req.query['from'])
   let toToken = tokens.getToken(req.query['to'])
-  let val = parseInt(req.query['value']);
+  let val = parseFloat(req.query['value']);
 
   async.waterfall([
     (next) => {

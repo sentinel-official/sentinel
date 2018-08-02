@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-import hdkey from 'ethereumjs-wallet/hdkey'
 import Wallet from 'ethereumjs-wallet';
 import crypto from 'crypto';
 import Tx from 'ethereumjs-tx';

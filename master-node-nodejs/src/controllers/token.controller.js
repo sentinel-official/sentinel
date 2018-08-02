@@ -156,7 +156,7 @@ const getNewAddress = (req, res) => {
         } else {
           res.status(200).send({
             'success': true,
-            'result': fromAddress
+            'address': fromAddress
           })
         }
       })

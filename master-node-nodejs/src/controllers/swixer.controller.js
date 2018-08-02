@@ -193,8 +193,9 @@ const getSwixDetails = (req, res) => {
       let fromToken = tokens.getToken(fromSymbol)
       let toToken = tokens.getToken(toSymbol)
       let val = 1 * Math.pow(10, fromToken['decimals'])
-      tokens.exchange(fromToken, toToken, val, node['service_charge'], (err, _rate) => {
+      tokens.exchange(fromToken, toToken, val, node['service_charge'], (_rate) => {
         rate = _rate
+        next()
       })
     }, (next) => {
       getAccount(node['ip'], fromSymbol, toSymbol, clientAddress, destinationAddress, delayInSeconds, rate, refundAddress, (err, account) => {

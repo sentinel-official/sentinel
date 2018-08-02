@@ -14,4 +14,4 @@ let swixerNodeModel = new Schema({
   }
 })
 
-export const SwixerNodes = mongoose.model('SwixerNode', swixerNodeModel)
+export const SwixerNodes = mongoose.model('swixernodes', swixerNodeModel)

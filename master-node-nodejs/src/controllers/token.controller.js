@@ -148,7 +148,7 @@ const getNewAddress = (req, res) => {
             'success': false,
             'err': err
           })
-        } else if (!result) {
+        } else if (!resp) {
           res.status(400).send({
             'success': false,
             'message': 'No transaction found.'

@@ -168,7 +168,7 @@ const getSwixDetails = (req, res) => {
   let clientAddress = req.body['client_address']
   let destinationAddress = req.body['destination_address']
   let delayInSeconds = req.body['delay_in_seconds']
-  let refundAddress = 'refund_address' in req.body ? req.refund_address : clientAddress
+  let refundAddress = 'refund_address' in req.body ? req.body['refund_address'] : clientAddress
 
   let node = null
   let rate = 0

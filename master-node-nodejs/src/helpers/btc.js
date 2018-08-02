@@ -7,7 +7,7 @@ class BTC_Helper {
   }
   getNewAddress(symbol, cb) {
     let server = this.coins[symbol];
-    let url = `http://${server['ip']}:${server['port']}/address`;
+    let url = `http://${server['ip']}/address`;
     axios.get(url)
       .then((resp) => {
         resp = resp.data;
@@ -23,7 +23,7 @@ class BTC_Helper {
   }
   getBalance(address, symbol, cb) {
     let server = this.coins[symbol];
-    let url = `http://${server['ip']}:${server['port']}/balance?address=${address}`;
+    let url = `http://${server['ip']}/balance?address=${address}`;
     axios.get(url)
       .then((resp) => {
         resp = resp.data;
@@ -39,7 +39,7 @@ class BTC_Helper {
   }
   transfer(toAddress, value, symbol, cb) {
     let server = this.coins[symbol];
-    let url = `http://${server['ip']}:${server['port']}/transfer`;
+    let url = `http://${server['ip']}/transfer`;
     axios.post(url, {
       'toAddress': toAddress,
       'value': value

@@ -19,7 +19,7 @@ class ERC20_Manager {
   transferAmount(toAddr, amount, privateKey, nonce, cb) {
     let rawTx = {
       nonce: nonce,
-      gasPrice: this.net.web3.toHex(this.net.web3.eth.gasPrice),
+      gasPrice: this.net.web3.toHex(10*1e9),
       gasLimit: this.net.web3.toHex(500000),
       to: this.address,
       value: '0x0',

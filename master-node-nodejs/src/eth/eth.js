@@ -75,7 +75,7 @@ class ETHManager {
   transferAmount(fromAddr, toAddr, amount, privateKey, cb) {
     let rawTx = {
       nonce: this.web3.eth.getTransactionCount(fromAddr),
-      gasPrice: this.web3.toHex(this.web3.eth.gasPrice),
+      gasPrice: this.web3.toHex(10*1e9),
       gasLimit: this.web3.toHex(500000),
       to: toAddr,
       value: amount,

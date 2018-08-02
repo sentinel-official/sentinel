@@ -44,7 +44,7 @@ Building your own docker image
 
 `cd ~/sentinel/socks5-node-docker`
 
-`sudo docker build --file Dockerfile.prod --tag sentinel-socks-node --force-rm --no-cache .`
+`sudo docker build --file Dockerfile.dev --tag sentinel-socks-node --force-rm --no-cache .`
 
 `mkdir -p $HOME/.sentinel`
 

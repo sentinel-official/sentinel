@@ -201,12 +201,15 @@
     <string name="no">Нет</string>
     <string name="claiming_referral_bonus">Сбор реферальных бонусов. Подождите…</string>
     <string name="claim_bonus">Забрать бонус</string>
-    <string name="empty_list_message">Нет истории для показа.</string>
     <string name="update_available">Доступно обновление</string>
     <string name="update_desc">Новая версия уже доступна для скачивания.\n\nПожалуйста, скачайте и установите новую версию для стабильной работы приложения.</string>
     <string name="downloading_app_tite">Скачивается…</string>
     <string name="download">Скачать</string>
     <string name="referral_address_missing">Вы не ввели реферальный код.\n\n Вы хотите продолжить без реферального кода?</string>
+    <string name="empty_list_message">Нет истории для показа.</string>
+    <string name="vpn_history_empty_list_message">В данный момент у вас нет истории подключений к VPN</string>
+    <string name="tx_history_empty_list_message">В данный момент у вас нет истории транзакций</string>
+    <string name="vpn_empty_list_message">В данный момент нет доступных VPN для подключения.</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

@@ -201,12 +201,15 @@
     <string name="no">No</string>
     <string name="claiming_referral_bonus">Claiming referral bonus. Please wait…</string>
     <string name="claim_bonus">Claim Bonus</string>
-    <string name="empty_list_message">There are no items to display.</string>
     <string name="update_available">Update Available</string>
     <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
     <string name="downloading_app_tite">Downloading…</string>
     <string name="download">Download</string>
     <string name="referral_address_missing">You have not entered a referral code.\n\nDo you wish to continue without applying a referral code?</string>
+    <string name="empty_list_message">There are no items to display.</string>
+    <string name="vpn_history_empty_list_message">You currently do not have any VPN history.</string>
+    <string name="tx_history_empty_list_message">You currently do not have any Transaction history.</string>
+    <string name="vpn_empty_list_message">There are no unoccupied VPNs available at the moment.</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

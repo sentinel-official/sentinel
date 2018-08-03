@@ -1,29 +1,38 @@
-let chains = require('./chains');
-let { tokensConfigs } = require('../config/ethereum/tokens');
+let web3 = require('./web3');
+let tokenConfigs = require('../config/ethereum/tokens');
 
 
 class Tokens {
-  constructor(web3, tokensConfigs) {
-    this.web3 = web3;
-    tokensConfigs.forEach((config) => {
+  constructor(tokenConfigs) {
+    tokenConfigs.forEach((config) => {
       this.loadToken(config);
     });
   }
 
   loadToken(config) {
-    this[config.coinSymbol] = {
+    this[config.symbol] = {
+      abi: config.abi,
+      symbol: config.symbol,
       address: config.address,
       decimals: config.decimals,
-      contract: this.web3.eth.contract(config.abi).at(config.address)
+      contract: web3.eth.contract(config.abi).at(config.address)
     };
   }
 
-  balanceOf(address, coinSymbol) {
-    let balance = this[coinSymbol].contract.balanceOf(address);
+  balanceOf(address, tokenSymbol, cb) {
+    let balance = this[tokenSymbol].contract.balanceOf(address,
+      (error, balance) => {
+        if (error) cb(error, null);
+        else cb(null, balance);
+      });
+  }
+
+  balanceOfSync(address, tokenSymbol) {
+    let balance = this[tokenSymbol].contract.balanceOf(address);
     return balance;
   }
 }
 
-let tokens = new Tokens(chains['main'].web3, tokensConfigs);
+let tokens = new Tokens(tokenConfigs);
 
 module.exports = tokens;

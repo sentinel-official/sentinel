@@ -9,6 +9,6 @@
     <item
         android:id="@+id/action_wallet"
         android:icon="@drawable/menu_wallet_unselected"
-        android:title="@string/vpn"
+        android:title="@string/wallet"
         app:showAsAction="always" />
 </menu>

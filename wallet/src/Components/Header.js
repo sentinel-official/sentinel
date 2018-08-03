@@ -350,7 +350,7 @@ class Header extends Component {
                   iconStyle={{
                     top: -5,
                     right: -10,
-                    fill: this.state.isTest ? 'white' : '#4b4e5d'
+                    fill: this.state.isTest ? 'white' : '#3d425c'
                   }}
                   labelStyle={{
                     height: 42,

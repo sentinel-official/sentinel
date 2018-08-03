@@ -1,8 +1,10 @@
 package sentinelgroup.io.sentinel.network.model;
 
-public class Location {
-    public float latitude;
-    public float longitude;
+import java.io.Serializable;
+
+public class Location implements Serializable{
+    public double latitude;
+    public double longitude;
     public String city;
     public String country;
 }

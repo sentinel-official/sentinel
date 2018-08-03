@@ -1,13 +1,11 @@
 <resources>
-    <string name="app_name">Sentinel</string>
-    <string name="app_sub_name">Open source wallet and secure VPN\nplatform</string>
+    <string name="app_name" translatable="false">Sentinel</string>
+    <string name="app_sub_name">Open source wallet and secure VPN platform</string>
     <string name="enter_pin">Enter PIN</string>
-    <string name="verify">Verify</string>
     <string name="create_account_desc">Anonymous User ID (AUID) generates a unique identity to users</string>
     <string name="create_account">Create your AUID</string>
     <string name="or">OR</string>
     <string name="restore_account_desc">Already have an account?\nRestore your Keystore File</string>
-    <string name="restore_account">Restore</string>
     <string name="password_hint">Enter Password to Create AUID</string>
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="next">Next</string>
@@ -24,23 +22,21 @@
     <string name="test_net_state">Test Mode %1s</string>
     <string name="transaction_history">Transaction History</string>
     <string name="vpn_history">VPN History</string>
-    <string name="network_stats">Network Stats</string>
-    <string name="usage_stats">Usage Stats</string>
     <string name="reset_pin">Reset PIN</string>
     <string name="help">Help</string>
-    <string name="about">About</string>
     <string name="disconnect">Disconnect</string>
-    <string name="view_vpns">View VPNs</string>
+    <string name="view_vpns">VIEW VPNs</string>
     <string name="make_payment">Make Payment</string>
-    <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN</string>
+    <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN.\nIf you have already paid, Please wait for a couple of minutes, or you can report the payment</string>
     <string name="view_list">View List</string>
     <string name="view_map">View Map</string>
     <string name="connect_to_vpn">Connect to VPN</string>
     <string name="connect">Connect</string>
     <string name="sent_desc">Total SENT Tokens</string>
-    <string name="eth_desc">Total ETH Tokens</string>
+    <string name="test_sent_desc">Total Test SENT Tokens</string>
+    <string name="eth_desc">Total ETH</string>
+    <string name="test_eth_desc">Total Test ETH</string>
     <string name="send">Send</string>
-    <string name="select_token">Select Token</string>
     <string name="send_to_hint">Send To</string>
     <string name="enter_amount_hint">Enter Amount</string>
     <string name="gas_limit_hint">Gas Limit</string>
@@ -62,7 +58,259 @@
     <string name="enter_old_pin">Enter Old PIN</string>
     <string name="enter_new_pin">Enter New PIN</string>
     <string name="re_enter_new_pin">Re-Enter New PIN</string>
+    <string name="create_auid">Create User ID</string>
+    <string name="no_internet">No internet connectivity. Please try again.</string>
+    <string name="password_mismatch">Password and Confirm Password did not match</string>
+    <string name="please_note">Please Note</string>
+    <string name="secure_keys">Secure Keys</string>
+    <string name="storage_permission_denied">Storage permission not granted.</string>
+    <string name="key_copied">Private Key copied to clipboard</string>
+    <string name="address_copied">Address copied to clipboard</string>
+    <string name="hash_copied">Transaction Hash copied to clipboard</string>
+    <string name="set_app_pin">Set App PIN</string>
+    <string name="pin_mismatch">Pin and Confirm Pin did not match</string>
+    <string name="invalid_pin">Invalid PIN. Please try again.</string>
+    <string name="restore_keystore">Restore Keystore File</string>
+    <string name="select_file">Select a File</string>
+    <string name="uploaded_success">File uploaded successfully</string>
+    <string name="wallet">Wallet</string>
+    <string name="pin_empty">Please enter the app PIN</string>
+    <string name="active">Activated</string>
+    <string name="deactive">Deactivated</string>
+    <string name="wallet_balance">Wallet Balance</string>
+    <string name="free_token_requested">Free test SENT tokens getting mined. You will receive them in your wallet soon.</string>
+    <string name="yay">Yay!</string>
+    <string name="thanks">Thanks</string>
+    <string name="empty_token_value">-</string>
+    <string name="forgot_pin">Forgot PIN?</string>
+    <string name="reset_pin_success">PIN reset successful</string>
+    <string name="wrong_old_pin">App PIN entered is wrong</string>
+    <string name="gwei">%d Gwei</string>
+    <string name="copy_address">Copy Address</string>
+    <string name="receive">Receive</string>
+    <string name="payment_pending">Payment pending for this session</string>
+    <string name="sents">%1s SENTs</string>
+    <string name="eths">%1s ETH</string>
+    <string name="pay_sents">Pay %1s SENTs</string>
+    <string name="vpn_location">%1s, %2s</string>
+    <string name="vpn_ip">IP \t %1s</string>
+    <string name="vpn_bandwidth">Bandwidth \t %s</string>
+    <string name="vpn_price">Price (SENTs/GB) \t %s</string>
+    <string name="vpn_latency">Latency \t %s</string>
+    <string name="vpn_bandwidth_value">%.2f Mbps</string>
+    <string name="vpn_price_value">%.0f SENTs</string>
+    <string name="vpn_latency_value">%.3f ms</string>
+    <string name="generic_loading_message">Please wait. Loading…</string>
+    <string name="creating_account">Creating a new account. Please wait…</string>
+    <string name="setting_pin">Setting up app PIN. Please wait…</string>
+    <string name="restoring_accunt">Restoring account. Please wait…</string>
+    <string name="verifying_credentials">Verifying credentials. Please wait…</string>
+    <string name="resetting_pin">Resetting app PIN. Please wait…</string>
+    <string name="gas_limit_sents">42000</string>
+    <string name="gas_limit_eth">21000</string>
+    <string name="sending">Sending…</string>
+    <string name="signing_transaction">Validating &amp; signing transaction. Please wait…</string>
+    <string name="init_vpn_pay">100</string>
+    <string name="init_vpn_pay_title">Initial Payment Reminder</string>
+    <string name="init_vpn_pay_success_message">Payment is being processed, please wait a couple of minutes before you connect to the VPN</string>
+    <string name="init_vpn_pay_pending_message">Inorder to use VPN, you need to pay 100 SENTs for the first time.\n\nIf you have already paid, please wait a couple of minutes before you connect to the VPN.</string>
+    <string name="transaction_placed">Transaction placed…</string>
+    <string name="check_status">Check status</string>
+    <string name="select_vpn">Select VPN</string>
+    <string name="vpn_connections">VPN Connections</string>
+    <string name="city">City: %1s</string>
+    <string name="country">Country: %1s</string>
+    <string name="bandwidth">Bandwidth: %1s</string>
+    <string name="latency">Latency: %1s</string>
+    <string name="price">Price(SENTs / GB): %1s</string>
+    <string name="coming_soon">Coming soon…</string>
+    <string name="fetching_config">Fetching VPN configurations…</string>
+    <string name="saving_config">Saving VPN configurations…</string>
+    <string name="download_speed">Download Speed</string>
+    <string name="data_used">Data Used</string>
+    <string name="upload_speed">Upload Speed</string>
+    <string name="vpn_status">VPN Status: %1s</string>ring>
+    <string name="vpn_already_connected">You have already connected to a VPN server. Please disconnect from it before connecting to a new VPN server.</string>
+    <string name="pending_payment_desc">Pending payment for previous session</string>
+    <string name="amount_owed">Amount Owed</string>
+    <string name="estimate_low"><![CDATA[Below recommended level]]></string>
+    <string name="estimate_normal"><![CDATA[Estimate: Normal (< 5 mins to confirm)]]></string>
+    <string name="estimate_fast"><![CDATA[Estimate: Fast (< 2 mins to confirm)]]></string>
+    <string name="estimate_fastest"><![CDATA[Estimate: Fastest (1–2 Blocks to confirm)]]></string>
+    <string name="session_cost">Session Cost</string>
+    <string name="vpn_session_details">VPN Session Details</string>
+    <string name="reporting_payment">Reporting VPN payment…</string>
+    <string name="pay">Pay</string>
+    <string name="loading_tx_history">Loading Transaction History…</string>
+    <string name="send_eth">Send ETH</string>
+    <string name="receive_eth">Receive ETH</string>
+    <string name="earning_positive">+ %1s</string>
+    <string name="earning_neagtive">- %1s</string>
+    <string name="status_success">Status: Success</string>
+    <string name="status_fail">Status: Fail</string>
+    <string name="send_sent">Send SENT</string>
+    <string name="receive_sent">Receive SENT</string>
+    <string name="tx_details">Transaction Details</string>
+    <string name="view_on_etherscan">View on Etherscan</string>
+    <string name="telegram">Telegram</string>
+    <string name="telegram_url">https://t.me/sentinelsecuritygroup</string>
+    <string name="medium">Medium</string>
+    <string name="twitter">Twitter</string>
+    <string name="website">Website</string>
+    <string name="medium_url">https://medium.com/@Sentinel</string>
+    <string name="twitter_url">https://twitter.com/SentinelGroupio</string>
+    <string name="website_url">https://sentinelgroup.io/</string>
+    <string name="link_coming_soon">This data will be added soon.</string>
+    <string name="faq">FAQ</string>
+    <string name="check_for_updates">Check for Updates</string>
+    <string name="social_links">Social Links</string>
+    <string name="got_it">Got it</string>
+    <string name="no_scan_results">Scan results not found.</string>
+    <string name="not_a_address">The scanned result is not an Account Address. Discarding scanned results.</string>
+    <string name="retry">Retry</string>
+    <string name="vpn_history_main_net_unavailable">No VPN history found in MAINNET.</string>
+    <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET.</string>
+    <string name="tx_history_main_net_unavailable">No Transaction History found in MAINNET.</string>
+    <string name="upload_keystore_desc">Tap here to upload your Keystore file</string>
+    <string name="logout">Logout</string>
+    <string name="logout_desc">Logging out will clear your keystore file, make sure you have saved it.</string>
+    <string name="default_language">en</string>
+    <string name="language">Language</string>
+    <string name="select_language">Select Language</string>
+    <string name="view_tx_history_for">View Tx History for</string>
+    <string name="payment_done_success">Payment Done Successfully</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="spinner_list">
+        <item>SENT</item>
+        <item>ETH</item>
+    </string-array>
+    <string-array name="spinner_test_list">
+        <item>Test SENT</item>
+        <item>Test ETH</item>
+    </string-array>
+    <string-array name="language">
+        <!--<item>Chinese</item>-->
+        <item>English</item>
+        <!--<item>Japanese</item>-->
+        <item>Russian</item>
+        <!--<item>Spanish</item>-->
+    </string-array>
+    <string-array name="language_code">
+        <!--<item>zh</item>-->
+        <item>en</item>
+        <!--<item>ja</item>-->
+        <item>ru</item>
+        <!--<item>es</item>-->
+    </string-array>
+
+    <!-- ics_openVPN strings -->
+    <string name="fetching_server_details">Fetching VPN server credentials…</string>
+    <string name="channel_name_background">Connection statistics</string>
+    <string name="channel_description_background">Ongoing statistics of the established OpenVPN connection</string>
+    <string name="channel_name_status">Connection status change</string>
+    <string name="channel_description_status">Status changes of the  OpenVPN connection (Connecting, authenticating,…)</string>
+    <string name="vpn_launch_title">Connecting to VPN…</string>
+    <string name="permission_icon_app">Icon of app trying to use OpenVPN for Android</string>
+    <string name="remote_warning">By proceeding, you are giving the application permission to completely control OpenVPN for Android and to intercept all network traffic.<b>Do NOT accept unless you trust the application.</b> Otherwise, you run the risk of having your data compromised by malicious software."</string>
+    <string name="remote_trust">I trust this application.</string>
+    <string name="prompt">%1$s attempts to control %2$s</string>
+    <string name="no_error_found">No error found</string>
+    <string name="screenoff_pause">Pausing connection in screen off state: less than %1$s in %2$ss</string>
+    <string name="screen_nopersistenttun">Warning: Persistent tun not enabled for this VPN. Traffic will use the normal Internet connection when the screen is off.</string>
+    <string name="netstatus">Network Status: %s</string>
+    <string name="reread_log">Reread (%d) log items from log cache file</string>
+    <string name="mobile_info">%10$s %9$s running on %3$s %1$s (%2$s), Android %6$s (%7$s) API %4$d, ABI %5$s, (%8$s)</string>
+    <string name="official_build">official build</string>
+    <string name="debug_build">debug build</string>
+    <string name="built_by">built by %s</string>
+    <string name="state_waitconnectretry">Waiting %ss seconds between connection attempt</string>
+    <string name="using_proxy">Using proxy %1$s %2$d</string>
+    <string name="password">Password</string>
+    <string name="state_auth_failed">Authentication failed</string>
+    <string name="bits_per_second">%.0f bit/s</string>
+    <string name="kbits_per_second">%.1f kbit/s</string>
+    <string name="mbits_per_second">%.1f Mbit/s</string>
+    <string name="gbits_per_second">%.1f Gbit/s</string>
+    <string name="volume_byte">%.0f B</string>
+    <string name="volume_kbyte">%.1f kB</string>
+    <string name="volume_mbyte">%.1f MB</string>
+    <string name="volume_gbyte">%.1f GB</string>
+    <string name="permission_revoked">VPN permission revoked by OS (e.g. other VPN program started), stopping VPN</string>
+    <string name="notifcation_title">%1$s - %2$s</string>
+    <string name="notifcation_title_notconnect">Not connected</string>
+    <string name="service_restarted">Restarting OpenVPN Service (App crashed probably crashed or killed for memory pressure)</string>
+    <string name="building_configration">Building configuration…</string>
+    <string name="last_openvpn_tun_config">Opening tun interface:</string>
+    <string name="opentun_no_ipaddr">Refusing to open tun device without IP information</string>
+    <string name="dns_add_error">Could not add DNS Server \"%1$s\", rejected by the system: %2$s</string>
+    <string name="ip_add_error">Could not configure IP Address \"%1$s\", rejected by the system: %2$s</string>
+    <string name="ignore_multicast_route">Ignoring multicast route: %s</string>
+    <string name="route_rejected">Route rejected by Android</string>
+    <string name="local_ip_info">Local IPv4: %1$s/%2$d IPv6: %3$s MTU: %4$d</string>
+    <string name="dns_server_info">DNS Server: %1$s, Domain: %2$s</string>
+    <string name="routes_info_incl">Routes: %1$s %2$s</string>
+    <string name="routes_info_excl">Routes excluded: %1$s %2$s</string>
+    <string name="routes_debug">VpnService routes installed: %1$s %2$s</string>
+    <string name="session_ipv4string">%1$s - %2$s</string>
+    <string name="session_ipv6string">%1$s - %3$s, %2$s</string>
+    <string name="warn_no_dns">No DNS servers being used. Name resolution may not work. Consider setting custom DNS Servers. Please also note that Android will keep using your proxy settings specified for your mobile/Wi-Fi connection when no DNS servers are set.</string>
+    <string name="tun_open_error">Failed to open the tun interface</string>
+    <string name="error">"Error: "</string>
+    <string name="tun_error_helpful">On some custom ICS images the permission on /dev/tun might be wrong, or the tun module might be missing completely. For CM9 images try the fix ownership option under general settings</string>
+    <string name="app_no_longer_exists">Package %s is no longer installed, removing it from app allow/disallow list</string>
+    <string name="no_allowed_app">No allowed app added. Adding ourselves (%s) to have at least one app in the allowed app list to not allow all apps</string>
+    <string name="disallowed_vpn_apps_info">Disallowed VPN apps: %1$s</string>
+    <string name="allowed_vpn_apps_info">Allowed VPN apps: %1$s</string>
+    <string name="route_not_cidr">Cannot make sense of %1$s and %2$s as IP route with CIDR netmask, using /32 as netmask.</string>
+    <string name="route_not_netip">Corrected route %1$s/%2$s to %3$s/%2$s</string>
+    <string name="ip_not_cidr">Got interface information %1$s and %2$s, assuming second address is peer address of remote. Using /32 netmask for local IP. Mode given by OpenVPN is \"%3$s\".</string>
+    <string name="ip_looks_like_subnet">Vpn topology \"%3$s\" specified but IP Config %1$s %2$s looks more like an IP address with a network mask. Assuming \"subnet\" topology.</string>
+    <string name="statusline_bytecount">↓:%2$s(%1$s)-↑:%4$s(%3$s)</string>
+    <string name="state_noprocess">Not running</string>
+    <string name="minidump_generated">OpenVPN crashed unexpectedly.</string>
+    <string name="getproxy_error">Error getting proxy settings: %s</string>
+    <string name="abi_mismatch">Preferred native ABI precedence of this device (%1$s) and ABI reported by native libraries (%2$s) mismatch</string>
+    <string name="unhandled_exception_context">%3$s: %1$s\n\n%2$s</string>
+    <string name="unhandled_exception">Unhandled exception: %1$s\n\n%2$s</string>
+    <string name="unknown_state" translatable="false">Unknown state</string>
+    <string name="state_connecting">Connecting</string>
+    <string name="state_wait">Waiting for server reply</string>
+    <string name="state_auth">Authenticating</string>
+    <string name="state_get_config">Getting client configuration</string>
+    <string name="state_assign_ip">Assigning IP addresses</string>
+    <string name="state_add_routes">Adding routes</string>
+    <string name="state_connected">Connected</string>
+    <string name="state_disconnected">Disconnect</string>
+    <string name="state_reconnecting">Reconnecting</string>
+    <string name="state_exiting">Exiting</string>
+    <string name="state_resolve">Resolving host names</string>
+    <string name="state_tcp_connect">Connecting (TCP)</string>
+    <string name="state_nonetwork">Waiting for usable network</string>
+    <string name="state_screenoff">VPN paused - screen off</string>
+    <string name="state_userpause">VPN pause requested by user</string>
+    <string name="cannotparsecert">Cannot display certificate information</string>
+    <string name="keychain_access">Cannot access the Android Keychain Certificates. This can be caused by a firmware upgrade or by restoring a backup of the app/app settings. Please edit the VPN and reselect the certificate under basic settings to recreate the permission to access the certificate.</string>
+    <string name="jelly_keystore_alphanumeric_bug">Some versions of Android 4.1 have problems if the name of the keystore certificate contains non alphanumeric characters (like spaces, underscores or dashes). Try to reimport the certificate without special characters</string>
+    <string name="keychain_nocacert">No CA Certificate returned while reading from Android keystore. Authentication will probably fail.</string>
+    <string name="no_keystore_cert_selected">You must select a User certificate</string>
+    <string name="no_ca_cert_selected">You must select a CA certificate</string>
+    <string name="keyChainAccessError">KeyChain Access error: %s</string>
+    <string name="deprecated_tls_remote">Config uses option tls-remote that was deprecated in 2.3 and finally removed in 2.4</string>
+    <string name="ipv4_format_error">Error parsing the IPv4 address</string>
+    <string name="shortcut_profile_notfound">Profile specified in shortcut not found</string>
+    <string name="state_user_vpn_permission" translatable="false">Waiting for user permission to use VPN API</string>
+    <string name="state_user_vpn_password" translatable="false">Waiting for user VPN password</string>
+    <string name="state_user_vpn_permission_cancelled" translatable="false">VPN API permission dialog cancelled.\n\nPlease grant this permission to use VPN services</string>
+    <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
+    <string name="config_error_found">Error in Configuration</string>
+    <string name="no_vpn_support_image">Your image does not support the VPNService API.</string>
+    <string name="custom_route_format_error">Error parsing the custom routes</string>
+    <string name="missing_tlsauth">tls-auth file is missing</string>
+    <string name="missing_certificates">Missing user certificate or user certifcate key file</string>
+    <string name="missing_ca_certificate">Missing CA certificate</string>
+    <string name="remote_no_server_selected">You need to define and enable at least one remote server.</string>
+    <string name="pkcs12_file_encryption_key">PKCS12 File Encryption Key</string>
+    <string name="private_key_password">Private Key Password</string>
+    <string name="error_rsa_sign">Error signing with Android keystore key %1$s: %2$s</string>
 </resources>

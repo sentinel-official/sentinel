@@ -13,7 +13,7 @@
     android:layout_marginTop="8dp"
     app:cardBackgroundColor="@color/colorCardDark"
     app:cardCornerRadius="@dimen/margin_4"
-    app:cardElevation="@dimen/margin_8"
+    app:cardElevation="@dimen/margin_4"
     app:cardPreventCornerOverlap="false">
 
     <android.support.constraint.ConstraintLayout
@@ -38,7 +38,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Node Earnings"
+            app:layout_constraintBottom_toTopOf="@+id/tv_date_time"
             app:layout_constraintEnd_toStartOf="@+id/tv_source_earnings"
             app:layout_constraintStart_toEndOf="@+id/iv_source"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +51,6 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:gravity="end"
-            android:text="+1,743"
             app:layout_constraintBottom_toBottomOf="@+id/tv_source"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_source"
@@ -65,7 +64,6 @@
             android:layout_marginTop="8dp"
             android:background="@color/colorCardShadow"
             android:padding="@dimen/margin_8"
-            android:text="May 11- 2018, 10:30 AM   "
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_tx_status"
             app:layout_constraintStart_toEndOf="@+id/iv_source"
@@ -79,7 +77,6 @@
             android:background="@color/colorCardShadow"
             android:gravity="end"
             android:padding="@dimen/margin_8"
-            android:text="Status: Pending"
             app:layout_constraintBottom_toBottomOf="@+id/tv_date_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_date_time"

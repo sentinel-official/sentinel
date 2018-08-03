@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:hint="@string/restore_password_hint"
+        android:textColorHint="@color/colorTextWhiteWithAlpha50"
+        app:hintTextAppearance="@style/TextInputLayoutTheme"
+        app:layout_constraintBottom_toTopOf="@+id/et_enter_pin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tet_password"
+            style="@style/CustomTextAppearance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:theme="@style/TextInputEditTextTheme" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/tv_enter_pin"
+        style="@style/CustomTextAppearance.Text12.BlueNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_new_pin"
+        app:layout_constraintBottom_toBottomOf="@+id/et_enter_pin"
+        app:layout_constraintEnd_toEndOf="@+id/et_enter_pin"
+        app:layout_constraintStart_toStartOf="@+id/et_enter_pin"
+        app:layout_constraintTop_toTopOf="@+id/et_enter_pin"
+        app:layout_constraintVertical_bias="0.15"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.alimuzaffar.lib.pin.PinEntryEditText
+        android:id="@+id/et_enter_pin"
+        style="@style/CustomTextAppearance.PinEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:imeOptions="actionNext"
+        app:layout_constraintBottom_toTopOf="@+id/et_re_enter_pin"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
+        app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/til_password"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:pinCharacterMask="*"
+        app:pinLineColors="@color/colorButtonBlue" />
+
+    <TextView
+        android:id="@+id/tv_re_enter_pin"
+        style="@style/CustomTextAppearance.Text12.BlueNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/re_enter_new_pin"
+        app:layout_constraintBottom_toBottomOf="@+id/et_re_enter_pin"
+        app:layout_constraintEnd_toEndOf="@+id/et_re_enter_pin"
+        app:layout_constraintStart_toStartOf="@+id/et_re_enter_pin"
+        app:layout_constraintTop_toTopOf="@+id/et_re_enter_pin"
+        app:layout_constraintVertical_bias="0.15" />
+
+    <com.alimuzaffar.lib.pin.PinEntryEditText
+        android:id="@+id/et_re_enter_pin"
+        style="@style/CustomTextAppearance.PinEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:imeOptions="actionDone"
+        app:layout_constraintBottom_toTopOf="@+id/btn_reset"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/et_enter_pin"
+        app:pinCharacterMask="*"
+        app:pinLineColors="@color/colorButtonBlue" />
+
+    <Button
+        android:id="@+id/btn_reset"
+        style="@style/CustomTextAppearance.OrangeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/reset"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>

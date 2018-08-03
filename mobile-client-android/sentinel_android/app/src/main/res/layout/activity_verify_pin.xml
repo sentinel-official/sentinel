@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.activity.VerifyPinActivity">
 
     <android.support.constraint.Guideline
@@ -11,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.42" />
+        app:layout_constraintGuide_percent="0.44" />
 
     <android.support.constraint.Guideline
         android:id="@+id/vertical_guideline1"
@@ -32,11 +33,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="@+id/app_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,10 +52,10 @@
         style="@style/CustomTextAppearance.AppTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
         android:text="@string/app_name"
         app:layout_constraintBottom_toTopOf="@+id/app_sub_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,13 +65,13 @@
     <TextView
         android:id="@+id/app_sub_name"
         style="@style/CustomTextAppearance.Text12"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
         android:gravity="center"
         android:text="@string/app_sub_name"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline"
@@ -97,22 +98,29 @@
         style="@style/CustomTextAppearance.PinEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_verify"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:imeOptions="actionDone"
+        app:layout_constraintBottom_toTopOf="@+id/btn_forgot_pin"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
         app:layout_constraintTop_toTopOf="@+id/horizontal_guideline"
-        app:layout_constraintVertical_bias="0.7"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintVertical_chainStyle="packed"
         app:pinCharacterMask="*"
-        app:pinLineColors="@color/colorAccent" />
+        app:pinLineColors="@color/colorButtonBlue" />
 
     <Button
-        android:id="@+id/btn_verify"
-        style="@style/CustomTextAppearance.OrangeButton"
-        android:layout_width="0dp"
+        android:id="@+id/btn_forgot_pin"
+        style="@style/CustomTextAppearance.TransparentOrangeButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/verify"
+        android:layout_marginBottom="16dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="@string/forgot_pin"
+        android:textColor="@color/colorButtonOrange"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
+        app:layout_constraintStart_toEndOf="@+id/vertical_guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/et_enter_pin" />
 </android.support.constraint.ConstraintLayout>

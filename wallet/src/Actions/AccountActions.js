@@ -679,6 +679,80 @@ export function getAvailableTokens(cb) {
   }
 }
 
+export function getMixerNodesList(data, cb) {
+  try {
+    fetch(B_URL + '/mixer/list', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify(data)
+    }).then(function (response) {
+      if (response.status === 200) {
+        response.json().then(function (response) {
+        })
+      }
+      else {
+        cb({ message: response.message || 'Internal Server Error' }, null);
+      }
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
+export function getMixerToAddress(account_addr, cb) {
+  try {
+    fetch(B_URL + '/mixer/to', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({
+        'account_addr': account_addr
+      })
+    }).then(function (response) {
+      if (response.status === 200) {
+        response.json().then(function (response) {
+        })
+      }
+      else {
+        cb({ message: response.message || 'Internal Server Error' }, null);
+      }
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
+export function startMix(data, cb) {
+  try {
+    fetch(B_URL + '/mixer/init', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify(data)
+    }).then(function (response) {
+      if (response.status === 200) {
+        response.json().then(function (response) {
+        })
+      }
+      else {
+        cb({ message: response.message || 'Internal Server Error' }, null);
+      }
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
 export function getEthBalance(data, cb) {
   try {
     if (localStorage.getItem('config') === 'TEST')

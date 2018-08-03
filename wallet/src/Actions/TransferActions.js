@@ -105,8 +105,8 @@ export function getPrivateKey(password, language, cb) {
             var keystore = JSON.parse(data)
             try {
                 var privateKey = keythereum.recover(password, keystore);
-                cb(null, privateKey);
-                // setTimeout(function () { cb(null, privateKey) }, 2000);
+                // cb(null, privateKey);
+                setTimeout(function () { cb(null, privateKey) }, 1000);
             }
             catch (err) {
                 cb({ message: lang[language].KeyPassMatch }, null);

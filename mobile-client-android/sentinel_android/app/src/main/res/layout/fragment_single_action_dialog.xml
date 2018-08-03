@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorCardDark"
+    android:orientation="vertical"
+    tools:mContext=".ui.dialogfragments.SingleActionDialogFragment">
+
+    <TextView
+        android:id="@+id/tv_dialog_title"
+        style="@style/CustomTextAppearance.Text14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/margin_16" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <TextView
+            android:id="@+id/tv_dialog_body"
+            style="@style/CustomTextAppearance.Text14.White70Normal"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_16"
+            android:paddingEnd="@dimen/margin_16"
+            android:paddingLeft="@dimen/margin_16"
+            android:paddingRight="@dimen/margin_16"
+            android:paddingStart="@dimen/margin_16" />
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="@color/colorCardShadow"
+        tools:ignore="ContentDescription" />
+
+    <Button
+        android:id="@+id/btn_dialog_positive"
+        style="@style/CustomTextAppearance.TransparentOrangeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

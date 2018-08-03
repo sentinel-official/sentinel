@@ -1,5 +1,4 @@
 let joi = require('joi');
-let { validate } = require('../helpers/validation.helper');
 
 
 let insertMixDetails = (req, res, next) => {
@@ -10,9 +9,9 @@ let insertMixDetails = (req, res, next) => {
     coinSymbol: joi.string().required()
   });
 
-  let validation = validate(req.body, addMixDetailsSchema);
-  if (validation.isValid) next();
-  else res.status(422).send(validation.errors);
+  let validation = joi.validate(req.body, addMixDetailsSchema);
+  if(validation.error) res.status(422).send(validation.error);
+  else next();
 };
 
 module.exports = {

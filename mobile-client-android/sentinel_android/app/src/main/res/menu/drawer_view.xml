@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="none">
         <item
             android:id="@+id/nav_tx_history"
             android:title="@string/transaction_history" />
         <item
             android:id="@+id/nav_vpn_history"
             android:title="@string/vpn_history" />
-        <item
-            android:id="@+id/nav_nw_stats"
-            android:title="@string/network_stats" />
-        <item
-            android:id="@+id/nav_usage_stats"
-            android:title="@string/usage_stats" />
+        <!--<item-->
+            <!--android:id="@+id/nav_nw_stats"-->
+            <!--android:title="@string/network_stats" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_usage_stats"-->
+            <!--android:title="@string/usage_stats" />-->
         <item
             android:id="@+id/nav_reset_pin"
             android:title="@string/reset_pin" />
@@ -20,7 +20,13 @@
             android:id="@+id/nav_help"
             android:title="@string/help" />
         <item
-            android:id="@+id/nav_about"
-            android:title="@string/about" />
+            android:id="@+id/nav_social_links"
+            android:title="@string/social_links" />
+        <item
+            android:id="@+id/nav_language"
+            android:title="@string/language"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:title="@string/logout" />
     </group>
 </menu>

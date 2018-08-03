@@ -7,6 +7,7 @@ import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnect
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
+import MixerComponent from './MixerComponent';
 import VPNHistory from './VPNHistory';
 let lang = require('./language');
 const { ipcRenderer } = window.require('electron');
@@ -278,6 +279,9 @@ class Dashboard extends Component {
                   <iframe src="https://swixer.sentinelgroup.io" style={{ width: 1000, height: 525, border: 0 }}>
                   </iframe>
                 </div>
+              </Tab>
+              <Tab style={styles.enabledTabStyle} label="Mixer" value="mixer">
+                <MixerComponent local_address={this.state.local_address} lang={this.props.lang} isTest={this.state.isTest} />
               </Tab>
             </Tabs>
           </div>

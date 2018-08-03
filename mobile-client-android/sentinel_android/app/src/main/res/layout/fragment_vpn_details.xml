@@ -2,37 +2,49 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorWindowDark">
 
-    <TextView
-        android:id="@+id/tv_source"
-        style="@style/CustomTextAppearance.Text18"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+    <com.haipq.android.flagkit.FlagImageView
+        android:id="@+id/fv_flag"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/margin_24"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+        app:layout_constraintEnd_toStartOf="@+id/tv_location"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_location" />
+
+    <TextView
+        android:id="@+id/tv_location"
+        style="@style/CustomTextAppearance.Text18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/margin_8"
+        android:paddingTop="@dimen/margin_16"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:text="Denver, CO, USA"
         app:layout_constraintBottom_toTopOf="@+id/tv_city"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/fv_flag"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/tv_city"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="City: Amsterdam"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_country"
-        app:layout_constraintEnd_toEndOf="@+id/tv_source"
+        app:layout_constraintEnd_toEndOf="@+id/tv_location"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/tv_source"
-        app:layout_constraintTop_toBottomOf="@+id/tv_source" />
+        app:layout_constraintStart_toStartOf="@+id/fv_flag"
+        app:layout_constraintTop_toBottomOf="@+id/tv_location" />
 
     <TextView
         android:id="@+id/tv_country"
@@ -40,7 +52,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Country: Netherlands"
         app:layout_constraintBottom_toTopOf="@+id/tv_bandwidth"
         app:layout_constraintEnd_toEndOf="@+id/tv_city"
         app:layout_constraintHorizontal_bias="0.5"
@@ -53,7 +64,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Bandwidth: 774.43 Mbps"
         app:layout_constraintBottom_toTopOf="@+id/tv_latency"
         app:layout_constraintEnd_toEndOf="@+id/tv_country"
         app:layout_constraintHorizontal_bias="0.5"
@@ -66,7 +76,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Latency: 799.256 ms"
         app:layout_constraintBottom_toTopOf="@+id/tv_price"
         app:layout_constraintEnd_toEndOf="@+id/tv_bandwidth"
         app:layout_constraintHorizontal_bias="0.5"
@@ -77,51 +86,14 @@
         android:id="@+id/tv_price"
         style="@style/CustomTextAppearance.Text12.WhiteNormal"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="17dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginTop="8dp"
-        android:text="Price( SENTs/GB): 774.43 Mbps"
-        app:layout_constraintBottom_toTopOf="@+id/tv_sent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_connect"
         app:layout_constraintEnd_toEndOf="@+id/tv_latency"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tv_latency"
         app:layout_constraintTop_toBottomOf="@+id/tv_latency" />
-
-    <TextView
-        android:id="@+id/tv_sent"
-        style="@style/CustomTextAppearance.Text12.OrangeNormal"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:gravity="bottom"
-        android:text="SENTs 98"
-        app:layout_constraintBottom_toTopOf="@+id/tv_ether"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_price"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/tv_ether"
-        style="@style/CustomTextAppearance.Text12.OrangeNormal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:text="ETHER 0.0202678"
-        app:layout_constraintBottom_toTopOf="@+id/btn_connect"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_sent" />
 
     <Button
         android:id="@+id/btn_connect"
@@ -132,7 +104,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_ether" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

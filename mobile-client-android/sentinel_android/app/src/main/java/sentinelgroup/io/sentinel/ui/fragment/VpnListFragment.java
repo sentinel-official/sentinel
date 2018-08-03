@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.ui.activity.DashboardActivity;
 import sentinelgroup.io.sentinel.ui.activity.VpnListActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnListAdapter;
+import sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -47,7 +47,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     private OnVpnConnectionListener mVpnListener;
 
     private SwipeRefreshLayout mSrReload;
-    private RecyclerView mRvVpnList;
+    private EmptyRecyclerView mRvVpnList;
     private VpnListAdapter mAdapter;
 
     public VpnListFragment() {
@@ -94,6 +94,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         mRvVpnList = iView.findViewById(R.id.rv_list);
         // Setup RecyclerView
         mRvVpnList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mRvVpnList.setEmptyView(iView.findViewById(R.id.tv_empty_message));
         mAdapter = new VpnListAdapter(this, getContext());
         mRvVpnList.setAdapter(mAdapter);
         // setup swipe to refresh layout
@@ -113,7 +114,10 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         });
         mViewModel.getVpnListErrorLiveEvent().observe(this, iMessage -> {
             if (iMessage != null && !iMessage.isEmpty() && mAdapter.getItemCount() != 0)
-                showSingleActionDialog(AppConstants.VALUE_DEFAULT, iMessage, AppConstants.VALUE_DEFAULT);
+                if (iMessage.equals(AppConstants.GENERIC_ERROR))
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                else
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, iMessage, AppConstants.VALUE_DEFAULT);
         });
         mViewModel.getVpnGetServerCredentials().observe(this, vpnCredentialsResource -> {
             if (vpnCredentialsResource != null) {
@@ -127,6 +131,8 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                         showDoubleActionDialog(AppConstants.TAG_INIT_PAY, AppConstants.VALUE_DEFAULT,
                                 getString(R.string.init_vpn_pay_pending_message),
                                 R.string.pay, AppConstants.VALUE_DEFAULT);
+                    else if (vpnCredentialsResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
                     else
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnCredentialsResource.message, AppConstants.VALUE_DEFAULT);
                 }
@@ -140,7 +146,10 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                     mViewModel.saveCurrentVpnSessionConfig(vpnConfigResource.data);
                 } else if (vpnConfigResource.message != null && vpnConfigResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigResource.message, AppConstants.VALUE_DEFAULT);
+                    if (vpnConfigResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });

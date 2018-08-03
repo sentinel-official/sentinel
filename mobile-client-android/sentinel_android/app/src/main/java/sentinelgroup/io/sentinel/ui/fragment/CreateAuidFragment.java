@@ -111,7 +111,10 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                     mViewModel.saveAccount(accountResource.data);
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, accountResource.message, AppConstants.VALUE_DEFAULT);
+                    if (accountResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, accountResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -130,6 +133,8 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
                     if (accountResource.message.equals(AppConstants.STORAGE_ERROR))
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.storage_error), AppConstants.VALUE_DEFAULT);
+                    else if (accountResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
                     else
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, accountResource.message, AppConstants.VALUE_DEFAULT);
                 }
@@ -146,7 +151,10 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     clearReferralField();
-                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                    if (genericResponseResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });

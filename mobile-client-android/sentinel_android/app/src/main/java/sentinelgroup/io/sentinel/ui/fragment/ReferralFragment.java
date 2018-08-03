@@ -119,10 +119,13 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
                     showProgressDialog(true, getString(R.string.claiming_referral_bonus));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
-                    showSingleActionDialog(R.string.yay, getString(R.string.referral_claimed), AppConstants.VALUE_DEFAULT);
+                    showSingleActionDialog(R.string.yay, getString(R.string.referral_claimed), R.string.thanks);
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                    if (genericResponseResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });

@@ -18,6 +18,7 @@ public class AppConstants {
     public static final String PREFS_GAS_NORMAL = "prefs_standard";
     public static final String PREFS_GAS_FAST = "prefs_fast";
     public static final String PREFS_GAS_FASTEST = "prefs_fastest";
+    public static final String PREFS_IP_ADDRESS = "prefs_ip_address";
     public static final String PREFS_IS_HELPER_SHOWN = "is_helper_shown";
     public static final String PREFS_SELECTED_LANGUAGE_CODE = "selected_language";
 

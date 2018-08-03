@@ -133,7 +133,10 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
                     loadNextFragment(VpnSelectFragment.newInstance(null));
                 } else if (reportPayResource.message != null && reportPayResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, reportPayResource.message, AppConstants.VALUE_DEFAULT);
+                    if (reportPayResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, reportPayResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });

@@ -16,7 +16,7 @@ import sentinelgroup.io.sentinel.ui.fragment.VpnMapFragment;
 
 public class VpnSelectPagerAdapter extends FragmentPagerAdapter {
 
-    private final int TAB_TITLES[] = new int[]{R.string.view_list, R.string.view_map,};
+    private final int TAB_TITLES[] = new int[]{R.string.view_vpn_list, R.string.view_socks5_list,};
     private Context mContext;
 
     public VpnSelectPagerAdapter(FragmentManager fm, Context iContext) {

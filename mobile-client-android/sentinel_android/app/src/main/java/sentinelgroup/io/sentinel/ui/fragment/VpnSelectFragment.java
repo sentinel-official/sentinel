@@ -133,7 +133,9 @@ public class VpnSelectFragment extends Fragment {
                             loadNextFragment(EmptyFragment.newInstance(getString(R.string.vpn_main_net_unavailable), getString(R.string.app_name)));
                     } else if (vpnUsageResource.message != null && vpnUsageResource.status.equals(Status.ERROR)) {
                         hideProgressDialog();
-                        if (!vpnUsageResource.message.equals(getString(R.string.no_internet)))
+                        if (vpnUsageResource.message.equals(AppConstants.GENERIC_ERROR))
+                            showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                        else if (!vpnUsageResource.message.equals(getString(R.string.no_internet)))
                             showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnUsageResource.message, AppConstants.VALUE_DEFAULT);
                         else
                             loadNextFragment(NoNetworkFragment.newInstance());

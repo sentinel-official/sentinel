@@ -92,7 +92,6 @@ public class ReferralRepository {
 
             @Override
             public void onFailure(Call<ReferralInfoEntity> call, Throwable t) {
-                reportSuccessResponse(null);
             }
 
             private void reportSuccessResponse(Response<ReferralInfoEntity> iResponse) {

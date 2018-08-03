@@ -215,7 +215,10 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
                         showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.txHash));
                 } else if (payResponseResource.message != null && payResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, payResponseResource.message, AppConstants.VALUE_DEFAULT);
+                    if (payResponseResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, payResponseResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });

@@ -112,7 +112,10 @@ public class WalletFragment extends Fragment implements View.OnClickListener {
 
         mViewModel.getBalanceErrorLiveEvent().observe(this, balanceError -> {
             if (balanceError != null) {
-                showSingleActionDialog(AppConstants.VALUE_DEFAULT, balanceError, AppConstants.VALUE_DEFAULT);
+                if (balanceError.equals(AppConstants.GENERIC_ERROR))
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                else
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, balanceError, AppConstants.VALUE_DEFAULT);
             }
         });
     }

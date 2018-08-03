@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +23,7 @@ import sentinelgroup.io.sentinel.network.model.Session;
 import sentinelgroup.io.sentinel.network.model.Stats;
 import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnHistoryListAdapter;
+import sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Converter;
@@ -44,7 +44,7 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
 
     private TextView mTvSentPaid, mTvTotalDuration, mTvTotalReceivedData;
     private SwipeRefreshLayout mSrReload;
-    private RecyclerView mRvVpnHistory;
+    private EmptyRecyclerView mRvVpnHistory;
 
     private VpnHistoryListAdapter mAdapter;
 
@@ -95,6 +95,7 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
         mRvVpnHistory = iView.findViewById(R.id.rv_vpn_history);
         // Setup RecyclerView
         mRvVpnHistory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mRvVpnHistory.setEmptyView(iView.findViewById(R.id.tv_empty_message));
         mAdapter = new VpnHistoryListAdapter(this, getContext());
         mRvVpnHistory.setAdapter(mAdapter);
         // setup swipe to refresh layout

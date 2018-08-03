@@ -153,9 +153,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_vpn_history"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="match_parent">
+
+            <sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView
+                android:id="@+id/rv_vpn_history"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_empty_message"
+                style="@style/CustomTextAppearance.Text14.White70Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/margin_16"
+                android:text="@string/empty_list_message" />
+        </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

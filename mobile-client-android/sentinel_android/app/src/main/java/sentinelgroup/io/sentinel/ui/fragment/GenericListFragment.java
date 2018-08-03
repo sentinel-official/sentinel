@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.network.model.GenericListItem;
 import sentinelgroup.io.sentinel.ui.adapter.GenericListAdapter;
+import sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 
@@ -37,7 +37,7 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     private OnGenericFragmentInteractionListener mListener;
 
     private SwipeRefreshLayout mSrReload;
-    private RecyclerView mRvList;
+    private EmptyRecyclerView mRvList;
     private GenericListAdapter mAdapter;
 
     public GenericListFragment() {
@@ -104,6 +104,7 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
         mRvList = iView.findViewById(R.id.rv_list);
         // Setup RecyclerView
         mRvList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mRvList.setEmptyView(iView.findViewById(R.id.tv_empty_message));
         mRvList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         mAdapter = new GenericListAdapter(this, getContext());
         mRvList.setAdapter(mAdapter);

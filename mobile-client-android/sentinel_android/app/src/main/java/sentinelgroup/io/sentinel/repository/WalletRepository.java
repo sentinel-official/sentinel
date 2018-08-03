@@ -13,6 +13,7 @@ import sentinelgroup.io.sentinel.network.model.Chains;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
+import sentinelgroup.io.sentinel.util.NoConnectivityException;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
 /**
@@ -82,7 +83,7 @@ public class WalletRepository {
 
             @Override
             public void onFailure(Call<Balance> call, Throwable t) {
-                reportErrorResponse(t.getLocalizedMessage());
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<Balance> response) {

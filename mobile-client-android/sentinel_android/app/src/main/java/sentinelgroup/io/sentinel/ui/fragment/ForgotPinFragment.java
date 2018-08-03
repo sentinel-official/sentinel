@@ -126,7 +126,7 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, View.OnC
                         loadNextActivity();
                     } else {
                         clearInput();
-                        Toast.makeText(getContext(), AppConstants.GENERIC_ERROR, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.generic_error, Toast.LENGTH_SHORT).show();
                     }
 
                 }

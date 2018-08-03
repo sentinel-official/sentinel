@@ -23,8 +23,8 @@
     <string name="view_vpns">Список VPN</string>
     <string name="make_payment">Оплатить</string>
     <string name="vpn_pay_desc">Оплатите предыдущий сеанс, чтобы подключиться к VPN.\nЕсли вы уже заплатили, то подождите пару минут или подтвердите платеж.</string>
-    <string name="view_list">Список</string>
-    <string name="view_map">Карта</string>
+    <string name="view_vpn_list">VPN List</string>
+    <string name="view_socks5_list">SOCKS5 List</string>
     <string name="connect_to_vpn">Подключиться к VPN</string>
     <string name="connect">Подключиться</string>
     <string name="sent_desc">Баланс токенов SENT</string>
@@ -194,15 +194,19 @@
     <string name="info_title_2">Кошелек с открытым исходным кодом и защищенным VPN-сервисом</string>
     <string name="disconnect_vpn_to_logout">Вы подключены к VPN.\nОтключите VPN для выхода.</string>
     <string name="referral_claimed">Вы получили ваши реферальные токены.\nПосмотрите на обновленный баланс в вашем кошельке.</string>
-    <string name="generic_error">Something went wrong. Please try again.</string>
+    <string name="generic_error">Что-то пошло не так. Попробуйте ещё раз.</string>
     <string name="storage_error">Storage not found. Unable to store keystore file.</string>
     <string name="adding_referral">Adding referral details. Please wait…</string>
-    <string name="referral_address_missing">You have not entered a referral address.\n\nDo you wish to continue without applying a referral address?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="claiming_referral_bonus">Claiming referral bonus. Please wait…</string>
     <string name="claim_bonus">Claim Bonus</string>
-
+    <string name="empty_list_message">There are no items to display.</string>
+    <string name="update_available">Update Available</string>
+    <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
+    <string name="downloading_app_tite">Downloading…</string>
+    <string name="download">Download</string>
+    <string name="referral_address_missing">You have not entered a referral code.\n\nDo you wish to continue without applying a referral code?</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

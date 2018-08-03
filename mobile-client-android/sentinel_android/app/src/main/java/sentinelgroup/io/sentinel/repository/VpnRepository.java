@@ -23,6 +23,7 @@ import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.NoConnectivityException;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -176,7 +177,7 @@ public class VpnRepository {
 
             @Override
             public void onFailure(Call<VpnCredentials> call, Throwable t) {
-                reportErrorResponse(null, t.getLocalizedMessage());
+                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<VpnCredentials> response) {
@@ -211,7 +212,7 @@ public class VpnRepository {
 
             @Override
             public void onFailure(Call<VpnUsage> call, Throwable t) {
-                reportErrorResponse(t.getLocalizedMessage());
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<VpnUsage> response) {
@@ -247,7 +248,7 @@ public class VpnRepository {
 
             @Override
             public void onFailure(Call<VpnConfig> call, Throwable t) {
-                reportErrorResponse(t.getLocalizedMessage());
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<VpnConfig> response) {
@@ -278,7 +279,7 @@ public class VpnRepository {
 
             @Override
             public void onFailure(Call<ReportPay> call, Throwable t) {
-                reportErrorResponse(t.getLocalizedMessage());
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<ReportPay> response) {

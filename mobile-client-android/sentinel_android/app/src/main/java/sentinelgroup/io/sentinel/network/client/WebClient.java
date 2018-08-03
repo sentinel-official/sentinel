@@ -19,6 +19,7 @@ import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import sentinelgroup.io.sentinel.network.api.AppVersionWebService;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.api.ReferralWebService;
 import sentinelgroup.io.sentinel.util.Logger;
@@ -28,7 +29,8 @@ import sentinelgroup.io.sentinel.util.Logger;
  */
 public class WebClient {
     private static final String GENERIC_BASE_URL = "https://api.sentinelgroup.io/";
-    private static final String REFERRAL_BASE_URL = " https://refer-api.sentinelgroup.io/";
+    private static final String REFERRAL_BASE_URL = "https://refer-api.sentinelgroup.io/";
+    private static final String App_VERSION_BASE_URL = "https://version-api.sentinelgroup.io/";
 
     private static OkHttpClient sHttpClient = enableTls12OnPreLollipop(new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -38,15 +40,16 @@ public class WebClient {
             .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(new AuthInterceptor())).build();
 
-    private static Retrofit sGenericClient;
-    private static Retrofit sReferralClient;
+    private static Retrofit sGenericClient, sReferralClient, sAppVersionClient;
 
     private static GenericWebService sGenericWebService;
     private static ReferralWebService sReferralWebService;
+    private static AppVersionWebService sAppVersionWebService;
 
     static {
         setupGenericRestClient();
         setupReferralRestClient();
+        setupAppVersionClient();
     }
 
     private WebClient() {
@@ -68,6 +71,14 @@ public class WebClient {
                 .build();
     }
 
+    private static void setupAppVersionClient() {
+        sAppVersionClient = new Retrofit.Builder()
+                .baseUrl(App_VERSION_BASE_URL)
+                .client(sHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
     public static Retrofit getGenericClient() {
         return sGenericClient;
     }
@@ -76,12 +87,20 @@ public class WebClient {
         return sReferralClient;
     }
 
+    public static Retrofit getsAppVersionClient() {
+        return sAppVersionClient;
+    }
+
     public static GenericWebService getGenericWebService() {
         return sGenericClient.create(GenericWebService.class);
     }
 
     public static ReferralWebService getReferralWebService() {
         return sReferralClient.create(ReferralWebService.class);
+    }
+
+    public static AppVersionWebService getAppVersionWebService() {
+        return sAppVersionClient.create(AppVersionWebService.class);
     }
 
     private static OkHttpClient.Builder enableTls12OnPreLollipop(OkHttpClient.Builder iClient) {

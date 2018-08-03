@@ -13,6 +13,7 @@ import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Converter;
+import sentinelgroup.io.sentinel.util.NoConnectivityException;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -73,7 +74,7 @@ public class TxHistoryRepository {
 
             @Override
             public void onFailure(Call<TxHistory> call, Throwable t) {
-                reportErrorResponse(t.getLocalizedMessage());
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<TxHistory> response) {

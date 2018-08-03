@@ -3,9 +3,11 @@ package sentinelgroup.io.sentinel.di;
 import android.content.Context;
 
 import sentinelgroup.io.sentinel.db.AppDatabase;
+import sentinelgroup.io.sentinel.network.api.AppVersionWebService;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.api.ReferralWebService;
 import sentinelgroup.io.sentinel.network.client.WebClient;
+import sentinelgroup.io.sentinel.repository.AppVersionRepository;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.repository.PinRepository;
 import sentinelgroup.io.sentinel.repository.ReferralRepository;
@@ -22,6 +24,7 @@ import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SetPinViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.SplashViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.TxHistoryViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.VerifyPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.VpnConnectedViewModelFactory;
@@ -72,8 +75,7 @@ public class InjectorModule {
         return SendRepository.getInstance(aAppDatabase.getGasEstimateEntryDao(), aGenericWebService, aAppExecutors);
     }
 
-    private static TxHistoryRepository provideTxHistoryRepository(Context iContext) {
-        AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
+    private static TxHistoryRepository provideTxHistoryRepository() {
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
         return TxHistoryRepository.getInstance(aGenericWebService, aAppExecutors);
@@ -84,6 +86,11 @@ public class InjectorModule {
         ReferralWebService aReferralWebService = WebClient.getReferralWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
         return ReferralRepository.getInstance(aAppDatabase.getReferralInfoEntryDao(), aReferralWebService, aAppExecutors);
+    }
+
+    private static AppVersionRepository provideAppVersionRepository() {
+        AppVersionWebService aAppVersionWebService = WebClient.getAppVersionWebService();
+        return AppVersionRepository.getInstance(aAppVersionWebService);
     }
 
     /* Static private getter methods for ViewModelFactory classes */
@@ -166,13 +173,18 @@ public class InjectorModule {
         return new ReceiveViewModelFactory(aAppExecutors);
     }
 
-    public static TxHistoryViewModelFactory provideTxHistoryViewModelFactory(Context iContext) {
-        TxHistoryRepository aRepository = provideTxHistoryRepository(iContext);
+    public static TxHistoryViewModelFactory provideTxHistoryViewModelFactory() {
+        TxHistoryRepository aRepository = provideTxHistoryRepository();
         return new TxHistoryViewModelFactory(aRepository);
     }
 
     public static ReferralViewModelFactory provideReferralViewModelFactory(Context iContext) {
         ReferralRepository aRepository = provideReferralRepository(iContext);
         return new ReferralViewModelFactory(aRepository);
+    }
+
+    public static SplashViewModelFactory provideSplashViewModelFactory() {
+        AppVersionRepository aRepository = provideAppVersionRepository();
+        return new SplashViewModelFactory(aRepository);
     }
 }

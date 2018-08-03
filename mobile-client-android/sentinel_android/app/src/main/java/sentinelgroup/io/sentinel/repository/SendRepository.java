@@ -16,6 +16,7 @@ import sentinelgroup.io.sentinel.network.model.PayError;
 import sentinelgroup.io.sentinel.network.model.PayResponse;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
+import sentinelgroup.io.sentinel.util.NoConnectivityException;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -84,7 +85,7 @@ public class SendRepository {
 
             @Override
             public void onFailure(Call<PayResponse> call, Throwable t) {
-                reportErrorResponse(null, t.getLocalizedMessage());
+                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<PayResponse> response) {
@@ -122,7 +123,7 @@ public class SendRepository {
 
             @Override
             public void onFailure(Call<PayResponse> call, Throwable t) {
-                reportErrorResponse(null, t.getLocalizedMessage());
+                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<PayResponse> response) {
@@ -163,7 +164,6 @@ public class SendRepository {
 
             @Override
             public void onFailure(Call<GasEstimateEntity> call, Throwable t) {
-                t.printStackTrace();
             }
 
             private void reportSuccessResponse(Response<GasEstimateEntity> response) {

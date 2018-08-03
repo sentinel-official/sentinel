@@ -23,8 +23,8 @@
     <string name="view_vpns">VIEW VPNs</string>
     <string name="make_payment">Make Payment</string>
     <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN.\nIf you have already paid, Please wait for a couple of minutes, or you can report the payment</string>
-    <string name="view_list">View List</string>
-    <string name="view_map">View Map</string>
+    <string name="view_vpn_list">VPN List</string>
+    <string name="view_socks5_list">SOCKS5 List</string>
     <string name="connect_to_vpn">Connect to VPN</string>
     <string name="connect">Connect</string>
     <string name="sent_desc">Total SENT Tokens</string>
@@ -197,12 +197,16 @@
     <string name="generic_error">Something went wrong. Please try again.</string>
     <string name="storage_error">Storage not found. Unable to store keystore file.</string>
     <string name="adding_referral">Adding referral details. Please wait…</string>
-    <string name="referral_address_missing">You have not entered a referral address.\n\nDo you wish to continue without applying a referral address?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="claiming_referral_bonus">Claiming referral bonus. Please wait…</string>
     <string name="claim_bonus">Claim Bonus</string>
-
+    <string name="empty_list_message">There are no items to display.</string>
+    <string name="update_available">Update Available</string>
+    <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
+    <string name="downloading_app_tite">Downloading…</string>
+    <string name="download">Download</string>
+    <string name="referral_address_missing">You have not entered a referral code.\n\nDo you wish to continue without applying a referral code?</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

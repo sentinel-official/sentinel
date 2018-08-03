@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -27,6 +26,7 @@ import sentinelgroup.io.sentinel.network.model.TxResult;
 import sentinelgroup.io.sentinel.ui.adapter.MaterialSpinnerAdapter;
 import sentinelgroup.io.sentinel.ui.adapter.TxHistoryListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.CustomSpinner;
+import sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Status;
@@ -46,7 +46,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
 
     private CustomSpinner mCsTokens;
     private SwipeRefreshLayout mSrReload;
-    private RecyclerView mRvTransactionList;
+    private EmptyRecyclerView mRvTransactionList;
 
     private TxHistoryListAdapter mAdapter;
     private MaterialSpinnerAdapter mSpinnerAdapter;
@@ -97,6 +97,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
         mRvTransactionList = iView.findViewById(R.id.rv_list);
         // Setup RecyclerView
         mRvTransactionList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mRvTransactionList.setEmptyView(iView.findViewById(R.id.tv_empty_message));
         mAdapter = new TxHistoryListAdapter(this, getContext());
         mRvTransactionList.setAdapter(mAdapter);
         // setup swipe to refresh layout
@@ -115,7 +116,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
     }
 
     private void initViewModel() {
-        TxHistoryViewModelFactory aFactory = InjectorModule.provideTxHistoryViewModelFactory(getContext());
+        TxHistoryViewModelFactory aFactory = InjectorModule.provideTxHistoryViewModelFactory();
         mViewModel = ViewModelProviders.of(this, aFactory).get(TxHistoryViewModel.class);
 
         mViewModel.getTxHistoryLiveEvent().observe(this, txListResource -> {
@@ -126,8 +127,11 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
                     mAdapter.loadData(txListResource.data);
                     hideProgressDialog();
                 } else if (txListResource.message != null && txListResource.status.equals(Status.ERROR)) {
-                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, txListResource.message, AppConstants.VALUE_DEFAULT);
                     hideProgressDialog();
+                    if (txListResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, txListResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });

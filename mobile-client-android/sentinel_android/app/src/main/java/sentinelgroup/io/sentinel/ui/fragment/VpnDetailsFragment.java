@@ -134,6 +134,8 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                         showDoubleActionDialog(AppConstants.TAG_INIT_PAY, AppConstants.VALUE_DEFAULT,
                                 getString(R.string.init_vpn_pay_pending_message),
                                 R.string.pay, AppConstants.VALUE_DEFAULT);
+                    else if (vpnCredentialsResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
                     else
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnCredentialsResource.message, AppConstants.VALUE_DEFAULT);
                 }
@@ -147,7 +149,10 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                     mViewModel.saveCurrentVpnSessionConfig(vpnConfigResource.data);
                 } else if (vpnConfigResource.message != null && vpnConfigResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigResource.message, AppConstants.VALUE_DEFAULT);
+                    if (vpnConfigResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });

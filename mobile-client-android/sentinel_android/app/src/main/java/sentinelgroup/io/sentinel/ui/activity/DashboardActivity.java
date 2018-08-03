@@ -493,7 +493,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case AppConstants.REQ_VPN_INIT_PAY:
                 if (resultCode == RESULT_OK) {
-                    showSingleActionError(R.string.yay, getString(R.string.init_vpn_pay_success_message), R.string.thanks);
+                    showSingleActionError(AppConstants.VALUE_DEFAULT, getString(R.string.init_vpn_pay_success_message), AppConstants.VALUE_DEFAULT);
                 }
                 break;
             case AppConstants.REQ_HELPER_SCREENS:
@@ -644,7 +644,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 SentinelApp.isVpnConnected = true;
             }
             // Called when the VPN connection terminates
-            if (state.equals("NOPROCESS") || state.equals("USER_VPN_PERMISSION_CANCELLED")) {
+            if (!VpnStatus.isVPNActive()) {
+//            if (state.equals("NOPROCESS") || state.equals("USER_VPN_PERMISSION_CANCELLED")) {
                 if (SentinelApp.isVpnConnected && !mHasActivityResult) {
                     SentinelApp.isVpnInitiated = false;
                     SentinelApp.isVpnConnected = false;

@@ -9,6 +9,7 @@ import { Snackbar, FlatButton } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { receiveStyles } from './../Assets/receive.styles';
 var lang = require('./../Constants/language');
 
 class Receive extends Component {
@@ -56,26 +57,23 @@ class Receive extends Component {
             <div>
                 <FlatButton
                     label={lang[language].GetTokens}
-                    labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', fontSize: 12, color: '#FAFAFA' }}
+                    labelStyle={receiveStyles.flatButtonLabelStyle}
                     onClick={this.getFree.bind(this)}
                     disabled={this.props.isTest}
-                    style={{
-                        backgroundColor: this.props.isTest ? '#2f3245' : 'rgba(47, 50, 69, 0.34)',
-                        position: 'absolute', right: 0, marginTop: 10, marginRight: 20
-                    }}
+                    style={
+                        this.props.isTest ? 
+                        receiveStyles.flatButtonStyleOnTest: 
+                        receiveStyles.flatButtonStyleOffTest
+                    }
                 />
                 <Grid>
                     <Row>
                         <Col>
-                            <div style={{
-                                marginLeft: 370,
-                                marginTop: 70,
-                                marginBottom: 30,
-                            }}>
+                            <div style={receiveStyles.QRCodeDiv}>
                                 <QRCode
                                     bgColor="#FFFFFF"
                                     level="Q"
-                                    style={{ width: 256 }}
+                                    style={receiveStyles.w_256}
                                     value={this.state.local_address}
                                     fgColor="#000000"
                                 />
@@ -84,13 +82,9 @@ class Receive extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            <div style={{
-                                marginLeft: 290
-                            }}>
-                                <label style={{
-                                    color: '#31b0d5',
-                                    fontWeight: 'bold'
-                                }}>{this.state.local_address} <CopyToClipboard text={this.state.local_address}
+                            <div style={receiveStyles.m_l_290}>
+                                <label style={receiveStyles.c_f_w}>
+                                {this.state.local_address} <CopyToClipboard text={this.state.local_address}
                                     onCopy={() => this.setState({
                                         snackMessage: 'Copied to Clipboard Successfully',
                                         openSnack: true
@@ -98,11 +92,7 @@ class Receive extends Component {
                                         <img
                                             src={'../src/Images/download.jpeg'}
                                             data-tip data-for="copyImage"
-                                            style={{
-                                                height: 18,
-                                                width: 18,
-                                                cursor: 'pointer'
-                                            }}
+                                            style={receiveStyles.copyIcon}
                                         />
                                     </CopyToClipboard></label>
                                 <ReactTooltip id="copyImage" place="bottom">
@@ -117,7 +107,7 @@ class Receive extends Component {
                     message={this.state.snackMessage}
                     autoHideDuration={2000}
                     onRequestClose={this.snackRequestClose}
-                    style={{ marginBottom: '2%' }}
+                    style={receiveStyles.m_b_2}
                 />
             </div>
         </MuiThemeProvider>

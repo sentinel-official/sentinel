@@ -78,7 +78,10 @@ class VpnService_Manager {
     this.contract.getVpnUsageOf(accountAddr, index, {
       from: COINBASE_ADDRESS
     }, (err, usage) => {
-      cb(err, usage);
+      if(err)
+        cb(err, null)
+      else 
+        cb(null, usage);
     });
   }
   addVpnUsage(fromAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, sessionId, nonce, cb) {

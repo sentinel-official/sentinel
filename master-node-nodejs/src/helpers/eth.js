@@ -276,12 +276,13 @@ const getVpnUsage = async (accountAddr, cb) => {
               })
               next()
             } else {
-              return cb(error, null)
+              next()
+              // cb(error, null)
             }
           })
         })
       }, () => {
-        return cb(null, usage)
+        cb(null, usage)
       })
     } else {
       cb(err, null)

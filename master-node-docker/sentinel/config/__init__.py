@@ -5,6 +5,8 @@ from .eth import MIN_GAS
 from .eth import PRIVATE_KEY as COINBASE_PRIVATE_KEY
 from .mixer import ADDRESS as MIXER_ADDRESS
 from .mixer import PRIVATE_KEY as MIXER_PRIVATE_KEY
+from .referral import REFERRAL_DUMMY
+from .referral import REFERRAL_URL
 from .services import VPN_SERVICE
 from .swaps import ADDRESS as SWAP_ADDRESS
 from .swaps import BTC_BASED_COINS

@@ -4,10 +4,12 @@ from hashlib import md5
 
 from redis import Redis
 
+from .referral import add_session
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
 from ..config import LIMIT_100MB
 from ..config import LIMIT_10MB
+from ..config import REFERRAL_DUMMY
 from ..config import SESSIONS_SALT
 from ..db import db
 from ..eth import erc20_manger
@@ -73,7 +75,7 @@ class ETHHelper(object):
         previous_nonce = self.redis.get(key)
         if previous_nonce is not None:
             previous_nonce = int(previous_nonce)
-        
+
         if net == 'main':
             error, nonce = eth_manager['main'].get_transaction_count(
                 account_addr)
@@ -221,7 +223,7 @@ class ETHHelper(object):
 
         return error, usage
 
-    def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data, payment_type):
+    def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data, payment_type, device_id=None):
         errors, tx_hashes = [], []
         error, tx_hash = self.raw_transaction(tx_data, net)
         if error is None:
@@ -234,7 +236,8 @@ class ETHHelper(object):
                 error, tx_hash = vpn_service_manager.pay_vpn_session(
                     from_addr, amount, session_id, nonce)
             if error is None:
-                _ = db.referrals.find_one_and_update({'clientAddress':from_addr,'$or':[{'paymentTxHash':{'$exists': False}},{'paymentTxHash': None}]},{'$set':{'paymentTxHash':tx_hash}})
+                if device_id:
+                    _, res = add_session(device_id, session_id, tx_hash)
                 tx_hashes.append(tx_hash)
             else:
                 errors.append(error)
@@ -243,7 +246,7 @@ class ETHHelper(object):
 
         return errors, tx_hashes
 
-    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp):
+    def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, device_id=None):
         error, tx_hash, make_tx, session_id = None, None, False, None
         error, sessions_count = self.get_vpn_sessions_count(
             to_addr)  # to_addr: client account address
@@ -289,9 +292,13 @@ class ETHHelper(object):
                 })
 
         if make_tx is True:
-            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
-            error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration, amount,
-                                                               timestamp, session_id, nonce)
+            if to_addr == REFERRAL_DUMMY:
+                _, res = add_session(device_id, session_id)
+            else:
+                nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
+                error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration,
+                                                                   amount,
+                                                                   timestamp, session_id, nonce)
 
         return error, tx_hash
 
@@ -300,7 +307,7 @@ class ETHHelper(object):
         errors, tx_hashes = [], []
         error, tx_hash = self.transfer_eths(
             COINBASE_ADDRESS, to_addr, eths, COINBASE_PRIVATE_KEY, 'rinkeby')
-       
+
         if error is None:
             tx_hashes.append(tx_hash)
             error, tx_hash = self.transfer_erc20(

@@ -4,7 +4,7 @@ BTC_BASED_COINS = {
     'PIVX': {
         'ip': '',
         'port': 3000,
-        'url':''
+        'url': ''
     }
 }
 ETHEREUM_BASED_COINS = ['ETH', 'BNB', 'SENT']
@@ -22,7 +22,7 @@ TOKENS = [
         'coin_type': 'erc20'
     },
     {
-        'address': '',
+        'address': '0xb8c77482e45f1f44de1745f52c74426c631bdd52',
         'decimals': 18,
         'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',
         'name': 'Binance Coin',
@@ -40,7 +40,7 @@ TOKENS = [
         'coin_type': 'btc_fork'
     },
     {
-        'address': '',
+        'address': '0xa44e5137293e855b1b7bc7e2c6f8cd796ffcb037',
         'decimals': 8,
         'logo_url': 'https://s2.coinmarketcap.com/static/img/coins/64x64/2643.png',
         'name': 'SENTinel',

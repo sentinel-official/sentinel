@@ -2,7 +2,7 @@
 true, false = True, False
 VPN_SERVICE = {
     'name': 'Vpn_service',
-    'address': ''.lower(),
+    'address': '0x86c592a4Ab2De10D8F1Ad3AD91e40BD676F559f2'.lower(),
     'abi': [{"constant": false, "inputs": [{"name": "_addr", "type": "address"}], "name": "addAuthorizedUser",
              "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false,
                                                                                                      "inputs": [{

@@ -26,7 +26,7 @@ class RegisterNode(object):
         account_addr = str(req.body['account_addr']).lower()
         price_per_gb = float(
             req.body['price_per_gb']) if 'price_per_gb' in req.body else float(
-                req.body['price_per_GB'])
+            req.body['price_per_GB'])
         ip = str(req.body['ip'])
         vpn_type = str(
             req.body['vpn_type']
@@ -38,7 +38,7 @@ class RegisterNode(object):
         joined_on = int(time.time())
         enc_method = str(
             req.body['enc_method']
-        ) if 'enc_method' in req.body else 'aes-256-cfb' if vpn_type=='socks5' else 'AES-128-CBC'
+        ) if 'enc_method' in req.body else 'aes-256-cfb' if vpn_type == 'socks5' else 'AES-128-CBC'
 
         node = db.nodes.find_one({'account_addr': account_addr})
         if location['city'] == 'None':
@@ -101,4 +101,3 @@ class DeRegisterNode(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
-

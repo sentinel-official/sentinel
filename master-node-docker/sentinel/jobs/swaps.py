@@ -22,7 +22,8 @@ class Swaps(object):
     def transfer(self, key, to_address, value, to_symbol):
         error, tx_hash_1 = None, None
         if to_symbol in ETHEREUM_BASED_COINS:
-            error, tx_hash_1 = eth_helper.transfer(SWAP_ADDRESS, to_address, int(value), to_symbol, SWAP_PRIVATE_KEY, 'main')
+            error, tx_hash_1 = eth_helper.transfer(SWAP_ADDRESS, to_address, int(value), to_symbol, SWAP_PRIVATE_KEY,
+                                                   'main')
         elif to_symbol in BTC_BASED_COINS:
             tx_hash_1 = btc_helper.transfer(to_address, value, to_symbol)
             error = True if tx_hash_1 is None else None

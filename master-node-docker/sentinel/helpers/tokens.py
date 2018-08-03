@@ -1,8 +1,8 @@
 # coding=utf-8
 import requests
 
-from ..config import SWAP_TOKENS
 from ..config import FEE_PERCENTAGE
+from ..config import SWAP_TOKENS
 
 
 class Tokens(object):

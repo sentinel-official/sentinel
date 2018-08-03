@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
@@ -92,9 +93,11 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     private void initView(View iView) {
         mSrReload = iView.findViewById(R.id.sr_reload);
         mRvVpnList = iView.findViewById(R.id.rv_list);
+        TextView aTvEmpty = iView.findViewById(R.id.tv_empty_message);
         // Setup RecyclerView
         mRvVpnList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mRvVpnList.setEmptyView(iView.findViewById(R.id.tv_empty_message));
+        aTvEmpty.setText(R.string.vpn_empty_list_message);
+        mRvVpnList.setEmptyView(aTvEmpty);
         mAdapter = new VpnListAdapter(this, getContext());
         mRvVpnList.setAdapter(mAdapter);
         // setup swipe to refresh layout

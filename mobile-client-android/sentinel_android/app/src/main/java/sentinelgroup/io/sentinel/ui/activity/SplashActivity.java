@@ -67,7 +67,8 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
                 } else if (versionInfoResource.message != null && versionInfoResource.status.equals(Status.ERROR)) {
                     if (versionInfoResource.message.equals(AppConstants.GENERIC_ERROR))
                         showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel_button_label);
-                    showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, versionInfoResource.message, R.string.retry, R.string.cancel_button_label);
+                    else
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, versionInfoResource.message, R.string.retry, R.string.cancel_button_label);
                 }
             }
         });

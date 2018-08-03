@@ -214,9 +214,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case R.id.nav_language:
                 startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_LANGUAGE), AppConstants.REQ_LANGUAGE);
                 break;
-            case R.id.nav_referral:
-                startActivity(new Intent(this, ReferralActivity.class));
-                break;
+//            TODO uncomment to enable referral
+//            case R.id.nav_referral:
+//                startActivity(new Intent(this, ReferralActivity.class));
+//                break;
             case R.id.nav_faq:
                 openUrl(getString(R.string.link_coming_soon));
                 break;
@@ -526,8 +527,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         aMenuResetPin.setTitle(R.string.reset_pin);
         MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
         aMenuLanguage.setTitle(R.string.language);
-        MenuItem aMenuHelp = aMenu.findItem(R.id.nav_referral);
-        aMenuHelp.setTitle(R.string.referrals);
+//        TODO uncomment to enable referral
+//        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_referral);
+//        aMenuReferral.setTitle(R.string.referrals);
         MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
         aMenuSocialLinks.setTitle(R.string.faq);
         MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);

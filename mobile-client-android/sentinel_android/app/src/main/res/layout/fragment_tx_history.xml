@@ -73,10 +73,10 @@
                 style="@style/CustomTextAppearance.Text14.White70Normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_32"
                 android:padding="@dimen/margin_16"
-                android:text="@string/empty_list_message" />
+                android:text="@string/tx_history_empty_list_message" />
         </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

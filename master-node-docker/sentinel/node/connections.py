@@ -86,10 +86,14 @@ class UpdateConnections(object):
                     amount = int(calculate_amount(sent_bytes, node['price_per_gb']) * DECIMALS)
                     timestamp = int(time.time())
                     print(account_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
+                    device = db.devices.find_one({
+                        'session_name': connection['session_name'],
+                        'account_addr': to_addr
+                    })
+                    device_id = device['device_id'] if device else None
 
                     error, tx_hash = eth_helper.add_vpn_usage(account_addr, to_addr, sent_bytes, session_duration,
-                                                              amount,
-                                                              timestamp)
+                                                              amount, timestamp, device_id)
                     if error:
                         tx_hashes.append(error)
                     else:

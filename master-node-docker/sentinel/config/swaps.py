@@ -3,7 +3,8 @@
 BTC_BASED_COINS = {
     'PIVX': {
         'ip': '',
-        'port': 0
+        'port': 3000,
+        'url': ''
     }
 }
 ETHEREUM_BASED_COINS = ['ETH', 'BNB', 'SENT']

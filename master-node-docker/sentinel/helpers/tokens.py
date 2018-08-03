@@ -1,6 +1,7 @@
 # coding=utf-8
 import requests
 
+from ..config import FEE_PERCENTAGE
 from ..config import SWAP_TOKENS
 
 
@@ -20,11 +21,11 @@ class Tokens(object):
             print(error)
         return price
 
-    def exchange(self, from_token, to_token, value, service_charge):
+    def exchange(self, from_token, to_token, value):
         value = value / (1.0 * (10 ** from_token['decimals']))
         from_price = self.get_price(from_token)
         to_price = self.get_price(to_token)
-        value = value * (from_price / to_price) * (1.0 - (service_charge * 0.01))
+        value = value * (from_price / to_price) * (1.0 - FEE_PERCENTAGE)
         value = value * 10 ** to_token['decimals']
         return value
 

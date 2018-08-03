@@ -5,10 +5,11 @@ import Authenticate from './Components/Authenticate';
 import { defaultPageStyle } from './Assets/authenticate.styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Receive from './Components/Receive';
 import { setLanguage, setComponent } from './Actions/authentication.action';
 import TermsAndConditions from './Components/TermsAndConditions';
 import { readFile } from './Utils/Keystore';
-import { KEYSTORE_FILE } from './Actions/authentication.action';
+import { KEYSTORE_FILE } from './Utils/Keystore';
 import Dashboard from './Components/Dashboard';
 const { ipcRenderer } = window.require('electron');
 
@@ -55,7 +56,7 @@ class App extends Component {
                 }
             case 'dashboard':
                 {
-                    return <Dashboard />
+                    return <Receive />
                 }
             case 'home':
                 {

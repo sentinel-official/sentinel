@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import Header from './Header';
+import { getAccount } from '../Actions/dashboard.action';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -8,8 +12,27 @@ class Dashboard extends Component {
             lang: 'en'
         }
     }
+
+    componentWillMount = () => {
+        this.props.getAccount();
+    }
     render() {
-        return <div>dashboard</div>
+        return (<div>
+            <Header />
+        </div>)
     }
 }
-export default Dashboard;
+
+function mapStateToProps(state) {
+    return {
+        walletAddress: state.getAccount
+    }
+}
+
+function mapDispatchToActions(dispatch) {
+    return bindActionCreators({
+        getAccount
+    }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToActions)(Dashboard);

@@ -13,6 +13,8 @@
     "url": "https://github.com/sentinel-official/sentinel.git"
   },
   "dependencies": {
+    "@material-ui/core": "^1.4.2",
+    "@material-ui/icons": "^2.0.0",
     "async": "^2.6.0",
     "axios": "^0.18.0",
     "child_process": "^1.0.2",

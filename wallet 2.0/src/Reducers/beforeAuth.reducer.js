@@ -24,7 +24,7 @@ export function setComponent(state = null, action) {
         case types.COMPONENT:
             return action.payload
         default:
-            return '.'
+            return state
     }
 }
 

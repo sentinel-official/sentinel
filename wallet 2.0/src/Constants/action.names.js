@@ -1,3 +1,4 @@
 export const LANGUAGE = 'LANGUAGE';
 export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
 export const COMPONENT = 'COMPONENT';
+export const GET_FREE_AMOUNT = 'GET_FREE_AMOUNT';

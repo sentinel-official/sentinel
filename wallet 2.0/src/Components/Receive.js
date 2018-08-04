@@ -36,8 +36,9 @@ class Receive extends Component {
     }
     getFree() {
         let self = this;
-        getFreeAmount(this.state.local_address, function (message) {
-            self.setState({ openSnack: true, snackMessage: message })
+        self.props.getFreeAmount(self.state.local_address)
+        .then(()=> {
+            self.setState({ openSnack: true, snackMessage: self.props.getFreeAmountRes.message })
         })
     }
 
@@ -117,13 +118,15 @@ class Receive extends Component {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setLanguage: setLanguage
+        setLanguage: setLanguage,
+        getFreeAmount:getFreeAmount
     }, dispatch)
 }
 function mapStateToProps(state) {
     return {
         language: state.setLanguage,
-        isTest: state.isTest
+        isTest: state.isTest,
+        getFreeAmountRes: state.getFreeAmount
     }
 }
 export default connect(mapStateToProps, mapDispatchToActions)(Receive);

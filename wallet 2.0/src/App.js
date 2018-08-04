@@ -56,7 +56,7 @@ class App extends Component {
                 }
             case 'dashboard':
                 {
-                    return <Receive />
+                    return <Dashboard />
                 }
             case 'home':
                 {

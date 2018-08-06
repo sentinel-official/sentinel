@@ -17,3 +17,12 @@ export function getETHBalance(state = 'Loading', action) {
             return state
     }
 }
+
+export function getSentBalance(state = 'Loading', action) {
+    switch (action.type) {
+        case types.GETSENTBAL:
+            return action.payload
+        default:
+            return state
+    }
+}

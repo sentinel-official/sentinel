@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { setLanguage, createAccount, setComponent } from './beforeAuth.reducer';
-import { setTestNet, getETHBalance } from './header.reducer';
+import { setTestNet, getETHBalance, getSentBalance } from './header.reducer';
 import { getAccount } from './dashboard.reducer';
 
 const rootReducer = combineReducers({
@@ -9,7 +9,8 @@ const rootReducer = combineReducers({
     setComponent,
     setTestNet,
     getAccount,
-    getETHBalance
+    getETHBalance,
+    getSentBalance
 });
 
 export default rootReducer;

@@ -30,3 +30,25 @@ export async function getETHBalance(address, isTest) {
         }
     }
 }
+
+export async function getSentBalance(address, isTest) {
+    let SENT_BALANCE_URL = isTest ? config.test.sentBalanceUrl : config.main.sentBalanceUrl;
+    let response = await axios.get(SENT_BALANCE_URL + address, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        }
+    })
+    if (response.data.status === '1') {
+        var balance = response.data.result / (10 ** 8);
+        return {
+            type: types.GETSENTBAL,
+            payload: balance
+        }
+    } else {
+        return {
+            type: types.GETSENTBAL,
+            payload: 'Loading'
+        }
+    }
+}

@@ -1,7 +1,7 @@
 const headerStyles = {
     mainDivStyle: {
         height: 70,
-        background: 'linear-gradient(to right,#2f3245 65%,#3d425c 35%)'
+        background: 'linear-gradient(to right,#2f3245 68%,#3d425c 32%)'
     },
     firstRowStyle: {
         paddingTop: 10
@@ -73,8 +73,8 @@ const headerStyles = {
         fontWeight: '600'
     },
     toggleStyle: {
-        marginTop: 8,
-        marginLeft: 20
+        marginTop: -22,
+        marginLeft: -5
     },
     thumbTrackStyle: {
         backgroundColor: '#4b4e5d'

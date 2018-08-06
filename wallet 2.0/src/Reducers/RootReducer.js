@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { setLanguage, createAccount, setComponent } from './beforeAuth.reducer';
 import { setTestNet, getETHBalance, getSentBalance } from './header.reducer';
+import { setCurrentTab } from './sidebar.reducer';
 import { getAccount } from './dashboard.reducer';
 
 const rootReducer = combineReducers({
@@ -10,7 +11,8 @@ const rootReducer = combineReducers({
     setTestNet,
     getAccount,
     getETHBalance,
-    getSentBalance
+    getSentBalance,
+    setCurrentTab
 });
 
 export default rootReducer;

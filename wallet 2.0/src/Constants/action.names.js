@@ -5,3 +5,4 @@ export const TESTNET = 'TESTNET';
 export const GETACCOUNT = 'GETACCOUNT';
 export const GETETHBAL = 'GETETHBAL';
 export const GETSENTBAL = 'GETSENTBAL';
+export const CURRENTTAB= 'CURRENTTAB';

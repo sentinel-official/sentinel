@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
+import LayoutComponent from './LayoutComponent';
 import { getAccount } from '../Actions/dashboard.action';
 import { dashboardStyles } from '../Assets/dashboard.styles';
 import { connect } from 'react-redux';
@@ -38,7 +39,7 @@ class Dashboard extends Component {
                             <Sidebar />
                         </div>
                         <div style={dashboardStyles.componentStyle}>
-
+                            <LayoutComponent />
                         </div>
                     </div>
                     <Footer />

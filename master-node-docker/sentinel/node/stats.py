@@ -28,7 +28,7 @@ class GetDailyDataCount(object):
             '$group': {
                 '_id': {
                     '$dateToString': {
-                        'format': '%d/%m/%Y',
+                        'format': '%Y/%m/%d',
                         'date': '$total'
                     }
                 },
@@ -43,6 +43,7 @@ class GetDailyDataCount(object):
         }])
 
         for doc in result:
+            doc['dataCount'] = doc['dataCount']/(1024*1024)
             daily_count.append(doc)
 
         message = {'success': True, 'stats': daily_count}
@@ -63,6 +64,7 @@ class GetTotalDataCount(object):
             }
         }])
         for doc in result:
+            doc['Total'] = doc['Total']/(1024*1024)
             total_count.append(doc)
 
         message = {'success': True, 'stats': total_count}
@@ -90,6 +92,7 @@ class GetLastDataCount(object):
         }])
 
         for doc in result:
+            doc['Total'] = doc['Total']/(1024*1024)
             total_count.append(doc)
 
         message = {'success': True, 'stats': total_count}
@@ -115,7 +118,7 @@ class GetDailyNodeCount(object):
             '$group': {
                 '_id': {
                     '$dateToString': {
-                        'format': '%d/%m/%Y',
+                        'format': '%Y/%m/%d',
                         'date': '$total'
                     }
                 },
@@ -155,7 +158,7 @@ class GetTotalNodeCount(object):
             '$group': {
                 '_id': {
                     '$dateToString': {
-                        'format': '%d/%m/%Y',
+                        'format': '%Y/%m/%d',
                         'date': '$total'
                     }
                 },
@@ -180,40 +183,45 @@ class GetTotalNodeCount(object):
 
 class GetDailyActiveNodeCount(object):
     def on_get(self, req, resp):
-        daily_count = []
-        result = db.statistics.aggregate([{
-            '$project': {
-                'total': {
-                    '$add': [
-                        datetime.datetime(1970, 1, 1), {
-                            '$multiply': ['$timestamp', 1000]
-                        }
-                    ]
-                },
-                'nodes': '$nodes.up'
-            }
-        }, {
-            '$group': {
-                '_id': {
-                    '$dateToString': {
-                        'format': '%d/%m/%Y',
-                        'date': '$total'
-                    }
-                },
-                'nodesCount': {
-                    '$sum': '$nodes'
+        interval=req.get_param('interval')
+        if interval is not None:
+            daily_count = []
+            result = db.statistics.aggregate([{
+                '$project': {
+                    'total': {
+                        '$add': [
+                            datetime.datetime(1970, 1, 1), {
+                                '$multiply': ['$timestamp', 1000]
+                            }
+                        ]
+                    },
+                    'nodes': '$nodes.up'
                 }
-            }
-        }, {
-            '$sort': {
-                '_id': 1
-            }
-        }])
+            }, {
+                '$group': {
+                    '_id': {
+                        '$dateToString': {
+                            'format': '%Y/%m/%d',
+                            'date': '$total'
+                        }
+                    },
+                    'nodesCount': {
+                        '$sum': '$nodes'
+                    }
+                }
+            }, {
+                '$sort': {
+                    '_id': 1
+                }
+            }])
 
-        for doc in result:
-            daily_count.append(doc)
+            for doc in result:
+                daily_count.append(doc)
 
-        message = {'success': True, 'stats': daily_count}
+            message = {'success': True, 'stats': daily_count}
+
+        else:
+            message = {'success': False,'message': 'No params found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -237,7 +245,7 @@ class GetDailyPaidSentsCount(object):
             '$group': {
                 '_id': {
                     '$dateToString': {
-                        'format': '%d/%m/%Y',
+                        'format': '%Y/%m/%d',
                         'date': '$total'
                     }
                 },
@@ -316,7 +324,7 @@ class GetDailyTotalSentsUsed(object):
             '$group': {
                 '_id': {
                     '$dateToString': {
-                        'format': '%d/%m/%Y',
+                        'format': '%Y/%m/%d',
                         'date': '$total'
                     }
                 },
@@ -391,38 +399,43 @@ class GetActiveNodeCount(object):
 
 class GetDailySessionCount(object):
     def on_get(self, req, resp):
-        daily_count = []
-        result = db.connections.aggregate([{
-            '$project': {
-                'total': {
-                    '$add': [
-                        datetime.datetime(1970, 1, 1), {
-                            '$multiply': ['$start_time', 1000]
-                        }
-                    ]
-                }
-            }
-        }, {
-            '$group': {
-                '_id': {
-                    '$dateToString': {
-                        'format': '%d/%m/%Y',
-                        'date': '$total'
+        interval=req.get_param('interval')
+        if interval is not None:
+            daily_count = []
+            result = db.connections.aggregate([{
+                '$project': {
+                    'total': {
+                        '$add': [
+                            datetime.datetime(1970, 1, 1), {
+                                '$multiply': ['$start_time', 1000]
+                            }
+                        ]
                     }
-                },
-                'sessionsCount': {
-                    '$sum': 1
                 }
-            }
-        }, {
-            '$sort': {
-                '_id': 1
-            }
-        }])
-        for doc in result:
-            daily_count.append(doc)
+            }, {
+                '$group': {
+                    '_id': {
+                        '$dateToString': {
+                            'format': '%Y/%m/%d',
+                            'date': '$total'
+                        }
+                    },
+                    'sessionsCount': {
+                        '$sum': 1
+                    }
+                }
+            }, {
+                '$sort': {
+                    '_id': 1
+                }
+            }])
+            for doc in result:
+                daily_count.append(doc)
 
-        message = {'success': True, 'stats': daily_count}
+            message = {'success': True, 'stats': daily_count}
+        
+        else:
+            message = {'success':False, 'message':'No param found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -430,40 +443,46 @@ class GetDailySessionCount(object):
 
 class GetAverageSessionsCount(object):
     def on_get(self, req, resp):
-        avg_count = []
+        interval = req.get_param('interval')
+        format = req.get_param('format')
+        if interval is not None and format is not None:
+            avg_count = []
 
-        result = db.connections.aggregate([{
-            '$group': {
-                '_id': None,
-                'olddate': {
-                    '$min': "$start_time"
-                },
-                'newdate': {
-                    '$max': "$start_time"
-                },
-                "SUM": {
-                    '$sum': 1
+            result = db.connections.aggregate([{
+                '$group': {
+                    '_id': None,
+                    'olddate': {
+                        '$min': "$start_time"
+                    },
+                    'newdate': {
+                        '$max': "$start_time"
+                    },
+                    "SUM": {
+                        '$sum': 1
+                    }
                 }
-            }
-        }, {
-            '$project': {
-                '_id': 0,
-                'Average Sessions': {
-                    '$divide': [
-                        "$SUM", {
-                            '$divide': [{
-                                "$subtract": ["$newdate", "$olddate"]
-                            }, 24 * 60 * 60]
-                        }
-                    ]
+            }, {
+                '$project': {
+                    '_id': 0,
+                    'Average Sessions': {
+                        '$divide': [
+                            "$SUM", {
+                                '$divide': [{
+                                    "$subtract": ["$newdate", "$olddate"]
+                                }, 24 * 60 * 60]
+                            }
+                        ]
+                    }
                 }
-            }
-        }])
+            }])
 
-        for doc in result:
-            avg_count.append(doc)
+            for doc in result:
+                avg_count.append(doc)
 
-        message = {'success': True, 'average': avg_count}
+            message = {'success': True, 'average': avg_count}
+        
+        else:
+            message = {'success': False, 'message': 'No params Found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -471,8 +490,14 @@ class GetAverageSessionsCount(object):
 
 class GetActiveSessionCount(object):
     def on_get(self, req, resp):
-        count = db.connections.find({'end_time': None}).count()
-        message = {'success': True, 'count': count}
+        filter = req.get_param('filter')
+        format = req.get_param('format')
+        if filter is not None and format is not None:
+            count = db.connections.find({'end_time': None}).count()
+            message = {'success': True, 'count': count}
+        
+        else:
+            message = {'success': False, 'message': 'No params found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -502,7 +527,7 @@ class GetDailyDurationCount(object):
             '$group': {
                 '_id': {
                     '$dateToString': {
-                        'format': '%d/%m/%Y',
+                        'format': '%Y/%m/%d',
                         'date': '$total'
                     }
                 },
@@ -518,6 +543,7 @@ class GetDailyDurationCount(object):
             }
         }])
         for doc in result:
+            doc['durationCount'] = doc['durationCount']/(60)
             daily_count.append(doc)
 
         message = {'success': True, 'stats': daily_count}
@@ -553,7 +579,7 @@ class GetDailyAverageDuration(object):
             '$group': {
                 '_id': {
                     '$dateToString': {
-                        'format': '%d/%m/%Y',
+                        'format': '%Y/%m/%d',
                         'date': '$total'
                     }
                 },
@@ -568,6 +594,7 @@ class GetDailyAverageDuration(object):
         }])
 
         for doc in result:
+            doc['Average'] = doc['Average']/(60)
             daily_count.append(doc)
 
         message = {'success': True, 'stats': daily_count}
@@ -602,6 +629,7 @@ class GetAverageDuration(object):
         }])
 
         for doc in result:
+            doc['Average'] = doc['Average']/(60)
             avg_count.append(doc)
 
         message = {'success': True, 'average': avg_count}
@@ -642,6 +670,7 @@ class GetLastAverageDuration(object):
         }])
 
         for doc in result:
+            doc['Average'] = doc['Average']/(60)
             avg_count.append(doc)
 
         message = {'success': True, 'average': avg_count}

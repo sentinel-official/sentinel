@@ -128,8 +128,8 @@
     <style name="DrawerItemTheme">
         <item name="android:textSize">@dimen/text_14</item>
         <item name="android:fontFamily">@font/bangla_sangam_mn</item>
-        <item name="android:listPreferredItemHeightSmall">40dp</item><!-- item size in menu-->
-        <item name="listPreferredItemHeightSmall">40dp</item><!-- item size in menu-->
+        <item name="android:listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
+        <item name="listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
     </style>
 
     <!-- TextInputLayout And TextInputEditText Theme -->

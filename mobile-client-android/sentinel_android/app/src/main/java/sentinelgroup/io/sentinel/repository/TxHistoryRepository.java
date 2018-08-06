@@ -21,7 +21,6 @@ public class TxHistoryRepository {
     // For Singleton instantiation
     private static final Object LOCK = new Object();
     private static TxHistoryRepository sInstance;
-    // TODO declare dao
     private final GenericWebService mGenericWebService;
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<List<TxResult>>> mTxHistoryLiveEvent;

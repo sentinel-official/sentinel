@@ -17,11 +17,10 @@
             android:id="@+id/nav_language"
             android:icon="@drawable/menu_language"
             android:title="@string/language" />
-        <!-- TODO uncomment to enable referral -->
-        <!--<item-->
-        <!--android:id="@+id/nav_referral"-->
-        <!--android:icon="@drawable/menu_referrals"-->
-        <!--android:title="@string/referrals" />-->
+        <item
+            android:id="@+id/nav_referral"
+            android:icon="@drawable/menu_referrals"
+            android:title="@string/referrals" />
         <item
             android:id="@+id/nav_faq"
             android:icon="@drawable/menu_faq"

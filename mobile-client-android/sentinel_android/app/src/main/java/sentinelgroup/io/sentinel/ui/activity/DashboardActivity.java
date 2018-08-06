@@ -214,10 +214,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case R.id.nav_language:
                 startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_LANGUAGE), AppConstants.REQ_LANGUAGE);
                 break;
-//            TODO uncomment to enable referral
-//            case R.id.nav_referral:
-//                startActivity(new Intent(this, ReferralActivity.class));
-//                break;
+            case R.id.nav_referral:
+                startActivity(new Intent(this, ReferralActivity.class));
+                break;
             case R.id.nav_faq:
                 openUrl(getString(R.string.link_coming_soon));
                 break;
@@ -527,9 +526,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         aMenuResetPin.setTitle(R.string.reset_pin);
         MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
         aMenuLanguage.setTitle(R.string.language);
-//        TODO uncomment to enable referral
-//        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_referral);
-//        aMenuReferral.setTitle(R.string.referrals);
+        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_referral);
+        aMenuReferral.setTitle(R.string.referrals);
         MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
         aMenuSocialLinks.setTitle(R.string.faq);
         MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);
@@ -585,12 +583,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         showDoubleActionDialog(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
     }
-
-    // TODO delete the below lines later
-//    @Override
-//    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-//        showDoubleActionDialog(AppConstants.TAG_INIT_PAY, R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
-//    }
 
     @Override
     public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {

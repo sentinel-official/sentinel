@@ -20,8 +20,8 @@ public class EndPoint {
     /*
      * Referral flow
      */
-    public static final String ADD_REFERRAL_ADDRESS = "referral";
-    public static final String CLAIM_REFERRAL_BONUS = "referral/claim";
+    public static final String ACCOUNT = "account";
+    public static final String CLAIM_BONUS = "bonus/claim";
     public static final String GET_REFERRAL_INFO = "referral/status";
     /*
      * App details Flow

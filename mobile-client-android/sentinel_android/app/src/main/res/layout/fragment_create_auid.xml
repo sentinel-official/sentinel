@@ -70,7 +70,6 @@
         android:layout_marginStart="24dp"
         android:hint="@string/referral_code"
         android:textColorHint="@color/colorTextWhiteWithAlpha50"
-        android:visibility="invisible"
         app:hintTextAppearance="@style/TextInputLayoutTheme"
         app:layout_constraintBottom_toTopOf="@+id/referral_desc"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,18 +86,8 @@
             android:theme="@style/TextInputEditTextTheme" />
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_next"
-        style="@style/CustomTextAppearance.OrangeButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="@string/next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
+
         android:id="@+id/referral_desc"
         style="@style/CustomTextAppearance.Text12.OrangeNormal"
         android:layout_width="0dp"
@@ -110,9 +99,19 @@
         android:layout_marginStart="4dp"
         android:gravity="center"
         android:text="@string/referral_code_desc"
-        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="@+id/til_referral"
         app:layout_constraintStart_toStartOf="@+id/til_referral"
         app:layout_constraintTop_toBottomOf="@+id/til_referral" />
+
+    <Button
+        android:id="@+id/btn_next"
+        style="@style/CustomTextAppearance.OrangeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

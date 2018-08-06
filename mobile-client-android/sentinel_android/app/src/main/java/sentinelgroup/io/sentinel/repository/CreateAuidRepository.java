@@ -121,7 +121,7 @@ public class CreateAuidRepository {
 
     public void addReferralAddress(GenericRequestBody iRequestBody) {
         mReferralLiveEvent.postValue(Resource.loading(null));
-        mReferralWebService.addReferralAddress(iRequestBody).enqueue(new Callback<GenericResponse>() {
+        mReferralWebService.addAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 reportSuccessResponse(response);

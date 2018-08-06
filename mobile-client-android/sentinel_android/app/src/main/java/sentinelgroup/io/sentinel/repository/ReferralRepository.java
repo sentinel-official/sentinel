@@ -107,7 +107,7 @@ public class ReferralRepository {
 
     public void claimReferralBonus(GenericRequestBody iRequestBody) {
         mReferralClaimLiveEvent.postValue(Resource.loading(null));
-        mReferralWebService.claimReferralBonus(iRequestBody).enqueue(new Callback<GenericResponse>() {
+        mReferralWebService.claimBonus(iRequestBody).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 reportSuccessResponse(response);

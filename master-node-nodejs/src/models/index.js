@@ -9,6 +9,7 @@ import { Usage } from "./usage";
 import { Validation } from "./validations";
 import { SwixerNodes } from "./swixer.nodes";
 import { Swixes } from "./swixes";
+import { Device } from "./devices";
 
 export {
   Connection,
@@ -21,5 +22,6 @@ export {
   Usage,
   Validation,
   SwixerNodes,
-  Swixes
+  Swixes,
+  Device
 }

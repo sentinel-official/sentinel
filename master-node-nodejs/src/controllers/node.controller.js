@@ -1,10 +1,20 @@
 import async from 'async';
 import uuid from 'uuid';
-import { exec } from "child_process";
+import {
+  exec
+} from "child_process";
 
-import { Node, Connection, Statistic, Payment } from "../models";
+import {
+  Node,
+  Connection,
+  Statistic,
+  Payment,
+  Device
+} from "../models";
 import EthHelper from '../helpers/eth';
-import { DECIMALS } from '../config/vars';
+import {
+  DECIMALS
+} from '../config/vars';
 import dbo from "../db/database";
 import database from '../db/database';
 
@@ -12,7 +22,9 @@ const getLatency = (url, cb) => {
   const avgLatencyCmd = "ping -c 2 " + url + " | tail -1 | awk '{print $4}' | cut -d '/' -f 2"
   exec(avgLatencyCmd, (error, stdout, stderr) => {
     if (error)
-      return cb({ 'error': 'error getting in latency' }, null)
+      return cb({
+        'error': 'error getting in latency'
+      }, null)
     return cb(null, stdout)
   })
 }
@@ -22,18 +34,18 @@ const calculateAmount = (usedBytes, pricePerGB) => {
 }
 
 /**
-* @api {post} /node/register VPN registration.
-* @apiName RegisterNode
-* @apiGroup NODE
-* @apiParam {String} account_addr Account address.
-* @apiParam {String} price_per_gb price of data usage for GB
-* @apiParam {String} ip Internet Protocal of the VPN node.
-* @apiParam {String} location location of the VPN node.
-* @apiParam {String} net_speed Net Speed of the VPN node.
-* @apiParam {String} vpn_type Type of vpn that the user want to give.
-* @apiSuccess {String} token Token id for the node.
-* @apiSuccess {String} message Node registered successfully.
-*/
+ * @api {post} /node/register VPN registration.
+ * @apiName RegisterNode
+ * @apiGroup NODE
+ * @apiParam {String} account_addr Account address.
+ * @apiParam {String} price_per_gb price of data usage for GB
+ * @apiParam {String} ip Internet Protocal of the VPN node.
+ * @apiParam {String} location location of the VPN node.
+ * @apiParam {String} net_speed Net Speed of the VPN node.
+ * @apiParam {String} vpn_type Type of vpn that the user want to give.
+ * @apiSuccess {String} token Token id for the node.
+ * @apiSuccess {String} message Node registered successfully.
+ */
 
 const registerNode = (req, res) => {
   let accountAddr = req.body['account_addr']
@@ -64,7 +76,9 @@ const registerNode = (req, res) => {
         next();
       })
     }, (next) => {
-      Node.findOne({ "account_addr": accountAddr },
+      Node.findOne({
+          "account_addr": accountAddr
+        },
         (err, node) => {
           if (!err) {
             next(null, node)
@@ -146,14 +160,14 @@ const registerNode = (req, res) => {
 }
 
 /**
-* @api {post} /node/update-nodeinfo Update the existing node info.
-* @apiName UpdateNodeInfo
-* @apiGroup NODE
-* @apiParam {String} token Token Id of Node.
-* @apiParam {String} accountAddr Account address.
-* @apiParam {String} info Info to be updated.
-* @apiSuccess {String} message Node info updated successfully.
-*/
+ * @api {post} /node/update-nodeinfo Update the existing node info.
+ * @apiName UpdateNodeInfo
+ * @apiGroup NODE
+ * @apiParam {String} token Token Id of Node.
+ * @apiParam {String} accountAddr Account address.
+ * @apiParam {String} info Info to be updated.
+ * @apiSuccess {String} message Node info updated successfully.
+ */
 
 const updateNodeInfo = (req, res) => {
   let token = req.body['token'];
@@ -240,15 +254,15 @@ const updateNodeInfo = (req, res) => {
 }
 
 /**
-* @api {post} /node/update-connections Update the connections of VPNs.
-* @apiName UpdateConnections
-* @apiGroup NODE
-* @apiParam {String} token Token Id of Node.
-* @apiParam {String} accountAddr Account address.
-* @apiParam {String[]} connections connected nodes list.
-* @apiSuccess {String} message Connection details updated successfully.
-* @apiSuccess {Object[]} tx_hashes list transaction hashes.
-*/
+ * @api {post} /node/update-connections Update the connections of VPNs.
+ * @apiName UpdateConnections
+ * @apiGroup NODE
+ * @apiParam {String} token Token Id of Node.
+ * @apiParam {String} accountAddr Account address.
+ * @apiParam {String[]} connections connected nodes list.
+ * @apiSuccess {String} message Connection details updated successfully.
+ * @apiSuccess {Object[]} tx_hashes list transaction hashes.
+ */
 
 const updateConnections = (req, res) => {
   let token = req.body['token']
@@ -359,13 +373,21 @@ const updateConnections = (req, res) => {
         let sessionDuration = parseInt(connection['end_time']) - parseInt(connection['start_time']);
         let amount = parseInt(calculateAmount(sentBytes, node['price_per_gb']) * DECIMALS);
         let timeStamp = Date.now() / 1000;
-
-        EthHelper.addVpnUsage(accountAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp,
-          (err, txHash) => {
-            if (err) txHashes.push(err)
-            else txHashes.push(txHash)
-            iterate()
-          })
+        Device.findOne({
+          'session_name': connection['session_name'],
+          'account_addr': toAddr
+        }, (err, device) => {
+          let deviceId = null
+          if (device) {
+            deviceId = device['device_id']
+          }
+          EthHelper.addVpnUsage(accountAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp,
+            (err, txHash) => {
+              if (err) txHashes.push(err)
+              else txHashes.push(txHash)
+              iterate()
+            })
+        })
       }, () => {
         next(null, {
           'success': true,
@@ -373,20 +395,21 @@ const updateConnections = (req, res) => {
           'tx_hashes': txHashes
         })
       })
-    }], (err, resp) => {
-      if (err) res.send(err)
-      else res.send(resp)
-    })
+    }
+  ], (err, resp) => {
+    if (err) res.send(err)
+    else res.send(resp)
+  })
 }
 
 /**
-* @api {post} /node/deregister Deregistering the node.
-* @apiName DeRegisterNode
-* @apiGroup NODE
-* @apiParam {String} accountAddr Account address to be deregistered.
-* @apiParam {String} token Token Id of Node.
-* @apiSuccess {String} message Node deregistred successfully.
-*/
+ * @api {post} /node/deregister Deregistering the node.
+ * @apiName DeRegisterNode
+ * @apiGroup NODE
+ * @apiParam {String} accountAddr Account address to be deregistered.
+ * @apiParam {String} token Token Id of Node.
+ * @apiSuccess {String} message Node deregistred successfully.
+ */
 
 const deRegisterNode = (req, res) => {
   let accountAddr = req.body['account_addr'];
@@ -418,16 +441,16 @@ const deRegisterNode = (req, res) => {
 }
 
 /**
-* @api {post} /node/add-usage add the usage of the VPN.
-* @apiName AddVpnUsage
-* @apiGroup NODE
-* @apiParam {String} fromAddr Account address which is used the VPN.
-* @apiParam {String} toAddr Account address whose VPN is.
-* @apiParam {Number} sentBytes Bytes used by the client.
-* @apiParam {Number} sessionDuration Duration of the VPN connection.
-* @apiSuccess {String} txHash Hash of the transaction.
-* @apiSuccess {String} message VPN usage data will be added soon.
-*/
+ * @api {post} /node/add-usage add the usage of the VPN.
+ * @apiName AddVpnUsage
+ * @apiGroup NODE
+ * @apiParam {String} fromAddr Account address which is used the VPN.
+ * @apiParam {String} toAddr Account address whose VPN is.
+ * @apiParam {Number} sentBytes Bytes used by the client.
+ * @apiParam {Number} sessionDuration Duration of the VPN connection.
+ * @apiSuccess {String} txHash Hash of the transaction.
+ * @apiSuccess {String} message VPN usage data will be added soon.
+ */
 
 const addVpnUsage = (req, res) => {
   let fromAddr = req.body['fromAddr']
@@ -467,11 +490,11 @@ const addVpnUsage = (req, res) => {
 //---------------------------------------------------------------------------------------
 
 /**
-* @api {get} /stats/data/daily-stats daily usage of vpns.
-* @apiName GetDailyDataCount
-* @apiGroup NODE
-* @apiSuccess {Object[]} stats Total daily data downloaded by the clients.
-*/
+ * @api {get} /stats/data/daily-stats daily usage of vpns.
+ * @apiName GetDailyDataCount
+ * @apiGroup NODE
+ * @apiSuccess {Object[]} stats Total daily data downloaded by the clients.
+ */
 
 const getDailyDataCount = (req, res) => {
   Connection.aggregate([{
@@ -512,11 +535,11 @@ const getDailyDataCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/data/total-data total data usage.
-* @apiName getTotalDataCount
-* @apiGroup NODE
-* @apiSuccess {Number} stats total data downloaded by the clients.
-*/
+ * @api {get} /stats/data/total-data total data usage.
+ * @apiName getTotalDataCount
+ * @apiGroup NODE
+ * @apiSuccess {Number} stats total data downloaded by the clients.
+ */
 
 const getTotalDataCount = (req, res) => {
   Connection.aggregate([{
@@ -536,15 +559,20 @@ const getTotalDataCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/data/last-data last day's data usage.
-* @apiName getLastDataCount
-* @apiGroup NODE
-* @apiSuccess {Object[]} stats Data usage of last day.
-*/
+ * @api {get} /stats/data/last-data last day's data usage.
+ * @apiName getLastDataCount
+ * @apiGroup NODE
+ * @apiSuccess {Object[]} stats Data usage of last day.
+ */
 
 const getLastDataCount = (req, res) => {
-  Connection.aggregate([
-    { '$match': { 'start_time': { '$gte': (Date.now() / 1000) - (24 * 60 * 60) } } },
+  Connection.aggregate([{
+      '$match': {
+        'start_time': {
+          '$gte': (Date.now() / 1000) - (24 * 60 * 60)
+        }
+      }
+    },
     {
       '$group': {
         '_id': null,
@@ -552,27 +580,28 @@ const getLastDataCount = (req, res) => {
           '$sum': '$server_usage.down'
         }
       }
-    }], (err, resp) => {
-      if (err) {
-        res.send({
-          'success': false,
-          'err': err
-        })
-      } else {
-        res.send({
-          'success': true,
-          'stats': resp
-        })
-      }
-    })
+    }
+  ], (err, resp) => {
+    if (err) {
+      res.send({
+        'success': false,
+        'err': err
+      })
+    } else {
+      res.send({
+        'success': true,
+        'stats': resp
+      })
+    }
+  })
 }
 
 /**
-* @api {get} /stats/nodes/daily-stats registered nodes per day.
-* @apiName getDailyNodeCount
-* @apiGroup NODE
-* @apiSuccess {Object[]} stats total nodes registered per day.
-*/
+ * @api {get} /stats/nodes/daily-stats registered nodes per day.
+ * @apiName getDailyNodeCount
+ * @apiGroup NODE
+ * @apiSuccess {Object[]} stats total nodes registered per day.
+ */
 
 const getDailyNodeCount = (req, res) => {
   let dailyCount = []
@@ -619,11 +648,11 @@ const getDailyNodeCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/nodes/total-nodes total registered nodes.
-* @apiName getTotalNodeCount
-* @apiGroup NODE
-* @apiSuccess {Number} stats total nodes registered.
-*/
+ * @api {get} /stats/nodes/total-nodes total registered nodes.
+ * @apiName getTotalNodeCount
+ * @apiGroup NODE
+ * @apiSuccess {Number} stats total nodes registered.
+ */
 
 const getTotalNodeCount = (req, res) => {
   Statistic.aggregate([{
@@ -669,11 +698,11 @@ const getTotalNodeCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/nodes/daily-active active nodes per day.
-* @apiName getDailyActiveNodeCount
-* @apiGroup NODE
-* @apiSuccess {Object[]} stats List of nodes active per day.
-*/
+ * @api {get} /stats/nodes/daily-active active nodes per day.
+ * @apiName getDailyActiveNodeCount
+ * @apiGroup NODE
+ * @apiSuccess {Object[]} stats List of nodes active per day.
+ */
 
 const getDailyActiveNodeCount = (req, res) => {
   Statistic.aggregate([{
@@ -719,11 +748,11 @@ const getDailyActiveNodeCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/nodes/average-nodes average nodes per day
-* @apiName getAverageNodesCount
-* @apiGroup NODE
-* @apiSuccess {Object} average Average list of node registered count per day.
-*/
+ * @api {get} /stats/nodes/average-nodes average nodes per day
+ * @apiName getAverageNodesCount
+ * @apiGroup NODE
+ * @apiSuccess {Object} average Average list of node registered count per day.
+ */
 
 const getAverageNodesCount = (req, res) => {
   Node.aggregate([{
@@ -768,14 +797,16 @@ const getAverageNodesCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/nodes/active-count active nodes count
-* @apiName getActiveNodeCount
-* @apiGroup NODE
-* @apiSuccess {Number} stats Active nodes count .
-*/
+ * @api {get} /stats/nodes/active-count active nodes count
+ * @apiName getActiveNodeCount
+ * @apiGroup NODE
+ * @apiSuccess {Number} stats Active nodes count .
+ */
 
 const getActiveNodeCount = (req, res) => {
-  Node.find({ "vpn.status": "up" }, (err, data) => {
+  Node.find({
+    "vpn.status": "up"
+  }, (err, data) => {
     if (err) {
       res.status(400).send({
         'success': false,
@@ -791,11 +822,11 @@ const getActiveNodeCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/sessions/daily-stats daily sessions count
-* @apiName getDailySessionCount
-* @apiGroup NODE
-* @apiSuccess {Object[]} stats List of daily using sessions count
-*/
+ * @api {get} /stats/sessions/daily-stats daily sessions count
+ * @apiName getDailySessionCount
+ * @apiGroup NODE
+ * @apiSuccess {Object[]} stats List of daily using sessions count
+ */
 
 const getDailySessionCount = (req, res) => {
   Connection.aggregate([{
@@ -840,11 +871,11 @@ const getDailySessionCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/sessions/average-count average sessions
-* @apiName getAverageSessionsCount
-* @apiGroup NODE
-* @apiSuccess {Object[]} average List of average sessions count.
-*/
+ * @api {get} /stats/sessions/average-count average sessions
+ * @apiName getAverageSessionsCount
+ * @apiGroup NODE
+ * @apiSuccess {Object[]} average List of average sessions count.
+ */
 
 const getAverageSessionsCount = (req, res) => {
   Connection.aggregate([{
@@ -889,14 +920,16 @@ const getAverageSessionsCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/sessions/active-count active session count.
-* @apiName getActiveSessionCount
-* @apiGroup NODE
-* @apiSuccess {Number} count Active sessions count.
-*/
+ * @api {get} /stats/sessions/active-count active session count.
+ * @apiName getActiveSessionCount
+ * @apiGroup NODE
+ * @apiSuccess {Number} count Active sessions count.
+ */
 
 const getActiveSessionCount = (req, res) => {
-  Connection.find({ end_time: null }, (err, data) => {
+  Connection.find({
+    end_time: null
+  }, (err, data) => {
     if (err) {
       res.status(400).send({
         'success': false,
@@ -912,11 +945,11 @@ const getActiveSessionCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/time/daily-stats daily duration usage.
-* @apiName getDailyDurationCount
-* @apiGroup NODE
-* @apiSuccess {Object[]} stats Daily duration of the vpn usage.
-*/
+ * @api {get} /stats/time/daily-stats daily duration usage.
+ * @apiName getDailyDurationCount
+ * @apiGroup NODE
+ * @apiSuccess {Object[]} stats Daily duration of the vpn usage.
+ */
 
 const getDailyDurationCount = (req, res) => {
   Connection.aggregate([{
@@ -931,9 +964,10 @@ const getDailyDurationCount = (req, res) => {
       "start": "$start_time",
       "end": {
         "$cond": [{
-          "$eq": ["$end_time", null]
-        },
-        parseInt(Date.now() / 1000), "$end_time"]
+            "$eq": ["$end_time", null]
+          },
+          parseInt(Date.now() / 1000), "$end_time"
+        ]
       }
     }
   }, {
@@ -970,11 +1004,11 @@ const getDailyDurationCount = (req, res) => {
 }
 
 /**
-* @api {get} /stats/time/average-daily average duration per everyday .
-* @apiName getDailyAverageDuration
-* @apiGroup NODE
-* @apiSuccess {String} average List of daily average duration of the vpn.
-*/
+ * @api {get} /stats/time/average-daily average duration per everyday .
+ * @apiName getDailyAverageDuration
+ * @apiGroup NODE
+ * @apiSuccess {String} average List of daily average duration of the vpn.
+ */
 
 const getDailyAverageDuration = (req, res) => {
   Connection.aggregate([{
@@ -983,14 +1017,16 @@ const getDailyAverageDuration = (req, res) => {
         '$add': [new Date(1970 - 1 - 1), {
           '$multiply': ['$start_time', 1000]
         }]
-      }, 'Sum': {
+      },
+      'Sum': {
         '$sum': {
-          '$subtract': [
-            {
-              '$cond': [
-                { '$eq': ['$end_time', null] },
+          '$subtract': [{
+              '$cond': [{
+                  '$eq': ['$end_time', null]
+                },
                 parseInt(Date.now() / 1000),
-                '$end_time']
+                '$end_time'
+              ]
             },
             '$start_time'
           ]
@@ -999,11 +1035,20 @@ const getDailyAverageDuration = (req, res) => {
     }
   }, {
     '$group': {
-      '_id': { '$dateToString': { 'format': '%d/%m/%Y', 'date': '$total' } },
-      'Average': { '$avg': '$Sum' }
+      '_id': {
+        '$dateToString': {
+          'format': '%d/%m/%Y',
+          'date': '$total'
+        }
+      },
+      'Average': {
+        '$avg': '$Sum'
+      }
     }
   }, {
-    '$sort': { '_id': 1 }
+    '$sort': {
+      '_id': 1
+    }
   }], (err, resp) => {
     if (err) {
       res.status(400).send({
@@ -1020,11 +1065,11 @@ const getDailyAverageDuration = (req, res) => {
 }
 
 /**
-* @api {get} /stats/time/average-duration average duration of sessions.
-* @apiName getAverageDuration
-* @apiGroup NODE
-* @apiSuccess {Number} average daily average duration of vpn usage.
-*/
+ * @api {get} /stats/time/average-duration average duration of sessions.
+ * @apiName getAverageDuration
+ * @apiGroup NODE
+ * @apiSuccess {Number} average daily average duration of vpn usage.
+ */
 
 const getAverageDuration = (req, res) => {
   let avgCount = []
@@ -1034,9 +1079,10 @@ const getAverageDuration = (req, res) => {
         "$sum": {
           "$subtract": [{
             "$cond": [{
-              "$eq": ["$end_time", null]
-            },
-            parseInt(Date.now() / 1000), "$end_time"]
+                "$eq": ["$end_time", null]
+              },
+              parseInt(Date.now() / 1000), "$end_time"
+            ]
           }, "$start_time"]
         }
       }
@@ -1064,24 +1110,30 @@ const getAverageDuration = (req, res) => {
 }
 
 /**
-* @api {get} /stats/time/last-average last day's average duration.
-* @apiName getLastAverageDuration
-* @apiGroup NODE
-* @apiSuccess {Number} average Average duration of the last day.
-*/
+ * @api {get} /stats/time/last-average last day's average duration.
+ * @apiName getLastAverageDuration
+ * @apiGroup NODE
+ * @apiSuccess {Number} average Average duration of the last day.
+ */
 
 const getLastAverageDuration = (req, res) => {
-  Connection.aggregate([
-    { '$match': { 'start_time': { '$gte': Date.now() / 1000 - (24 * 60 * 60) } } },
+  Connection.aggregate([{
+      '$match': {
+        'start_time': {
+          '$gte': Date.now() / 1000 - (24 * 60 * 60)
+        }
+      }
+    },
     {
       '$project': {
         'Sum': {
           '$sum': {
             '$subtract': [{
               '$cond': [{
-                '$eq': ['$end_time', null]
-              },
-              Date.now() / 1000, '$end_time']
+                  '$eq': ['$end_time', null]
+                },
+                Date.now() / 1000, '$end_time'
+              ]
             }, '$start_time']
           }
         }
@@ -1093,28 +1145,29 @@ const getLastAverageDuration = (req, res) => {
           '$avg': '$Sum'
         }
       }
-    }], (err, resp) => {
-      if (err) {
-        res.status(400).send({
-          'success': false,
-          'err': err
-        })
-      } else {
-        res.status(200).send({
-          'success': true,
-          'average': resp
-        })
-      }
-    })
+    }
+  ], (err, resp) => {
+    if (err) {
+      res.status(400).send({
+        'success': false,
+        'err': err
+      })
+    } else {
+      res.status(200).send({
+        'success': true,
+        'average': resp
+      })
+    }
+  })
 }
 
 /**
-* @api {get} stats/node?addr = {vpn address} vpn address stats.
-* @apiName getNodeStatistics
-* @apiGroup NODE
-* @apiParam {String} addr vpn address of the node.
-* @apiSuccess {Object} average The usage of the node.
-*/
+ * @api {get} stats/node?addr = {vpn address} vpn address stats.
+ * @apiName getNodeStatistics
+ * @apiGroup NODE
+ * @apiParam {String} addr vpn address of the node.
+ * @apiSuccess {Object} average The usage of the node.
+ */
 
 const getNodeStatistics = (req, res) => {
   let account_addr = req.query.addr;
@@ -1191,8 +1244,17 @@ const getDailyPaidSentsCount = (req, res) => {
       '_id': 1
     }
   }], (err, dailyCount) => {
-    if (err) { res.status(400).send({ success: false, message: "error getting daily paid session count" }) }
-    else { res.status(200).send({ success: true, stats: dailyCount }) }
+    if (err) {
+      res.status(400).send({
+        success: false,
+        message: "error getting daily paid session count"
+      })
+    } else {
+      res.status(200).send({
+        success: true,
+        stats: dailyCount
+      })
+    }
   })
 }
 
@@ -1227,29 +1289,70 @@ const getDailyTotalSentsUsed = (req, res) => {
       '_id': 1
     }
   }], (err, dailyCount) => {
-    if (err) { res.status(400).send({ success: false, message: "error getting daily sents used" }) }
-    else { res.status(200).send({ success: true, stats: dailyCount }) }
+    if (err) {
+      res.status(400).send({
+        success: false,
+        message: "error getting daily sents used"
+      })
+    } else {
+      res.status(200).send({
+        success: true,
+        stats: dailyCount
+      })
+    }
   })
 }
 
 const getAveragePaidSentsCount = (req, res) => {
-  Payment.aggregate([{ '$group': { '_id': 0, 'AverageCount': { '$avg': '$paid_count' } } }],
+  Payment.aggregate([{
+      '$group': {
+        '_id': 0,
+        'AverageCount': {
+          '$avg': '$paid_count'
+        }
+      }
+    }],
     (err, avgCount) => {
-      if (err) { res.status(400).send({ success: false, message: "error getting average paid sents count" }) }
-      else { res.status(200).send({ success: true, stats: avgCount }) }
+      if (err) {
+        res.status(400).send({
+          success: false,
+          message: "error getting average paid sents count"
+        })
+      } else {
+        res.status(200).send({
+          success: true,
+          stats: avgCount
+        })
+      }
     })
 }
 
 const getAverageTotalSentsCount = (req, res) => {
   Payment.aggregate([{
     '$project': {
-      'total': { '$add': ['$paid_count', '$unpaid_count'] }
+      'total': {
+        '$add': ['$paid_count', '$unpaid_count']
+      }
     }
   }, {
-    '$group': { '_id': 0, 'Avg': { '$avg': '$total' } }
+    '$group': {
+      '_id': 0,
+      'Avg': {
+        '$avg': '$total'
+      }
+    }
   }], (err, avgCount) => {
-    if (err) { res.status(400).send({ success: false, message: "error getting average total sents count" }) }
-    else { res.status(200).send({ success: true, stats: avgCount }) }
+    if (err) {
+      res.status(400).send({
+        success: false,
+        message: "error getting average total sents count"
+      })
+    } else {
+      res.status(200).send({
+        success: true,
+        stats: avgCount
+      })
+    }
   })
 }
 

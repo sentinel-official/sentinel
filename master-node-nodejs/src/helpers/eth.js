@@ -1,8 +1,10 @@
 import md5 from 'md5'
 import redis from 'redis'
-import sleep from 'sleep'
 import async from 'async'
 
+import {
+  addSession
+} from "./referral";
 import {
   Eth_manager
 } from '../eth/eth';
@@ -25,6 +27,9 @@ import {
   Usage
 } from '../models';
 import database from '../db/database';
+import {
+  REFERRAL_DUMMY
+} from '../config/referral';
 
 let redisClient = redis.createClient();
 
@@ -290,7 +295,7 @@ const getVpnUsage = async (accountAddr, cb) => {
   })
 }
 
-const payVpnSession = (fromAddr, amount, sessionId, net, txData, paymentType, cb) => {
+const payVpnSession = (fromAddr, amount, sessionId, net, txData, paymentType, deviceId = null, cb) => {
   let errors = []
   let txHashes = []
 
@@ -301,35 +306,45 @@ const payVpnSession = (fromAddr, amount, sessionId, net, txData, paymentType, cb
         if (paymentType == 'init') {
           VpnServiceManager.setInitialPayment(fromAddr, nonce, (err2, txHash2) => {
             if (!err2) {
-              txHashes.push(txHash2)
-              return cb(errors, txHashes)
+              if (deviceId) {
+                addSession(deviceId, sessionId, txHash2, (_, res) => {
+                  txHashes.push(txHash2)
+                  cb(errors, txHashes)
+                })
+              }
             } else {
               errors.push(err2)
-              return cb(errors, txHashes)
+              cb(errors, txHashes)
             }
           })
         } else if (paymentType == 'normal') {
           VpnServiceManager.payVpnSession(fromAddr, amount, sessionId, nonce, (err2, txHash2) => {
             if (!err2) {
+              if (deviceId) {
+                addSession(deviceId, sessionId, txHash2, (_, res) => {
+                  txHashes.push(txHash2)
+                  cb(errors, txHashes)
+                })
+              }
               txHashes.push(txHash2)
-              return cb(errors, txHashes)
+              cb(errors, txHashes)
             } else {
               errors.push(err2)
-              return cb(errors, txHashes)
+              cb(errors, txHashes)
             }
           })
         } else {
-          return cb(errors, txHashes)
+          cb(errors, txHashes)
         }
       })
     } else {
       errors.push(err1)
-      return cb(errors, txHashes);
+      cb(errors, txHashes);
     }
   })
 }
 
-const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, cb) => {
+const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, deviceId, cb) => {
   let err = null;
   let txHash = null;
   let makeTx = false;
@@ -419,12 +434,19 @@ const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeS
       }
     }, (next) => {
       if (makeTx) {
-        getValidNonce(COINBASE_ADDRESS, 'rinkeby', (nonce) => {
-          VpnServiceManager.addVpnUsage(fromAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, sessionId, nonce,
-            (err, txHash) => {
-              next(err, txHash)
-            })
-        })
+        if (toAddr === REFERRAL_DUMMY) {
+          addSession(deviceId, sessionId, null, (_, resp) => {
+            let error = _
+          })
+        } else {
+          getValidNonce(COINBASE_ADDRESS, 'rinkeby', (nonce) => {
+            VpnServiceManager.addVpnUsage(fromAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, sessionId, nonce,
+              (err, txHash) => {
+                next(err, txHash)
+              })
+          })
+        }
+
       } else {
         next(null, null)
       }

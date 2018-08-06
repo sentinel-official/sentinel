@@ -1,5 +1,4 @@
 import async from 'async';
-import request from 'request';
 import uuid from 'uuid'
 import axios from 'axios';
 
@@ -15,12 +14,16 @@ import {
 } from '../config/eth';
 import {
   Node,
-  Connection
+  Connection,
+  Device
 } from "../models";
 import {
   BTC_BASED_COINS
 } from '../config/swaps';
 import database from '../db/database';
+import {
+  REFERRAL_DUMMY
+} from '../config/referral';
 
 /**
  * @api {get} /client/vpn/list Get all unoccupied VPN servers list.
@@ -132,9 +135,28 @@ const getSocksList = (req, res) => {
  */
 
 const getCurrentVpnUsage = (req, res) => {
-  let accountAddr = req.body['account_addr']
-  accountAddr = accountAddr.toLowerCase();
+  let deviceId = 'device_id' in req.body ? req.body['device_id'] : null
+  let accountAddr = account_addr in req.body ? req.body['account_addr'] : REFERRAL_DUMMY
   let sessionName = req.body['session_name']
+  if (accountAddr)
+    accountAddr = accountAddr.toLowerCase();
+
+  if (deviceId) {
+    let findObj = {
+      'session_name': sessionName,
+      'account_addr': accountAddr
+    }
+    let updateObj = {
+      'device_id': deviceId
+    }
+    Device.findOneAndUpdate(findObj, {
+      $set: {
+        updateObj
+      }
+    }, {
+      upsert: true
+    })
+  }
 
   Connection.findOne({
     client_addr: accountAddr,
@@ -173,7 +195,7 @@ const getCurrentVpnUsage = (req, res) => {
  */
 
 const getVpnCredentials = (req, res) => {
-  let accountAddr = req.body['account_addr'];
+  let accountAddr = account_addr in req.body ? req.body['account_addr'] : REFERRAL_DUMMY
   let vpnAddr = req.body['vpn_addr'];
 
   async.waterfall([
@@ -241,13 +263,13 @@ const getVpnCredentials = (req, res) => {
         next(null, node);
       }
     }, (node, next) => {
-      EthHelper.getInitialPayment(accountAddr, (err, isPayed) => {
+      EthHelper.getInitialPayment(accountAddr, (err, isPaid) => {
         if (err) {
           next({
             'success': false,
             'message': 'Error occurred while cheking initial payment status.'
           }, null)
-        } else if (isPayed) {
+        } else if (isPaid) {
           let token = uuid.v4();
           let ip = node.ip;
           let port = 3000;
@@ -309,13 +331,14 @@ const payVpnUsage = (req, res) => {
   let txData = req.body['tx_data']
   let net = req.body['net']
   let fromAddr = req.body['from_addr']
-  let amount = req.body['amount'] || null
-  let sessionId = req.body['session_id'] || null
+  let amount = 'amount' in req.body ? req.body['amount'] : null
+  let sessionId = 'session_id' in req.body ? req.body['session_id'] : null
+  let deviceId = 'device_id' in req.body ? req.body['device_id'] : null
 
   if (sessionId)
     sessionId = sessionId.toString();
 
-  EthHelper.payVpnSession(fromAddr, amount, sessionId, net, txData, paymentType, (errors, txHashes) => {
+  EthHelper.payVpnSession(fromAddr, amount, sessionId, net, txData, paymentType, deviceId, (errors, txHashes) => {
     if (errors.length > 0) {
       res.send({
         'success': false,
@@ -481,11 +504,15 @@ const updateConnection = (req, res) => {
                         let sessionDuration = parseInt(connection['end_time']) - parseInt(connection['start_time'])
                         let amount = parseInt(calculateAmount(sentBytes, node['price_per_gb']) * DECIMALS);
                         let timeStamp = parseInt(Date.now() / 1000)
-
-                        EthHelper.addVpnUsage(accountAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, (err, txHash) => {
-                          if (err) txHashes.push(error)
-                          else txHashes.push(txHash)
-                          iterate()
+                        Device.findOne({
+                          'session_name': connection['session_name'],
+                          'account_addr': to_addr
+                        }, (_, device) => {
+                          EthHelper.addVpnUsage(accountAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, null, (err, txHash) => {
+                            if (err) txHashes.push(error)
+                            else txHashes.push(txHash)
+                            iterate()
+                          })
                         })
                       }, () => {
 

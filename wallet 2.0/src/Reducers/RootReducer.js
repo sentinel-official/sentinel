@@ -3,6 +3,7 @@ import { setLanguage, createAccount, setComponent } from './beforeAuth.reducer';
 import { setTestNet, getETHBalance, getSentBalance } from './header.reducer';
 import { setCurrentTab } from './sidebar.reducer';
 import { getAccount } from './dashboard.reducer';
+import { setListViewType, setVpnType, getVpnList } from './vpnlist.reducer';
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -12,7 +13,10 @@ const rootReducer = combineReducers({
     getAccount,
     getETHBalance,
     getSentBalance,
-    setCurrentTab
+    setCurrentTab,
+    setListViewType,
+    setVpnType,
+    getVpnList
 });
 
 export default rootReducer;

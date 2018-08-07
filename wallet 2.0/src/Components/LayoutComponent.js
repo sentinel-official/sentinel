@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Swixer from './Swixer';
+import VpnList from './VpnList';
 
 class LayoutComponent extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class LayoutComponent extends Component {
                 }
             case 'vpnList':
                 {
-                    return <div>VPN List</div>
+                    return <VpnList />
                 }
             case 'receive':
                 {

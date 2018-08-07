@@ -30,6 +30,12 @@ export default class SendComponent extends React.Component {
     })
   }
 
+  componentDidMount(){
+    var ele = document.querySelectorAll(".jss83");
+    ele[0].style.fontFamily='Montserrat, Medium';
+    ele[0].style.fontWeight='bold';
+  }
+
   render() {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>

@@ -16,8 +16,6 @@ const styles = theme => ({
   options:{
     marginTop: '-5px',
     marginLeft: '50px',
-    fontFamily: 'Montserrat, Medium',
-    fontWeight: 'bold'
   },
   list:{
     backgroundColor:'#B6B9CB',

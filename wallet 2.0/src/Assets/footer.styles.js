@@ -1,6 +1,6 @@
 const footerStyles = {
     mainDivStyle: {
-        backgroundColor: '#4e3695',
+        backgroundColor: '#54609a',
         height: 55,
         paddingTop: 5,
         paddingRight: 25,

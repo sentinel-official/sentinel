@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Swixer from './Swixer';
 
 class LayoutComponent extends Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class LayoutComponent extends Component {
                 }
             case 'swixer':
                 {
-                    return <div>Swixer</div>
+                    return <Swixer />
                 }
             default:
                 {

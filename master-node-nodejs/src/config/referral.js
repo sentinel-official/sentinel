@@ -1,5 +1,5 @@
-let REFERRAL_URL = ''
-let REFERRAL_DUMMY = ''
+let REFERRAL_URL = process.env.REFERRAL_URL
+let REFERRAL_DUMMY = process.env.REFERRAL_DUMMY
 
 export {
   REFERRAL_DUMMY,

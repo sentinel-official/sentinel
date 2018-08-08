@@ -10,3 +10,6 @@ export const CURRENTTAB = 'CURRENTTAB';
 export const LISTTYPE = 'LISTTYPE';
 export const GETVPNLIST = 'GETVPNLIST';
 export const SETVPNTYPE = 'SETVPNTYPE';
+export const GET_ETH_BALANCE = 'GET_ETH_BALANCE';
+export const GET_AVAIL_BALANCE = 'GET_AVAIL_BALANCE';
+export const GET_SENT_BALANCE = 'GET_SENT_BALANCE';

@@ -1,4 +1,25 @@
 <resources>
+    <string name="app_name">Sentinel Lite</string>
+    <string name="sentinel">Sentinel</string>
+    <string name="lite">Lite</string>
+    <string name="default_language">en</string>
+
+    <!-- String Array -->
+    <string-array name="language">
+        <!--<item>Chinese</item>-->
+        <item>English</item>
+        <!--<item>Japanese</item>-->
+        <item>Russian</item>
+        <!--<item>Spanish</item>-->
+    </string-array>
+    <string-array name="language_code">
+        <!--<item>zh</item>-->
+        <item>en</item>
+        <!--<item>ja</item>-->
+        <item>ru</item>
+        <!--<item>es</item>-->
+    </string-array>
+
     <!-- ics_openVPN strings -->
     <string name="fetching_server_details">Получение данных от VPN-сервера</string>
     <string name="channel_name_background">Статистика подключений</string>
@@ -68,7 +89,7 @@
     <string name="abi_mismatch">Preferred native ABI precedence of this device (%1$s) and ABI reported by native libraries (%2$s) mismatch</string>
     <string name="unhandled_exception_context">%3$s: %1$s\n\n%2$s</string>
     <string name="unhandled_exception">Необработанная ошибка: %1$s\n\n%2$s</string>
-    <string name="unknown_state" translatable="false">Unknown state</string>
+    <string name="unknown_state">Unknown state</string>
     <string name="state_connecting">Подключается</string>
     <string name="state_wait">Ожидание ответа</string>
     <string name="state_auth">Аутентификация</string>
@@ -94,9 +115,9 @@
     <string name="deprecated_tls_remote">Config uses option tls-remote that was deprecated in 2.3 and finally removed in 2.4</string>
     <string name="ipv4_format_error">Ошибка в распознавании IPv4 адреса</string>
     <string name="shortcut_profile_notfound">Профиль указанный в ярлыке не найден</string>
-    <string name="state_user_vpn_permission" translatable="false">Ожжидание разрешения от пользователя для VPN API</string>
-    <string name="state_user_vpn_password" translatable="false">Ожидание пароля от VPN пользователя</string>
-    <string name="state_user_vpn_permission_cancelled" translatable="false">Диалог разрешения API VPN отменен.\n\nПредоставьте разрешение для использования служб VPN</string>
+    <string name="state_user_vpn_permission">Ожжидание разрешения от пользователя для VPN API</string>
+    <string name="state_user_vpn_password">Ожидание пароля от VPN пользователя</string>
+    <string name="state_user_vpn_permission_cancelled">Диалог разрешения API VPN отменен.\n\nПредоставьте разрешение для использования служб VPN</string>
     <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
     <string name="config_error_found">Ошибка в конфигурации</string>
     <string name="no_vpn_support_image">Ваш образ не поддерживает VPNService API.</string>

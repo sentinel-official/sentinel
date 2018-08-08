@@ -64,7 +64,7 @@ public class BonusRepository {
     }
 
     private MutableLiveData<BonusInfoEntity> getBonusInfoMutableLiveData() {
-        updateBonusInfo();
+        fetchBonusInfo();
         return mBonusInfoMutableLiveData;
     }
 
@@ -72,7 +72,6 @@ public class BonusRepository {
      * public getter methods for LiveData and SingleLiveEvents
      */
     public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
-        getAccountDetails();
         return mAccountInfoLiveEvent;
     }
 
@@ -92,14 +91,18 @@ public class BonusRepository {
         return mDao.getBonusInfoEntity();
     }
 
-    public void updateBonusInfo() {
+    public void fetchAccountInfo() {
+        getAccountDetails();
+    }
+
+    public void fetchBonusInfo() {
         getReferralInfo();
     }
 
     /*
      * Network call
      */
-    public void getAccountDetails() {
+    private void getAccountDetails() {
         mBonusWebService.getAccountInfo(mDeviceId).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {

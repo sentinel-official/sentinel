@@ -34,7 +34,7 @@ public class ReferralViewModel extends ViewModel {
     }
 
     public void updateReferralInfo() {
-        mBonusRepository.updateBonusInfo();
+        mBonusRepository.fetchBonusInfo();
     }
 
     public void fetchSncVersionInfo() {

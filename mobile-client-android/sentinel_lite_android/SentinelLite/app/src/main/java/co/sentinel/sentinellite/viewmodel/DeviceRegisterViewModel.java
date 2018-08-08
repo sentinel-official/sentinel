@@ -9,11 +9,20 @@ import co.sentinel.sentinellite.util.SingleLiveEvent;
 
 public class DeviceRegisterViewModel extends ViewModel {
     private final BonusRepository mBonusRepository;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mRegisterDeviceIdLiveEvent;
 
-    public DeviceRegisterViewModel(BonusRepository iBonusRepository) {
+    DeviceRegisterViewModel(BonusRepository iBonusRepository) {
         mBonusRepository = iBonusRepository;
+        mAccountInfoLiveEvent = iBonusRepository.getAccountInfoLiveEvent();
         mRegisterDeviceIdLiveEvent = mBonusRepository.getRegisterDeviceIdLiveEvent();
+    }
+
+    /*
+     * Getters
+     */
+    public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
+        return mAccountInfoLiveEvent;
     }
 
     public SingleLiveEvent<Resource<GenericResponse>> getRegisterDeviceIdLiveEvent() {
@@ -22,5 +31,9 @@ public class DeviceRegisterViewModel extends ViewModel {
 
     public void registerDeviceId(String iReferralCode) {
         mBonusRepository.registerDeviceId(iReferralCode);
+    }
+
+    public void fetchAccountInfo() {
+        mBonusRepository.fetchAccountInfo();
     }
 }

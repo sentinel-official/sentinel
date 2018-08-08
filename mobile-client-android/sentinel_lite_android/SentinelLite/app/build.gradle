@@ -28,7 +28,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
@@ -45,10 +45,6 @@ android {
             jniLibs.srcDirs = ['src/main/ovpnlibs/jniLibs']
             jni.srcDirs = [] //disable automatic ndk-build }
         }
-    }
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
     }
 }
 

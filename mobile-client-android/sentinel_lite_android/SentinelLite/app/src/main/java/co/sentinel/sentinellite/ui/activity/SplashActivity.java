@@ -154,7 +154,7 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
             if (iTag.equals(TAG_UPDATE)) {
                 updateApp();
             } else if (iTag.equals(TAG_ERROR)) {
-                mViewModel.reload();
+                mViewModel.fetchAccountInfo();
             }
         } else {
             finish();

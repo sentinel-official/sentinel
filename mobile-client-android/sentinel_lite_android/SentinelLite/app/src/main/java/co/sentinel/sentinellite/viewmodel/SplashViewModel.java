@@ -26,6 +26,7 @@ public class SplashViewModel extends ViewModel {
      * Getters
      */
     public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
+        fetchAccountInfo();
         return mAccountInfoLiveEvent;
     }
 
@@ -33,8 +34,8 @@ public class SplashViewModel extends ViewModel {
         return mSlcVersionInfoLiveEvent;
     }
 
-    public void reload() {
-        mBonusRepository.getAccountDetails();
+    public void fetchAccountInfo() {
+        mBonusRepository.fetchAccountInfo();
     }
 
     public void fetchSlcVersionInfo() {

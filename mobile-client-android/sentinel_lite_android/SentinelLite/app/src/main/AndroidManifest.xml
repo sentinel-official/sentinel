@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="co.sentinel.sentinellite">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".SentinelLiteApp"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.CustomTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:allowBackup">
+
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.OnBoardingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.DeviceRegisterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".ui.activity.DashboardActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.HelperActivity"
+            android:theme="@style/CustomDialogActivityTheme" />
+        <activity
+            android:name=".ui.activity.VpnListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GenericListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ReferralActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- Declaring components in ics-openVPN -->
+        <service
+            android:name="de.blinkt.openvpn.core.OpenVPNService"
+            android:permission="android.permission.BIND_VPN_SERVICE">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="de.blinkt.openvpn.api.ExternalOpenVPNService"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="de.blinkt.openvpn.api.IOpenVPNAPIService" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name="de.blinkt.openvpn.LaunchVPN"
+            android:excludeFromRecents="true"
+            android:label="@string/vpn_launch_title"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Panel"
+            tools:ignore="ExportedActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Bugsnag Meta-Data -->
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="1a6577e99de2f3137015aff209ca8ee2" />
+
+    </application>
+
+</manifest>

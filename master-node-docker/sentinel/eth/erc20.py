@@ -2,22 +2,18 @@
 import rlp
 from ethereum.transactions import Transaction
 
-from .eth import mainnet
-from .eth import rinkeby
+from .eth import eth_manager
+from ..config import MAIN_TOKENS
 from ..config import MAX_TX_TRY
-from ..config import SENTINEL_ABI
-from ..config import SENTINEL_ADDRESS
-from ..config import SENTINEL_NAME
-from ..config import SENTINEL_TEST_ABI
-from ..config import SENTINEL_TEST_ADDRESS
-from ..config import SENTINEL_TEST_NAME
+from ..config import RINKEBY_TOKENS
 
 
-class SentinelManger(object):
+class ERC20Manager(object):
     def __init__(self, net, name, address, abi):
         self.net = net
         self.address = address
-        self.contract = net.web3.eth.contract(contract_name=name, abi=abi, address=address)
+        self.contract = net.web3.eth.contract(
+            contract_name=name, abi=abi, address=address)
 
     def get_balance(self, account_addr):
         try:
@@ -27,7 +23,8 @@ class SentinelManger(object):
                 'data': self.net.web3.toHex(
                     self.net.web3.toBytes(hexstr=self.contract.encodeABI(fn_name='balanceOf', args=[account_addr])))
             }
-            balance = self.net.web3.toInt(hexstr=self.net.web3.eth.call(caller_object))
+            balance = self.net.web3.toInt(
+                hexstr=self.net.web3.eth.call(caller_object))
         except Exception as err:
             return {'code': 201, 'error': str(err)}, None
         return None, balance
@@ -51,11 +48,20 @@ class SentinelManger(object):
             except Exception as err:
                 err = str(err)
                 if '-32000' in err:
-                    count = count + 1
+                    count += 1
                 if (count >= MAX_TX_TRY) or ('-32000' not in err):
                     return {'code': 202, 'error': err}, None
         return None, tx_hash
 
 
-sentinel_main = SentinelManger(mainnet, SENTINEL_NAME, SENTINEL_ADDRESS, SENTINEL_ABI)
-sentinel_rinkeby = SentinelManger(rinkeby, SENTINEL_TEST_NAME, SENTINEL_TEST_ADDRESS, SENTINEL_TEST_ABI)
+erc20_manger = {
+    'main': {},
+    'rinkeby': {}
+}
+for symbol in MAIN_TOKENS.keys():
+    token = MAIN_TOKENS[symbol]
+    erc20_manger['main'][symbol] = ERC20Manager(eth_manager['main'], token['name'], token['address'], token['abi'])
+for symbol in RINKEBY_TOKENS.keys():
+    token = RINKEBY_TOKENS[symbol]
+    erc20_manger['rinkeby'][symbol] = ERC20Manager(eth_manager['rinkeby'], token['name'], token['address'],
+                                                   token['abi'])

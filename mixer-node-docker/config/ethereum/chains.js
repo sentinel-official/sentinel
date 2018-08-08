@@ -1,19 +1,16 @@
-let chainConfigs = [
-  {
+let chainConfigs = {
+  main: {
     chainId: 1,
-    chainName: 'main',
     rpcServerAddress: 'https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy'
   },
-  {
+  ropsten: {
     chainId: 3,
-    chainName: 'ropsten',
     rpcServerAddress: 'https://ropsten.infura.io/aiAxnxbpJ4aG0zed1aMy'
   },
-  {
+  rinkeby: {
     chainId: 4,
-    chainName: 'rinkeby',
     rpcServerAddress: 'https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy'
   }
-];
+};
 
 module.exports = chainConfigs;

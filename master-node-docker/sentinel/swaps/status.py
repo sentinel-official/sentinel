@@ -8,15 +8,16 @@ from ..db import db
 
 class SwapStatus(object):
     def on_get(self, req, resp):
-        tx_hash = str(req.get_param('tx_hash'))
+        key = str(req.get_param('key'))
 
-        result = db.token_swaps.find_one({
-            'tx_hash_0': tx_hash
-        }, {
-            '_id': 0,
-            'tx_data': 0,
-            'tx_hash_0': 0,
-            'time_0': 0
+        find_obj = None
+        if len(key) == 66:
+            find_obj = {'tx_hash_0': key}
+        elif len(key) == 34:
+            find_obj = {'from_address': key}
+
+        result = db.swaps.find_one(find_obj, {
+            '_id': 0
         })
         if result is None:
             message = {

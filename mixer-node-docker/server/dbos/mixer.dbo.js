@@ -9,7 +9,7 @@ let insertMixDetails = (mixDetails, cb) => {
   });
 };
 
-let getMixDetails = (cb) => {
+let getAllValidMixDetails = (cb) => {
   MixDetailsModel.find({
     $or: [
       {
@@ -36,7 +36,7 @@ let getMixDetails = (cb) => {
 
 let updateMixStatus = (toAddress, message, cb) => {
   MixDetailsModel.findOneAndUpdate({
-    toAddress: toAddress
+    'toAddress': toAddress
   }, {
       $set: {
         'lastUpdateOn': Math.round(Date.now() / Math.pow(10, 3)),
@@ -50,7 +50,7 @@ let updateMixStatus = (toAddress, message, cb) => {
 
 let increaseTries = (toAddress, cb) => {
   MixDetailsModel.findOneAndUpdate({
-    toAddress: toAddress
+    'toAddress': toAddress
   }, {
       $inc: {
         'tries': 1
@@ -59,33 +59,28 @@ let increaseTries = (toAddress, cb) => {
       if (error) cb(error, null);
       else cb(null, result);
     });
-}
+};
 
-let updateTransactionsStatus = (toAddress, remainingAmount, txHash, message, cb) => {
+let updateMixTransactionStatus = (toAddress, txInfo, remainingAmount, cb) => {
   MixDetailsModel.findOneAndUpdate({
-    toAddress: toAddress
+    'toAddress': toAddress
   }, {
       $push: {
-        'transactionStatuses': {
-          'txHash': txHash,
-          'message': message,
-          'timestamp': Math.round(Date.now() / Math.pow(10, 3))
-        },
+        'txInfos': txInfo
       },
       $set: {
-        'remainingAmount': remainingAmount,
-        'lastUpdateOn': Math.round(Date.now() / Math.pow(10, 3))
+        'remainingAmount': remainingAmount
       }
     }, (error, result) => {
       if (error) cb(error, null);
       else cb(null, result);
-    });
+    })
 };
 
 module.exports = {
   insertMixDetails: insertMixDetails,
-  getMixDetails: getMixDetails,
+  getAllValidMixDetails: getAllValidMixDetails,
   updateMixStatus: updateMixStatus,
   increaseTries: increaseTries,
-  updateTransactionsStatus: updateTransactionsStatus
+  updateMixTransactionStatus: updateMixTransactionStatus
 };

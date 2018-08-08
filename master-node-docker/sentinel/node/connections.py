@@ -32,6 +32,9 @@ class UpdateConnections(object):
                 if 'account_addr' in connection:
                     connection['client_addr'] = connection['account_addr'].lower()
                     connection.pop('account_addr')
+                if 'usage' in connection:
+                    connection['server_usage'] = connection['usage']
+                    connection.pop('usage')
 
                 data = db.connections.find_one({
                     'vpn_addr': connection['vpn_addr'],
@@ -48,7 +51,7 @@ class UpdateConnections(object):
                         'end_time': None
                     }, {
                         '$set': {
-                            'server_usage': connection['usage']
+                            'server_usage': connection['server_usage']
                         }
                     })
                 session_names.append(connection['session_name'])
@@ -83,14 +86,27 @@ class UpdateConnections(object):
                     amount = int(calculate_amount(sent_bytes, node['price_per_gb']) * DECIMALS)
                     timestamp = int(time.time())
                     print(account_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
+                    device = db.devices.find_one({
+                        'session_name': connection['session_name'],
+                        'account_addr': to_addr
+                    })
+                    device_id = device['device_id'] if device else None
 
                     error, tx_hash = eth_helper.add_vpn_usage(account_addr, to_addr, sent_bytes, session_duration,
-                                                              amount,
-                                                              timestamp)
+                                                              amount, timestamp, device_id)
                     if error:
                         tx_hashes.append(error)
                     else:
                         tx_hashes.append(tx_hash)
+                        if tx_hash is not None:
+                            _ = db.connections.find_one_and_update({
+                                'vpn_addr': connection['vpn_addr'],
+                                'session_name': connection['session_name']
+                            }, {
+                                '$set': {
+                                    'tx_hash': tx_hash
+                                }
+                            })
             message = {
                 'success': True,
                 'message': 'Connection details updated successfully.',

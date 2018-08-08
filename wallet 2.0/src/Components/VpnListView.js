@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { List, ListItem } from '@material-ui/core';
 import lang from '../Constants/language';
 import Flag from 'react-world-flags';
-import Country from 'countrynames';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 
 class VpnListView extends Component {

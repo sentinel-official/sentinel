@@ -112,8 +112,8 @@ public class VpnRepository {
     public void getVpnConfig(String iVpnAddress, String iToken, String iIp, int iPort) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
                 .deviceIdMain(mDeviceId)
+                .accountAddress(mDeviceId)
                 .vpnAddress(iVpnAddress)
-                .accountAddress(iToken)
                 .token(iToken)
                 .build();
         String aUrl = String.format(Locale.US, AppConstants.URL_BUILDER, iIp, iPort);

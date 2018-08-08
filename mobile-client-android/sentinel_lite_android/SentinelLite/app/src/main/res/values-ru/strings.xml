@@ -110,7 +110,7 @@
     <string name="error_rsa_sign">Ошибка при входе с ключом Android хранилища %1$s: %2$s</string>
 
     <!-- Translatable strings -->
-    <string name="app_sub_name">Защищённая децентрализационная VPN-платформа</string>
+    <string name="app_sub_name">Защищённая децентрализованная VPN-платформа</string>
     <string name="next">Дальше</string>
     <string name="disconnect">Отключиться</string>
     <string name="view_vpns">Список VPN</string>
@@ -166,7 +166,7 @@
     <string name="share_id">Поделиться кодом</string>
     <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %s</string>
     <string name="info_title_1">Поделись своим реферальным кодом для бесплатных токенов за каждого зарегистрированного пользователя</string>
-    <string name="info_title_2">Защищённая децентрализационная VPN-платформа</string>
+    <string name="info_title_2">Защищённая децентрализованная VPN-платформа</string>
     <string name="info_desc_1">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети</string>
     <string name="info_desc_2">Децентрализованный VPN-сервис прямо у вас под рукой</string>
     <string name="generic_error">Что-то пошло не так. Попробуйте ещё раз.</string>

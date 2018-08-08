@@ -1,4 +1,26 @@
+# Add project specific ProGuard rules here.
+# You can control the set of applied configuration files using the
+# proguardFiles setting in build.gradle.
+#
+# For more details, see
+#   http://developer.android.com/guide/developing/tools/proguard.html
+
+# If your project uses WebView with JS, uncomment the following
+# and specify the fully qualified class name to the JavaScript interface
+# class:
+#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+#   public *;
+#}
+
+# Uncomment this to preserve the line number information for
+# debugging stack traces.
+#-keepattributes SourceFile,LineNumberTable
+
+# If you keep the line number information, uncomment this to
+# hide the original source file name.
+#-renamesourcefileattribute SourceFile
 #Specifies not to ignore non-public library classes. As of version 4.5, this is the default setting
+
 -dontskipnonpubliclibraryclasses
 #!code/simplification/arithmetic,!field/*,!class/merging/*
 -optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
@@ -12,20 +34,16 @@
 #Specifies to write out some more information during processing. If the program terminates with an exception, this option will print out the entire stack trace, instead of just the exception message.
 -verbose
 
--dontwarn com.j256.ormlite.**
--dontwarn com.amazonaws.**
 -dontwarn android.support.v7.**
 -dontwarn android.support.v4.**
 -dontwarn com.google.android.gms.**
--dontwarn com.koushikdutta.**
 -dontwarn com.googlecode.**
 -dontwarn android.support.design.**
--dontwarn io.branch.**
--dontwarn com.cloudinary.**
 -dontnote android.support.**
 -dontwarn android.support.**
--dontwarn com.rey.material.**
--dontwarn com.chauthai.swipereveallayout.**
+-dontwarn org.greenrobot.greendao.database.**
+-dontwarn org.slf4j.**
+
 #Retrofit
 # Platform calls Class.forName on types which do not exist on Android to determine platform.
 -dontnote retrofit2.Platform
@@ -42,9 +60,6 @@
 -dontwarn javax.annotation.**
 -dontwarn com.android.volley.toolbox.**
 -dontwarn com.facebook.infer.**
-
-#ChipsLayoutManager
--dontwarn com.beloo.widget.chipslayoutmanager.Orientation
 
 -keepclassmembers class * {
   public <init>(android.content.Context);
@@ -85,13 +100,7 @@
     @android.support.annotation.Keep <init>(...);
 }
 
-#ChipsLayoutManager
--keep class com.beloo.widget.chipslayoutmanager.* { *; }
--keep class com.beloo.widget.chipslayoutmanager.** { *; }
--keep class com.beloo.widget.chipslayoutmanager.*$* { *; }
--keep class RestrictTo.*
--keep class RestrictTo.**
--keep class RestrictTo.*$*
+
 
 # Optimization is turned off by default. Dex does not like code run
 # through the ProGuard optimize and preverify steps (and performs some
@@ -137,13 +146,9 @@
 
 -keepattributes Signature
 -keepattributes *Annotation*
--keep class com.squareup.okhttp.** { *; }
 -keep class com.cloudinary.** { *; }
+-keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
--keep class com.rey.material.** { *; }
--keep class uk.co.chrisjenx.calligraphy.* { *; }
--keep class uk.co.chrisjenx.calligraphy.*$* { *; }
--keep class org.jsoup.**
 
 #-ignorewarnings
 
@@ -188,12 +193,6 @@ public void onEventMainThread(**);
 -dontnote com.android.vending.licensing.ILicensingService
 -dontnote com.google.vending.licensing.ILicensingService
 -dontnote com.google.android.vending.licensing.ILicensingService
--keep class com.j256.**
--keepclassmembers class com.j256.** { *; }
--keep enum com.j256.**
--keepclassmembers enum com.j256.** { *; }
--keep interface com.j256.**
--keepclassmembers interface com.j256.** { *; }
 # Google Map
 #-keep class com.google.android.gms.** { *; }
 #-keep interface com.google.android.gms.** { *; }
@@ -276,6 +275,35 @@ public void onEventMainThread(**);
     public static <fields>;
 }
 
+
+#GreenDao
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+#Glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+## for DexGuard only
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+#Chrisjenx Calligraphy
+-keep class uk.co.chrisjenx.calligraphy.* { *; }
+-keep class uk.co.chrisjenx.calligraphy.*$* { *; }
+
+
 ###### ADDITIONAL OPTIONS NOT USED NORMALLY
 
 #To keep callback calls. Uncomment if using any
@@ -289,10 +317,6 @@ public void onEventMainThread(**);
 -keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }
 
-# Application classes that will be serialized/deserialized over Gson
--keep class com.barandbench.barandbench_poc.model.** { *; }
-
-
 #Uncomment if using Serializable
 -keepclassmembers class * implements java.io.Serializable {
     private static final java.io.ObjectStreamField[] serialPersistentFields;
@@ -301,3 +325,7 @@ public void onEventMainThread(**);
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
+
+# AVLoadingIndicatorView
+-keep class com.wang.avi.** { *; }
+-keep class com.wang.avi.indicators.** { *; }

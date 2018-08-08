@@ -275,6 +275,7 @@ const createPagestyles = {
 }
 
 const authenticateStyles = {
+    w_600:{width: 600},
     f_s_16: { fontSize: 16 },
     f_s_14: { fontSize: 14 },
     textFieldCreate: {

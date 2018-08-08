@@ -5,7 +5,8 @@ import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { sendError, setLanguage } from '../Actions/authentication.action';
 import { getAccount, getFreeAmount } from '../Actions/receive.action';
-import { Snackbar, FlatButton } from 'material-ui';
+import { Snackbar } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -56,9 +57,7 @@ class Receive extends Component {
         let language = this.props.language;
         return (<MuiThemeProvider>
             <div>
-                <FlatButton
-                    label={lang[language].GetTokens}
-                    labelStyle={receiveStyles.flatButtonLabelStyle}
+                <Button
                     onClick={this.getFree.bind(this)}
                     disabled={this.props.isTest}
                     style={
@@ -66,8 +65,8 @@ class Receive extends Component {
                         receiveStyles.flatButtonStyleOnTest: 
                         receiveStyles.flatButtonStyleOffTest
                     }
-                />
-                <Grid>
+                >{lang[language].GetTokens}</Button>
+                <Grid style={receiveStyles.w_100}>
                     <Row>
                         <Col>
                             <div style={receiveStyles.QRCodeDiv}>
@@ -107,7 +106,7 @@ class Receive extends Component {
                     open={this.state.openSnack}
                     message={this.state.snackMessage}
                     autoHideDuration={2000}
-                    onRequestClose={this.snackRequestClose}
+                    onClose={this.snackRequestClose}
                     style={receiveStyles.m_b_2}
                 />
             </div>

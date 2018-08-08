@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import Swixer from './Swixer';
 import VpnList from './VpnList';
 import Receive from './Receive';
+import Swaps from './Swaps';
 
 class LayoutComponent extends Component {
     constructor(props) {
@@ -35,6 +36,10 @@ class LayoutComponent extends Component {
             case 'swixer':
                 {
                     return <Swixer />
+                }
+            case 'swaps':
+                {
+                    return <Swaps />
                 }
             default:
                 {

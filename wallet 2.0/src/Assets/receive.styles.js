@@ -1,4 +1,7 @@
 const receiveStyles = {
+    w_100: {
+        width: '100%'
+    },
     flatButtonStyle: { 
         paddingLeft: 10, 
         paddingRight: 10, 
@@ -15,13 +18,13 @@ const receiveStyles = {
         position: 'absolute', right: 0, marginTop: 10, marginRight: 20
     },
     QRCodeDiv:{
-        marginLeft: 370,
+        marginLeft: 256,
         marginTop: 70,
         marginBottom: 30,
     },
     w_256: { width: 256 },
     m_l_290: {
-        marginLeft: 290
+        marginLeft: 180
     },
     c_f_w: {
         color: '#31b0d5',

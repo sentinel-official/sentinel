@@ -292,7 +292,7 @@ class ETHHelper(object):
                 })
 
         if make_tx is True:
-            if to_addr == REFERRAL_DUMMY:
+            if to_addr == REFERRAL_DUMMY and sent_bytes >= LIMIT_100MB:
                 _, res = add_session(device_id, session_id)
             else:
                 nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')

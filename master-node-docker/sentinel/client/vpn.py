@@ -92,7 +92,7 @@ class GetVpnCredentials(object):
                                     token = uuid4().hex
                                     ip, port = str(node['ip']), 3000
                                     body = {
-                                        'account_addr': account_addr,
+                                        'account_addr': token if account_addr == REFERRAL_DUMMY else account_addr,
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)

@@ -5,6 +5,7 @@ import time
 import falcon
 
 from ..config import DECIMALS
+from ..config import REFERRAL_DUMMY
 from ..db import db
 from ..helpers import eth_helper
 
@@ -35,6 +36,9 @@ class UpdateConnections(object):
                 if 'usage' in connection:
                     connection['server_usage'] = connection['usage']
                     connection.pop('usage')
+
+                if 'client_addr' in connection and len(connection['client_addr']) == 32:
+                    connection['client_addr'] = REFERRAL_DUMMY
 
                 data = db.connections.find_one({
                     'vpn_addr': connection['vpn_addr'],

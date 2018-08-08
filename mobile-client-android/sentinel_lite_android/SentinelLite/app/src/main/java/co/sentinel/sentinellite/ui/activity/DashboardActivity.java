@@ -480,6 +480,14 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                     loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
                 }
             }
+
+            if (state.equals("USER_VPN_PERMISSION_CANCELLED")) {
+                SentinelLiteApp.isVpnInitiated = false;
+                SentinelLiteApp.isVpnConnected = false;
+                AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
+                loadVpnFragment(getString(localizedResId));
+            }
+
             // Called when user connects to a VPN node from other activity
             if (mHasActivityResult) {
                 onVpnConnectionInitiated(AppPreferences.getInstance().getString(AppConstants.PREFS_CONFIG_PATH));

@@ -639,7 +639,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             }
             // Called when the VPN connection terminates
             if (!VpnStatus.isVPNActive()) {
-//            if (state.equals("NOPROCESS") || state.equals("USER_VPN_PERMISSION_CANCELLED")) {
                 if (SentinelApp.isVpnConnected && !mHasActivityResult) {
                     SentinelApp.isVpnInitiated = false;
                     SentinelApp.isVpnConnected = false;
@@ -647,6 +646,14 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                     if (!(aFragment instanceof WalletFragment))
                         loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
                 }
+            }
+            // Called when VPN permission is not given
+            if (state.equals("USER_VPN_PERMISSION_CANCELLED")) {
+                SentinelApp.isVpnInitiated = false;
+                SentinelApp.isVpnConnected = false;
+                AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
+                if (!(aFragment instanceof WalletFragment))
+                    loadVpnFragment(getString(localizedResId));
             }
             // Called when user connects to a VPN node from other activity
             if (mHasActivityResult) {

@@ -47,6 +47,12 @@ from sentinel.node import GetTotalNodeCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
+from sentinel.node import GetActiveSessionCountOld
+from sentinel.node import GetDailyActiveNodeCountOld
+from sentinel.node import GetActiveNodeCountOld
+from sentinel.node import GetDailyDataCountOld
+from sentinel.node import GetTotalDataCountOld
+from sentinel.node import GetAverageDurationOld
 from sentinel.swaps import GetAvailableTokens
 from sentinel.swaps import GetExchangeValue
 from sentinel.swaps import GetNewAddress
@@ -110,6 +116,12 @@ server.add_route('/stats/earnings/all', GetDailyTotalSentsUsed())
 server.add_route('/stats/payments/average/day', GetAveragePaidSentsCount())
 server.add_route('/stats/earnings/average', GetAverageTotalSentsCount())
 server.add_route('/stats/node', GetNodeStatistics())
+server.add_route('/stats/sessions/active-count', GetActiveSessionCountOld())
+server.add_route('/stats/nodes/daily-active', GetDailyActiveNodeCountOld())
+server.add_route('/stats/nodes/active-count', GetActiveNodeCountOld())
+server.add_route('/stats/data/daily-stats', GetDailyDataCountOld())
+server.add_route('/stats/data/total-data', GetTotalDataCountOld())
+server.add_route('/stats/time/average-duration', GetAverageDurationOld())
 
 # Token Swaps
 server.add_route('/swaps', Up())

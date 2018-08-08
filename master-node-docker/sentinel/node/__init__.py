@@ -23,3 +23,9 @@ from .stats import GetLastDataCount
 from .stats import GetNodeStatistics
 from .stats import GetTotalDataCount
 from .stats import GetTotalNodeCount
+from .stats import GetActiveSessionCountOld
+from .stats import GetDailyActiveNodeCountOld
+from .stats import GetActiveNodeCountOld
+from .stats import GetDailyDataCountOld
+from .stats import GetTotalDataCountOld
+from .stats import GetAverageDurationOld

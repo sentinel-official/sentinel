@@ -754,3 +754,160 @@ class GetNodeStatistics(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
+class GetActiveSessionCountOld(object):
+    def on_get(self, req, resp):
+        count = db.connections.find({'end_time': None}).count()
+        message = {'success': True, 'count': count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+class GetDailyActiveNodeCountOld(object):
+    def on_get(self, req, resp):
+        daily_count = []
+        result = db.statistics.aggregate([{
+            '$project': {
+                'total': {
+                    '$add': [
+                        datetime.datetime(1970, 1, 1), {
+                            '$multiply': ['$timestamp', 1000]
+                        }
+                    ]
+                },
+                'nodes': '$nodes.up'
+            }
+        }, {
+            '$group': {
+                '_id': {
+                    '$dateToString': {
+                        'format': '%d/%m/%Y',
+                        'date': '$total'
+                    }
+                },
+                'nodesCount': {
+                    '$sum': '$nodes'
+                }
+            }
+        }, {
+            '$sort': {
+                '_id': 1
+            }
+        }])
+
+        for doc in result:
+            daily_count.append(doc)
+
+        message = {'success': True, 'stats': daily_count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+class GetActiveNodeCountOld(object):
+    def on_get(self, req, resp):
+        count = db.nodes.find({'vpn.status': 'up'}).count()
+        message = {'success': True, 'count': count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+class GetDailyDataCountOld(object):
+    def on_get(self, req, resp):
+        daily_count = []
+        output = db.connections.find({'server_usage': {'$exists': True}})
+
+        result = db.connections.aggregate([{
+            '$project': {
+                'total': {
+                    '$add': [
+                        datetime.datetime(1970, 1, 1), {
+                            '$multiply': ['$start_time', 1000]
+                        }
+                    ]
+                },
+                'data': '$server_usage.down'
+            }
+        }, {
+            '$group': {
+                '_id': {
+                    '$dateToString': {
+                        'format': '%d/%m/%Y',
+                        'date': '$total'
+                    }
+                },
+                'dataCount': {
+                    '$sum': '$data'
+                }
+            }
+        }, {
+            '$sort': {
+                '_id': 1
+            }
+        }])
+
+        for doc in result:
+            daily_count.append(doc)
+
+        message = {'success': True, 'stats': daily_count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+class GetTotalDataCountOld(object):
+    def on_get(self, req, resp):
+        total_count = []
+        result = db.connections.aggregate([{
+            '$match': {
+                'start_time': {
+                    '$gte': time.time() - (24 * 60 * 60)
+                }
+            }
+        }, {
+            '$group': {
+                '_id': None,
+                'Total': {
+                    '$sum': '$server_usage.down'
+                }
+            }
+        }])
+
+        for doc in result:
+            total_count.append(doc)
+
+        message = {'success': True, 'stats': total_count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+class GetAverageDurationOld(object):
+    def on_get(self, req, resp):
+        avg_count = []
+        result = db.connections.aggregate([{
+            '$project': {
+                'Sum': {
+                    '$sum': {
+                        '$subtract': [{
+                            '$cond': [{
+                                '$eq': ['$end_time', None]
+                            },
+                                int(time.time()), '$end_time']
+                        }, '$start_time']
+                    }
+                }
+            }
+        }, {
+            '$group': {
+                '_id': None,
+                'Average': {
+                    '$avg': '$Sum'
+                }
+            }
+        }])
+
+        for doc in result:
+            avg_count.append(doc)
+
+        message = {'success': True, 'average': avg_count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)

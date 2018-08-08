@@ -38,7 +38,8 @@ const homePageStyles = {
     },
     raisedButton: {
         marginLeft: '7%',
-        backgroundColor: 'transparent',
+        backgroundColor: '#2f3245',
+        color: 'white',
         height: '42px'
     },
     toolbarTitle: {

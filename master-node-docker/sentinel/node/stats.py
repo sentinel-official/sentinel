@@ -26,7 +26,7 @@ def getAverageNodeCount():
     }, {
         '$project': {
             '_id': 0,
-            'Average': {
+            'average': {
                 '$divide': [
                     "$SUM", {
                         '$divide': [{
@@ -80,7 +80,7 @@ def getDailyAverageDuration():
                     'date': '$total'
                 }
             },
-            'Average': {
+            'average': {
                 '$avg': '$Sum'
             }
         }
@@ -91,10 +91,10 @@ def getDailyAverageDuration():
     }])
 
     for doc in result:
-        doc['Average'] = doc['Average']/(60)
+        doc['average'] = doc['average']/(60)
         daily_count.append(doc)
 
-    message = {'success': True, 'stats': daily_count}
+    message = {'success': True, 'units': 'minutes', 'stats': daily_count}
     return message
 
 def getLastAverageDuration():
@@ -121,17 +121,17 @@ def getLastAverageDuration():
     }, {
         '$group': {
             '_id': None,
-            'Average': {
+            'average': {
                 '$avg': '$Sum'
             }
         }
     }])
 
     for doc in result:
-        doc['Average'] = doc['Average']/(60)
+        doc['average'] = doc['average']/(60)
         avg_count.append(doc)
 
-    message = {'success': True, 'average': avg_count}
+    message = {'success': True, 'units': 'minutes', 'average': avg_count}
     return message
 
 
@@ -173,7 +173,7 @@ class GetDailyDataCount(object):
                 doc['dataCount'] = doc['dataCount']/(1024*1024)
                 daily_count.append(doc)
 
-            message = {'success': True, 'stats': daily_count}
+            message = {'success': True, 'units':'MB', 'stats': daily_count}
         
         else:
             message = {'success': False, 'message': 'No param found'}
@@ -190,16 +190,16 @@ class GetTotalDataCount(object):
             result = db.connections.aggregate([{
                 '$group': {
                     '_id': None,
-                    'Total': {
+                    'total': {
                         '$sum': '$server_usage.down'
                     }
                 }
             }])
             for doc in result:
-                doc['Total'] = doc['Total']/(1024*1024)
+                doc['total'] = doc['total']/(1024*1024)
                 total_count.append(doc)
 
-            message = {'success': True, 'stats': total_count}
+            message = {'success': True, 'units': 'MB', 'stats': total_count}
         
         else:
             message = {'success': False, 'message': 'No param found'}
@@ -223,17 +223,17 @@ class GetLastDataCount(object):
             }, {
                 '$group': {
                     '_id': None,
-                    'Total': {
+                    'total': {
                         '$sum': '$server_usage.down'
                     }
                 }
             }])
 
             for doc in result:
-                doc['Total'] = doc['Total']/(1024*1024)
+                doc['total'] = doc['total']/(1024*1024)
                 total_count.append(doc)
 
-            message = {'success': True, 'stats': total_count}
+            message = {'success': True, 'units': 'MB', 'stats': total_count}
         
         else:
             message = {'success': False, 'message': 'No params found'}
@@ -414,7 +414,7 @@ class GetDailyPaidSentsCount(object):
         for doc in result:
             daily_count.append(doc)
 
-        message = {'success': True, 'stats': daily_count}
+        message = {'success': True, 'units':'SENT', 'stats': daily_count}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -426,12 +426,12 @@ class GetAveragePaidSentsCount(object):
         if format is not None:
             avg_count = []
 
-            result = db.payments.aggregate([{'$group': {'_id': 0, 'AverageCount': {'$avg': '$paid_count'}}}])
+            result = db.payments.aggregate([{'$group': {'_id': 0, 'averageCount': {'$avg': '$paid_count'}}}])
 
             for doc in result:
                 avg_count.append(doc)
 
-            message = {'success': True, 'average': avg_count}
+            message = {'success': True, 'units':'SENT', 'average': avg_count}
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -450,13 +450,13 @@ class GetAverageTotalSentsCount(object):
                     'total': {'$add': ['$paid_count', '$unpaid_count']}
                 }
                 }, {
-                    '$group': {'_id': 0, 'Avg': {'$avg': '$total'}}}
+                    '$group': {'_id': 0, 'average': {'$avg': '$total'}}}
             ])
 
             for doc in result:
                 avg_count.append(doc)
 
-            message = {'success': True, 'average': avg_count}
+            message = {'success': True,'units':'SENT', 'average': avg_count}
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -503,7 +503,7 @@ class GetDailyTotalSentsUsed(object):
             for doc in result:
                 daily_count.append(doc)
 
-            message = {'success': True, 'stats': daily_count}
+            message = {'success': True, 'units':'SENT', 'stats': daily_count}
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -578,7 +578,7 @@ class GetAverageSessionsCount(object):
             }, {
                 '$project': {
                     '_id': 0,
-                    'Average Sessions': {
+                    'averageSessions': {
                         '$divide': [
                             "$SUM", {
                                 '$divide': [{
@@ -662,7 +662,7 @@ class GetDailyDurationCount(object):
                 doc['durationCount'] = doc['durationCount']/(60)
                 daily_count.append(doc)
 
-            message = {'success': True, 'stats': daily_count}
+            message = {'success': True, 'units':'minutes', 'stats': daily_count}
         
         else:
             message = {'success': False, 'message': 'No param found'}
@@ -693,17 +693,17 @@ class GetAverageDuration(object):
             }, {
                 '$group': {
                     '_id': None,
-                    'Average': {
+                    'average': {
                         '$avg': '$Sum'
                     }
                 }
             }])
 
             for doc in result:
-                doc['Average'] = doc['Average']/(60)
+                doc['average'] = doc['average']/(60)
                 avg_count.append(doc)
 
-            message = {'success': True, 'average': avg_count}
+            message = {'success': True, 'units':'minutes', 'average': avg_count}
         
         elif filter is not None and format is None:
             message = getDailyAverageDuration()

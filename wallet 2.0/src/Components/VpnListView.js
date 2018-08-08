@@ -4,8 +4,9 @@ import { bindActionCreators } from 'redux';
 import { List, ListItem } from '@material-ui/core';
 import lang from '../Constants/language';
 import Flag from 'react-world-flags';
-import Country from 'countrynames';
 import { Grid, Row, Col } from 'react-flexbox-grid';
+import { listStyles } from '../Assets/vpnListView.styles';
+let Country = window.require('countrynames');
 
 class VpnListView extends Component {
     constructor(props) {
@@ -16,8 +17,18 @@ class VpnListView extends Component {
 
     render() {
         let language = this.props.lang;
+        let vpnsList = this.props.availableVpns;
         return (
-            <div>Hello</div>
+            <div>
+                {
+                    vpnsList.length !== 0 ?
+                        <List>
+                            
+                        </List>
+                        :
+                        <div></div>
+                }
+            </div>
         )
     }
 }

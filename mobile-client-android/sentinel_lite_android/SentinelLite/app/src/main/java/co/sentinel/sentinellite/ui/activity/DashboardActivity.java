@@ -477,7 +477,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                     SentinelLiteApp.isVpnInitiated = false;
                     SentinelLiteApp.isVpnConnected = false;
                     AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                    loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
+                    loadVpnFragment(null);
                 }
             }
 

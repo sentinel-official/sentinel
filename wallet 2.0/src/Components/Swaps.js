@@ -4,16 +4,18 @@ import { bindActionCreators } from 'redux';
 import {
     getAvailableTokens, getTokenBalance,
     getSentValue
-} from '../Actions/swaps.actions';
+} from '../Actions/swaps.action';
+import { Dialog } from 'material-ui';
 import { getAccount } from '../Actions/receive.action';
-import { Grid, Row, Col } from 'react-flexbox-grid';
-import TransIcon from 'material-ui/svg-icons/action/swap-horiz';
+import { Row, Col } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
 import Button from '@material-ui/core/Button';
-import { getEthBalance, getSentBalance } from './../Actions/swaps.actions';
+import { getETHBalance, getSentBalance } from '../Actions/header.action';
 import { setLanguage, setComponent } from './../Actions/authentication.action';
 import { swapsStyles as styles } from './../Assets/swaps.styles';
-import TransactionScreen from './TransactionScreen';
+import ConvertToErc from './ConvertToErc';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Pivx from './Pivx';
 let lang = require('./../Constants/language');
 
 class Swaps extends Component {
@@ -27,6 +29,7 @@ class Swaps extends Component {
             currentSentValue: 1,
             isGetBalanceCalled: false,
             local_address: '',
+            pivxTokenDetails: [],
             ethBalance: 'Loading',
             sentBalance: 'Loading',
         }
@@ -48,8 +51,6 @@ class Swaps extends Component {
     }
 
     componentDidMount = () => {
-        this.getCompareValue(this.state.selectedToken);
-
         let that = this;
 
         getAccount((err, account_addr) => {
@@ -92,43 +93,34 @@ class Swaps extends Component {
         let self = this;
         this.props.getAvailableTokens()
             .then(() => {
-                let tokensList = this.props.getAvailableTokensRes.filter((token) => token.symbol !== 'SENT');
-                self.setState({ tokens: tokensList })
+                let tokensList = this.props.getAvailableTokensRes.filter(
+                    (token) => token.symbol !== 'SENT' && token.symbol !== 'PIVX');
+                let pivxToken = this.props.getAvailableTokensRes.filter((token) => token.symbol === 'PIVX');
+                self.setState({ tokens: tokensList, pivxTokenDetails: pivxToken })
                 tokensList.map((token) => {
                     self.getUnitBalance(token);
                 })
             })
     }
 
-
-    getCompareValue = (symbol) => {
-        let token = this.state.tokens.find(obj => obj.symbol === symbol);
-        if (token) {
-            let self = this;
-            let value = 10 ** token.decimals;
-            getSentValue(token.address, value, function (err, swapValue) {
-                if (err) { }
-                else {
-                    self.setState({ currentSentValue: swapValue });
-                }
-            })
-        }
-    }
+    handleClose = () => {
+        this.setState({ showTransScreen: false });
+    };
 
     getUserEthBalance() {
         let that = this;
-        this.props.getEthBalance(this.state.local_address)
-        .then(() => {
-                that.setState({ ethBalance: this.props.getEthBalanceRes})
-        })
+        that.props.getEthBalance(this.state.local_address, that.props.isTest)
+            .then(() => {
+                that.setState({ ethBalance: that.props.getEthBalanceRes })
+            })
     }
 
     getUserSentBalance() {
         let that = this;
-        this.props.getSentBalance(this.state.local_address)
-        .then(() => {
-                that.setState({ sentBalance: this.props.getSentBalanceRes})
-        })
+        that.props.getSentBalance(that.state.local_address, that.props.isTest)
+            .then(() => {
+                that.setState({ sentBalance: that.props.getSentBalanceRes })
+            })
     }
 
 
@@ -159,20 +151,20 @@ class Swaps extends Component {
                         <div style={styles.tokenStyle2}>
                             <Row>
                                 <Col xs={4}>
-                                    <img src={'../src/Images/logo.svg'} alt="logo" style={{ width: 50, height: 50, margin: '1% 10%' }} />
+                                    <img src={'../src/Images/logo.svg'} alt="logo" style={styles.sentImg} />
                                 </Col>
                                 <Col xs={8}>
                                     <b>
                                         <p style={styles.otherBalanceBalc} data-tip data-for="sentsBal">
-                                            {this.state.sentBalance && this.state.sentBalance !== 'Loading' ? 
-                                            this.state.sentBalance.toFixed(8) : 'Loading'}
+                                            {this.props.getSentBalanceRes && this.props.getSentBalanceRes !== 'Loading' ?
+                                                this.props.getSentBalanceRes.toFixed(8) : 0}
                                         </p>
                                     </b>
-                                    <p style={{ color: 'grey', marginTop: -15, letterSpacing: 2, wordBreak: 'break-all' }}>Sentinel [SENT]</p>
+                                    <p style={styles.sentinel}>Sentinel [SENT]</p>
                                 </Col>
                                 <ReactTooltip id="sentsBal" place="bottom">
-                                    <span>{this.state.sentBalance && this.state.sentBalance !== 'Loading' ? 
-                                    this.state.sentBalance.toFixed(8) : 'Loading'}</span>
+                                    <span>{this.props.getSentBalanceRes && this.props.getSentBalanceRes !== 'Loading' ?
+                                        this.props.getSentBalanceRes.toFixed(8) : 'Loading'}</span>
                                 </ReactTooltip>
                             </Row>
                         </div>
@@ -180,50 +172,85 @@ class Swaps extends Component {
                     {this.state.tokens.length !== 0 ?
                         this.state.tokens.map((token, index) =>
                             <Col xs={6}>
-                                <div style={index % 2 == 0 ?
-                                    token.name === 'PIVX' ? styles.tokenStyle1 : styles.tokenStyle
-                                    : styles.tokenStyle2}>
-                                    <Row>
+                                <Row>
+                                    <Button style={index % 2 == 0 ?
+                                        styles.tokenStyle
+                                        : styles.tokenStyle2}
+                                        onClick={() => {
+                                            this.setState({ showTransScreen: true, selectedToken: token });
+                                        }}>
                                         <Col xs={4}>
-                                            <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'} alt="logo" style={styles.otherBalanceLogo} />
+                                            <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'}
+                                                alt="logo" style={styles.otherBalanceLogo} />
                                         </Col>
                                         <Col xs={8}>
-                                            {token.name !== 'PIVX' ?
-                                                <b>
-                                                    <p style={styles.otherBalanceBalc}>
-                                                        {this.state.tokenBalances[token.symbol] ? this.state.tokenBalances[token.symbol] : 0}
-                                                    </p>
-                                                </b>
-                                                : null}
-                                            <p style={token.name !== 'PIVX' ? styles.otherBalanceText : styles.f_w_b}>{token.name} [{token.symbol}]</p>
+                                            <b>
+                                                <p style={styles.otherBalanceBalc}>
+                                                    {this.state.tokenBalances[token.symbol] > 0 ?
+                                                        this.state.tokenBalances[token.symbol] :
+                                                        0}
+                                                </p>
+                                            </b>
+                                            <p style={styles.otherBalanceText}>{token.name} [{token.symbol}]</p>
+                                        </Col>
+                                    </Button>
+                                </Row>
+                            </Col>
+                        )
+                        :
+                        <div><br />
+                            <p style={styles.no_tokens_msg}>
+                                No Tokens Found
+                                          </p>
+                        </div>
+                    }{this.state.pivxTokenDetails.length !== 0 ?
+                        this.state.pivxTokenDetails.map((token) =>
+                            <Col xs={6}>
+                                <div style={styles.tokenStyle1}>
+                                    <Row style={{
+                                        cursor: this.props.isTest ?
+                                            'not-allowed' :
+                                            'pointer', backgroundColor: '#badee4', paddingTop: 5
+                                    }}
+                                        onClick={() => {
+                                            if (!this.props.isTest)
+                                                this.setState({
+                                                    showTransPivxScreen: true,
+                                                    showAddress: false,
+                                                    isPivxSend: false
+                                                });
+                                        }}>
+                                        <Col xs={4}>
+                                            <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'}
+                                                alt="logo" style={styles.otherBalanceLogo} />
+                                        </Col>
+                                        <Col xs={8}>
+                                            <p style={styles.f_w_b}>{token.name} [{token.symbol}]</p>
                                         </Col>
                                     </Row>
                                 </div>
                             </Col>
                         )
-                        :
-                        <div><br />
-                            <p style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginTop: '35%' }}>
-                                No Tokens Found
-                                          </p>
-                        </div>
-                    }
+                        : null}
                 </Row>
-                <div style={styles.convertERCDiv}>
-                    <Button
-                        fullWidth={true}
-                        disabled={this.props.isTest || this.state.tokens.length === 0}
-                        onClick={() => {
-                            this.setState({ showTransScreen: true });
-                            this.getCompareValue(this.state.selectedToken);
-                        }}
-                        buttonStyle={this.props.isTest || this.state.tokens.length === 0 ?
-                            styles.disabledButtonStyle : styles.enabledButtonStyle}
-                        style={styles.convertERCButton}
-                    >{lang[language].ConvertERC}
-                    </Button>
-                </div>
-                {this.state.showTransScreen ? <TransactionScreen /> : null}
+                {this.state.showTransScreen ? <MuiThemeProvider>
+                    <Dialog
+                        contentStyle={{ width: 700 }}
+                        bodyStyle={{ padding: 0 }}
+                        open={this.state.showTransScreen}
+                        onRequestClose={this.handleClose}
+                    >
+                        <ConvertToErc token={this.state.selectedToken} />
+                    </Dialog></MuiThemeProvider> : null}
+                {this.state.showTransPivxScreen ? <MuiThemeProvider>
+                    < Dialog
+                        contentStyle={{ width: 700 }}
+                        bodyStyle={{ padding: '5%' }}
+                        open={this.state.showTransPivxScreen}
+                        onRequestClose={this.handleTransClose}
+                    >
+                        <Pivx />
+                    </Dialog></MuiThemeProvider> : null}
             </div>
         )
     }
@@ -234,8 +261,9 @@ function mapDispatchToActions(dispatch) {
         setLanguage: setLanguage,
         setComponent: setComponent,
         getAvailableTokens: getAvailableTokens,
-        getEthBalance: getEthBalance,
-        getSentBalance: getSentBalance
+        getEthBalance: getETHBalance,
+        getSentBalance: getSentBalance,
+        getSentValue: getSentValue
     }, dispatch)
 }
 
@@ -244,8 +272,10 @@ function mapStateToProps(state) {
         lang: state.setLanguage,
         setComponentResponse: state.setComponent,
         getAvailableTokensRes: state.getAvailableTokens,
-        getEthBalanceRes: state.getSwapEthBalance,
-        getSentBalanceRes: state.getSwapSentBalance
+        getEthBalanceRes: state.getEthBalance,
+        getSentBalanceRes: state.getSentBalance,
+        isTest: state.setTestNet,
+        getSentValueRes: state.getSentValue
     }
 }
 export default connect(mapStateToProps, mapDispatchToActions)(Swaps);

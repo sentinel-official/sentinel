@@ -17,6 +17,7 @@ export async function getETHBalance(address, isTest) {
             'Content-type': 'application/json',
         }
     })
+    
     if (response.data.status === '1') {
         var balance = response.data.result / (10 ** 18);
         return {

@@ -94,7 +94,7 @@ const swapsStyles = {
     tokenStyle1: {
         marginTop: '10%',
         marginLeft: '5%',
-        padding: '6% 6%',
+        padding: '4% 6%',
         marginRight: '10%',
         paddingBottom: 0,
         backgroundColor: '#BADEE4',
@@ -103,17 +103,21 @@ const swapsStyles = {
     tokenStyle2: {
         marginTop: '10%',
         marginLeft: '10%',
-        padding: '6% 6%',
+        padding: '4% 6%',
         paddingBottom: 0,
+        width: 343,
+        borderRadius:0,
         backgroundColor: '#ececf1',
         height: 85
     },
     tokenStyle: {
         marginTop: '10%',
         marginLeft: '5%',
-        padding: '6% 6%',
+        padding: '0% 6%',
         marginRight: '10%',
         paddingBottom: 0,
+        borderRadius:0,
+        width: 343,
         backgroundColor: '#ececf1',
         height: 85
     },
@@ -130,6 +134,23 @@ const swapsStyles = {
     convertERCDiv: {
         padding: '0% 5%',
         marginTop: '5%'
+    },
+    no_tokens_msg: {
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginTop: '35%'
+    },
+    sentinel: {
+        color: 'grey',
+        marginTop: -15,
+        letterSpacing: 2,
+        wordBreak: 'break-all'
+    },
+    sentImg: {
+        width: 50,
+        height: 50,
+        margin: '1% 10%'
     }
 }
 

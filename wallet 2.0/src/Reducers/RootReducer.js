@@ -5,9 +5,7 @@ import { setCurrentTab } from './sidebar.reducer';
 import { getAccount } from './dashboard.reducer';
 import { setListViewType, setVpnType, getVpnList } from './vpnlist.reducer';
 import { getFreeAmount } from './receive.reducer';
-import { getEthBalance as getSwapEthBalance, 
-    getSentBalance as getSwapSentBalance, 
-    getAvailableTokens } from './swaps.reducer';
+import { getAvailableTokens, getSentValue } from './swaps.reducer';
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -22,9 +20,8 @@ const rootReducer = combineReducers({
     setVpnType,
     getVpnList,
     getFreeAmount,
-    getSwapEthBalance: getSwapEthBalance,
-    getSwapSentBalance: getSwapSentBalance,
-    getAvailableTokens
+    getAvailableTokens,
+    getSentValue
 });
 
 export default rootReducer;

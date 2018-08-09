@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
 import co.sentinel.sentinellite.BuildConfig;
 import co.sentinel.sentinellite.R;
@@ -39,6 +40,10 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
     }
 
     private void initViewModel() {
+        String aVersionName = getString(R.string.lite, BuildConfig.VERSION_NAME);
+        ((TextView) findViewById(R.id.tv_app_version)).setText(aVersionName);
+
+
         // init Device ID
         @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 

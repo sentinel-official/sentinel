@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import co.sentinel.sentinellite.BuildConfig;
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.SentinelLiteApp;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
@@ -146,6 +147,8 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                     mDrawerLayout.closeDrawers();
                     return true;
                 });
+        String aVersionName = getString(R.string.lite, BuildConfig.VERSION_NAME);
+        ((TextView) mNavFooter.getHeaderView(0).findViewById(R.id.tv_app_version)).setText(aVersionName);
         mNavFooter.getHeaderView(0).findViewById(R.id.ib_telegram).setOnClickListener(v -> openUrl(getString(R.string.telegram_url)));
         mNavFooter.getHeaderView(0).findViewById(R.id.ib_medium).setOnClickListener(v -> openUrl(getString(R.string.medium_url)));
         mNavFooter.getHeaderView(0).findViewById(R.id.ib_twitter).setOnClickListener(v -> openUrl(getString(R.string.twitter_url)));

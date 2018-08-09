@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sentinel Lite</string>
     <string name="sentinel">Sentinel</string>
-    <string name="lite">Lite</string>
+    <string name="lite">Lite Client v %s</string>
     <string name="default_language">en</string>
 
     <!-- String Array -->
@@ -190,7 +190,7 @@
     <string name="info_title_2">Защищённая децентрализованная VPN-платформа</string>
     <string name="info_desc_1">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети</string>
     <string name="info_desc_2">Децентрализованный VPN-сервис прямо у вас под рукой</string>
-    <string name="generic_error">Что-то пошло не так. Попробуйте ещё раз.</string>
+    <string name="generic_error">Не удалось подключиться к серверам Sentinel. Пожалуйста, попробуйте еще раз.</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="claim_bonus">Забрать бонус</string>

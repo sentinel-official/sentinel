@@ -4,7 +4,7 @@
     <style name="CustomTextAppearance">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/bangla_sangam_mn</item>
+        <item name="android:fontFamily">@font/dinpro</item>
         <item name="android:textSize">@dimen/text_14</item>
         <item name="android:textColor">@color/colorTextWhite</item>
         <item name="android:textAllCaps">false</item>
@@ -36,6 +36,10 @@
         <item name="android:textSize">@dimen/text_16</item>
     </style>
 
+    <style name="CustomTextAppearance.Text18">
+        <item name="android:textSize">@dimen/text_16</item>
+    </style>
+
     <style name="CustomTextAppearance.Text20">
         <item name="android:textSize">@dimen/text_20</item>
     </style>
@@ -50,11 +54,6 @@
 
     <style name="CustomTextAppearance.Text12.Gray">
         <item name="android:textColor">@color/colorTextGray</item>
-    </style>
-
-    <style name="CustomTextAppearance.Text12.InfoWhiteNormal">
-        <item name="android:textColor">@color/colorTextInfoWhite</item>
-        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="CustomTextAppearance.Text12.White50Normal">
@@ -81,32 +80,48 @@
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="CustomTextAppearance.Text16.WhiteNormal">
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="CustomTextAppearance.Text16.Orange">
-        <item name="android:textColor">@color/colorButtonOrange</item>
-    </style>
-
     <style name="CustomTextAppearance.Text14.White70Normal">
         <item name="android:textColor">@color/colorTextWhiteWithAlpha70</item>
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="CustomTextAppearance.Text14.Blue">
+        <item name="android:textColor">@color/colorTextBlue</item>
+    </style>
+
+
+    <style name="CustomTextAppearance.Text14.InfoWhiteNormal">
+        <item name="android:textColor">@color/colorTextInfoWhite</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text16.WhiteNormal">
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text18.InfoWhite">
+        <item name="android:textColor">@color/colorTextInfoWhite</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text32.Orange">
+        <item name="android:textColor">@color/colorButtonOrange</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <!-- Navigation Drawer Item Theme -->
     <style name="DrawerItemTheme">
-        <item name="android:textSize">@dimen/text_14</item>
-        <item name="android:fontFamily">@font/bangla_sangam_mn</item>
+        <item name="android:textSize">@dimen/text_18</item>
+        <item name="android:fontFamily">@font/dinpro</item>
         <item name="android:listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
         <item name="listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
+        <item name="android:textColor">@color/colorTextInfoWhite</item>
     </style>
 
     <!-- TextInputLayout And TextInputEditText Theme -->
     <style name="TextInputLayoutTheme" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/colorButtonOrange</item>
-        <item name="android:textSize">@dimen/text_10</item>
-        <item name="android:fontFamily">@font/bangla_sangam_mn</item>
+        <item name="android:textSize">@dimen/text_12</item>
+        <item name="android:fontFamily">@font/dinpro</item>
     </style>
 
     <style name="TextInputEditTextTheme">

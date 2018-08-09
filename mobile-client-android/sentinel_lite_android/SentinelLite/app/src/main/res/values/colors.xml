@@ -9,12 +9,14 @@
     <color name="colorButtonGreen">#9BD362</color>
     <color name="colorButtonDisconnect">#FF3434</color>
     <!-- Text Colors -->
-    <color name="colorTextInfoWhite">#E8E9EA</color>
+    <color name="colorTextInfoWhite">#CECECE</color>
+    <color name="colorTextDrawerWhite">#9D9D9D</color>
     <color name="colorTextWhite">#DDDDDD</color>
     <color name="colorTextWhiteWithAlpha70">#BADDDDDD</color>
     <color name="colorTextWhiteWithAlpha50">#80DDDDDD</color>
     <color name="colorTextDarkBlue">#32445c</color>
     <color name="colorTextGray">#AEB1B5</color>
+    <color name="colorTextBlue">#4F749B</color>
     <!-- Control Color -->
     <color name="colorControlNormal">#1FFFFFFF</color>
     <!-- Background Window Color -->

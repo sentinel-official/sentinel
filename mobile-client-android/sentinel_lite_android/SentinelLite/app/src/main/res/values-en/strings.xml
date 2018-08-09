@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sentinel Lite</string>
     <string name="sentinel">Sentinel</string>
-    <string name="lite">Lite</string>
+    <string name="lite">Lite Client v %s</string>
     <string name="default_language">en</string>
 
     <!-- String Array -->
@@ -190,7 +190,7 @@
     <string name="info_title_2">Secure decentralized VPN</string>
     <string name="info_desc_1">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network</string>
     <string name="info_desc_2">Decentralized VPN right at your finger tips</string>
-    <string name="generic_error">Something went wrong. Please try again.</string>
+    <string name="generic_error">There was a problem connecting to the Sentinel servers. Please try again.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="claim_bonus">Claim Bonus</string>

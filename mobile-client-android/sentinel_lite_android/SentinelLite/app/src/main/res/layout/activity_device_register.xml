@@ -72,26 +72,11 @@
         android:layout_marginStart="32dp"
         android:text="@string/sentinel"
         android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@+id/app_name_postfix"
+        app:layout_constraintBottom_toTopOf="@+id/app_sub_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_icon" />
-
-    <TextView
-        android:id="@+id/app_name_postfix"
-        style="@style/CustomTextAppearance.Text14.White70Normal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/lite"
-        android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@id/app_sub_name"
-        app:layout_constraintEnd_toEndOf="@+id/app_name"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/app_name"
-        app:layout_constraintTop_toBottomOf="@id/app_name" />
 
     <TextView
         android:id="@+id/app_sub_name"
@@ -103,14 +88,13 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/app_sub_name"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
         app:layout_constraintStart_toEndOf="@+id/vertical_guideline3"
-        app:layout_constraintTop_toBottomOf="@+id/app_name_postfix"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/app_name" />
 
     <TextView
         android:id="@+id/add_referral"

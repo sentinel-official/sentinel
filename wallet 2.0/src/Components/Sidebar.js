@@ -5,7 +5,7 @@ import { menuItems } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import MenuIcon from '@material-ui/icons/Menu';
-import { Drawer, IconButton } from '@material-ui/core';
+import { Drawer, IconButton, Tooltip } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
@@ -56,18 +56,20 @@ class Sidebar extends Component {
                                     !isTest && (item.value === 'vpnList' || item.value === 'vpnHistory') ?
                                         sidebarStyles.disabledDivStyle : sidebarStyles.activeDivStyle
                                 } onClick={() => { this.setMenu(item); }}>
-                                    <label
-                                        style={
-                                            (!isTest && (item.value === 'vpnList' || item.value === 'vpnHistory'))
-                                                || (isTest && (item.value === 'swixer'))
-                                                ?
-                                                sidebarStyles.disabledLabelStyle :
-                                                (item.value === currentTab ?
-                                                    sidebarStyles.activeLabelStyle :
-                                                    sidebarStyles.normalLabelStyle)
-                                        }>
-                                        <MenuIcon />
-                                    </label>
+                                    <Tooltip title={item.name}>
+                                        <label
+                                            style={
+                                                (!isTest && (item.value === 'vpnList' || item.value === 'vpnHistory'))
+                                                    || (isTest && (item.value === 'swixer'))
+                                                    ?
+                                                    sidebarStyles.disabledLabelStyle :
+                                                    (item.value === currentTab ?
+                                                        sidebarStyles.activeLabelStyle :
+                                                        sidebarStyles.normalLabelStyle)
+                                            }>
+                                            <MenuIcon />
+                                        </label>
+                                    </Tooltip>
                                 </div>
                                 <hr style={{ margin: 0 }} />
                             </div>

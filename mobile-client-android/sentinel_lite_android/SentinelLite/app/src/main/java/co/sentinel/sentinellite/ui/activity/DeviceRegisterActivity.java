@@ -10,6 +10,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 
@@ -96,6 +97,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private void initView() {
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         mTetReferral = findViewById(R.id.tet_referral);
+        mTetReferral.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         findViewById(R.id.btn_next).setOnClickListener(this);
         mTetReferral.addTextChangedListener(this);
     }

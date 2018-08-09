@@ -135,8 +135,8 @@
     <string name="next">Next</string>
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">VIEW VPNs</string>
-    <string name="view_vpn_list">VPN List</string>
-    <string name="view_socks5_list">SOCKS5 List</string>
+    <string name="view_vpn_list">VPN Nodes</string>
+    <string name="view_socks5_list">SOCKS5 Nodes</string>
     <string name="connect_to_vpn">Connect to VPN</string>
     <string name="connect">Connect</string>
     <string name="no_internet">No internet connectivity. Please try again.</string>

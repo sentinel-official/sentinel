@@ -41,7 +41,7 @@ def getAverageNodeCount():
     for doc in result:
         avg_count.append(doc)
 
-    message = {'success': True, 'average': avg_count}
+    message = {'success': True, 'average': avg_count[0]['average']}
 
     return message
 
@@ -131,7 +131,7 @@ def getLastAverageDuration():
         doc['average'] = doc['average']/(60)
         avg_count.append(doc)
 
-    message = {'success': True, 'units': 'minutes', 'average': avg_count}
+    message = {'success': True, 'units': 'minutes', 'average': avg_count[0]['average']}
     return message
 
 
@@ -199,7 +199,7 @@ class GetTotalDataCount(object):
                 doc['total'] = doc['total']/(1024*1024)
                 total_count.append(doc)
 
-            message = {'success': True, 'units': 'MB', 'stats': total_count}
+            message = {'success': True, 'units': 'MB', 'stats': total_count[0]['total']}
         
         else:
             message = {'success': False, 'message': 'No param found'}
@@ -233,7 +233,7 @@ class GetLastDataCount(object):
                 doc['total'] = doc['total']/(1024*1024)
                 total_count.append(doc)
 
-            message = {'success': True, 'units': 'MB', 'stats': total_count}
+            message = {'success': True, 'units': 'MB', 'stats': total_count[0]['total']}
         
         else:
             message = {'success': False, 'message': 'No params found'}
@@ -431,7 +431,7 @@ class GetAveragePaidSentsCount(object):
             for doc in result:
                 avg_count.append(doc)
 
-            message = {'success': True, 'units':'SENT', 'average': avg_count}
+            message = {'success': True, 'units':'SENT', 'average': avg_count[0]['averageCount']}
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -456,7 +456,7 @@ class GetAverageTotalSentsCount(object):
             for doc in result:
                 avg_count.append(doc)
 
-            message = {'success': True,'units':'SENT', 'average': avg_count}
+            message = {'success': True,'units':'SENT', 'average': avg_count[0]['average']}
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -593,7 +593,7 @@ class GetAverageSessionsCount(object):
             for doc in result:
                 avg_count.append(doc)
 
-            message = {'success': True, 'average': avg_count}
+            message = {'success': True, 'average': avg_count[0]['averageSessions']}
         
         else:
             message = {'success': False, 'message': 'No params Found'}
@@ -703,7 +703,7 @@ class GetAverageDuration(object):
                 doc['average'] = doc['average']/(60)
                 avg_count.append(doc)
 
-            message = {'success': True, 'units':'minutes', 'average': avg_count}
+            message = {'success': True, 'units':'minutes', 'average': avg_count[0]['average']}
         
         elif filter is not None and format is None:
             message = getDailyAverageDuration()

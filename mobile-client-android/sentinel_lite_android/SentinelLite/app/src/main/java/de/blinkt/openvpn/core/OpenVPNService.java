@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.ping.PingResult;
-import com.wang.avi.BuildConfig;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -52,6 +51,7 @@ import java.util.Locale;
 import java.util.Vector;
 
 import co.sentinel.sentinellite.R;
+import co.sentinel.sentinellite.SentinelLiteApp;
 import co.sentinel.sentinellite.ui.activity.DashboardActivity;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
@@ -61,7 +61,9 @@ import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.VpnStatus.ByteCountListener;
 import de.blinkt.openvpn.core.VpnStatus.StateListener;
 
+import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_AUTH_FAILED;
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_CONNECTED;
+import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_NONETWORK;
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_WAITING_FOR_USER_INPUT;
 import static de.blinkt.openvpn.core.NetworkSpace.ipAddress;
 
@@ -307,24 +309,21 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     }
 
     private int getIconByConnectionStatus(ConnectionStatus level) {
-        /*switch (level) {
-            case LEVEL_CONNECTED:
-                return R.drawable.ic_stat_vpn;
-            case LEVEL_AUTH_FAILED:
-            case LEVEL_NONETWORK:
-            case LEVEL_NOTCONNECTED:
-                return R.drawable.ic_stat_vpn_offline;
-            case LEVEL_CONNECTING_NO_SERVER_REPLY_YET:
-            case LEVEL_WAITING_FOR_USER_INPUT:
-                return R.drawable.ic_stat_vpn_outline;
-            case LEVEL_CONNECTING_SERVER_REPLIED:
-                return R.drawable.ic_stat_vpn_empty_halo;
-            case LEVEL_VPNPAUSED:
-                return android.R.drawable.ic_media_pause;
-            case UNKNOWN_LEVEL:
-            default:
-                return R.drawable.ic_stat_vpn;
-        }*/
+//        switch (level) {
+//            case LEVEL_CONNECTED:
+//                SentinelLiteApp.isVpnConnected = true;
+//                break;
+//
+//            case LEVEL_AUTH_FAILED:
+//            case LEVEL_NONETWORK:
+//            case LEVEL_NOTCONNECTED:
+//                if (SentinelLiteApp.isVpnConnected)
+//                    SentinelLiteApp.isVpnDisconnected = true;
+//                break;
+//
+//            default:
+//                return R.drawable.ic_notification;
+//        }
         return R.drawable.ic_notification;
     }
 
@@ -895,6 +894,11 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
     @Override
     public void updateState(String state, String logmessage, int resid, ConnectionStatus level) {
+        if (AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME) == 0L && state.equals("CONNECTED")) {
+            AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, System.currentTimeMillis());
+            SentinelLiteApp.isVpnConnected = true;
+        }
+
         // If the process is not running, ignore any state,
         // Notification should be invisible in this state
         doSendBroadcast(state, level);
@@ -918,12 +922,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             // CONNECTED
             // Does not work :(
             showNotification(VpnStatus.getLastCleanLogMessage(this), VpnStatus.getLastCleanLogMessage(this), channel, 0, level);
-
-            // TODO Prevent reconnection after connection drops
-            if (state.equals("NONETWORK")) {
-                mManagement.stopVPN(false);
-                endVpnService();
-            }
         }
     }
 

@@ -161,7 +161,7 @@
     <string name="bandwidth">Скорость:</string>
     <string name="latency">Задержка:</string>
     <string name="encryption">Шифрование:</string>
-    <string name="coming_soon">Скоро добавим…</string>
+    <string name="coming_soon">Скоро добавим</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
     <string name="saving_config">Сохранение конфигураций VPN…</string>
     <string name="download_speed">Скорость входящих данных</string>
@@ -171,7 +171,7 @@
     <string name="vpn_already_connected">Вы уже подключены к VPN-серверу. Перед подключением к новому VPN-серверу отключите старый.</string>
     <string name="telegram_url">https://t.me/sentinelsecuritygroup</string>
     <string name="medium_url">https://medium.com/@Sentinel</string>
-    <string name="twitter_url">https://twitter.com/sentinel_co</string>
+    <string name="twitter_url">https://t.me/sentinel_co</string>
     <string name="website_url">https://sentinel.co</string>
     <string name="link_coming_soon">Скоро добавим.</string>
     <string name="faq">FAQ</string>

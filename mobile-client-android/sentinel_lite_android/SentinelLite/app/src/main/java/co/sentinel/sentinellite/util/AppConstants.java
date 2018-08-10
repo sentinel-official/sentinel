@@ -20,7 +20,6 @@ public class AppConstants {
     // Request codes
     public static final int REQ_CODE_NULL = -1;
     public static final int REQ_CODE_PERMISSION = 100;
-    public static final int REQ_CODE_PING_IP = 101;
     public static final int REQ_LANGUAGE = 200;
     public static final int REQ_VPN_CONNECT = 201;
     public static final int REQ_HELPER_SCREENS = 202;
@@ -37,7 +36,6 @@ public class AppConstants {
     public static final String TAG_ERROR = "error";
     public static final String TAG_UPDATE = "update";
     public static final String TAG_DOWNLOAD = "download";
-    public static final String TAG_PING_IP = "ping_ip";
 
     // Error Constants
     public static final String ERROR_GENERIC = "error_generic";
@@ -45,7 +43,7 @@ public class AppConstants {
 
     // Other app constants
     public static final int VALUE_DEFAULT = -1;
-    public static final int REFERRAL_CODE_LENGHT = 7;
+    public static final int REFERRAL_CODE_LENGHT = 13;
     public static final String CONFIG_NAME = "client.ovpn";
     public static final String URL_BUILDER = "http://%1s:%d/ovpn";
     public static final String HOME = "home";

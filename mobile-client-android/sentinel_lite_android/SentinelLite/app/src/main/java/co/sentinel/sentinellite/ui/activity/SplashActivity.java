@@ -53,6 +53,7 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
         mViewModel.getAccountInfoLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_NEW_DEVICE, false);
                     mViewModel.fetchSlcVersionInfo();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))

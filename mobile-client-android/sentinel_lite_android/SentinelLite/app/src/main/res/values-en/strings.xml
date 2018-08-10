@@ -161,7 +161,7 @@
     <string name="bandwidth">Bandwidth:</string>
     <string name="latency">Latency:</string>
     <string name="encryption">Encryption:</string>
-    <string name="coming_soon">Coming soon…</string>
+    <string name="coming_soon">Coming soon</string>
     <string name="fetching_config">Fetching VPN configurations…</string>
     <string name="saving_config">Saving VPN configurations…</string>
     <string name="download_speed">Download Speed</string>
@@ -171,7 +171,7 @@
     <string name="vpn_already_connected">You have already connected to a VPN server. Please disconnect from it before connecting to a new VPN server.</string>
     <string name="telegram_url">https://t.me/sentinelsecuritygroup</string>
     <string name="medium_url">https://medium.com/@Sentinel</string>
-    <string name="twitter_url">https://twitter.com/sentinel_co</string>
+    <string name="twitter_url">https://t.me/sentinel_co</string>
     <string name="website_url">https://sentinel.co</string>
     <string name="link_coming_soon">This data will be added soon.</string>
     <string name="faq">FAQ</string>

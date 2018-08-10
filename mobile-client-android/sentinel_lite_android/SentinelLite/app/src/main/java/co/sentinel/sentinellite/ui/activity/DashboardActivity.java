@@ -53,7 +53,6 @@ import static co.sentinel.sentinellite.util.AppConstants.TAG_SINGLE_ACTION_DIALO
 public class DashboardActivity extends AppCompatActivity implements OnGenericFragmentInteractionListener,
         OnVpnConnectionListener, VpnStatus.StateListener, DoubleActionDialogFragment.OnDialogActionListener {
 
-    private String mIntentExtra;
     private boolean mHasActivityResult;
 
     private DrawerLayout mDrawerLayout;
@@ -468,19 +467,16 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     @Override
     public void updateState(String state, String logMessage, int localizedResId, ConnectionStatus level) {
         Logger.logError("VPN_STATE", state + " - " + logMessage + " : " + getString(localizedResId), null);
+
         runOnUiThread(() -> {
-            if (state.equals("CONNECTED") || (state.equals("USER_VPN_PERMISSION"))) {
-                if (AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME) == 0L && state.equals("CONNECTED"))
-                    AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, System.currentTimeMillis());
-                SentinelLiteApp.isVpnConnected = true;
-            }
             // Called when the VPN connection terminates
-            if (state.equals("NOPROCESS") || state.equals("NONETWORK")) {
+            if (state.equals("NOPROCESS") || state.equals("NONETWORK") || state.equals("RECONNECTING") || state.equals("AUTH")) {
                 if (SentinelLiteApp.isVpnConnected && !mHasActivityResult) {
+                    onVpnDisconnectionInitiated();
                     SentinelLiteApp.isVpnInitiated = false;
                     SentinelLiteApp.isVpnConnected = false;
                     AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                    loadVpnFragment(state.equals("NONETWORK")?getString(R.string.network_lost):null);
+                    loadVpnFragment(state.equals("NOPROCESS") ? null : getString(R.string.network_lost));
                 }
             }
 
@@ -500,7 +496,5 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     @Override
-    public void setConnectedVPN(String uuid) {
-
-    }
+    public void setConnectedVPN(String uuid) {}
 }

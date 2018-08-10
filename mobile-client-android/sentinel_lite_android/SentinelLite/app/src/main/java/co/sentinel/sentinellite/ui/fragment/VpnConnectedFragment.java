@@ -319,9 +319,14 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     @Override
     public void updateState(String state, String logmessage, int localizedResId, ConnectionStatus level) {
         if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                updateStatus(getString(localizedResId, logmessage));
-            });
+            if (level == ConnectionStatus.LEVEL_START
+                    || level == ConnectionStatus.LEVEL_CONNECTED
+                    || level == ConnectionStatus.LEVEL_CONNECTING_NO_SERVER_REPLY_YET
+                    || level == ConnectionStatus.LEVEL_CONNECTING_SERVER_REPLIED) {
+                getActivity().runOnUiThread(() -> {
+                    updateStatus(getString(localizedResId, logmessage));
+                });
+            }
         }
     }
 

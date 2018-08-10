@@ -1,21 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'SentinelLiteKey'
-            keyPassword '123456'
-            storeFile file('E:/WowLabz/UploadSigningKeys/senitnellite.jks')
-            storePassword '123456'
-        }
-    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "co.sentinel.sentinellite"
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
-        versionName '0.1.4'
+        versionName '0.1.5'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // Enable Vector drawable
         vectorDrawables.useSupportLibrary = true
@@ -31,7 +23,6 @@ android {
             minifyEnabled false
             useProguard false
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
     }
     productFlavors {

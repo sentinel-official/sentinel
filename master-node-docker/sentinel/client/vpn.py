@@ -57,6 +57,7 @@ class GetVpnCredentials(object):
         @apiSuccess {String} vpn_addr VPN server account address.
         """
         account_addr = str(req.body['account_addr']).lower() if 'account_addr' in req.body else REFERRAL_DUMMY
+        device_id = str(req.body['device_id']) if 'device_id' in req.body else None
         vpn_addr = str(req.body['vpn_addr']).lower()
 
         balances = eth_helper.get_balances(account_addr)
@@ -92,7 +93,7 @@ class GetVpnCredentials(object):
                                     token = uuid4().hex
                                     ip, port = str(node['ip']), 3000
                                     body = {
-                                        'account_addr': token if account_addr == REFERRAL_DUMMY else account_addr,
+                                        'account_addr': device_id if account_addr == REFERRAL_DUMMY else account_addr,
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)

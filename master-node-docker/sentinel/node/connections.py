@@ -37,7 +37,8 @@ class UpdateConnections(object):
                     connection['server_usage'] = connection['usage']
                     connection.pop('usage')
 
-                if 'client_addr' in connection and len(connection['client_addr']) == 32:
+                if 'client_addr' in connection and len(connection['client_addr']) == 16:
+                    connection['device_id'] = connection['client_addr']
                     connection['client_addr'] = REFERRAL_DUMMY
 
                 data = db.connections.find_one({
@@ -88,13 +89,9 @@ class UpdateConnections(object):
                     sent_bytes = int(connection['server_usage']['down'])
                     session_duration = int(int(connection['end_time']) - int(connection['start_time']))
                     amount = int(calculate_amount(sent_bytes, node['price_per_gb']) * DECIMALS)
+                    device_id = connection['device_id'] if 'device_id' in connection else None
                     timestamp = int(time.time())
-                    print(account_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
-                    device = db.devices.find_one({
-                        'session_name': connection['session_name'],
-                        'account_addr': to_addr
-                    })
-                    device_id = device['device_id'] if device else None
+                    print(account_addr, to_addr, sent_bytes, session_duration, amount, timestamp, device_id)
 
                     error, tx_hash = eth_helper.add_vpn_usage(account_addr, to_addr, sent_bytes, session_duration,
                                                               amount, timestamp, device_id)

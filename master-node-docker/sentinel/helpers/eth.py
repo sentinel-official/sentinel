@@ -292,8 +292,19 @@ class ETHHelper(object):
                 })
 
         if make_tx is True:
-            if to_addr == REFERRAL_DUMMY and sent_bytes >= LIMIT_100MB:
-                _, res = add_session(device_id, session_id)
+            if to_addr == REFERRAL_DUMMY:
+                if sent_bytes >= LIMIT_100MB:
+                    _, res = add_session(device_id, session_id)
+                    _ = db.ref_sessions.insert_one({
+                        'device_id': device_id,
+                        'session_id': session_id,
+                        'from_addr': from_addr,
+                        'to_addr': to_addr,
+                        'sent_bytes': sent_bytes,
+                        'session_duration': session_duration,
+                        'amount': amount,
+                        'timestamp': timestamp
+                    })
             else:
                 nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
                 error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration,

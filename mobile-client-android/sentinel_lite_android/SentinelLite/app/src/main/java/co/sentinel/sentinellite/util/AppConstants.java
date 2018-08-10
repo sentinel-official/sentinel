@@ -19,10 +19,11 @@ public class AppConstants {
 
     // Request codes
     public static final int REQ_CODE_NULL = -1;
-    public static final int REQ_LANGUAGE = 100;
-    public static final int REQ_VPN_CONNECT = 101;
-    public static final int REQ_HELPER_SCREENS = 102;
-    public static final int REQ_CODE_PERMISSION = 103;
+    public static final int REQ_CODE_PERMISSION = 100;
+    public static final int REQ_CODE_PING_IP = 101;
+    public static final int REQ_LANGUAGE = 200;
+    public static final int REQ_VPN_CONNECT = 201;
+    public static final int REQ_HELPER_SCREENS = 202;
 
     // EXTRA used in Intent
     public static final String EXTRA_NOTIFICATION_ACTIVITY = "notification_activity";
@@ -30,12 +31,13 @@ public class AppConstants {
     public static final String EXTRA_REQ_CODE = "req_code";
 
     // Fragment Tags
-    public static final String TAG_PROGRESS_DIALOG = "sentinelgroup.io.sentinel.progress_dialog";
-    public static final String TAG_SINGLE_ACTION_DIALOG = "sentinelgroup.io.sentinel.single_action_dialog";
-    public static final String TAG_DOUBLE_ACTION_DIALOG = "sentinelgroup.io.sentinel.double_action_dialog";
+    public static final String TAG_PROGRESS_DIALOG = "co.sentinel.sentinellite.progress_dialog";
+    public static final String TAG_SINGLE_ACTION_DIALOG = "co.sentinel.sentinellite.single_action_dialog";
+    public static final String TAG_DOUBLE_ACTION_DIALOG = "co.sentinel.sentinellite.double_action_dialog";
     public static final String TAG_ERROR = "error";
     public static final String TAG_UPDATE = "update";
     public static final String TAG_DOWNLOAD = "download";
+    public static final String TAG_PING_IP = "ping_ip";
 
     // Error Constants
     public static final String ERROR_GENERIC = "error_generic";

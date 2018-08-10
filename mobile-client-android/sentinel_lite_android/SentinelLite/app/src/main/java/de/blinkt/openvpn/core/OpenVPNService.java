@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 
 import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.ping.PingResult;
+import com.wang.avi.BuildConfig;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -49,7 +51,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Vector;
 
-import co.sentinel.sentinellite.BuildConfig;
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.ui.activity.DashboardActivity;
 import co.sentinel.sentinellite.util.AppConstants;
@@ -114,8 +115,9 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     };
     private String mLastTunCfg;
     private String mRemoteGW;
+    private Thread mPingThread;
     private Handler guiHandler, mPingHandler;
-    private Runnable mOpenVPNThread, mPingThread;
+    private Runnable mOpenVPNThread, mPingRunnable;
     private Toast mlastToast;
 
     // From: http://stackoverflow.com/questions/3758606/how-to-convert-byte-size-into-human-readable-format-in-java
@@ -194,32 +196,49 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         cancelPingTask();
     }
 
-    private void schedulePIngTask() {
+    private void schedulePingTask() {
         if (mPingThread == null) {
-            mPingThread = new Runnable() {
+            mPingThread = new Thread() {
                 @Override
                 public void run() {
-                    String aIp = AppPreferences.getInstance().getString(AppConstants.PREFS_IP_ADDRESS);
-                    try {
-                        PingResult aPingresResult = Ping.onAddress(aIp).setTimeOutMillis(1000).doPing();
-                        if (aPingresResult.isReachable)
-                            Logger.logDebug("PING_IP", "Result - " + aPingresResult.result + " | Latency - " + aPingresResult.timeTaken);
-                        else
-                            Logger.logDebug("PING_IP", "Error - " + aPingresResult.error);
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    }
-                    mPingHandler.postDelayed(this, PING_DELAY);
+                    Looper.prepare();
+
+                    mPingHandler = new Handler();
+                    mPingRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            // Work to be done (ping)
+                            String aIp = AppPreferences.getInstance().getString(AppConstants.PREFS_IP_ADDRESS);
+                            try {
+                                PingResult aPingResult = Ping.onAddress(aIp).setTimeOutMillis(1000).doPing();
+                                if (aPingResult.isReachable)
+                                    Logger.logDebug("PING_IP", "Result - " + aPingResult.result + " | Latency - " + aPingResult.timeTaken);
+                                else
+                                    Logger.logDebug("PING_IP", "Error - " + aPingResult.error);
+                            } catch (UnknownHostException e) {
+                                e.printStackTrace();
+                            }
+                            // Reschedule the work
+                            if (mPingHandler != null)
+                                mPingHandler.postDelayed(this, PING_DELAY);
+                        }
+                    };
+                    // Start the initial work
+                    mPingHandler.post(mPingRunnable);
+                    Looper.loop();
                 }
             };
+            mPingThread.start();
         }
-        mPingHandler.postDelayed(mPingThread, PING_DELAY);
     }
 
     private void cancelPingTask() {
-        if (mPingHandler != null) {
-            mPingHandler.removeCallbacks(mPingThread);
+        if (mPingThread != null) {
             mPingThread = null;
+            mPingHandler.removeCallbacks(mPingRunnable);
+            mPingHandler = null;
+            mPingRunnable = null;
+            AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
             Logger.logDebug("PING_IP", "Completed - Removed callbacks from the Handler");
         }
     }
@@ -378,13 +397,16 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     }
 
     public void userPause(boolean shouldBePaused) {
-        if (mDeviceStateReceiver != null) mDeviceStateReceiver.userPause(shouldBePaused);
+        if (mDeviceStateReceiver != null)
+            mDeviceStateReceiver.userPause(shouldBePaused);
     }
 
     @Override
     public boolean stopVPN(boolean replaceConnection) throws RemoteException {
-        if (getManagement() != null) return getManagement().stopVPN(replaceConnection);
-        else return false;
+        if (getManagement() != null)
+            return getManagement().stopVPN(replaceConnection);
+        else
+            return false;
     }
 
     @Override
@@ -394,7 +416,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         VpnStatus.addStateListener(this);
         VpnStatus.addByteCountListener(this);
         guiHandler = new Handler(getMainLooper());
-        mPingHandler = new Handler();
         if (intent != null && PAUSE_VPN.equals(intent.getAction())) {
             if (mDeviceStateReceiver != null) mDeviceStateReceiver.userPause(true);
             return START_NOT_STICKY;
@@ -473,7 +494,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         // Start a new session by creating a new thread.
         SharedPreferences prefs = Preferences.getDefaultSharedPreferences(this);
         mOvpn3 = prefs.getBoolean("ovpn3", false);
-        if (!"ovpn3".equals(BuildConfig.FLAVOR)) mOvpn3 = false;
+        mOvpn3 = false;
         // Open the Management Interface
         if (!mOvpn3) {
             // start a Thread that handles incoming messages of the managment socket
@@ -505,8 +526,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             if (mDeviceStateReceiver != null) unregisterDeviceStateReceiver();
             registerDeviceStateReceiver(mManagement);
         });
-        // TODO Schedule ping task
-        schedulePIngTask();
     }
 
     private void stopOldOpenVPNProcess() {
@@ -899,6 +918,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             // CONNECTED
             // Does not work :(
             showNotification(VpnStatus.getLastCleanLogMessage(this), VpnStatus.getLastCleanLogMessage(this), channel, 0, level);
+
+            // TODO Prevent reconnection after connection drops
+            if (state.equals("NONETWORK")) {
+                mManagement.stopVPN(false);
+                endVpnService();
+            }
         }
     }
 
@@ -919,6 +944,8 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         if (mDisplayBytecount) {
             String netstat = String.format(getString(R.string.statusline_bytecount), humanReadableByteCount(in, false, getResources()), humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources()), humanReadableByteCount(out, false, getResources()), humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources()));
             showNotification(netstat, getString(R.string.app_name), NOTIFICATION_CHANNEL_BG_ID, mConnecttime, LEVEL_CONNECTED);
+//            // TODO Schedule ping task
+            schedulePingTask();
         }
     }
 

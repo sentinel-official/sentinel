@@ -21,12 +21,6 @@ public interface GenericWebService {
     @POST(EndPoint.GET_VPN_SERVER_CREDENTIALS)
     Call<VpnCredentials> getVpnServerCredentials(@Body GenericRequestBody iBody);
 
-    @POST(EndPoint.GET_VPN_USAGE_FOR_USER)
-    Call<VpnUsage> getVpnUsageForUser(@Body GenericRequestBody iBody);
-
-    @POST(EndPoint.GET_VPN_CURRENT_USAGE)
-    Call<VpnUsage> getVpnCurrentUsage(@Body GenericRequestBody iBody);
-
     @POST
     Call<VpnConfig> getVpnConfig(@Url String url, @Body GenericRequestBody iBody);
 }

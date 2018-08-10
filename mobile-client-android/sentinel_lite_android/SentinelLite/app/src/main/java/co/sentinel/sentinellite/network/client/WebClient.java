@@ -33,9 +33,9 @@ public class WebClient {
     private static final String App_VERSION_BASE_URL = "https://version-api.sentinelgroup.io/";
 
     private static OkHttpClient sHttpClient = enableTls12OnPreLollipop(new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .writeTimeout(20, TimeUnit.SECONDS)
             .retryOnConnectionFailure(false)
             .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(new AuthInterceptor())).build();

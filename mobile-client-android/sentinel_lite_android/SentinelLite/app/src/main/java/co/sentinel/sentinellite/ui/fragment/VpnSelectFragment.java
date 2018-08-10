@@ -17,7 +17,6 @@ import co.sentinel.sentinellite.SentinelLiteApp;
 import co.sentinel.sentinellite.ui.adapter.VpnSelectPagerAdapter;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.util.AppConstants;
-import co.sentinel.sentinellite.util.NetworkUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,10 +94,7 @@ public class VpnSelectFragment extends Fragment {
         if (SentinelLiteApp.isVpnInitiated)
             loadNextFragment(VpnConnectedFragment.newInstance());
         else {
-            if (NetworkUtil.isOnline())
-                setupViewPagerAndTabs();
-            else
-                loadNextFragment(NoNetworkFragment.newInstance());
+            setupViewPagerAndTabs();
         }
     }
 

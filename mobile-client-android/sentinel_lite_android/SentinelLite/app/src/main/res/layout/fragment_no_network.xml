@@ -9,10 +9,11 @@
     <TextView
         android:id="@+id/no_network_text"
         style="@style/CustomTextAppearance.Text14.White70Normal"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
+        android:gravity="center"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"

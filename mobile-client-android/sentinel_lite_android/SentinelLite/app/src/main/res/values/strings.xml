@@ -190,7 +190,7 @@
     <string name="info_title_2">Secure decentralized VPN</string>
     <string name="info_desc_1">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network</string>
     <string name="info_desc_2">Decentralized VPN right at your finger tips</string>
-    <string name="generic_error">There was a problem connecting to the Sentinel servers. Please try again.</string>
+    <string name="generic_error">Unable to reach server. Please retry.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="claim_bonus">Claim Bonus</string>
@@ -208,4 +208,5 @@
     <string name="can_claim_after">Can claim after: %s</string>
     <string name="download_desc">Download and install the Sentinel Network Client on the same device to claim your bonus tokens and access all features.</string>
     <string name="referral_desc">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network.</string>
+    <string name="network_lost">A loss of network connection was detected.The VPN connection has been dropped.\nPlease reconnect.</string>
 </resources>

@@ -57,6 +57,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
             android:ellipsize="end"
+            android:enabled="false"
             android:gravity="center"
             android:maxLines="1"
             app:layout_constraintBottom_toTopOf="@+id/tv_referral_count"

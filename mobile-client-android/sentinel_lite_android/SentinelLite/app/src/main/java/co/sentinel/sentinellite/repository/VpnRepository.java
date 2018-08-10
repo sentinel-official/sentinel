@@ -193,7 +193,7 @@ public class VpnRepository {
             }
 
             private void reportSuccessResponse(Response<VpnConfig> iResponse) {
-                if (iResponse.isSuccessful())
+                if (iResponse.isSuccessful() && iResponse.body() != null && iResponse.body().success)
                     mVpnConfigLiveEvent.postValue(Resource.success(iResponse.body()));
                 else
                     reportErrorResponse(iResponse, null);

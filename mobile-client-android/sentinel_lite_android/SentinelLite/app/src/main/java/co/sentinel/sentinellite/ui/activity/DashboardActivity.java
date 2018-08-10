@@ -85,8 +85,8 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         // setup VPN listeners & services
         VpnStatus.addStateListener(this);
         Intent intent = new Intent(this, OpenVPNService.class);
@@ -95,8 +95,8 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         VpnStatus.removeStateListener(this);
         unbindService(mConnection);
     }
@@ -475,12 +475,12 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                 SentinelLiteApp.isVpnConnected = true;
             }
             // Called when the VPN connection terminates
-            if (!VpnStatus.isVPNActive()) {
+            if (state.equals("NOPROCESS") || state.equals("NONETWORK")) {
                 if (SentinelLiteApp.isVpnConnected && !mHasActivityResult) {
                     SentinelLiteApp.isVpnInitiated = false;
                     SentinelLiteApp.isVpnConnected = false;
                     AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                    loadVpnFragment(null);
+                    loadVpnFragment(state.equals("NONETWORK")?getString(R.string.network_lost):null);
                 }
             }
 

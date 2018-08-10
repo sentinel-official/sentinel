@@ -1,6 +1,6 @@
 import * as types from "../Constants/action.names";
 
-export function setListViewType(state = 'list', action) {
+export function setListViewType(state = 'map', action) {
     switch (action.type) {
         case types.LISTTYPE:
             return action.payload

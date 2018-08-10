@@ -135,28 +135,10 @@ const getSocksList = (req, res) => {
  */
 
 const getCurrentVpnUsage = (req, res) => {
-  let deviceId = 'device_id' in req.body ? req.body['device_id'] : null
   let accountAddr = account_addr in req.body ? req.body['account_addr'] : REFERRAL_DUMMY
   let sessionName = req.body['session_name']
   if (accountAddr)
     accountAddr = accountAddr.toLowerCase();
-
-  if (deviceId) {
-    let findObj = {
-      'session_name': sessionName,
-      'account_addr': accountAddr
-    }
-    let updateObj = {
-      'device_id': deviceId
-    }
-    Device.findOneAndUpdate(findObj, {
-      $set: {
-        updateObj
-      }
-    }, {
-      upsert: true
-    })
-  }
 
   Connection.findOne({
     client_addr: accountAddr,
@@ -197,6 +179,7 @@ const getCurrentVpnUsage = (req, res) => {
 const getVpnCredentials = (req, res) => {
   let accountAddr = account_addr in req.body ? req.body['account_addr'] : REFERRAL_DUMMY
   let vpnAddr = req.body['vpn_addr'];
+  let deviceId = 'device_id' in req.body ? req.body['device_id'] : null
 
   async.waterfall([
     (next) => {
@@ -274,7 +257,7 @@ const getVpnCredentials = (req, res) => {
           let ip = node.ip;
           let port = 3000;
           let body = {
-            account_addr: accountAddr,
+            account_addr: accountAddr === REFERRAL_DUMMY ? deviceId : accountAddr,
             token: token
           };
           let url = 'http://' + ip + ':' + port + '/token';

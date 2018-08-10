@@ -10,6 +10,7 @@ import { Validation } from "./validations";
 import { SwixerNodes } from "./swixer.nodes";
 import { Swixes } from "./swixes";
 import { Device } from "./devices";
+import { refSession } from "./refSessions";
 
 export {
   Connection,
@@ -23,5 +24,6 @@ export {
   Validation,
   SwixerNodes,
   Swixes,
-  Device
+  Device,
+  refSession
 }

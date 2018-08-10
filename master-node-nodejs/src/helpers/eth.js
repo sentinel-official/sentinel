@@ -24,7 +24,8 @@ import {
   PRIVATE_KEY as COINBASE_PRIVATE_KEY
 } from '../config/eth';
 import {
-  Usage
+  Usage,
+  refSession
 } from '../models';
 import database from '../db/database';
 import {
@@ -433,20 +434,33 @@ const addVpnUsage = (fromAddr, toAddr, sentBytes, sessionDuration, amount, timeS
         })
       }
     }, (next) => {
-      if (makeTx) {
-        if (toAddr === REFERRAL_DUMMY) {
-          addSession(deviceId, sessionId, null, (_, resp) => {
-            let error = _
+      if (toAddr === REFERRAL_DUMMY && sentBytes >= LIMIT_100MB) {
+        addSession(deviceId, sessionId, null, (_, resp) => {
+          let error = _
+          let _refSession = new refSession({
+            'device_id': deviceId,
+            'session_id': deviceId,
+            'from_addr': fromAddr,
+            'to_addr': toAddr,
+            'sent_bytes': sentBytes,
+            'session_duration': sessionDuration,
+            'amount': amount,
+            'timestamp': timeStamp
           })
-        } else {
-          getValidNonce(COINBASE_ADDRESS, 'rinkeby', (nonce) => {
-            VpnServiceManager.addVpnUsage(fromAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, sessionId, nonce,
-              (err, txHash) => {
-                next(err, txHash)
-              })
+          _refSession.save((err, resp) => {
+            next(err, resp)
           })
-        }
-
+        })
+      } else {
+        next(null)
+      }
+      if (makeTx && toAddr !== REFERRAL_DUMMY) {
+        getValidNonce(COINBASE_ADDRESS, 'rinkeby', (nonce) => {
+          VpnServiceManager.addVpnUsage(fromAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, sessionId, nonce,
+            (err, txHash) => {
+              next(err, txHash)
+            })
+        })
       } else {
         next(null, null)
       }

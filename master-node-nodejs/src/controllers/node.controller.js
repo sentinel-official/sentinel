@@ -17,6 +17,9 @@ import {
 } from '../config/vars';
 import dbo from "../db/database";
 import database from '../db/database';
+import {
+  REFERRAL_DUMMY
+} from '../config/referral';
 
 const getLatency = (url, cb) => {
   const avgLatencyCmd = "ping -c 2 " + url + " | tail -1 | awk '{print $4}' | cut -d '/' -f 2"
@@ -293,6 +296,14 @@ const updateConnections = (req, res) => {
             connection['client_addr'] = address.toString();
             delete connection['account_addr'];
           }
+          if ('usage' in connection) {
+            connection['server_usage'] = connection['usage']
+            delete connection['usage']
+          }
+          if ('client_addr' in connection && connection['client_addr'] == 16) {
+            connection['device_id'] = connection['client_addr'];
+            connection['client_addr'] = REFERRAL_DUMMY
+          }
 
           Connection.findOne({
             'vpn_addr': connection['vpn_addr'],
@@ -372,21 +383,12 @@ const updateConnections = (req, res) => {
         let sentBytes = parseInt(connection['server_usage']['down']);
         let sessionDuration = parseInt(connection['end_time']) - parseInt(connection['start_time']);
         let amount = parseInt(calculateAmount(sentBytes, node['price_per_gb']) * DECIMALS);
+        let deviceId = 'device_id' in connection ? connection['device_id'] : null
         let timeStamp = Date.now() / 1000;
-        Device.findOne({
-          'session_name': connection['session_name'],
-          'account_addr': toAddr
-        }, (err, device) => {
-          let deviceId = null
-          if (device) {
-            deviceId = device['device_id']
-          }
-          EthHelper.addVpnUsage(accountAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp,
-            (err, txHash) => {
-              if (err) txHashes.push(err)
-              else txHashes.push(txHash)
-              iterate()
-            })
+        EthHelper.addVpnUsage(accountAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp, deviceId, (err, txHash) => {
+          if (err) txHashes.push(err)
+          else txHashes.push(txHash)
+          iterate()
         })
       }, () => {
         next(null, {
@@ -451,42 +453,6 @@ const deRegisterNode = (req, res) => {
  * @apiSuccess {String} txHash Hash of the transaction.
  * @apiSuccess {String} message VPN usage data will be added soon.
  */
-
-const addVpnUsage = (req, res) => {
-  let fromAddr = req.body['fromAddr']
-  let toAddr = req.body['toAddr']
-  let sentBytes = parseInt(req.body['sentBytes'])
-  let sessionDuration = parseInt(req.body['sessionDuration'])
-  let amount = parseInt((sentBytes / (1024.0 * 1024.0 * 1024.0)) * 100.0 * DECIMALS)
-  let timeStamp = parseInt(Date.now() / 1000)
-
-  if (sentBytes <= 100 * 1024 * 1024) {
-    res.send({
-      'success': false,
-      'error': 'Usage is less than 100 MB. So data is not added',
-      'message': 'Usage is less than 100 MB. So data is not added'
-    })
-  }
-
-  EthHelper.addVpnUsage(
-    fromAddr, toAddr, sentBytes, sessionDuration, amount, timeStamp,
-    (err, txHash) => {
-      if (!err) {
-        res.send({
-          'success': true,
-          'txHash': txHash,
-          'message': 'VPN usage data will be added soon.'
-        })
-      } else {
-        res.send({
-          'success': false,
-          'error': err,
-          'message': 'Error occurred while adding the VPN usage data.'
-        })
-      }
-    })
-}
-
 //---------------------------------------------------------------------------------------
 
 /**

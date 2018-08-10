@@ -248,8 +248,7 @@ class ETHHelper(object):
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, device_id=None):
         error, tx_hash, make_tx, session_id = None, None, False, None
-        error, sessions_count = self.get_vpn_sessions_count(
-            to_addr)  # to_addr: client account address
+        error, sessions_count = self.get_vpn_sessions_count(to_addr)  # to_addr: client account address
         if error is None:
             session_id = get_encoded_session_id(to_addr, sessions_count)
             _usage = db.usage.find_one({
@@ -291,25 +290,24 @@ class ETHHelper(object):
                     'to_addr': to_addr
                 })
 
-        if make_tx is True:
-            if to_addr == REFERRAL_DUMMY:
-                if sent_bytes >= LIMIT_100MB:
-                    _, res = add_session(device_id, session_id)
-                    _ = db.ref_sessions.insert_one({
-                        'device_id': device_id,
-                        'session_id': session_id,
-                        'from_addr': from_addr,
-                        'to_addr': to_addr,
-                        'sent_bytes': sent_bytes,
-                        'session_duration': session_duration,
-                        'amount': amount,
-                        'timestamp': timestamp
-                    })
-            else:
-                nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
-                error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration,
-                                                                   amount,
-                                                                   timestamp, session_id, nonce)
+        if to_addr == REFERRAL_DUMMY and sent_bytes >= LIMIT_100MB:
+            _, res = add_session(device_id, session_id)
+            _ = db.ref_sessions.insert_one({
+                'device_id': device_id,
+                'session_id': session_id,
+                'from_addr': from_addr,
+                'to_addr': to_addr,
+                'sent_bytes': sent_bytes,
+                'session_duration': session_duration,
+                'amount': amount,
+                'timestamp': timestamp
+            })
+
+        if make_tx is True and to_addr != REFERRAL_DUMMY:
+            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
+            error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration,
+                                                               amount,
+                                                               timestamp, session_id, nonce)
 
         return error, tx_hash
 

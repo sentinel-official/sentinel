@@ -240,7 +240,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                 mPrgDialog.updateLoadingMessage(iMessage);
             }
         } else {
-            if (aFragment != null)
+            if (aFragment != null && mPrgDialog != null)
                 mPrgDialog.dismissAllowingStateLoss();
         }
     }
@@ -496,5 +496,6 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     @Override
-    public void setConnectedVPN(String uuid) {}
+    public void setConnectedVPN(String uuid) {
+    }
 }

@@ -169,9 +169,9 @@
     <string name="upload_speed">Upload Speed</string>
     <string name="vpn_status">VPN Status: %1s</string>
     <string name="vpn_already_connected">You have already connected to a VPN server. Please disconnect from it before connecting to a new VPN server.</string>
-    <string name="telegram_url">https://t.me/sentinelsecuritygroup</string>
+    <string name="telegram_url">https://t.me/sentinel_co</string>
     <string name="medium_url">https://medium.com/@Sentinel</string>
-    <string name="twitter_url">https://t.me/sentinel_co</string>
+    <string name="twitter_url">https://twitter.com/sentinel_co</string>
     <string name="website_url">https://sentinel.co</string>
     <string name="link_coming_soon">This data will be added soon.</string>
     <string name="faq">FAQ</string>
@@ -185,7 +185,7 @@
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
     <string name="share_id">Share ID</string>
-    <string name="share_string">Hey, check out this new dVPN android app. Use my Referral ID to get free tokens when you sign up.\nReferral ID: %s</string>
+    <string name="share_string">Hey, check out this new dVPN android app. Use my Referral ID to get free tokens when you sign up.\n\nReferral ID: %s\n\nLink: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
     <string name="info_title_1">Share your Referral ID to earn tokens for every Sign Up</string>
     <string name="info_title_2">Secure decentralized VPN</string>
     <string name="info_desc_1">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network</string>

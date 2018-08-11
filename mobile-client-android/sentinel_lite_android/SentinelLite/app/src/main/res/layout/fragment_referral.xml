@@ -52,11 +52,11 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/referral_id"
-                    app:layout_constraintTop_toTopOf="@+id/ib_copy_referral"
                     app:layout_constraintBottom_toBottomOf="@+id/ib_copy_referral"
                     app:layout_constraintEnd_toEndOf="@+id/referral_desc"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="@+id/referral_desc"
+                    app:layout_constraintTop_toTopOf="@+id/ib_copy_referral"
                     tools:layout_editor_absoluteY="123dp" />
 
                 <TextView
@@ -203,6 +203,7 @@
         style="@style/CustomTextAppearance.BlueButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:enabled="false"
         android:text="@string/claim_bonus"
         app:layout_constraintBottom_toBottomOf="@+id/btn_share_referral_id"
         app:layout_constraintEnd_toEndOf="parent"

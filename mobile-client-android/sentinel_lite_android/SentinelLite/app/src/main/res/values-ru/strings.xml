@@ -169,9 +169,9 @@
     <string name="upload_speed">Скорость исходящих данных</string>
     <string name="vpn_status">Статус VPN: %1s</string>
     <string name="vpn_already_connected">Вы уже подключены к VPN-серверу. Перед подключением к новому VPN-серверу отключите старый.</string>
-    <string name="telegram_url">https://t.me/sentinelsecuritygroup</string>
+    <string name="telegram_url">https://t.me/sentinel_co</string>
     <string name="medium_url">https://medium.com/@Sentinel</string>
-    <string name="twitter_url">https://t.me/sentinel_co</string>
+    <string name="twitter_url">https://twitter.com/sentinel_co</string>
     <string name="website_url">https://sentinel.co</string>
     <string name="link_coming_soon">Скоро добавим.</string>
     <string name="faq">FAQ</string>
@@ -185,7 +185,7 @@
     <string name="no_of_referrals">Количество рефералов</string>
     <string name="reward_earned">Заработано токенов</string>
     <string name="share_id">Поделиться кодом</string>
-    <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %s</string>
+    <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %s\n\nСсылка: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
     <string name="info_title_1">Поделись своим реферальным кодом для бесплатных токенов за каждого зарегистрированного пользователя</string>
     <string name="info_title_2">Защищённая децентрализованная VPN-платформа</string>
     <string name="info_desc_1">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети</string>

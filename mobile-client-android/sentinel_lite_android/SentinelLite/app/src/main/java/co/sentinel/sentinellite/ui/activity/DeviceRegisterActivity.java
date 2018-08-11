@@ -197,7 +197,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 mPrgDialog.updateLoadingMessage(iMessage);
             }
         } else {
-            if (aFragment != null)
+            if (aFragment != null && mPrgDialog != null)
                 mPrgDialog.dismissAllowingStateLoss();
         }
     }

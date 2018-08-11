@@ -115,7 +115,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
                 mPrgDialog.updateLoadingMessage(iMessage);
             }
         } else {
-            if (aFragment != null)
+            if (aFragment != null && mPrgDialog != null)
                 mPrgDialog.dismissAllowingStateLoss();
         }
     }

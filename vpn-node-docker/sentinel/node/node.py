@@ -24,13 +24,15 @@ class Node(object):
         self.config = {
             'account_addr': None,
             'price_per_gb': None,
-            'token': None
+            'token': None,
+            'enc_method': None
         }
 
         if config is not None:
             self.config['account_addr'] = str(config['account_addr']).lower() if 'account_addr' in config else None
             self.config['price_per_gb'] = float(config['price_per_gb']) if 'price_per_gb' in config else None
             self.config['token'] = str(config['token']) if 'token' in config else None
+            self.config['enc_method'] = str(config['enc_method']) if 'enc_method' in config else None
 
         self.update_nodeinfo({'type': 'location'})
         self.update_nodeinfo({'type': 'netspeed'})
@@ -45,7 +47,8 @@ class Node(object):
                 'location': self.location,
                 'net_speed': self.net_speed,
                 'price_per_gb': self.config['price_per_gb'],
-                'token': self.config['token']
+                'token': self.config['token'],
+                'enc_method': self.config['enc_method']
             }
         }, upsert=True)
 
@@ -79,5 +82,7 @@ class Node(object):
                 self.config['account_addr'] = info['account_addr']
             if ('token' in info) and (info['token'] is not None):
                 self.config['token'] = info['token']
+            if ('enc_method' in info) and (info['enc_method' is not None]):
+                self.config['enc_method'] = info['enc_method']
             self.save_config_data()
         self.save_to_db()

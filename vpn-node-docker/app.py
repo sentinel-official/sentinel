@@ -70,7 +70,7 @@ if __name__ == "__main__":
         exit(2)
 
     node = Node(config)
-    openvpn = OpenVPN()
+    openvpn = OpenVPN(node.config['enc_method'])
 
     if len(node.config['token']) == 0:
         register_node(node)

@@ -7,6 +7,7 @@ import requests
 
 from ..config import COINBASE_ADDRESS
 from ..config import DECIMALS
+from ..config import REFERRAL_DUMMY
 from ..db import db
 from ..eth import vpn_service_manager
 from ..helpers import eth_helper
@@ -24,7 +25,8 @@ def get_vpns_list(vpn_type):
         'location': 1,
         'net_speed.upload': 1,
         'latency': 1,
-        'net_speed.download': 1
+        'net_speed.download': 1,
+        'enc_method': 1
     })
     return list(_list)
 
@@ -54,7 +56,7 @@ class GetVpnCredentials(object):
         @apiSuccess {String} token Unique token for validation.
         @apiSuccess {String} vpn_addr VPN server account address.
         """
-        account_addr = str(req.body['account_addr']).lower()
+        account_addr = str(req.body['account_addr']).lower() if 'account_addr' in req.body else REFERRAL_DUMMY
         vpn_addr = str(req.body['vpn_addr']).lower()
 
         balances = eth_helper.get_balances(account_addr)
@@ -158,9 +160,10 @@ class PayVpnUsage(object):
         amount = int(req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
         session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
             'session_id'] is not None else None
+        device_id = str(req.body['device_id']) if 'device_id' in req.body else None
 
         errors, tx_hashes = eth_helper.pay_vpn_session(
-            from_addr, amount, session_id, net, tx_data, payment_type)
+            from_addr, amount, session_id, net, tx_data, payment_type, device_id)
 
         if len(errors) > 0:
             message = {
@@ -196,8 +199,9 @@ class ReportPayment(object):
         amount = int(req.body['amount'])
         session_id = str(req.body['session_id'])
 
+        nonce = eth_helper.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
         error, tx_hash = vpn_service_manager.pay_vpn_session(
-            from_addr, amount, session_id)
+            from_addr, amount, session_id, nonce)
 
         if error is None:
             message = {
@@ -296,8 +300,19 @@ class GetVpnCurrentUsage(object):
         @apiParam {String} session_name Session name of the VPN connection.
         @apiSuccess {Object} usage Current VPN usage.
         """
-        account_addr = str(req.body['account_addr']).lower()
+        device_id = str(req.body['device_id']) if 'device_id' in req.body else None
+        account_addr = str(req.body['account_addr']).lower() if 'account_addr' in req.body else REFERRAL_DUMMY
         session_name = str(req.body['session_name'])
+
+        if device_id:
+            db.devices.find_one_and_update({
+                'session_name': session_name,
+                'account_addr': account_addr
+            }, {
+                '$set': {
+                    'device_id': device_id
+                }
+            }, upsert=True)
 
         usage = get_current_vpn_usage(account_addr, session_name)
 

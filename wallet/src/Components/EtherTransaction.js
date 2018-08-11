@@ -64,11 +64,9 @@ class EtherTransaction extends Component {
                                     <span style={{ marginLeft: 5 }}>{new Date(history.timeStamp * 1000).toGMTString()}</span>
                                 </div>
                                 <div>
-                                    <span style={{
-                                        fontWeight: 'bold'
-                                    }}>{lang[language].To}:
+                                    <span style={styles.historyHeading}>{lang[language].To}:
                   </span>
-                                    <a style={{ cursor: 'pointer', marginLeft: 5 }}
+                                    <a style={styles.transactionLink}
                                         onClick={() => {
                                             statusUrl = this.getStatusUrl();
                                             this.openInExternalBrowser(`${statusUrl}/address/${history.to}`)
@@ -83,9 +81,7 @@ class EtherTransaction extends Component {
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard>
-                                    <span style={{
-                                        fontWeight: 'bold'
-                                    }}>
+                                    <span style={styles.historyHeading}>
                                         {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
@@ -103,12 +99,10 @@ class EtherTransaction extends Component {
                                     <span style={{ marginLeft: 5 }}>{new Date(history.timeStamp * 1000).toGMTString()}</span>
                                 </div>
                                 <div>
-                                    <span style={{
-                                        fontWeight: 'bold'
-                                    }}>
+                                    <span style={styles.historyHeading}>
                                         {lang[language].From}:
                 </span>
-                                    <a style={{ cursor: 'pointer', marginLeft: 5 }}
+                                    <a style={styles.transactionLink}
                                         onClick={() => {
                                             statusUrl = this.getStatusUrl();
                                             this.openInExternalBrowser(`${statusUrl}/address/${history.from}`)
@@ -123,9 +117,7 @@ class EtherTransaction extends Component {
                                             data-tip data-for="copyImage"
                                             style={styles.clipBoard} />
                                     </CopyToClipboard>
-                                    <span style={{
-                                        fontWeight: 'bold'
-                                    }}>
+                                    <span style={styles.historyHeading}>
                                         {lang[language].GasPrice}:
                 </span>
                                     <span style={{ marginLeft: 5 }}>
@@ -135,10 +127,10 @@ class EtherTransaction extends Component {
                             </div>
                         }
                         <pre style={{ marginTop: 0, fontFamily: 'Poppins', overflow: 'hidden' }}>
-                            <span style={{ fontWeight: 'bold' }}>{lang[language].Amount} : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
+                            <span style={styles.historyHeading}>{lang[language].Amount} : </span><span>{parseInt(history.value) / (10 ** 18)} </span>
                             <span>ETHs</span>  |
-                    <span style={{ fontWeight: 'bold' }}> {lang[language].Status} : </span><span style={{ fontWeight: 'bold' }}>{history.isError === '0' ? lang[language].Success : lang[language].Fail}</span>  |
-                    <span style={{ fontWeight: 'bold' }}> Tx : </span>
+                    <span style={styles.historyHeading}> {lang[language].Status} : </span><span style={styles.historyHeading}>{history.isError === '0' ? lang[language].Success : lang[language].Fail}</span>  |
+                    <span style={styles.historyHeading}> Tx : </span>
                             <a style={styles.anchorStyle} onClick={
                                 () => {
                                     statusUrl = this.getStatusUrl();
@@ -163,14 +155,14 @@ class EtherTransaction extends Component {
             })
         }
         return (
-            <div style={this.props.isTest ? styles.testOutputDiv : styles.outputDiv}>
+            <div style={this.props.isTest ? (this.props.hasExtraDiv ? styles.testOuptutDivExtra : styles.testOutputDiv) : (this.props.hasExtraDiv ? styles.outputDivExtra : styles.outputDiv)}>
                 {output}
                 <Snackbar
                     open={this.state.openSnack}
                     message={this.state.snackMessage}
                     autoHideDuration={2000}
                     onRequestClose={this.snackRequestClose}
-                    style={{ marginBottom: '2%' }}
+                    style={{ marginBottom: '1%' }}
                 />
             </div>
         )
@@ -191,6 +183,9 @@ const styles = {
         textOverflow: 'ellipsis',
         cursor: 'pointer',
     },
+    historyHeading: {
+        fontWeight: 'bold'
+    },
     clipBoard: {
         height: 20,
         width: 20,
@@ -208,6 +203,22 @@ const styles = {
         overflowY: 'auto',
         marginTop: '2%',
         overflowX: 'hidden'
+    },
+    outputDivExtra: {
+        height: 365,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    testOutputDivExtra: {
+        height: 330,
+        overflowY: 'auto',
+        marginTop: '2%',
+        overflowX: 'hidden'
+    },
+    transactionLink: {
+        cursor: 'pointer',
+        marginLeft: 5
     }
 }
 

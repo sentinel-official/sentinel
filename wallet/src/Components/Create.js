@@ -278,12 +278,12 @@ class Create extends Component {
                         message={this.state.snackMessage}
                         autoHideDuration={2000}
                         onRequestClose={this.snackRequestClose}
-                        style={{ marginBottom: '2%' }}
+                        style={{ marginBottom: '1%' }}
                     />
                     <Snackbar
                         open={this.state.snackOpen}
                         message={this.state.openSnackMessage}
-                        style={{ marginBottom: '2%' }}
+                        style={{ marginBottom: '1%' }}
                     />
                 </div>
             </MuiThemeProvider>

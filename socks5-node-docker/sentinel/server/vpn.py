@@ -1,11 +1,12 @@
 # coding=utf-8
 import json
 import time
+from random import choice
 
 import falcon
 
 from ..db import db
-from ..vpn import Keys
+# from ..vpn import Keys
 
 
 class GetSockCreds(object):
@@ -33,21 +34,27 @@ class GetSockCreds(object):
                 }
             })
             data = db.node.find_one({
-                'address': vpn_addr
+                'account_addr': vpn_addr
             })
 
+            json_data=json.load(open('/root/sentinel/shell_scripts/shadowsocks.json'))
+            rand_data=choice(list(json_data['port_password'].keys()))
 
-            keys = Keys(name=name)
-            keys.generate()
+            config_data={
+                'ip':data['ip'],
+                'port':rand_data,
+                'password':json_data['port_password'][rand_data],
+                'method':json_data['method']
+            }
 
-            
+
             message = {
                 'success': True,
                 'node': {
                     'location': data['location'],
                     'net_speed': data['net_speed'],
                     'vpn': {
-                        'ovpn': keys.ovpn()
+                        'config': config_data
                     }
                 },
                 'session_name': 'client' + name

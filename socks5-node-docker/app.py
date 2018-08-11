@@ -10,9 +10,9 @@ from sentinel.config import KEYSTORE_FILE_PATH
 from sentinel.node import Node
 from sentinel.node import create_account
 from sentinel.node import register_node
-from sentinel.node import send_connections_info
+# from sentinel.node import send_connections_info
 from sentinel.node import send_nodeinfo
-from sentinel.vpn import OpenVPN
+from sentinel.vpn import ShadowSocks
 
 
 def alive_job():
@@ -26,18 +26,18 @@ def alive_job():
         time.sleep(30)
 
 
-def connections_job():
-    while True:
-        try:
-            vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
-            if vpn_status_file is True:
-                connections = openvpn.get_connections()
-                connections_len = len(connections)
-                if connections_len > 0:
-                    send_connections_info(node.config['account_addr'], node.config['token'], connections)
-        except Exception as err:
-            print(str(err))
-        time.sleep(5)
+# def connections_job():
+    # while True:
+    #     try:
+    #         vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
+    #         if vpn_status_file is True:
+    #             connections = openvpn.get_connections()
+    #             connections_len = len(connections)
+    #             if connections_len > 0:
+    #                 send_connections_info(node.config['account_addr'], node.config['token'], connections)
+    #     except Exception as err:
+    #         print(str(err))
+    #     time.sleep(5)
 
 
 if __name__ == "__main__":
@@ -48,7 +48,7 @@ if __name__ == "__main__":
         print('ERROR: {} not found.'.format(CONFIG_DATA_PATH))
         exit(1)
 
-    if (len(sys.argv) > 1) and (len(config['account_addr']) == 0):
+    if (len(config['account_addr']) == 0) and (len(sys.argv) > 1):
         PASSWORD = sys.argv[1]
         keystore, account_addr = create_account(PASSWORD)
         if (keystore is not None) and (account_addr is not None):
@@ -60,32 +60,36 @@ if __name__ == "__main__":
         else:
             print('Error occurred while creating a new account.')
             exit(3)
+    elif (len(config['account_addr']) == 42) and (len(sys.argv) == 1):
+        pass
     else:
-        print('Password is not provided OR `account_addr` field in config file is not empty.')
+        print('Password is not provided OR `account_addr` in config is incorrect. \
+               Please try again after deleting config file.')
         exit(2)
 
-    node = Node(config)
-    openvpn = OpenVPN()
 
+    node = Node(config)
+    # openvpn = OpenVPN()
+    shadowsocks=ShadowSocks()
     if len(node.config['token']) == 0:
         register_node(node)
-    openvpn.start()
+    shadowsocks.start()
     send_nodeinfo(node, {
         'type': 'vpn'
     })
     start_new_thread(alive_job, ())
-    start_new_thread(connections_job, ())
+    # start_new_thread(connections_job, ())
     while True:
-        line = openvpn.vpn_proc.stdout.readline().strip()
+        line = shadowsocks.vpn_proc.stdout.readline().strip()
         line_len = len(line)
         if line_len > 0:
-            print(line)
-            if 'Peer Connection Initiated with' in line:
-                client_name = line.split()[6][1:-1]
-                if 'client' in client_name:
-                    print('*' * 128)
-            elif 'client-instance exiting' in line:
-                client_name = line.split()[5].split('/')[0]
-                if 'client' in client_name:
-                    print('*' * 128)
-                    openvpn.revoke(client_name)
+            print("Line..",line)
+    #         if 'Peer Connection Initiated with' in line:
+    #             client_name = line.split()[6][1:-1]
+    #             if 'client' in client_name:
+    #                 print('*' * 128)
+    #         elif 'client-instance exiting' in line:
+    #             client_name = line.split()[5].split('/')[0]
+    #             if 'client' in client_name:
+    #                 print('*' * 128)
+    #                 openvpn.revoke(client_name)

@@ -142,8 +142,8 @@ class VPNHistory extends Component {
                     return (
                         <Card>
                             <CardText>
-                                <span style={{ fontWeight: 600 }}>{lang[language].SessionId}: </span>{sessionData.id}
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].VpnAddress}: </span>{sessionData.account_addr}
+                                <span style={styles.headingStyle}>{lang[language].SessionId}: </span>{sessionData.id}
+                                <span style={styles.headingWithMarginStyle}>{lang[language].VpnAddress}: </span>{sessionData.account_addr}
                                 <CopyToClipboard text={sessionData.account_addr}
                                     onCopy={() => that.setState({
                                         snackMessage: 'Copied to Clipboard Successfully',
@@ -158,10 +158,10 @@ class VPNHistory extends Component {
                                     <span>Copy</span>
                                 </ReactTooltip>
                                 <br />
-                                <span style={{ fontWeight: 600 }}>{lang[language].Amount}: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS
-                                <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].Duration}: </span>{sessionData.session_duration} secs
-                            <span style={{ fontWeight: 600, marginLeft: 10 }}>{lang[language].ReceivedData}: </span>{this.getPaymentBytes(sessionData.received_bytes)}<br />
-                                <span style={{ fontWeight: 600 }}>{lang[language].Time}: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
+                                <span style={styles.headingStyle}>{lang[language].Amount}: </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS
+                                <span style={styles.headingWithMarginStyle}>{lang[language].Duration}: </span>{sessionData.session_duration} secs
+                            <span style={styles.headingWithMarginStyle}>{lang[language].ReceivedData}: </span>{this.getPaymentBytes(sessionData.received_bytes)}<br />
+                                <span style={styles.headingStyle}>{lang[language].Time}: </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardText>
                             {
                                 sessionData.is_paid ?
@@ -214,11 +214,11 @@ class VPNHistory extends Component {
                 })
             }
             else {
-                sessionOutput = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Previous Sessions</div>
+                sessionOutput = <div style={styles.noSessionsStyle}>No Previous Sessions</div>
             }
         }
         else {
-            sessionOutput = <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>No Previous Sessions</div>
+            sessionOutput = <div style={styles.noSessionsStyle}>No Previous Sessions</div>
         }
         return (
             <MuiThemeProvider>
@@ -230,11 +230,11 @@ class VPNHistory extends Component {
                     </div>
                     {vpnUsage ?
                         <div>
-                            <span style={{ fontWeight: 600 }}>{lang[language].TotalDue} : </span>{parseInt(vpnUsage.due) / (10 ** 8)} SENTS<br />
-                            <span style={{ fontWeight: 600 }} >{lang[language].TotalDuration} : </span>{vpnUsage.stats['duration']} secs<br />
-                            <span style={{ fontWeight: 600 }}>{lang[language].TotalData} : </span>{this.getPaymentBytes(vpnUsage.stats['received_bytes'])}
+                            <span style={styles.headingStyle}>{lang[language].TotalDue} : </span>{parseInt(vpnUsage.due) / (10 ** 8)} SENTS<br />
+                            <span style={styles.headingStyle} >{lang[language].TotalDuration} : </span>{vpnUsage.stats['duration']} secs<br />
+                            <span style={styles.headingStyle}>{lang[language].TotalData} : </span>{this.getPaymentBytes(vpnUsage.stats['received_bytes'])}
                             <hr />
-                            <h4 style={{ fontWeight: 600 }}>{lang[language].Sessions}</h4>
+                            <h4 style={styles.headingStyle}>{lang[language].Sessions}</h4>
                             <div style={{ overflow: 'auto', height: 300 }}>{sessionOutput}</div>
                         </div>
 
@@ -246,7 +246,7 @@ class VPNHistory extends Component {
                         message={this.state.snackMessage}
                         autoHideDuration={2000}
                         onRequestClose={this.snackRequestClose}
-                        style={{ marginBottom: '2%' }}
+                        style={{ marginBottom: '1%' }}
                     />
                 </div>
             </MuiThemeProvider>
@@ -259,6 +259,18 @@ const styles = {
         height: 20,
         width: 20,
         cursor: 'pointer'
+    },
+    headingStyle: {
+        fontWeight: 600
+    },
+    headingWithMarginStyle: {
+        fontWeight: 600,
+        marginLeft: 10
+    },
+    noSessionsStyle: {
+        display: 'flex',
+        justifyContent: 'center',
+        paddingTop: '20%'
     }
 }
 

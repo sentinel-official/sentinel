@@ -32,7 +32,7 @@ Using existing docker image
 
 `mkdir -p $HOME/.sentinel`
 
-`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 1194:1194/udp sentinelofficial/sentinel-vpn-node`
+`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4000:4000 -p 4001:4001 -p 4002:4002 -p 4003:4003 sentinelofficial/sentinel-vpn-node`
 
 #### Method #2
 
@@ -42,20 +42,20 @@ Building your own docker image
 
 `git clone https://github.com/sentinel-official/sentinel.git`
 
-`cd ~/sentinel/vpn-node-docker`
+`cd ~/sentinel/socks5-node-docker`
 
-`sudo docker build --file Dockerfile.prod --tag sentinel-vpn-node --force-rm --no-cache .`
+`sudo docker build --file Dockerfile.dev --tag sentinel-socks-node --force-rm --no-cache .`
 
 `mkdir -p $HOME/.sentinel`
 
-`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 1194:1194/udp sentinel-vpn-node`
+`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4000:4000 -p 4001:4001 -p 4002:4002 -p 4003:4003 sentinel-socks-node`
 
 ### Updating existing Sentinel VPN node
 
-`sudo docker pull sentinelofficial/sentinel-vpn-node`
+`sudo docker pull sentinelofficial/sentinel-socks-node`
 
-`sudo docker stop $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-vpn-node")`
+`sudo docker stop $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-socks-node")`
 
-`sudo docker rm $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-vpn-node")`
+`sudo docker rm $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-socks-node")`
 
 After running the above commands please follow the method #1 for running the node again

@@ -7,7 +7,7 @@ import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnect
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
-import SendNew from './SendNew';
+import MixerComponent from './MixerComponent';
 import VPNHistory from './VPNHistory';
 let lang = require('./language');
 const { ipcRenderer } = window.require('electron');
@@ -32,10 +32,12 @@ class Dashboard extends Component {
       amount: '',
       unit: 'ETH',
       isTest: false,
+      isSock: false,
       sessionId: null,
       testDisabled: false,
       lang: 'en',
-      currentHash: null
+      currentHash: null,
+      swapHash: null
     }
     this.set = this.props.set;
   }
@@ -51,10 +53,10 @@ class Dashboard extends Component {
         })
       }
     });
-    getVPNConnectedData(function (err, data) {
+    getVPNConnectedData(function (err, data, sock) {
       if (err) { }
       else {
-        that.setState({ status: true, vpnData: data, isTest: true });
+        that.setState({ status: true, vpnData: data, isTest: true, isSock: sock });
       }
     })
   }
@@ -76,6 +78,10 @@ class Dashboard extends Component {
 
   getTxHash = (txHash) => {
     this.setState({ currentHash: txHash })
+  }
+
+  getSwapHash = (txHash) => {
+    this.setState({ swapHash: txHash })
   }
 
   getUserSentBalance() {
@@ -153,8 +159,16 @@ class Dashboard extends Component {
     this.getUserSentBalance();
   }
 
+  onSockChange = (value) => {
+    this.setState({ isSock: value })
+  }
+
   removeHash = () => {
     this.setState({ currentHash: null })
+  }
+
+  removeSwapHash = () => {
+    this.setState({ swapHash: null })
   }
 
   testDisable = (value) => {
@@ -186,12 +200,14 @@ class Dashboard extends Component {
             balance={userBalance}
             onChange={this.getVPNapi}
             ontestChange={this.onTestChange}
+            onsockChange={this.onSockChange}
             local_address={this.state.local_address}
             vpnPayment={this.vpnPayment}
             status={this.state.status}
             testDisabled={this.state.testDisabled}
             moveToList={this.moveToVPN}
             isTest={this.state.isTest}
+            isSock={this.state.isSock}
             lang={this.props.lang}
           />
           <div>
@@ -203,27 +219,13 @@ class Dashboard extends Component {
               }}
               inkBarStyle={{ backgroundColor: '#2f3245', height: 3 }}
             >
-              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].History} value="history">
+              <Tab style={styles.enabledTabStyle} label={lang[language].History} value="history">
                 <History
-                  local_address={this.state.local_address} isTest={this.state.isTest}
-                  lang={this.props.lang} currentHash={this.state.currentHash} removeHash={this.removeHash} />
+                  local_address={this.state.local_address} isTest={this.state.isTest} swapHash={this.state.swapHash}
+                  lang={this.props.lang} currentHash={this.state.currentHash} removeHash={this.removeHash} removeSwapHash={this.removeSwapHash} />
               </Tab>
-              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Send} value="send">
-                {/* <SendComponent
-                  local_address={this.state.local_address}
-                  amount={this.state.amount}
-                  to_addr={this.state.to_addr}
-                  unit={this.state.unit}
-                  session_id={this.state.sessionId}
-                  sending={this.state.sending}
-                  isTest={this.state.isTest}
-                  isPropReceive={this.state.isPropReceive}
-                  propReceiveChange={this.propReceiveChange.bind(this)}
-                  clearSend={this.clearSend.bind(this)}
-                  lang={this.props.lang}
-                  getCurrentTx={this.getTxHash}
-                /> */}
-                <SendNew
+              <Tab style={styles.enabledTabStyle} label={lang[language].Send} value="send">
+                <SendComponent
                   local_address={this.state.local_address}
                   amount={this.state.amount}
                   balance={userBalance}
@@ -237,15 +239,16 @@ class Dashboard extends Component {
                   clearSend={this.clearSend.bind(this)}
                   lang={this.props.lang}
                   getCurrentTx={this.getTxHash}
+                  getCurrentSwapHash={this.getSwapHash}
                 />
               </Tab>
-              <Tab style={{ fontSize: 14, fontWeight: 'bold', color: '#2f3245' }} label={lang[language].Receive} value="receive">
+              <Tab style={styles.enabledTabStyle} label={lang[language].Receive} value="receive">
                 <div>
-                  <ReceiveComponent local_address={this.state.local_address} lang={this.props.lang} />
+                  <ReceiveComponent local_address={this.state.local_address} lang={this.props.lang} isTest={this.state.isTest} />
                 </div>
               </Tab>
-              <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :
-                { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label={lang[language].VpnList} value="vpn" disabled={!this.state.isTest}>
+              <Tab style={this.state.isTest ? styles.enabledTabStyle : styles.disabledTabStyle}
+                label={lang[language].VpnList} value="vpn" disabled={!this.state.isTest}>
                 <VPNComponent
                   local_address={this.state.local_address}
                   status={this.state.status}
@@ -255,19 +258,21 @@ class Dashboard extends Component {
                   vpnPayment={this.vpnPayment}
                   changeTest={this.testDisable}
                   lang={this.props.lang}
+                  isSock={this.state.isSock}
                 />
               </Tab>
-              <Tab style={this.state.isTest ? { fontSize: 14, fontWeight: 'bold', color: '#2f3245' } :
-                { fontSize: 14, fontWeight: 'bold', color: '#bdbfce' }} label={lang[language].VpnHistory} value="vpn_history" disabled={!this.state.isTest}>
+              <Tab style={this.state.isTest ? styles.enabledTabStyle : styles.disabledTabStyle}
+                label={lang[language].VpnHistory} value="vpn_history" disabled={!this.state.isTest}>
                 <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} lang={this.props.lang} />
+              </Tab>
+              <Tab style={styles.enabledTabStyle} label="Mixer" value="mixer">
+                <MixerComponent local_address={this.state.local_address} lang={this.props.lang} isTest={this.state.isTest} />
               </Tab>
             </Tabs>
           </div>
           {this.state.isTest ?
-            <div style={{ backgroundColor: '#31b0d5', position: 'absolute', bottom: 0, width: '100%' }}>
-              <h4 style={{
-                textAlign: 'center', fontSize: 14, fontWeight: 'bold', padding: 14, margin: 0, color: 'white'
-              }}>{lang[language].TestMode}</h4>
+            <div style={styles.testModeDiv}>
+              <h4 style={styles.testModeHeading}>{lang[language].TestMode}</h4>
             </div>
             :
             <div></div>
@@ -275,6 +280,33 @@ class Dashboard extends Component {
         </div>
       </MuiThemeProvider >
     );
+  }
+}
+
+const styles = {
+  enabledTabStyle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#2f3245'
+  },
+  disabledTabStyle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#bdbfce'
+  },
+  testModeDiv: {
+    backgroundColor: '#31b0d5',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%'
+  },
+  testModeHeading: {
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: 'bold',
+    padding: 14,
+    margin: 0,
+    color: 'white'
   }
 }
 

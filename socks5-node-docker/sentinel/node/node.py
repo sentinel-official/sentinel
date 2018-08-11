@@ -43,6 +43,7 @@ class Node(object):
             'ip': self.ip,
             'location': self.location,
             'net_speed': self.net_speed,
+            'account_addr': self.config['account_addr'],
             'price_per_gb': self.config['price_per_gb'],
             'token': self.config['token']
         }, upsert=True)
@@ -73,8 +74,10 @@ class Node(object):
             self.net_speed['download'] = self.speed_test.download()
             self.net_speed['upload'] = self.speed_test.upload()
         elif info['type'] == 'config':
-            if info['account_addr'] is not None:
-                self.config['account_addr'] = info['account_addr']
+            print("Config...")
+            # if info['account_addr'] is not None:
+            #     self.config['account_addr'] = info['account_addr']
             if info['token'] is not None:
+                print("Token...")
                 self.config['token'] = info['token']
             self.save_config_data()

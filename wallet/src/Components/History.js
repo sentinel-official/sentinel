@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getEthTransactionHistory, getSentTransactionHistory, isOnline, sendError } from '../Actions/AccountActions';
+import { getEthTransactionHistory, getSentTransactionHistory, isOnline, sendError, getSwapTransactionStatus } from '../Actions/AccountActions';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import _ from 'lodash';
 import { RaisedButton, IconButton, Snackbar } from 'material-ui';
@@ -8,6 +8,8 @@ import EtherTransaction from './EtherTransaction';
 import SentTransaction from './SentTransaction';
 let zfill = require('zfill');
 var lang = require('./language');
+var StatusInterval = null;
+var showDivCount = 0;
 
 class History extends Component {
   constructor(props) {
@@ -15,14 +17,16 @@ class History extends Component {
     this.state = {
       ethData: [],
       sentData: [],
-      isGetHistoryCalled: false,
+      isGetStatusCalled: false,
       isLoading: true,
       ethActive: false,
       openSnack: false,
       snackMessage: '',
       pageNumber: 1,
       nextDisabled: false,
-      isInitial: true
+      isInitial: true,
+      showDiv: false,
+      txStatus: 'Pending'
     }
   }
 
@@ -53,6 +57,42 @@ class History extends Component {
       }
       else {
         that.setState({ ethData: _.sortBy(history, o => o.timeStamp).reverse(), pageNumber: page, isLoading: false })
+      }
+    })
+  }
+
+  getStatus = () => {
+    let self = this;
+    getSwapTransactionStatus(this.props.swapHash, function (err, result) {
+      if (err) {
+        self.setState({ showDiv: false });
+      }
+      else if (result['status'] === 1) {
+        if (showDivCount === 0) {
+          showDivCount++;
+          self.setState({ txStatus: 'Success' })
+        }
+        if (showDivCount === 1) {
+          self.props.removeSwapHash();
+          self.setState({ showDiv: false, pageNumber: 1 })
+          self.getEthHistory(1);
+          self.getSentHistory();
+        }
+      }
+      else if (result['status'] === 0) {
+        self.setState({ txStatus: 'Pending', showDiv: true })
+      }
+      else {
+        if (showDivCount === 0) {
+          showDivCount++;
+          self.setState({ txStatus: 'Error' })
+        }
+        if (showDivCount === 1) {
+          self.props.removeSwapHash();
+          self.setState({ showDiv: false, pageNumber: 1 })
+          self.getEthHistory(1);
+          self.getSentHistory();
+        }
       }
     })
   }
@@ -89,39 +129,50 @@ class History extends Component {
   }
 
   render() {
+    let self = this;
     if (this.state.isInitial && this.props.local_address !== "") {
       this.getEthHistory(this.state.pageNumber);
       this.getSentHistory();
       this.setState({ isInitial: false });
     }
+    if (!this.state.isGetStatusCalled && this.props.swapHash) {
+      setInterval(function () {
+        self.getStatus();
+      }, 2000);
+
+      this.setState({ isGetStatusCalled: true });
+    }
     let language = this.props.lang;
     let ethOutput = <EtherTransaction
-      data={this.state.ethData} isTest={this.props.isTest} local_address={this.props.local_address} lang={this.props.lang} />
+      data={this.state.ethData} isTest={this.props.isTest} local_address={this.props.local_address} lang={this.props.lang} hasExtraDiv={this.state.showDiv} />
     let sentOutput = <SentTransaction
-      data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address}
+      data={this.state.sentData} isTest={this.props.isTest} local_address={this.props.local_address} hasExtraDiv={this.state.showDiv}
       lang={this.props.lang} currentHash={this.props.currentHash} removeHash={this.props.removeHash} getHistory={this.getSentHistory.bind(this)} />
     return (
       <div style={{ margin: '1% 3%' }}>
         {this.state.ethActive ?
           <span style={styles.transactionsHeading}>{lang[language].EthTransactions}</span> :
           <span style={styles.transactionsHeading}>{lang[language].SentTransactions}</span>}
-        <span style={{ marginLeft: this.props.lang === 'en' ? '65%' : '62%' }}>
+        <span style={{ marginLeft: this.props.lang === 'en' ? '65%' : '60%' }}>
           <IconButton style={{ position: 'absolute', marginLeft: -50, marginTop: -8 }}>
             <Refresh onClick={this.handleRefresh.bind(this)} />
           </IconButton>
           <RaisedButton
             label="SENT"
-            buttonStyle={this.state.ethActive ? {} : { backgroundColor: 'grey' }}
+            buttonStyle={this.state.ethActive ? {} : styles.activeButtonColor}
             onClick={() => { this.setState({ ethActive: false }) }}
           />
           <RaisedButton
             label="ETH"
-            buttonStyle={this.state.ethActive ? { backgroundColor: 'grey' } : {}}
+            buttonStyle={this.state.ethActive ? styles.activeButtonColor : {}}
             onClick={() => { this.setState({ ethActive: true }) }}
           />
         </span>
         {this.state.isLoading === true ? this.renderProgress() :
           <div >
+            {this.state.showDiv ? <div style={styles.wholeDiv}>
+              <span>Swap Transaction {this.props.swapHash} Status: <span style={{ fontWeight: 'bold' }}>{this.state.txStatus}</span></span>
+            </div> : null}
             {this.state.ethActive ?
               <div>
                 {ethOutput}
@@ -166,6 +217,16 @@ const styles = {
   transactionsHeading: {
     fontSize: 16,
     fontWeight: 600
+  },
+  activeButtonColor: {
+    backgroundColor: 'grey'
+  },
+  wholeDiv: {
+    fontSize: 14,
+    marginTop: '2%',
+    marginBottom: '2%',
+    fontWeight: '400',
+    color: 'rgba(0, 0, 0, 0.66)'
   }
 }
 

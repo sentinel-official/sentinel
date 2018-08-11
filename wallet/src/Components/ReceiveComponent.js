@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { QRCode } from 'react-qr-svg';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { sendError } from '../Actions/AccountActions';
-import { Snackbar } from 'material-ui';
+import { sendError, getFreeAmount } from '../Actions/AccountActions';
+import { Snackbar, FlatButton } from 'material-ui';
 import ReactTooltip from 'react-tooltip';
+var lang = require('./language');
 
 class ReceiveComponent extends Component {
 
@@ -14,6 +15,13 @@ class ReceiveComponent extends Component {
       openSnack: false,
       snackMessage: ''
     }
+  }
+
+  getFree() {
+    let self = this;
+    getFreeAmount(this.props.local_address, function (message) {
+      self.setState({ openSnack: true, snackMessage: message })
+    })
   }
 
   componentDidCatch(error, info) {
@@ -27,8 +35,19 @@ class ReceiveComponent extends Component {
   };
 
   render() {
+    let language = this.props.lang;
     return (
       <div>
+        <FlatButton
+          label={lang[language].GetTokens}
+          labelStyle={{ paddingLeft: 10, paddingRight: 10, fontWeight: '600', fontSize: 12, color: '#FAFAFA' }}
+          onClick={this.getFree.bind(this)}
+          disabled={!this.props.isTest}
+          style={{
+            backgroundColor: this.props.isTest ? '#2f3245' : 'rgba(47, 50, 69, 0.34)',
+            position: 'absolute', right: 0, marginTop: 10, marginRight: 20
+          }}
+        />
         <Grid style={{
           // display: 'flex',
           // alignItems: 'center',

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorWindowDark"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorWindowDark">
 
     <TextView
         android:id="@+id/session_id"
-        style="@style/CustomTextAppearance.Text10.Gray"
+        style="@style/CustomTextAppearance.Text12.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -26,10 +26,10 @@
 
     <TextView
         android:id="@+id/tv_session_id"
-        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        style="@style/CustomTextAppearance.Text14.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="4dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tv_date_time"
@@ -39,7 +39,7 @@
 
     <TextView
         android:id="@+id/tv_date_time"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        style="@style/CustomTextAppearance.Text14.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -52,12 +52,12 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_1"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toTopOf="@+id/received_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +67,7 @@
 
     <TextView
         android:id="@+id/received_data"
-        style="@style/CustomTextAppearance.Text10.Gray"
+        style="@style/CustomTextAppearance.Text12.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -82,7 +82,7 @@
 
     <TextView
         android:id="@+id/tv_received_data"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        style="@style/CustomTextAppearance.Text14.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -93,7 +93,7 @@
 
     <TextView
         android:id="@+id/duration"
-        style="@style/CustomTextAppearance.Text10.Gray"
+        style="@style/CustomTextAppearance.Text12.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -109,7 +109,7 @@
 
     <TextView
         android:id="@+id/tv_duration"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        style="@style/CustomTextAppearance.Text14.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -120,7 +120,7 @@
 
     <TextView
         android:id="@+id/session_cost"
-        style="@style/CustomTextAppearance.Text10.Gray"
+        style="@style/CustomTextAppearance.Text12.GrayNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -136,7 +136,7 @@
 
     <TextView
         android:id="@+id/tv_session_cost"
-        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+        style="@style/CustomTextAppearance.Text14.WhiteNormal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

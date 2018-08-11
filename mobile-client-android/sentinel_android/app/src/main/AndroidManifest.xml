@@ -10,6 +10,7 @@
     <application
         android:name=".SentinelApp"
         android:allowBackup="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -17,8 +18,9 @@
         android:theme="@style/AppTheme.CustomTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
+
         <activity
-            android:name=".ui.activity.LauncherActivity"
+            android:name=".ui.activity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,8 +29,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.CreateAccountActivity"
+            android:name=".ui.activity.OnBoardingActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.LauncherActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.CreateAccountActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".ui.activity.RestoreKeystoreActivity"
             android:screenOrientation="portrait" />
@@ -45,10 +54,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.ForgotPinActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".ui.activity.ResetPinActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".ui.activity.ReceiveActivity"
             android:screenOrientation="portrait" />
@@ -60,6 +71,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.TxHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GenericListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.HelperActivity"
+            android:theme="@style/CustomDialogActivityTheme" />
+        <activity
+            android:name=".ui.activity.ReferralActivity"
             android:screenOrientation="portrait" />
 
         <!-- Zxing scanner activity -->
@@ -103,13 +123,6 @@
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
             android:value="3ef59c1aedfd5938d2b519f33cf6b5ec" />
-
-        <activity
-            android:name=".ui.activity.GenericListActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.activity.HelperActivity"
-            android:theme="@style/CustomDialogActivityTheme" />
     </application>
 
 </manifest>

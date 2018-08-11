@@ -67,14 +67,14 @@ public class SendActivity extends BaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() == null) {
-                showSingleActionError(getString(R.string.no_scan_results));
+                showSingleActionError(AppConstants.VALUE_DEFAULT, getString(R.string.no_scan_results), AppConstants.VALUE_DEFAULT);
             } else {
                 if (result.getContents().matches("0[xX][0-9a-fA-F]+") && result.getContents().length() == 42) {
                     Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
                     if (aFragment instanceof SendFragment)
                         ((SendFragment) aFragment).updateToAddress(result.getContents());
                 } else {
-                    showSingleActionError(getString(R.string.not_a_address));
+                    showSingleActionError(AppConstants.VALUE_DEFAULT, getString(R.string.not_a_address), AppConstants.VALUE_DEFAULT);
                 }
             }
         } else {
@@ -110,12 +110,12 @@ public class SendActivity extends BaseActivity {
     }
 
     @Override
-    public void onShowSingleActionDialog(String iMessage) {
-        showSingleActionError(iMessage);
+    public void onShowSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
+        showSingleActionError(iTitleId, iMessage, iPositiveOptionId);
     }
 
     @Override
-    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+    public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         // Unimplemented interface method
     }
 

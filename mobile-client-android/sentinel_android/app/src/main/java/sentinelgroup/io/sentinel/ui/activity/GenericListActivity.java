@@ -8,7 +8,6 @@ import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.fragment.GenericListFragment;
-import sentinelgroup.io.sentinel.ui.fragment.GenericUrlListFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 
 public class GenericListActivity extends BaseActivity {
@@ -40,7 +39,8 @@ public class GenericListActivity extends BaseActivity {
         Bundle aExtras = getIntent().getExtras();
         if (aExtras != null) {
             int aReqCode = aExtras.getInt(AppConstants.EXTRA_REQ_CODE);
-            loadFragment(aReqCode == AppConstants.REQ_LANGUAGE ? GenericListFragment.newInstance(aReqCode) : GenericUrlListFragment.newInstance(aReqCode));
+            if (aReqCode == AppConstants.REQ_LANGUAGE)
+                loadFragment(GenericListFragment.newInstance(aReqCode));
         } else
             finish();
     }
@@ -73,12 +73,12 @@ public class GenericListActivity extends BaseActivity {
     }
 
     @Override
-    public void onShowSingleActionDialog(String iMessage) {
-        showSingleActionError(iMessage);
+    public void onShowSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
+        showSingleActionError(iTitleId, iMessage, iPositiveOptionId);
     }
 
     @Override
-    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+    public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         // Unimplemented method
     }
 

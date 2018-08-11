@@ -42,19 +42,23 @@ public interface OnGenericFragmentInteractionListener {
      * This method is intended to instruct the activity implementing this callback to show an Error
      * dialog with a Single button from the fragment contained in this activity
      *
-     * @param iMessage [String] The error message to be shown in the dialog
+     * @param iTitleId          [int] The resource id of the dialog title
+     * @param iMessage          [String] The error message to be shown in the dialog
+     * @param iPositiveOptionId [int] The resource id of the positive button text
      */
-    void onShowSingleActionDialog(String iMessage);
+    void onShowSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId);
 
     /**
      * This method is intended to instruct the activity implementing this callback to show an Error
      * dialog with two buttons from the fragment contained in this activity
      *
+     * @param iTag              [String] The tag used to identify the dialog
+     * @param iTitleId          [int] The resource id of the dialog title
      * @param iMessage          [String] The error message to be shown in the dialog
      * @param iPositiveOptionId [int] The resource id of the positive button text
      * @param iNegativeOptionId [int] The resource id of the negative button text
      */
-    void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId);
+    void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId);
 
     /**
      * This method is intended to instruct the activity implementing this callback to copy the

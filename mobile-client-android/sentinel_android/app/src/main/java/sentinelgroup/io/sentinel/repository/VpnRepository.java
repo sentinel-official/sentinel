@@ -10,7 +10,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
 import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
-import sentinelgroup.io.sentinel.network.api.WebService;
+import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.ReportPay;
 import sentinelgroup.io.sentinel.network.model.Tokens;
@@ -23,6 +23,7 @@ import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.NoConnectivityException;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -35,7 +36,7 @@ public class VpnRepository {
     private static VpnRepository sInstance;
     private final VpnListEntryDao mListDao;
     private final VpnUsageEntryDao mUsageDao;
-    private final WebService mWebService;
+    private final GenericWebService mGenericWebService;
     private final AppExecutors mAppExecutors;
     private final MutableLiveData<List<VpnListEntity>> mVpnListMutableLiveData;
     private final MutableLiveData<VpnUsageEntity> mVpnUsageMutableLiveData;
@@ -46,10 +47,10 @@ public class VpnRepository {
     private final SingleLiveEvent<Resource<ReportPay>> mReportPaymentLiveEvent;
     private final SingleLiveEvent<Boolean> mTokenAlertLiveEvent;
 
-    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, WebService iWebService, AppExecutors iAppExecutors) {
+    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
         mListDao = iListDao;
         mUsageDao = iUsageDao;
-        mWebService = iWebService;
+        mGenericWebService = iGenericWebService;
         mAppExecutors = iAppExecutors;
         mVpnListMutableLiveData = new MutableLiveData<>();
         mVpnUsageMutableLiveData = new MutableLiveData<>();
@@ -80,10 +81,10 @@ public class VpnRepository {
         });
     }
 
-    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, WebService iWebService, AppExecutors iAppExecutors) {
+    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new VpnRepository(iListDao, iUsageDao, iWebService, iAppExecutors);
+                sInstance = new VpnRepository(iListDao, iUsageDao, iGenericWebService, iAppExecutors);
             }
         }
         return sInstance;
@@ -140,7 +141,7 @@ public class VpnRepository {
 
     // Network call
     public void getUnoccupiedVpnList() {
-        mWebService.getUnoccupiedVpnList().enqueue(new Callback<Vpn>() {
+        mGenericWebService.getUnoccupiedVpnList().enqueue(new Callback<Vpn>() {
             @Override
             public void onResponse(Call<Vpn> call, Response<Vpn> response) {
                 reportSuccessResponse(response);
@@ -168,7 +169,7 @@ public class VpnRepository {
 
     public void getVpnServerCredentials(GenericRequestBody iRequestBody) {
         mVpnServerCredentialsLiveEvent.postValue(Resource.loading(null));
-        mWebService.getVpnServerCredentials(iRequestBody).enqueue(new Callback<VpnCredentials>() {
+        mGenericWebService.getVpnServerCredentials(iRequestBody).enqueue(new Callback<VpnCredentials>() {
             @Override
             public void onResponse(Call<VpnCredentials> call, Response<VpnCredentials> response) {
                 reportSuccessResponse(response);
@@ -176,7 +177,7 @@ public class VpnRepository {
 
             @Override
             public void onFailure(Call<VpnCredentials> call, Throwable t) {
-                reportErrorResponse(null, t.getLocalizedMessage());
+                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<VpnCredentials> response) {
@@ -203,7 +204,7 @@ public class VpnRepository {
 
     public void getVpnUsageForUser(GenericRequestBody iRequestBody) {
         mVpnUsageLiveEvent.postValue(Resource.loading(null));
-        mWebService.getVpnUsageForUser(iRequestBody).enqueue(new Callback<VpnUsage>() {
+        mGenericWebService.getVpnUsageForUser(iRequestBody).enqueue(new Callback<VpnUsage>() {
             @Override
             public void onResponse(Call<VpnUsage> call, Response<VpnUsage> response) {
                 reportSuccessResponse(response);
@@ -211,7 +212,7 @@ public class VpnRepository {
 
             @Override
             public void onFailure(Call<VpnUsage> call, Throwable t) {
-                reportErrorResponse(t.getLocalizedMessage());
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<VpnUsage> response) {
@@ -239,7 +240,7 @@ public class VpnRepository {
 
     public void getVpnConfig(String iUrl, GenericRequestBody iRequestBody) {
         mVpnConfigLiveEvent.postValue(Resource.loading(null));
-        mWebService.getVpnConfig(iUrl, iRequestBody).enqueue(new Callback<VpnConfig>() {
+        mGenericWebService.getVpnConfig(iUrl, iRequestBody).enqueue(new Callback<VpnConfig>() {
             @Override
             public void onResponse(Call<VpnConfig> call, Response<VpnConfig> response) {
                 reportSuccessResponse(response);
@@ -247,7 +248,7 @@ public class VpnRepository {
 
             @Override
             public void onFailure(Call<VpnConfig> call, Throwable t) {
-                reportErrorResponse(t.getLocalizedMessage());
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<VpnConfig> response) {
@@ -270,7 +271,7 @@ public class VpnRepository {
 
     public void reportPayment(GenericRequestBody iRequestBody) {
         mReportPaymentLiveEvent.postValue(Resource.loading(null));
-        mWebService.reportPayment(iRequestBody).enqueue(new Callback<ReportPay>() {
+        mGenericWebService.reportPayment(iRequestBody).enqueue(new Callback<ReportPay>() {
             @Override
             public void onResponse(Call<ReportPay> call, Response<ReportPay> response) {
                 reportSuccessResponse(response);
@@ -278,7 +279,7 @@ public class VpnRepository {
 
             @Override
             public void onFailure(Call<ReportPay> call, Throwable t) {
-                reportErrorResponse(t.getLocalizedMessage());
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
             }
 
             private void reportSuccessResponse(Response<ReportPay> response) {
@@ -302,7 +303,7 @@ public class VpnRepository {
     }
 
     private void getFreeTokens(GenericRequestBody iBody) {
-        mWebService.getFreeTokens(iBody).enqueue(new Callback<Tokens>() {
+        mGenericWebService.getFreeTokens(iBody).enqueue(new Callback<Tokens>() {
             @Override
             public void onResponse(Call<Tokens> call, Response<Tokens> response) {
                 reportSuccessResponse(response);
@@ -315,8 +316,7 @@ public class VpnRepository {
             private void reportSuccessResponse(Response<Tokens> response) {
                 if (response != null && response.body() != null) {
                     mTokenAlertLiveEvent.postValue(response.body().success);
-                    if (response.body().success)
-                        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_FREE_TOKEN_RECEIVED, true);
+                    AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_FREE_TOKEN_RECEIVED, true);
                 }
             }
         });

@@ -1,12 +1,12 @@
 import { sendError } from './../Actions/authentication.action';
 import EthereumTx from 'ethereumjs-tx';
 import Web3 from 'web3';
-import config from '../config';
+import config from '../Constants/config';
 
 const web3 = new Web3();
+let contract;
 const SENTINEL_ABI = [{ "constant": true, "inputs": [], "name": "name", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "bytes32" }], "name": "services", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "name": "", "type": "uint8" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_value", "type": "uint256" }], "name": "burn", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_from", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "burnFrom", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_serviceName", "type": "bytes32" }, { "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "payService", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "owner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transfer", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }, { "name": "_extraData", "type": "bytes" }], "name": "approveAndCall", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }, { "name": "", "type": "address" }], "name": "allowance", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_owner", "type": "address" }], "name": "transferOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_serviceName", "type": "bytes32" }, { "name": "_serviceAddress", "type": "address" }], "name": "deployService", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "name": "_tokenName", "type": "string" }, { "name": "_tokenSymbol", "type": "string" }, { "name": "_decimals", "type": "uint8" }, { "name": "_totalSupply", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "from", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" }], "name": "Burn", "type": "event" }];
 
-let lang = require('../Components/language');
 
 function setWeb3() {
     if (localStorage.getItem('config') === 'TEST')
@@ -51,7 +51,7 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
     }
 }
 
-export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
+export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey,cb) {
     try {
         // amount = amount * Math.pow(10, 8);
         setWeb3();
@@ -70,13 +70,17 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
         var tx = new EthereumTx(txParams);
         tx.sign(privateKey);
         var serializedTx = '0x' + tx.serialize().toString('hex');
-        cb(serializedTx);
+        if(serializedTx){
+            cb(null,serializedTx)
+        } else {
+            cb('Not Assigned',null)
+        }
     } catch (Err) {
         sendError(Err);
     }
 }
 
-export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
+export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey,cb) {
     try {
         setWeb3();
         var txParams = {
@@ -91,13 +95,18 @@ export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, priva
         var tx = new EthereumTx(txParams);
         tx.sign(privateKey);
         var serializedTx = '0x' + tx.serialize().toString('hex');
-        cb(serializedTx);
+        if(serializedTx){
+            cb(null,serializedTx)
+        } else {
+            cb('Not Assigned',null)
+        }
     } catch (Err) {
         sendError(Err);
     }
 }
 
 export function setGas(from_addr, to_addr, amount, cb) {
+    let tokenGas
     try {
         tokenGas = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
     } catch (err) {
@@ -179,3 +188,4 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
         sendError(Err);
     }
 }
+

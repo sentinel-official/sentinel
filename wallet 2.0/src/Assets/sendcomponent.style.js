@@ -21,22 +21,28 @@ const sendComponentStyles = {
         paddingRight: 6,
         color: 'white'
       },
+      textInputStyle: {
+        padding: 10,
+        fontWeight: '500px',
+        color: '#434343',
+        marginLeft: '1pc'
+      },
+      textInputStyleForNumber: {
+        padding: 10,
+        fontWeight: '500px',
+        color: '#434343',
+        marginLeft: '1pc',
+        marginTop:'4px'
+      },
       questionMarkDiv:{
           marginTop:'1.5px'
       },
       textFieldDiv:{
           width: '720px',
-          marginTop: '11px'
-      },
-      textField:{
-        background: '#F5F5F5'
-      },
-      textFieldAmount:{
-        background: '#F5F5F5',
-        width:'529px'
+          marginTop: '12px'
       },
       amountDiv:{
-        marginTop:'11px',
+        marginTop:'35px',
       },
       amountDivCol:{
         width: '720px', 
@@ -53,16 +59,12 @@ const sendComponentStyles = {
       gasWei:{
         fontSize:'18px'
       },
-      gasTextField:{
-        background: '#F5F5F5',
-        marginTop:'10px'
-      },
       row:{
         display:'flex',
         flexDirection:'row'
       },
       slider:{
-         width: '300px',
+         width: '320px',
          color: '#595D8F' 
       },
       button:{
@@ -71,8 +73,7 @@ const sendComponentStyles = {
       },
       sendDiv:{
         width:'298px',
-        backgroundColor:'#BDBDBD',
-        marginTop: '10px',
+        marginTop: '12px',
         marginLeft:'100px'
       }
       

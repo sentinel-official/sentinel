@@ -1,6 +1,6 @@
 
 import { sendError } from './../Actions/authentication.action';
-import { lang } from './../Constants/language';
+import lang from './../Constants/language';
 
 const fs = window.require('fs');
 const electron = window.require('electron');
@@ -33,6 +33,24 @@ export function getPrivateKey(password, language, cb) {
             }
             catch (err) {
                 cb({ message: lang[language].KeyPassMatch }, null);
+            }
+        }
+    })
+}
+
+export function getPrivateKeyWithoutCallback(password, cb) {
+    console.log(KEYSTORE_FILE)
+    readFile(KEYSTORE_FILE, function (err, data) {
+        if (err) cb(err, null);
+        else {
+            var keystore = JSON.parse(data)
+            try {
+                var privateKey = keythereum.recover(password, keystore);
+                console.log(privateKey,'in get')
+                cb(null, privateKey);
+            }
+            catch (err) {
+                cb({ message: lang['en'].KeyPassMatch }, null);
             }
         }
     })

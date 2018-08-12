@@ -8,7 +8,7 @@ const styles = {
         width: 50,
     },
     questionMark: {
-        marginLeft: 10,
+        marginLeft: 20,
         fontSize: 13,
         borderRadius: '50%',
         backgroundColor: '#2f3245',

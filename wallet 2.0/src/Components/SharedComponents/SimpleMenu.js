@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+
 
 const styles = theme => ({
   root: {
@@ -13,76 +11,59 @@ const styles = theme => ({
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
-  options:{
-    marginTop: '-5px',
-    marginLeft: '50px',
+  icon: {
+    fill: 'white',
+    right: '60px'
   },
-  list:{
-    backgroundColor:'#B6B9CB',
-    height: '48px'
-  },
+  list: {
+    backgroundColor: '#B6B9CB',
+    height: '45px',
+    fontFamily: 'Montserrat,Medium',
+    fontWeight: 600,
+    alignItems: 'center'
+  }
 });
 
-const options = [
-  'ETH',
-  'SENT',
-];
 
 class SimpleListMenu extends React.Component {
-  button = null;
 
   state = {
-    anchorEl: null,
-    selectedIndex: 0,
+    token: 'ETH'
+  }
+
+  handleMenuItemClick = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+    this.props.token(event.target.value);
   };
 
-  handleClickListItem = event => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  handleMenuItemClick = (event, index) => {
-    this.setState({ selectedIndex: index, anchorEl: null });
-  };
-
-  handleClose = () => {
-    this.setState({ anchorEl: null });
-  };
 
   render() {
     const { classes } = this.props;
-    const { anchorEl } = this.state;
 
     return (
       <div className={classes.root}>
-        <List component="nav" className={classes.list}>
-          <ListItem
-            button
-            aria-haspopup="true"
-            aria-controls="lock-menu"
-            onClick={this.handleClickListItem}
-          >
-            <ListItemText
-              className={classes.options}
-              secondary={options[this.state.selectedIndex]}
-            />
-          </ListItem>
-        </List>
-        <Menu
-          id="lock-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={this.handleClose}
+        <Select
+          value={this.state.token}
+          onChange={this.handleMenuItemClick}
+          displayEmpty
+          name='token'
+          // native={true}
+          disableUnderline={true}
+          className={classes.list}
+          fullWidth={true}
+          inputProps={{
+              classes: {
+                icon: classes.icon,
+              }
+          }}
+          SelectDisplayProps={{
+            style:{paddingLeft:'60px'}
+          }
+          }
         >
-          {options.map((option, index) => (
-            <MenuItem
-              key={option}
-              selected={index === this.state.selectedIndex}
-              onClick={event => this.handleMenuItemClick(event, index)}
-            >
-              {option}
-            </MenuItem>
-          ))}
-        </Menu>
+          <MenuItem value={'ETH'} >ETH</MenuItem>
+          <MenuItem value={'SENT'}>SENT</MenuItem>
+        </Select>
       </div>
     );
   }

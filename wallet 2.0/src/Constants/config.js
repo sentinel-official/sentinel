@@ -1,6 +1,6 @@
 // const environ = 'TEST' // set TEST for test environ, PROD for main environ
-var config;
-config = {
+
+const config = {
     'main': {
         masterUrl: 'https://api.sentinelgroup.io:8333',
         infuraUrl: 'https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy',

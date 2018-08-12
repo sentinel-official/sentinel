@@ -79,13 +79,13 @@ export async function transferAmount(net, data) {
       } else {
         sendError(response.error);
         return {
-          type: sendComponentTypes.TX_ERROR,
+          type: sendComponentTypes.TX_FAILURE,
           payload: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.'
         }
       }
     } else {
       return {
-        type:sendComponentTypes.SERVER_ERROR,
+        type:sendComponentTypes.TX_ERROR,
         payload: response.message || 'Internal Server Error'
       }
     }

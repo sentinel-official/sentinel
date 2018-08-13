@@ -29,7 +29,8 @@ const sidebarStyles = {
     disabledLabelStyle: {
         fontSize: 16,
         color: '#CECECE'
-    }
+    },
+    m_0: { margin: 0 }
 }
 
 module.exports = {

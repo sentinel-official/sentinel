@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Receive from './Receive';
+import Swaps from './Swaps';
+import TxnHistory from '../containers/txnHistory'
+import VPNHistory from './VPNHistory';
+import { vpnhistoryStyles }from '../Assets/vpnhistory.style';
+import SendComponent from './SendComponent';
 import Swixer from './Swixer';
 import VpnList from './VpnList';
 
@@ -17,7 +23,7 @@ class LayoutComponent extends Component {
         switch (component) {
             case 'history':
                 {
-                    return <div>History</div>
+                    return <TxnHistory/>;
                 }
             case 'vpnList':
                 {
@@ -25,19 +31,26 @@ class LayoutComponent extends Component {
                 }
             case 'receive':
                 {
-                    return <div>Receive</div>
+                    return <Receive/>
                 }
             case 'vpnHistory':
                 {
-                    return <div>VPN History</div>
+                    return  (
+                        <div style={vpnhistoryStyles.contianer}>
+                    <VPNHistory />
+                    </div>)
                 }
             case 'swixer':
                 {
                     return <Swixer />
                 }
+            case 'swaps':
+                {
+                    return <Swaps />
+                }
             default:
                 {
-                    return <div>Send</div>
+                    return <div><SendComponent/></div>
                 }
         }
     }

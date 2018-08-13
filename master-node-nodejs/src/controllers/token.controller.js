@@ -1,10 +1,22 @@
 import async from 'async'
-import { tokens } from '../helpers/tokens'
+import {
+  tokens
+} from '../helpers/tokens'
 import ETHHelper from '../helpers/eth'
-import { ADDRESS as SWAP_ADDRESS, TOKENS, FEE_PERCENTAGE } from '../config/swaps';
-import { DECIMALS } from '../config/vars';
-import { BTCHelper } from '../helpers/btc'
-import { Swap } from '../models';
+import {
+  ADDRESS as SWAP_ADDRESS,
+  TOKENS,
+  FEE_PERCENTAGE
+} from '../config/swaps';
+import {
+  DECIMALS
+} from '../config/vars';
+import {
+  BTCHelper
+} from '../helpers/btc'
+import {
+  Swap
+} from '../models';
 import database from '../db/database';
 const getAvailableTokens = (req, res) => {
   let dailyCount = [];
@@ -27,7 +39,7 @@ const tokenSwapRawTransaction = (req, res) => {
   let value = 0 // parseInt(req.query['value']);
   // value = tokens.exchange(fromToken, toToken, value)
   // value = value * (1.0*(Math.pow(10, toToken['decimals'])))
-  let balance = 1// ETHHelper.rawTransaction(txData, 'main')
+  let balance = 1 // ETHHelper.rawTransaction(txData, 'main')
   let requestedSents = 0;
   let availableSents = 1;
   console.log('req.body in token swaps', req.body, txData, toAddr, '--------------------------------------------------------------------------------------------');
@@ -110,10 +122,16 @@ const swapStatus = (req, res) => {
   let key = req.query['key'];
   let findObj = null;
   if (key.length == 66)
-    findObj = { 'tx_hash_0': key }
+    findObj = {
+      'tx_hash_0': key
+    }
   else if (key.length == 34)
-    findObj = { 'from_address': key }
-  Swap.findOne(findObj, { _id: 0 }, (err, result) => {
+    findObj = {
+      'from_address': key
+    }
+  Swap.findOne(findObj, {
+    _id: 0
+  }, (err, result) => {
     if (!result) {
       res.status(400).send({
         'success': false,
@@ -168,10 +186,30 @@ const getNewAddress = (req, res) => {
     }
   })
 }
+
+const getPendingTransactions = (req, res) => {
+  Swap.find({
+    status: 0
+  }, (err, resp) => {
+    if (err) {
+      res.status(400).send({
+        success: false,
+        message: 'Error in getting pending transactions'
+      })
+    } else {
+      res.status(200).send({
+        success: true,
+        list: resp
+      })
+    }
+  })
+}
+
 export default {
   getAvailableTokens,
   tokenSwapRawTransaction,
   getExchangeValue,
   swapStatus,
-  getNewAddress
-} 
+  getNewAddress,
+  getPendingTransactions
+}

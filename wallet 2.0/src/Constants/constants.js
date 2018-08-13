@@ -29,5 +29,9 @@ module.exports = {
             'name': 'SWIXER',
             'value': 'swixer'
         },
+        {
+            'name': 'SWAPS',
+            'value': 'swaps'
+        },
     ]
 };

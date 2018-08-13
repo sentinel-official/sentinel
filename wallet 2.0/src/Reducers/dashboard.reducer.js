@@ -5,7 +5,7 @@ export function getAccount(state = null, action) {
         case types.GET_ACCOUNT_SUCCESS:
             return action.payload
         case types.GET_ACCOUNT_ERROR:
-            return error
+            return action.error
         default:
             return state
     }

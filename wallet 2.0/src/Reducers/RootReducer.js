@@ -3,6 +3,8 @@ import { setLanguage, createAccount, setComponent } from './beforeAuth.reducer';
 import { setTestNet, getETHBalance, getSentBalance } from './header.reducer';
 import { setCurrentTab } from './sidebar.reducer';
 import { getAccount } from './dashboard.reducer';
+import { getFreeAmount } from './receive.reducer';
+import { getAvailableTokens, getSentValue } from './swaps.reducer';
 import {getVPNHistory,getSnackMessage,getCompareTransactionStatus,getVPNDuePaymetnDetails} from './vpnHistory.reducer';
 import { sendComponentReducer } from './sendcomponent.reducer';
 import { setListViewType, setVpnType, getVpnList } from './vpnlist.reducer';
@@ -17,6 +19,9 @@ const rootReducer = combineReducers({
     getETHBalance,
     getSentBalance,
     setCurrentTab,
+    getFreeAmount,
+    getAvailableTokens,
+    getSentValue,
     getVPNHistory,
     getSnackMessage,
     getVPNDuePaymetnDetails,

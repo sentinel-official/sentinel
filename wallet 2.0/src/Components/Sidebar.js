@@ -29,7 +29,7 @@ class Sidebar extends Component {
     setMenu = (item) => {
         if (!this.props.isTest &&
             (item.value === 'vpnList' || item.value === 'vpnHistory')) { }
-        else if (this.props.isTest && item.value === 'swixer') { }
+        else if (this.props.isTest && (item.value === 'swixer' || item.value === 'swaps')) { }
         else {
             this.props.setCurrentTab(item.value);
         }
@@ -60,7 +60,7 @@ class Sidebar extends Component {
                                         <label
                                             style={
                                                 (!isTest && (item.value === 'vpnList' || item.value === 'vpnHistory'))
-                                                    || (isTest && (item.value === 'swixer'))
+                                                    || (isTest && (item.value === 'swixer' || item.value === 'swaps'))
                                                     ?
                                                     sidebarStyles.disabledLabelStyle :
                                                     (item.value === currentTab ?
@@ -71,7 +71,7 @@ class Sidebar extends Component {
                                         </label>
                                     </Tooltip>
                                 </div>
-                                <hr style={{ margin: 0 }} />
+                                <hr style={sidebarStyles.m_0} />
                             </div>
                         )
                     })
@@ -106,7 +106,7 @@ class Sidebar extends Component {
                                                 {item.name}
                                             </label>
                                         </div>
-                                        <hr style={{ margin: 0 }} />
+                                        <hr style={sidebarStyles.m_0} />
                                     </div>
                                 )
                             })

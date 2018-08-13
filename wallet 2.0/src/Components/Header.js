@@ -29,7 +29,7 @@ class Header extends Component {
         this.props.setTestNet(value);
         this.props.getETHBalance(this.props.walletAddress, value);
         this.props.getSentBalance(this.props.walletAddress, value);
-        if ((value && currentTab === 'swixer') ||
+        if ((value && currentTab === 'swixer' || currentTab === 'swaps') ||
             (!value && (currentTab === 'vpnList' || currentTab === 'vpnHistory'))) {
             this.props.setCurrentTab('send');
         }

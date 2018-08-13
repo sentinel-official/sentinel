@@ -1,6 +1,10 @@
 export const LANGUAGE = 'LANGUAGE';
 export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
 export const COMPONENT = 'COMPONENT';
+export const GET_FREE_AMOUNT = 'GET_FREE_AMOUNT';
+export const GET_ETH_BALANCE = 'GET_ETH_BALANCE';
+export const GET_AVAIL_BALANCE = 'GET_AVAIL_BALANCE';
+export const GET_SENT_VALUE = 'GET_SENT_VALUE';
 export const TESTNET = 'TESTNET';
 export const SENT_TEST_HISTORY = 'SENT_TEST_HISTORY';
 export const ETH_TEST_HISTORY = 'SENT_TEST_HISTORY';

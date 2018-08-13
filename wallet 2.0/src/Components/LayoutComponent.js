@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Receive from './Receive';
+import Swaps from './Swaps';
 import TxnHistory from '../containers/txnHistory'
 import VPNHistory from './VPNHistory';
 import { vpnhistoryStyles }from '../Assets/vpnhistory.style';
@@ -29,7 +31,7 @@ class LayoutComponent extends Component {
                 }
             case 'receive':
                 {
-                    return <div>Receive</div>
+                    return <Receive/>
                 }
             case 'vpnHistory':
                 {
@@ -41,6 +43,10 @@ class LayoutComponent extends Component {
             case 'swixer':
                 {
                     return <Swixer />
+                }
+            case 'swaps':
+                {
+                    return <Swaps />
                 }
             default:
                 {

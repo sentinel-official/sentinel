@@ -4,19 +4,13 @@ import * as types from './../Constants/action.names';
 import * as URL from './../Constants/api.routes'
 import { readFile } from './../Utils/Keystore';
 import axios from 'axios';
-
+import { KEYSTORE_FILE } from './../Utils/Keystore';
 const keythereum = require('keythereum');
 const electron = window.require('electron');
 const remote = electron.remote;
-const SENT_DIR = getUserHome() + '/.sentinel';
-var ACCOUNT_ADDR = '';
 var lang = require('./../Constants/language');
 
-export const KEYSTORE_FILE = SENT_DIR + '/keystore';
-
-function getUserHome() {
-    return remote.process.env[(remote.process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
-}
+var ACCOUNT_ADDR = '';
 
 export function sendError(err) {
     if (err) {
@@ -95,20 +89,4 @@ export function getPrivateKey(password, language, cb) {
             }
         }
     })
-}
-
-export function getAccount(cb) {
-    try {
-        readFile(KEYSTORE_FILE, function (err, data) {
-            if (err) {
-                cb(err, null);
-            } else {
-                data = JSON.parse(data);
-                ACCOUNT_ADDR = '0x' + data.address;
-                cb(null, ACCOUNT_ADDR);
-            }
-        });
-    } catch (Err) {
-        sendError(Err);
-    }
 }

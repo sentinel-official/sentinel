@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {
-    Toolbar, ToolbarGroup, TextField, RaisedButton,
+     ToolbarGroup, TextField, RaisedButton,
     Chip, Paper, Snackbar, RefreshIndicator
 } from 'material-ui';
+import Toolbar from '@material-ui/core/Toolbar';
 import { bindActionCreators } from 'redux';
 import { createAccount, sendError, setComponent } from '../Actions/authentication.action';
 import { isOnline } from './../Utils/UserConfig';
@@ -40,6 +41,8 @@ class Create extends Component {
     componentDidCatch(error, info) {
         sendError(error);
     }
+
+
 
     onChange = (event) => {
         var input = event.target;

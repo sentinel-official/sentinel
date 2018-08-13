@@ -20,11 +20,11 @@ export function setLanguage(state = 'en', action) {
 }
 
 export function setComponent(state = null, action) {
-    switch(action.type) {
+    switch (action.type) {
         case types.COMPONENT:
             return action.payload
         default:
-            return '.'
+            return state
     }
 }
 

@@ -8,13 +8,13 @@ export function getAccount() {
         data = JSON.parse(data);
         let ACCOUNT_ADDR = '0x' + data.address;
         return {
-            type: types.GETACCOUNT,
+            type: types.GET_ACCOUNT_SUCCESS,
             payload: ACCOUNT_ADDR
         }
-    } catch (err) {
+    } catch (error) {
         return {
-            type: types.GETACCOUNT,
-            payload: null
+            type: types.GET_ACCOUNT_ERROR,
+            error
         }
     }
 }

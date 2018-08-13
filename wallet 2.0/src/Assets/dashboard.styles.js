@@ -7,9 +7,9 @@ const dashboardStyles = {
     height: 522
   },
   sideBarStyle: {
-    // flex: '30px',
-    width:'60px',
-    backgroundColor: '#f8f8f8'
+    flex: '0 1 0%',
+    backgroundColor: '#f8f8f8',
+    width:60
   },
   componentStyle: {
     flex: 5,

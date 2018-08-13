@@ -4,6 +4,8 @@ import { setTestNet, getETHBalance, getSentBalance } from './header.reducer';
 import { setCurrentTab } from './sidebar.reducer';
 import { getAccount } from './dashboard.reducer';
 import {getVPNHistory,getSnackMessage,getCompareTransactionStatus,getVPNDuePaymetnDetails} from './vpnHistory.reducer';
+import { sendComponentReducer } from './sendcomponent.reducer';
+import { setListViewType, setVpnType, getVpnList } from './vpnlist.reducer';
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -16,8 +18,11 @@ const rootReducer = combineReducers({
     setCurrentTab,
     getVPNHistory,
     getSnackMessage,
-    getVPNDuePaymetnDetails
-
+    getVPNDuePaymetnDetails,
+    sendComponentReducer,
+    setListViewType,
+    setVpnType,
+    getVpnList
 });
 
 export default rootReducer;

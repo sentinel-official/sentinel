@@ -7,7 +7,7 @@ import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
   transferAmount, isOnline, payVPNUsage, getAvailableTokens, sendError, getTokenBalance,
-  getSentValue, getSentTransactionHistory, swapRawTransaction
+  getSentValue, swapRawTransaction
 } from '../Actions/AccountActions';
 import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost, swapTransaction } from '../Actions/TransferActions';
 import ReactTooltip from 'react-tooltip';

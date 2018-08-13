@@ -2,8 +2,10 @@ import * as types from "../Constants/action.names";
 
 export function getAccount(state = null, action) {
     switch (action.type) {
-        case types.GETACCOUNT:
+        case types.GET_ACCOUNT_SUCCESS:
             return action.payload
+        case types.GET_ACCOUNT_ERROR:
+            return error
         default:
             return state
     }

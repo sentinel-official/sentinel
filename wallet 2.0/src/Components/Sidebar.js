@@ -4,12 +4,25 @@ import { bindActionCreators } from 'redux';
 import { menuItems } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
+import MenuIcon from '@material-ui/icons/Menu';
+import { Drawer, IconButton, Tooltip } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import { compose } from 'recompose';
+
+const Customstyles = theme => ({
+    paper: {
+        height: 522,
+        top: 70,
+        width: 180
+    }
+});
 
 class Sidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            openDrawer: false
         }
     }
 
@@ -22,11 +35,19 @@ class Sidebar extends Component {
         }
     }
 
+    toggleDrawer = (value) => () => {
+        this.setState({ openDrawer: value })
+    }
+
     render() {
+        let { classes } = this.props;
         let currentTab = this.props.currentTab;
         let isTest = this.props.isTest;
         return (
             <div>
+                <div style={sidebarStyles.menuIconStyle}>
+                    <MenuIcon onClick={this.toggleDrawer(true)} />
+                </div>
                 {
                     menuItems.map((item) => {
                         return (
@@ -35,27 +56,70 @@ class Sidebar extends Component {
                                     !isTest && (item.value === 'vpnList' || item.value === 'vpnHistory') ?
                                         sidebarStyles.disabledDivStyle : sidebarStyles.activeDivStyle
                                 } onClick={() => { this.setMenu(item); }}>
-                                    <label
-                                        style={
-                                            (!isTest && (item.value === 'vpnList' || item.value === 'vpnHistory'))
-                                                || (isTest && (item.value === 'swixer'))
-                                                ?
-                                                sidebarStyles.disabledLabelStyle :
-                                                (item.value === currentTab ?
-                                                    sidebarStyles.activeLabelStyle :
-                                                    sidebarStyles.normalLabelStyle)
-                                        }>
-                                        {item.name}
-                                    </label>
+                                    <Tooltip title={item.name}>
+                                        <label
+                                            style={
+                                                (!isTest && (item.value === 'vpnList' || item.value === 'vpnHistory'))
+                                                    || (isTest && (item.value === 'swixer'))
+                                                    ?
+                                                    sidebarStyles.disabledLabelStyle :
+                                                    (item.value === currentTab ?
+                                                        sidebarStyles.activeLabelStyle :
+                                                        sidebarStyles.normalLabelStyle)
+                                            }>
+                                            <MenuIcon />
+                                        </label>
+                                    </Tooltip>
                                 </div>
                                 <hr style={{ margin: 0 }} />
                             </div>
                         )
                     })
                 }
+                <Drawer
+                    open={this.state.openDrawer}
+                    onClose={this.toggleDrawer(false)}
+                    classes={{ paper: classes.paper }}
+                >
+                    <div
+                        tabIndex={0}
+                        role="button"
+                    >
+                        {
+                            menuItems.map((item) => {
+                                return (
+                                    <div>
+                                        <div style={
+                                            !isTest && (item.value === 'vpnList' || item.value === 'vpnHistory') ?
+                                                sidebarStyles.disabledDivStyle : sidebarStyles.activeDivStyle
+                                        } onClick={() => { this.setMenu(item); }}>
+                                            <label
+                                                style={
+                                                    (!isTest && (item.value === 'vpnList' || item.value === 'vpnHistory'))
+                                                        || (isTest && (item.value === 'swixer'))
+                                                        ?
+                                                        sidebarStyles.disabledLabelStyle :
+                                                        (item.value === currentTab ?
+                                                            sidebarStyles.activeLabelStyle :
+                                                            sidebarStyles.normalLabelStyle)
+                                                }>
+                                                {item.name}
+                                            </label>
+                                        </div>
+                                        <hr style={{ margin: 0 }} />
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </Drawer>
             </div>
         )
     }
+}
+
+Sidebar.propTypes = {
+    classes: PropTypes.object.isRequired
 }
 
 function mapStateToProps(state) {
@@ -72,4 +136,4 @@ function mapDispatchToActions(dispatch) {
     }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToActions)(Sidebar);
+export default compose(withStyles(Customstyles), connect(mapStateToProps, mapDispatchToActions))(Sidebar);

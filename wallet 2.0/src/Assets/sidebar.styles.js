@@ -5,10 +5,15 @@ const sidebarStyles = {
         cursor: 'pointer',
         fontFamily: 'Montserrat'
     },
+    menuIconStyle: {
+        cursor: 'pointer',
+        textAlign: 'center'
+    },
     disabledDivStyle: {
         padding: '18px 20px 8px 20px',
         textAlign: 'center',
-        fontFamily: 'Montserrat'
+        fontFamily: 'Montserrat',
+        cursor:'not-allowed'
     },
     activeLabelStyle: {
         fontWeight: 'bold',

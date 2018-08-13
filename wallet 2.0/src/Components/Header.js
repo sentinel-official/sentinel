@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Switch, Snackbar, Tooltip } from '@material-ui/core';
+import { Switch, Snackbar, Tooltip, IconButton, Paper, ClickAwayListener, Popper, MenuList, MenuItem, Grow } from '@material-ui/core';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
+import AccountIcon from '@material-ui/icons/AccountCircle';
 import { headerStyles } from '../Assets/header.styles';
 import { setTestNet, getETHBalance, getSentBalance } from '../Actions/header.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
@@ -15,12 +16,25 @@ class Header extends Component {
         this.state = {
             openSnack: false,
             snackMessage: '',
-            isGetBalanceCalled: false
+            isGetBalanceCalled: false,
+            openAccountMenu: false,
+            anchorEl: null
         }
     }
 
     handleClose = (event, reason) => {
         this.setState({ openSnack: false });
+    };
+
+    handleMenuClose = (event) => {
+        if (this.anchorEl.contains(event.target)) {
+            return;
+        }
+        this.setState({ openAccountMenu: false })
+    }
+
+    handleMenuToggle = () => {
+        this.setState(state => ({ openAccountMenu: !state.openAccountMenu }));
     };
 
     testNetChange = () => event => {
@@ -37,6 +51,7 @@ class Header extends Component {
 
     render() {
         let self = this;
+        const open = Boolean(this.state.anchorEl);
         if (!this.state.isGetBalanceCalled) {
             setInterval(function () {
                 self.props.getETHBalance(self.props.walletAddress, self.props.isTest);
@@ -87,7 +102,7 @@ class Header extends Component {
                                 }</span>
                             </div>
                         </Col>
-                        <Col xs={1}>
+                        <Col xs={2} style={{ textAlign: 'right' }}>
                             <div style={headerStyles.columnStyle}>
                                 <p style={headerStyles.toggleLabelisTest}>TESTNET</p>
                             </div>
@@ -98,6 +113,31 @@ class Header extends Component {
                                     color="primary"
                                 />
                             </div>
+                        </Col>
+                        <Col xs={1} style={{ textAlign: 'right' }}>
+                            <IconButton
+                                style={{ outline: 'none' }}
+                                aria-label="Account"
+                                aria-owns={open ? 'long-menu' : null}
+                                aria-haspopup="true"
+                                onClick={this.handleMenuToggle}
+                            >
+                                <AccountIcon style={{ color: '#ddd' }} />
+                            </IconButton>
+                            <Menu
+                                id="long-menu"
+                                anchorEl={this.state.anchorEl}
+                                open={this.state.openAccountMenu}
+                                onClose={this.handleMenuClose}
+                                PaperProps={{
+                                    style: {
+                                        maxHeight: ITEM_HEIGHT * 4.5,
+                                        width: 200,
+                                    },
+                                }}
+                            >
+                                <MenuItem onClick={this.handleMenuClose}>Create Account</MenuItem>
+                            </Menu>
                         </Col>
                     </Row>
                 </Grid>

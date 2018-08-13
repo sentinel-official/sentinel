@@ -1,7 +1,7 @@
 const headerStyles = {
     mainDivStyle: {
         height: 70,
-        background: 'linear-gradient(to right,#2f3245 68%,#3d425c 32%)'
+        background: 'linear-gradient(to right,#2f3245 78%,#3d425c 22%)'
     },
     firstRowStyle: {
         paddingTop: 10

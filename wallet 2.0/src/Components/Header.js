@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Switch, Snackbar, Tooltip } from '@material-ui/core';
+import {
+    Switch, Snackbar, Tooltip, IconButton, Paper, ClickAwayListener, Popper,
+    MenuList, MenuItem, Grow
+} from '@material-ui/core';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
+import AccountIcon from '@material-ui/icons/AccountCircle';
 import { headerStyles } from '../Assets/header.styles';
 import { setTestNet, getETHBalance, getSentBalance } from '../Actions/header.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
@@ -15,12 +19,21 @@ class Header extends Component {
         this.state = {
             openSnack: false,
             snackMessage: '',
-            isGetBalanceCalled: false
+            isGetBalanceCalled: false,
+            openAccountMenu: false
         }
     }
 
     handleClose = (event, reason) => {
         this.setState({ openSnack: false });
+    };
+
+    handleMenuClose = (event) => {
+        this.setState({ openAccountMenu: false })
+    }
+
+    handleMenuToggle = () => {
+        this.setState(state => ({ openAccountMenu: !state.openAccountMenu }));
     };
 
     testNetChange = () => event => {
@@ -87,7 +100,7 @@ class Header extends Component {
                                 }</span>
                             </div>
                         </Col>
-                        <Col xs={1}>
+                        <Col xs={2} style={headerStyles.alignRight}>
                             <div style={headerStyles.columnStyle}>
                                 <p style={headerStyles.toggleLabelisTest}>TESTNET</p>
                             </div>
@@ -99,6 +112,34 @@ class Header extends Component {
                                 />
                             </div>
                         </Col>
+                        <Col xs={1} style={headerStyles.alignRight}>
+                            <IconButton
+                                style={{ outline: 'none' }}
+                                aria-label="Account"
+                                aria-owns={this.state.openAccountMenu ? 'menu-list-grow' : null}
+                                aria-haspopup="true"
+                                onClick={this.handleMenuToggle}
+                            >
+                                <AccountIcon style={headerStyles.accountIconColor} />
+                            </IconButton>
+                            <Popper open={this.state.openAccountMenu} transition disablePortal>
+                                {({ TransitionProps, placement }) => (
+                                    <Grow
+                                        {...TransitionProps}
+                                        id="menu-list-grow"
+                                        style={{ transformOrigin: 'center bottom' }}
+                                    >
+                                        <Paper>
+                                            <ClickAwayListener onClickAway={this.handleMenuClose}>
+                                                <MenuList>
+                                                    <MenuItem onClick={this.handleMenuClose}>Create Account</MenuItem>
+                                                </MenuList>
+                                            </ClickAwayListener>
+                                        </Paper>
+                                    </Grow>
+                                )}
+                            </Popper>
+                        </Col>
                     </Row>
                 </Grid>
                 <Snackbar
@@ -107,7 +148,7 @@ class Header extends Component {
                     onClose={this.handleClose}
                     message={this.state.snackMessage}
                 />
-            </div>
+            </div >
         )
     }
 }

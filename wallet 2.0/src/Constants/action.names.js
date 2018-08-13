@@ -9,3 +9,5 @@ export const CURRENTTAB = 'CURRENTTAB';
 export const LISTTYPE = 'LISTTYPE';
 export const GETVPNLIST = 'GETVPNLIST';
 export const SETVPNTYPE = 'SETVPNTYPE';
+export const SENT_TEST_HISTORY = 'SENT_TEST_HISTORY';
+export const ETH_TEST_HISTORY = 'SENT_TEST_HISTORY';

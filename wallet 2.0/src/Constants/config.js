@@ -27,5 +27,5 @@ config = {
         statusUrl: `https://rinkeby.etherscan.io`,
         balanceUrl:`https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=tokenbalance&tag=latest&contractaddress=`
     }
-}
+};
 module.exports = config;

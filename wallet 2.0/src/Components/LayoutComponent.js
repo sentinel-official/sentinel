@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import TxnHistory from '../containers/txnHistory'
 import Swixer from './Swixer';
 import VpnList from './VpnList';
 
@@ -17,7 +18,7 @@ class LayoutComponent extends Component {
         switch (component) {
             case 'history':
                 {
-                    return <div>History</div>
+                    return <TxnHistory/>;
                 }
             case 'vpnList':
                 {

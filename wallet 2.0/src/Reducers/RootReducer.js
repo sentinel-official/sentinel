@@ -4,6 +4,7 @@ import { setTestNet, getETHBalance, getSentBalance } from './header.reducer';
 import { setCurrentTab } from './sidebar.reducer';
 import { getAccount } from './dashboard.reducer';
 import { setListViewType, setVpnType, getVpnList } from './vpnlist.reducer';
+import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -16,7 +17,9 @@ const rootReducer = combineReducers({
     setCurrentTab,
     setListViewType,
     setVpnType,
-    getVpnList
+    getVpnList,
+    testSENTHistory,
+    testETHHistory,
 });
 
 export default rootReducer;

@@ -54,7 +54,8 @@ const vpnhistoryStyles={
     noSessionsStyle: {
         display: 'flex',
         justifyContent: 'center',
-        paddingTop: '20%'
+        paddingTop: '20%',
+        fontSize:'25px'
     },
     button:{
           label:{
@@ -96,7 +97,7 @@ const styles = {
         border: 0,
         transition: '2000',
         float: 'right',
-        color: 'black',
+        color: '#707070',
         outline: 'none !important',
     }, 
     refresh_icon:{

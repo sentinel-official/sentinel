@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import SendComponent from './SendComponent';
 import Swixer from './Swixer';
 import VpnList from './VpnList';
 
@@ -37,7 +38,7 @@ class LayoutComponent extends Component {
                 }
             default:
                 {
-                    return <div>Send</div>
+                    return <div><SendComponent/></div>
                 }
         }
     }

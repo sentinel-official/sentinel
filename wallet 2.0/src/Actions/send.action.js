@@ -5,7 +5,7 @@ import { B_URL } from '../Constants/constants';
 
 export async function payVPNUsage(data) {
   try {
-    let res = await axios.post(B_URL + '/client/vpn/pay', data, {
+    let response = await axios.post(B_URL + '/client/vpn/pay', data, {
       'Accept': 'application/json',
       'Content-type': 'application/json',
       'Access-Control-Allow-Origin': '*'

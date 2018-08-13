@@ -163,7 +163,6 @@ class SendComponent extends React.Component {
             if (err) {
               console.log('Error', err)
             } else {
-
               transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
                 console.log(response)
                 self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
@@ -186,9 +185,11 @@ class SendComponent extends React.Component {
                 }
                 payVPNUsage(data).then((response) => {
                   console.log(response)
+                  self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
                 })
               } else {
                 transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) })
+                self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
               }
             }
           });

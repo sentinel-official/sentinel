@@ -63,10 +63,6 @@ const sendComponentStyles = {
         display:'flex',
         flexDirection:'row'
       },
-      slider:{
-         width: '320px',
-         color: '#595D8F' 
-      },
       button:{
           width:'298px',
           height:'48px',

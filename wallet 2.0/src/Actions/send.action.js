@@ -5,23 +5,17 @@ import { B_URL } from '../Constants/constants';
 
 export async function payVPNUsage(data) {
   try {
-    let res = await axios({
-      url: B_URL + '/client/vpn/pay',
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      data: data
+    let res = await axios.post(B_URL + '/client/vpn/pay', data, {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
     });
-    let response = await res.json()
     console.log('vpn usage', response)
     if (response.status === 200) {
-      if (response.success === true) {
+      if (response.data.success === true) {
         return {
           type: sendComponentTypes.TX_SUCCESS,
-          payload: response['tx_hashes'][0]
+          payload: response.data['tx_hashes'][0]
         }
       } else {
         sendError(response.errors);
@@ -70,7 +64,7 @@ export async function transferAmount(net, data) {
         'Content-type': 'application/json',
       }
     });
-    if(response.status === 200 ){
+    if (response.status === 200) {
       if (response.data.success === true) {
         return {
           type: sendComponentTypes.TX_SUCCESS,
@@ -85,7 +79,7 @@ export async function transferAmount(net, data) {
       }
     } else {
       return {
-        type:sendComponentTypes.TX_ERROR,
+        type: sendComponentTypes.TX_ERROR,
         payload: response.message || 'Internal Server Error'
       }
     }

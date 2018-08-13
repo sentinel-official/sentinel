@@ -1,24 +1,25 @@
 import React from 'react';
-import { MuiThemeProvider, Snackbar, Menu, MenuItem, RaisedButton, Slider, TextField, FlatButton, Dialog } from 'material-ui';
+import { Snackbar, Menu, MenuItem, RaisedButton, TextField, FlatButton, Dialog } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { withStyles } from '@material-ui/core/styles';
 import TransIcon from 'material-ui/svg-icons/action/swap-horiz';
 import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import { sendComponentStyles } from '../Assets/sendcomponent.style';
 import SimpleMenu from './SharedComponents/SimpleMenu';
-// import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CustomTooltips from './SharedComponents/customTooltip';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import lang from '../Constants/language';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+// import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { payVPNUsage, transferAmount } from '../Actions/send.action';
 import { getGasCost, ethTransaction, tokenTransaction } from '../Utils/Ethereum';
 import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
+import Slider from '@material-ui/lab/Slider'
 
-const muiTheme = getMuiTheme({
+const muiTheme = createMuiTheme({
   slider: {
     selectionColor: '#595d8f',
     trackSize: 4,
@@ -30,6 +31,10 @@ const styles = theme => ({
   textField: {
     background: '#F5F5F5',
     height: '45px'
+  },
+  slider: {
+    width: '320px',
+    color: '#595D8F'
   },
   textFieldAmount: {
     background: '#F5F5F5',
@@ -43,8 +48,8 @@ const styles = theme => ({
   },
   enableButton: {
     "&:hover": {
-      backgroundColor:'#2f3245'
-    } ,
+      backgroundColor: '#2f3245'
+    },
     backgroundColor: '#2f3245',
     height: '45px',
   },
@@ -114,7 +119,7 @@ class SendComponent extends React.Component {
     this.callEnable();
   }
 
-  setGasLimit = (event)=>{
+  setGasLimit = (event) => {
     this.setState({ gas: event.target.value });
     this.callEnable();
   }
@@ -143,6 +148,7 @@ class SendComponent extends React.Component {
 
   handleOnclick = () => {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
+    let { payVpn, transferAmount, payVPNUsage } = this.props
 
     this.setState({ label: 'SENDING', isDisabled: true })
 
@@ -157,7 +163,11 @@ class SendComponent extends React.Component {
             if (err) {
               console.log('Error', err)
             } else {
-              self.props.transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) })
+
+              transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
+                console.log(response)
+                self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
+              })
             }
           });
         } else {
@@ -165,10 +175,21 @@ class SendComponent extends React.Component {
             if (err) {
               console.log('Error', err)
             } else {
-              self.props.transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
-                console.log(response)
-                self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
-              })
+              if (payVpn.isVPNPayment) {
+                let data = {
+                  from_addr: self.props.local_address,
+                  amount: self.state.amount,
+                  session_id: payVpn.data.sessionId,
+                  tx_data: result,
+                  net: self.props.net ? 'rinkeby' : 'main',
+                  payment_type: 'normal'
+                }
+                payVPNUsage(data).then((response) => {
+                  console.log(response)
+                })
+              } else {
+                transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) })
+              }
             }
           });
         }
@@ -183,12 +204,15 @@ class SendComponent extends React.Component {
   }
 
 
-  componentDidMount() {
-    // var ele = document.getElementsByClassName(".jss75");
-    // var ele1 = document.querySelectorAll(".jss77");
-    // ele[0].style.marginLeft = '60px';
-    // ele1[0].style.right = '60px';
-    // ele1[0].style.color = '#fff';
+  componentWillMount() {
+    let { payVpn } = this.props;
+    if (payVpn.isVPNPayment) {
+      this.setState({
+        sendToAddress: payVpn.data.to_addr,
+        token: payVpn.data.unit,
+        amount: payVpn.data.amount
+      });
+    }
   }
 
   render() {
@@ -294,8 +318,7 @@ class SendComponent extends React.Component {
                   <div>
                     <Slider
                       defaultValue={this.state.gwei}
-                      disableFocusRipple={false}
-                      style={sendComponentStyles.slider}
+                      className={classes.slider}
                       min={1.1}
                       max={100}
                       value={this.state.gwei}
@@ -337,7 +360,7 @@ class SendComponent extends React.Component {
                       fullWidth={true}
                       className={!this.state.isDisabled ? classes.enableButton : classes.disableButton}
                       disabled={this.state.isDisabled}
-                      style={{color: '#fff',fontWeight:'600'}}
+                      style={{ color: '#fff', fontWeight: '600' }}
                       onClick={this.handleOnclick}
                     >{this.state.label}</Button>
                   </div>
@@ -356,6 +379,7 @@ function mapStateToProps(state) {
     language: state.setLanguage,
     local_address: state.getAccount,
     net: state.setTestNet,
+    payVpn: state.getVPNDuePaymetnDetail
   }
 }
 

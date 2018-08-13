@@ -136,18 +136,11 @@ export function reportPayment(data, cb) {
   }
 }
 export const setVPNDuePayment = (sessionData) => {
-  var Data = {
-    to_addr: sessionData.account_addr,
-    amount: sessionData.amount,
-    unit: 'SENT',
-    value: 'send',
-    sessionId: sessionData.id,
-  }
   return {
     type: types.VPN_DUE_PAYMENT,
     payload: {
       isVPNPayment: true,
-      data: Data
+      data: sessionData
     }
   }
 }

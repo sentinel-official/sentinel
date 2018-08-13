@@ -41,7 +41,7 @@ let lang = {
         'TotalData': 'Total Received Data',
         'SessionId': 'Session ID',
         'Sessions': 'Sessions',
-        'VpnAddress': 'VPN address',
+        'VpnAddress': 'VPN Address',
         'Bandwidth': 'Bandwidth',
         'Latency': 'Latency',
         'Loading': 'Loading...',

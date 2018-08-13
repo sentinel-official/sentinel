@@ -145,7 +145,6 @@ class SendComponent extends React.Component {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
 
     this.setState({ label: 'SENDING', isDisabled: true })
-
     let self = this;
     getPrivateKeyWithoutCallback(password, function (err, privateKey) {
       if (err) {

@@ -2,7 +2,7 @@ import * as types from "../Constants/action.names";
 
 export function setListViewType(state = 'list', action) {
     switch (action.type) {
-        case types.LISTTYPE:
+        case types.LIST_TYPE:
             return action.payload
         default:
             return state
@@ -11,7 +11,7 @@ export function setListViewType(state = 'list', action) {
 
 export function setVpnType(state = 'openvpn', action) {
     switch (action.type) {
-        case types.SETVPNTYPE:
+        case types.SET_VPN_TYPE:
             return action.payload
         default:
             return state
@@ -20,7 +20,9 @@ export function setVpnType(state = 'openvpn', action) {
 
 export function getVpnList(state = [], action) {
     switch (action.type) {
-        case types.GETVPNLIST:
+        case types.GET_VPN_LIST_SUCCESS:
+            return action.payload
+        case types.GET_VPN_LIST_PROGRESS:
             return action.payload
         default:
             return state

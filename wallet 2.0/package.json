@@ -13,11 +13,12 @@
     "url": "https://github.com/sentinel-official/sentinel.git"
   },
   "dependencies": {
-    "@material-ui/core": "^1.4.2",
+    "@material-ui/core": "^1.4.3",
     "@material-ui/icons": "^2.0.1",
     "async": "^2.6.0",
     "axios": "^0.18.0",
     "child_process": "^1.0.2",
+    "compose": "^0.1.2",
     "countrynames": "^0.1.1",
     "electron-hot-loader": "^0.8.0",
     "ip": "^1.1.5",
@@ -26,6 +27,7 @@
     "react-proxy": "^1.1.8",
     "react-redux": "^5.0.7",
     "react-table-sorter": "^2.0.0",
+    "react-text-mask": "^5.4.3",
     "redux": "^4.0.0",
     "redux-promise": "^0.6.0",
     "sudo-prompt": "^8.1.0",

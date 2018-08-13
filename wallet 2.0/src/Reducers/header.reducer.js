@@ -11,8 +11,10 @@ export function setTestNet(state = false, action) {
 
 export function getETHBalance(state = 'Loading...', action) {
     switch (action.type) {
-        case types.GETETHBAL:
-            return action.payload;
+        case types.GET_ETH_BAL_SUCCESS:
+            return action.payload
+        case types.GET_ETH_BAL_PROGRESS:
+            return action.payload
         default:
             return state
     }
@@ -20,8 +22,10 @@ export function getETHBalance(state = 'Loading...', action) {
 
 export function getSentBalance(state = 'Loading...', action) {
     switch (action.type) {
-        case types.GETSENTBAL:
-            return action.payload;
+        case types.GET_SENT_BAL_SUCCESS:
+            return action.payload
+        case types.GET_VPN_LIST_PROGRESS:
+            return action.payload
         default:
             return state
     }

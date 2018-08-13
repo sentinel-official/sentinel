@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import TxnHistory from '../containers/txnHistory'
+import VPNHistory from './VPNHistory';
+import { vpnhistoryStyles }from '../Assets/vpnhistory.style';
+import SendComponent from './SendComponent';
 import Swixer from './Swixer';
 import VpnList from './VpnList';
 
@@ -30,7 +33,10 @@ class LayoutComponent extends Component {
                 }
             case 'vpnHistory':
                 {
-                    return <div>VPN History</div>
+                    return  (
+                        <div style={vpnhistoryStyles.contianer}>
+                    <VPNHistory />
+                    </div>)
                 }
             case 'swixer':
                 {
@@ -38,7 +44,7 @@ class LayoutComponent extends Component {
                 }
             default:
                 {
-                    return <div>Send</div>
+                    return <div><SendComponent/></div>
                 }
         }
     }

@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export function setListViewType(component) {
     return {
-        type: types.LISTTYPE,
+        type: types.LIST_TYPE,
         payload: component
     }
 }
@@ -23,12 +23,12 @@ export async function getVpnList(vpnType) {
     })
     if (response.data.success) {
         return {
-            type: types.GETVPNLIST,
+            type: types.GET_VPN_LIST_SUCCESS,
             payload: response.data.list
         }
     } else {
         return {
-            type: types.GETVPNLIST,
+            type: types.GET_VPN_LIST_PROGRESS,
             payload: []
         }
     }
@@ -36,7 +36,7 @@ export async function getVpnList(vpnType) {
 
 export function setVpnType(vpnType) {
     return {
-        type: types.SETVPNTYPE,
+        type: types.SET_VPN_TYPE,
         payload: vpnType
     }
 }

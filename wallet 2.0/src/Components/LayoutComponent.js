@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import VPNHistory from './VPNHistory';
+import { vpnhistoryStyles }from '../Assets/vpnhistory.style';
 
 class LayoutComponent extends Component {
     constructor(props) {
@@ -27,7 +29,10 @@ class LayoutComponent extends Component {
                 }
             case 'vpnHistory':
                 {
-                    return <div>VPN History</div>
+                    return  (
+                        <div style={vpnhistoryStyles.contianer}>
+                    <VPNHistory />
+                    </div>)
                 }
             case 'swixer':
                 {

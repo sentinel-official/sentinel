@@ -6,3 +6,6 @@ export const GETACCOUNT = 'GETACCOUNT';
 export const GETETHBAL = 'GETETHBAL';
 export const GETSENTBAL = 'GETSENTBAL';
 export const CURRENTTAB= 'CURRENTTAB';
+export const GET_VPN_HISTORY='GET_VPN_HISTORY';
+export const SNACK_INPUTS='SNACK_INPUTS';
+export const VPN_DUE_PAYMENT='VPN_DUE_PAYMENT';

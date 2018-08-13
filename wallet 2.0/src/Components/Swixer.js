@@ -7,7 +7,7 @@ class Swixer extends Component {
 
     render() {
         return (
-            <iframe src="https://swixer.sentinelgroup.io" style={{ width: 775, height: 522, border: 0 }}>
+            <iframe src="https://swixer.sentinelgroup.io" style={{ width: '100%', height: '100%', border: 0 }}>
             </iframe>
         )
     }

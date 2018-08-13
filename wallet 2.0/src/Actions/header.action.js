@@ -17,16 +17,15 @@ export async function getETHBalance(address, isTest) {
             'Content-type': 'application/json',
         }
     })
-    
     if (response.data.status === '1') {
         var balance = response.data.result / (10 ** 18);
         return {
-            type: types.GETETHBAL,
+            type: types.GET_ETH_BAL_SUCCESS,
             payload: balance
         }
     } else {
         return {
-            type: types.GETETHBAL,
+            type: types.GET_ETH_BAL_PROGRESS,
             payload: 'Loading'
         }
     }
@@ -43,12 +42,12 @@ export async function getSentBalance(address, isTest) {
     if (response.data.status === '1') {
         var balance = response.data.result / (10 ** 8);
         return {
-            type: types.GETSENTBAL,
+            type: types.GET_SENT_BAL_SUCCESS,
             payload: balance
         }
     } else {
         return {
-            type: types.GETSENTBAL,
+            type: types.GET_SENT_BAL_PROGRESS,
             payload: 'Loading'
         }
     }

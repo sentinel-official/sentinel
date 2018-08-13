@@ -22,7 +22,7 @@ class App extends Component {
         }
     }
     componentWillMount = () => {
-        var that = this;
+        let that = this;
         document.getElementById('home').style.display = 'none';
 
         // Read keystore file
@@ -32,7 +32,7 @@ class App extends Component {
                 else that.props.setComponent('authenticate');
             }, 3000);
         })
-    }
+    };
 
     componentDidMount = () => {
         ipcRenderer.on('lang', (event, arg) => {
@@ -40,7 +40,7 @@ class App extends Component {
                 this.props.setLanguage(this.state.lang)
             })
         })
-    }
+    };
 
     render() {
         let component = this.props.setComponentResponse;
@@ -52,7 +52,8 @@ class App extends Component {
                 }
             case 'authenticate':
                 {
-                    return <Authenticate />
+                    // return <Authenticate />
+                    return <Dashboard />
                 }
             case 'dashboard':
                 {

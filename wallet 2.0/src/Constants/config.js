@@ -1,6 +1,6 @@
 // const environ = 'TEST' // set TEST for test environ, PROD for main environ
-var config;
-config = {
+
+const config = {
     'main': {
         masterUrl: 'https://api.sentinelgroup.io:8333',
         infuraUrl: 'https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy',
@@ -27,5 +27,5 @@ config = {
         statusUrl: `https://rinkeby.etherscan.io`,
         balanceUrl:`https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=tokenbalance&tag=latest&contractaddress=`
     }
-}
+};
 module.exports = config;

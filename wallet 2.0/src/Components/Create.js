@@ -42,6 +42,8 @@ class Create extends Component {
         sendError(error);
     }
 
+
+
     onChange = (event) => {
         var input = event.target;
         var reader = new FileReader();

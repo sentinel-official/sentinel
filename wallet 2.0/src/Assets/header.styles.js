@@ -78,6 +78,12 @@ const headerStyles = {
     },
     thumbTrackStyle: {
         backgroundColor: '#4b4e5d'
+    },
+    alignRight:{
+        textAlign:'right'
+    },
+    accountIconColor:{
+        color:'#ddd'
     }
 }
 

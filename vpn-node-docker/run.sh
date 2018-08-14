@@ -47,12 +47,10 @@ else
                 echo "You selected AES-128-CBC as your encryption method"
                 ENCMETHOD=AES-128-CBC
                 ;;
-
             3)
                 echo "You selected AES-256-GCM as your encryption method"
                 ENCMETHOD=AES-256-GCM
                 ;;
-
             4)
                 echo "You selected AES-128-GCM as your encryption method"
                 ENCMETHOD=AES-128-GCM

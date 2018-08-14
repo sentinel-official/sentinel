@@ -60,14 +60,14 @@ class Node(object):
 
     def update_nodeinfo(self, info=None):
         if info['type'] == 'location':
-            web_url = 'https://ipleak.net/json'
+            web_url = 'http://ip-api.com/json'
             response = json.load(urlopen(web_url))
             self.ip = str(response['ip'])
             self.location = {
-                'city': str(response['city_name']),
-                'country': str(response['country_name']),
-                'latitude': float(response['latitude']),
-                'longitude': float(response['longitude'])
+                'city': str(response['city']),
+                'country': str(response['country']),
+                'latitude': float(response['lat']),
+                'longitude': float(response['long'])
             }
         elif info['type'] == 'netspeed':
             self.speed_test.get_best_server()

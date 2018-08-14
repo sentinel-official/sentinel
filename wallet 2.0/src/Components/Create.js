@@ -135,7 +135,7 @@ class Create extends Component {
                     })
                 }
                 else {
-                    uploadKeystore(keystore, function (err) {
+                    uploadKeystore(keystore, function (err,keystotefile) {
                         if (err) sendError(err);
                         else {
                             that.props.setComponent('dashboard');
@@ -255,6 +255,7 @@ class Create extends Component {
             </div>
         </MuiThemeProvider>
     }
+
 }
 
 function mapStateToProps(state) {

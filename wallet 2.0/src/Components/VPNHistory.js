@@ -131,7 +131,7 @@ class VPNHistory extends Component {
                                 </span> { new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardContent>
                             {
-                              ! sessionData.is_paid ?
+                               sessionData.is_paid ?
                                     <span>
                                         <Done classes={{ root: classes.done }}
                                             data-tip data-for="payed" />
@@ -247,7 +247,7 @@ class VPNHistory extends Component {
                     <Snackbar
                         open={this.props.snack.status}
                         message={this.props.snack.message}
-                        autoHideDuration={5000}
+                        autoHideDuration={3000}
                         transitionDuration={{ enter: 200, exit: 200 }}
                         onClose={this.snackRequestClose}
                         classes={{ root: classes.snack }}

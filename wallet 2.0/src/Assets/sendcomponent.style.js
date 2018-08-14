@@ -6,7 +6,7 @@ const sendComponentStyles = {
         height:'100%'
     },
     sendToAddress: {
-        fontSize:'20px',
+        fontSize:'16px',
         color: '#434343',
         fontFamily: 'Montserrat,Medium',
         textAlign: 'left',
@@ -35,14 +35,14 @@ const sendComponentStyles = {
         marginTop:'4px'
       },
       questionMarkDiv:{
-          marginTop:'1.5px'
+          marginBottom:'-1.7px'
       },
       textFieldDiv:{
           width: '720px',
           marginTop: '12px'
       },
       amountDiv:{
-        marginTop:'35px',
+        marginTop:'25px',
       },
       amountDivCol:{
         width: '720px', 
@@ -62,10 +62,6 @@ const sendComponentStyles = {
       row:{
         display:'flex',
         flexDirection:'row'
-      },
-      slider:{
-         width: '320px',
-         color: '#595D8F' 
       },
       button:{
           width:'298px',

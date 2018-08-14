@@ -1,4 +1,4 @@
 # coding=utf-8
-USER = ""
-PASSWORD = ""
-ADDRESS = ""
+USER = ''
+PASSWORD = ''
+ADDRESS = ''

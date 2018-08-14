@@ -17,9 +17,9 @@ const styles = theme => ({
   },
   list: {
     backgroundColor: '#B6B9CB',
-    height: '45px',
     fontFamily: 'Montserrat,Medium',
     fontWeight: 600,
+    fontSize: '18px',
     alignItems: 'center'
   }
 });
@@ -52,14 +52,15 @@ class SimpleListMenu extends React.Component {
           className={classes.list}
           fullWidth={true}
           inputProps={{
-              classes: {
-                icon: classes.icon,
-              }
+            classes: {
+              icon: classes.icon,
+            }
           }}
           SelectDisplayProps={{
-            style:{paddingLeft:'60px'}
-          }
-          }
+            style: {
+              padding: '12px', paddingLeft: '50px'
+            }
+          }}
         >
           <MenuItem value={'ETH'} >ETH</MenuItem>
           <MenuItem value={'SENT'}>SENT</MenuItem>

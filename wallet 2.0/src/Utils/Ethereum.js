@@ -54,6 +54,7 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
 export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey,cb) {
     try {
         // amount = amount * Math.pow(10, 8);
+        console.log('in token trans',from_addr,to_addr);
         setWeb3();
         setContract();
         var SENTINEL_ADDRESS = getSENTContractAddress();

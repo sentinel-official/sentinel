@@ -7,18 +7,17 @@ import * as routes from './../Constants/api.routes';
 import _ from 'lodash';
 let zfill = require('zfill');
 export const setsnackMessage = (message) => {
-  if(message)
-  {
-  return {
-    type: types.SNACK_INPUTS,
-    payload: { status: true, message: message }
+  if (message) {
+    return {
+      type: types.SNACK_INPUTS,
+      payload: { status: true, message: message }
+    }
   }
-}
-else{
-  return {
-    type: types.SNACK_INPUTS,
-    payload: { status: false, message: message }
-  }
+  else {
+    return {
+      type: types.SNACK_INPUTS,
+      payload: { status: false, message: message }
+    }
   }
 }
 export async function getVpnHistory(account_addr) {
@@ -145,11 +144,23 @@ export function reportPayment(data, cb) {
   }
 }
 export const setVPNDuePayment = (sessionData) => {
-  return {
-    type: types.VPN_DUE_PAYMENT,
-    payload: {
-      isVPNPayment: true,
-      data: sessionData
+  if (sessionData) {
+    return {
+      type: types.VPN_DUE_PAYMENT,
+      payload: {
+        isVPNPayment: true,
+        data: sessionData
+      }
+    }
+  }
+  else
+  {
+    return {
+      type: types.VPN_DUE_PAYMENT,
+      payload: {
+        isVPNPayment: false,
+        data: ''
+      }
     }
   }
 }

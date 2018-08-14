@@ -27,12 +27,12 @@
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/colorCardDark"
                 app:cardCornerRadius="@dimen/margin_4"
                 app:cardElevation="@dimen/margin_4"
@@ -44,7 +44,7 @@
 
                     <TextView
                         android:id="@+id/tv_vpn_state"
-                        style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                        style="@style/CustomTextAppearance.Text14.WhiteNormal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/selector_vpn_state"
@@ -58,7 +58,7 @@
                         android:paddingRight="@dimen/margin_8"
                         android:paddingStart="@dimen/margin_8"
                         android:paddingTop="@dimen/margin_4"
-                        android:textColor="@color/colorTextBlack"
+                        android:textColor="@color/colorTextDarkBlue"
                         app:layout_constraintBottom_toTopOf="@+id/tv_location"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -80,9 +80,10 @@
 
                     <TextView
                         android:id="@+id/tv_location"
-                        style="@style/CustomTextAppearance.Text18"
+                        style="@style/CustomTextAppearance.Text20"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:paddingLeft="@dimen/margin_8"
                         android:paddingRight="@dimen/margin_8"
                         android:paddingTop="@dimen/margin_16"
@@ -93,9 +94,10 @@
 
                     <TextView
                         android:id="@+id/tv_ip"
-                        style="@style/CustomTextAppearance.Text10.Gray"
+                        style="@style/CustomTextAppearance.Text12.Gray"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:paddingBottom="@dimen/margin_16"
                         android:paddingLeft="@dimen/margin_8"
                         android:paddingRight="@dimen/margin_8"
@@ -127,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="24dp"
                         android:gravity="center"
                         app:layout_constraintBottom_toTopOf="@+id/tv_bandwidth"
                         app:layout_constraintEnd_toStartOf="@+id/tv_upload_speed"
@@ -137,10 +139,10 @@
 
                     <TextView
                         android:id="@+id/download_speed"
-                        style="@style/CustomTextAppearance.Text10.Gray"
+                        style="@style/CustomTextAppearance.Text12.Gray"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="24dp"
                         android:gravity="center"
                         android:text="@string/download_speed"
                         app:layout_constraintBottom_toTopOf="@+id/tv_bandwidth"
@@ -167,7 +169,7 @@
 
                     <TextView
                         android:id="@+id/upload_speed"
-                        style="@style/CustomTextAppearance.Text10.Gray"
+                        style="@style/CustomTextAppearance.Text12.Gray"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:gravity="center"
@@ -195,7 +197,7 @@
 
                     <TextView
                         android:id="@+id/data_used"
-                        style="@style/CustomTextAppearance.Text10.Gray"
+                        style="@style/CustomTextAppearance.Text12.Gray"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:gravity="center"
@@ -207,7 +209,7 @@
 
                     <TextView
                         android:id="@+id/tv_bandwidth"
-                        style="@style/CustomTextAppearance.Text10.Gray"
+                        style="@style/CustomTextAppearance.Text14.GrayNormal"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -217,7 +219,7 @@
                         android:paddingLeft="@dimen/margin_8"
                         android:paddingRight="@dimen/margin_4"
                         android:paddingStart="@dimen/margin_8"
-                        android:paddingTop="@dimen/margin_16"
+                        android:paddingTop="@dimen/margin_24"
                         app:layout_constraintBottom_toTopOf="@+id/tv_price"
                         app:layout_constraintEnd_toStartOf="@+id/tv_latency"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -227,7 +229,7 @@
 
                     <TextView
                         android:id="@+id/tv_latency"
-                        style="@style/CustomTextAppearance.Text10.Gray"
+                        style="@style/CustomTextAppearance.Text14.GrayNormal"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:background="@color/colorCardShadow"
@@ -237,7 +239,7 @@
                         android:paddingLeft="@dimen/margin_4"
                         android:paddingRight="@dimen/margin_8"
                         android:paddingStart="@dimen/margin_4"
-                        android:paddingTop="@dimen/margin_16"
+                        android:paddingTop="@dimen/margin_24"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_bandwidth"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tv_bandwidth"
@@ -245,22 +247,38 @@
 
                     <TextView
                         android:id="@+id/tv_price"
-                        style="@style/CustomTextAppearance.Text10.Gray"
+                        style="@style/CustomTextAppearance.Text14.GrayNormal"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:background="@color/colorCardShadow"
-                        android:gravity="center"
-                        android:paddingBottom="@dimen/margin_16"
+                        android:paddingBottom="@dimen/margin_24"
                         android:paddingEnd="@dimen/margin_4"
                         android:paddingLeft="@dimen/margin_8"
                         android:paddingRight="@dimen/margin_4"
                         android:paddingStart="@dimen/margin_8"
                         android:paddingTop="@dimen/margin_8"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_bandwidth"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_duration"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_bandwidth" />
+
+                    <TextView
+                        android:id="@+id/tv_duration"
+                        style="@style/CustomTextAppearance.Text14.GrayNormal"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@color/colorCardShadow"
+                        android:gravity="end"
+                        android:paddingBottom="@dimen/margin_24"
+                        android:paddingEnd="@dimen/margin_8"
+                        android:paddingLeft="@dimen/margin_4"
+                        android:paddingRight="@dimen/margin_8"
+                        android:paddingStart="@dimen/margin_4"
+                        android:paddingTop="@dimen/margin_8"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_price"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_price"
+                        app:layout_constraintTop_toTopOf="@+id/tv_price" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -268,7 +286,7 @@
 
     <Button
         android:id="@+id/btn_disconnect"
-        style="@style/CustomTextAppearance.OrangeButton"
+        style="@style/CustomTextAppearance.Disconnect"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/disconnect"

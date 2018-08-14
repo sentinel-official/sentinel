@@ -19,53 +19,88 @@ import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import sentinelgroup.io.sentinel.BuildConfig;
-import sentinelgroup.io.sentinel.network.api.WebService;
+import sentinelgroup.io.sentinel.network.api.AppVersionWebService;
+import sentinelgroup.io.sentinel.network.api.GenericWebService;
+import sentinelgroup.io.sentinel.network.api.ReferralWebService;
 import sentinelgroup.io.sentinel.util.Logger;
 
 /**
  * Retrofit client.
  */
 public class WebClient {
-    private static final String BASE_URL = "https://api.sentinelgroup.io/";
+    private static final String GENERIC_BASE_URL = "https://api.sentinelgroup.io/";
+    private static final String REFERRAL_BASE_URL = "https://refer-api.sentinelgroup.io/";
+    private static final String App_VERSION_BASE_URL = "https://version-api.sentinelgroup.io/";
 
-    private static WebService sWebService;
+    private static OkHttpClient sHttpClient = enableTls12OnPreLollipop(new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(false)
+            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor(new AuthInterceptor())).build();
+
+    private static Retrofit sGenericClient, sReferralClient, sAppVersionClient;
+
+    private static GenericWebService sGenericWebService;
+    private static ReferralWebService sReferralWebService;
+    private static AppVersionWebService sAppVersionWebService;
 
     static {
-        setupRestClient();
+        setupGenericRestClient();
+        setupReferralRestClient();
+        setupAppVersionClient();
     }
 
     private WebClient() {
     }
 
-    private static void setupRestClient() {
-        // set your desired log level
-        HttpLoggingInterceptor aLoggingInterceptor = new HttpLoggingInterceptor();
-        aLoggingInterceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
-        // set ContentTypeInterceptor
-        ContentTypeInterceptor aContentTypeInterceptor = new ContentTypeInterceptor();
-
-        OkHttpClient.Builder aClientBuilder = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(false)
-                .addInterceptor(aLoggingInterceptor)
-                .addInterceptor(aContentTypeInterceptor);
-        OkHttpClient aClient = enableTls12OnPreLollipop(aClientBuilder)
-                .build();
-
-        Retrofit aRetrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(aClient)
+    private static void setupGenericRestClient() {
+        sGenericClient = new Retrofit.Builder()
+                .baseUrl(GENERIC_BASE_URL)
+                .client(sHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
-        sWebService = aRetrofit.create(WebService.class);
     }
 
-    public static WebService get() {
-        return sWebService;
+    private static void setupReferralRestClient() {
+        sReferralClient = new Retrofit.Builder()
+                .baseUrl(REFERRAL_BASE_URL)
+                .client(sHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    private static void setupAppVersionClient() {
+        sAppVersionClient = new Retrofit.Builder()
+                .baseUrl(App_VERSION_BASE_URL)
+                .client(sHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    public static Retrofit getGenericClient() {
+        return sGenericClient;
+    }
+
+    public static Retrofit getReferralClient() {
+        return sReferralClient;
+    }
+
+    public static Retrofit getsAppVersionClient() {
+        return sAppVersionClient;
+    }
+
+    public static GenericWebService getGenericWebService() {
+        return sGenericClient.create(GenericWebService.class);
+    }
+
+    public static ReferralWebService getReferralWebService() {
+        return sReferralClient.create(ReferralWebService.class);
+    }
+
+    public static AppVersionWebService getAppVersionWebService() {
+        return sAppVersionClient.create(AppVersionWebService.class);
     }
 
     private static OkHttpClient.Builder enableTls12OnPreLollipop(OkHttpClient.Builder iClient) {
@@ -78,7 +113,7 @@ public class WebClient {
                         TrustManagerFactory.getDefaultAlgorithm());
                 aTrustManagerFactory.init((KeyStore) null);
                 TrustManager[] aTrustManagers = aTrustManagerFactory.getTrustManagers();
-                if(aTrustManagers.length!=1 || !(aTrustManagers[0] instanceof X509TrustManager)) {
+                if (aTrustManagers.length != 1 || !(aTrustManagers[0] instanceof X509TrustManager)) {
                     throw new IllegalStateException("Unexpected default trust managers:"
                             + Arrays.toString(aTrustManagers));
                 }

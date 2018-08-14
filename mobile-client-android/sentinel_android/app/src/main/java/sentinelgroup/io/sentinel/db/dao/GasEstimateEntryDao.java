@@ -18,7 +18,4 @@ public interface GasEstimateEntryDao {
 
     @Query("SELECT * FROM gas_estimate_entity")
     LiveData<GasEstimateEntity> getGasEstimateEntity();
-
-    @Query("DELETE FROM gas_estimate_entity")
-    void deleteGasEstimateEntity();
 }

@@ -3,32 +3,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.activity.LauncherActivity">
 
     <android.support.constraint.Guideline
-        android:id="@+id/horizontal_guideline"
+        android:id="@+id/horizontal_guideline1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.44" />
+        app:layout_constraintGuide_percent="0.4" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
 
     <ImageView
         android:id="@+id/app_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_width="@dimen/margin_48"
+        android:layout_height="@dimen/margin_48"
+        android:layout_marginBottom="12dp"
         android:layout_marginEnd="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="@+id/app_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/ic_app_icon"
         tools:ignore="ContentDescription" />
@@ -43,6 +72,7 @@
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
         android:text="@string/app_name"
+        android:textAllCaps="true"
         app:layout_constraintBottom_toTopOf="@+id/app_sub_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,19 +80,20 @@
 
     <TextView
         android:id="@+id/app_sub_name"
-        style="@style/CustomTextAppearance.Text12"
+        style="@style/CustomTextAppearance.Text14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="@string/app_sub_name"
-        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
+        app:layout_constraintStart_toEndOf="@+id/vertical_guideline3"
         app:layout_constraintTop_toBottomOf="@+id/app_name" />
 
     <TextView
@@ -78,24 +109,18 @@
         app:layout_constraintEnd_toEndOf="@+id/btn_create_auid"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/btn_create_auid"
-        app:layout_constraintTop_toBottomOf="@+id/horizontal_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_guideline1"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
         android:id="@+id/btn_create_auid"
         style="@style/CustomTextAppearance.OrangeButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
         android:text="@string/create_account"
         app:layout_constraintBottom_toTopOf="@+id/or"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
+        app:layout_constraintStart_toStartOf="@+id/vertical_guideline3"
         app:layout_constraintTop_toBottomOf="@+id/create_auid" />
 
     <TextView
@@ -103,7 +128,8 @@
         style="@style/CustomTextAppearance.Text12.GrayNormal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/or"
         app:layout_constraintBottom_toTopOf="@+id/restore"
         app:layout_constraintEnd_toEndOf="parent"
@@ -117,7 +143,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/restore_account_desc"
         app:layout_constraintBottom_toTopOf="@+id/btn_restore"
@@ -129,17 +154,12 @@
     <Button
         android:id="@+id/btn_restore"
         style="@style/CustomTextAppearance.BlueButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
         android:text="@string/restore"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
+        app:layout_constraintStart_toStartOf="@+id/vertical_guideline3"
         app:layout_constraintTop_toBottomOf="@+id/restore" />
 </android.support.constraint.ConstraintLayout>

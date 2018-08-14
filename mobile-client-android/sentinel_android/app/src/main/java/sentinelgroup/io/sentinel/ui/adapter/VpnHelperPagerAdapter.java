@@ -14,10 +14,12 @@ public class VpnHelperPagerAdapter extends PagerAdapter {
 
     private LayoutInflater mLayoutInflater;
     private final int[] mResources;
+    private Context mContext;
 
     public VpnHelperPagerAdapter(Context iContext) {
         mLayoutInflater = (LayoutInflater) iContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResources = new int[]{R.drawable.ic_helper_1, R.drawable.ic_helper_2, R.drawable.ic_helper_3};
+        mContext = iContext;
     }
 
     @Override
@@ -28,12 +30,13 @@ public class VpnHelperPagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View itemView = mLayoutInflater.inflate(R.layout.item_helper, container, false);
-        ImageView imageView = itemView.findViewById(R.id.iv_helper);
-        imageView.setImageResource(mResources[position]);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        container.addView(itemView);
-        return itemView;
+        View aItemView;
+        aItemView = mLayoutInflater.inflate(R.layout.item_helper, container, false);
+        ImageView aImageView = aItemView.findViewById(R.id.iv_helper);
+        aImageView.setImageResource(mResources[position]);
+        aImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        container.addView(aItemView);
+        return aItemView;
     }
 
     @Override

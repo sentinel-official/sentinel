@@ -8,11 +8,11 @@
     tools:context=".ui.activity.VerifyPinActivity">
 
     <android.support.constraint.Guideline
-        android:id="@+id/horizontal_guideline"
+        android:id="@+id/horizontal_guideline1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.44" />
+        app:layout_constraintGuide_percent="0.4" />
 
     <android.support.constraint.Guideline
         android:id="@+id/vertical_guideline1"
@@ -28,21 +28,36 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.75" />
 
-    <ImageView
-        android:id="@+id/app_icon"
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="@dimen/margin_48"
+        android:layout_height="@dimen/margin_48"
+        android:layout_marginBottom="12dp"
         android:layout_marginEnd="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="@+id/app_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/ic_app_icon"
         tools:ignore="ContentDescription" />
@@ -56,6 +71,7 @@
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
+        android:textAllCaps="true"
         android:text="@string/app_name"
         app:layout_constraintBottom_toTopOf="@+id/app_sub_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,19 +80,20 @@
 
     <TextView
         android:id="@+id/app_sub_name"
-        style="@style/CustomTextAppearance.Text12"
+        style="@style/CustomTextAppearance.Text14"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="@string/app_sub_name"
-        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
+        app:layout_constraintStart_toEndOf="@+id/vertical_guideline3"
         app:layout_constraintTop_toBottomOf="@+id/app_name" />
 
     <TextView
@@ -98,13 +115,13 @@
         style="@style/CustomTextAppearance.PinEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
         android:imeOptions="actionDone"
         app:layout_constraintBottom_toTopOf="@+id/btn_forgot_pin"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
-        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline"
+        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1"
         app:layout_constraintVertical_bias="0.8"
         app:layout_constraintVertical_chainStyle="packed"
         app:pinCharacterMask="*"

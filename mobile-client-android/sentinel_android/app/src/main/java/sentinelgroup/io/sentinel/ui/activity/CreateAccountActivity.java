@@ -1,17 +1,19 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.CreateAuidFragment;
 import sentinelgroup.io.sentinel.ui.fragment.SetPinFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
-public class CreateAccountActivity extends SimpleBaseActivity {
+public class CreateAccountActivity extends SimpleBaseActivity implements DoubleActionDialogFragment.OnDialogActionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +90,13 @@ public class CreateAccountActivity extends SimpleBaseActivity {
     }
 
     @Override
-    public void onShowSingleActionDialog(String iMessage) {
-        showSingleActionError(iMessage);
+    public void onShowSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
+        showSingleActionError(iTitleId, iMessage, iPositiveOptionId);
     }
 
     @Override
-    public void onShowDoubleActionDialog(String iMessageId, int iPositiveOptionId, int iNegativeOptionId) {
-        // Unimplemented interface method
+    public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        showDoubleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
     }
 
     @Override
@@ -113,5 +115,18 @@ public class CreateAccountActivity extends SimpleBaseActivity {
             startActivity(iIntent);
             finish();
         }
+    }
+
+    @Override
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+        if (isPositiveButton) {
+            if (iTag.equals(AppConstants.TAG_ADD_REFERRAL)) {
+                Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+                if (aFragment instanceof CreateAuidFragment) {
+                    ((CreateAuidFragment) aFragment).loadNextFragment();
+                }
+            }
+        }
+        iDialog.dismiss();
     }
 }

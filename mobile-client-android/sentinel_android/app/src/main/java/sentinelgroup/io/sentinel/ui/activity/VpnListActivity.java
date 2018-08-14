@@ -8,11 +8,12 @@ import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
+import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.ui.fragment.VpnDetailsFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnListFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 
-public class VpnListActivity extends BaseActivity {
+public class VpnListActivity extends BaseActivity implements OnVpnConnectionListener {
     private VpnListEntity mVpnListData;
 
     @Override
@@ -67,7 +68,7 @@ public class VpnListActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AppConstants.REQ_VPN_INIT_PAY) {
             if (resultCode == RESULT_OK) {
-                showSingleActionError(getString(R.string.init_vpn_pay_success_message));
+                showSingleActionError(AppConstants.VALUE_DEFAULT, getString(R.string.init_vpn_pay_success_message), AppConstants.VALUE_DEFAULT);
             }
         }
     }
@@ -100,13 +101,13 @@ public class VpnListActivity extends BaseActivity {
     }
 
     @Override
-    public void onShowSingleActionDialog(String iMessage) {
-        showSingleActionError(iMessage);
+    public void onShowSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
+        showSingleActionError(iTitleId, iMessage, iPositiveOptionId);
     }
 
     @Override
-    public void onShowDoubleActionDialog(String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-        showDoubleActionError(AppConstants.TAG_INIT_PAY, R.string.init_vpn_pay_title, iMessage, iPositiveOptionId, iNegativeOptionId);
+    public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        showDoubleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
     }
 
     @Override
@@ -137,5 +138,15 @@ public class VpnListActivity extends BaseActivity {
                 ((VpnDetailsFragment) aFragment).loadNextActivity(getIntent());
         }
         iDialog.dismiss();
+    }
+
+    @Override
+    public void onVpnConnectionInitiated(String iVpnConfigFilePath) {
+        // Unimplemented interface method
+    }
+
+    @Override
+    public void onVpnDisconnectionInitiated() {
+        // Unimplemented interface method
     }
 }

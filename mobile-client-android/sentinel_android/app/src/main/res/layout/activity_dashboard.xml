@@ -11,15 +11,40 @@
     <include layout="@layout/activity_container" />
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/navigation_view"
+        android:id="@+id/nav_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/colorDrawerBackground"
-        android:fitsSystemWindows="false"
-        android:theme="@style/DrawerItemTheme"
-        app:headerLayout="@layout/layout_header"
-        app:itemBackground="@drawable/selector_drawer_item_background"
-        app:itemTextColor="@color/colorTextWhite"
-        app:menu="@menu/drawer_view" />
+        android:fitsSystemWindows="false">
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/nav_menu_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:layout_marginBottom="@dimen/margin_64"
+            android:background="@color/colorDrawerBackground"
+            android:isScrollContainer="true"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical"
+            android:theme="@style/DrawerItemTheme"
+            app:headerLayout="@layout/layout_header"
+            app:itemBackground="@drawable/selector_drawer_item_background"
+            app:itemTextColor="@color/colorTextWhite"
+            app:layout_constraintBottom_toTopOf="@+id/include"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/drawer_view" />
+
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/nav_footer_view"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/margin_64"
+            android:layout_gravity="bottom"
+            android:background="@color/colorDrawerBackground"
+            app:headerLayout="@layout/layout_footer" />
+    </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

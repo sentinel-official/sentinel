@@ -15,8 +15,8 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="24dp"
-        android:text="@string/view_tx_history_for"
         android:gravity="center"
+        android:text="@string/view_tx_history_for"
         app:layout_constraintBaseline_toBaselineOf="@+id/cs_tokens"
         app:layout_constraintEnd_toStartOf="@+id/cs_tokens"
         app:layout_constraintHorizontal_bias="1.0"
@@ -59,9 +59,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cs_tokens">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_list"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView
+                android:id="@+id/rv_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_empty_message"
+                style="@style/CustomTextAppearance.Text14.White70Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_32"
+                android:padding="@dimen/margin_16"
+                android:text="@string/tx_history_empty_list_message" />
+        </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

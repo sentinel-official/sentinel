@@ -5,6 +5,8 @@ public class AppConstants {
     public static final String TAG = "SENTINEL_DEBUG";
 
     // Keys used in SharedPreference
+    public static final String PREFS_CLEAR_DB = "prefs_clear_db";
+    public static final String PREFS_IS_INFO_SHOWN = "prefs_is_info_shown";
     public static final String PREFS_ACCOUNT_ADDRESS = "prefs_account_address";
     public static final String PREFS_FILE_PATH = "prefs_file_path";
     public static final String PREFS_CONFIG_PATH = "prefs_config_path";
@@ -12,10 +14,11 @@ public class AppConstants {
     public static final String PREFS_IS_FREE_TOKEN_RECEIVED = "prefs_is_free_token_received";
     public static final String PREFS_IS_TEST_NET_ACTIVE = "prefs_is_test_net_active";
     public static final String PREFS_VPN_ADDRESS = "prefs_vpn_address";
-    public static final String PREFS_SESSION_NAME = "prefs_session_name";
+    public static final String PREFS_CONNECTION_START_TIME = "prefs_connection_start_time_in_millis";
     public static final String PREFS_GAS_NORMAL = "prefs_standard";
     public static final String PREFS_GAS_FAST = "prefs_fast";
     public static final String PREFS_GAS_FASTEST = "prefs_fastest";
+    public static final String PREFS_IP_ADDRESS = "prefs_ip_address";
     public static final String PREFS_IS_HELPER_SHOWN = "is_helper_shown";
     public static final String PREFS_SELECTED_LANGUAGE_CODE = "selected_language";
 
@@ -24,8 +27,6 @@ public class AppConstants {
     public static final int REQ_TX_HISTORY = 100;
     public static final int REQ_VPN_HISTORY = 101;
     public static final int REQ_RESET_PIN = 102;
-    public static final int REQ_HELP = 103;
-    public static final int REQ_SOCIAL_LINKS = 104;
     public static final int REQ_LANGUAGE = 105;
     public static final int REQ_CODE_FORGOT_PIN = 105;
     public static final int REQ_VPN_CONNECT = 106;
@@ -40,14 +41,15 @@ public class AppConstants {
     public static final String EXTRA_SESSION_ID = "session_id";
     public static final String EXTRA_VPN_LIST = "vpn_list";
     public static final String EXTRA_NOTIFICATION_ACTIVITY = "notification_activity";
-    public static final String EXTRA_CONFIG_PATH = "config_path";
     public static final String EXTRA_REQ_CODE = "req_code";
 
     // Fragment Tags
+    public static final String TAG_ADD_REFERRAL = "ADD_REFERRAL";
     public static final String TAG_INIT_PAY = "INIT_PAY";
     public static final String TAG_LOGOUT = "LOGOUT";
 
     // Other app constants
+    public static final int VALUE_DEFAULT = -1;
     public static final String FOLDER_NAME = "Sentinel";
     public static final String FILE_NAME = "keystore.file";
     public static final String CONFIG_NAME = "client.ovpn";
@@ -62,7 +64,8 @@ public class AppConstants {
     public static final String DOUBLE_ACTION_DIALOG_TAG = "sentinelgroup.io.sentinel.double_action_dialog";
     public static final String SENT = "SENT";
     public static final String ETH = "ETH";
-    public static final String GENERIC_ERROR = "Something went wrong. Please try again.";
+    public static final String GENERIC_ERROR = "generic_error";
+    public static final String STORAGE_ERROR = "storage_error";
     public static final String INIT_PAY_ERROR = "Initial VPN payment is not done.";
     public static final String URL_BUILDER = "http://%1s:%d/ovpn";
     public static final String GAS_PRICE_ESTIMATE_URL = "https://www.etherchain.org/api/gasPriceOracle";

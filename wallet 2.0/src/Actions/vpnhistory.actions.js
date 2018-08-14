@@ -1,15 +1,24 @@
 import config from '../Constants/config';
 import axios from 'axios';
 import { sendError } from './authentication.action';
-import { B_URL} from './../Constants/constants';
+import { B_URL } from './../Constants/constants';
 import * as types from './../Constants/action.names';
 import * as routes from './../Constants/api.routes';
 import _ from 'lodash';
 let zfill = require('zfill');
 export const setsnackMessage = (message) => {
+  if(message)
+  {
   return {
     type: types.SNACK_INPUTS,
     payload: { status: true, message: message }
+  }
+}
+else{
+  return {
+    type: types.SNACK_INPUTS,
+    payload: { status: false, message: message }
+  }
   }
 }
 export async function getVpnHistory(account_addr) {

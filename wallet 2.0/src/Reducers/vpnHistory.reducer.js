@@ -1,9 +1,9 @@
 import * as types from "../Constants/action.names";
-const initialstate1={
+var defaultstate={
     status:false,
     message:''
 }
-const initialstate2={
+var initialstate2={
         isVPNPayment: false,
         data: null
 }
@@ -15,7 +15,7 @@ export function getVPNHistory(state = 'Loading', action) {
             return state
     }
 }
-export function getSnackMessage(state = initialstate1, action) {
+export function getSnackMessage(state =defaultstate , action) {
     switch (action.type) {
         case types.SNACK_INPUTS:
             return action.payload
@@ -23,10 +23,10 @@ export function getSnackMessage(state = initialstate1, action) {
             return state
     }
 }
-export function getVPNDuePaymentDetails(state = initialstate2, action) {
+export function getVPNDuePaymentDetails(state =initialstate2 , action) {
     switch (action.type) {
         case types.VPN_DUE_PAYMENT:
-            return action.payload
+            return {...state, ...action.payload}
         default:
             return state
 

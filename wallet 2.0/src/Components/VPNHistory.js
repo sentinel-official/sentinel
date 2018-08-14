@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import lang from '../Constants/language';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Card, CardActions, CardContent, Snackbar, TextField, Button } from '@material-ui/core';
 import Done from '@material-ui/icons/Done';
@@ -66,14 +65,13 @@ class VPNHistory extends Component {
     }
     setHash = (event, hash)=>{
         let value=event.target.value;
-        console.log("value=",value);
         var pattern = /^([0]{0,1}|[0][x][0-9A-Fa-f]{0,64})$/;
         if(value.match(pattern))
             this.setState({txHash:event.target.value})
 
     }
     snackRequestClose = () => {
-        this.setState({ open: false })
+     this.props.setsnackMessage('')
     }
     handleclick=(sessiondata)=>{
         var txhash= this.state.txHash
@@ -133,7 +131,7 @@ class VPNHistory extends Component {
                                 </span> { new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardContent>
                             {
-                               sessionData.is_paid ?
+                              ! sessionData.is_paid ?
                                     <span>
                                         <Done classes={{ root: classes.done }}
                                             data-tip data-for="payed" />
@@ -153,7 +151,7 @@ class VPNHistory extends Component {
                                                 }}
                                                 onClick={() => {
                                                      this.props.setVPNDuePayment(sessionData),
-                                                     this.props.setCurrentTab('send')
+                                                        this.props.setCurrentTab('send')                                                   
                                                  }}
                                             >{lang[this.props.lang].PayNow}</Button>
                                             <Button
@@ -249,7 +247,7 @@ class VPNHistory extends Component {
                     <Snackbar
                         open={this.props.snack.status}
                         message={this.props.snack.message}
-                        autoHideDuration={4000}
+                        autoHideDuration={5000}
                         transitionDuration={{ enter: 200, exit: 200 }}
                         onClose={this.snackRequestClose}
                         classes={{ root: classes.snack }}
@@ -266,6 +264,7 @@ function mapStateToProps(state) {
         account_addr: state.getAccount,
         snack: state.getSnackMessage,
         isTest:state.setTestNet,
+        vpndue:state.getVPNDuePaymentDetails
     }
 }
 

@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import lang from '../Constants/language';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Card, CardActions, CardContent, Snackbar, TextField, Button } from '@material-ui/core';
 import Done from '@material-ui/icons/Done';
@@ -13,8 +12,8 @@ import Send from '@material-ui/icons/Send';
 import Refresh from '@material-ui/icons/Refresh';
 import ReactTooltip from 'react-tooltip';
 import { getVpnHistory, setsnackMessage, compareTransaction,setVPNDuePayment } from '../Actions/vpnhistory.actions';
-import { getAccount } from '../Actions/dashboard.action';
 import { withStyles } from '@material-ui/core/styles';
+import {setCurrentTab} from '../Actions/sidebar.action';
 import { compose } from 'redux';
 import _ from 'lodash';
 import {MaskedInput} from 'react-text-mask'
@@ -66,14 +65,13 @@ class VPNHistory extends Component {
     }
     setHash = (event, hash)=>{
         let value=event.target.value;
-        console.log("value=",value);
-        var pattern = /^([0]|[0][x][0-9A-Fa-f]{0,64})$/;
+        var pattern = /^([0]{0,1}|[0][x][0-9A-Fa-f]{0,64})$/;
         if(value.match(pattern))
             this.setState({txHash:event.target.value})
 
     }
     snackRequestClose = () => {
-        this.setState({ open: false })
+     this.props.setsnackMessage('')
     }
     handleclick=(sessiondata)=>{
         var txhash= this.state.txHash
@@ -101,12 +99,11 @@ class VPNHistory extends Component {
                         <Card>
                             <CardContent classes={{ root: classes.cardtext }}>
                                 <span style={vpnhistoryStyles.headingStyle}>
-                                    {lang[language].SessionId}:
-                                </span>{sessionData.id}
+                                    {lang[language].SessionId} : 
+                                </span> { sessionData.id}
                                 <span style={vpnhistoryStyles.headingWithMarginStyle}>
-                                    {lang[language].VpnAddress}:
-                                </span>
-                                {sessionData.account_addr}
+                                    {lang[language].VpnAddress} : 
+                                </span> { sessionData.account_addr} 
                                 <CopyToClipboard text={sessionData.account_addr}
                                     onCopy={() =>
                                         this.props.setsnackMessage('Copied to Clipboard Successfully')
@@ -121,20 +118,20 @@ class VPNHistory extends Component {
                                 </ReactTooltip>
                                 <br />
                                 <span style={vpnhistoryStyles.headingStyle}>
-                                    {lang[language].Amount}:
-                                </span>{parseInt(sessionData.amount) / (10 ** 8)} SENTS
+                                    {lang[language].Amount} : 
+                                </span> { parseInt(sessionData.amount) / (10 ** 8)} SENTS
                                 <span style={vpnhistoryStyles.headingWithMarginStyle}>
-                                    {lang[language].Duration}:
-                                </span>{sessionData.session_duration} secs
+                                    {lang[language].Duration} : 
+                                </span> { sessionData.session_duration} secs
                                 <span style={vpnhistoryStyles.headingWithMarginStyle}>
-                                    {lang[language].ReceivedData}:
-                                 </span>{this.getPaymentBytes(sessionData.received_bytes)}<br />
+                                    {lang[language].ReceivedData} : 
+                                 </span> { this.getPaymentBytes(sessionData.received_bytes)}<br />
                                 <span style={vpnhistoryStyles.headingStyle}>
-                                    {lang[language].Time}:
-                                </span>{new Date(sessionData.timestamp * 1000).toGMTString()}
+                                    {lang[language].Time} : 
+                                </span> { new Date(sessionData.timestamp * 1000).toGMTString()}
                             </CardContent>
                             {
-                                sessionData.is_paid ?
+                              ! sessionData.is_paid ?
                                     <span>
                                         <Done classes={{ root: classes.done }}
                                             data-tip data-for="payed" />
@@ -152,7 +149,10 @@ class VPNHistory extends Component {
                                                     root: classes.but1_root,
                                                     label: classes.label,
                                                 }}
-                                                onClick={() => { this.props.setVPNDuePayment(sessionData) }}
+                                                onClick={() => {
+                                                     this.props.setVPNDuePayment(sessionData),
+                                                        this.props.setCurrentTab('send')                                                   
+                                                 }}
                                             >{lang[this.props.lang].PayNow}</Button>
                                             <Button
                                                 variant="raised" color="default"
@@ -218,7 +218,7 @@ class VPNHistory extends Component {
                     </div>
                     {VpnUsage && VpnUsage!=='Loading'?
                         <div>
-                            <div style={{ paddingTop: '2%' }}>
+                            <div style={{ paddingTop: '2%' ,color:'#919191'}}>
                                 <span style={vpnhistoryStyles.text1}>
                                     {lang[language].TotalDue} :
                                 </span> {parseInt(VpnUsage.due) / (10 ** 8)} SENTS<br />
@@ -236,7 +236,7 @@ class VPNHistory extends Component {
                             </div>
                         </div>
                         : VpnUsage === null ?
-                            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%',fontSize:'25px'}}>
                                 No VPN Used
                             </div>
                             :
@@ -247,7 +247,7 @@ class VPNHistory extends Component {
                     <Snackbar
                         open={this.props.snack.status}
                         message={this.props.snack.message}
-                        autoHideDuration={3000}
+                        autoHideDuration={5000}
                         transitionDuration={{ enter: 200, exit: 200 }}
                         onClose={this.snackRequestClose}
                         classes={{ root: classes.snack }}
@@ -264,6 +264,7 @@ function mapStateToProps(state) {
         account_addr: state.getAccount,
         snack: state.getSnackMessage,
         isTest:state.setTestNet,
+        vpndue:state.getVPNDuePaymentDetails
     }
 }
 
@@ -271,7 +272,8 @@ function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         getVpnHistory,
         setsnackMessage,
-        setVPNDuePayment
+        setVPNDuePayment,
+        setCurrentTab
     }, dispatch)
 }
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToActions)(VPNHistory));

@@ -18,9 +18,10 @@ const vpnhistoryStyles={
         marginRight:'30px'
     },
     text1:{
-        fontSize:'16px',
+        fontSize:'17px',
         fontWeight:'600',
-        textAlign:'left'
+        textAlign:'left',
+        color: 'rgb(61, 66, 92)'
     },
     history:{
         maxHeight:'300px',
@@ -28,8 +29,11 @@ const vpnhistoryStyles={
         overflow:'auto'
     },
     header:{
-        fontSize:'24px',
+        fontSize:'21px',
         fontWeight:'600',
+        color: 'black',
+        textTransform:'uppercase',
+        letterSpacing: '1.2px'
     },
     clipBoard: {
         height: 20,
@@ -38,17 +42,20 @@ const vpnhistoryStyles={
     },
     headingStyle: {
         fontWeight: 600,
-        fontSize:'12px'
+        fontSize:'14px',
+        color:'rgb(61,66,92)'
     },
     headingWithMarginStyle: {
         fontWeight: 600,
         marginLeft: 10,
-        fontSize:'12px'
+        fontSize:'14px',
+        color:'rgb(61,66,92)'
     },
     noSessionsStyle: {
         display: 'flex',
         justifyContent: 'center',
-        paddingTop: '20%'
+        paddingTop: '20%',
+        fontSize:'25px'
     },
     button:{
           label:{
@@ -90,7 +97,7 @@ const styles = {
         border: 0,
         transition: '2000',
         float: 'right',
-        color: 'black',
+        color: '#707070',
         outline: 'none !important',
     }, 
     refresh_icon:{
@@ -126,7 +133,8 @@ const styles = {
     },
     cardtext: {
         paddingLeft: '0px !important',
-        fontSize: '13px',
+        fontSize: '14px',
+        color:'#919191'
     },
     textField: {
         width: '90%',

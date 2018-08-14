@@ -157,7 +157,6 @@ class SendComponent extends React.Component {
     console.log('onClik', payVpn)
 
     this.setState({ label: 'SENDING', isDisabled: true })
-
     let self = this;
 
     setTimeout(() => {

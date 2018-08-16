@@ -5,6 +5,14 @@ import { menuItems } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import MenuIcon from '@material-ui/icons/Menu';
+import HistoryIcon from '@material-ui/icons/History';
+import SendIcon from '@material-ui/icons/Send';
+import SwapIcon from '@material-ui/icons/SwapHoriz';
+import SwixerIcon from '@material-ui/icons/SwapHorizontalCircle';
+import ListIcon from '@material-ui/icons/List';
+import ReceiveIcon from '@material-ui/icons/CallReceived';
+import VpnHisIcon from '@material-ui/icons/VpnLock';
+import BackIcon from '@material-ui/icons/KeyboardBackspace';
 import { Drawer, IconButton, Tooltip } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -24,6 +32,15 @@ class Sidebar extends Component {
         this.state = {
             openDrawer: false
         }
+        this.components = {
+            sendIcon: SendIcon,
+            historyIcon: HistoryIcon,
+            receiveIcon: ReceiveIcon,
+            listIcon: ListIcon,
+            vpnHisIcon: VpnHisIcon,
+            swixerIcon: SwixerIcon,
+            swapIcon: SwapIcon
+        }
     }
 
     setMenu = (item) => {
@@ -39,14 +56,21 @@ class Sidebar extends Component {
         this.setState({ openDrawer: value })
     }
 
+    getIcon = (iconName) => {
+        let Icon = this.components[iconName];
+        return <Icon />
+    }
+
     render() {
         let { classes } = this.props;
         let currentTab = this.props.currentTab;
         let isTest = this.props.isTest;
         return (
             <div>
-                <div style={sidebarStyles.menuIconStyle}>
-                    <MenuIcon onClick={this.toggleDrawer(true)} />
+                <div style={sidebarStyles.activeDivStyle}>
+                    <Tooltip title="Toggle Menu">
+                        <MenuIcon onClick={this.toggleDrawer(true)} />
+                    </Tooltip>
                 </div>
                 {
                     menuItems.map((item) => {
@@ -67,7 +91,7 @@ class Sidebar extends Component {
                                                         sidebarStyles.activeLabelStyle :
                                                         sidebarStyles.normalLabelStyle)
                                             }>
-                                            <MenuIcon />
+                                            {this.getIcon(item.icon)}
                                         </label>
                                     </Tooltip>
                                 </div>
@@ -84,6 +108,7 @@ class Sidebar extends Component {
                     <div
                         tabIndex={0}
                         role="button"
+                        style={sidebarStyles.outlineNone}
                     >
                         {
                             menuItems.map((item) => {

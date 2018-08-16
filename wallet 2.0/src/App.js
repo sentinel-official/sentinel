@@ -16,6 +16,7 @@ const { ipcRenderer } = window.require('electron');
 class App extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             lang: 'en',
             component: null
@@ -38,8 +39,8 @@ class App extends Component {
         ipcRenderer.on('lang', (event, arg) => {
             this.setState({ lang: arg }, () => {
                 this.props.setLanguage(this.state.lang)
-            })
-        })
+            });
+        });
     };
 
     render() {
@@ -83,7 +84,7 @@ function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         setLanguage: setLanguage,
         setComponent: setComponent
-    }, dispatch)
+    }, dispatch);
 }
 
 function mapStateToProps(state) {

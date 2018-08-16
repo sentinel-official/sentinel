@@ -16,9 +16,11 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.post['Accept'] = 'application/json';
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware)(createStore);
+
 ReactDOM.render(
     <Provider store={createStoreWithMiddleware(rootreducer)}>
         <App />
     </Provider>
     , document.getElementById('root'));
+    
 registerServiceWorker();

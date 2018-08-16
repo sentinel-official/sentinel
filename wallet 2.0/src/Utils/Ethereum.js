@@ -31,33 +31,41 @@ function getSENTContractAddress() {
 
 export function getGasCost(from_addr, to_addr, amount, unit, cb) {
     var gasCost;
+
     setWeb3();
+
     if (unit === 'ETH') {
         try {
             gasCost = web3.eth.estimateGas({ to: to_addr, value: amount })
         } catch (err) {
             gasCost = 21000
         }
+
         cb(gasCost)
-    }
-    else {
+    } else {
         setContract();
+
         try {
             gasCost = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
         } catch (err) {
             gasCost = 38119
         }
+
         cb(gasCost)
     }
 }
 
-export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey,cb) {
+export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     try {
         // amount = amount * Math.pow(10, 8);
+        console.log('in token trans', from_addr, to_addr);
+
         setWeb3();
         setContract();
+
         var SENTINEL_ADDRESS = getSENTContractAddress();
         var data = contract.transfer.getData(to_addr, amount, { from: from_addr });
+
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
             gasPrice: gas_price,
@@ -67,22 +75,25 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
             value: '0x00',
             data: data
         }
+
         var tx = new EthereumTx(txParams);
         tx.sign(privateKey);
         var serializedTx = '0x' + tx.serialize().toString('hex');
-        if(serializedTx){
-            cb(null,serializedTx)
+
+        if (serializedTx) {
+            cb(null, serializedTx)
         } else {
-            cb('Not Assigned',null)
+            cb('Not Assigned', null)
         }
     } catch (Err) {
         sendError(Err);
     }
 }
 
-export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey,cb) {
+export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     try {
         setWeb3();
+
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
             gasPrice: gas_price,
@@ -92,13 +103,15 @@ export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, priva
             value: web3.toHex(amount),
             data: ''
         }
+
         var tx = new EthereumTx(txParams);
         tx.sign(privateKey);
         var serializedTx = '0x' + tx.serialize().toString('hex');
-        if(serializedTx){
-            cb(null,serializedTx)
+
+        if (serializedTx) {
+            cb(null, serializedTx);
         } else {
-            cb('Not Assigned',null)
+            cb('Not Assigned', null);
         }
     } catch (Err) {
         sendError(Err);
@@ -106,12 +119,14 @@ export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, priva
 }
 
 export function setGas(from_addr, to_addr, amount, cb) {
-    let tokenGas
+    let tokenGas;
+
     try {
-        tokenGas = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
+        tokenGas = contract.transfer.estimateGas(to_addr, amount, { from: from_addr });
     } catch (err) {
-        tokenGas = 38119
+        tokenGas = 38119;
     }
+
     cb(tokenGas);
 }
 
@@ -127,9 +142,11 @@ function setSwapContract(contractAddr, cb) {
         response.json().then(function (resp) {
             if (resp.status === '1') {
                 contract = web3.eth.contract(JSON.parse(resp['result'])).at(contractAddr);
+
                 cb(contract);
             } else {
                 contract = null;
+
                 cb(null);
             }
         });
@@ -142,6 +159,7 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
             cb({ message: 'Please send amount for swapping' }, null)
         } else {
             setWeb3();
+
             if (unit === 'ETH') {
                 var txParams = {
                     nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
@@ -152,12 +170,13 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
                     value: web3.toHex(amount),
                     data: ''
                 }
+
                 var tx = new EthereumTx(txParams);
                 tx.sign(privateKey);
                 var serializedTx = '0x' + tx.serialize().toString('hex');
+
                 cb(null, serializedTx);
-            }
-            else {
+            } else {
                 setSwapContract(contract_addr, function (contract) {
                     if (contract) {
                         setGas(from_addr, ether_addr, amount, function (gasValue) {
@@ -171,17 +190,17 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
                                 value: '0x00',
                                 data: data
                             }
+
                             var tx = new EthereumTx(txParams);
                             tx.sign(privateKey);
                             var serializedTx = '0x' + tx.serialize().toString('hex');
+
                             cb(null, serializedTx);
                         });
-                    }
-                    else {
+                    } else {
                         cb({ message: 'Problem in swapping. Please Try Later' }, null);
                     }
-                })
-
+                });
             }
         }
     } catch (Err) {

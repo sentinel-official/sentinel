@@ -1,15 +1,23 @@
 import config from '../Constants/config';
 import axios from 'axios';
 import { sendError } from './authentication.action';
-import { B_URL} from './../Constants/constants';
+import { B_URL } from './../Constants/constants';
 import * as types from './../Constants/action.names';
 import * as routes from './../Constants/api.routes';
 import _ from 'lodash';
 let zfill = require('zfill');
 export const setsnackMessage = (message) => {
-  return {
-    type: types.SNACK_INPUTS,
-    payload: { status: true, message: message }
+  if (message) {
+    return {
+      type: types.SNACK_INPUTS,
+      payload: { status: true, message: message }
+    }
+  }
+  else {
+    return {
+      type: types.SNACK_INPUTS,
+      payload: { status: false, message: message }
+    }
   }
 }
 export async function getVpnHistory(account_addr) {
@@ -136,18 +144,23 @@ export function reportPayment(data, cb) {
   }
 }
 export const setVPNDuePayment = (sessionData) => {
-  var Data = {
-    to_addr: sessionData.account_addr,
-    amount: sessionData.amount,
-    unit: 'SENT',
-    value: 'send',
-    sessionId: sessionData.id,
+  if (sessionData) {
+    return {
+      type: types.VPN_DUE_PAYMENT,
+      payload: {
+        isVPNPayment: true,
+        data: sessionData
+      }
+    }
   }
-  return {
-    type: types.VPN_DUE_PAYMENT,
-    payload: {
-      isVPNPayment: true,
-      data: Data
+  else
+  {
+    return {
+      type: types.VPN_DUE_PAYMENT,
+      payload: {
+        isVPNPayment: false,
+        data: ''
+      }
     }
   }
 }

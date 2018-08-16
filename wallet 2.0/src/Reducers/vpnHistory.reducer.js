@@ -1,4 +1,12 @@
 import * as types from "../Constants/action.names";
+var defaultstate={
+    status:false,
+    message:''
+}
+var initialstate2={
+        isVPNPayment: false,
+        data: null
+}
 export function getVPNHistory(state = 'Loading', action) {
     switch (action.type) {
         case types.GET_VPN_HISTORY:
@@ -7,23 +15,20 @@ export function getVPNHistory(state = 'Loading', action) {
             return state
     }
 }
-export function getSnackMessage(state = null, action) {
+export function getSnackMessage(state =defaultstate , action) {
     switch (action.type) {
         case types.SNACK_INPUTS:
             return action.payload
         default:
-            return { status: false, measage: '' }
+            return state
     }
 }
-export function getVPNDuePaymetnDetails(state = null, action) {
+export function getVPNDuePaymentDetails(state =initialstate2 , action) {
     switch (action.type) {
         case types.VPN_DUE_PAYMENT:
-            return action.payload
+            return {...state, ...action.payload}
         default:
-            return {
-                isVPNPayment: false,
-                data: null
-            }
+            return state
 
     }
 }

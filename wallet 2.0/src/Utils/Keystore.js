@@ -16,7 +16,7 @@ function getUserHome() {
 
 export const uploadKeystore = (keystore, cb) => {
     try {
-        cb(null, createFile(KEYSTORE_FILE, keystore))
+        createFile(KEYSTORE_FILE, keystore,cb)
     } catch (Err) {
         sendError(Err);
     }
@@ -39,14 +39,12 @@ export function getPrivateKey(password, language, cb) {
 }
 
 export function getPrivateKeyWithoutCallback(password, cb) {
-    console.log(KEYSTORE_FILE)
     readFile(KEYSTORE_FILE, function (err, data) {
         if (err) cb(err, null);
         else {
             var keystore = JSON.parse(data)
             try {
                 var privateKey = keythereum.recover(password, keystore);
-                console.log(privateKey,'in get')
                 cb(null, privateKey);
             }
             catch (err) {
@@ -56,12 +54,12 @@ export function getPrivateKeyWithoutCallback(password, cb) {
     })
 }
 
-export function createFile(KEYSTORE_FILE, keystore) {
+export function createFile(KEYSTORE_FILE, keystore,cb) {
     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
         if (err) {
-            return (err, null);
+            cb(err, null);
         } else {
-            return KEYSTORE_FILE
+            cb(null,KEYSTORE_FILE)
         }
     });
 }

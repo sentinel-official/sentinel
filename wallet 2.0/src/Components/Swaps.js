@@ -140,14 +140,14 @@ class Swaps extends Component {
                                     <b>
                                         <p style={styles.number} data-tip data-for="sentsBal">
                                             {this.props.getSentBalanceRes && this.props.getSentBalanceRes !== 'Loading' ?
-                                                this.props.getSentBalanceRes.toFixed(8) : 0}
+                                                this.props.getSentBalanceRes : 0}
                                         </p>
                                     </b>
                                     <p style={styles.sentinel}>Sentinel [SENT]</p>
                                 </Col>
                                 <ReactTooltip id="sentsBal" place="bottom">
                                     <span>{this.props.getSentBalanceRes && this.props.getSentBalanceRes !== 'Loading' ?
-                                        this.props.getSentBalanceRes.toFixed(8) : 'Loading'}</span>
+                                        this.props.getSentBalanceRes : 'Loading'}</span>
                                 </ReactTooltip>
                             </Row>
                         </Button>

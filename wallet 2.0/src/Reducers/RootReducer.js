@@ -9,6 +9,7 @@ import {getVPNHistory,getSnackMessage,getCompareTransactionStatus,getVPNDuePayme
 import { sendComponentReducer } from './sendcomponent.reducer';
 import { setListViewType, setVpnType, getVpnList } from './vpnlist.reducer';
 import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
+import { connectVPNReducer } from './connectVPN.reducer'
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
     getVpnList,
     testSENTHistory,
     testETHHistory,
+    connectVPNReducer,
 });
 
 export default rootReducer;

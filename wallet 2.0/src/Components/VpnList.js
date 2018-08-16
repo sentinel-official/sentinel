@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CircularProgress } from '@material-ui/core'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setListViewType, getVpnList, setVpnType } from '../Actions/vpnlist.action';
@@ -21,14 +22,20 @@ class VpnList extends Component {
         this.props.getVpnList(this.props.vpnType);
     };
 
+    componentDidMount = () => {
+        this.props.getVpnList(this.props.vpnType);
+    };
+
     render() {
-        let self = this;
-        if (!this.state.isGetVPNCalled && this.props.isTest) {
-            setInterval(function () {
-                self.getVPNs()
-            }, 10000);
-            this.setState({ isGetVPNCalled: true });
-        }
+        console.log(this.props.vpnList, 'list here');
+
+        // let self = this;
+        // if (!this.state.isGetVPNCalled && this.props.isTest) {
+        //     setInterval(function () {
+        //         self.getVPNs()
+        //     }, 10000);
+        //     this.setState({ isGetVPNCalled: true });
+        // }
         return (
             <div>
                 <div style={{ display: 'flex' }} >
@@ -45,8 +52,12 @@ class VpnList extends Component {
                     </div>
                 </div>
                 {
+                    this.props.vpnList.length === 0 ?
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> :
                     this.props.listView === 'list' ?
-                        <VpnListView query={this.state.dVpnQuery} />
+                        <div style={{ maxWidth: 895, marginLeft: 20 }} >
+                            <VpnListView query={this.state.dVpnQuery} />
+                        </div>
                         :
                         <VpnMapView />
                 }

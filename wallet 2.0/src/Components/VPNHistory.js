@@ -36,7 +36,8 @@ class VPNHistory extends Component {
     }
     componentWillMount = () => {
         this.props.getVpnHistory(this.props.account_addr);
-    }
+    };
+
     showText = (divID) => {
         if (document.getElementById(divID).style.display === 'none') {
             document.getElementById(divID).style.display = 'inline';
@@ -44,8 +45,9 @@ class VPNHistory extends Component {
         else {
             document.getElementById(divID).style.display = 'none';
         }
-    }
-    getPaymentBytes(bytes) {
+    };
+
+    getPaymentBytes = (bytes) => {
         let data = (parseInt(bytes) / 1024);
         if (data >= 1024) {
             data = data / 1024;
@@ -63,21 +65,24 @@ class VPNHistory extends Component {
             data = data.toFixed(3);
             return data + ' KB';
         }
-    }
-    setHash = (event, hash)=>{
+    };
+
+    setHash = (event, hash) => {
         let value=event.target.value;
         console.log("value=",value);
         var pattern = /^([0]|[0][x][0-9A-Fa-f]{0,64})$/;
         if(value.match(pattern))
             this.setState({txHash:event.target.value})
 
-    }
+    };
+
     snackRequestClose = () => {
         this.setState({ open: false })
-    }
-    handleclick=(sessiondata)=>{
-        var txhash= this.state.txHash
-        this.setState({txHash:''})
+    };
+
+    handleclick = (sessiondata) => {
+        var txhash= this.state.txHash;
+        this.setState({txHash:''});
         compareTransaction(sessiondata,txhash,
             this.props.account_addr,this.props.isTest, (err, str) => {
            if (!err) {
@@ -87,7 +92,8 @@ class VPNHistory extends Component {
            }
        })
 
-    }
+    };
+
     history = () => {
         let sessionOutput;
         let that = this;
@@ -201,7 +207,8 @@ class VPNHistory extends Component {
             sessionOutput = <div style={vpnhistoryStyles.noSessionsStyle}>No Previous Sessions</div>
         }
         return sessionOutput;
-    }
+    };
+
     render() {
         // console.log("vpnHistory", this.props.VPNUsage)
         let language = this.props.lang;

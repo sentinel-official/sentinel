@@ -29,6 +29,7 @@ import java.io.File;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModel;
@@ -51,7 +52,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     private TextInputEditText mTetPassword;
     private Button mBtnRestore;
     private TextView mTvUpload;
-    private ImageView mIvUploaded;
+    private ImageView mIvUpload, mIvUploaded;
 
     private String mKeystorePath = "";
     private int mButtonId;
@@ -95,10 +96,11 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         mTetPassword = iView.findViewById(R.id.tet_password);
         mBtnRestore = iView.findViewById(R.id.btn_restore);
         mTvUpload = iView.findViewById(R.id.tv_upload_file);
+        mIvUpload = iView.findViewById(R.id.iv_upload_file);
         mIvUploaded = iView.findViewById(R.id.iv_uploaded);
         // Set Listeners
         mTetPassword.addTextChangedListener(this);
-        mTvUpload.setOnClickListener(this);
+        mIvUpload.setOnClickListener(this);
         mBtnRestore.setOnClickListener(this);
     }
 
@@ -116,7 +118,8 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                 } else if (keystoreResource.message != null && keystoreResource.status.equals(Status.ERROR)) {
                     mTetPassword.setText("");
                     hideProgressDialog();
-                    showErrorDialog(keystoreResource.message);
+                    clearPassword();
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, keystoreResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -141,7 +144,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
     private void performAction(int iButtonId) {
         switch (iButtonId) {
-            case R.id.tv_upload_file:
+            case R.id.iv_upload_file:
                 uploadFile();
                 break;
             case R.id.btn_restore:
@@ -167,8 +170,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
             if (files.length == 1) {
                 mKeystorePath = files[0];
                 mIvUploaded.setVisibility(View.VISIBLE);
-                mTvUpload.setText("");
-                Toast.makeText(getContext(), R.string.uploaded_success, Toast.LENGTH_SHORT).show();
+                mTvUpload.setText(R.string.uploaded_keystore_desc);
                 Logger.logDebug("KEYSTOREPATH", mKeystorePath);
                 mBtnRestore.setEnabled(!mTetPassword.getText().toString().isEmpty() && !mKeystorePath.isEmpty());
                 aDialog.dismiss();
@@ -180,6 +182,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     private void restoreFile() {
         String aPassword = mTetPassword.getText().toString().trim();
         mViewModel.restoreKeystoreFile(aPassword, mKeystorePath);
+    }
+
+    private void clearPassword() {
+        mTetPassword.setText("");
     }
 
     // Interface interaction methods
@@ -201,10 +207,9 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mTetPassword.setText("");
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

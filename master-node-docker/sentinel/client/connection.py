@@ -28,6 +28,9 @@ class UpdateConnection(object):
                 if 'account_addr' in connection:
                     connection['client_addr'] = connection['account_addr'].lower()
                     connection.pop('account_addr')
+                if 'usage' in connection:
+                    connection['client_usage'] = connection['usage']
+                    connection.pop('usage')
 
                 data = db.connections.find_one({
                     'vpn_addr': connection['vpn_addr'],
@@ -38,14 +41,14 @@ class UpdateConnection(object):
                     connection['end_time'] = None
                     _ = db.connections.insert_one(connection)
                 else:
-                    if connection['usage'] is not None:
+                    if connection['client_usage'] is not None:
                         _ = db.connections.find_one_and_update({
                             'vpn_addr': connection['vpn_addr'],
                             'session_name': connection['session_name'],
                             'end_time': None
                         }, {
                             '$set': {
-                                'client_usage': connection['usage']
+                                'client_usage': connection['client_usage']
                             }
                         })
                     else:
@@ -80,6 +83,15 @@ class UpdateConnection(object):
                                     tx_hashes.append(error)
                                 else:
                                     tx_hashes.append(tx_hash)
+                                    if tx_hash is not None:
+                                        _ = db.connections.find_one_and_update({
+                                            'vpn_addr': connection['vpn_addr'],
+                                            'session_name': connection['session_name']
+                                        }, {
+                                            '$set': {
+                                                'tx_hash': tx_hash
+                                            }
+                                        })
             message = {
                 'success': True,
                 'message': 'Connection details updated successfully.',

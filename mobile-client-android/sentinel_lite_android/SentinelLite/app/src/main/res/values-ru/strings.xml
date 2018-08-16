@@ -1,0 +1,212 @@
+<resources>
+    <string name="app_name">Sentinel Lite</string>
+    <string name="sentinel">Sentinel</string>
+    <string name="lite">Lite Client v %s</string>
+    <string name="default_language">en</string>
+
+    <!-- String Array -->
+    <string-array name="language">
+        <!--<item>Chinese</item>-->
+        <item>English</item>
+        <!--<item>Japanese</item>-->
+        <item>Russian</item>
+        <!--<item>Spanish</item>-->
+    </string-array>
+    <string-array name="language_code">
+        <!--<item>zh</item>-->
+        <item>en</item>
+        <!--<item>ja</item>-->
+        <item>ru</item>
+        <!--<item>es</item>-->
+    </string-array>
+
+    <!-- ics_openVPN strings -->
+    <string name="fetching_server_details">Получение данных от VPN-сервера</string>
+    <string name="channel_name_background">Статистика подключений</string>
+    <string name="channel_description_background">Текущая статистика установленного соединения OpenVPN</string>
+    <string name="channel_name_status">Изменение статуса соединения</string>
+    <string name="channel_description_status">Изменения состояния соединения OpenVPN (подключение, аутентификация, …)</string>
+    <string name="vpn_launch_title">Подключение к VPN…</string>
+    <string name="permission_icon_app">Значок приложения, которое пытается использовать OpenVPN для Android</string>
+    <string name="remote_warning">Продолжив, вы даете разрешение приложению полностью контролировать OpenVPN для Android и перехватывать весь сетевой трафик.<b>Не продолжайте, если вы не доверяете этому приложению.</b> В противном случае вы рискуете заразить ваши данные вредоносным программным обеспечением."</string>
+    <string name="remote_trust">Я доверяю этому приложению.</string>
+    <string name="prompt">%1$s пытается контролировать %2$s</string>
+    <string name="no_error_found">Ошибка не найдена</string>
+    <string name="screenoff_pause">Остановка приложения при выключенном экране: меньше чем %1$s в %2$ss</string>
+    <string name="screen_nopersistenttun">Предупреждение: Если вы отключите экран, то программа может работать не корректно.</string>
+    <string name="netstatus">Статус Сети: %s</string>
+    <string name="reread_log">Reread (%d) log items from log cache file</string>
+    <string name="mobile_info">%10$s %9$s запущено на %3$s %1$s (%2$s), Android %6$s (%7$s) API %4$d, ABI %5$s, (%8$s)</string>
+    <string name="official_build">оффициальная сборка</string>
+    <string name="debug_build">отладочная сборка</string>
+    <string name="built_by">собрано %s</string>
+    <string name="state_waitconnectretry">Подождите %ss секунд перед подключением</string>
+    <string name="using_proxy">Использование прокси %1$s %2$d</string>
+    <string name="password">Пароль</string>
+    <string name="state_auth_failed">Ошибка аутентификации</string>
+    <string name="bits_per_second">%.0f бит/с</string>
+    <string name="kbits_per_second">%.1f кбит/с</string>
+    <string name="mbits_per_second">%.1f Мбит/с</string>
+    <string name="gbits_per_second">%.1f Гбит/с</string>
+    <string name="volume_byte">%.0f Б</string>
+    <string name="volume_kbyte">%.1f КБ</string>
+    <string name="volume_mbyte">%.1f МБ</string>
+    <string name="volume_gbyte">%.1f ГБ</string>
+    <string name="permission_revoked">Отказано в доступе операционной системой (возможно запущена другая VPN-программа), приостановка VPN</string>
+    <string name="notifcation_title">%1$s - %2$s</string>
+    <string name="notifcation_title_notconnect">Нет соединения</string>
+    <string name="service_restarted">Перезапуск OpenVPN сервиса (App crashed probably crashed or killed for memory pressure)</string>
+    <string name="building_configration">Настройка сборки…</string>
+    <string name="last_openvpn_tun_config">Открытие туннельного интерфейса:</string>
+    <string name="opentun_no_ipaddr">Отказано в доступе к туннельному интерфейсу без предоставления IP </string>
+    <string name="dns_add_error">Ошибка при добавлении DNS Сервера \"%1$s\", отказано системой: %2$s</string>
+    <string name="ip_add_error">Ошибка при конфигурации IP Адреса \"%1$s\", отказано системой: %2$s</string>
+    <string name="ignore_multicast_route">Игнорирование multicast-маршрута: %s</string>
+    <string name="route_rejected">Маршруту отказано ОС Android</string>
+    <string name="local_ip_info">Локальный IPv4: %1$s/%2$d IPv6: %3$s MTU: %4$d</string>
+    <string name="dns_server_info">DNS Сервер: %1$s, Домен: %2$s</string>
+    <string name="routes_info_incl">Маршруты: %1$s %2$s</string>
+    <string name="routes_info_excl">Исключенные маршруты: %1$s %2$s</string>
+    <string name="routes_debug">Установлено VpnService маршрутов: %1$s %2$s</string>
+    <string name="session_ipv4string">%1$s - %2$s</string>
+    <string name="session_ipv6string">%1$s - %3$s, %2$s</string>
+    <string name="warn_no_dns">DNS серверы не используются. Разрешение имени может не работать. Подумайте о настройке собственных DNS-серверов. Также обратите внимание, что Android не будет использовать настройки прокси-сервера, указанные для вашего мобильного/Wi-Fi-соединения, если DNS-серверы не установлены.</string>
+    <string name="tun_open_error">Не получилось открыть туннельный интерфейс</string>
+    <string name="error">"Ошибка: "</string>
+    <string name="tun_error_helpful">На некоторых пользовательских образах ICS права для /dev/tun могут быть неправильными либо модуль tun может отсутствовать полностью. Для образов CM9 попробуйте исправить параметр владельца в общих настройках</string>
+    <string name="app_no_longer_exists">Пакет %s больше не установлен, удаляем его из разрешить/отказать списка</string>
+    <string name="no_allowed_app">No allowed app added. Adding ourselves (%s) to have at least one app in the allowed app list to not allow all apps</string>
+    <string name="disallowed_vpn_apps_info">Запрещенные VPN приложения: %1$s</string>
+    <string name="allowed_vpn_apps_info">Разрешенные VPN приложения: %1$s</string>
+    <string name="route_not_cidr">Cannot make sense of %1$s and %2$s as IP route with CIDR netmask, using /32 as netmask.</string>
+    <string name="route_not_netip">Corrected route %1$s/%2$s to %3$s/%2$s</string>
+    <string name="ip_not_cidr">Got interface information %1$s and %2$s, assuming second address is peer address of remote. Using /32 netmask for local IP. Mode given by OpenVPN is \"%3$s\".</string>
+    <string name="ip_looks_like_subnet">Vpn topology \"%3$s\" specified but IP Config %1$s %2$s looks more like an IP address with a network mask. Assuming \"subnet\" topology.</string>
+    <string name="statusline_bytecount">↓:%2$s(%1$s)-↑:%4$s(%3$s)</string>
+    <string name="state_noprocess">Не запущено</string>
+    <string name="minidump_generated">OpenVPN внезапно закрылся.</string>
+    <string name="getproxy_error">Ошибка в получении прокси-настроек: %s</string>
+    <string name="abi_mismatch">Preferred native ABI precedence of this device (%1$s) and ABI reported by native libraries (%2$s) mismatch</string>
+    <string name="unhandled_exception_context">%3$s: %1$s\n\n%2$s</string>
+    <string name="unhandled_exception">Необработанная ошибка: %1$s\n\n%2$s</string>
+    <string name="unknown_state">Unknown state</string>
+    <string name="state_connecting">Подключается</string>
+    <string name="state_wait">Ожидание ответа</string>
+    <string name="state_auth">Аутентификация</string>
+    <string name="state_get_config">Получение конфигураций пользователя</string>
+    <string name="state_assign_ip">Назначение IP адреса</string>
+    <string name="state_add_routes">Добавление маршрутов</string>
+    <string name="state_connected">Подключено</string>
+    <string name="state_disconnected">Отключено</string>
+    <string name="state_reconnecting">Переподключение</string>
+    <string name="state_exiting">Выход</string>
+    <string name="state_resolve">Получение имен хостов</string>
+    <string name="state_tcp_connect">Подключение (TCP)</string>
+    <string name="state_nonetwork">Ожидание рабочей сети</string>
+    <string name="state_screenoff">VPN подключение остановлено - экран выключен</string>
+    <string name="state_userpause">VPN остановлено пользователем</string>
+    <string name="cannotparsecert">Не получается отобразить информацию о сертификате</string>
+    <string name="keychain_access">Cannot access the Android Keychain Certificates. This can be caused by a firmware upgrade or by restoring a backup of the app/app settings. Please edit the VPN and reselect the certificate under basic settings to recreate the permission to access the certificate.</string>
+    <string name="jelly_keystore_alphanumeric_bug">Some versions of Android 4.1 have problems if the name of the keystore certificate contains non alphanumeric characters (like spaces, underscores or dashes). Try to reimport the certificate without special characters</string>
+    <string name="keychain_nocacert">No CA Certificate returned while reading from Android keystore. Authentication will probably fail.</string>
+    <string name="no_keystore_cert_selected">Вы должны выбрать сертификат пользователя</string>
+    <string name="no_ca_cert_selected">Вы должны выбрать CA-сертификат</string>
+    <string name="keyChainAccessError">Ошибка доступа к KeyChain: %s</string>
+    <string name="deprecated_tls_remote">Config uses option tls-remote that was deprecated in 2.3 and finally removed in 2.4</string>
+    <string name="ipv4_format_error">Ошибка в распознавании IPv4 адреса</string>
+    <string name="shortcut_profile_notfound">Профиль указанный в ярлыке не найден</string>
+    <string name="state_user_vpn_permission">Ожжидание разрешения от пользователя для VPN API</string>
+    <string name="state_user_vpn_password">Ожидание пароля от VPN пользователя</string>
+    <string name="state_user_vpn_permission_cancelled">Диалог разрешения API VPN отменен.\n\nПредоставьте разрешение для использования служб VPN</string>
+    <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
+    <string name="config_error_found">Ошибка в конфигурации</string>
+    <string name="no_vpn_support_image">Ваш образ не поддерживает VPNService API.</string>
+    <string name="custom_route_format_error">Ошибка анализа пользовательских маршрутов</string>
+    <string name="missing_tlsauth">Файл tls-auth отсутсвует</string>
+    <string name="missing_certificates">Отсутствует сертификат пользователя или файл ключа сертификата пользователя</string>
+    <string name="missing_ca_certificate">Отсутствует сертификат CA</string>
+    <string name="remote_no_server_selected">Вам необходимо определить и включить хотя бы один удаленный сервер.</string>
+    <string name="pkcs12_file_encryption_key">Ключ шифрования файлов PKCS12</string>
+    <string name="private_key_password">Пароль приватного ключа</string>
+    <string name="error_rsa_sign">Ошибка при входе с ключом Android хранилища %1$s: %2$s</string>
+
+    <!-- Translatable strings -->
+    <string name="app_sub_name">Защищённая децентрализованная VPN-платформа</string>
+    <string name="next">Дальше</string>
+    <string name="disconnect">Отключиться</string>
+    <string name="view_vpns">Список VPN</string>
+    <string name="view_vpn_list">Список VPN</string>
+    <string name="view_socks5_list">Список SOCKS5</string>
+    <string name="connect_to_vpn">Подключиться к VPN</string>
+    <string name="connect">Подключиться</string>
+    <string name="no_internet">Нет подключения к интернету. Попробуйте еще раз.</string>
+    <string name="please_note">Внимание</string>
+    <string name="referral_id_copied">Реферальный код скопирован</string>
+    <string name="vpn_location">%1s, %2s</string>
+    <string name="vpn_ip">IP %1s</string>
+    <string name="vpn_bandwidth">Скорость %s</string>
+    <string name="vpn_bandwidth_connected">Скорость\n%s</string>
+    <string name="vpn_enc_method">Шифрование %s</string>
+    <string name="vpn_enc_method_connected">Шифрование\n%s</string>
+    <string name="vpn_latency">Задержка %s</string>
+    <string name="vpn_latency_connected">Задержка\n%s</string>
+    <string name="vpn_duration_connected">Длительность\n%s</string>
+    <string name="vpn_bandwidth_value">%.2f Мб/с</string>
+    <string name="vpn_latency_value">%.3f мс</string>
+    <string name="generic_loading_message">Загрузка. Подождите…</string>
+    <string name="select_vpn">Выбрать VPN</string>
+    <string name="vpn_connections">VPN Подключения</string>
+    <string name="city">Город:</string>
+    <string name="country">Страна:</string>
+    <string name="bandwidth">Скорость:</string>
+    <string name="latency">Задержка:</string>
+    <string name="encryption">Шифрование:</string>
+    <string name="coming_soon">Скоро добавим</string>
+    <string name="fetching_config">Получение конфигураций VPN…</string>
+    <string name="saving_config">Сохранение конфигураций VPN…</string>
+    <string name="download_speed">Скорость входящих данных</string>
+    <string name="data_used">Использовано данных</string>
+    <string name="upload_speed">Скорость исходящих данных</string>
+    <string name="vpn_status">Статус VPN: %1s</string>
+    <string name="vpn_already_connected">Вы уже подключены к VPN-серверу. Перед подключением к новому VPN-серверу отключите старый.</string>
+    <string name="telegram_url">https://t.me/sentinel_co</string>
+    <string name="medium_url">https://medium.com/@Sentinel</string>
+    <string name="twitter_url">https://twitter.com/sentinel_co</string>
+    <string name="website_url">https://sentinel.co</string>
+    <string name="link_coming_soon">Скоро добавим.</string>
+    <string name="faq">FAQ</string>
+    <string name="got_it">Понял</string>
+    <string name="retry">Повторить</string>
+    <string name="language">Язык</string>
+    <string name="select_language">Выбрать Язык</string>
+    <string name="referral_id">Реферальный код</string>
+    <string name="referrals">Рефералы</string>
+    <string name="send_to">Отправить…</string>
+    <string name="no_of_referrals">Количество рефералов</string>
+    <string name="reward_earned">Заработано токенов</string>
+    <string name="share_id">Поделиться кодом</string>
+    <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %s\n\nСсылка: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
+    <string name="info_title_1">Поделись своим реферальным кодом для бесплатных токенов за каждого зарегистрированного пользователя</string>
+    <string name="info_title_2">Защищённая децентрализованная VPN-платформа</string>
+    <string name="info_desc_1">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети</string>
+    <string name="info_desc_2">Децентрализованный VPN-сервис прямо у вас под рукой</string>
+    <string name="generic_error">Невозможно подключиться к серверу. Пожалуйста, попробуйте ещё раз.</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="claim_bonus">Забрать бонус</string>
+    <string name="update_available">Доступно обновление</string>
+    <string name="update_desc">Новая версия уже доступна для скачивания.\n\nПожалуйста, скачайте и установите новую версию для стабильной работы приложения.</string>
+    <string name="downloading_app_tite">Скачивается…</string>
+    <string name="download">Скачать</string>
+    <string name="referral_address_missing">Вы не ввели реферальный код.\n\n Вы хотите продолжить без реферального кода?</string>
+    <string name="empty_list_message">Нет истории для показа.</string>
+    <string name="vpn_empty_list_message">В данный момент нет доступных VPN для подключения.</string>
+    <string name="cancel">Отмена</string>
+    <string name="registering_device">Подготавливаем ваше устройство. Подождите…</string>
+    <string name="add_referral_desc">У вас есть реферальный код? \nВведите его при регистрации для получения бонусов.</string>
+    <string name="ok">ОК</string>
+    <string name="can_claim_after">Можно забрать через: %s</string>
+    <string name="download_desc">Скачайте и установите Sentinel Network Client на это же устройство, чтобы забрать свой бонусные токены и получить доступ к полноценной версии.</string>
+    <string name="referral_desc">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети.</string>
+    <string name="network_lost">Похоже, что вы отключились от интернета. VPN подключение остановлено.\nПожалуста, переподключитесь.</string>
+</resources>

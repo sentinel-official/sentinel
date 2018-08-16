@@ -21,7 +21,7 @@ public class VpnUsageEntity {
     private Stats stats;
     @TypeConverters(SessionListTypeConverter.class)
     private List<Session> sessions = new ArrayList<>();
-    // To get current usage
+    // To getGenericWebService current usage
     @Ignore
     public long down;
     @Ignore

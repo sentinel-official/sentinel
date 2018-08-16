@@ -1,0 +1,3 @@
+node server &
+node swix
+

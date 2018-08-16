@@ -14,8 +14,8 @@ let mixDetailsSchema = new mongoose.Schema({
   tries: Number,
   remainingAmount: Number,
   lastUpdateOn: Number,
-  transactionStatuses: Array,
-  message: String
+  message: String,
+  txInfos: Array
 }, {
     strict: true,
     versionKey: false

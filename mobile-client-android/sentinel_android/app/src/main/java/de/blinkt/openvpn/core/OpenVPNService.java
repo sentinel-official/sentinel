@@ -36,6 +36,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.stealthcopter.networktools.Ping;
+import com.stealthcopter.networktools.ping.PingResult;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,6 +57,8 @@ import sentinelgroup.io.sentinel.BuildConfig;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.activity.DashboardActivity;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Logger;
 
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_CONNECTED;
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_WAITING_FOR_USER_INPUT;
@@ -71,6 +76,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     private static final int PRIORITY_MIN = -2;
     private static final int PRIORITY_DEFAULT = 0;
     private static final int PRIORITY_MAX = 2;
+    private static final long PING_DELAY = 6000;
     private static boolean mNotificationAlwaysVisible = false;
     private static Class mNotificationActivityClass;
     private final Vector<String> mDnslist = new Vector<>();
@@ -108,9 +114,9 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     };
     private String mLastTunCfg;
     private String mRemoteGW;
-    private Handler guiHandler;
+    private Handler guiHandler, mPingHandler;
+    private Runnable mOpenVPNThread, mPingThread;
     private Toast mlastToast;
-    private Runnable mOpenVPNThread;
 
     // From: http://stackoverflow.com/questions/3758606/how-to-convert-byte-size-into-human-readable-format-in-java
     public static String humanReadableByteCount(long bytes, boolean speed, Resources res) {
@@ -183,6 +189,38 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
                 stopSelf();
                 VpnStatus.removeStateListener(this);
             }
+        }
+        // TODO Cancel Ping task
+        cancelPingTask();
+    }
+
+    private void schedulePIngTask() {
+        if (mPingThread == null) {
+            mPingThread = new Runnable() {
+                @Override
+                public void run() {
+                    String aIp = AppPreferences.getInstance().getString(AppConstants.PREFS_IP_ADDRESS);
+                    try {
+                        PingResult aPingresResult = Ping.onAddress(aIp).setTimeOutMillis(1000).doPing();
+                        if (aPingresResult.isReachable)
+                            Logger.logDebug("PING_IP", "Result - " + aPingresResult.result + " | Latency - " + aPingresResult.timeTaken);
+                        else
+                            Logger.logDebug("PING_IP", "Error - " + aPingresResult.error);
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
+                    mPingHandler.postDelayed(this, PING_DELAY);
+                }
+            };
+        }
+        mPingHandler.postDelayed(mPingThread, PING_DELAY);
+    }
+
+    private void cancelPingTask() {
+        if (mPingHandler != null) {
+            mPingHandler.removeCallbacks(mPingThread);
+            mPingThread = null;
+            Logger.logDebug("PING_IP", "Completed - Removed callbacks from the Handler");
         }
     }
 
@@ -356,6 +394,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         VpnStatus.addStateListener(this);
         VpnStatus.addByteCountListener(this);
         guiHandler = new Handler(getMainLooper());
+        mPingHandler = new Handler();
         if (intent != null && PAUSE_VPN.equals(intent.getAction())) {
             if (mDeviceStateReceiver != null) mDeviceStateReceiver.userPause(true);
             return START_NOT_STICKY;
@@ -372,7 +411,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         if (intent != null && intent.hasExtra(getPackageName() + ".profileUUID")) {
             String profileUUID = intent.getStringExtra(getPackageName() + ".profileUUID");
             int profileVersion = intent.getIntExtra(getPackageName() + ".profileVersion", 0);
-            // Try for 10s to get current version of the profile
+            // Try for 10s to getGenericWebService current version of the profile
             mProfile = ProfileManager.get(this, profileUUID, profileVersion, 100);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 updateShortCutUsage(mProfile);
@@ -462,13 +501,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             mProcessThread = new Thread(processThread, "OpenVPNProcessThread");
             mProcessThread.start();
         }
-        new Handler(getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                if (mDeviceStateReceiver != null) unregisterDeviceStateReceiver();
-                registerDeviceStateReceiver(mManagement);
-            }
+        new Handler(getMainLooper()).post(() -> {
+            if (mDeviceStateReceiver != null) unregisterDeviceStateReceiver();
+            registerDeviceStateReceiver(mManagement);
         });
+        // TODO Schedule ping task
+        schedulePIngTask();
     }
 
     private void stopOldOpenVPNProcess() {
@@ -800,7 +838,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         mRemoteGW = null;
         long netMaskAsInt = CIDRIP.getInt(netmask);
         if (mLocalIP.len == 32 && !netmask.equals("255.255.255.255")) {
-            // get the netmask as IP
+            // getGenericWebService the netmask as IP
             int masklen;
             long mask;
             if ("net30".equals(mode)) {

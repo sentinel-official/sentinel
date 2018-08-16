@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import com.haipq.android.flagkit.FlagImageView;
 
 import java.util.List;
-import java.util.Locale;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
@@ -54,7 +54,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         String aBandwidthValue = mContext.getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(aItemData.getNetSpeed().download, Convert.DataUnit.MBPS));
         String aBandwidth = mContext.getString(R.string.vpn_bandwidth, aBandwidthValue);
         SpannableString aStyledBandwidth = new SpannableStringUtil.SpannableStringUtilBuilder(aBandwidth, aBandwidthValue)
-                .color(Color.WHITE)
+                .color(ContextCompat.getColor(mContext, R.color.colorTextWhite))
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvBandwidth.setText(aStyledBandwidth);
@@ -62,7 +62,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         String aPriceValue = mContext.getString(R.string.vpn_price_value, aItemData.getPricePerGb());
         String aPrice = mContext.getString(R.string.vpn_price, aPriceValue);
         SpannableString aStyledPrice = new SpannableStringUtil.SpannableStringUtilBuilder(aPrice, aPriceValue)
-                .color(Color.WHITE)
+                .color(ContextCompat.getColor(mContext, R.color.colorTextWhite))
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvPrice.setText(aStyledPrice);
@@ -70,7 +70,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         String aLatencyValue = mContext.getString(R.string.vpn_latency_value, aItemData.getLatency());
         String aLatency = mContext.getString(R.string.vpn_latency, aLatencyValue);
         SpannableString aStyleLatency = new SpannableStringUtil.SpannableStringUtilBuilder(aLatency, aLatencyValue)
-                .color(Color.WHITE)
+                .color(ContextCompat.getColor(mContext, R.color.colorTextWhite))
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvLatency.setText(aStyleLatency);

@@ -39,7 +39,7 @@ public class WalletViewModel extends ViewModel {
         return AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
     }
 
-    public Chains updateBalance(boolean isChecked) {
+    public Chains updateBalance() {
         return mBalanceLiveData.getValue();
     }
 

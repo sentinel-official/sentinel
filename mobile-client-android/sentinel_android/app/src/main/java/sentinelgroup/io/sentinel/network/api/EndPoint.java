@@ -4,6 +4,9 @@ package sentinelgroup.io.sentinel.network.api;
  * Contains all the API endpoints used in the app.
  */
 public class EndPoint {
+    /*
+     * VPN and Wallet flow
+     */
     public static final String CREATE_NEW_ACCOUNT = "client/account";
     public static final String GET_ACCOUNT_BALANCE = "client/account/balance";
     public static final String GET_FREE_SENT = "dev/free";
@@ -14,4 +17,14 @@ public class EndPoint {
     public static final String GET_VPN_CURRENT_USAGE = "client/vpn/current";
     public static final String MAKE_VPN_USAGE_PAYMENT = "client/vpn/pay";
     public static final String REPORT_PAYMENT = "client/vpn/report";
+    /*
+     * Referral flow
+     */
+    public static final String ACCOUNT = "account";
+    public static final String CLAIM_BONUS = "bonus/claim";
+    public static final String GET_REFERRAL_INFO = "referral/status";
+    /*
+     * App details Flow
+     */
+    public static final String GET_LATEST_VERSION = "version/latest?type=m";
 }

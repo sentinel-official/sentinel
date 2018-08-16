@@ -18,9 +18,10 @@
 
             <TextView
                 android:id="@+id/description"
-                style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                style="@style/CustomTextAppearance.Text14.WhiteNormal"
                 android:layout_width="0dp"
-                android:layout_height="77dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -38,10 +39,10 @@
 
             <TextView
                 android:id="@+id/address"
-                style="@style/CustomTextAppearance.Text10.Gray"
+                style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/address_desc"
                 app:layout_constraintBottom_toTopOf="@+id/tv_address"
                 app:layout_constraintEnd_toEndOf="@+id/description"
@@ -64,10 +65,10 @@
 
             <TextView
                 android:id="@+id/private_key"
-                style="@style/CustomTextAppearance.Text10.Gray"
+                style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/private_key_desc"
                 app:layout_constraintBottom_toTopOf="@+id/tv_private_key"
                 app:layout_constraintEnd_toStartOf="@+id/ib_copy_key"
@@ -92,12 +93,10 @@
                 android:id="@+id/ib_copy_key"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="@dimen/margin_8"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_private_key"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/description"
                 app:layout_constraintStart_toEndOf="@+id/private_key"
                 app:layout_constraintTop_toTopOf="@+id/private_key"
                 app:srcCompat="@drawable/ic_copy"
@@ -105,10 +104,10 @@
 
             <TextView
                 android:id="@+id/keystore"
-                style="@style/CustomTextAppearance.Text12.White50Normal"
+                style="@style/CustomTextAppearance.Text12.GrayNormal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/keystore_desc"
                 app:layout_constraintBottom_toTopOf="@+id/tv_keystore"
                 app:layout_constraintEnd_toEndOf="@+id/description"
@@ -121,19 +120,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                app:layout_constraintBottom_toTopOf="@+id/rb_key_copied"
+                app:layout_constraintBottom_toTopOf="@+id/ctv_key_copied"
                 app:layout_constraintEnd_toEndOf="@+id/keystore"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/keystore"
                 app:layout_constraintTop_toBottomOf="@+id/keystore" />
 
-            <RadioButton
-                android:id="@+id/rb_key_copied"
-                style="@style/CustomTextAppearance.AgreeRadioButton"
+            <CheckedTextView
+                android:id="@+id/ctv_key_copied"
+                style="@style/CustomTextAppearance.CheckedView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/key_copied_agree"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/description"
@@ -145,9 +144,9 @@
 
     <Button
         android:id="@+id/btn_next"
-        android:enabled="false"
         style="@style/CustomTextAppearance.OrangeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/next" />
 </LinearLayout>

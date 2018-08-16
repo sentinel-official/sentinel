@@ -3,7 +3,7 @@ Terms and Conditions
 
 1. These 'Terms of Use' apply to the website of Swixer project located at https://swixer.sentinelgroup.io/ 
 
-    BY USING THE WEBSITE YOU AGREE TO THE TERMS OF USE. IF YOU DISAGREE WITH THE TERMS DO NOT USE THE WEBSITE.
+    BY USING THE WEBSITE YOU AGREE TO THE TERMS OF USE. IF YOU DISAGREE WITH THE TERMS DO NOT USE THE WEBSITE. ITS ALPHA VERSION AND YOU MIGHT ENCOUNTER FEW ISSUES IN USING IT.
 
 2. By using the service you also agree to the following statements
 

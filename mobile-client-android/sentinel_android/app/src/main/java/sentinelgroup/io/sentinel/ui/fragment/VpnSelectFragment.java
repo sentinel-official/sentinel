@@ -71,7 +71,7 @@ public class VpnSelectFragment extends Fragment {
         if (getArguments() != null) {
             String aMessage = getArguments().getString(ARG_MESSAGE);
             if (aMessage != null && !aMessage.isEmpty())
-                showErrorDialog(aMessage);
+                showSingleActionDialog(AppConstants.VALUE_DEFAULT, aMessage, AppConstants.VALUE_DEFAULT);
         }
     }
 
@@ -109,7 +109,7 @@ public class VpnSelectFragment extends Fragment {
 
             mViewModel.getTokenAlertLiveEvent().observe(this, isTokenRequested -> {
                 if (isTokenRequested != null && isTokenRequested) {
-                    showErrorDialog(getString(R.string.free_token_requested));
+                    showSingleActionDialog(R.string.yay, getString(R.string.free_token_requested), R.string.thanks);
                 }
             });
 
@@ -133,8 +133,10 @@ public class VpnSelectFragment extends Fragment {
                             loadNextFragment(EmptyFragment.newInstance(getString(R.string.vpn_main_net_unavailable), getString(R.string.app_name)));
                     } else if (vpnUsageResource.message != null && vpnUsageResource.status.equals(Status.ERROR)) {
                         hideProgressDialog();
-                        if (!vpnUsageResource.message.equals(getString(R.string.no_internet)))
-                            showErrorDialog(vpnUsageResource.message);
+                        if (vpnUsageResource.message.equals(AppConstants.GENERIC_ERROR))
+                            showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                        else if (!vpnUsageResource.message.equals(getString(R.string.no_internet)))
+                            showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnUsageResource.message, AppConstants.VALUE_DEFAULT);
                         else
                             loadNextFragment(NoNetworkFragment.newInstance());
                     }
@@ -190,9 +192,9 @@ public class VpnSelectFragment extends Fragment {
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

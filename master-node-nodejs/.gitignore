@@ -1,0 +1,9 @@
+.vscode/
+node_modules/
+dist/
+.env
+coverage
+doc/
+package-lock.json
+txt.log
+data/

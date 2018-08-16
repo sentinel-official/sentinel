@@ -8,7 +8,7 @@ const styles = {
     },
     textInputStyle: {
         padding: 10,
-        fontWeight: 'bold',
+        fontWeight: 500,
         color: '#2f3245',
         paddingTop: '10px',
         paddingLeft: '10px'
@@ -29,10 +29,11 @@ const styles = {
         marginBottom: '10px'
     },
     buttonLabelStyle: {
-        textTransform: 'none',
         color: 'white',
-        fontWeight: 'bold',
-        fontSize: 16
+        fontWeight: 600,
+        fontSize: 16,
+        fontFamily:'Montserrat,Medium',
+        marginTop:'5px'
     },
     disabledButtonStyle: {
         backgroundColor: '#bdbdbd',

@@ -62,12 +62,12 @@ class Node(object):
         if info['type'] == 'location':
             web_url = 'http://ip-api.com/json'
             response = json.load(urlopen(web_url))
-            self.ip = str(response['ip'])
+            self.ip = str(response['query'])
             self.location = {
                 'city': str(response['city']),
                 'country': str(response['country']),
                 'latitude': float(response['lat']),
-                'longitude': float(response['long'])
+                'longitude': float(response['lon'])
             }
         elif info['type'] == 'netspeed':
             self.speed_test.get_best_server()

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -12,11 +13,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
-import PersonIcon from '@material-ui/icons/Person';
 import AddIcon from '@material-ui/icons/SwapVerticalCircle';
-import Typography from '@material-ui/core/Typography';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
+import { setCurrentTab } from '../Actions/sidebar.action';
+import { initPaymentAction } from '../Actions/initPayment';
 const emails = ['username@gmail.com', 'user02@gmail.com'];
 const styles = {
     avatar: {
@@ -147,6 +148,18 @@ class AlertDialog extends React.Component {
         this.setState({ open: false });
     };
 
+    makeInitPayment = async () => {
+
+        let data = {
+          account_addr: this.props.paymentAddr,
+          amount: 10000000000,
+          id: -1
+        };
+
+        await this.props.initPaymentAction(data);
+        this.props.setCurrentTab('send')
+    };
+
     render() {
         return (
                 <Dialog
@@ -155,17 +168,17 @@ class AlertDialog extends React.Component {
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                 >
-                    <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">{"Initial Payment Alert"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            { this.props.message }
+                            { `${this.props.message} Please click on pay button to make the initial payment` }
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={this.handleClose} color="primary" autoFocus>
+                        <Button onClick={this.makeInitPayment} color="primary" autoFocus>
                             Pay
                         </Button>
                     </DialogActions>
@@ -188,6 +201,7 @@ class SimpleDialogDemo extends React.Component {
         selectedValue: emails[1],
         pendingInitPayment: null,
         isPending: false,
+        paymentAddr: '',
     };
 
     handleClickOpen = () => {
@@ -206,10 +220,11 @@ class SimpleDialogDemo extends React.Component {
         connectVPN('0x108953974437ad11d6a850791e74908716c3a40b', '0x108953974437ad11d6a850791e74908716c3a40b' , 'linux', (res) => {
             console.log(res, "nakli res")
 
-            this.setState({ pendingInitPayment: res.data.message, isPending: true, open: false })
+            // this.setState({ pendingInitPayment: res.data.message, isPending: true, open: false })
 
             if (res.data.account_addr) {
-                this.setState({ pendingInitPayment: res.data.message, isPending: true, open: false })
+                this.setState({ pendingInitPayment: res.data.message, isPending: true, open: false,
+                    paymentAddr: res.data.account_addr })
             }
         })
     };
@@ -224,6 +239,9 @@ class SimpleDialogDemo extends React.Component {
                     <AlertDialog
                         open={this.state.isPending}
                         message={this.state.pendingInitPayment}
+                        paymentAddr={this.state.paymentAddr}
+                        initPaymentAction={this.props.initPaymentAction}
+                        setCurrentTab={this.props.setCurrentTab}
                     />
                     :
                     <SimpleDialogWrapped
@@ -239,8 +257,13 @@ class SimpleDialogDemo extends React.Component {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+
+    return bindActionCreators({ setCurrentTab, initPaymentAction }, dispatch)
+}
+
 function mapStateToProps({ connecVPNReducer }) {
     return { connecVPNReducer }
 }
 
-export default connect(mapStateToProps)(SimpleDialogDemo);
+export default connect(mapStateToProps, mapDispatchToProps)(SimpleDialogDemo);

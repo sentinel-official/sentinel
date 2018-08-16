@@ -84,14 +84,14 @@ export function testConnect(account_addr, vpn_addr, cb) {
                 })
                 } else {
                 // sendError(res);
-                return {
-                    payload: resp,
-                    type: CONNECT_VPN
-                }
-                // if (resp.data.account_addr)
-                //     cb(resp);
-                // else
-                //     cb({ message: resp.data.message || 'Connecting VPN Failed. Please Try Again' });
+                // return {
+                //     payload: resp,
+                //     type: CONNECT_VPN
+                // }
+                if (resp.data.account_addr)
+                    cb(resp);
+                else
+                    cb({ message: resp.data.message || 'Connecting VPN Failed. Please Try Again' });
             }
         })
         .catch(err => { console.log(err) })

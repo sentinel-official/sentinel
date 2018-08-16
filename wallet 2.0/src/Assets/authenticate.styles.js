@@ -111,6 +111,7 @@ const homePageStyles = {
 }
 
 const createPagestyles = {
+    keystoreButton: { marginTop: '3%', textTransform:'capitalize' },
     f_12: { 
         fontSize: 12 
     },
@@ -189,7 +190,10 @@ const createPagestyles = {
         width: '85%',
         paddingLeft: '5%',
         height: 40,
-        lineHeight: '18px'
+        lineHeight: '18px',
+        fontSize: '12px',
+        paddingTop: '5px'
+    
     },
     buttonLabel: {
         color: 'white',
@@ -207,8 +211,11 @@ const createPagestyles = {
         lineHeight: '30px'
     },
     createStyle: {
-        marginTop: '5%',
-        marginBottom: '3%'
+        marginTop: '5%', 
+        textTransform:'capitalize',
+        marginBottom: '3%',
+        backgroundColor: 'rgba(83, 45, 145, 0.71)',
+        color: 'white',
     },
     bluePaper: {
         backgroundColor: 'rgba(181, 216, 232, 0.32)',
@@ -248,8 +255,9 @@ const createPagestyles = {
     refresh: {
         display: 'inline-block',
         position: 'relative',
-        // justifyContent: 'center',
-        // alignItems: 'center'
+        position: 'relative',
+        top: '30px',
+        left: '50px'
     },
     questionMark: {
         marginLeft: 3,
@@ -280,18 +288,19 @@ const authenticateStyles = {
     f_s_14: { fontSize: 14 },
     textFieldCreate: {
         width: '85%',
-        paddingLeft: '5%',
-        height: 40,
+        borderBottom: '#00bcd4',
         lineHeight: '18px'
     },
     closeButton: {
         border: '1px solid #00bcd4',
-        borderRadius: 5
+        borderRadius: 5,
+        color: '#00bcd4'
     },
     submitButton: {
         border: '1px solid #00bcd4',
         borderRadius: 5,
-        margin: '0px 20px 0px 10px'
+        margin: '0px 20px 0px 10px',
+        color: '#00bcd4'
     },
     snackBarStyle: {
         marginBottom: '1%'

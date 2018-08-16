@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {
-     ToolbarGroup, TextField, RaisedButton,
-    Chip, Paper, Snackbar, RefreshIndicator
-} from 'material-ui';
+import Paper from '@material-ui/core/Paper';
+import Input from '@material-ui/core/Input';
+import { Snackbar } from '@material-ui/core';
+import Chip from '@material-ui/core/Chip';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Toolbar from '@material-ui/core/Toolbar';
 import { bindActionCreators } from 'redux';
 import { createAccount, sendError, setComponent } from '../Actions/authentication.action';
@@ -59,7 +60,7 @@ class Create extends Component {
     renderProgress() {
         const { refresh } = createPagestyles;
         return (
-            <RefreshIndicator
+            <CircularProgress
                 size={50}
                 left={30}
                 top={15}
@@ -135,7 +136,7 @@ class Create extends Component {
                     })
                 }
                 else {
-                    uploadKeystore(keystore, function (err,keystotefile) {
+                    uploadKeystore(keystore, function (err, keystotefile) {
                         if (err) sendError(err);
                         else {
                             that.props.setComponent('dashboard');
@@ -147,113 +148,112 @@ class Create extends Component {
     }
     render() {
         let language = this.props.lang;
-        return <MuiThemeProvider>
-            <div>
-                <Toolbar style={createPagestyles.toolbarStyle}>
-                    <ToolbarGroup>
-                        <img src={'../src/Images/logo.svg'} alt="Logo" style={createPagestyles.toolbarImage} />
-                        <p style={createPagestyles.toolbarTitle}></p>
-                    </ToolbarGroup>
-                </Toolbar>
-                {this.state.private_key === '' ?
-                    <div style={createPagestyles.createDiv}>
-                        <div style={createPagestyles.m_t_5}>
-                            <span style={createPagestyles.headingCreate}>{lang[language].CreateAUID}</span>
-                            <span data-tip data-for="createID" style={createPagestyles.questionMark}>?</span>
-                            <ReactTooltip id="createID" place="bottom">
-                                <span>
-                                    {lang[language].CreateTooltip}
-                                </span>
-                            </ReactTooltip>
-                        </div>
-                        <hr width="50%" align="left" size="3" noshade style={createPagestyles.hr_color} />
-                        <Paper zDepth={2} style={createPagestyles.textBoxPaper}>
-                            <TextField
-                                hintText={lang[language].PasswordAUID}
-                                hintStyle={createPagestyles.textFieldCreateHint}
-                                type="password"
-                                underlineShow={false}
-                                onChange={(event, password) => { this.setState({ password: password }) }}
-                                style={createPagestyles.textFieldCreate}
-                            />
-                        </Paper>
-                        <Paper zDepth={2} style={createPagestyles.textBoxPaper}>
-                            <TextField
-                                hintText={lang[language].ConfirmPwd}
-                                hintStyle={createPagestyles.textFieldCreateHint}
-                                type="password"
-                                underlineShow={false}
-                                onChange={(event, password) => { this.setState({ confirmPwd: password }) }}
-                                style={createPagestyles.textFieldCreate}
-                            />
-                        </Paper>
-                        <RaisedButton label={lang[language].Create}
-                            labelStyle={createPagestyles.buttonLabel}
-                            disabled={this.state.password === '' ? true : false}
-                            onClick={this._createAccount}
-                            buttonStyle={createPagestyles.buttonCreate}
-                            style={createPagestyles.createStyle} />
-                        {this.state.isLoading === true ? this.renderProgress() : ''}
-                        <p style={createPagestyles.f_m_l_3}>(Or)</p>
-                        <Paper zDepth={2} style={createPagestyles.bluePaper}>
-                            <div style={createPagestyles.p_3}>
-                                <RaisedButton
-                                    label={lang[language].SelectKeystore}
-                                    labelStyle={createPagestyles.buttonLabel}
-                                    onClick={() => { document.getElementById('filepicker').click() }}
-                                    buttonStyle={this.state.file === '' ? createPagestyles.buttonCreate : createPagestyles.buttonRaisedKeystore}
-                                    disabled={this.state.file === '' ? false : true} />
-                                {this.state.file === '' ?
-                                    <div></div>
-                                    :
-                                    <Chip onRequestDelete={() => {
-                                        this.setState({ file: '', keystore: '', keystorePassword: '' })
-                                    }} style={createPagestyles.m_2} >
-                                        {this.state.file}
-                                    </Chip>
-                                }
-                                <Paper zDepth={2} style={createPagestyles.keyTextBoxPaper}>
-                                    <TextField
-                                        hintText={lang[language].KeyPass}
-                                        hintStyle={createPagestyles.f_12}
-                                        type="password"
-                                        underlineShow={false}
-                                        onChange={(event, password) => { this.setState({ keystorePassword: password, isRestoredisabled: false }) }}
-                                        style={createPagestyles.textFieldCreate}
-                                    />
-                                </Paper>
-                                <RaisedButton
-                                    label={lang[language].RestoreKeystore}
-                                    labelStyle={createPagestyles.c_t_t}
-                                    disabled={this.state.file === '' || this.state.keystorePassword === '' ||
-                                        this.state.isRestoredisabled ? true : false}
-                                    onClick={this._store.bind(this)}
-                                    buttonStyle={this.state.file === '' || this.state.keystorePassword === '' ||
-                                        this.state.isRestoredisabled ?
-                                        createPagestyles.buttonRaisedKeystore : createPagestyles.buttonCreate}
-                                    style={{ marginTop: '3%' }} />
-                                <input type="file" style={{ display: 'none' }} id="filepicker"
-                                    onChange={this.onChange.bind(this)} />
-                            </div>
-                        </Paper>
+        return <div>
+            <Toolbar style={createPagestyles.toolbarStyle}>
+                <img src={'../src/Images/logo.svg'} alt="Logo" style={createPagestyles.toolbarImage} />
+                <p style={createPagestyles.toolbarTitle}></p>
+            </Toolbar>
+            {this.state.private_key === '' ?
+                <div style={createPagestyles.createDiv}>
+                    <div style={createPagestyles.m_t_5}>
+                        <span style={createPagestyles.headingCreate}>{lang[language].CreateAUID}</span>
+                        <span data-tip data-for="createID" style={createPagestyles.questionMark}>?</span>
+                        <ReactTooltip id="createID" place="bottom">
+                            <span>
+                                {lang[language].CreateTooltip}
+                            </span>
+                        </ReactTooltip>
                     </div>
-                    :
-                    this.props.setComponent('terms')
-                }
-                <Snackbar
-                    open={this.state.openSnack}
-                    message={this.state.snackMessage}
-                    autoHideDuration={2000}
-                    onRequestClose={this.snackRequestClose}
-                    style={createPagestyles.m_b_1}
-                />
-                <Snackbar
-                    open={this.state.snackOpen}
-                    message={this.state.openSnackMessage}
-                    style={createPagestyles.m_b_1}
-                />
-            </div>
-        </MuiThemeProvider>
+                    <hr width="50%" align="left" size="3" noshade style={createPagestyles.hr_color} />
+                    <Paper elevation={2} style={createPagestyles.textBoxPaper}>
+                        <Input
+                            placeholder={lang[language].PasswordAUID}
+                            hintStyle={createPagestyles.textFieldCreateHint}
+                            type="password"
+                            value={this.state.password}
+                            underlineShow={false}
+                            onChange={(event) => { this.setState({ password: event.target.value }) }}
+                            style={createPagestyles.textFieldCreate}
+                        />
+                    </Paper>
+                    <Paper elevation={2} style={createPagestyles.textBoxPaper}>
+                        <Input
+                            placeholder={lang[language].ConfirmPwd}
+                            hintStyle={createPagestyles.textFieldCreateHint}
+                            type="password"
+                            value={this.state.confirmPwd}
+                            underlineShow={false}
+                            onChange={(event) => { this.setState({ confirmPwd: event.target.value }) }}
+                            style={createPagestyles.textFieldCreate}
+                        />
+                    </Paper>
+                    <Button variant="contained"
+                        labelStyle={createPagestyles.buttonLabel}
+                        disabled={this.state.password === '' ? true : false}
+                        onClick={this._createAccount}
+                        buttonStyle={createPagestyles.buttonCreate}
+                        style={createPagestyles.createStyle} >{lang[language].Create}</Button>
+
+                    {this.state.isLoading === true ? this.renderProgress() : ''}
+                    <p style={createPagestyles.f_m_l_3}>(Or)</p>
+                    <Paper elevation={2} style={createPagestyles.bluePaper}>
+                        <div style={createPagestyles.p_3}>
+                            <Button
+                                labelStyle={createPagestyles.buttonLabel}
+                                onClick={() => { document.getElementById('filepicker').click() }}
+                                style={createPagestyles.createStyle}
+                                buttonStyle={this.state.file === '' ? createPagestyles.buttonCreate : createPagestyles.buttonRaisedKeystore}
+                                disabled={this.state.file === '' ? false : true} >
+                                {lang[language].SelectKeystore}</Button>
+                            {this.state.file === '' ?
+                                <div></div>
+                                : <Chip
+                                    label={this.state.file}
+                                    onDelete={() => {
+                                        this.setState({ file: '', keystore: '', keystorePassword: '' })
+                                    }}
+                                    style={createPagestyles.m_2}
+                                />
+                            }
+                            <Paper elevation={2} style={createPagestyles.keyTextBoxPaper}>
+                                <Input
+                                    placeholder={lang[language].KeyPass}
+                                    hintStyle={createPagestyles.f_12}
+                                    type="password"
+                                    underlineShow={false}
+                                    onChange={(event, password) => { this.setState({ keystorePassword: password, isRestoredisabled: false }) }}
+                                    style={createPagestyles.textFieldCreate}
+                                />
+                            </Paper>
+                            <Button variant="contained"
+                                disabled={this.state.file === '' || this.state.keystorePassword === '' ||
+                                    this.state.isRestoredisabled ? true : false}
+                                onClick={this._store.bind(this)}
+                                buttonStyle={this.state.file === '' || this.state.keystorePassword === '' ||
+                                    this.state.isRestoredisabled ?
+                                    createPagestyles.buttonRaisedKeystore : createPagestyles.buttonCreate}
+                                style={createPagestyles.keystoreButton} >{lang[language].RestoreKeystore}</Button>
+                            <input type="file" style={{ display: 'none' }} id="filepicker"
+                                onChange={this.onChange.bind(this)} />
+                        </div>
+                    </Paper>
+                </div>
+                :
+                this.props.setComponent('terms')
+            }
+            <Snackbar
+                open={this.state.openSnack}
+                message={this.state.snackMessage}
+                autoHideDuration={2000}
+                onClose={this.snackRequestClose}
+                style={createPagestyles.m_b_1}
+            />
+            <Snackbar
+                open={this.state.snackOpen}
+                message={this.state.openSnackMessage}
+                style={createPagestyles.m_b_1}
+            />
+        </div>
     }
 
 }

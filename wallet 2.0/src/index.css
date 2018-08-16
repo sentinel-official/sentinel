@@ -32,3 +32,20 @@ body {
 .map-selected:hover, .map-unselected:hover {
   cursor: pointer;
 }
+.jss82::after{
+  border-bottom: 2px solid #00bcd4 !important;
+}
+.jss43::after{
+  border-bottom: none !important;
+}
+.jss43::before{
+  border-bottom: none !important;
+}
+.jss70::after{
+  border-bottom: none !important;
+}
+.jss70::before{
+  border-bottom: none !important;
+}.jss70{
+  border-bottom: none !important;
+}

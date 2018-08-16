@@ -6,14 +6,12 @@ export function getAccount() {
     try {
         let data = fs.readFileSync(KEYSTORE_FILE);
         data = JSON.parse(data);
-        console.log("data=",data)
         let ACCOUNT_ADDR = '0x' + data.address;
         return {
             type: types.GET_ACCOUNT_SUCCESS,
             payload: ACCOUNT_ADDR
         }
     } catch (error) {
-        console.log("err=",error)
         return {
             type: types.GET_ACCOUNT_ERROR,
             error

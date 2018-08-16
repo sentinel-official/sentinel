@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { homePageStyles } from './../Assets/authenticate.styles';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { sendError, setComponent } from '../Actions/authentication.action';
 import Toolbar from '@material-ui/core/Toolbar';

@@ -53,8 +53,7 @@ class App extends Component {
                 }
             case 'authenticate':
                 {
-                    // return <Authenticate />
-                    return <Dashboard />
+                    return <Authenticate />
                 }
             case 'dashboard':
                 {

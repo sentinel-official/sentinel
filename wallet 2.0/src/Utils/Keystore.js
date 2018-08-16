@@ -16,7 +16,7 @@ function getUserHome() {
 
 export const uploadKeystore = (keystore, cb) => {
     try {
-        createFile(KEYSTORE_FILE, keystore,cb)
+        createFile(KEYSTORE_FILE, keystore, cb)
     } catch (Err) {
         sendError(Err);
     }
@@ -54,12 +54,12 @@ export function getPrivateKeyWithoutCallback(password, cb) {
     })
 }
 
-export function createFile(KEYSTORE_FILE, keystore,cb) {
+export function createFile(KEYSTORE_FILE, keystore, cb) {
     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
         if (err) {
             cb(err, null);
         } else {
-            cb(null,KEYSTORE_FILE)
+            cb(null, KEYSTORE_FILE)
         }
     });
 }

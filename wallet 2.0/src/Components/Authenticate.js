@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { sendError, setComponent, getPrivateKey } from '../Actions/authentication.action';
 import { authenticateStyles } from './../Assets/authenticate.styles'
 import Dialog from '@material-ui/core/Dialog';
@@ -8,10 +7,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
 import { Snackbar } from '@material-ui/core';
-import {TextField} from 'material-ui';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 let lang = require('./../Constants/language');
 
 class Authenticate extends Component {
@@ -44,6 +44,7 @@ class Authenticate extends Component {
             statusMessage:
                 lang[this.props.language].CheckCre
         })
+
         let self = this;
         setTimeout(function () {
             getPrivateKey(self.state.password, self.props.language, function (err, privateKey) {
@@ -73,62 +74,60 @@ class Authenticate extends Component {
 
     render() {
         let language = this.props.language;
-        return (
-            <MuiThemeProvider>
-                <div>
-                    <Dialog
-                        open={this.state.showPopUp}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                        modal={true}
-                    >
-                    <div style={authenticateStyles.w_600}> 
-                        <DialogTitle style={authenticateStyles.f_s_16} id="alert-dialog-title">{lang[language].KeystoreLogin}</DialogTitle>
-                        <DialogContent style={authenticateStyles.w_600}>
-                            <DialogContentText id="alert-dialog-description">
-                                <TextField
-                                    autoFocus={true}
-                                    hintText={lang[language].KeyPass}
-                                    hintStyle={authenticateStyles.f_s_14}
-                                    type="password"
-                                    onChange={(event, password) => { this.setState({ password: password }) }}
-                                    onKeyPress={(ev) => { if (ev.key === 'Enter') this.submitPassword() }}
-                                    value={this.state.password}
-                                    style={authenticateStyles.textFieldCreate}
-                                />
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button
-                                onClick={this.closeWindow}
-                                style={authenticateStyles.closeButton}
-                                >
-                                {lang[language].Close}
-                            </Button>
-                            <Button
-                                onClick={this.submitPassword}
-                                disabled={this.state.isDisabled}
-                                style={authenticateStyles.submitButton}
-                                >
-                                {lang[language].Submit}
-                            </Button>
-                        </DialogActions>
-                        </div>
-                    </Dialog>
-                    <Snackbar
-                        open={this.state.openSnack}
-                        message={this.state.snackMessage}
-                        autoHideDuration={2000}
-                        onClose={this.snackRequestClose}
-                        style={authenticateStyles.snackBarStyle}
-                    />
-                    <Snackbar
-                        open={this.state.statusSnack}
-                        message={this.state.statusMessage}
-                        style={authenticateStyles.snackBarStyle}
-                    />
+        return (<div>
+            <Dialog
+                open={this.state.showPopUp}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                modal={true}
+            >
+                <div style={authenticateStyles.w_600}>
+                    <DialogTitle style={authenticateStyles.f_s_16} id="alert-dialog-title">{lang[language].KeystoreLogin}</DialogTitle>
+                    <DialogContent style={authenticateStyles.w_600}>
+                        <DialogContentText id="alert-dialog-description">
+                            <Input
+                                autoFocus={true}
+                                hintText={lang[language].KeyPass}
+                                hintStyle={authenticateStyles.f_s_14}
+                                type="password"
+                                className={'textBox'}
+                                onChange={(event) => { this.setState({ password: event.target.value }) }}
+                                onKeyPress={(ev) => { if (ev.key === 'Enter') this.submitPassword() }}
+                                value={this.state.password}
+                                style={authenticateStyles.textFieldCreate}
+                            />
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={this.closeWindow}
+                            style={authenticateStyles.closeButton}
+                        >
+                            {lang[language].Close}
+                        </Button>
+                        <Button
+                            onClick={this.submitPassword}
+                            disabled={this.state.isDisabled}
+                            style={authenticateStyles.submitButton}
+                        >
+                            {lang[language].Submit}
+                        </Button>
+                    </DialogActions>
                 </div>
-            </MuiThemeProvider>
+            </Dialog>
+            <Snackbar
+                open={this.state.openSnack}
+                message={this.state.snackMessage}
+                autoHideDuration={2000}
+                onClose={this.snackRequestClose}
+                style={authenticateStyles.snackBarStyle}
+            />
+            <Snackbar
+                open={this.state.statusSnack}
+                message={this.state.statusMessage}
+                style={authenticateStyles.snackBarStyle}
+            />
+        </div>
         )
     }
 }

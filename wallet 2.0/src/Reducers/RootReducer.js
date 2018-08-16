@@ -8,7 +8,8 @@ import { getAvailableTokens, getSentValue } from './swaps.reducer';
 import {getVPNHistory,getSnackMessage,getCompareTransactionStatus,getVPNDuePaymentDetails} from './vpnHistory.reducer';
 import { sendComponentReducer } from './sendcomponent.reducer';
 import { setListViewType, setVpnType, getVpnList } from './vpnlist.reducer';
-import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
+import { testSENTHistory, testETHHistory } from './txnHistoryReducer';
+import { swixRateInState } from './swixReducer';
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
     setCurrentTab,
     getFreeAmount,
     getAvailableTokens,
+    swixRateInState,
     getSentValue,
     getVPNHistory,
     getSnackMessage,

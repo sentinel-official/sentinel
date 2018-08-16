@@ -10,14 +10,32 @@ import { sendError } from './../Actions/authentication.action';
 import { swapTransaction, swapRawTransaction } from './../Actions/convertErc.action';
 import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import { convertToErcStyles } from './../Assets/convertToErc.styles.js';
+import { swixRate } from './../Actions/swix.details';
 let lang = require('./../Constants/language');
+
+Number.prototype.noExponents = function () {
+    var data = String(this).split(/[eE]/);
+    if (data.length == 1) return data[0];
+
+    var z = '', sign = this < 0 ? '-' : '',
+        str = data[0].replace('.', ''),
+        mag = Number(data[1]) + 1;
+
+    if (mag < 0) {
+        z = sign + '0.';
+        while (mag++) z += '0';
+        return z + str.replace(/^\-/, '');
+    }
+    mag -= str.length;
+    while (mag--) z += '0';
+    return str + z;
+}
 
 class ConvertToErc extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentSentValue: 1,
-            swapAmount: 1,
+            swapAmount: 0,
             tokens: [],
             tokenBalances: {},
             convertPass: '',
@@ -27,8 +45,11 @@ class ConvertToErc extends Component {
     }
 
     valueChange = (event, value) => {
+        let { token } = this.props;
         this.setState({ swapAmount: value });
-        this.getCompareValue(this.props.token);
+        this.getCompareValue(token);
+        let myValue = Math.pow(value, token.decimals)
+        this.props.swixRate(token.symbol, 'SENT', myValue.noExponents())
     }
     componentDidMount() {
         console.log(this.props.token)
@@ -41,7 +62,7 @@ class ConvertToErc extends Component {
             self.props.getSentValue(token.symbol, 'SENT', value, 8)
                 .then(() => {
                     console.log(self.props.getSentValueRes)
-                    self.setState({ currentSentValue: self.props.getSentValueRes });
+                    self.setState({ expectedValue: self.props.getSentValueRes });
                 })
         }
     }
@@ -52,7 +73,7 @@ class ConvertToErc extends Component {
         if (this.state.convertPass === '') {
             this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
         }
-        else if (parseFloat(this.state.currentSentValue * this.state.swapAmount) > 10000) {
+        else if (parseFloat(this.props.expectedValue / Math.pow(10, this.props.token.decimals)) > 10000) {
             this.setState({ sending: false, snackOpen: true, snackMessage: `Swap Limit for once is 10000 SENTS only` })
         }
         else {
@@ -124,6 +145,7 @@ class ConvertToErc extends Component {
 
     render() {
         var language = this.props.lang;
+        console.log('in render', this.props.expectedValue.value)
         return (
             <div>
                 <div style={convertToErcStyles.b_f_f}>
@@ -145,7 +167,7 @@ class ConvertToErc extends Component {
                     </p>
                 </div>
                 <div style={convertToErcStyles.compareDiv}>
-                    <p style={convertToErcStyles.compareP}>1 {this.props.token.symbol} = {this.state.currentSentValue} SENTS</p>
+                    <p style={convertToErcStyles.compareP}>{this.state.swapAmount} {this.props.token.symbol} = {this.props.expectedValue.value === 0 ?this.props.expectedValue.value : Number(this.props.expectedValue.value / Math.pow(10,this.props.token.decimals)).toFixed(8)} SENT's</p>
                 </div>
                 <div style={convertToErcStyles.f_f_p}>
                     <p style={convertToErcStyles.convertHead}>{lang[language].Convert}</p>
@@ -175,7 +197,7 @@ class ConvertToErc extends Component {
                             <div style={convertToErcStyles.b_p}>
                                 <p style={convertToErcStyles.bal}>
                                     <span style={convertToErcStyles.f_w}>
-                                        {this.state.currentSentValue * this.state.swapAmount}
+                                        {Number(this.props.expectedValue.value / Math.pow(10,this.props.token.decimals)).toFixed(8)}
                                     </span>
                                     <span style={convertToErcStyles.sentTokens}> SENT TOKENS</span>
                                 </p>
@@ -204,7 +226,7 @@ class ConvertToErc extends Component {
                                 fullWidth={true}
                                 style={this.state.converting ?
                                     convertToErcStyles.b1 :
-                                   convertToErcStyles.b2}
+                                    convertToErcStyles.b2}
                             >
                                 <span style={convertToErcStyles.labelStyle}
                                 >{this.state.converting ? 'CONVERTING' : lang[language].Convert}</span>
@@ -220,7 +242,16 @@ class ConvertToErc extends Component {
 function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
-        getSentValueRes: state.getSentValue
+        getSentValueRes: state.getSentValue,
+        expectedValue: state.swixRateInState
     }
 }
-export default connect(mapStateToProps)(ConvertToErc);
+
+function mapDispatchToActions(dispatch) {
+    return bindActionCreators({
+        swixRate
+    }, dispatch)
+}
+
+
+export default connect(mapStateToProps, mapDispatchToActions)(ConvertToErc);

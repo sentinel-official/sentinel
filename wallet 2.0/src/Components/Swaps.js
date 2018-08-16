@@ -10,8 +10,7 @@ import { getAccount } from '../Actions/receive.action';
 import { Row, Col } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
 import Button from '@material-ui/core/Button';
-import { getETHBalance, getSentBalance } from '../Actions/header.action';
-import { setLanguage, setComponent } from './../Actions/authentication.action';
+import { setComponent } from './../Actions/authentication.action';
 import { swapsStyles as styles } from './../Assets/swaps.styles';
 import ConvertToErc from './ConvertToErc';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -30,8 +29,6 @@ class Swaps extends Component {
             isGetBalanceCalled: false,
             local_address: '',
             pivxTokenDetails: [],
-            ethBalance: 'Loading',
-            sentBalance: 'Loading',
         }
     }
 
@@ -73,7 +70,9 @@ class Swaps extends Component {
     getUnitBalance = (token) => {
         if (token.symbol === 'ETH') {
             let obj = this.state.tokenBalances;
-            obj[token.symbol] = this.state.ethBalance !== 'Loading' ? this.state.ethBalance ? this.state.ethBalance.toFixed(8) : 0 : 'Loading';
+            console.log('ETH res', this.props.getEthBalanceRes, this.props.isTest, this.props.getAvailableTokensRes, this.props.lang)
+            obj[token.symbol] = this.props.getEthBalanceRes && this.props.getEthBalanceRes !== 'Loading' ?
+                this.props.getEthBalanceRes.toFixed(8) : 'Loading';
             this.setState({ tokenBalances: obj });
         }
         else {
@@ -93,12 +92,16 @@ class Swaps extends Component {
         let self = this;
         this.props.getAvailableTokens()
             .then(() => {
+                // console.log(this.props.getAvailableTokensRes)
                 let tokensList = this.props.getAvailableTokensRes.filter(
-                    (token) => token.symbol !== 'SENT' && token.symbol !== 'PIVX');
+                    (token) =>  token.symbol !== 'PIVX');
                 let pivxToken = this.props.getAvailableTokensRes.filter((token) => token.symbol === 'PIVX');
                 self.setState({ tokens: tokensList, pivxTokenDetails: pivxToken })
                 tokensList.map((token) => {
-                    self.getUnitBalance(token);
+                    if(token.symbol!=='SENT')
+                    {
+                        self.getUnitBalance(token);
+                    }
                 })
             })
     }
@@ -107,55 +110,33 @@ class Swaps extends Component {
         this.setState({ showTransScreen: false });
     };
 
-    getUserEthBalance() {
-        let that = this;
-        that.props.getEthBalance(this.state.local_address, that.props.isTest)
-            .then(() => {
-                that.setState({ ethBalance: that.props.getEthBalanceRes })
-            })
+    handleTransClose = () => {
+        this.setState({ showTransPivxScreen: false });
     }
-
-    getUserSentBalance() {
-        let that = this;
-        that.props.getSentBalance(that.state.local_address, that.props.isTest)
-            .then(() => {
-                that.setState({ sentBalance: that.props.getSentBalanceRes })
-            })
-    }
-
 
     render() {
-        let self = this;
 
-        if (!this.state.isGetBalanceCalled) {
-            setInterval(function () {
-                self.getUserEthBalance();
-                self.getUserSentBalance();
-                self.getBalancesTokens();
-            }, 2000);
-
-            this.setState({
-                balance: {
-                    eths: this.state.ethBalance,
-                    sents: this.state.sentBalance
-                }, isGetBalanceCalled: true
-            });
-        }
-
-        let language = this.props.lang;
+        console.log('this render',this.state.tokens.filter(
+            (token) =>  token.symbol === 'SENT'))
 
         return (
             <div>
                 <Row>
                     <Col xs={6}>
-                        <div style={styles.tokenStyle2}>
-                            <Row>
+                        <Button component='div' style={styles.tokenStyle2}
+                        onClick={()=>{this.setState({
+                            showTransScreen:true,
+                            selectedToken:this.state.tokens.filter(
+                                (token) =>  token.symbol === 'SENT')[0]
+                        })}}
+                        >
+                            <Row style={{ alignItems: 'center', marginTop: '-5px' }}>
                                 <Col xs={4}>
-                                    <img src={'../src/Images/logo.svg'} alt="logo" style={styles.sentImg} />
+                                    <img src={'../src/Images/logo.svg'} alt="logo" style={styles.image} />
                                 </Col>
                                 <Col xs={8}>
                                     <b>
-                                        <p style={styles.otherBalanceBalc} data-tip data-for="sentsBal">
+                                        <p style={styles.number} data-tip data-for="sentsBal">
                                             {this.props.getSentBalanceRes && this.props.getSentBalanceRes !== 'Loading' ?
                                                 this.props.getSentBalanceRes.toFixed(8) : 0}
                                         </p>
@@ -167,35 +148,37 @@ class Swaps extends Component {
                                         this.props.getSentBalanceRes.toFixed(8) : 'Loading'}</span>
                                 </ReactTooltip>
                             </Row>
-                        </div>
+                        </Button>
                     </Col>
                     {this.state.tokens.length !== 0 ?
-                        this.state.tokens.map((token, index) =>
-                            <Col xs={6}>
-                                <Row>
-                                    <Button style={index % 2 == 0 ?
-                                        styles.tokenStyle
-                                        : styles.tokenStyle2}
-                                        onClick={() => {
-                                            this.setState({ showTransScreen: true, selectedToken: token });
-                                        }}>
-                                        <Col xs={4}>
+                        this.state.tokens.map((token, index) =>{
+                            if(token.symbol !== 'SENT' ){
+                            return (<Col xs={6}>
+                                <Button component='div' style={index % 2 == 0 ?
+                                    styles.tokenStyle
+                                    : styles.tokenStyle2}
+                                    onClick={() => {
+                                        this.setState({ showTransScreen: true, selectedToken: token });
+                                    }}>
+                                    <Row style={{ alignItems: 'center', marginTop: '-5px' }}>
+                                        <Col xs={4} style={{ padding: '0px' }}>
                                             <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'}
-                                                alt="logo" style={styles.otherBalanceLogo} />
+                                                alt="logo" style={styles.image} />
                                         </Col>
                                         <Col xs={8}>
                                             <b>
-                                                <p style={styles.otherBalanceBalc}>
+                                                <p style={styles.number}>
                                                     {this.state.tokenBalances[token.symbol] > 0 ?
                                                         this.state.tokenBalances[token.symbol] :
                                                         0}
                                                 </p>
                                             </b>
-                                            <p style={styles.otherBalanceText}>{token.name} [{token.symbol}]</p>
+                                            <p style={styles.sentinel}>{token.name} [{token.symbol}]</p>
                                         </Col>
-                                    </Button>
-                                </Row>
+                                    </Row>
+                                </Button>
                             </Col>
+                            )}}
                         )
                         :
                         <div><br />
@@ -206,11 +189,11 @@ class Swaps extends Component {
                     }{this.state.pivxTokenDetails.length !== 0 ?
                         this.state.pivxTokenDetails.map((token) =>
                             <Col xs={6}>
-                                <div style={styles.tokenStyle1}>
+                                <Button component='div' style={styles.tokenStyle}>
                                     <Row style={{
                                         cursor: this.props.isTest ?
                                             'not-allowed' :
-                                            'pointer', backgroundColor: '#badee4', paddingTop: 5
+                                            'pointer', alignItems: 'center', marginTop: '-5px'
                                     }}
                                         onClick={() => {
                                             if (!this.props.isTest)
@@ -220,15 +203,15 @@ class Swaps extends Component {
                                                     isPivxSend: false
                                                 });
                                         }}>
-                                        <Col xs={4}>
+                                        <Col xs={4} style={{ paddingRight: '50px' }}>
                                             <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'}
-                                                alt="logo" style={styles.otherBalanceLogo} />
+                                                alt="logo" style={styles.image} />
                                         </Col>
                                         <Col xs={8}>
-                                            <p style={styles.f_w_b}>{token.name} [{token.symbol}]</p>
+                                            <p style={styles.sentinel}>{token.name} [{token.symbol}]</p>
                                         </Col>
                                     </Row>
-                                </div>
+                                </Button>
                             </Col>
                         )
                         : null}
@@ -258,11 +241,8 @@ class Swaps extends Component {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setLanguage: setLanguage,
         setComponent: setComponent,
         getAvailableTokens: getAvailableTokens,
-        getEthBalance: getETHBalance,
-        getSentBalance: getSentBalance,
         getSentValue: getSentValue
     }, dispatch)
 }
@@ -272,7 +252,7 @@ function mapStateToProps(state) {
         lang: state.setLanguage,
         setComponentResponse: state.setComponent,
         getAvailableTokensRes: state.getAvailableTokens,
-        getEthBalanceRes: state.getEthBalance,
+        getEthBalanceRes: state.getETHBalance,
         getSentBalanceRes: state.getSentBalance,
         isTest: state.setTestNet,
         getSentValueRes: state.getSentValue

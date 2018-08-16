@@ -38,7 +38,7 @@ class VpnListView extends Component {
                     vpnsList.length !== 0 ?
                         <EnhancedTable data={this.props.availableVpns} />
                         :
-                        <div/>
+                        <div>No dVPN nodes found</div>
                 }
             </div>
         )

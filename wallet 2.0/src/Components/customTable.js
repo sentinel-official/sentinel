@@ -249,11 +249,12 @@ class EnhancedTable extends React.Component {
         this.setState({ rowsPerPage: event.target.value });
     };
 
-    showConnectDialog = (city, country, speed, latency, price_per_GB) => {
+    showConnectDialog = (city, country, speed, latency, price_per_GB, vpn_addr) => {
 
         // let data = [].push()
         this.setState({ openDialog: !this.state.openDialog,
-            data: { 'city': city, 'country': country, 'speed': speed, 'latency': latency, 'price_per_GB': price_per_GB }
+            data: { 'city': city, 'country': country, 'speed': speed,
+                'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr  }
         });
     };
 
@@ -287,7 +288,7 @@ class EnhancedTable extends React.Component {
                                         <TableRow
                                             hover
                                             onClick={() => this.showConnectDialog(n.location.city, n.location.country,
-                                                n.net_speed.download, n.latency, n.price_per_GB
+                                                n.net_speed.download, n.latency, n.price_per_GB, n.account_addr
                                             )}
                                             aria-checked={isSelected}
                                             tabIndex={-1}

@@ -18,6 +18,11 @@ import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
+import {getAccount} from "../Reducers/dashboard.reducer";
+
+const electron = window.require('electron');
+const remote = electron.remote;
+
 const emails = ['username@gmail.com', 'user02@gmail.com'];
 const styles = {
     avatar: {
@@ -36,9 +41,9 @@ const styles = {
     }
 };
 
-function Transition (props) {
-    return <Slide direction="up" {...props} />;
-};
+// function Transition (props) {
+//     return <Slide direction="up" {...props} />;
+// }
 
 class SimpleDialog extends React.Component {
 
@@ -49,14 +54,15 @@ class SimpleDialog extends React.Component {
     handleClose = () => {
         this.props.onClose(this.props.selectedValue);
     };
+
     render() {
-        // console.log(this.props, "dialog props");
         const { classes, onClose, selectedValue, ...other } = this.props;
 
         return (
-                    <Dialog style={{width: 300}} onClose={this.handleClose}
-                            aria-labelledby="simple-dialog-title" {...other}
-                            TransitionComponent={Transition}
+                    <Dialog onClose={this.handleClose}
+                            aria-labelledby="simple-dialog-title"
+                            {...other}
+                            // TransitionComponent={Transition}
                     >
                         <DialogTitle id="simple-dialog-title">Connect to dVPN</DialogTitle>
                         <div>
@@ -104,7 +110,7 @@ class SimpleDialog extends React.Component {
                                     </ListItemText>
                                 </ListItem>
 
-                                <ListItem button onClick={() => this.props.onClick}>
+                                <ListItem button onClick={() => this.props.onClick(this.props.data.vpn_addr)}>
                                     <ListItemAvatar>
                                         <Avatar>
                                             <AddIcon/>
@@ -214,27 +220,27 @@ class SimpleDialogDemo extends React.Component {
         this.setState({ selectedValue: value, open: false });
     };
 
-    handleListItemClick = () => {
-        // this.props.onClose(value);
-        // this.setState({ open: false })
-        connectVPN('0x108953974437ad11d6a850791e74908716c3a40b', '0x108953974437ad11d6a850791e74908716c3a40b' , 'linux', (res) => {
-            console.log(res, "nakli res")
+    handleListItemClick = (vpn_addr) => {
 
-            // this.setState({ pendingInitPayment: res.data.message, isPending: true, open: false })
+        connectVPN(this.props.getAccount, vpn_addr , remote.process.platform, (res) => {
 
-            if (res.data.account_addr) {
+            console.log(res, 'check this out')
+            if ( res.data && res.data.account_addr) {
                 this.setState({ pendingInitPayment: res.data.message, isPending: true, open: false,
                     paymentAddr: res.data.account_addr })
+            } else if (res.success) {
+                console.log('res came, connect now', res.data)
+                this.setState({ open: false })
             }
+
         })
     };
 
     render() {
-        console.log(this.state, 'state');
         console.log(this.props, 'props props props');
         // console.log('down props', this.props.data );
         return (
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }} >
                 {this.state.isPending ?
                     <AlertDialog
                         open={this.state.isPending}
@@ -262,8 +268,8 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ setCurrentTab, initPaymentAction }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer }) {
-    return { connecVPNReducer }
+function mapStateToProps({ connecVPNReducer, getAccount }) {
+    return { connecVPNReducer, getAccount }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimpleDialogDemo);

@@ -48,7 +48,7 @@ class ConvertToErc extends Component {
         let { token } = this.props;
         this.setState({ swapAmount: value });
         this.getCompareValue(token);
-        let myValue = Math.pow(value, token.decimals)
+        let myValue = Math.pow(10, token.decimals) * value
         this.props.swixRate(token.symbol, 'SENT', myValue.noExponents())
     }
     componentDidMount() {
@@ -67,13 +67,17 @@ class ConvertToErc extends Component {
         }
     }
 
+    componentWillUnmount(){
+        this.props.swixRate(this.props.token.symbol, 'SENT', 0)
+    }
+
 
     onClickConvert = () => {
         let self = this;
         if (this.state.convertPass === '') {
             this.setState({ sending: false, snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
         }
-        else if (parseFloat(this.props.expectedValue / Math.pow(10, this.props.token.decimals)) > 10000) {
+        else if (parseFloat(this.props.expectedValue / Math.pow(10, 8)) > 10000) {
             this.setState({ sending: false, snackOpen: true, snackMessage: `Swap Limit for once is 10000 SENTS only` })
         }
         else {
@@ -167,7 +171,7 @@ class ConvertToErc extends Component {
                     </p>
                 </div>
                 <div style={convertToErcStyles.compareDiv}>
-                    <p style={convertToErcStyles.compareP}>{this.state.swapAmount} {this.props.token.symbol} = {this.props.expectedValue.value === 0 ?this.props.expectedValue.value : Number(this.props.expectedValue.value / Math.pow(10,this.props.token.decimals)).toFixed(8)} SENT's</p>
+                    <p style={convertToErcStyles.compareP}>{this.state.swapAmount} {this.props.token.symbol} = {this.props.expectedValue.value === 0 ?this.props.expectedValue.value : Number(this.props.expectedValue.value / Math.pow(10,8)).toFixed(8)} SENT's</p>
                 </div>
                 <div style={convertToErcStyles.f_f_p}>
                     <p style={convertToErcStyles.convertHead}>{lang[language].Convert}</p>
@@ -197,7 +201,7 @@ class ConvertToErc extends Component {
                             <div style={convertToErcStyles.b_p}>
                                 <p style={convertToErcStyles.bal}>
                                     <span style={convertToErcStyles.f_w}>
-                                        {Number(this.props.expectedValue.value / Math.pow(10,this.props.token.decimals)).toFixed(8)}
+                                        {Number(this.props.expectedValue.value / Math.pow(10,8)).toFixed(8)}
                                     </span>
                                     <span style={convertToErcStyles.sentTokens}> SENT TOKENS</span>
                                 </p>

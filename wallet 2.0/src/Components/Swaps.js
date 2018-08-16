@@ -5,7 +5,6 @@ import {
     getAvailableTokens, getTokenBalance,
     getSentValue
 } from '../Actions/swaps.action';
-import { Dialog } from 'material-ui';
 import { getAccount } from '../Actions/receive.action';
 import { Row, Col } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
@@ -15,6 +14,8 @@ import { swapsStyles as styles } from './../Assets/swaps.styles';
 import ConvertToErc from './ConvertToErc';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Pivx from './Pivx';
+import { DialogContent, Dialog } from '@material-ui/core';
+
 let lang = require('./../Constants/language');
 
 class Swaps extends Component {
@@ -94,12 +95,11 @@ class Swaps extends Component {
             .then(() => {
                 // console.log(this.props.getAvailableTokensRes)
                 let tokensList = this.props.getAvailableTokensRes.filter(
-                    (token) =>  token.symbol !== 'PIVX');
+                    (token) => token.symbol !== 'PIVX');
                 let pivxToken = this.props.getAvailableTokensRes.filter((token) => token.symbol === 'PIVX');
                 self.setState({ tokens: tokensList, pivxTokenDetails: pivxToken })
                 tokensList.map((token) => {
-                    if(token.symbol!=='SENT')
-                    {
+                    if (token.symbol !== 'SENT') {
                         self.getUnitBalance(token);
                     }
                 })
@@ -116,19 +116,21 @@ class Swaps extends Component {
 
     render() {
 
-        console.log('this render',this.state.tokens.filter(
-            (token) =>  token.symbol === 'SENT'))
+        console.log('this render', this.state.tokens.filter(
+            (token) => token.symbol === 'SENT'))
 
         return (
             <div>
                 <Row>
                     <Col xs={6}>
                         <Button component='div' style={styles.tokenStyle2}
-                        onClick={()=>{this.setState({
-                            showTransScreen:true,
-                            selectedToken:this.state.tokens.filter(
-                                (token) =>  token.symbol === 'SENT')[0]
-                        })}}
+                            onClick={() => {
+                                this.setState({
+                                    showTransScreen: true,
+                                    selectedToken: this.state.tokens.filter(
+                                        (token) => token.symbol === 'SENT')[0]
+                                })
+                            }}
                         >
                             <Row style={{ alignItems: 'center', marginTop: '-5px' }}>
                                 <Col xs={4}>
@@ -151,34 +153,36 @@ class Swaps extends Component {
                         </Button>
                     </Col>
                     {this.state.tokens.length !== 0 ?
-                        this.state.tokens.map((token, index) =>{
-                            if(token.symbol !== 'SENT' ){
-                            return (<Col xs={6}>
-                                <Button component='div' style={index % 2 == 0 ?
-                                    styles.tokenStyle
-                                    : styles.tokenStyle2}
-                                    onClick={() => {
-                                        this.setState({ showTransScreen: true, selectedToken: token });
-                                    }}>
-                                    <Row style={{ alignItems: 'center', marginTop: '-5px' }}>
-                                        <Col xs={4} style={{ padding: '0px' }}>
-                                            <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'}
-                                                alt="logo" style={styles.image} />
-                                        </Col>
-                                        <Col xs={8}>
-                                            <b>
-                                                <p style={styles.number}>
-                                                    {this.state.tokenBalances[token.symbol] > 0 ?
-                                                        this.state.tokenBalances[token.symbol] :
-                                                        0}
-                                                </p>
-                                            </b>
-                                            <p style={styles.sentinel}>{token.name} [{token.symbol}]</p>
-                                        </Col>
-                                    </Row>
-                                </Button>
-                            </Col>
-                            )}}
+                        this.state.tokens.map((token, index) => {
+                            if (token.symbol !== 'SENT') {
+                                return (<Col xs={6}>
+                                    <Button component='div' style={index % 2 == 0 ?
+                                        styles.tokenStyle
+                                        : styles.tokenStyle2}
+                                        onClick={() => {
+                                            this.setState({ showTransScreen: true, selectedToken: token });
+                                        }}>
+                                        <Row style={{ alignItems: 'center', marginTop: '-5px' }}>
+                                            <Col xs={4} style={{ padding: '0px' }}>
+                                                <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'}
+                                                    alt="logo" style={styles.image} />
+                                            </Col>
+                                            <Col xs={8}>
+                                                <b>
+                                                    <p style={styles.number}>
+                                                        {this.state.tokenBalances[token.symbol] > 0 ?
+                                                            this.state.tokenBalances[token.symbol] :
+                                                            0}
+                                                    </p>
+                                                </b>
+                                                <p style={styles.sentinel}>{token.name} [{token.symbol}]</p>
+                                            </Col>
+                                        </Row>
+                                    </Button>
+                                </Col>
+                                )
+                            }
+                        }
                         )
                         :
                         <div><br />
@@ -218,21 +222,21 @@ class Swaps extends Component {
                 </Row>
                 {this.state.showTransScreen ? <MuiThemeProvider>
                     <Dialog
-                        contentStyle={{ width: 700 }}
-                        bodyStyle={{ padding: 0 }}
                         open={this.state.showTransScreen}
-                        onRequestClose={this.handleClose}
+                        onClose={this.handleClose}
                     >
-                        <ConvertToErc token={this.state.selectedToken} />
+                        <DialogContent>
+                            <ConvertToErc token={this.state.selectedToken} />
+                        </DialogContent>
                     </Dialog></MuiThemeProvider> : null}
                 {this.state.showTransPivxScreen ? <MuiThemeProvider>
-                    < Dialog
-                        contentStyle={{ width: 700 }}
-                        bodyStyle={{ padding: '5%' }}
+                    <Dialog
                         open={this.state.showTransPivxScreen}
-                        onRequestClose={this.handleTransClose}
+                        onClose={this.handleTransClose}
                     >
-                        <Pivx />
+                        <DialogContent>
+                            <Pivx />
+                        </DialogContent>
                     </Dialog></MuiThemeProvider> : null}
             </div>
         )

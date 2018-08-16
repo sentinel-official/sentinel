@@ -289,7 +289,7 @@ class SendComponent extends React.Component {
                     />
                   </div>
                   <div style={{ width: '191px' }}>
-                    <SimpleMenu token={this.setToken} />
+                    <SimpleMenu token={this.setToken} isSend={true}/>
                   </div>
                 </div>
               </Col>

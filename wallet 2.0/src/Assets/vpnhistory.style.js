@@ -147,4 +147,4 @@ const styles = {
 };
 module.exports={
     vpnhistoryStyles,styles
-}
+};

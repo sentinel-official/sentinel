@@ -37,8 +37,9 @@ class LayoutComponent extends Component {
                 {
                     return  (
                         <div style={vpnhistoryStyles.contianer}>
-                    <VPNHistory />
-                    </div>)
+                            <VPNHistory />
+                        </div>
+                    )
                 }
             case 'swixer':
                 {

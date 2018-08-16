@@ -6,24 +6,20 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
+import Flag from 'react-world-flags';
+import SimpleDialogDemo from "./customDialog";
 
-let counter = 0;
-function createData(name, calories, fat, carbs, protein) {
-    counter += 1;
-    return { id: counter, name, calories, fat, carbs, protein };
-}
+
+let Country = window.require('countrynames');
 
 function getSorting(order, orderBy) {
     return order === 'desc' ? (a, b) => b[orderBy] - a[orderBy] : (a, b) => a[orderBy] - b[orderBy];
@@ -31,10 +27,12 @@ function getSorting(order, orderBy) {
 
 const columnData = [
     // { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
-    { id: 'calories', numeric: true, disablePadding: false, label: 'Calories' },
-    { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
-    { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-    { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
+    { id: 'flag', numeric: false, disablePadding: false, label: 'Flag' },
+    { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
+    { id: 'bandwidth', numeric: true, disablePadding: false, label: 'Bandwidth (mbps)' },
+    { id: 'latency', numeric: true, disablePadding: false, label: 'Latency (ms)' },
+    { id: 'algorithm', numeric: false, disablePadding: false, label: 'Algorithm' },
+    { id: 'price', numeric: true, disablePadding: false, label: 'Price (SENT/GB)' },
 ];
 
 
@@ -44,25 +42,22 @@ class EnhancedTableHead extends React.Component {
     };
 
     render() {
-        const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+        const { order, orderBy, classes } = this.props;
 
         return (
             <TableHead>
                 <TableRow>
-                    {/*<TableCell padding="checkbox">*/}
-                        {/*<Checkbox*/}
-                            {/*indeterminate={numSelected > 0 && numSelected < rowCount}*/}
-                            {/*checked={numSelected === rowCount}*/}
-                            {/*onChange={onSelectAllClick}*/}
-                        {/*/>*/}
-                    {/*</TableCell>*/}
                     {columnData.map(column => {
                         return (
                             <TableCell
                                 key={column.id}
                                 numeric={column.numeric}
-                                padding={column.disablePadding ? 'none' : 'default'}
+                                padding={"checkbox"}
+                                // padding={column.disablePadding ? 'none' : 'default'}
                                 sortDirection={orderBy === column.id ? order : false}
+                                // style={{ textAlign: 'center', }}
+                                classes={{ body: classes.center }}
+                                // variant={"body"}
                             >
                                 <Tooltip
                                     title="Sort"
@@ -94,6 +89,16 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
 };
+
+const alignStyle = {
+    center: {
+        // textAlign: 'center'
+        // marginLeft: 25
+    },
+};
+
+EnhancedTableHead = withStyles(alignStyle)(EnhancedTableHead);
+
 
 const toolbarStyles = theme => ({
     root: {
@@ -148,13 +153,7 @@ let EnhancedTableToolbar = props => {
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                ) : (
-                    <Tooltip title="Filter list">
-                        <IconButton aria-label="Filter list">
-                            <FilterListIcon />
-                        </IconButton>
-                    </Tooltip>
-                )}
+                ) : ''}
             </div>
         </Toolbar>
     );
@@ -171,12 +170,14 @@ const styles = theme => ({
     root: {
         width: '100%',
         marginTop: theme.spacing.unit * 3,
+        height: 420,
+        overflowY: 'auto',
     },
     table: {
-        minWidth: 1020,
+        // minWidth: 1020,
     },
     tableWrapper: {
-        // overflowX: 'auto',
+        overflowY: 'auto',
     },
 });
 
@@ -185,26 +186,18 @@ class EnhancedTable extends React.Component {
         super(props);
 
         this.state = {
+            openDialog: false,
             order: 'asc',
             orderBy: 'calories',
             selected: [],
-            data: [
-                createData('Cupcake', 305, 3.7, 67, 4.3),
-                createData('Donut', 452, 25.0, 51, 4.9),
-                createData('Eclair', 262, 16.0, 24, 6.0),
-                createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-                createData('Gingerbread', 356, 16.0, 49, 3.9),
-                createData('Honeycomb', 408, 3.2, 87, 6.5),
-                createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-                createData('Jelly Bean', 375, 0.0, 94, 0.0),
-                createData('KitKat', 518, 26.0, 65, 7.0),
-                createData('Lollipop', 392, 0.2, 98, 0.0),
-                createData('Marshmallow', 318, 0, 81, 2.0),
-                createData('Nougat', 360, 19.0, 9, 37.0),
-                createData('Oreo', 437, 18.0, 63, 4.0),
-            ],
+            city: '',
+            country: '',
+            speed: 0,
+            price: 0,
+            latency: 0,
             page: 0,
             rowsPerPage: 5,
+            data: {}
         };
     }
 
@@ -256,12 +249,20 @@ class EnhancedTable extends React.Component {
         this.setState({ rowsPerPage: event.target.value });
     };
 
+    showConnectDialog = (city, country, speed, latency, price_per_GB) => {
+
+        // let data = [].push()
+        this.setState({ openDialog: !this.state.openDialog,
+            data: { 'city': city, 'country': country, 'speed': speed, 'latency': latency, 'price_per_GB': price_per_GB }
+        });
+    };
+
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
         const { classes } = this.props;
-        const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+        let data = this.props.data;
+        const { order, orderBy, selected, rowsPerPage, page } = this.state;
 
         return (
             <Paper className={classes.root}>
@@ -277,56 +278,55 @@ class EnhancedTable extends React.Component {
                             rowCount={data.length}
                         />
                         <TableBody>
-                            {data
+                            {
+                                data
                                 .sort(getSorting(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map(n => {
                                     const isSelected = this.isSelected(n.id);
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={event => this.handleClick(event, n.id)}
-                                            role="checkbox"
+                                            onClick={() => this.showConnectDialog(n.location.city, n.location.country,
+                                                n.net_speed.download, n.latency, n.price_per_GB
+                                            )}
                                             aria-checked={isSelected}
                                             tabIndex={-1}
                                             key={n.id}
                                             selected={isSelected}
                                         >
-                                            {/*<TableCell padding="checkbox">*/}
-                                                {/*<Checkbox checked={isSelected} />*/}
-                                            {/*</TableCell>*/}
-                                            <TableCell component="th" scope="row" padding="none">
-                                                {n.name}
+                                            <TableCell style={{ textAlign: 'center' }} component="th" scope="row" padding="none">
+                                                <Flag code={Country.getCode(n.location.country)} height="16" />
                                             </TableCell>
-                                            <TableCell numeric>{n.calories}</TableCell>
-                                            <TableCell numeric>{n.fat}</TableCell>
-                                            <TableCell numeric>{n.carbs}</TableCell>
-                                            <TableCell numeric>{n.protein}</TableCell>
+                                            <TableCell style={{ textAlign: 'center' }}>
+                                                {`${n.location.city}, `} {n.location.country}
+                                            </TableCell>
+                                            <TableCell style={{ textAlign: 'center' }} numeric>
+                                                {(n.net_speed.download / (1024 * 1024)).toFixed(2)}
+                                            </TableCell>
+                                            <TableCell style={{ textAlign: 'center' }} numeric>
+                                                {n.latency ? n.latency : 'None'}
+                                                {n.latency ? (n.latency === 'Loading...' ? null : '') : null}
+                                            </TableCell>
+                                            <TableCell>
+                                                <p style={{
+                                                        textAlign: 'center',
+                                                        padding: 0,
+                                                        borderRadius: 8,
+                                                }}>{n.enc_method ? n.enc_method : 'None'}</p>
+                                            </TableCell>
+                                            <TableCell style={{ textAlign: 'center' }} numeric>
+                                                {n.price_per_GB ? n.price_per_GB : 100}
+                                            </TableCell>
+
                                         </TableRow>
                                     );
                                 })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: 49 * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
                         </TableBody>
                     </Table>
+                    <div>
+                        <SimpleDialogDemo data={this.state.data} open={this.state.openDialog} />
+                    </div>
                 </div>
-                {/*<TablePagination*/}
-                    {/*component="div"*/}
-                    {/*count={data.length}*/}
-                    {/*rowsPerPage={rowsPerPage}*/}
-                    {/*page={page}*/}
-                    {/*backIconButtonProps={{*/}
-                        {/*'aria-label': 'Previous Page',*/}
-                    {/*}}*/}
-                    {/*nextIconButtonProps={{*/}
-                        {/*'aria-label': 'Next Page',*/}
-                    {/*}}*/}
-                    {/*onChangePage={this.handleChangePage}*/}
-                    {/*onChangeRowsPerPage={this.handleChangeRowsPerPage}*/}
-                {/*/>*/}
             </Paper>
         );
     }

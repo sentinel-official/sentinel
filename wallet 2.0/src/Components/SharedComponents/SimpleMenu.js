@@ -33,8 +33,18 @@ class SimpleListMenu extends React.Component {
 
   handleMenuItemClick = (event) => {
     this.setState({ [event.target.name]: event.target.value });
+
     this.props.token(event.target.value);
+
   };
+
+  componentWillMount() {
+    this.setState({ token: 'SENT'});
+
+    if (this.props.isVPN) {
+      this.props.token('SENT');
+    }
+  }
 
 
   render() {

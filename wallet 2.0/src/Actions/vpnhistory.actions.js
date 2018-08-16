@@ -45,6 +45,7 @@ export async function getVpnHistory(account_addr) {
     }
   }
   catch (Err) {
+    console.log("getvpnerror=",Err)
     sendError(Err);
   }
 

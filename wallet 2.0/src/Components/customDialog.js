@@ -244,6 +244,7 @@ class SimpleDialogDemo extends React.Component {
         paymentAddr: '',
         isLoading: false,
         success: false,
+        timer: true,
     };
 
     handleClickOpen = () => {
@@ -276,11 +277,12 @@ class SimpleDialogDemo extends React.Component {
 
     render() {
         console.log(this.props, 'props props props');
-        if (this.state.success) {
+        if (this.state.success && this.state.timer) {
             setInterval(() => { this.props.getVPNUsageData(this.props.getAccount)
                 .then(res => {console.log('usage', res)})
                 .catch(err => { console.log('err', err) });
             }, 3000);
+            this.setState({ timer: false })
         }
         // console.log('down props', this.props.data );
         return (

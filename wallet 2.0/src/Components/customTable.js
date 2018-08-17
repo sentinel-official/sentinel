@@ -324,7 +324,7 @@ class EnhancedTable extends React.Component {
                                 })}
                         </TableBody>
                     </Table>
-                    <div>
+                    <div style={{ width: 280 }} >
                         <SimpleDialogDemo data={this.state.data} open={this.state.openDialog} />
                     </div>
                 </div>

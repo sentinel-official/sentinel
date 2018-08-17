@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { getVPNUsageData } from '../Utils/utils'
 import { footerStyles } from '../Assets/footer.styles';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import lang from '../Constants/language';
@@ -55,16 +56,16 @@ class Footer extends Component {
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, { VPNUsage }) {
     return {
         lang: state.setLanguage,
-        isTest: state.setTestNet
+        isTest: state.setTestNet,
+        VPNUsage,
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-
     }, dispatch)
 }
 

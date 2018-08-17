@@ -11,6 +11,7 @@ import { setListViewType, setVpnType, getVpnList } from './vpnlist.reducer';
 import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 import { connectVPNReducer } from './connectVPN.reducer'
 import { initPaymentDetails } from './initPayment.reducer';
+import { VPNUsage } from './vpnUsage'
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -34,7 +35,8 @@ const rootReducer = combineReducers({
     testSENTHistory,
     testETHHistory,
     connectVPNReducer,
-    initPaymentDetails
+    initPaymentDetails,
+    VPNUsage,
 });
 
 export default rootReducer;

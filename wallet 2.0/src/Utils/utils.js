@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { VPN_USAGE } from '../Constants/action.names'
 const fs = window.require('fs');
 const electron = window.require('electron');
 const { exec, execSync } = window.require('child_process');
@@ -84,6 +84,23 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
         })
     }
 }
+
+
+export function getVPNUsageData(account_addr) {
+
+    let uri = `${B_URL}/client/vpn/current`;
+    let data = {
+        account_addr: account_addr,
+        session_name: SESSION_NAME
+    };
+    let request = axios.post(uri, data);
+
+    return {
+        payload: request,
+        type: VPN_USAGE
+    };
+}
+
 
 export function getVPNPIDs(cb) {
     try {

@@ -2,32 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import classNames from 'classnames';
 import { DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import Slide from '@material-ui/core/Slide';
-import AddIcon from '@material-ui/icons/SwapVerticalCircle';
+import { withStyles, Button, Avatar, List, ListItem, ListItemAvatar, ListItemText,
+    DialogTitle, Dialog, CircularProgress } from '@material-ui/core';
+import green from '@material-ui/core/colors/green';
+import CheckIcon from '@material-ui/icons/Check';
+import ConnectIcon from '@material-ui/icons/SwapVerticalCircle';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
-import {getAccount} from "../Reducers/dashboard.reducer";
+import {getVPNUsageData} from "../Utils/utils";
 
 const electron = window.require('electron');
 const remote = electron.remote;
 
 const emails = ['username@gmail.com', 'user02@gmail.com'];
-const styles = {
+const styles = theme => ({
     avatar: {
         backgroundColor: blue[100],
         color: blue[600],
+    },
+    container: {
+        width: 280,
+        overflow: 'none'
     },
     dialogLabel: {
         fontSize: 14,
@@ -38,8 +37,40 @@ const styles = {
     dialogValue: {
         fontSize: 13,
         fontFamily: 'Montserrat',
-    }
-};
+    },
+    fabProgress: {
+        margin: theme.spacing.unit * 2,
+        height: '1em',
+        width: '1em'
+    },
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+    },
+    buttonSuccess: {
+        backgroundColor: green[500],
+        '&:hover': {
+            backgroundColor: green[700],
+        },
+    },
+    listRoot: {
+        display: 'flex',
+        backgroundColor: theme.palette.background.paper,
+        justifyContent: 'center',
+    },
+    wrapper: {
+        margin: theme.spacing.unit,
+        position: 'relative',
+    },
+    button: {
+        margin: theme.spacing.unit,
+    },
+    extendedIcon: {
+        marginRight: theme.spacing.unit,
+    },
+
+});
 
 // function Transition (props) {
 //     return <Slide direction="up" {...props} />;
@@ -53,21 +84,26 @@ class SimpleDialog extends React.Component {
 
     handleClose = () => {
         this.props.onClose(this.props.selectedValue);
+
     };
 
     render() {
         const { classes, onClose, selectedValue, ...other } = this.props;
 
+        console.log(this.props.isLoading, '<= isloading');
+        const buttonClassname = classNames({
+            [classes.buttonSuccess]: !this.props.isLoading,
+        });
+
+
         return (
                     <Dialog onClose={this.handleClose}
-                            aria-labelledby="simple-dialog-title"
-                            {...other}
-                            // TransitionComponent={Transition}
+                            aria-labelledby="simple-dialog-title" keepMounted
+                            {...other} className={{ classes: { paper: classes.container } }}
                     >
-                        <DialogTitle id="simple-dialog-title">Connect to dVPN</DialogTitle>
+                        <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
                         <div>
 
-                            {/*// this.props.data && this.props.data.price >= 0 ?*/}
                             <List>
                                 <ListItem button onClick={() => {
                                 }}>
@@ -89,11 +125,7 @@ class SimpleDialog extends React.Component {
                                 }}>
                                     {/*<ListItemText primary={`Bandwidth: ${this.props.data.speed}`} />*/}
                                     <label style={styles.dialogLabel}>Bandwidth:&nbsp;</label>
-                                    <span style={{
-                                        fontSize: 13,
-                                        fontFamily: 'Montserrat',
-                                        marginTop: -8
-                                    }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2)}</span>
+                                    <span style={styles.dialogValue}>{(this.props.data.speed / (1024 * 1024)).toFixed(2)}</span>
                                 </ListItem>
 
                                 <ListItem button onClick={() => {
@@ -110,14 +142,15 @@ class SimpleDialog extends React.Component {
                                     </ListItemText>
                                 </ListItem>
 
-                                <ListItem button onClick={() => this.props.onClick(this.props.data.vpn_addr)}>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <AddIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="connect"/>
-                                </ListItem>
+                                <div className={classes.listRoot}>
+                                    <Button disabled={this.props.isLoading} variant="extendedFab" aria-label="Connect"
+                                            onClick={() => this.props.onClick(this.props.data.vpn_addr)}
+                                            className={classes.button}>
+                                        { !this.props.isLoading && this.props.success ?  <CheckIcon
+                                            className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} /> }
+                                        { !this.props.isLoading && this.props.success ? 'Connected' : 'Connect' }
+                                    </Button>
+                                </div>
                             </List>
                             {/*: ''*/}
                             {/*}*/}
@@ -151,7 +184,7 @@ class AlertDialog extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({ open: false });
+        this.setState({ open: false, success: false, isLoading: false });
     };
 
     makeInitPayment = async () => {
@@ -208,6 +241,8 @@ class SimpleDialogDemo extends React.Component {
         pendingInitPayment: null,
         isPending: false,
         paymentAddr: '',
+        isLoading: false,
+        success: false,
     };
 
     handleClickOpen = () => {
@@ -222,15 +257,17 @@ class SimpleDialogDemo extends React.Component {
 
     handleListItemClick = (vpn_addr) => {
 
+        this.setState({ isLoading: true });
         connectVPN(this.props.getAccount, vpn_addr , remote.process.platform, (res) => {
 
-            console.log(res, 'check this out')
             if ( res.data && res.data.account_addr) {
-                this.setState({ pendingInitPayment: res.data.message, isPending: true, open: false,
-                    paymentAddr: res.data.account_addr })
+                this.setState({ pendingInitPayment: res.data.message, isPending: false, open: true,
+                    paymentAddr: res.data.account_addr, isLoading: false })
             } else if (res.success) {
-                console.log('res came, connect now', res.data)
-                this.setState({ open: false })
+                this.setState({ isLoading: false, success: true });
+                // setTimeout(() => {  this.setState({ open: false })}, 4000)
+            } else {
+                this.setState({ open: false, isLoading: false })
             }
 
         })
@@ -238,6 +275,9 @@ class SimpleDialogDemo extends React.Component {
 
     render() {
         console.log(this.props, 'props props props');
+        if (this.state.success) {
+            setInterval(() => this.props.getVPNUsageData, 3000);
+        }
         // console.log('down props', this.props.data );
         return (
             <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }} >
@@ -256,6 +296,8 @@ class SimpleDialogDemo extends React.Component {
                         onClose={this.handleClose}
                         data={this.props.data}
                         onClick={this.handleListItemClick}
+                        isLoading={this.state.isLoading}
+                        success={this.state.success}
                     />
                 }
             </div>
@@ -265,7 +307,7 @@ class SimpleDialogDemo extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ setCurrentTab, initPaymentAction }, dispatch)
+    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData }, dispatch)
 }
 
 function mapStateToProps({ connecVPNReducer, getAccount }) {

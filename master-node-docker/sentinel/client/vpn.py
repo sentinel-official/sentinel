@@ -232,8 +232,9 @@ class GetVpnUsage(object):
         @apiSuccess {Object[]} usage VPN usage details.
         """
         account_addr = str(req.body['account_addr']).lower()
+        device_id = str(req.body['device_id']) if 'device_id' in req.body else None
 
-        error, usage = eth_helper.get_vpn_usage(account_addr)
+        error, usage = eth_helper.get_vpn_usage(account_addr, device_id)
 
         if error is None:
             message = {'success': True, 'usage': usage}

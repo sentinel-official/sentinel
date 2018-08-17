@@ -24,16 +24,21 @@ from sentinel.mixer import DeRegisterMixerNode
 from sentinel.mixer import RegisterMixerNode
 from sentinel.mixer import UpdateMixerNodeInfo
 from sentinel.node import DeRegisterNode
+from sentinel.node import GetActiveNodeCountOld
 # from sentinel.node import GetActiveNodeCount
 from sentinel.node import GetActiveSessionCount
+from sentinel.node import GetActiveSessionCountOld
 from sentinel.node import GetAverageDuration
+from sentinel.node import GetAverageDurationOld
 # from sentinel.node import GetAverageNodesCount
 from sentinel.node import GetAveragePaidSentsCount
 from sentinel.node import GetAverageSessionsCount
 from sentinel.node import GetAverageTotalSentsCount
 from sentinel.node import GetDailyActiveNodeCount
+from sentinel.node import GetDailyActiveNodeCountOld
 # from sentinel.node import GetDailyAverageDuration
 from sentinel.node import GetDailyDataCount
+from sentinel.node import GetDailyDataCountOld
 from sentinel.node import GetDailyDurationCount
 from sentinel.node import GetDailyNodeCount
 from sentinel.node import GetDailyPaidSentsCount
@@ -43,16 +48,11 @@ from sentinel.node import GetDailyTotalSentsUsed
 from sentinel.node import GetLastDataCount
 from sentinel.node import GetNodeStatistics
 from sentinel.node import GetTotalDataCount
+from sentinel.node import GetTotalDataCountOld
 from sentinel.node import GetTotalNodeCount
 from sentinel.node import RegisterNode
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
-from sentinel.node import GetActiveSessionCountOld
-from sentinel.node import GetDailyActiveNodeCountOld
-from sentinel.node import GetActiveNodeCountOld
-from sentinel.node import GetDailyDataCountOld
-from sentinel.node import GetTotalDataCountOld
-from sentinel.node import GetAverageDurationOld
 from sentinel.swaps import GetAvailableTokens
 from sentinel.swaps import GetExchangeValue
 from sentinel.swaps import GetNewAddress

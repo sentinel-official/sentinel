@@ -9,12 +9,13 @@ from ..db import db
 
 class OpenVPN(object):
     def __init__(self, enc_method, show_output=True):
-        enc_method = 'AES-256-CBC' if enc_method not in ['AES-256-CBC', 'AES-128-CBC', 'AES-256-GCM', 'AES-128-GCM'] else enc_method
+        enc_method = 'AES-256-CBC' if enc_method not in ['AES-256-CBC', 'AES-128-CBC', 'AES-256-GCM',
+                                                         'AES-128-GCM'] else enc_method
         self.init_cmd = 'sh /root/sentinel/shell_scripts/init.sh {}'.format(enc_method)
         self.start_cmd = 'openvpn --config /etc/openvpn/server.conf \
                           --status /etc/openvpn/openvpn-status.log 2 \
                           --management 127.0.0.1 1195 \
-                          --ping-exit 15'
+                          --keepalive 10 60'
         if show_output is False:
             self.init_cmd += ' >> /dev/null 2>&1'
             self.start_cmd += ' >> /dev/null 2>&1'

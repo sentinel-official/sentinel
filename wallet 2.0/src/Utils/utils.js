@@ -1,16 +1,12 @@
 import axios from 'axios';
 import { VPN_USAGE } from '../Constants/action.names'
+import { B_URL } from '../Constants/constants'
 const fs = window.require('fs');
 const electron = window.require('electron');
 const { exec, execSync } = window.require('child_process');
 const remote = electron.remote;
 const SENT_DIR = getUserHome() + '/.sentinel';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
-let SESSION_NAME = '';
-let IPGENERATED = '';
-let LOCATION = '';
-let SPEED = '';
-let CONNECTED_VPN = '';
 
 
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
@@ -57,7 +53,7 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
         cb(null);
     } else {
         axios.post(uri, data).then(response => {
-
+            console.log(response, 'session data')
             if (response.data.success) {
                 if (response.data['node'] === null) {
                     cb({message: 'Something wrong. Please Try Later'})
@@ -68,11 +64,11 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
                         delete (response.data['node']['vpn']['ovpn'][18]);
                     }
                     let ovpn = response.data['node']['vpn']['ovpn'].join('');
-                    localStorage.setItem(SESSION_NAME , response.data['session_name']);
-                    localStorage.setItem(CONNECTED_VPN, vpn_addr)
-                    localStorage.setItem(IPGENERATED, response.data['node']['vpn']['ovpn'][3].split(' ')[1]);
-                    localStorage.setItem(LOCATION, response.data['node']['location']['city']);
-                    localStorage.setItem(SPEED, Number(response.data['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + ' Mbps');
+                    localStorage.setItem('SESSION_NAME', response.data['session_name']);
+                    localStorage.setItem('CONNECTED_VPN', vpn_addr);
+                    localStorage.setItem('IPGENERATED', response.data['node']['vpn']['ovpn'][3].split(' ')[1]);
+                    localStorage.setItem('LOCATION', response.data['node']['location']['city']);
+                    localStorage.setItem('SPEED', Number(response.data['node']['net_speed']['download'] / (1024 * 1024)).toFixed(2) + ' Mbps');
                     fs.writeFile(OVPN_FILE, ovpn, function (err) {
                         if (err) cb(err);
                         else cb(null);
@@ -91,7 +87,7 @@ export function getVPNUsageData(account_addr) {
     let uri = `${B_URL}/client/vpn/current`;
     let data = {
         account_addr: account_addr,
-        session_name: SESSION_NAME
+        session_name: localStorage.getItem('SESSION_NAME')
     };
     let request = axios.post(uri, data);
 

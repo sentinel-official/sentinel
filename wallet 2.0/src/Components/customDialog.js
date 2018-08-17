@@ -13,7 +13,7 @@ import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
-import {getVPNUsageData} from "../Utils/utils";
+import { getVPNUsageData } from "../Utils/utils";
 
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -65,6 +65,7 @@ const styles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
+        outline: 'none',
     },
     extendedIcon: {
         marginRight: theme.spacing.unit,
@@ -276,7 +277,10 @@ class SimpleDialogDemo extends React.Component {
     render() {
         console.log(this.props, 'props props props');
         if (this.state.success) {
-            setInterval(() => this.props.getVPNUsageData, 3000);
+            setInterval(() => { this.props.getVPNUsageData(this.props.getAccount)
+                .then(res => {console.log('usage', res)})
+                .catch(err => { console.log('err', err) });
+            }, 3000);
         }
         // console.log('down props', this.props.data );
         return (

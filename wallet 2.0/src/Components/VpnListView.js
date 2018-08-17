@@ -25,6 +25,10 @@ class VpnListView extends Component {
             this.setState({ updatedList: list });
     }
 
+    componentDidMount() {
+        this.setState({ updatedList: this.props.availableVpns });
+
+    }
 
 
     render() {

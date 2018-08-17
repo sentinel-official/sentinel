@@ -22,7 +22,7 @@ class VpnList extends Component {
         this.props.getVpnList(this.props.vpnType);
     };
 
-    componentDidMount = () => {
+    componentWillMount = () => {
         this.props.getVpnList(this.props.vpnType);
     };
 

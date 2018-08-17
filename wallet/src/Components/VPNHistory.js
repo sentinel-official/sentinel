@@ -20,12 +20,20 @@ class VPNHistory extends Component {
             openSnack: false,
             snackMessage: '',
             isReport: false,
-            txHash: ''
+            txHash: '',
+            isPrivate: false
         }
     }
 
     componentDidCatch(error, info) {
         sendError(error);
+    }
+
+    componentWillReceiveProps = (nextProps) => {
+        if (nextProps.isPrivate !== this.state.isPrivate) {
+            this.setState({ isPrivate: nextProps.isPrivate })
+            this.getVpnHistory()
+        }
     }
 
     snackRequestClose = () => {

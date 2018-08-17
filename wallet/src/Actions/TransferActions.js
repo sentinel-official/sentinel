@@ -61,7 +61,7 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
         var data = contract.transfer.getData(to_addr, amount, { from: from_addr });
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-            gasPrice: gas_price,
+            gasPrice: gas_price ? gas_price : web3.toHex(web3.eth.gasPrice),
             gasLimit: gas,
             from: from_addr,
             to: SENTINEL_ADDRESS,
@@ -77,16 +77,16 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
     }
 }
 
-export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
+export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, isPivx, cb) {
     try {
         setWeb3();
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-            gasPrice: gas_price,
+            gasPrice: gas_price ? gas_price : web3.toHex(web3.eth.gasPrice),
             gasLimit: gas,
             from: from_addr,
             to: to_addr,
-            value: web3.toHex(amount),
+            value: isPivx ? web3.toHex(web3.toWei(amount, 'ether')) : web3.toHex(amount),
             data: ''
         }
         var tx = new EthereumTx(txParams);
@@ -153,8 +153,8 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
             if (unit === 'ETH') {
                 var txParams = {
                     nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-                    gasPrice: 20 * (10 ** 9),
-                    gasLimit: 21000,
+                    gasPrice: web3.toHex(web3.eth.gasPrice),
+                    gasLimit: 100000,
                     from: from_addr,
                     to: ether_addr,
                     value: web3.toHex(amount),
@@ -172,7 +172,7 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
                             var data = contract.transfer.getData(ether_addr, amount, { from: from_addr });
                             var txParams = {
                                 nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-                                gasPrice: 20 * (10 ** 9),
+                                gasPrice: web3.toHex(web3.eth.gasPrice),
                                 gasLimit: gasValue,
                                 from: from_addr,
                                 to: contract_addr,

@@ -14,7 +14,7 @@ def add_session(device_id, session_id, tx_hash=None):
         }
         if tx_hash:
             body['session']['paymentTxHash'] = tx_hash
-        url = 'https://{}/session'.format(REFERRAL_URL)
+        url = '{}/session'.format(REFERRAL_URL)
         res = requests.post(url, json=body, timeout=10)
         res = res.json()
         return None, res['success']

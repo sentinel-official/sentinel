@@ -24,13 +24,15 @@ class Node(object):
         self.config = {
             'account_addr': None,
             'price_per_gb': None,
-            'token': None
+            'token': None,
+            'enc_method': None
         }
 
         if config is not None:
             self.config['account_addr'] = str(config['account_addr']).lower() if 'account_addr' in config else None
             self.config['price_per_gb'] = float(config['price_per_gb']) if 'price_per_gb' in config else None
             self.config['token'] = str(config['token']) if 'token' in config else None
+            self.config['enc_method'] = str(config['enc_method']) if 'enc_method' in config else None
 
         self.update_nodeinfo({'type': 'location'})
         self.update_nodeinfo({'type': 'netspeed'})
@@ -45,7 +47,8 @@ class Node(object):
                 'location': self.location,
                 'net_speed': self.net_speed,
                 'price_per_gb': self.config['price_per_gb'],
-                'token': self.config['token']
+                'token': self.config['token'],
+                'enc_method': self.config['enc_method']
             }
         }, upsert=True)
 
@@ -57,14 +60,14 @@ class Node(object):
 
     def update_nodeinfo(self, info=None):
         if info['type'] == 'location':
-            web_url = 'https://ipleak.net/json'
+            web_url = 'http://ip-api.com/json'
             response = json.load(urlopen(web_url))
-            self.ip = str(response['ip'])
+            self.ip = str(response['query'])
             self.location = {
-                'city': str(response['city_name']),
-                'country': str(response['country_name']),
-                'latitude': float(response['latitude']),
-                'longitude': float(response['longitude'])
+                'city': str(response['city']),
+                'country': str(response['country']),
+                'latitude': float(response['lat']),
+                'longitude': float(response['lon'])
             }
         elif info['type'] == 'netspeed':
             self.speed_test.get_best_server()
@@ -79,5 +82,7 @@ class Node(object):
                 self.config['account_addr'] = info['account_addr']
             if ('token' in info) and (info['token'] is not None):
                 self.config['token'] = info['token']
+            if ('enc_method' in info) and (info['enc_method' is not None]):
+                self.config['enc_method'] = info['enc_method']
             self.save_config_data()
         self.save_to_db()

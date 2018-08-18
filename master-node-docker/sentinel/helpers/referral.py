@@ -2,6 +2,7 @@
 import requests
 
 from ..config import REFERRAL_URL
+from ..db import db
 
 
 def add_session(device_id, session_id, tx_hash=None):
@@ -20,3 +21,14 @@ def add_session(device_id, session_id, tx_hash=None):
         return None, res['success']
     except Exception as error:
         return error, None
+
+
+def get_vpn_sessions(device_id):
+    usage = db.ref_sessions.find({
+        'device_id': device_id
+    }, {
+        '_id': 0,
+        'session_id': 0,
+        'to_addr': 0,
+    })
+    return list(usage) if usage else []

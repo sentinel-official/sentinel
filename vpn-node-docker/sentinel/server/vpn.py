@@ -6,6 +6,7 @@ import falcon
 
 from ..db import db
 from ..vpn import Keys
+from ..vpn import disconnect_client
 
 
 class GenerateOVPN(object):
@@ -61,6 +62,31 @@ class GenerateOVPN(object):
             message = {
                 'success': False,
                 'message': 'Wrong client wallet address or token.'
+            }
+
+        res.status = falcon.HTTP_200
+        res.body = json.dumps(message)
+
+
+class Disconnect(object):
+    def on_post(self, req, res):
+        account_addr = str(req.body['account_addr']).lower()
+        token = str(req.body['token'])
+
+        client = db.clients.find_one({
+            'account_addr': account_addr,
+            'token': token
+        })
+        if client is None:
+            message = {
+                'success': False,
+                'message': 'Wrong client wallet address or token.'
+            }
+        else:
+            disconnect_client(client['session_name'])
+            message = {
+                'success': True,
+                'message': 'Disconnected successfully.'
             }
 
         res.status = falcon.HTTP_200

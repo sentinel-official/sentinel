@@ -7,6 +7,7 @@ import falcon
 
 from ..db import db
 
+
 def getAverageNodeCount():
     avg_count = []
 
@@ -45,10 +46,12 @@ def getAverageNodeCount():
 
     return message
 
+
 def getActiveNodeCount():
     count = db.nodes.find({'vpn.status': 'up'}).count()
     message = {'success': True, 'count': count}
     return message
+
 
 def getDailyAverageDuration():
     daily_count = []
@@ -91,11 +94,12 @@ def getDailyAverageDuration():
     }])
 
     for doc in result:
-        doc['average'] = doc['average']/(60)
+        doc['average'] = doc['average'] / 60
         daily_count.append(doc)
 
     message = {'success': True, 'units': 'minutes', 'stats': daily_count}
     return message
+
 
 def getLastAverageDuration():
     avg_count = []
@@ -128,7 +132,7 @@ def getLastAverageDuration():
     }])
 
     for doc in result:
-        doc['average'] = doc['average']/(60)
+        doc['average'] = doc['average'] / 60
         avg_count.append(doc)
 
     message = {'success': True, 'units': 'minutes', 'average': avg_count[0]['average']}
@@ -137,7 +141,7 @@ def getLastAverageDuration():
 
 class GetDailyDataCount(object):
     def on_get(self, req, resp):
-        interval=req.get_param('interval')
+        interval = req.get_param('interval')
         if interval is not None:
             daily_count = []
             result = db.connections.aggregate([{
@@ -170,11 +174,11 @@ class GetDailyDataCount(object):
             }])
 
             for doc in result:
-                doc['dataCount'] = doc['dataCount']/(1024*1024)
+                doc['dataCount'] = doc['dataCount'] / (1024 * 1024)
                 daily_count.append(doc)
 
-            message = {'success': True, 'units':'MB', 'stats': daily_count}
-        
+            message = {'success': True, 'units': 'MB', 'stats': daily_count}
+
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -184,8 +188,8 @@ class GetDailyDataCount(object):
 
 class GetTotalDataCount(object):
     def on_get(self, req, resp):
-        format=req.get_param('format')
-        if format is not None:
+        _format = req.get_param('format')
+        if _format is not None:
             total_count = []
             result = db.connections.aggregate([{
                 '$group': {
@@ -196,11 +200,11 @@ class GetTotalDataCount(object):
                 }
             }])
             for doc in result:
-                doc['total'] = doc['total']/(1024*1024)
+                doc['total'] = doc['total'] / (1024 * 1024)
                 total_count.append(doc)
 
             message = {'success': True, 'units': 'MB', 'stats': total_count[0]['total']}
-        
+
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -210,9 +214,9 @@ class GetTotalDataCount(object):
 
 class GetLastDataCount(object):
     def on_get(self, req, resp):
-        filter=req.get_param('filter')
-        format=req.get_param('format')
-        if filter is not None and format is not None:
+        _filter = req.get_param('filter')
+        _format = req.get_param('format')
+        if _filter is not None and _format is not None:
             total_count = []
             result = db.connections.aggregate([{
                 '$match': {
@@ -230,11 +234,11 @@ class GetLastDataCount(object):
             }])
 
             for doc in result:
-                doc['total'] = doc['total']/(1024*1024)
+                doc['total'] = doc['total'] / (1024 * 1024)
                 total_count.append(doc)
 
             message = {'success': True, 'units': 'MB', 'stats': total_count[0]['total']}
-        
+
         else:
             message = {'success': False, 'message': 'No params found'}
 
@@ -244,7 +248,7 @@ class GetLastDataCount(object):
 
 class GetDailyNodeCount(object):
     def on_get(self, req, resp):
-        interval=req.get_param('interval')
+        interval = req.get_param('interval')
         if interval is not None:
             daily_count = []
             result = db.nodes.aggregate([{
@@ -278,9 +282,9 @@ class GetDailyNodeCount(object):
                 daily_count.append(doc)
 
             message = {'success': True, 'stats': daily_count}
-        
+
         else:
-            message = {'success':False, 'message':'No param found'}
+            message = {'success': False, 'message': 'No param found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -329,10 +333,10 @@ class GetTotalNodeCount(object):
 
 class GetDailyActiveNodeCount(object):
     def on_get(self, req, resp):
-        interval=req.get_param('interval')
-        format=req.get_param('format')
-        if interval is not None and format is None:
-            if interval=='current':
+        interval = req.get_param('interval')
+        _format = req.get_param('format')
+        if interval is not None and _format is None:
+            if interval == 'current':
                 message = getActiveNodeCount()
             else:
                 daily_count = []
@@ -373,7 +377,7 @@ class GetDailyActiveNodeCount(object):
         elif interval is not None and format is not None:
             message = getAverageNodeCount()
         else:
-            message = {'success': False,'message': 'No params found'}
+            message = {'success': False, 'message': 'No params found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -414,7 +418,7 @@ class GetDailyPaidSentsCount(object):
         for doc in result:
             daily_count.append(doc)
 
-        message = {'success': True, 'units':'SENT', 'stats': daily_count}
+        message = {'success': True, 'units': 'SENT', 'stats': daily_count}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -422,8 +426,8 @@ class GetDailyPaidSentsCount(object):
 
 class GetAveragePaidSentsCount(object):
     def on_get(self, req, resp):
-        format=req.get_param('format')
-        if format is not None:
+        _format = req.get_param('format')
+        if _format is not None:
             avg_count = []
 
             result = db.payments.aggregate([{'$group': {'_id': 0, 'averageCount': {'$avg': '$paid_count'}}}])
@@ -431,7 +435,7 @@ class GetAveragePaidSentsCount(object):
             for doc in result:
                 avg_count.append(doc)
 
-            message = {'success': True, 'units':'SENT', 'average': avg_count[0]['averageCount']}
+            message = {'success': True, 'units': 'SENT', 'average': avg_count[0]['averageCount']}
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -456,7 +460,7 @@ class GetAverageTotalSentsCount(object):
             for doc in result:
                 avg_count.append(doc)
 
-            message = {'success': True,'units':'SENT', 'average': avg_count[0]['average']}
+            message = {'success': True, 'units': 'SENT', 'average': avg_count[0]['average']}
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -503,7 +507,7 @@ class GetDailyTotalSentsUsed(object):
             for doc in result:
                 daily_count.append(doc)
 
-            message = {'success': True, 'units':'SENT', 'stats': daily_count}
+            message = {'success': True, 'units': 'SENT', 'stats': daily_count}
         else:
             message = {'success': False, 'message': 'No param found'}
 
@@ -513,7 +517,7 @@ class GetDailyTotalSentsUsed(object):
 
 class GetDailySessionCount(object):
     def on_get(self, req, resp):
-        interval=req.get_param('interval')
+        interval = req.get_param('interval')
         if interval is not None:
             daily_count = []
             result = db.connections.aggregate([{
@@ -547,9 +551,9 @@ class GetDailySessionCount(object):
                 daily_count.append(doc)
 
             message = {'success': True, 'stats': daily_count}
-        
+
         else:
-            message = {'success':False, 'message':'No param found'}
+            message = {'success': False, 'message': 'No param found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -558,8 +562,8 @@ class GetDailySessionCount(object):
 class GetAverageSessionsCount(object):
     def on_get(self, req, resp):
         interval = req.get_param('interval')
-        format = req.get_param('format')
-        if interval is not None and format is not None:
+        _format = req.get_param('format')
+        if interval is not None and _format is not None:
             avg_count = []
 
             result = db.connections.aggregate([{
@@ -594,7 +598,7 @@ class GetAverageSessionsCount(object):
                 avg_count.append(doc)
 
             message = {'success': True, 'average': avg_count[0]['averageSessions']}
-        
+
         else:
             message = {'success': False, 'message': 'No params Found'}
 
@@ -604,12 +608,12 @@ class GetAverageSessionsCount(object):
 
 class GetActiveSessionCount(object):
     def on_get(self, req, resp):
-        filter = req.get_param('filter')
-        format = req.get_param('format')
-        if filter is not None and format is not None:
+        _filter = req.get_param('filter')
+        _format = req.get_param('format')
+        if _filter is not None and _format is not None:
             count = db.connections.find({'end_time': None}).count()
             message = {'success': True, 'count': count}
-        
+
         else:
             message = {'success': False, 'message': 'No params found'}
 
@@ -619,7 +623,7 @@ class GetActiveSessionCount(object):
 
 class GetDailyDurationCount(object):
     def on_get(self, req, resp):
-        interval=req.get_param('interval')
+        interval = req.get_param('interval')
         if interval is not None:
             daily_count = []
             result = db.connections.aggregate([{
@@ -659,23 +663,24 @@ class GetDailyDurationCount(object):
                 }
             }])
             for doc in result:
-                doc['durationCount'] = doc['durationCount']/(60)
+                doc['durationCount'] = doc['durationCount'] / 60
                 daily_count.append(doc)
 
-            message = {'success': True, 'units':'minutes', 'stats': daily_count}
-        
+            message = {'success': True, 'units': 'minutes', 'stats': daily_count}
+
         else:
             message = {'success': False, 'message': 'No param found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
+
 class GetAverageDuration(object):
     def on_get(self, req, resp):
-        interval=req.get_param('interval')
-        filter=req.get_param('filter')
-        format=req.get_param('format')
-        if interval is not None and format is not None:
+        interval = req.get_param('interval')
+        _filter = req.get_param('filter')
+        _format = req.get_param('format')
+        if interval is not None and _format is not None:
             avg_count = []
             result = db.connections.aggregate([{
                 '$project': {
@@ -700,22 +705,23 @@ class GetAverageDuration(object):
             }])
 
             for doc in result:
-                doc['average'] = doc['average']/(60)
+                doc['average'] = doc['average'] / 60
                 avg_count.append(doc)
 
-            message = {'success': True, 'units':'minutes', 'average': avg_count[0]['average']}
-        
-        elif filter is not None and format is None:
+            message = {'success': True, 'units': 'minutes', 'average': avg_count[0]['average']}
+
+        elif _filter is not None and _format is None:
             message = getDailyAverageDuration()
-        
-        elif filter is not None and format is not None:
+
+        elif _filter is not None and _format is not None:
             message = getLastAverageDuration()
-        
+
         else:
             message = {'success': False, 'message': 'No appropriate param found'}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
 
 class GetNodeStatistics(object):
     def on_get(self, req, resp):
@@ -755,6 +761,7 @@ class GetNodeStatistics(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
+
 class GetActiveSessionCountOld(object):
     def on_get(self, req, resp):
         count = db.connections.find({'end_time': None}).count()
@@ -762,6 +769,7 @@ class GetActiveSessionCountOld(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
 
 class GetDailyActiveNodeCountOld(object):
     def on_get(self, req, resp):
@@ -803,6 +811,7 @@ class GetDailyActiveNodeCountOld(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
+
 class GetActiveNodeCountOld(object):
     def on_get(self, req, resp):
         count = db.nodes.find({'vpn.status': 'up'}).count()
@@ -811,10 +820,11 @@ class GetActiveNodeCountOld(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
+
 class GetDailyDataCountOld(object):
     def on_get(self, req, resp):
         daily_count = []
-        output = db.connections.find({'server_usage': {'$exists': True}})
+        _ = db.connections.find({'server_usage': {'$exists': True}})
 
         result = db.connections.aggregate([{
             '$project': {
@@ -853,6 +863,7 @@ class GetDailyDataCountOld(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
+
 class GetTotalDataCountOld(object):
     def on_get(self, req, resp):
         total_count = []
@@ -878,6 +889,7 @@ class GetTotalDataCountOld(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
 
 class GetAverageDurationOld(object):
     def on_get(self, req, resp):

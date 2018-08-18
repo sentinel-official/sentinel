@@ -5,6 +5,7 @@ from hashlib import md5
 from redis import Redis
 
 from .referral import add_session
+from .referral import get_vpn_sessions
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
 from ..config import LIMIT_100MB
@@ -188,7 +189,7 @@ class ETHHelper(object):
 
         return error, usage
 
-    def get_vpn_usage(self, account_addr):
+    def get_vpn_usage(self, account_addr, device_id=None):
         error, usage = None, {
             'due': 0,
             'stats': {
@@ -198,6 +199,23 @@ class ETHHelper(object):
             },
             'sessions': []
         }
+        if device_id:
+            sessions = get_vpn_sessions(device_id)
+            sessions_count = len(sessions)
+            for index in range(0, sessions_count):
+                session = sessions[index]
+                usage['stats']['received_bytes'] += session['sent_bytes']
+                usage['stats']['duration'] += session['duration']
+                usage['stats']['amount'] += session['amount']
+                usage['session'].append({
+                    'id': index,
+                    'account_addr': str(session['from_addr']).lower(),
+                    'received_bytes': session['sent_bytes'],
+                    'session_duration': session['duration'],
+                    'amount': session['amount'],
+                    'timestamp': session['timestamp']
+                })
+            return error, usage
 
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
         if error is None:

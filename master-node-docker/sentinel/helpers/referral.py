@@ -31,4 +31,4 @@ def get_vpn_sessions(device_id):
         'session_id': 0,
         'to_addr': 0,
     })
-    return usage if usage and len(usage) else []
+    return list(usage) if usage else []

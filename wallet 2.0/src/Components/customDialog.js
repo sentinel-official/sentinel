@@ -4,13 +4,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import classNames from 'classnames';
 import { DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-import { withStyles, Button, Avatar, List, ListItem, ListItemAvatar, ListItemText,
-    DialogTitle, Dialog, CircularProgress } from '@material-ui/core';
+import {
+    withStyles, Button, Avatar, List, ListItem, ListItemAvatar, ListItemText,
+    DialogTitle, Dialog, CircularProgress
+} from '@material-ui/core';
 import green from '@material-ui/core/colors/green';
 import CheckIcon from '@material-ui/icons/Check';
 import ConnectIcon from '@material-ui/icons/SwapVerticalCircle';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
+import { setVpnStatus } from '../Actions/vpnlist.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
@@ -90,73 +93,71 @@ class SimpleDialog extends React.Component {
 
     render() {
         const { classes, onClose, selectedValue, ...other } = this.props;
-
-        console.log(this.props.isLoading, '<= isloading');
         const buttonClassname = classNames({
             [classes.buttonSuccess]: !this.props.isLoading,
         });
 
 
         return (
-                    <Dialog onClose={this.handleClose}
-                            aria-labelledby="simple-dialog-title" keepMounted
-                            {...other} className={{ classes: { paper: classes.container } }}
-                    >
-                        <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
-                        <div>
+            <Dialog onClose={this.handleClose}
+                aria-labelledby="simple-dialog-title" keepMounted
+                {...other} className={{ classes: { paper: classes.container } }}
+            >
+                <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
+                <div>
 
-                            <List>
-                                <ListItem button onClick={() => {
-                                }}>
-                                    <ListItemText>
-                                        <label style={styles.dialogLabel}>City:&nbsp;</label>
-                                        <span style={styles.dialogValue}>{this.props.data.city}</span>
-                                    </ListItemText>
-                                </ListItem>
+                    <List>
+                        <ListItem button onClick={() => {
+                        }}>
+                            <ListItemText>
+                                <label style={styles.dialogLabel}>City:&nbsp;</label>
+                                <span style={styles.dialogValue}>{this.props.data.city}</span>
+                            </ListItemText>
+                        </ListItem>
 
-                                <ListItem button onClick={() => {
-                                }}>
-                                    <ListItemText>
-                                        <label style={styles.dialogLabel}>Country:&nbsp;</label>
-                                        <span style={styles.dialogValue}>{this.props.data.country}</span>
-                                    </ListItemText>
-                                </ListItem>
+                        <ListItem button onClick={() => {
+                        }}>
+                            <ListItemText>
+                                <label style={styles.dialogLabel}>Country:&nbsp;</label>
+                                <span style={styles.dialogValue}>{this.props.data.country}</span>
+                            </ListItemText>
+                        </ListItem>
 
-                                <ListItem button onClick={() => {
-                                }}>
-                                    {/*<ListItemText primary={`Bandwidth: ${this.props.data.speed}`} />*/}
-                                    <label style={styles.dialogLabel}>Bandwidth:&nbsp;</label>
-                                    <span style={styles.dialogValue}>{(this.props.data.speed / (1024 * 1024)).toFixed(2)}</span>
-                                </ListItem>
+                        <ListItem button onClick={() => {
+                        }}>
+                            {/*<ListItemText primary={`Bandwidth: ${this.props.data.speed}`} />*/}
+                            <label style={styles.dialogLabel}>Bandwidth:&nbsp;</label>
+                            <span style={styles.dialogValue}>{(this.props.data.speed / (1024 * 1024)).toFixed(2)}</span>
+                        </ListItem>
 
-                                <ListItem button onClick={() => {
-                                }}>
-                                    <ListItemText>
-                                        <label style={styles.dialogLabel}>Price:&nbsp;</label><span
-                                        style={styles.dialogValue}>{this.props.data.price_per_GB}</span>
-                                    </ListItemText>
-                                </ListItem>
-                                <ListItem button onClick={() => {
-                                }}>
-                                    <ListItemText> <label style={styles.dialogLabel}>Latency:&nbsp;</label>
-                                        <span style={styles.dialogValue}> {this.props.data.latency}</span>
-                                    </ListItemText>
-                                </ListItem>
+                        <ListItem button onClick={() => {
+                        }}>
+                            <ListItemText>
+                                <label style={styles.dialogLabel}>Price:&nbsp;</label><span
+                                    style={styles.dialogValue}>{this.props.data.price_per_GB}</span>
+                            </ListItemText>
+                        </ListItem>
+                        <ListItem button onClick={() => {
+                        }}>
+                            <ListItemText> <label style={styles.dialogLabel}>Latency:&nbsp;</label>
+                                <span style={styles.dialogValue}> {this.props.data.latency}</span>
+                            </ListItemText>
+                        </ListItem>
 
-                                <div className={classes.listRoot}>
-                                    <Button disabled={this.props.isLoading} variant="extendedFab" aria-label="Connect"
-                                            onClick={() => this.props.onClick(this.props.data.vpn_addr)}
-                                            className={classes.button}>
-                                        { !this.props.isLoading && this.props.success ?  <CheckIcon
-                                            className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} /> }
-                                        { !this.props.isLoading && this.props.success ? 'Connected' : 'Connect' }
-                                    </Button>
-                                </div>
-                            </List>
-                            {/*: ''*/}
-                            {/*}*/}
+                        <div className={classes.listRoot}>
+                            <Button disabled={this.props.isLoading} variant="extendedFab" aria-label="Connect"
+                                onClick={() => this.props.onClick(this.props.data.vpn_addr)}
+                                className={classes.button}>
+                                {!this.props.isLoading && this.props.success ? <CheckIcon
+                                    className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
+                                {!this.props.isLoading && this.props.success ? 'Connected' : 'Connect'}
+                            </Button>
                         </div>
-                    </Dialog>
+                    </List>
+                    {/*: ''*/}
+                    {/*}*/}
+                </div>
+            </Dialog>
         );
     }
 }
@@ -185,15 +186,15 @@ class AlertDialog extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({ open: false, success: false, isLoading: false });
+        this.setState({ open: false, isLoading: false });
     };
 
     makeInitPayment = async () => {
 
         let data = {
-          account_addr: this.props.paymentAddr,
-          amount: 10000000000,
-          id: -1
+            account_addr: this.props.paymentAddr,
+            amount: 10000000000,
+            id: -1
         };
 
         await this.props.initPaymentAction(data);
@@ -202,27 +203,27 @@ class AlertDialog extends React.Component {
 
     render() {
         return (
-                <Dialog
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">{"Initial Payment Alert"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            { `${this.props.message} Please click on pay button to make the initial payment` }
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
-                            Cancel
+            <Dialog
+                open={this.state.open}
+                onClose={this.handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Initial Payment Alert"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {`${this.props.message} Please click on pay button to make the initial payment`}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="primary">
+                        Cancel
                         </Button>
-                        <Button onClick={this.makeInitPayment} color="primary" autoFocus>
-                            Pay
+                    <Button onClick={this.makeInitPayment} color="primary" autoFocus>
+                        Pay
                         </Button>
-                    </DialogActions>
-                </Dialog>
+                </DialogActions>
+            </Dialog>
         );
     }
 }
@@ -243,7 +244,6 @@ class SimpleDialogDemo extends React.Component {
         isPending: false,
         paymentAddr: '',
         isLoading: false,
-        success: false,
         timer: true,
     };
 
@@ -260,13 +260,16 @@ class SimpleDialogDemo extends React.Component {
     handleListItemClick = (vpn_addr) => {
 
         this.setState({ isLoading: true });
-        connectVPN(this.props.getAccount, vpn_addr , remote.process.platform, (res) => {
+        connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
 
-            if ( res.data && res.data.account_addr) {
-                this.setState({ pendingInitPayment: res.data.message, isPending: false, open: true,
-                    paymentAddr: res.data.account_addr, isLoading: false })
+            if (res.data && res.data.account_addr) {
+                this.setState({
+                    pendingInitPayment: res.data.message, isPending: false, open: true,
+                    paymentAddr: res.data.account_addr, isLoading: false
+                })
             } else if (res.success) {
-                this.setState({ isLoading: false, success: true });
+                this.setState({ isLoading: false});
+                this.props.setVpnStatus(true)
                 // setTimeout(() => {  this.setState({ open: false })}, 4000)
             } else {
                 this.setState({ open: false, isLoading: false })
@@ -276,11 +279,11 @@ class SimpleDialogDemo extends React.Component {
     };
 
     render() {
-        console.log(this.props, 'props props props');
-        if (this.state.success && this.state.timer) {
-            setInterval(() => { this.props.getVPNUsageData(this.props.getAccount)
-                .then(res => {console.log('usage', res)})
-                .catch(err => { console.log('err', err) });
+        if (this.props.vpnStatus && this.state.timer) {
+            setInterval(() => {
+                this.props.getVPNUsageData(this.props.getAccount)
+                    .then(res => { console.log('usage', res) })
+                    .catch(err => { console.log('err', err) });
             }, 3000);
             this.setState({ timer: false })
         }
@@ -303,7 +306,7 @@ class SimpleDialogDemo extends React.Component {
                         data={this.props.data}
                         onClick={this.handleListItemClick}
                         isLoading={this.state.isLoading}
-                        success={this.state.success}
+                        success={this.props.vpnStatus}
                     />
                 }
             </div>
@@ -313,11 +316,11 @@ class SimpleDialogDemo extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData }, dispatch)
+    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer, getAccount }) {
-    return { connecVPNReducer, getAccount }
+function mapStateToProps(state, { connecVPNReducer, getAccount }) {
+    return { connecVPNReducer, getAccount, vpnStatus: state.setVpnStatus }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimpleDialogDemo);

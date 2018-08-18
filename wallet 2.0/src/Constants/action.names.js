@@ -22,6 +22,7 @@ export const LIST_TYPE = 'LIST_TYPE';
 export const GET_VPN_LIST_SUCCESS = 'GET_VPN_LIST_SUCCESS';
 export const GET_VPN_LIST_PROGRESS = 'GET_VPN_LIST_PROGRESS';
 export const SET_VPN_TYPE = 'SET_VPN_TYPE';
+export const SET_VPN_STATUS = 'SET_VPN_STATUS';
 export const CONNECT_VPN = 'CONNECT_VPN';
 export const INIT_PAYMENT = 'INIT_PAYMENT';
 export const VPN_USAGE = 'VPN_USAGE';

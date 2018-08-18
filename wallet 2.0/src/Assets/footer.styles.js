@@ -33,7 +33,9 @@ const footerStyles = {
         textTransform: 'none',
         fontSize: 14,
         marginBottom: 0,
-        textAlign: 'center'
+        textAlign: 'center',
+        overflow:'hidden',
+        textOverflow:'ellipsis'
     },
     textCenter:{
         textAlign:'center'

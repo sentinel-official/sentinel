@@ -13,3 +13,4 @@ from .vpn import GetVpnUsage
 from .vpn import GetVpnsList
 from .vpn import PayVpnUsage
 from .vpn import ReportPayment
+from .vpn import RateVPNSession

@@ -33,6 +33,7 @@ class RegisterNode(object):
         ) if 'vpn_type' in req.body and req.body['vpn_type'] else 'openvpn'
         location = req.body['location']
         net_speed = req.body['net_speed']
+        version = str(req.body['version']) if 'version' in req.body else None
         token = uuid4().hex
         latency = get_latency(ip)
         joined_on = int(time.time())
@@ -54,7 +55,8 @@ class RegisterNode(object):
                 'joined_on': joined_on,
                 'location': location,
                 'net_speed': net_speed,
-                'enc_method': enc_method
+                'enc_method': enc_method,
+                'version': version
             })
         else:
             _ = db.nodes.find_one_and_update({
@@ -68,7 +70,8 @@ class RegisterNode(object):
                     'vpn_type': vpn_type,
                     'location': location,
                     'net_speed': net_speed,
-                    'enc_method': enc_method
+                    'enc_method': enc_method,
+                    'version': version
                 }
             })
         message = {

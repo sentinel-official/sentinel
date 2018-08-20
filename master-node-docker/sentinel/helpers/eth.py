@@ -205,13 +205,13 @@ class ETHHelper(object):
             for index in range(0, sessions_count):
                 session = sessions[index]
                 usage['stats']['received_bytes'] += session['sent_bytes']
-                usage['stats']['duration'] += session['duration']
+                usage['stats']['duration'] += session['session_duration']
                 usage['stats']['amount'] += session['amount']
-                usage['session'].append({
+                usage['sessions'].append({
                     'id': index,
                     'account_addr': str(session['from_addr']).lower(),
                     'received_bytes': session['sent_bytes'],
-                    'session_duration': session['duration'],
+                    'session_duration': session['session_duration'],
                     'amount': session['amount'],
                     'timestamp': session['timestamp']
                 })

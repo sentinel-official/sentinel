@@ -30,7 +30,8 @@ def register_node(node):
         'price_per_gb': node.config['price_per_gb'],
         'enc_method': node.config['enc_method'],
         'location': node.location,
-        'net_speed': node.net_speed
+        'net_speed': node.net_speed,
+        'version': node.version
     }
     url = urljoin(MASTER_NODE_URL, 'node/register')
     try:

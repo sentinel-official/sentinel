@@ -94,7 +94,7 @@ class VpnList extends Component {
                             aria-label="dVPN Type"
                             name="nodes"
                             className={classes.group}
-                            value={this.state.vpnType}
+                            value={this.state.networkType}
                             onChange={this.handleNetworkChange}
                         >
                             <FormControlLabel value="public" control={<Radio />} label="public" />
@@ -107,7 +107,7 @@ class VpnList extends Component {
                             aria-label="dVPN Type"
                             name="nodes"
                             className={classes.group}
-                            value={this.state.networkType}
+                            value={this.state.vpnType}
                             onChange={this.handleRadioChange}
                         >
                             <FormControlLabel value="openvpn" control={<Radio />} label="OpenVPN" />
@@ -140,7 +140,7 @@ function mapStateToProps(state) {
         lang: state.setLanguage,
         isTest: state.setTestNet,
         listView: state.setListViewType,
-        vpnType: state.setVpnType,
+        vpnType: state.vpnType,
         vpnList: state.getVpnList
     }
 }

@@ -284,6 +284,7 @@ class SimpleDialogDemo extends React.Component {
     };
 
     render() {
+        console.log(this.props.vpnType)
         if (this.props.vpnStatus && this.state.timer) {
             setInterval(() => { this.props.getVPNUsageData(this.props.getAccount)
                 .then(res => {console.log('usage', res)})
@@ -320,19 +321,11 @@ class SimpleDialogDemo extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 
-<<<<<<< HEAD
-    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, connectSocks }, dispatch)
+    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectSocks }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer, getAccount, socksReducer }) {
-    return { connecVPNReducer, getAccount, socksReducer }
-=======
-    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus }, dispatch)
-}
-
-function mapStateToProps(state, { connecVPNReducer, getAccount }) {
-    return { connecVPNReducer, getAccount, vpnStatus: state.setVpnStatus }
->>>>>>> e5d7e1441a83b25ba53434264985aac28936aded
+function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus }) {
+    return { connecVPNReducer, getAccount, socksReducer, vpnType, vpnStatus: setVpnStatus }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimpleDialogDemo);

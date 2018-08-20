@@ -31,7 +31,7 @@ const rootReducer = combineReducers({
     getVPNDuePaymentDetails,
     sendComponentReducer,
     setListViewType,
-    setVpnType,
+    vpnType: setVpnType,
     getVpnList,
     testSENTHistory,
     testETHHistory,

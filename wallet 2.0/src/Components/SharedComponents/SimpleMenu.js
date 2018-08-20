@@ -35,11 +35,11 @@ const styles = theme => ({
     fontSize: '16px',
     color: '#253245',
     alignItems: 'center',
-    marginLeft: '186px'
+    marginLeft: '173px'
   },
   pivxIcon: {
     fill: '#B6B9CB',
-  }
+  },
 });
 
 
@@ -65,7 +65,7 @@ class SimpleListMenu extends React.Component {
     console.log('pivx menu', event.target.value)
     let tokens = event.target.value.split('to')
     this.props.setSwap(tokens[0].trim(),tokens[1].trim());
-    
+    this.props.rate()
   }
 
   render() {
@@ -116,7 +116,8 @@ class SimpleListMenu extends React.Component {
           }}
           SelectDisplayProps={{
             style: {
-
+              fontFamily: 'Montserrat,Medium',
+              backgroundColor: '#fff'
             }
           }}
         >

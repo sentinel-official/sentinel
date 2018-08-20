@@ -40,14 +40,14 @@ export function getPrivateKey(password, language, cb) {
 
 export function getPrivateKeyWithoutCallback(password, cb) {
     console.log(KEYSTORE_FILE)
-    readFile(KEYSTORE_FILE, function (err, data) {
+    readFile(KEYSTORE_FILE, async function (err, data) {
         if (err) cb(err, null);
         else {
             var keystore = JSON.parse(data)
             try {
-                var privateKey = keythereum.recover(password, keystore);
+                var privateKey = await keythereum.recover(password, keystore);
                 console.log(privateKey,'in get')
-                cb(null, privateKey);
+                setTimeout(function () { cb(null, privateKey) }, 1000);
             }
             catch (err) {
                 cb({ message: lang['en'].KeyPassMatch }, null);

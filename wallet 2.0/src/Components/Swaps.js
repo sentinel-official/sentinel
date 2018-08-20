@@ -224,6 +224,7 @@ class Swaps extends Component {
                     <Dialog
                         open={this.state.showTransScreen}
                         onClose={this.handleClose}
+                        fullWidth={true}
                     >
                         <DialogContent>
                             <ConvertToErc token={this.state.selectedToken} />
@@ -233,6 +234,7 @@ class Swaps extends Component {
                     <Dialog
                         open={this.state.showTransPivxScreen}
                         onClose={this.handleTransClose}
+                        fullWidth={true}
                     >
                         <DialogContent>
                             <Pivx />
@@ -245,9 +247,9 @@ class Swaps extends Component {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setComponent: setComponent,
-        getAvailableTokens: getAvailableTokens,
-        getSentValue: getSentValue
+        setComponent,
+        getAvailableTokens,
+        getSentValue,
     }, dispatch)
 }
 

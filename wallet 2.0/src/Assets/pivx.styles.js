@@ -33,7 +33,6 @@ const styles = {
         fontWeight: 600,
         fontSize: 16,
         fontFamily:'Montserrat,Medium',
-        marginTop:'5px'
     },
     disabledButtonStyle: {
         backgroundColor: '#bdbdbd',

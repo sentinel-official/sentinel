@@ -212,42 +212,6 @@ class EnhancedTable extends React.Component {
         this.setState({ order, orderBy });
     };
 
-    handleSelectAllClick = (event, checked) => {
-        if (checked) {
-            this.setState(state => ({ selected: state.data.map(n => n.id) }));
-            return;
-        }
-        this.setState({ selected: [] });
-    };
-
-    handleClick = (event, id) => {
-        const { selected } = this.state;
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
-        }
-
-        this.setState({ selected: newSelected });
-    };
-
-    handleChangePage = (event, page) => {
-        this.setState({ page });
-    };
-
-    handleChangeRowsPerPage = event => {
-        this.setState({ rowsPerPage: event.target.value });
-    };
 
     showConnectDialog = (city, country, speed, latency, price_per_GB, vpn_addr) => {
 

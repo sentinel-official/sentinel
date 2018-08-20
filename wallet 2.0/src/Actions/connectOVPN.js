@@ -1,12 +1,8 @@
 import axios from 'axios';
 import { CONNECT_VPN } from '../Constants/action.names';
-import { checkDependencies, getOVPNAndSave, getUserHome, getVPNPIDs } from '../Utils/utils'
-
-
-let CONNECTED = false;
-
-
-const B_URL = 'https://api.sentinelgroup.io';
+import { checkDependencies, getOVPNAndSave, getUserHome, getVPNPIDs } from '../Utils/utils';
+import { getConfig } from '../Utils/UserConfig';
+import { B_URL } from './../Constants/constants';
 const electron = window.require('electron');
 const remote = electron.remote;
 const sudo = remote.require('sudo-prompt');
@@ -24,19 +20,19 @@ export function connectVPN(account_addr, vpn_addr, os, cb) {
     switch (os) {
         case 'win32': {
 
-            }
+        }
         case 'darwin': {
 
-            }
+        }
         case 'linux': {
             checkDependencies(['openvpn'], async (e, o, se) => {
-                if ( o ) {
+                if (o) {
                     await testConnect(account_addr, vpn_addr, (res) => { cb(res) });
                 } else {
                     console.log("dependecy error")
                 }
             })
-            }
+        }
         default: {
 
         }
@@ -63,7 +59,7 @@ export async function testConnect(account_addr, vpn_addr, cb) {
     axios.post(`${B_URL}/client/vpn`, data)
         .then(resp => {
             if (resp.data.success) {
-                getOVPNAndSave(account_addr, resp.data['ip'], resp.data['port'], resp.data['vpn_addr'], resp.data['token'],  (err) => {
+                getOVPNAndSave(account_addr, resp.data['ip'], resp.data['port'], resp.data['vpn_addr'], resp.data['token'], (err) => {
                     if (err) cb(err, false, false, false, null);
                     else {
                         if (OVPNDelTimer) clearInterval(OVPNDelTimer);
@@ -78,17 +74,18 @@ export async function testConnect(account_addr, vpn_addr, cb) {
                             );
                         } else {
                             exec(command, function (err, stdout, stderr) {
+                                console.log('Err...', err, 'Stdout..', stdout, 'Stderr..', stderr)
                                 OVPNDelTimer = setTimeout(function () {
                                     fs.unlinkSync(OVPN_FILE);
                                 }, 1000);
                             });
                         } // internal else ends here
                         // setTimeout(function () {
-                            getVPNPIDs( async (err, pids) => {
-                                if (err) cb({message: err});
-                                else {
-                                    CONNECTED = true;
-                                    let data = {};
+                        getVPNPIDs(async (err, pids) => {
+                            if (err) cb({ message: err });
+                            else {
+                                getConfig(async function (err, confdata) {
+                                    let data = confdata ? JSON.parse(confdata) : {};
                                     data.isConnected = true;
                                     data.ipConnected = localStorage.getItem('IPGENERATED');
                                     data.location = localStorage.getItem('LOCATION');
@@ -102,12 +99,13 @@ export async function testConnect(account_addr, vpn_addr, cb) {
                                         cb(err)
                                     });
                                     cb({ 'message': resp.data.message, 'success': resp.data.success });
-                                }
-                            })
+                                })
+                            }
+                        })
                         // }, 1000)
                     } // parent else ends here
                 })
-                } else {
+            } else {
                 if (resp.data.account_addr)
                     cb(resp);
                 else

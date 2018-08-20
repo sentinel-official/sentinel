@@ -18,6 +18,15 @@ export function setVpnType(state = 'openvpn', action) {
     }
 }
 
+export function setVpnStatus(state = false, action) {
+    switch (action.type) {
+        case types.SET_VPN_STATUS:
+            return action.payload;
+        default:
+            return state
+    }
+}
+
 export function getVpnList(state = [], action) {
     switch (action.type) {
         case types.GET_VPN_LIST_SUCCESS:

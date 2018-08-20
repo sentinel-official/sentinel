@@ -33,7 +33,7 @@ class RegisterNode(object):
         ) if 'vpn_type' in req.body and req.body['vpn_type'] else 'openvpn'
         location = req.body['location']
         net_speed = req.body['net_speed']
-        version = str(req.body['version']) if 'version' in req.body else None
+        version = str(req.body['version']) if 'version' in req.body else '0.0.4-alpha'
         token = uuid4().hex
         latency = get_latency(ip)
         joined_on = int(time.time())

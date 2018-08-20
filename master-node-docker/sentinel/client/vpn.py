@@ -28,7 +28,8 @@ def get_vpns_list(vpn_type):
         'latency': 1,
         'rating':1,
         'net_speed.download': 1,
-        'enc_method': 1
+        'enc_method': 1,
+        'version': 1
     })
     return list(_list)
 

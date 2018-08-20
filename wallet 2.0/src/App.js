@@ -11,6 +11,7 @@ import TermsAndConditions from './Components/TermsAndConditions';
 import { readFile } from './Utils/Keystore';
 import { KEYSTORE_FILE } from './Utils/Keystore';
 import Dashboard from './Components/Dashboard';
+import { runGaiacli } from './Utils/Gaiacli';
 const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
@@ -25,7 +26,7 @@ class App extends Component {
     componentWillMount = () => {
         let that = this;
         document.getElementById('home').style.display = 'none';
-
+        runGaiacli();
         // Read keystore file
         readFile(KEYSTORE_FILE, function (err) {
             setTimeout(function () {

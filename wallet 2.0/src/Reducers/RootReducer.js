@@ -12,6 +12,8 @@ import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 import { connectVPNReducer } from './connectVPN.reducer'
 import { initPaymentDetails } from './initPayment.reducer';
 import { VPNUsage } from './vpnUsage'
+import { getKeys, setTMComponent } from './tendermint.reducer';
+import { createTMAccount } from './createTM.reducer';
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -37,7 +39,10 @@ const rootReducer = combineReducers({
     connectVPNReducer,
     initPaymentDetails,
     VPNUsage,
-    setVpnStatus
+    setVpnStatus,
+    getKeys,
+    setTMComponent,
+    createTMAccount
 });
 
 export default rootReducer;

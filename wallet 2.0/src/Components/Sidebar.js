@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { menuItems } from '../Constants/constants';
+import { menuItems, disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -45,8 +45,8 @@ class Sidebar extends Component {
 
     setMenu = (item) => {
         if (!this.props.isTest &&
-            (item.value === 'vpnList' || item.value === 'vpnHistory')) { }
-        else if (this.props.isTest && (item.value === 'swixer' || item.value === 'swaps')) { }
+            disabledItemsMain.includes(item.value)) { }
+        else if (this.props.isTest && disabledItemsTest.includes(item.value)) { }
         else {
             this.props.setCurrentTab(item.value);
         }
@@ -57,8 +57,16 @@ class Sidebar extends Component {
     }
 
     getIcon = (iconName) => {
-        let Icon = this.components[iconName];
-        return <Icon />
+        if (iconName === 'tmintIcon') {
+            if (!this.props.isTest)
+                return <img src={'../src/Images/tendermint-disable.png'} style={{ width: 24, height: 24 }} />
+            else
+                return <img src={'../src/Images/tendermint.png'} style={{ width: 24, height: 24 }} />
+        }
+        else {
+            let Icon = this.components[iconName];
+            return <Icon />
+        }
     }
 
     render() {
@@ -78,13 +86,16 @@ class Sidebar extends Component {
                             <div>
                                 <div style={
                                     !isTest && (item.value === 'vpnList' || item.value === 'vpnHistory') ?
-                                        sidebarStyles.disabledDivStyle : sidebarStyles.activeDivStyle
+                                        sidebarStyles.disabledDivStyle :
+                                        (item.value === currentTab ?
+                                            sidebarStyles.currentDivStyle :
+                                            sidebarStyles.activeDivStyle)
                                 } onClick={() => { this.setMenu(item); }}>
                                     <Tooltip title={item.name}>
                                         <label
                                             style={
-                                                (!isTest && (item.value === 'vpnList' || item.value === 'vpnHistory'))
-                                                    || (isTest && (item.value === 'swixer' || item.value === 'swaps'))
+                                                (!isTest && disabledItemsMain.includes(item.value))
+                                                    || (isTest && disabledItemsTest.includes(item.value))
                                                     ?
                                                     sidebarStyles.disabledLabelStyle :
                                                     (item.value === currentTab ?
@@ -116,12 +127,15 @@ class Sidebar extends Component {
                                     <div>
                                         <div style={
                                             !isTest && (item.value === 'vpnList' || item.value === 'vpnHistory') ?
-                                                sidebarStyles.disabledDivStyle : sidebarStyles.activeDivStyle
+                                                sidebarStyles.disabledDivStyle :
+                                                (item.value === currentTab ?
+                                                    sidebarStyles.currentDivStyle :
+                                                    sidebarStyles.activeDivStyle)
                                         } onClick={() => { this.setMenu(item); }}>
                                             <label
                                                 style={
-                                                    (!isTest && (item.value === 'vpnList' || item.value === 'vpnHistory'))
-                                                        || (isTest && (item.value === 'swixer'))
+                                                    (!isTest && disabledItemsMain.includes(item.value))
+                                                    || (isTest && disabledItemsTest.includes(item.value))
                                                         ?
                                                         sidebarStyles.disabledLabelStyle :
                                                         (item.value === currentTab ?

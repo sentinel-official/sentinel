@@ -1,12 +1,19 @@
 const sidebarStyles = {
     activeDivStyle: {
-        padding: '18px 20px 8px 20px',
+        padding: '12px 20px 4px 20px',
         textAlign: 'center',
         cursor: 'pointer',
         fontFamily: 'Montserrat'
     },
+    currentDivStyle: {
+        padding: '12px 20px 4px 20px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        fontFamily: 'Montserrat',
+        backgroundColor: 'rgba(48, 50, 70, 0.16)'
+    },
     disabledDivStyle: {
-        padding: '18px 20px 8px 20px',
+        padding: '12px 20px 4px 20px',
         textAlign: 'center',
         fontFamily: 'Montserrat',
         cursor: 'not-allowed'
@@ -25,11 +32,14 @@ const sidebarStyles = {
     disabledLabelStyle: {
         fontSize: 16,
         color: '#CECECE',
-        cursor:'not-allowed'
+        cursor: 'not-allowed'
     },
     m_0: { margin: 0 },
     outlineNone: {
         outline: 'none'
+    },
+    heightFull: {
+        height: '100%'
     }
 }
 

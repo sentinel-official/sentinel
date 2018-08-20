@@ -40,6 +40,7 @@ function windowManager() {
 
     this.window.on('close', (e) => {
       let self = this;
+      exec('killall gaiacli',(err,std,sto)=>{});
       isVPNConnected(function (isConnected) {
         if (showPrompt && isConnected) {
           // e.preventDefault();

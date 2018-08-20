@@ -4,6 +4,7 @@ from uuid import uuid4
 
 import falcon
 import requests
+import time
 
 from ..config import COINBASE_ADDRESS
 from ..config import DECIMALS
@@ -25,6 +26,7 @@ def get_vpns_list(vpn_type):
         'location': 1,
         'net_speed.upload': 1,
         'latency': 1,
+        'rating':1,
         'net_speed.download': 1,
         'enc_method': 1
     })
@@ -312,6 +314,73 @@ class GetVpnCurrentUsage(object):
             'success': True,
             'usage': usage
         }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
+class RateVPNSession(object):
+    def on_post(self, req, resp):
+        """
+        @api {post} /client/vpn/rate Rate vpn session.
+        @apiName RateVPNSession
+        @apiGroup VPN
+        @apiParam {String} vpn_addr VPN Account Address.
+        @apiParam {String} session_name Session name of the VPN connection.
+        @apiParam {String} rating Rating to the session.
+        @apiSuccess {Object} message Response of the request.
+        """ 
+        vpn_addr = str(req.body['vpn_addr']).lower()
+        session_name = str(req.body['session_name'])
+        rating = int(req.body['rating'])
+        
+        session = db.connections.find_one({
+            'vpn_addr':vpn_addr,
+            'session_name':session_name
+        })
+
+        if session is None:
+            message = {
+                'success': False,
+                'message': 'No session found with the given details'
+            }
+        
+        else:
+            _ = db.ratings.insert_one({
+                'vpn_addr': vpn_addr,
+                'session_name': session_name,
+                'rating': rating,
+                'timestamp': int(time.time())
+            })
+
+            count_dict=[]
+
+            output = db.ratings.aggregate([
+                {'$match':{'vpn_addr':vpn_addr}},
+                {'$project':{'totalRating':'$rating'}},
+                {'$group':{'_id':0,'rating_count':{'$sum':'$totalRating'}}}
+                ])
+            
+            for doc in output:
+                count_dict.append(doc)
+
+            vpn_total_ratings = int(count_dict[0]['rating_count'])
+            vpn_total_times = db.ratings.find({'vpn_addr':vpn_addr}).count()
+
+            average_rating = vpn_total_ratings/vpn_total_times
+
+            _ = db.nodes.find_one_and_update({
+                'account_addr':vpn_addr
+            },{
+                '$set':{
+                    'rating':average_rating
+                }
+            })
+
+            message = {
+                'success': True,
+                'message': 'Rated Successfully'
+            }
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

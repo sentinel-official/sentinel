@@ -18,6 +18,7 @@ from sentinel.client import PayVpnUsage
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.client import UpdateConnection
+from sentinel.client import RateVPNSession
 from sentinel.dev import GetFreeAmount
 from sentinel.logs import LogTheError
 from sentinel.mixer import DeRegisterMixerNode
@@ -86,6 +87,7 @@ server.add_route('/client/vpn/socks-list', GetSocksList())
 server.add_route('/client/vpn/usage', GetVpnUsage())
 server.add_route('/client/vpn/pay', PayVpnUsage())
 server.add_route('/client/vpn/report', ReportPayment())
+server.add_route('/client/vpn/rate',RateVPNSession())
 server.add_route('/client/update-connection', UpdateConnection())
 
 # Nodes

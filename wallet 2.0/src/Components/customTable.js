@@ -32,7 +32,7 @@ const columnData = [
     { id: 'bandwidth', numeric: true, disablePadding: false, label: 'Bandwidth (mbps)' },
     { id: 'latency', numeric: true, disablePadding: false, label: 'Latency (ms)' },
     { id: 'algorithm', numeric: false, disablePadding: false, label: 'Algorithm' },
-    { id: 'price', numeric: true, disablePadding: false, label: 'Price (SENT/GB)' },
+    { id: 'price', numeric: true, disablePadding: false, label: 'Price (SENTs/GB)' },
 ];
 
 
@@ -52,12 +52,12 @@ class EnhancedTableHead extends React.Component {
                             <TableCell
                                 key={column.id}
                                 numeric={column.numeric}
-                                padding={"checkbox"}
+                                padding={"default"}
                                 // padding={column.disablePadding ? 'none' : 'default'}
                                 sortDirection={orderBy === column.id ? order : false}
                                 // style={{ textAlign: 'center', }}
-                                classes={{ body: classes.center }}
-                                // variant={"body"}
+                                // classes={{ head: classes.center }}
+                                // variant={"head"}
                             >
                                 <Tooltip
                                     title="Sort"
@@ -82,20 +82,20 @@ class EnhancedTableHead extends React.Component {
 }
 
 EnhancedTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
+    // numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
+    // onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
+    // rowCount: PropTypes.number.isRequired,
 };
 
-const alignStyle = {
+const alignStyle = theme => ({
     center: {
-        // textAlign: 'center'
-        // marginLeft: 25
+        textAlign: 'center',
+        marginLeft: 25
     },
-};
+});
 
 EnhancedTableHead = withStyles(alignStyle)(EnhancedTableHead);
 
@@ -170,7 +170,7 @@ const styles = theme => ({
     root: {
         width: '100%',
         marginTop: theme.spacing.unit * 3,
-        height: 420,
+        height: 365,
         overflowY: 'auto',
     },
     table: {
@@ -267,55 +267,51 @@ class EnhancedTable extends React.Component {
 
         return (
             <Paper className={classes.root}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                {/*<EnhancedTableToolbar numSelected={selected.length} />*/}
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <EnhancedTableHead
-                            numSelected={selected.length}
+                            // numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            onSelectAllClick={this.handleSelectAllClick}
+                            // onSelectAllClick={this.handleSelectAllClick}
                             onRequestSort={this.handleRequestSort}
-                            rowCount={data.length}
+                            // rowCount={data.length}
                         />
                         <TableBody>
                             {
                                 data
                                 .sort(getSorting(order, orderBy))
                                 .map(n => {
-                                    const isSelected = this.isSelected(n.id);
+                                    // const isSelected = this.isSelected(n.id);
                                     return (
                                         <TableRow
                                             hover
                                             onClick={() => this.showConnectDialog(n.location.city, n.location.country,
                                                 n.net_speed.download, n.latency, n.price_per_GB, n.account_addr
                                             )}
-                                            aria-checked={isSelected}
-                                            tabIndex={-1}
+                                            // aria-checked={isSelected}
+                                            // tabIndex={-1}
                                             key={n.id}
-                                            selected={isSelected}
+                                            // selected={isSelected}
                                         >
-                                            <TableCell style={{ textAlign: 'center' }} component="th" scope="row" padding="none">
+                                            <TableCell component="th" scope="row" padding="default">
                                                 <Flag code={Country.getCode(n.location.country)} height="16" />
                                             </TableCell>
-                                            <TableCell style={{ textAlign: 'center' }}>
+                                            <TableCell padding='default'>
                                                 {`${n.location.city}, `} {n.location.country}
                                             </TableCell>
-                                            <TableCell style={{ textAlign: 'center' }} numeric>
+                                            <TableCell numeric padding='default'>
                                                 {(n.net_speed.download / (1024 * 1024)).toFixed(2)}
                                             </TableCell>
-                                            <TableCell style={{ textAlign: 'center' }} numeric>
+                                            <TableCell numeric padding='default'>
                                                 {n.latency ? n.latency : 'None'}
                                                 {n.latency ? (n.latency === 'Loading...' ? null : '') : null}
                                             </TableCell>
-                                            <TableCell>
-                                                <p style={{
-                                                        textAlign: 'center',
-                                                        padding: 0,
-                                                        borderRadius: 8,
-                                                }}>{n.enc_method ? n.enc_method : 'None'}</p>
+                                            <TableCell padding='default'>
+                                                {n.enc_method ? n.enc_method : 'None'}
                                             </TableCell>
-                                            <TableCell style={{ textAlign: 'center' }} numeric>
+                                            <TableCell numeric padding='default'>
                                                 {n.price_per_GB ? n.price_per_GB : 100}
                                             </TableCell>
 

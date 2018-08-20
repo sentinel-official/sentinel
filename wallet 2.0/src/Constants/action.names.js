@@ -25,3 +25,5 @@ export const SET_VPN_TYPE = 'SET_VPN_TYPE';
 export const CONNECT_VPN = 'CONNECT_VPN';
 export const INIT_PAYMENT = 'INIT_PAYMENT';
 export const VPN_USAGE = 'VPN_USAGE';
+export const SOCKS5 = 'SOCKS5';
+export const SOCKS5_CREDS = 'SOCKS5_CREDS';

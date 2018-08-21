@@ -199,6 +199,7 @@
     <string name="download">Download</string>
     <string name="referral_address_missing">You have not entered a referral code.\n\nDo you wish to continue without applying a referral code?</string>
     <string name="empty_list_message">There are no items to display.</string>
+    <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
 
 
     <string-array name="spinner_list">

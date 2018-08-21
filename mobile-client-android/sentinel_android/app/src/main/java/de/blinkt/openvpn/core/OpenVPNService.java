@@ -36,9 +36,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.stealthcopter.networktools.Ping;
-import com.stealthcopter.networktools.ping.PingResult;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -55,6 +52,7 @@ import de.blinkt.openvpn.core.VpnStatus.ByteCountListener;
 import de.blinkt.openvpn.core.VpnStatus.StateListener;
 import sentinelgroup.io.sentinel.BuildConfig;
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.ui.activity.DashboardActivity;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
@@ -114,8 +112,8 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
     };
     private String mLastTunCfg;
     private String mRemoteGW;
-    private Handler guiHandler, mPingHandler;
-    private Runnable mOpenVPNThread, mPingThread;
+    private Handler guiHandler;
+    private Runnable mOpenVPNThread;
     private Toast mlastToast;
 
     // From: http://stackoverflow.com/questions/3758606/how-to-convert-byte-size-into-human-readable-format-in-java
@@ -189,38 +187,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
                 stopSelf();
                 VpnStatus.removeStateListener(this);
             }
-        }
-        // TODO Cancel Ping task
-        cancelPingTask();
-    }
-
-    private void schedulePIngTask() {
-        if (mPingThread == null) {
-            mPingThread = new Runnable() {
-                @Override
-                public void run() {
-                    String aIp = AppPreferences.getInstance().getString(AppConstants.PREFS_IP_ADDRESS);
-                    try {
-                        PingResult aPingresResult = Ping.onAddress(aIp).setTimeOutMillis(1000).doPing();
-                        if (aPingresResult.isReachable)
-                            Logger.logDebug("PING_IP", "Result - " + aPingresResult.result + " | Latency - " + aPingresResult.timeTaken);
-                        else
-                            Logger.logDebug("PING_IP", "Error - " + aPingresResult.error);
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    }
-                    mPingHandler.postDelayed(this, PING_DELAY);
-                }
-            };
-        }
-        mPingHandler.postDelayed(mPingThread, PING_DELAY);
-    }
-
-    private void cancelPingTask() {
-        if (mPingHandler != null) {
-            mPingHandler.removeCallbacks(mPingThread);
-            mPingThread = null;
-            Logger.logDebug("PING_IP", "Completed - Removed callbacks from the Handler");
         }
     }
 
@@ -394,7 +360,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         VpnStatus.addStateListener(this);
         VpnStatus.addByteCountListener(this);
         guiHandler = new Handler(getMainLooper());
-        mPingHandler = new Handler();
         if (intent != null && PAUSE_VPN.equals(intent.getAction())) {
             if (mDeviceStateReceiver != null) mDeviceStateReceiver.userPause(true);
             return START_NOT_STICKY;
@@ -505,8 +470,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             if (mDeviceStateReceiver != null) unregisterDeviceStateReceiver();
             registerDeviceStateReceiver(mManagement);
         });
-        // TODO Schedule ping task
-        schedulePIngTask();
     }
 
     private void stopOldOpenVPNProcess() {
@@ -876,6 +839,11 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
     @Override
     public void updateState(String state, String logmessage, int resid, ConnectionStatus level) {
+        if (AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME) == 0L && state.equals("CONNECTED")) {
+            AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, System.currentTimeMillis());
+            SentinelApp.isVpnConnected = true;
+        }
+
         // If the process is not running, ignore any state,
         // Notification should be invisible in this state
         doSendBroadcast(state, level);

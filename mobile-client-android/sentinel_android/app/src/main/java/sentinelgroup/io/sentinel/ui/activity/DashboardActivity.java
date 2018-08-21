@@ -23,6 +23,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -195,6 +196,17 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger_menu);
         }
+        setToolbarTitle(getString(R.string.app_name));
+    }
+
+    /**
+     * Set the toolbar title
+     *
+     * @param iTitle [String] The title to be shown in the toolbar
+     */
+    protected void setToolbarTitle(String iTitle) {
+        mToolbar.findViewById(R.id.toolbar_icon).setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
+        ((TextView) mToolbar.findViewById(R.id.toolbar_title)).setText(iTitle);
     }
 
     /*
@@ -561,7 +573,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onFragmentLoaded(String iTitle) {
-        // Unimplemented interface method
+        setToolbarTitle(iTitle);
     }
 
     @Override
@@ -632,29 +644,28 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         Logger.logError("VPN_STATE", state + " - " + logMessage + " : " + getString(localizedResId), null);
         runOnUiThread(() -> {
             Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-            if (state.equals("CONNECTED") || (state.equals("USER_VPN_PERMISSION"))) {
-                if (AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME) == 0L && state.equals("CONNECTED"))
-                    AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, System.currentTimeMillis());
-                SentinelApp.isVpnConnected = true;
-            }
             // Called when the VPN connection terminates
-            if (!VpnStatus.isVPNActive()) {
-                if (SentinelApp.isVpnConnected && !mHasActivityResult) {
-                    SentinelApp.isVpnInitiated = false;
-                    SentinelApp.isVpnConnected = false;
-                    AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                    if (!(aFragment instanceof WalletFragment))
-                        loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
-                }
-            }
-            // Called when VPN permission is not given
-            if (state.equals("USER_VPN_PERMISSION_CANCELLED")) {
+            if (state.equals("USER_VPN_PERMISSION_CANCELLED")
+                    || (state.equals("RECONNECTING") && logMessage.contains("tls-error"))
+                    || (state.equals("NOPROCESS") && SentinelApp.isVpnConnected)) {
+                AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
+                if (!(aFragment instanceof WalletFragment)){
+                switch (state) {
+                    case "USER_VPN_PERMISSION_CANCELLED":
+                        loadVpnFragment(getString(localizedResId));
+                        break;
+                    case "RECONNECTING":
+                        loadVpnFragment(getString(R.string.network_lost));
+                        break;
+                    default:
+                        loadVpnFragment(null);
+                        break;
+                }}
                 SentinelApp.isVpnInitiated = false;
                 SentinelApp.isVpnConnected = false;
-                AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                if (!(aFragment instanceof WalletFragment))
-                    loadVpnFragment(getString(localizedResId));
+                SentinelApp.isVpnReconnectFailed=false;
             }
+
             // Called when user connects to a VPN node from other activity
             if (mHasActivityResult) {
                 onVpnConnectionInitiated(AppPreferences.getInstance().getString(AppConstants.PREFS_CONFIG_PATH));

@@ -21,11 +21,10 @@
     </string-array>
 
     <!-- ics_openVPN strings -->
-    <string name="fetching_server_details">Fetching VPN server credentials…</string>
-    <string name="channel_name_background">Connection statistics</string>
-    <string name="channel_description_background">Ongoing statistics of the established OpenVPN connection</string>
+    <string name="channel_name_background">Connection Statistics</string>
+    <string name="channel_description_background">On-going statistics of the established OpenVPN connection</string>
     <string name="channel_name_status">Connection status change</string>
-    <string name="channel_description_status">Status changes of the  OpenVPN connection (Connecting, authenticating,…)</string>
+    <string name="channel_description_status">Status changes of the  OpenVPN connection (connecting, authenticating,…)</string>
     <string name="vpn_launch_title">Connecting to VPN…</string>
     <string name="permission_icon_app">Icon of app trying to use OpenVPN for Android</string>
     <string name="remote_warning">By proceeding, you are giving the application permission to completely control OpenVPN for Android and to intercept all network traffic.<b>Do NOT accept unless you trust the application.</b> Otherwise, you run the risk of having your data compromised by malicious software."</string>
@@ -43,7 +42,7 @@
     <string name="state_waitconnectretry">Waiting %ss seconds between connection attempt</string>
     <string name="using_proxy">Using proxy %1$s %2$d</string>
     <string name="password">Password</string>
-    <string name="state_auth_failed">Authentication failed</string>
+    <string name="state_auth_failed">Authentication Failed</string>
     <string name="bits_per_second">%.0f bit/s</string>
     <string name="kbits_per_second">%.1f kbit/s</string>
     <string name="mbits_per_second">%.1f Mbit/s</string>
@@ -81,7 +80,7 @@
     <string name="route_not_cidr">Cannot make sense of %1$s and %2$s as IP route with CIDR netmask, using /32 as netmask.</string>
     <string name="route_not_netip">Corrected route %1$s/%2$s to %3$s/%2$s</string>
     <string name="ip_not_cidr">Got interface information %1$s and %2$s, assuming second address is peer address of remote. Using /32 netmask for local IP. Mode given by OpenVPN is \"%3$s\".</string>
-    <string name="ip_looks_like_subnet">Vpn topology \"%3$s\" specified but IP Config %1$s %2$s looks more like an IP address with a network mask. Assuming \"subnet\" topology.</string>
+    <string name="ip_looks_like_subnet">VPN topology \"%3$s\" specified but IP Config %1$s %2$s looks more like an IP address with a network mask. Assuming \"subnet\" topology.</string>
     <string name="statusline_bytecount">↓:%2$s(%1$s)-↑:%4$s(%3$s)</string>
     <string name="state_noprocess">Not running</string>
     <string name="minidump_generated">OpenVPN crashed unexpectedly.</string>
@@ -131,16 +130,17 @@
     <string name="error_rsa_sign">Error signing with Android keystore key %1$s: %2$s</string>
 
     <!-- Translatable strings -->
+    <string name="fetching_server_details">Establishing dVPN connection…</string>
     <string name="app_sub_name">Secure decentralized VPN</string>
     <string name="next">Next</string>
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">VIEW VPNs</string>
-    <string name="view_vpn_list">VPN Nodes</string>
+    <string name="view_vpn_list">OpenVPN Nodes</string>
     <string name="view_socks5_list">SOCKS5 Nodes</string>
     <string name="connect_to_vpn">Connect to VPN</string>
     <string name="connect">Connect</string>
     <string name="no_internet">No internet connectivity. Please try again.</string>
-    <string name="please_note">Please Note</string>
+    <string name="please_note">Attention</string>
     <string name="referral_id_copied">Referral ID copied to clipboard</string>
     <string name="vpn_location">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
@@ -158,21 +158,21 @@
     <string name="vpn_connections">VPN Connections</string>
     <string name="city">City:</string>
     <string name="country">Country:</string>
-    <string name="bandwidth">Bandwidth:</string>
+    <string name="bandwidth">Connection Speed:</string>
     <string name="latency">Latency:</string>
     <string name="encryption">Encryption:</string>
-    <string name="coming_soon">Coming soon</string>
-    <string name="fetching_config">Fetching VPN configurations…</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="fetching_config">Establishing dVPN Connection</string>
     <string name="saving_config">Saving VPN configurations…</string>
     <string name="download_speed">Download Speed</string>
     <string name="data_used">Data Used</string>
     <string name="upload_speed">Upload Speed</string>
     <string name="vpn_status">VPN Status: %1s</string>
     <string name="vpn_already_connected">You have already connected to a VPN server. Please disconnect from it before connecting to a new VPN server.</string>
-    <string name="telegram_url">https://t.me/sentinel_co</string>
-    <string name="medium_url">https://medium.com/@Sentinel</string>
-    <string name="twitter_url">https://twitter.com/sentinel_co</string>
-    <string name="website_url">https://sentinel.co</string>
+    <string translatable="false" name="telegram_url">https://t.me/sentinel_co</string>
+    <string translatable="false" name="medium_url">https://medium.com/@Sentinel</string>
+    <string translatable="false" name="twitter_url">https://twitter.com/sentinel_co</string>
+    <string translatable="false" name="website_url">https://sentinel.co</string>
     <string name="link_coming_soon">This data will be added soon.</string>
     <string name="faq">FAQ</string>
     <string name="got_it">Got it</string>
@@ -185,7 +185,7 @@
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
     <string name="share_id">Share ID</string>
-    <string name="share_string">Hey, check out this new dVPN android app. Use my Referral ID to get free tokens when you sign up.\n\nReferral ID: %s\n\nLink: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
+    <string name="share_string">Hey, check out this new dVPN Android app. Use my Referral ID to get free tokens when you Sign Up.\n\nReferral ID: %s\n\nLink: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
     <string name="info_title_1">Share your Referral ID to earn tokens for every Sign Up</string>
     <string name="info_title_2">Secure decentralized VPN</string>
     <string name="info_desc_1">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network</string>

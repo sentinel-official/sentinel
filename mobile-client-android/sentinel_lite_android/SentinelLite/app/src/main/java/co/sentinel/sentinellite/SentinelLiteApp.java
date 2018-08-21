@@ -27,7 +27,7 @@ public class SentinelLiteApp extends MultiDexApplication {
     public static final String TAG = SentinelLiteApp.class.getSimpleName();
 
     private static SentinelLiteApp sInstance;
-    public static boolean isVpnInitiated, isVpnConnected;
+    public static boolean isVpnInitiated, isVpnConnected, isVpnReconnectFailed;
     public static Locale sLocale = null;
 
     @Override

@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -192,6 +193,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
      * @param iTitle [String] The title to be shown in the toolbar
      */
     protected void setToolbarTitle(String iTitle) {
+        mToolbar.findViewById(R.id.toolbar_icon).setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
         mToolbarTitle.setText(iTitle);
     }
 
@@ -455,7 +457,6 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
 
     @Override
     public void onVpnDisconnectionInitiated() {
-        SentinelLiteApp.isVpnConnected = true;
         stopVPNConnection();
     }
 
@@ -470,21 +471,32 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
 
         runOnUiThread(() -> {
             // Called when the VPN connection terminates
-            if (state.equals("NOPROCESS") || state.equals("NONETWORK") || state.equals("RECONNECTING") || state.equals("AUTH")) {
-                if (SentinelLiteApp.isVpnConnected && !mHasActivityResult) {
-                    onVpnDisconnectionInitiated();
-                    SentinelLiteApp.isVpnInitiated = false;
-                    SentinelLiteApp.isVpnConnected = false;
-                    AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                    loadVpnFragment(state.equals("NOPROCESS") ? null : getString(R.string.network_lost));
+            if (state.equals("USER_VPN_PERMISSION_CANCELLED")
+                    || (state.equals("RECONNECTING") && logMessage.contains("tls-error"))
+                    || (state.equals("NOPROCESS") && SentinelLiteApp.isVpnConnected)) {
+                AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
+                switch (state) {
+                    case "USER_VPN_PERMISSION_CANCELLED":
+                        loadVpnFragment(getString(localizedResId));
+                        break;
+                    case "RECONNECTING":
+                        loadVpnFragment(getString(R.string.network_lost));
+                        break;
+                    default:
+                        loadVpnFragment(null);
+                        break;
                 }
-            }
-
-            if (state.equals("USER_VPN_PERMISSION_CANCELLED")) {
                 SentinelLiteApp.isVpnInitiated = false;
                 SentinelLiteApp.isVpnConnected = false;
+                SentinelLiteApp.isVpnReconnectFailed=false;
+            }
+
+            if (SentinelLiteApp.isVpnReconnectFailed){
                 AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                loadVpnFragment(getString(localizedResId));
+                loadVpnFragment(getString(R.string.network_lost));
+                SentinelLiteApp.isVpnInitiated = false;
+                SentinelLiteApp.isVpnConnected = false;
+                SentinelLiteApp.isVpnReconnectFailed=false;
             }
 
             // Called when user connects to a VPN node from other activity

@@ -208,5 +208,5 @@
     <string name="can_claim_after">Можно забрать через: %s</string>
     <string name="download_desc">Скачайте и установите Sentinel Network Client на это же устройство, чтобы забрать свой бонусные токены и получить доступ к полноценной версии.</string>
     <string name="referral_desc">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети.</string>
-    <string name="network_lost">Похоже, что вы отключились от интернета. VPN подключение остановлено.\nПожалуста, переподключитесь.</string>
+    <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
 </resources>

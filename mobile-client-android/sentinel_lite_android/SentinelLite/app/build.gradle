@@ -70,8 +70,6 @@ dependencies {
     implementation 'com.bugsnag:bugsnag-android:4.6.0'
     // ViewPagerIndicator
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:2.0.3'
-    // Network Tools Lib
-    implementation 'com.github.stealthcopter:AndroidNetworkTools:0.4.1'
     // Android Test Libs
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

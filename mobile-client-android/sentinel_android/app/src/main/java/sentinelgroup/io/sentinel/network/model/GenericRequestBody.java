@@ -7,6 +7,10 @@ import java.math.BigInteger;
 public class GenericRequestBody {
     @SerializedName("password")
     private String password;
+    @SerializedName("device_id")
+    private String deviceIdMain;
+    @SerializedName("deviceId")
+    private String deviceIdReferral;
     @SerializedName("account_addr")
     private String accountAddress;
     @SerializedName("vpn_addr")
@@ -30,12 +34,13 @@ public class GenericRequestBody {
     @SerializedName("session_id")
     private String sessionId;
     private String clientAddress;
-    private String referralAddress;
+    private String referredBy;
     private String address;
-    private String deviceId;
 
     private GenericRequestBody(GenericRequestBodyBuilder iBuilder) {
         password = iBuilder.password;
+        deviceIdMain = iBuilder.deviceIdMain;
+        deviceIdReferral = iBuilder.deviceIdReferral;
         accountAddress = iBuilder.accountAddress;
         vpnAddress = iBuilder.vpnAddress;
         sessionName = iBuilder.sessionName;
@@ -48,14 +53,22 @@ public class GenericRequestBody {
         amount = iBuilder.amount;
         sessionId = iBuilder.sessionId;
         clientAddress = iBuilder.clientAddress;
-        referralAddress = iBuilder.referralAddress;
+        referredBy = iBuilder.referredBy;
         address = iBuilder.address;
-        deviceId = iBuilder.deviceId;
+        ;
     }
 
     // Getters
     public String getPassword() {
         return password;
+    }
+
+    public String getDeviceIdMain() {
+        return deviceIdMain;
+    }
+
+    public String getDeviceIdReferral() {
+        return deviceIdReferral;
     }
 
     public String getAccountAddress() {
@@ -106,21 +119,21 @@ public class GenericRequestBody {
         return clientAddress;
     }
 
-    public String getReferralAddress() {
-        return referralAddress;
+    public String getReferredBy() {
+        return referredBy;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public String getDeviceId() {
-        return deviceId;
-    }
-
     public static class GenericRequestBodyBuilder {
         @SerializedName("password")
         private String password = null;
+        @SerializedName("device_id")
+        private String deviceIdMain = null;
+        @SerializedName("deviceId")
+        private String deviceIdReferral = null;
         @SerializedName("account_addr")
         private String accountAddress = null;
         @SerializedName("vpn_addr")
@@ -144,9 +157,8 @@ public class GenericRequestBody {
         @SerializedName("session_id")
         private String sessionId = null;
         private String clientAddress = null;
-        private String referralAddress = null;
+        private String referredBy = null;
         private String address = null;
-        private String deviceId = null;
 
         public GenericRequestBodyBuilder password(String password) {
             this.password = password;
@@ -155,6 +167,16 @@ public class GenericRequestBody {
 
         public GenericRequestBodyBuilder accountAddress(String accountAddress) {
             this.accountAddress = accountAddress;
+            return this;
+        }
+
+        public GenericRequestBodyBuilder deviceIdMain(String deviceIdMain) {
+            this.deviceIdMain = deviceIdMain;
+            return this;
+        }
+
+        public GenericRequestBodyBuilder deviceIdReferral(String deviceIdReferral) {
+            this.deviceIdReferral = deviceIdReferral;
             return this;
         }
 
@@ -213,18 +235,13 @@ public class GenericRequestBody {
             return this;
         }
 
-        public GenericRequestBodyBuilder referralAddress(String referralAddress) {
-            this.referralAddress = referralAddress;
+        public GenericRequestBodyBuilder referredBy(String referredBy) {
+            this.referredBy = referredBy;
             return this;
         }
 
         public GenericRequestBodyBuilder address(String address) {
             this.address = address;
-            return this;
-        }
-
-        public GenericRequestBodyBuilder deviceId(String deviceId) {
-            this.deviceId = deviceId;
             return this;
         }
 

@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -12,6 +13,7 @@ import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
 import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.network.model.GenericResponse;
 import sentinelgroup.io.sentinel.network.model.ReportPay;
 import sentinelgroup.io.sentinel.network.model.Tokens;
 import sentinelgroup.io.sentinel.network.model.Vpn;
@@ -45,9 +47,11 @@ public class VpnRepository {
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
     private final SingleLiveEvent<Resource<ReportPay>> mReportPaymentLiveEvent;
+    private final SingleLiveEvent<Resource<String>> mDisconnectLiveEvent;
     private final SingleLiveEvent<Boolean> mTokenAlertLiveEvent;
+    private final String mDeviceId;
 
-    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
+    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
         mListDao = iListDao;
         mUsageDao = iUsageDao;
         mGenericWebService = iGenericWebService;
@@ -59,7 +63,9 @@ public class VpnRepository {
         mVpnServerCredentialsLiveEvent = new SingleLiveEvent<>();
         mVpnConfigLiveEvent = new SingleLiveEvent<>();
         mReportPaymentLiveEvent = new SingleLiveEvent<>();
+        mDisconnectLiveEvent = new SingleLiveEvent<>();
         mTokenAlertLiveEvent = new SingleLiveEvent<>();
+        mDeviceId = iDeviceId;
 
         LiveData<List<VpnListEntity>> aVpnListServerData = getVpnListMutableLiveData();
         aVpnListServerData.observeForever(vpnList -> {
@@ -81,10 +87,10 @@ public class VpnRepository {
         });
     }
 
-    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
+    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new VpnRepository(iListDao, iUsageDao, iGenericWebService, iAppExecutors);
+                sInstance = new VpnRepository(iListDao, iUsageDao, iGenericWebService, iAppExecutors, iDeviceId);
             }
         }
         return sInstance;
@@ -269,6 +275,15 @@ public class VpnRepository {
         });
     }
 
+    public Call<GenericResponse> disconnectVpn() {
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .accountAddress(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS))
+                .token(AppPreferences.getInstance().getString(AppConstants.PREFS_VPN_TOKEN))
+                .build();
+        String aUrl = String.format(Locale.US, AppConstants.DISCONNECT_URL_BUILDER, AppPreferences.getInstance().getString(AppConstants.PREFS_IP_ADDRESS), AppPreferences.getInstance().getInteger(AppConstants.PREFS_IP_PORT));
+        return disconnectVpn(aUrl, aBody);
+    }
+
     public void reportPayment(GenericRequestBody iRequestBody) {
         mReportPaymentLiveEvent.postValue(Resource.loading(null));
         mGenericWebService.reportPayment(iRequestBody).enqueue(new Callback<ReportPay>() {
@@ -320,5 +335,10 @@ public class VpnRepository {
                 }
             }
         });
+    }
+
+    private Call<GenericResponse> disconnectVpn(String iUrl, GenericRequestBody iRequestBody) {
+        mDisconnectLiveEvent.postValue(Resource.loading(null));
+        return mGenericWebService.disconnectVpn(iUrl, iRequestBody);
     }
 }

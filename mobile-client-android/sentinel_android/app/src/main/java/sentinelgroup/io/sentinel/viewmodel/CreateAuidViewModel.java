@@ -68,7 +68,6 @@ public class CreateAuidViewModel extends ViewModel {
     public void addReferralAddress(String iClientAddress, String iReferralAddress) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
                 .clientAddress(iClientAddress)
-                .referralAddress(iReferralAddress)
                 .build();
         mRepository.addReferralAddress(aBody);
     }

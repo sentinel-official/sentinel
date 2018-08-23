@@ -1,5 +1,6 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.arch.lifecycle.ViewModelProviders;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -49,7 +51,10 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
         // init download manager
         mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 
-        SplashViewModelFactory aFactory = InjectorModule.provideSplashViewModelFactory();
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        SplashViewModelFactory aFactory = InjectorModule.provideSplashViewModelFactory(this, aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(SplashViewModel.class);
 
         mViewModel.getVersionInfoLiveEvent().observe(this, versionInfoResource -> {
@@ -148,7 +153,7 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
             if (iTag.equals(TAG_UPDATE)) {
                 updateApp();
             } else if (iTag.equals(TAG_ERROR)) {
-                mViewModel.reload();
+                mViewModel.fetchAccountInfo();
             }
         } else {
             finish();

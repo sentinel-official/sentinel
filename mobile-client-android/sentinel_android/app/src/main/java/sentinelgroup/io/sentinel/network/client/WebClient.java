@@ -21,7 +21,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sentinelgroup.io.sentinel.network.api.AppVersionWebService;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
-import sentinelgroup.io.sentinel.network.api.ReferralWebService;
+import sentinelgroup.io.sentinel.network.api.BonusWebService;
 import sentinelgroup.io.sentinel.util.Logger;
 
 /**
@@ -43,7 +43,7 @@ public class WebClient {
     private static Retrofit sGenericClient, sReferralClient, sAppVersionClient;
 
     private static GenericWebService sGenericWebService;
-    private static ReferralWebService sReferralWebService;
+    private static BonusWebService sBonusWebService;
     private static AppVersionWebService sAppVersionWebService;
 
     static {
@@ -95,8 +95,8 @@ public class WebClient {
         return sGenericClient.create(GenericWebService.class);
     }
 
-    public static ReferralWebService getReferralWebService() {
-        return sReferralClient.create(ReferralWebService.class);
+    public static BonusWebService getBonusWebService() {
+        return sReferralClient.create(BonusWebService.class);
     }
 
     public static AppVersionWebService getAppVersionWebService() {

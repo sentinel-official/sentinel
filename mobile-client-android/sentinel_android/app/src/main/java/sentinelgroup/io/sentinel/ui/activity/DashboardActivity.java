@@ -623,7 +623,6 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onVpnDisconnectionInitiated() {
-        SentinelApp.isVpnConnected = true;
         stopVPNConnection();
     }
 

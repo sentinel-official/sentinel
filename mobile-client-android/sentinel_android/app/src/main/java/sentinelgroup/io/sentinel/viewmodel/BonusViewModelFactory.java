@@ -4,12 +4,12 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import sentinelgroup.io.sentinel.repository.ReferralRepository;
+import sentinelgroup.io.sentinel.repository.BonusRepository;
 
-public class ReferralViewModelFactory extends ViewModelProvider.NewInstanceFactory {
-    private final ReferralRepository mRepository;
+public class BonusViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+    private final BonusRepository mRepository;
 
-    public ReferralViewModelFactory(ReferralRepository iRepository) {
+    public BonusViewModelFactory(BonusRepository iRepository) {
         this.mRepository = iRepository;
     }
 

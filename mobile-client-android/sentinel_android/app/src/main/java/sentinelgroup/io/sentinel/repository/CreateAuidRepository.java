@@ -7,7 +7,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import sentinelgroup.io.sentinel.db.dao.DeleteTableDao;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
-import sentinelgroup.io.sentinel.network.api.ReferralWebService;
+import sentinelgroup.io.sentinel.network.api.BonusWebService;
 import sentinelgroup.io.sentinel.network.model.Account;
 import sentinelgroup.io.sentinel.network.model.ApiError;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
@@ -28,26 +28,26 @@ public class CreateAuidRepository {
     private static CreateAuidRepository sInstance;
     private final DeleteTableDao mDao;
     private final GenericWebService mGenericWebService;
-    private final ReferralWebService mReferralWebService;
+    private final BonusWebService mBonusWebService;
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<Account>> mAccountLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mReferralLiveEvent;
     private final SingleLiveEvent<Boolean> mSessionClearedLiveEvent;
 
-    private CreateAuidRepository(DeleteTableDao iDao, GenericWebService iGenericWebService, ReferralWebService iReferralWebService, AppExecutors iAppExecutors) {
+    private CreateAuidRepository(DeleteTableDao iDao, GenericWebService iGenericWebService, BonusWebService iBonusWebService, AppExecutors iAppExecutors) {
         mDao = iDao;
         mGenericWebService = iGenericWebService;
-        mReferralWebService = iReferralWebService;
+        mBonusWebService = iBonusWebService;
         mAppExecutors = iAppExecutors;
         mAccountLiveEvent = new SingleLiveEvent<>();
         mReferralLiveEvent = new SingleLiveEvent<>();
         mSessionClearedLiveEvent = new SingleLiveEvent<>();
     }
 
-    public static CreateAuidRepository getInstance(DeleteTableDao iDao, GenericWebService iGenericWebService, ReferralWebService iReferralWebService, AppExecutors iAppExecutors) {
+    public static CreateAuidRepository getInstance(DeleteTableDao iDao, GenericWebService iGenericWebService, BonusWebService iBonusWebService, AppExecutors iAppExecutors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new CreateAuidRepository(iDao, iGenericWebService, iReferralWebService, iAppExecutors);
+                sInstance = new CreateAuidRepository(iDao, iGenericWebService, iBonusWebService, iAppExecutors);
             }
         }
         return sInstance;
@@ -78,7 +78,7 @@ public class CreateAuidRepository {
             mDao.deleteVpnListEntities();
             mDao.deleteVpnUsageEntities();
             mDao.deleteBalanceEntities();
-            mDao.deleteReferralInfoEntity();
+            mDao.deleteBonusInfoEntity();
             mSessionClearedLiveEvent.postValue(true);
         });
     }
@@ -121,7 +121,7 @@ public class CreateAuidRepository {
 
     public void addReferralAddress(GenericRequestBody iRequestBody) {
         mReferralLiveEvent.postValue(Resource.loading(null));
-        mReferralWebService.addAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
+        mBonusWebService.addAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 reportSuccessResponse(response);

@@ -1,9 +1,11 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -104,7 +106,10 @@ public class VpnSelectFragment extends Fragment {
         if (SentinelApp.isVpnInitiated)
             loadNextFragment(VpnConnectedFragment.newInstance());
         else {
-            VpnSelectViewModelFactory aFactory = InjectorModule.provideVpnSelectViewModelFactory(getContext());
+            // init Device ID
+            @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            VpnSelectViewModelFactory aFactory = InjectorModule.provideVpnSelectViewModelFactory(getContext(), aDeviceId);
             mViewModel = ViewModelProviders.of(this, aFactory).get(VpnSelectViewModel.class);
 
             mViewModel.getTokenAlertLiveEvent().observe(this, isTokenRequested -> {

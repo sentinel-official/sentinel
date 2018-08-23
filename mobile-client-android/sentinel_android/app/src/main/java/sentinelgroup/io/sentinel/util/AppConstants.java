@@ -19,8 +19,11 @@ public class AppConstants {
     public static final String PREFS_GAS_FAST = "prefs_fast";
     public static final String PREFS_GAS_FASTEST = "prefs_fastest";
     public static final String PREFS_IP_ADDRESS = "prefs_ip_address";
+    public static final String PREFS_IP_PORT = "prefs_ip_port";
+    public static final String PREFS_VPN_TOKEN = "prefs_vpn_token";
     public static final String PREFS_IS_HELPER_SHOWN = "is_helper_shown";
     public static final String PREFS_SELECTED_LANGUAGE_CODE = "selected_language";
+    public static final String PREFS_REF_ID = "prefs_ref_id";
 
     // Request codes
     public static final int REQ_CODE_NULL = -1;
@@ -48,6 +51,10 @@ public class AppConstants {
     public static final String TAG_INIT_PAY = "INIT_PAY";
     public static final String TAG_LOGOUT = "LOGOUT";
 
+    // Error Constants
+    public static final String ERROR_GENERIC = "error_generic";
+    public static final String ERROR_VERSION_FETCH = "error_version_undefined";
+
     // Other app constants
     public static final int VALUE_DEFAULT = -1;
     public static final String FOLDER_NAME = "Sentinel";
@@ -68,6 +75,7 @@ public class AppConstants {
     public static final String STORAGE_ERROR = "storage_error";
     public static final String INIT_PAY_ERROR = "Initial VPN payment is not done.";
     public static final String URL_BUILDER = "http://%1s:%d/ovpn";
+    public static final String DISCONNECT_URL_BUILDER = "http://%1s:%d/disconnect";
     public static final String GAS_PRICE_ESTIMATE_URL = "https://www.etherchain.org/api/gasPriceOracle";
     public static final String ETH_TX_URL_BUILDER = "https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=txlist&startblock=0&endblock=latest&address=%1s";
     public static final String SENT_TX_URL_BUILDER = "https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0x29317B796510afC25794E511e7B10659Ca18048B&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=%1s&topic1_2_opr=or&topic2=%2s";

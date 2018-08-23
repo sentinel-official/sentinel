@@ -124,6 +124,11 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="CustomTextAppearance.Text32.Orange">
+        <item name="android:textColor">@color/colorButtonOrange</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <!-- Navigation Drawer Item Theme -->
     <style name="DrawerItemTheme">
         <item name="android:textSize">@dimen/text_14</item>

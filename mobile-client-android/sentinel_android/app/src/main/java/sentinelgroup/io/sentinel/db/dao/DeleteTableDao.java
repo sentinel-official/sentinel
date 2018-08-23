@@ -17,6 +17,6 @@ public interface DeleteTableDao {
     @Query("DELETE FROM balance_entity")
     void deleteBalanceEntities();
 
-    @Query("DELETE FROM referral_info_entity")
-    void deleteReferralInfoEntity();
+    @Query("DELETE FROM bonus_info_entity")
+    void deleteBonusInfoEntity();
 }

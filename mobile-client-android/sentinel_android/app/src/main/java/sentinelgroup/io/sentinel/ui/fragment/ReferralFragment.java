@@ -1,10 +1,12 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
@@ -23,7 +27,7 @@ import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.ReferralViewModel;
-import sentinelgroup.io.sentinel.viewmodel.ReferralViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.BonusViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,7 +41,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     private OnGenericFragmentInteractionListener mListener;
 
     private SwipeRefreshLayout mSrReload;
-    private TextView mTvReferralCode, mtvReferralCount, mTvRewardsEarned;
+    private TextView mTvReferralCode, mtvReferralCount, mTvRewardsEarned, mTvCanClaimAfter, mTvReadMore;
     private ImageButton mIbCopyReferral;
     private Button mBtnShareAddress, mBtnClaimBonus;
 
@@ -88,27 +92,37 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         mtvReferralCount = iView.findViewById(R.id.tv_referral_count);
         mTvRewardsEarned = iView.findViewById(R.id.tv_rewards_earned);
         mIbCopyReferral = iView.findViewById(R.id.ib_copy_referral);
-        mBtnShareAddress = iView.findViewById(R.id.btn_share_address);
+        mBtnShareAddress = iView.findViewById(R.id.btn_share_referral_id);
+        mTvCanClaimAfter = iView.findViewById(R.id.tv_can_claim_after);
         mBtnClaimBonus = iView.findViewById(R.id.btn_claim_bonus);
+        mTvReadMore = iView.findViewById(R.id.tv_read_more);
         // Set listeners
         mSrReload.setOnRefreshListener(this);
         mIbCopyReferral.setOnClickListener(this);
         mBtnShareAddress.setOnClickListener(this);
         mBtnClaimBonus.setOnClickListener(this);
+        mTvReadMore.setOnClickListener(this);
     }
 
     private void initViewModel() {
-        ReferralViewModelFactory aFactory = InjectorModule.provideReferralViewModelFactory(getContext());
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        BonusViewModelFactory aFactory = InjectorModule.provideBonusViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(ReferralViewModel.class);
 
-        mTvReferralCode.setText(mViewModel.getAccountAddress());
+        mTvReferralCode.setText(mViewModel.getReferralId());
         mShareString = getString(R.string.share_string, mViewModel.getAccountAddress());
 
-        mViewModel.getReferralInfoLiveData().observe(this, referralInfoEntity -> {
-            if (referralInfoEntity != null) {
-                if (referralInfoEntity.getReferral() != null) {
-                    mtvReferralCount.setText(String.valueOf(referralInfoEntity.getReferral().count));
-                    mTvRewardsEarned.setText(Converter.getFormattedTokenString(referralInfoEntity.getReferral().amount));
+        mViewModel.getBonusInfoLiveData().observe(this, bonusInfoEntity -> {
+            if (bonusInfoEntity != null) {
+                mtvReferralCount.setText(String.valueOf(bonusInfoEntity.getRefCount()));
+                mTvRewardsEarned.setText(Converter.getFormattedTokenString(bonusInfoEntity.getBonuses().getTotalTokens()));
+                mBtnClaimBonus.setEnabled(bonusInfoEntity.isCanClaim());
+                if (bonusInfoEntity.getCanClaimAfter() != null) {
+                    String aFormattedTime = Converter.getFormattedTimeInUTC(bonusInfoEntity.getCanClaimAfter());
+                    if (aFormattedTime != null)
+                        mTvCanClaimAfter.setText(getString(R.string.can_claim_after, aFormattedTime));
                 }
             }
         });
@@ -134,7 +148,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_share_address:
+            case R.id.btn_share_referral_id:
                 Intent aIntent = new Intent();
                 aIntent.setAction(Intent.ACTION_SEND);
                 aIntent.putExtra(Intent.EXTRA_TEXT, mShareString);
@@ -146,6 +160,10 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.ib_copy_referral:
                 copyToClipboard(mTvReferralCode.getText().toString(), R.string.address_copied);
+                break;
+
+            case R.id.tv_read_more:
+                showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.referral_desc), AppConstants.VALUE_DEFAULT);
                 break;
         }
     }

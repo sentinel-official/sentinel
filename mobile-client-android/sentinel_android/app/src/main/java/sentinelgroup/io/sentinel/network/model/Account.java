@@ -14,4 +14,14 @@ public class Account {
     @SerializedName("message")
     public String message;
     public String keystoreFilePath;
+
+    /**
+     * This is for bonus account
+     */
+    public String deviceId;
+    public String referralId;
+    public String address;
+    public String referredBy;
+    public String addedOn;
+
 }

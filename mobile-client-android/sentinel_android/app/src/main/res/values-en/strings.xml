@@ -55,7 +55,7 @@
     <string name="create_auid">Create User ID</string>
     <string name="no_internet">No internet connectivity. Please try again.</string>
     <string name="password_mismatch">Password and Confirm Password did not match</string>
-    <string name="please_note">Please Note</string>
+    <string name="please_note">Attention</string>
     <string name="secure_keys">Secure Your Keys</string>
     <string name="storage_permission_denied">Storage permission not granted.</string>
     <string name="key_copied">Private Key copied to clipboard</string>
@@ -175,7 +175,7 @@
     <string name="off">OFF</string>
     <string name="upload_keystore_desc">Upload Keystore file</string>
     <string name="uploaded_keystore_desc">Keystore File Uploaded</string>
-    <string name="referral_desc">This address is your referral code.\nShare this to receive tokens for every new Sign Up.</string>
+    <string name="referral_desc">Welcome to the Sentinel Referral Utility Drop.\n\nUsers who test this Lite Client will be able to claim their reward(s) after 21 or so days from the time that they had first installed the application and consumed a minimum of 100 MB of data from the Sentinel dVPN community hosted network.\n\nThe referral air drop reward schedule is as follows: \n\n500 SENT : For downloading the Sentinel Android Google Play Client and using 100 MB of data \n\n300 SENT : For downloading the Sentinel Network Client which includes a mobile ERC20 wallet. This client will have to be downloaded by users in order to claim $SENT\n\n200 SENT : For every referral who downloads either SLC or SNC</string>
     <string name="referral_code_desc">Your referral tokens can be claimed when you make your first VPN payment.</string>
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
@@ -200,7 +200,8 @@
     <string name="referral_address_missing">You have not entered a referral code.\n\nDo you wish to continue without applying a referral code?</string>
     <string name="empty_list_message">There are no items to display.</string>
     <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
-
+    <string name="can_claim_after">Can claim after: %s</string>
+    <string name="read_more">Read More</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

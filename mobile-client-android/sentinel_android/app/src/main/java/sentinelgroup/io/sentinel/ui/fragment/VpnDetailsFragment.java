@@ -1,10 +1,12 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -119,7 +121,10 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     }
 
     private void initViewModel() {
-        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext());
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
 
         mViewModel.getVpnGetServerCredentials().observe(this, vpnCredentialsResource -> {

@@ -84,6 +84,8 @@ public class VpnListViewModel extends ViewModel {
                 .build();
         String aUrl = String.format(Locale.US, AppConstants.URL_BUILDER, iVpnCredentials.ip, iVpnCredentials.port);
         AppPreferences.getInstance().saveString(AppConstants.PREFS_IP_ADDRESS, iVpnCredentials.ip);
+        AppPreferences.getInstance().saveInteger(AppConstants.PREFS_IP_PORT, iVpnCredentials.port);
+        AppPreferences.getInstance().saveString(AppConstants.PREFS_VPN_TOKEN, iVpnCredentials.token);
         mRepository.getVpnConfig(aUrl, aBody);
     }
 

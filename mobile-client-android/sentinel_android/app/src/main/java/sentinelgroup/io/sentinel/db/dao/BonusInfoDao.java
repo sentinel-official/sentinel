@@ -6,16 +6,17 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import sentinelgroup.io.sentinel.network.model.BonusInfoEntity;
 import sentinelgroup.io.sentinel.network.model.ReferralInfoEntity;
 
 /**
  * DAO to do CRUD operation related to Referral Info.
  */
 @Dao
-public interface ReferralInfoDao {
+public interface BonusInfoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertReferralInfoEntity(ReferralInfoEntity iEntity);
+    void insertBonusInfoEntity(BonusInfoEntity iEntity);
 
-    @Query("SELECT * FROM referral_info_entity")
-    LiveData<ReferralInfoEntity> getReferralInfoEntity();
+    @Query("SELECT * FROM bonus_info_entity")
+    LiveData<BonusInfoEntity> getBonusInfoEntity();
 }

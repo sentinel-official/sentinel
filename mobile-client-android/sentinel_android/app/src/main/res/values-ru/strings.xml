@@ -203,6 +203,7 @@
     <string name="tx_history_empty_list_message">В данный момент у вас нет истории транзакций</string>
     <string name="vpn_empty_list_message">В данный момент нет доступных VPN для подключения.</string>
     <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
+    <string name="can_claim_after">Можно забрать через: %s</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

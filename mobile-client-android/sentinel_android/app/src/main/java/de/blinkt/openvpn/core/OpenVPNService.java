@@ -5,6 +5,7 @@
 package de.blinkt.openvpn.core;
 
 import android.Manifest.permission;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
@@ -29,6 +30,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.system.OsConstants;
@@ -50,13 +52,17 @@ import de.blinkt.openvpn.LaunchVPN;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.VpnStatus.ByteCountListener;
 import de.blinkt.openvpn.core.VpnStatus.StateListener;
+import retrofit2.Call;
+import retrofit2.Response;
 import sentinelgroup.io.sentinel.BuildConfig;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
+import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.network.model.GenericResponse;
+import sentinelgroup.io.sentinel.repository.VpnRepository;
 import sentinelgroup.io.sentinel.ui.activity.DashboardActivity;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
-import sentinelgroup.io.sentinel.util.Logger;
 
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_CONNECTED;
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_WAITING_FOR_USER_INPUT;
@@ -177,6 +183,32 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         synchronized (mProcessLock) {
             mProcessThread = null;
         }
+        disconnectVpnCall();
+    }
+
+    private void disconnectVpnCall() {
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        VpnRepository aRepo = InjectorModule.provideVpnRepository(this, aDeviceId);
+        aRepo.disconnectVpn().enqueue(new retrofit2.Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                disconnectVpnLocal();
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                disconnectVpnLocal();
+            }
+        });
+    }
+
+    private void disconnectVpnLocal() {
+        AppPreferences.getInstance().saveString(AppConstants.PREFS_IP_ADDRESS, "");
+        AppPreferences.getInstance().saveInteger(AppConstants.PREFS_IP_PORT, 0);
+        AppPreferences.getInstance().saveString(AppConstants.PREFS_VPN_TOKEN, "");
+
         VpnStatus.removeByteCountListener(this);
         unregisterDeviceStateReceiver();
         ProfileManager.setConntectedVpnProfileDisconnected(this);
@@ -839,7 +871,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
     @Override
     public void updateState(String state, String logmessage, int resid, ConnectionStatus level) {
-        if (AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME) == 0L && state.equals("CONNECTED")) {
+        if (state.equals("CONNECTED")) {
             AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, System.currentTimeMillis());
             SentinelApp.isVpnConnected = true;
         }

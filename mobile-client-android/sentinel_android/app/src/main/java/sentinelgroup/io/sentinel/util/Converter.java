@@ -4,9 +4,11 @@ import android.support.annotation.NonNull;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class Converter {
@@ -146,5 +148,18 @@ public class Converter {
     public static String getFormattedTokenString(double iSentValue) {
         iSentValue /= Math.pow(10, 8);
         return String.format(Locale.US, iSentValue % 1 == 0 ? "%.0f" : "%.8f", iSentValue);
+    }
+
+    public static String getFormattedTimeInUTC(String iZuluTime) {
+        SimpleDateFormat aInputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        aInputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat aOutputFormat = new SimpleDateFormat("EEE, dd MMM yyyy   HH:mm:ss z", Locale.US);
+        String aFormattedDateString = null;
+        try {
+            aFormattedDateString = aOutputFormat.format(aInputFormat.parse(iZuluTime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return aFormattedDateString;
     }
 }

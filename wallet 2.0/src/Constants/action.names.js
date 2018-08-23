@@ -29,3 +29,5 @@ export const VPN_USAGE = 'VPN_USAGE';
 export const GET_KEYS = 'GET_KEYS';
 export const SET_TM_COMPONENT = 'SET_TM_COMPONENT';
 export const CREATE_TMACCOUNT = 'CREATE_TMACCOUNT';
+export const GET_TMBALANCE = 'GET_TMBALACE';
+export const SEND_TMAMOUNT = 'SEND_TMAMOUNT';

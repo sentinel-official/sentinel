@@ -17,3 +17,12 @@ export function setTMComponent(state = 'home', action) {
             return state
     }
 }
+
+export function tmBalance(state = null, action) {
+    switch (action.type) {
+        case types.GET_TMBALANCE:
+            return action.payload;
+        default:
+            return state
+    }
+}

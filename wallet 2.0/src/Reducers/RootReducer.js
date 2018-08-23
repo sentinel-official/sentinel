@@ -12,7 +12,7 @@ import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 import { connectVPNReducer } from './connectVPN.reducer'
 import { initPaymentDetails } from './initPayment.reducer';
 import { VPNUsage } from './vpnUsage'
-import { getKeys, setTMComponent } from './tendermint.reducer';
+import { getKeys, setTMComponent, tmBalance } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
 
 const rootReducer = combineReducers({
@@ -42,7 +42,8 @@ const rootReducer = combineReducers({
     setVpnStatus,
     getKeys,
     setTMComponent,
-    createTMAccount
+    createTMAccount,
+    tmBalance
 });
 
 export default rootReducer;

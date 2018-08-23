@@ -21,3 +21,46 @@ export function setTMComponent(component) {
         payload: component
     }
 }
+
+export async function getTMBalance(address) {
+    try {
+        let response = await axios.get(TM_URL + '/accounts/' + address, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        })
+        console.log("Res...", response)
+        return {
+            type: types.GET_TMBALANCE,
+            payload: response.data
+        }
+    } catch (err) {
+        return {
+            type: types.GET_TMBALANCE,
+            payload: null
+        }
+    }
+}
+
+export async function sendAmount(data) {
+    try {
+        let response = await axios.post(TM_URL + '/accounts/send', data, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        })
+        return {
+            type: types.SEND_TMAMOUNT,
+            payload: response.data,
+            error: null
+        }
+    } catch (err) {
+        return {
+            type: types.SEND_TMAMOUNT,
+            payload: null,
+            error: err.response
+        }
+    }
+}

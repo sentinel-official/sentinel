@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Row, Col } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import { setTMComponent } from '../Actions/tendermint.action';
 import { Button } from '@material-ui/core';
@@ -10,7 +11,7 @@ import { compose } from 'recompose';
 
 const Customstyles = theme => ({
     button: {
-        margin: theme.spacing.unit,
+        
     }
 });
 
@@ -28,11 +29,13 @@ class TMAccountDetails extends Component {
     render() {
         const { classes, account } = this.props;
         return (
-            <div>
-                <p>Account Name: {account.name}</p>
-                <p>Address: {account.address}</p>
-                <p>Public Key: {account.pub_key}</p>
-                <p>Seed: {account.seed}</p>
+            <div style={{padding:'5%'}}>
+                <p style={createAccountStyle.detailsHeading}>Address:</p>
+                <p style={createAccountStyle.detailsText}>{account.address}</p>
+                <p style={createAccountStyle.detailsHeading}>Public Key:</p>
+                <p style={createAccountStyle.detailsText}>{account.pub_key}</p>
+                <p style={createAccountStyle.detailsHeading}>Seed:</p>
+                <p style={createAccountStyle.detailsText}>{account.seed}</p>
                 <Button
                     variant="outlined"
                     color="primary"

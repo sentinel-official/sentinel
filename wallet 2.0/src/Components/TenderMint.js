@@ -6,6 +6,8 @@ import { sidebarStyles } from '../Assets/sidebar.styles';
 import { getKeys, setTMComponent } from '../Actions/tendermint.action';
 import CreateTMAccount from './CreateTMAccount';
 import TMAccountDetails from './TMAccountDetails';
+import TMAccountView from './TMAccountView';
+import TMTransactions from './TMTransactions';
 
 class TenderMint extends Component {
     constructor(props) {
@@ -32,6 +34,7 @@ class TenderMint extends Component {
 
     render() {
         let { component, account, keys } = this.props;
+        let { value } = this.state;
         switch (component) {
             case 'dashboard':
                 {
@@ -39,7 +42,7 @@ class TenderMint extends Component {
                         <div style={sidebarStyles.heightFull}>
                             <Paper>
                                 <Tabs
-                                    value={this.state.value}
+                                    value={value}
                                     indicatorColor="primary"
                                     textColor="primary"
                                     onChange={this.handleChange}
@@ -48,6 +51,8 @@ class TenderMint extends Component {
                                     <Tab label="Transactions" style={sidebarStyles.outlineNone} />
                                 </Tabs>
                             </Paper>
+                            {value === 0 && <TMAccountView />}
+                            {value === 1 && <TMTransactions />}
                         </div>
                     )
                 }

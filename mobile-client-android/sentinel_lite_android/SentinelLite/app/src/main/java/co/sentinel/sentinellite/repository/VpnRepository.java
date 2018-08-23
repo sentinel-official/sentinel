@@ -10,6 +10,7 @@ import co.sentinel.sentinellite.db.dao.VpnListEntryDao;
 import co.sentinel.sentinellite.network.api.GenericWebService;
 import co.sentinel.sentinellite.network.model.ApiError;
 import co.sentinel.sentinellite.network.model.GenericRequestBody;
+import co.sentinel.sentinellite.network.model.GenericResponse;
 import co.sentinel.sentinellite.network.model.Vpn;
 import co.sentinel.sentinellite.network.model.VpnConfig;
 import co.sentinel.sentinellite.network.model.VpnCredentials;
@@ -18,6 +19,7 @@ import co.sentinel.sentinellite.network.model.VpnUsageEntity;
 import co.sentinel.sentinellite.util.ApiErrorUtils;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppExecutors;
+import co.sentinel.sentinellite.util.AppPreferences;
 import co.sentinel.sentinellite.util.NoConnectivityException;
 import co.sentinel.sentinellite.util.Resource;
 import co.sentinel.sentinellite.util.SingleLiveEvent;
@@ -41,6 +43,7 @@ public class VpnRepository {
     private final SingleLiveEvent<String> mVpnListErrorLiveEvent;
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
+    private final SingleLiveEvent<Resource<String>> mDisconnectLiveEvent;
     private final SingleLiveEvent<String> mVpnUsageErrorLiveEvent;
 
     private VpnRepository(VpnListEntryDao iListDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
@@ -53,6 +56,7 @@ public class VpnRepository {
         mVpnListErrorLiveEvent = new SingleLiveEvent<>();
         mVpnServerCredentialsLiveEvent = new SingleLiveEvent<>();
         mVpnConfigLiveEvent = new SingleLiveEvent<>();
+        mDisconnectLiveEvent = new SingleLiveEvent<>();
         mVpnUsageErrorLiveEvent = new SingleLiveEvent<>();
 
         LiveData<List<VpnListEntity>> aVpnListServerData = getVpnListMutableLiveData();
@@ -118,6 +122,15 @@ public class VpnRepository {
                 .build();
         String aUrl = String.format(Locale.US, AppConstants.URL_BUILDER, iIp, iPort);
         getVpnConfig(aUrl, aBody);
+    }
+
+    public Call<GenericResponse> disconnectVpn() {
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .accountAddress(mDeviceId)
+                .token(AppPreferences.getInstance().getString(AppConstants.PREFS_VPN_TOKEN))
+                .build();
+        String aUrl = String.format(Locale.US, AppConstants.DISCONNECT_URL_BUILDER, AppPreferences.getInstance().getString(AppConstants.PREFS_IP_ADDRESS), AppPreferences.getInstance().getInteger(AppConstants.PREFS_IP_PORT));
+        return disconnectVpn(aUrl, aBody);
     }
 
     // Network call
@@ -209,5 +222,10 @@ public class VpnRepository {
                     mVpnConfigLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
             }
         });
+    }
+
+    private Call<GenericResponse> disconnectVpn(String iUrl, GenericRequestBody iRequestBody) {
+        mDisconnectLiveEvent.postValue(Resource.loading(null));
+        return mGenericWebService.disconnectVpn(iUrl, iRequestBody);
     }
 }

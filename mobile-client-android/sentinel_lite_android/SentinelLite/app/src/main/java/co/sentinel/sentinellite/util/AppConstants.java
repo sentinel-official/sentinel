@@ -12,6 +12,8 @@ public class AppConstants {
     public static final String PREFS_VPN_ADDRESS = "prefs_vpn_address";
     public static final String PREFS_CONNECTION_START_TIME = "prefs_connection_start_time_in_millis";
     public static final String PREFS_IP_ADDRESS = "prefs_ip_address";
+    public static final String PREFS_IP_PORT = "prefs_ip_port";
+    public static final String PREFS_VPN_TOKEN = "prefs_vpn_token";
     public static final String PREFS_SELECTED_LANGUAGE_CODE = "prefs_selected_language";
     public static final String PREFS_REF_ID = "prefs_ref_id";
     public static final String PREFS_FILE_URL = "prefs_file_url";
@@ -46,5 +48,6 @@ public class AppConstants {
     public static final int REFERRAL_CODE_LENGHT = 13;
     public static final String CONFIG_NAME = "client.ovpn";
     public static final String URL_BUILDER = "http://%1s:%d/ovpn";
+    public static final String DISCONNECT_URL_BUILDER = "http://%1s:%d/disconnect";
     public static final String HOME = "home";
 }

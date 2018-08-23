@@ -40,7 +40,7 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     // The associated DAOs for the database
-    public abstract BonusInfoDao getReferralInfoEntryDao();
+    public abstract BonusInfoDao getBonusInfoEntryDao();
 
     public abstract VpnListEntryDao getVpnListEntryDao();
 }

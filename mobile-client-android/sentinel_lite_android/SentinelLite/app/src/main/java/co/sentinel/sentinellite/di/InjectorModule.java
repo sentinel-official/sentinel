@@ -12,7 +12,7 @@ import co.sentinel.sentinellite.repository.BonusRepository;
 import co.sentinel.sentinellite.repository.VpnRepository;
 import co.sentinel.sentinellite.util.AppExecutors;
 import co.sentinel.sentinellite.viewmodel.DeviceRegisterViewModelFactory;
-import co.sentinel.sentinellite.viewmodel.ReferralViewModelFactory;
+import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.SplashViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnConnectedViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnListViewModelFactory;
@@ -24,9 +24,9 @@ public class InjectorModule {
     /* Static private getter methods for Repository classes. */
     private static BonusRepository provideBonusRepository(Context iContext, String aDeviceId) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
-        BonusWebService aReferralWebService = WebClient.getReferralWebService();
+        BonusWebService aBonusWebService = WebClient.getBonusWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return BonusRepository.getInstance(aAppDatabase.getReferralInfoEntryDao(), aReferralWebService, aAppExecutors, aDeviceId);
+        return BonusRepository.getInstance(aAppDatabase.getBonusInfoEntryDao(), aBonusWebService, aAppExecutors, aDeviceId);
     }
 
     private static AppVersionRepository provideAppVersionRepository() {
@@ -34,7 +34,7 @@ public class InjectorModule {
         return AppVersionRepository.getInstance(aAppVersionWebService);
     }
 
-    private static VpnRepository provideVpnRepository(Context iContext, String iDeviceId) {
+    public static VpnRepository provideVpnRepository(Context iContext, String iDeviceId) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
@@ -64,9 +64,9 @@ public class InjectorModule {
         return new VpnConnectedViewModelFactory(aRepository);
     }
 
-    public static ReferralViewModelFactory provideReferralViewModelFactory(Context iContext, String aDeviceId) {
+    public static BonusViewModelFactory provideBonusViewModelFactory(Context iContext, String aDeviceId) {
         BonusRepository aBonusRepository = provideBonusRepository(iContext, aDeviceId);
         AppVersionRepository aAppVersionRepository = provideAppVersionRepository();
-        return new ReferralViewModelFactory(aBonusRepository, aAppVersionRepository);
+        return new BonusViewModelFactory(aBonusRepository, aAppVersionRepository);
     }
 }

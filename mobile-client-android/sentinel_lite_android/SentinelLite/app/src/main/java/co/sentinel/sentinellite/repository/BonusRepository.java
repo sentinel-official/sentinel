@@ -96,7 +96,7 @@ public class BonusRepository {
     }
 
     public void fetchBonusInfo() {
-        getReferralInfo();
+        getBonusInfo();
     }
 
     /*
@@ -172,7 +172,7 @@ public class BonusRepository {
         });
     }
 
-    private void getReferralInfo() {
+    private void getBonusInfo() {
         mBonusWebService.getBonusInfo(mDeviceId).enqueue(new Callback<BonusInfoEntity>() {
             @Override
             public void onResponse(Call<BonusInfoEntity> call, Response<BonusInfoEntity> response) {

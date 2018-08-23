@@ -5,6 +5,7 @@
 package de.blinkt.openvpn.core;
 
 import android.Manifest.permission;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
@@ -29,6 +30,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.system.OsConstants;
@@ -48,6 +50,9 @@ import java.util.Vector;
 
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.SentinelLiteApp;
+import co.sentinel.sentinellite.di.InjectorModule;
+import co.sentinel.sentinellite.network.model.GenericResponse;
+import co.sentinel.sentinellite.repository.VpnRepository;
 import co.sentinel.sentinellite.ui.activity.DashboardActivity;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
@@ -55,6 +60,8 @@ import de.blinkt.openvpn.LaunchVPN;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.VpnStatus.ByteCountListener;
 import de.blinkt.openvpn.core.VpnStatus.StateListener;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_CONNECTED;
 import static de.blinkt.openvpn.core.ConnectionStatus.LEVEL_WAITING_FOR_USER_INPUT;
@@ -175,15 +182,41 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         synchronized (mProcessLock) {
             mProcessThread = null;
         }
-        VpnStatus.removeByteCountListener(this);
+        disconnectVpnCall();
+    }
+
+    private void disconnectVpnCall() {
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        VpnRepository aRepo = InjectorModule.provideVpnRepository(this, aDeviceId);
+        aRepo.disconnectVpn().enqueue(new retrofit2.Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                disconnectVpnLocal();
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                disconnectVpnLocal();
+            }
+        });
+    }
+
+    private void disconnectVpnLocal() {
+        AppPreferences.getInstance().saveString(AppConstants.PREFS_IP_ADDRESS, "");
+        AppPreferences.getInstance().saveInteger(AppConstants.PREFS_IP_PORT, 0);
+        AppPreferences.getInstance().saveString(AppConstants.PREFS_VPN_TOKEN, "");
+
+        VpnStatus.removeByteCountListener(OpenVPNService.this);
         unregisterDeviceStateReceiver();
-        ProfileManager.setConntectedVpnProfileDisconnected(this);
+        ProfileManager.setConntectedVpnProfileDisconnected(OpenVPNService.this);
         mOpenVPNThread = null;
         if (!mStarting) {
             stopForeground(!mNotificationAlwaysVisible);
             if (!mNotificationAlwaysVisible) {
                 stopSelf();
-                VpnStatus.removeStateListener(this);
+                VpnStatus.removeStateListener(OpenVPNService.this);
             }
         }
     }
@@ -837,12 +870,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
     @Override
     public void updateState(String state, String logmessage, int resid, ConnectionStatus level) {
-        if (AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME) == 0L && state.equals("CONNECTED")) {
+        if (state.equals("CONNECTED")) {
             AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, System.currentTimeMillis());
             SentinelLiteApp.isVpnConnected = true;
         }
 
-        if ((state.equals("RECONNECTING") && logmessage.contains("tls-error"))){
+        if ((state.equals("RECONNECTING") && logmessage.contains("tls-error"))) {
             SentinelLiteApp.isVpnReconnectFailed = true;
         }
 

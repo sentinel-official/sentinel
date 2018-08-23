@@ -35,7 +35,9 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:maxLines="5"
                     android:text="@string/referral_desc"
                     app:layout_constraintBottom_toTopOf="@+id/ib_copy_referral"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +46,17 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
                     app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/tv_read_more"
+                    style="@style/CustomTextAppearance.Text12.BlueNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/read_more"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/referral_desc" />
 
                 <TextView
                     android:id="@+id/referral_code"

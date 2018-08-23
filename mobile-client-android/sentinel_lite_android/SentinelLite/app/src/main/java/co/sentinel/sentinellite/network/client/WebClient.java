@@ -95,7 +95,7 @@ public class WebClient {
         return sGenericClient.create(GenericWebService.class);
     }
 
-    public static BonusWebService getReferralWebService() {
+    public static BonusWebService getBonusWebService() {
         return sReferralClient.create(BonusWebService.class);
     }
 

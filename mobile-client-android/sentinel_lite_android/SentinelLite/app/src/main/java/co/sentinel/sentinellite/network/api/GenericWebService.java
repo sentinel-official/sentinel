@@ -1,6 +1,7 @@
 package co.sentinel.sentinellite.network.api;
 
 import co.sentinel.sentinellite.network.model.GenericRequestBody;
+import co.sentinel.sentinellite.network.model.GenericResponse;
 import co.sentinel.sentinellite.network.model.Vpn;
 import co.sentinel.sentinellite.network.model.VpnConfig;
 import co.sentinel.sentinellite.network.model.VpnCredentials;
@@ -23,4 +24,7 @@ public interface GenericWebService {
 
     @POST
     Call<VpnConfig> getVpnConfig(@Url String url, @Body GenericRequestBody iBody);
+
+    @POST
+    Call<GenericResponse> disconnectVpn(@Url String url, @Body GenericRequestBody iBody);
 }

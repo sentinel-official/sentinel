@@ -2,13 +2,10 @@ package co.sentinel.sentinellite.ui.fragment;
 
 
 import android.annotation.SuppressLint;
-import android.app.DownloadManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,7 +20,6 @@ import android.widget.TextView;
 
 import java.util.Objects;
 
-import co.sentinel.sentinellite.BuildConfig;
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.di.InjectorModule;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
@@ -32,9 +28,7 @@ import co.sentinel.sentinellite.util.AppPreferences;
 import co.sentinel.sentinellite.util.Converter;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.ReferralViewModel;
-import co.sentinel.sentinellite.viewmodel.ReferralViewModelFactory;
-
-import static co.sentinel.sentinellite.util.AppConstants.TAG_UPDATE;
+import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +42,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     private OnGenericFragmentInteractionListener mListener;
 
     private SwipeRefreshLayout mSrReload;
-    private TextView mTvReferralCode, mtvReferralCount, mTvRewardsEarned, mTvCanClaimAfter;
+    private TextView mTvReferralCode, mtvReferralCount, mTvRewardsEarned, mTvCanClaimAfter, mTvReadMore;
     private ImageButton mIbCopyReferral;
     private Button mBtnShareAddress, mBtnClaimBonus;
 
@@ -102,18 +96,20 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         mIbCopyReferral = iView.findViewById(R.id.ib_copy_referral);
         mBtnShareAddress = iView.findViewById(R.id.btn_share_referral_id);
         mBtnClaimBonus = iView.findViewById(R.id.btn_claim_bonus);
+        mTvReadMore = iView.findViewById(R.id.tv_read_more);
         // Set listeners
         mSrReload.setOnRefreshListener(this);
         mIbCopyReferral.setOnClickListener(this);
         mBtnShareAddress.setOnClickListener(this);
         mBtnClaimBonus.setOnClickListener(this);
+        mTvReadMore.setOnClickListener(this);
     }
 
     private void initViewModel() {
         // init Device ID
         @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        ReferralViewModelFactory aFactory = InjectorModule.provideReferralViewModelFactory(getContext(), aDeviceId);
+        BonusViewModelFactory aFactory = InjectorModule.provideBonusViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(ReferralViewModel.class);
 
         mTvReferralCode.setText(mViewModel.getReferralId());
@@ -134,8 +130,8 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         mViewModel.getSncVersionInfoLiveEvent().observe(this, versionInfoResource -> {
             if (versionInfoResource != null) {
                 if (versionInfoResource.data != null && versionInfoResource.status.equals(Status.SUCCESS)) {
-                    AppPreferences.getInstance().saveString(AppConstants.PREFS_FILE_URL,versionInfoResource.data.fileUrl);
-                    AppPreferences.getInstance().saveString(AppConstants.PREFS_FILE_NAME,versionInfoResource.data.fileName);
+                    AppPreferences.getInstance().saveString(AppConstants.PREFS_FILE_URL, versionInfoResource.data.fileUrl);
+                    AppPreferences.getInstance().saveString(AppConstants.PREFS_FILE_NAME, versionInfoResource.data.fileName);
                     showDoubleActionDialog(AppConstants.TAG_DOWNLOAD, AppConstants.VALUE_DEFAULT, getString(R.string.download_desc), R.string.download, R.string.cancel);
                 } else if (versionInfoResource.message != null && versionInfoResource.status.equals(Status.ERROR)) {
                     if (versionInfoResource.message.equals(AppConstants.ERROR_GENERIC))
@@ -164,6 +160,10 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
 
             case R.id.ib_copy_referral:
                 copyToClipboard(mTvReferralCode.getText().toString(), R.string.referral_id_copied);
+                break;
+
+            case R.id.tv_read_more:
+                showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.referral_desc), AppConstants.VALUE_DEFAULT);
                 break;
         }
     }

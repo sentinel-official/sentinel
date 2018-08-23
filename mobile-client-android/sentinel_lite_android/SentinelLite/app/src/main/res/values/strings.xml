@@ -207,6 +207,7 @@
     <string name="ok">Ok</string>
     <string name="can_claim_after">Can claim after: %s</string>
     <string name="download_desc">Download and install the Sentinel Network Client on the same device to claim your bonus tokens and access all features.</string>
-    <string name="referral_desc">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network.</string>
+    <string name="referral_desc">Welcome to the Sentinel Referral Utility Drop.\n\nUsers who test this Lite Client will be able to claim their reward(s) after 21 or so days from the time that they had first installed the application and consumed a minimum of 100 MB of data from the Sentinel dVPN community hosted network.\n\nThe referral air drop reward schedule is as follows: \n\n500 SENT : For downloading the Sentinel Android Google Play Client and using 100 MB of data \n\n300 SENT : For downloading the Sentinel Network Client which includes a mobile ERC20 wallet. This client will have to be downloaded by users in order to claim $SENT\n\n200 SENT : For every referral who downloads either SLC or SNC</string>
     <string name="network_lost">A loss of network connection was detected.The VPN connection has been dropped.\nPlease reconnect.</string>
+    <string name="read_more">Read More</string>
 </resources>

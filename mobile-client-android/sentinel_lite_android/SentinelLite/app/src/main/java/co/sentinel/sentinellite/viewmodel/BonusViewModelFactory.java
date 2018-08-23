@@ -8,11 +8,11 @@ import co.sentinel.sentinellite.repository.AppVersionRepository;
 import co.sentinel.sentinellite.repository.BonusRepository;
 
 
-public class ReferralViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class BonusViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final BonusRepository mBonusRepository;
     private final AppVersionRepository mAppVersionRepository;
 
-    public ReferralViewModelFactory(BonusRepository iBonusRepository, AppVersionRepository iAppVersionRepository) {
+    public BonusViewModelFactory(BonusRepository iBonusRepository, AppVersionRepository iAppVersionRepository) {
         mBonusRepository = iBonusRepository;
         mAppVersionRepository = iAppVersionRepository;
     }

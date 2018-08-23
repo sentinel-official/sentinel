@@ -1,0 +1,27 @@
+FROM alpine:3.7
+
+ADD sentinel /root/sentinel
+
+ADD deps /tmp/
+
+ADD app.py server.py run.sh config /root/
+
+ENV SENT_ENV=DEV
+
+RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
+    apk add --no-cache ca-certificates easy-rsa mongodb openvpn ufw@testing && \
+    apk add --no-cache gcc python-dev musl-dev nano && \
+    mkdir -p /data/db && \
+    wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
+    python /tmp/get-pip.py && \
+    pip install --no-cache-dir falcon gunicorn pymongo requests speedtest_cli && \
+    pip install --no-cache-dir ipython
+
+RUN mv /tmp/gaiacli /usr/local/bin/ && \
+    mv /tmp/speedtest.py /usr/lib/python2.7/site-packages/
+
+RUN rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
+
+EXPOSE 1194/udp 3000
+
+CMD ["sh", "/root/run.sh"]

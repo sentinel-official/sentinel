@@ -10,7 +10,7 @@ import CustomTextfield from "./customTextfield";
 import VpnListView from './VpnListView';
 import VpnMapView from './VpnMapView';
 import CustomButton from "./customButton";
-import {margin} from "../Assets/commonStyles";
+import { margin, radioStyle } from "../Assets/commonStyles";
 
 const styles = theme => ({
     root: {
@@ -62,8 +62,6 @@ class VpnList extends Component {
     };
 
     render() {
-        console.log(this.props.vpnType, 'vpnType');
-
         const { classes } = this.props;
         // let self = this;
         // if (!this.state.isGetVPNCalled && this.props.isTest) {
@@ -76,18 +74,18 @@ class VpnList extends Component {
             <div>
                 <div style={{ display: 'flex' }} >
                     <div>
-                        <CustomTextfield type={'text'} onChange={ (e) => { this.setState({ dVpnQuery: e.target.value }) } } />
+                        <CustomTextfield type={'text'} onChange={(e) => { this.setState({ dVpnQuery: e.target.value }) }} />
                     </div>
-                    <div style={ margin }>
-                        <CustomButton color={'#FFFFFF'}  label={'LIST'} active={!this.state.isActive}
-                                      onClick={this.testSentHistory} />
+                    <div style={margin}>
+                        <CustomButton color={'#FFFFFF'} label={'LIST'} active={!this.state.isActive}
+                            onClick={this.testSentHistory} />
                     </div>
-                    <div style={ margin }>
+                    <div style={margin}>
                         <CustomButton color={'#F2F2F2'} label={'MAP'} active={this.state.isActive}
-                                      onClick={this.testEthHistory}/>
+                            onClick={this.testEthHistory} />
                     </div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between'}} >
+                <div style={{ display: 'flex', justifyContent: 'space-between' }} >
                     <FormControl component="fieldset" className={classes.networkFormControl}>
                         {/*<FormLabel className={classes.row} component="legend">dVPN Type</FormLabel>*/}
                         <RadioGroup
@@ -97,8 +95,8 @@ class VpnList extends Component {
                             value={this.state.networkType}
                             onChange={this.handleNetworkChange}
                         >
-                            <FormControlLabel value="public" control={<Radio />} label="public" />
-                            <FormControlLabel value="private" control={<Radio />} label="private" />
+                            <FormControlLabel value="public" control={<Radio style={radioStyle} />} label="Public" />
+                            <FormControlLabel value="private" control={<Radio style={radioStyle} />} label="Private" />
                         </RadioGroup>
                     </FormControl>
                     <FormControl component="fieldset" className={classes.dVPNFormControl}>
@@ -110,8 +108,8 @@ class VpnList extends Component {
                             value={this.state.vpnType}
                             onChange={this.handleRadioChange}
                         >
-                            <FormControlLabel value="openvpn" control={<Radio />} label="OpenVPN" />
-                            <FormControlLabel value="socks5" control={<Radio />} label="SOCKS5" />
+                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label="OpenVPN" />
+                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} />} label="SOCKS5" />
                         </RadioGroup>
                     </FormControl>
 
@@ -119,12 +117,12 @@ class VpnList extends Component {
                 {
                     this.props.vpnList.length === 0 ?
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> :
-                    this.props.listView === 'list' ?
-                        <div style={{ maxWidth: 895, marginLeft: 20 }} >
-                            <VpnListView query={this.state.dVpnQuery} />
-                        </div>
-                        :
-                        <VpnMapView />
+                        this.props.listView === 'list' ?
+                            <div style={{ maxWidth: 895, marginLeft: 20 }} >
+                                <VpnListView query={this.state.dVpnQuery} />
+                            </div>
+                            :
+                            <VpnMapView />
                 }
             </div>
         )
@@ -153,4 +151,4 @@ function mapDispatchToActions(dispatch) {
     }, dispatch)
 }
 
-export default compose( withStyles(styles) , connect(mapStateToProps, mapDispatchToActions))(VpnList);
+export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToActions))(VpnList);

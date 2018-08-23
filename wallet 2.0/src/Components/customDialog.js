@@ -23,6 +23,7 @@ const electron = window.require('electron');
 const remote = electron.remote;
 
 const emails = ['username@gmail.com', 'user02@gmail.com'];
+let UsageInterval = null;
 const styles = theme => ({
     avatar: {
         backgroundColor: blue[100],
@@ -106,40 +107,34 @@ class SimpleDialog extends React.Component {
             >
                 <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
                 <div>
-
                     <List>
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             <ListItemText>
                                 <label style={styles.dialogLabel}>City:&nbsp;</label>
                                 <span style={styles.dialogValue}>{this.props.data.city}</span>
                             </ListItemText>
                         </ListItem>
 
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             <ListItemText>
                                 <label style={styles.dialogLabel}>Country:&nbsp;</label>
                                 <span style={styles.dialogValue}>{this.props.data.country}</span>
                             </ListItemText>
                         </ListItem>
 
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             {/*<ListItemText primary={`Bandwidth: ${this.props.data.speed}`} />*/}
                             <label style={styles.dialogLabel}>Bandwidth:&nbsp;</label>
                             <span style={styles.dialogValue}>{(this.props.data.speed / (1024 * 1024)).toFixed(2)}</span>
                         </ListItem>
 
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             <ListItemText>
                                 <label style={styles.dialogLabel}>Price:&nbsp;</label><span
                                     style={styles.dialogValue}>{this.props.data.price_per_GB}</span>
                             </ListItemText>
                         </ListItem>
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             <ListItemText> <label style={styles.dialogLabel}>Latency:&nbsp;</label>
                                 <span style={styles.dialogValue}> {this.props.data.latency}</span>
                             </ListItemText>
@@ -147,7 +142,7 @@ class SimpleDialog extends React.Component {
 
                         <div className={classes.listRoot}>
                             <Button disabled={this.props.isLoading} variant="extendedFab" aria-label="Connect"
-                                onClick={() => this.props.onClick(this.props.data.vpn_addr)}
+                                onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
@@ -235,7 +230,7 @@ class AlertDialog extends React.Component {
 class SimpleDialogDemo extends React.Component {
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ open: this.props.open })
+        this.setState({ open: nextProps.open })
     }
 
     state = {
@@ -244,8 +239,7 @@ class SimpleDialogDemo extends React.Component {
         pendingInitPayment: null,
         isPending: false,
         paymentAddr: '',
-        isLoading: false,
-        timer: true,
+        isLoading: false
     };
 
     handleClickOpen = () => {
@@ -256,10 +250,10 @@ class SimpleDialogDemo extends React.Component {
 
     handleClose = value => {
         this.setState({ selectedValue: value, open: false });
+        this.props.onUpdate(false);
     };
 
     handleListItemClick = (vpn_addr) => {
-
         this.setState({ isLoading: true });
         if (this.props.vpnType === 'openvpn') {
             connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
@@ -270,27 +264,33 @@ class SimpleDialogDemo extends React.Component {
                         paymentAddr: res.data.account_addr, isLoading: false
                     })
                 } else if (res.success) {
-                    this.setState({isLoading: false});
+                    this.setState({ isLoading: false });
                     this.props.setVpnStatus(true)
                     // setTimeout(() => {  this.setState({ open: false })}, 4000)
                 } else {
-                    this.setState({open: false, isLoading: false})
+                    this.setState({ open: false, isLoading: false })
                 }
 
             })
         } else {
-            this.props.connectSocks(this.props.getAccount, vpn_addr);
+            this.props.connectSocks(this.props.getAccount, vpn_addr).then(res=>{
+                
+            });
         }
     };
 
     render() {
-        console.log(this.props.vpnType)
-        if (this.props.vpnStatus && this.state.timer) {
-            setInterval(() => { this.props.getVPNUsageData(this.props.getAccount)
-                .then(res => {console.log('usage', res)})
-                .catch(err => { console.log('err', err) });
+        if (this.props.vpnStatus && !UsageInterval) {
+            UsageInterval = setInterval(() => {
+                this.props.getVPNUsageData(this.props.getAccount);
             }, 3000);
-            this.setState({ timer: false })
+        }
+
+        if (!this.props.vpnStatus) {
+            if (UsageInterval) {
+                clearInterval(UsageInterval);
+                UsageInterval = null;
+            }
         }
         // console.log('down props', this.props.data );
         return (
@@ -309,7 +309,7 @@ class SimpleDialogDemo extends React.Component {
                         open={this.state.isPending === false && this.state.open}
                         onClose={this.handleClose}
                         data={this.props.data}
-                        onClick={this.handleListItemClick}
+                        onClicked={this.handleListItemClick}
                         isLoading={this.state.isLoading}
                         success={this.props.vpnStatus}
                     />

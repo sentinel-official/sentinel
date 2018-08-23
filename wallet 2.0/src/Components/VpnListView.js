@@ -14,15 +14,15 @@ class VpnListView extends Component {
 
     componentWillReceiveProps(nextProps) {
 
-            let list = nextProps.availableVpns;
-            list = list.filter(function (item) {
-                return (item.location.city.toLowerCase().search(
-                    nextProps.query.toLowerCase()
-                ) !== -1) || (item.location.country.toLowerCase().search(
-                    nextProps.query.toLowerCase()
-                ) !== -1);
-            });
-            this.setState({ updatedList: list });
+        let list = nextProps.availableVpns;
+        list = list.filter(function (item) {
+            return (item.location.city.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1) || (item.location.country.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1);
+        });
+        this.setState({ updatedList: list });
     }
 
     componentDidMount() {
@@ -32,7 +32,6 @@ class VpnListView extends Component {
 
 
     render() {
-        console.log('dvpn query', this.props.query);
         let language = this.props.lang;
         let vpnsList = this.state.updatedList;
 
@@ -40,7 +39,7 @@ class VpnListView extends Component {
             <div>
                 {
                     vpnsList.length !== 0 ?
-                        <EnhancedTable data={this.props.availableVpns} />
+                        <EnhancedTable data={vpnsList} />
                         :
                         <div>No dVPN nodes found</div>
                 }

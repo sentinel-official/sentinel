@@ -148,7 +148,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        mViewModel.getRegisterDeviceIdLiveEvent().observe(this, genericResponseResource -> {
+        mViewModel.getAddAccountLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.adding_referral));

@@ -10,6 +10,8 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +20,15 @@ import android.widget.TextView;
 
 import com.haipq.android.flagkit.FlagImageView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.network.model.VpnDetailListData;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
+import sentinelgroup.io.sentinel.ui.adapter.VpnDetailListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
@@ -46,8 +53,11 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     private OnGenericFragmentInteractionListener mListener;
 
     private FlagImageView mFvFlag;
-    private TextView mTvLocation, mTvCity, mTvCountry, mTvBandwidth, mTvLatency, mTvPrice;
+    private TextView mTvLocation;
+    private RecyclerView mRvVpnDetailsList;
     private Button mBtnConnect;
+
+    private VpnDetailListAdapter mAdapter;
 
     public VpnDetailsFragment() {
         // Required empty public constructor
@@ -99,25 +109,29 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     private void initView(View iView) {
         mFvFlag = iView.findViewById(R.id.fv_flag);
         mTvLocation = iView.findViewById(R.id.tv_location);
-        mTvCity = iView.findViewById(R.id.tv_city);
-        mTvCountry = iView.findViewById(R.id.tv_country);
-        mTvBandwidth = iView.findViewById(R.id.tv_bandwidth);
-        mTvLatency = iView.findViewById(R.id.tv_latency);
-        mTvPrice = iView.findViewById(R.id.tv_price);
+        mRvVpnDetailsList = iView.findViewById(R.id.rv_vpn_detail_list);
         mBtnConnect = iView.findViewById(R.id.btn_connect);
         // set default value
         mFvFlag.setCountryCode(Converter.getCountryCode(mVpnListData.getLocation().country));
-        mTvLocation.setText(getString(R.string.vpn_location, mVpnListData.getLocation().city, mVpnListData.getLocation().country));
-        mTvCity.setText(mVpnListData.getLocation().city);
-        mTvCountry.setText(mVpnListData.getLocation().country);
-        String aBandwidthValue = getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(mVpnListData.getNetSpeed().download, Convert.DataUnit.MBPS));
-        mTvBandwidth.setText(aBandwidthValue);
-        String aLatencyValue = getString(R.string.vpn_latency_value, mVpnListData.getLatency());
-        mTvLatency.setText(aLatencyValue);
-        String aPriceValue = getString(R.string.vpn_price_value, mVpnListData.getPricePerGb());
-        mTvPrice.setText(aPriceValue);
+        mTvLocation.setText(mVpnListData.getLocation().country);
+        // setup recyclerview
+        mAdapter = new VpnDetailListAdapter(getContext(),  getListData());
+        mRvVpnDetailsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRvVpnDetailsList.setAdapter(mAdapter);
         // Set listener
         mBtnConnect.setOnClickListener(this);
+    }
+
+    private List<VpnDetailListData> getListData() {
+        List<VpnDetailListData> aData = new ArrayList<>();
+        aData.add(new VpnDetailListData(getString(R.string.city), mVpnListData.getLocation().city));
+        aData.add(new VpnDetailListData(getString(R.string.country), mVpnListData.getLocation().country));
+        aData.add(new VpnDetailListData(getString(R.string.bandwidth), getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(mVpnListData.getNetSpeed().download, Convert.DataUnit.MBPS))));
+        aData.add(new VpnDetailListData(getString(R.string.latency), getString(R.string.vpn_latency_value, mVpnListData.getLatency())));
+        aData.add(new VpnDetailListData(getString(R.string.encryption), mVpnListData.getEncryptionMethod()));
+        aData.add(new VpnDetailListData(getString(R.string.node_version), mVpnListData.getVersion()));
+        aData.add(new VpnDetailListData(getString(R.string.price), getString(R.string.vpn_price_value, mVpnListData.getPricePerGb())));
+        return aData;
     }
 
     private void initViewModel() {

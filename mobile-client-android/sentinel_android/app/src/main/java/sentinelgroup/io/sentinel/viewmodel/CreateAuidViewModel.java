@@ -27,7 +27,7 @@ public class CreateAuidViewModel extends ViewModel {
     private final SingleLiveEvent<Resource<Account>> mAccountLiveEvent;
     private final SingleLiveEvent<Resource<Account>> mKeystoreFileLiveEvent;
     private final SingleLiveEvent<Boolean> mSessionClearedLiveEvent;
-    private final SingleLiveEvent<Resource<GenericResponse>> mRegisterDeviceIdLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAddAccountLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mUpdateAccountLiveEvent;
     private final String mDeviceId;
 
@@ -40,7 +40,7 @@ public class CreateAuidViewModel extends ViewModel {
         mSessionClearedLiveEvent = iRepository.getSessionClearedLiveEvent();
         mKeystoreFileLiveEvent = new SingleLiveEvent<>();
         mDeviceId = iDeviceId;
-        mRegisterDeviceIdLiveEvent = iBonusRepository.getRegisterDeviceIdLiveEvent();
+        mAddAccountLiveEvent = iBonusRepository.getAddAccountLiveEvent();
     }
 
     /*
@@ -58,8 +58,8 @@ public class CreateAuidViewModel extends ViewModel {
         return mSessionClearedLiveEvent;
     }
 
-    public SingleLiveEvent<Resource<GenericResponse>> getRegisterDeviceIdLiveEvent() {
-        return mRegisterDeviceIdLiveEvent;
+    public SingleLiveEvent<Resource<GenericResponse>> getAddAccountLiveEvent() {
+        return mAddAccountLiveEvent;
     }
 
     public SingleLiveEvent<Resource<GenericResponse>> getUpdateAccountLiveEvent() {

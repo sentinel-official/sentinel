@@ -70,7 +70,7 @@ public class RestoreKeystoreActivity extends SimpleBaseActivity {
 
     @Override
     public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-        // Unimplemented interface method
+        showDoubleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
     }
 
     @Override

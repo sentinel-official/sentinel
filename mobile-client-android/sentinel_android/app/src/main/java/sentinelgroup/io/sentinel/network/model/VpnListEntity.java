@@ -23,8 +23,11 @@ public class VpnListEntity implements Serializable {
     @Embedded(prefix = "net_")
     @SerializedName("net_speed")
     private NetSpeed netSpeed;
+    @SerializedName("enc_method")
+    private String encryptionMethod;
     @SerializedName("price_per_GB")
     private double pricePerGb;
+    private String version;
 
     public VpnListEntity(@NonNull String accountAddress, String ip, double latency, Location location, NetSpeed netSpeed, double pricePerGb) {
         this.accountAddress = accountAddress;
@@ -76,11 +79,27 @@ public class VpnListEntity implements Serializable {
         this.netSpeed = netSpeed;
     }
 
+    public String getEncryptionMethod() {
+        return encryptionMethod;
+    }
+
+    public void setEncryptionMethod(String encryptionMethod) {
+        this.encryptionMethod = encryptionMethod;
+    }
+
     public double getPricePerGb() {
         return pricePerGb;
     }
 
     public void setPricePerGb(double pricePerGb) {
         this.pricePerGb = pricePerGb;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

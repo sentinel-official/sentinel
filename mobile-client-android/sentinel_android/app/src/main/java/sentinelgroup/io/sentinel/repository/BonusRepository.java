@@ -16,6 +16,7 @@ import sentinelgroup.io.sentinel.util.ApiErrorUtils;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.NoConnectivityException;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
@@ -32,7 +33,7 @@ public class BonusRepository {
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoLiveEvent;
     private final MutableLiveData<BonusInfoEntity> mBonusInfoMutableLiveData;
-    private final SingleLiveEvent<Resource<GenericResponse>> mRegisterDeviceIdLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAddAccountLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mUpdateAccountLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mBonusClaimLiveEvent;
     private final String mDeviceId;
@@ -42,7 +43,7 @@ public class BonusRepository {
         this.mBonusWebService = iBonusWebService;
         this.mAppExecutors = iAppExecutors;
         mAccountInfoLiveEvent = new SingleLiveEvent<>();
-        mRegisterDeviceIdLiveEvent = new SingleLiveEvent<>();
+        mAddAccountLiveEvent = new SingleLiveEvent<>();
         mUpdateAccountLiveEvent = new SingleLiveEvent<>();
         mBonusInfoMutableLiveData = new MutableLiveData<>();
         mBonusClaimLiveEvent = new SingleLiveEvent<>();
@@ -79,8 +80,8 @@ public class BonusRepository {
         return mBonusClaimLiveEvent;
     }
 
-    public SingleLiveEvent<Resource<GenericResponse>> getRegisterDeviceIdLiveEvent() {
-        return mRegisterDeviceIdLiveEvent;
+    public SingleLiveEvent<Resource<GenericResponse>> getAddAccountLiveEvent() {
+        return mAddAccountLiveEvent;
     }
 
     public SingleLiveEvent<Resource<GenericResponse>> getUpdateAccountLiveEvent() {
@@ -133,10 +134,13 @@ public class BonusRepository {
                 if (iResponse != null) {
                     ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
                     mAccountInfoLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
+                    Logger.logDebug("BonusRepository", "getAccountDetails: " + (aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC));
                 } else if (iThrowableLocalMessage != null) {
                     mAccountInfoLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                    Logger.logDebug("BonusRepository", "getAccountDetails: " + iThrowableLocalMessage);
                 } else {
                     mAccountInfoLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+                    Logger.logDebug("BonusRepository", "getAccountDetails: ERROR_GENERIC");
                 }
             }
         });
@@ -200,7 +204,7 @@ public class BonusRepository {
     }
 
     public void addAccountInfo(GenericRequestBody iRequestBody) {
-        mRegisterDeviceIdLiveEvent.postValue(Resource.loading(null));
+        mAddAccountLiveEvent.postValue(Resource.loading(null));
         mBonusWebService.addAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
@@ -214,7 +218,7 @@ public class BonusRepository {
 
             private void reportSuccessResponse(Response<GenericResponse> iResponse) {
                 if (iResponse.isSuccessful()) {
-                    mRegisterDeviceIdLiveEvent.postValue(Resource.success(iResponse.body()));
+                    mAddAccountLiveEvent.postValue(Resource.success(iResponse.body()));
                 } else {
                     reportErrorResponse(iResponse, null);
                 }
@@ -223,11 +227,11 @@ public class BonusRepository {
             private void reportErrorResponse(Response<GenericResponse> iResponse, String iThrowableLocalMessage) {
                 if (iResponse != null) {
                     ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
-                    mRegisterDeviceIdLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
+                    mAddAccountLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
                 } else if (iThrowableLocalMessage != null) {
-                    mRegisterDeviceIdLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                    mAddAccountLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 } else {
-                    mRegisterDeviceIdLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+                    mAddAccountLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
                 }
             }
         });

@@ -39,25 +39,18 @@ public class OnBoardingActivity extends AppCompatActivity {
         mAdapter = new InfoPagerAdapter(getSupportFragmentManager(), this);
         mVpInfoPager.setAdapter(mAdapter);
         mVpInfoPager.setPageTransformer(true, new ZoomOutPageTransformer());
-        mVpInfoPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mTvNext.setVisibility(position == 1 ? View.VISIBLE : View.GONE);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
         // setup DotsIndicator
         mVpiInfoDots.setDotsClickable(true);
         mVpiInfoDots.setViewPager(mVpInfoPager);
         // Set listeners
-        mTvNext.setOnClickListener(v -> openLauncherActivity());
+        mTvNext.setOnClickListener(v -> {
+            int aCurrentItem = mVpInfoPager.getCurrentItem();
+            if (aCurrentItem == 0) {
+                mVpInfoPager.setCurrentItem(mVpInfoPager.getCurrentItem() + 1);
+            } else {
+                openLauncherActivity();
+            }
+        });
     }
 
     private void openLauncherActivity() {

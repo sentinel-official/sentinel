@@ -27,10 +27,10 @@ public class InfoPagerAdapter extends FragmentPagerAdapter {
         Fragment aFragment = null;
         switch (position) {
             case 0:
-                aFragment = InfoFragment.newInstance(R.drawable.ic_info_referral, -1, R.string.info_title_1, -1);
+                aFragment = InfoFragment.newInstance(R.drawable.ic_info_referral, -1, R.string.info_title_1, R.string.info_desc_1);
                 break;
             case 1:
-                aFragment = InfoFragment.newInstance(R.drawable.menu_vpn_unselected, R.drawable.menu_wallet_unselected, R.string.info_title_2, -1);
+                aFragment = InfoFragment.newInstance(R.drawable.menu_vpn_unselected, R.drawable.menu_wallet_unselected, R.string.info_title_2, R.string.info_desc_2);
                 break;
         }
         return aFragment;

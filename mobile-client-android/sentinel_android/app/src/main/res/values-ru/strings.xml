@@ -83,13 +83,14 @@
     <string name="sents">%1s SENTs</string>
     <string name="eths">%1s ETH</string>
     <string name="pay_sents">Заплатить %1s SENTs</string>
-    <string name="vpn_location">%1s, %2s</string>
+    <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Скорость %s</string>
     <string name="vpn_bandwidth_connected">Скорость\n%s</string>
     <string name="vpn_price">Цена (SENT/ГБ) %s</string>
     <string name="vpn_price_connected">Цена (SENT/ГБ)\n%s</string>
     <string name="vpn_latency">Задержка %s</string>
+    <string name="vpn_node_version">Версия %s</string>
     <string name="vpn_latency_connected">Задержка\n%s</string>
     <string name="vpn_duration_connected">Длительность\n%s</string>
     <string name="vpn_bandwidth_value">%.2f Мб/с</string>
@@ -117,6 +118,8 @@
     <string name="country">Страна:</string>
     <string name="bandwidth">Скорость:</string>
     <string name="latency">Задержка:</string>
+    <string name="encryption">Шифрование:</string>
+    <string name="node_version">Версия:</string>
     <string name="price">Цена (SENT/ГБ):</string>
     <string name="coming_soon">Скоро добавим…</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
@@ -183,8 +186,10 @@
     <string name="address">Адрес</string>
     <string name="share_address">Поделитесь адресом</string>
     <string name="share_string">Эй, зацени это новое dVPN Android приложение. Используй мой реферальный токен при регистрации.\nРеферальный код: %s</string>
-    <string name="info_title_1">Делись своим реферальным кодом для получения токенов за каждого нового пользователя</string>
-    <string name="info_title_2">Кошелек с открытым исходным кодом и защищенным VPN-сервисом</string>
+    <string name="info_title_1">Поделись своим реферальным кодом для бесплатных токенов за каждого зарегистрированного пользователя</string>
+    <string name="info_title_2">Защищённая децентрализованная VPN-платформа</string>
+    <string name="info_desc_1">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети</string>
+    <string name="info_desc_2">Децентрализованный VPN-сервис прямо у вас под рукой</string>
     <string name="disconnect_vpn_to_logout">Вы подключены к VPN.\nОтключите VPN для выхода.</string>
     <string name="referral_claimed">Вы получили ваши реферальные токены.\nПосмотрите на обновленный баланс в вашем кошельке.</string>
     <string name="generic_error">Что-то пошло не так. Попробуйте ещё раз.</string>

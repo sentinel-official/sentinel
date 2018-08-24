@@ -20,7 +20,6 @@ import sentinelgroup.io.sentinel.repository.BonusRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
-import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Resource;
 import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
@@ -28,16 +27,18 @@ public class RestoreKeystoreViewModel extends ViewModel {
     private final AppExecutors mAppExecutors;
     private final BonusRepository mBonusRepository;
     private final SingleLiveEvent<Resource<String>> mRestoreLiveEvent;
-    private final SingleLiveEvent<Resource<GenericResponse>> mRegisterDeviceIdLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAddAccountLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mUpdateAccountLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoLiveEvent;
     private final String mDeviceId;
 
     RestoreKeystoreViewModel(AppExecutors iAppExecutors, BonusRepository iBonusRepository, String iDeviceId) {
         mAppExecutors = iAppExecutors;
         mBonusRepository = iBonusRepository;
         mRestoreLiveEvent = new SingleLiveEvent<>();
-        mRegisterDeviceIdLiveEvent = iBonusRepository.getRegisterDeviceIdLiveEvent();
+        mAddAccountLiveEvent = iBonusRepository.getAddAccountLiveEvent();
         mUpdateAccountLiveEvent = iBonusRepository.getUpdateAccountLiveEvent();
+        mAccountInfoLiveEvent = iBonusRepository.getAccountInfoLiveEvent();
         mDeviceId = iDeviceId;
     }
 
@@ -45,16 +46,24 @@ public class RestoreKeystoreViewModel extends ViewModel {
      * Public Getters
      */
 
+    public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
+        return mAccountInfoLiveEvent;
+    }
+
     public LiveData<Resource<String>> getRestoreLiveEvent() {
         return mRestoreLiveEvent;
     }
 
-    public SingleLiveEvent<Resource<GenericResponse>> getRegisterDeviceIdLiveEvent() {
-        return mRegisterDeviceIdLiveEvent;
+    public SingleLiveEvent<Resource<GenericResponse>> getAddAccountLiveEvent() {
+        return mAddAccountLiveEvent;
     }
 
     public SingleLiveEvent<Resource<GenericResponse>> getUpdateAccountLiveEvent() {
         return mUpdateAccountLiveEvent;
+    }
+
+    public void fetchAccountInfo() {
+        mBonusRepository.fetchAccountInfo();
     }
 
     public void restoreKeystoreFile(String iPassword, String iKeystorePath) {
@@ -92,7 +101,7 @@ public class RestoreKeystoreViewModel extends ViewModel {
 
     public void addAccountInfo(String iAccountAddress, String iReferredBy) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
-                .deviceIdMain(mDeviceId)
+                .deviceIdReferral(mDeviceId)
                 .address(iAccountAddress)
                 .referredBy(iReferredBy)
                 .build();
@@ -101,7 +110,7 @@ public class RestoreKeystoreViewModel extends ViewModel {
 
     public void updateAccountInfo(String iAccountAddress) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
-                .deviceIdMain(mDeviceId)
+                .deviceIdReferral(mDeviceId)
                 .address(iAccountAddress)
                 .build();
         mBonusRepository.updateAccount(aBody);

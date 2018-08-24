@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,7 +121,8 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                 if (keystoreResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.restoring_accunt));
                 } else if (keystoreResource.data != null && keystoreResource.status.equals(Status.SUCCESS)) {
-                    mViewModel.addAccountInfo(keystoreResource.data, null);
+                    hideProgressDialog();
+                    mViewModel.fetchAccountInfo();
                 } else if (keystoreResource.message != null && keystoreResource.status.equals(Status.ERROR)) {
                     mTetPassword.setText("");
                     hideProgressDialog();
@@ -130,7 +132,32 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
             }
         });
 
-        mViewModel.getRegisterDeviceIdLiveEvent().observe(this, genericResponseResource -> {
+        mViewModel.getAccountInfoLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.data.account.address != null && !TextUtils.isEmpty(genericResponseResource.data.account.address) && !TextUtils.isEmpty(genericResponseResource.data.account.deviceId) && AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS).equals(genericResponseResource.data.account.address) && aDeviceId.equals(genericResponseResource.data.account.deviceId)) {
+                        loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                    } else {
+                        mViewModel.addAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS), null);
+                    }
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC)) {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ERROR_GENERIC");
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                    } else if (genericResponseResource.message.equals(getString(R.string.no_internet))) {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: NO INTERNET");
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                    } else {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ELSE");
+                        mViewModel.addAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS), null);
+                    }
+                }
+            }
+        });
+
+        mViewModel.getAddAccountLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.adding_referral));
@@ -163,11 +190,14 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                     loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC)) {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ERROR_GENERIC");
                         showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
-                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                    } else if (genericResponseResource.message.equals(getString(R.string.no_internet))) {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: NO INTERNET");
                         showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
-                    else {
+                    } else {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ELSE");
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
                     }
                 }

@@ -1,9 +1,12 @@
 package sentinelgroup.io.sentinel.db;
 
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import sentinelgroup.io.sentinel.db.dao.BalanceEntryDao;
@@ -20,6 +23,8 @@ import sentinelgroup.io.sentinel.network.model.PinEntity;
 import sentinelgroup.io.sentinel.network.model.ReferralInfoEntity;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
+import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 
 /**
  * Room Database for storing all the essential application data in it's table defined by the various DAO's.
@@ -63,4 +68,15 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BonusInfoDao getBonusInfoEntryDao();
 
     public abstract DeleteTableDao deleteTableDao();
+
+    private static final Migration MIGRATION_7_8 = new Migration(7, 8) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE referral_info_entity RENAME TO bonus_info_entity");
+            database.execSQL("ALTER TABLE bonus_info_entity ADD COLUMN canClaim INTEGER");
+            database.execSQL("ALTER TABLE bonus_info_entity ADD COLUMN canClaimAfter TEXT");
+            database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN version TEXT");
+            database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN encryptionMethod TEXT");
+        }
+    };
 }

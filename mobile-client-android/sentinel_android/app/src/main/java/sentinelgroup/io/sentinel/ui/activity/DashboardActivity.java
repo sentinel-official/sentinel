@@ -32,6 +32,7 @@ import de.blinkt.openvpn.LaunchVPN;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.ConnectionStatus;
 import de.blinkt.openvpn.core.IOpenVPNServiceInternal;
+import de.blinkt.openvpn.core.OpenVPNManagement;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.ProfileManager;
 import de.blinkt.openvpn.core.VpnStatus;
@@ -50,12 +51,13 @@ import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Logger;
 
+import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 import static sentinelgroup.io.sentinel.util.AppConstants.DOUBLE_ACTION_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.SINGLE_ACTION_DIALOG_TAG;
 
 public class DashboardActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
-        OnGenericFragmentInteractionListener, OnVpnConnectionListener, VpnStatus.StateListener, DoubleActionDialogFragment.OnDialogActionListener {
+        OnGenericFragmentInteractionListener, OnVpnConnectionListener, VpnStatus.StateListener, VpnStatus.ByteCountListener, DoubleActionDialogFragment.OnDialogActionListener {
 
     private String mIntentExtra;
     private boolean mHasActivityResult;
@@ -95,6 +97,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         super.onResume();
         // setup VPN listeners & services
         VpnStatus.addStateListener(this);
+        VpnStatus.addByteCountListener(this);
         Intent intent = new Intent(this, OpenVPNService.class);
         intent.setAction(OpenVPNService.START_SERVICE);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
@@ -115,12 +118,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     protected void onPause() {
         super.onPause();
         unbindService(mConnection);
-    }
-
-    @Override
-    protected void onStop() {
         VpnStatus.removeStateListener(this);
-        super.onStop();
+        VpnStatus.removeByteCountListener(this);
     }
 
     @Override
@@ -645,24 +644,31 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
             // Called when the VPN connection terminates
             if (state.equals("USER_VPN_PERMISSION_CANCELLED")
-                    || (state.equals("RECONNECTING") && logMessage.contains("tls-error"))
+                    || state.equals("CONNECTRETRY")
                     || (state.equals("NOPROCESS") && SentinelApp.isVpnConnected)) {
                 AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                if (!(aFragment instanceof WalletFragment)){
-                switch (state) {
-                    case "USER_VPN_PERMISSION_CANCELLED":
-                        loadVpnFragment(getString(localizedResId));
-                        break;
-                    case "RECONNECTING":
-                        loadVpnFragment(getString(R.string.network_lost));
-                        break;
-                    default:
-                        loadVpnFragment(null);
-                        break;
-                }}
+                if (!(aFragment instanceof WalletFragment)) {
+                    switch (state) {
+                        case "USER_VPN_PERMISSION_CANCELLED":
+                            loadVpnFragment(getString(localizedResId));
+                            break;
+                        case "CONNECTRETRY":
+                            loadVpnFragment(getString(R.string.network_lost));
+                            break;
+                        default:
+                            loadVpnFragment(null);
+                            break;
+                    }
+                }
                 SentinelApp.isVpnInitiated = false;
                 SentinelApp.isVpnConnected = false;
-                SentinelApp.isVpnReconnectFailed=false;
+                SentinelApp.isVpnReconnectFailed = false;
+            } else {
+                if (aFragment != null && aFragment instanceof VpnConnectedFragment) {
+                    runOnUiThread(() -> {
+                        ((VpnConnectedFragment) aFragment).updateStatus(getString(localizedResId));
+                    });
+                }
             }
 
             // Called when user connects to a VPN node from other activity
@@ -675,5 +681,18 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void setConnectedVPN(String uuid) {
+    }
+
+    @Override
+    public void updateByteCount(long in, long out, long diffIn, long diffOut) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        if (aFragment != null && aFragment instanceof VpnConnectedFragment) {
+            String aDownloadSpeed = humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String aUploadSpeed = humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String aTotalData = humanReadableByteCount(in, false, getResources());
+            runOnUiThread(() -> {
+                ((VpnConnectedFragment) aFragment).updateByteCount(aDownloadSpeed, aUploadSpeed, aTotalData);
+            });
+        }
     }
 }

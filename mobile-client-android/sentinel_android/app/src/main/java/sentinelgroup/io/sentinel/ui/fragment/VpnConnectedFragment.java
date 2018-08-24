@@ -52,7 +52,7 @@ import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
  * Use the {@link VpnConnectedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VpnConnectedFragment extends Fragment implements View.OnClickListener, VpnStatus.StateListener, VpnStatus.ByteCountListener {
+public class VpnConnectedFragment extends Fragment implements View.OnClickListener {
 
     private VpnConnectedViewModel mViewModel;
 
@@ -111,18 +111,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         super.onStart();
         if (!SentinelApp.isVpnInitiated) {
             loadNextFragment(VpnSelectFragment.newInstance(null));
-        } else {
-            // setup VPN listeners
-            VpnStatus.addStateListener(this);
-            VpnStatus.addByteCountListener(this);
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        VpnStatus.removeStateListener(this);
-        VpnStatus.removeByteCountListener(this);
     }
 
     private void initView(View iView) {
@@ -159,7 +148,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     }
 
     private void setupVpnData(VpnListEntity iVpnEntity) {
-        mTvLocation.setText(getString(R.string.vpn_location, iVpnEntity.getLocation().city, iVpnEntity.getLocation().country));
+        mTvLocation.setText(getString(R.string.vpn_location_city_country, iVpnEntity.getLocation().city, iVpnEntity.getLocation().country));
         // Construct and set - IP SpannableString
         String aIp = getString(R.string.vpn_ip, iVpnEntity.getIp());
         SpannableString aStyledIp = new SpannableStringUtil.SpannableStringUtilBuilder(aIp, iVpnEntity.getIp())
@@ -277,8 +266,6 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
 
     public void initiateVpnDisconnection() {
         if (mVpnListener != null) {
-            VpnStatus.removeStateListener(this);
-            VpnStatus.removeByteCountListener(this);
             mVpnListener.onVpnDisconnectionInitiated();
         }
     }
@@ -313,32 +300,6 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
             case R.id.btn_view_vpn:
                 loadNextActivity(new Intent(getActivity(), VpnListActivity.class), AppConstants.REQ_VPN_CONNECT);
                 break;
-        }
-    }
-
-    @Override
-    public void updateState(String state, String logmessage, int localizedResId, ConnectionStatus level) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                updateStatus(getString(localizedResId, logmessage));
-            });
-        }
-    }
-
-    @Override
-    public void setConnectedVPN(String uuid) {
-
-    }
-
-    @Override
-    public void updateByteCount(long in, long out, long diffIn, long diffOut) {
-        if (getActivity() != null) {
-            String aDownloadSpeed = humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources());
-            String aUploadSpeed = humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources());
-            String aTotalData = humanReadableByteCount(in, false, getResources());
-            getActivity().runOnUiThread(() -> {
-                updateByteCount(aDownloadSpeed, aUploadSpeed, aTotalData);
-            });
         }
     }
 }

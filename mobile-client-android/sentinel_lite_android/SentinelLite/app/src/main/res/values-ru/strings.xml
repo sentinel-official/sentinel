@@ -142,13 +142,14 @@
     <string name="no_internet">Нет подключения к интернету. Попробуйте еще раз.</string>
     <string name="please_note">Внимание</string>
     <string name="referral_id_copied">Реферальный код скопирован</string>
-    <string name="vpn_location">%1s, %2s</string>
+    <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Скорость %s</string>
     <string name="vpn_bandwidth_connected">Скорость\n%s</string>
     <string name="vpn_enc_method">Шифрование %s</string>
     <string name="vpn_enc_method_connected">Шифрование\n%s</string>
     <string name="vpn_latency">Задержка %s</string>
+    <string name="vpn_node_version">Версия %s</string>
     <string name="vpn_latency_connected">Задержка\n%s</string>
     <string name="vpn_duration_connected">Длительность\n%s</string>
     <string name="vpn_bandwidth_value">%.2f Мб/с</string>
@@ -161,6 +162,7 @@
     <string name="bandwidth">Скорость:</string>
     <string name="latency">Задержка:</string>
     <string name="encryption">Шифрование:</string>
+    <string name="node_version">Версия:</string>
     <string name="coming_soon">Скоро добавим</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
     <string name="saving_config">Сохранение конфигураций VPN…</string>

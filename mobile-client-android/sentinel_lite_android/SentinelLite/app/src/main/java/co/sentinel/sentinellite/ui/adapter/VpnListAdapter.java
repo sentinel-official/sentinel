@@ -46,7 +46,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         VpnListEntity aItemData = mData.get(position);
-        holder.mTvLocation.setText(mContext.getString(R.string.vpn_location, aItemData.getLocation().city, aItemData.getLocation().country));
+        holder.mTvLocation.setText(aItemData.getLocation().country);
         // Set country flag
         holder.mFvFlag.setCountryCode(Converter.getCountryCode(aItemData.getLocation().country));
         // Construct and set - Bandwidth SpannableString
@@ -73,6 +73,12 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvLatency.setText(aStyleLatency);
+        String aVersion = mContext.getString(R.string.vpn_node_version, aItemData.getVersion());
+        SpannableString aStyleVersion = new SpannableStringUtil.SpannableStringUtilBuilder(aVersion, aItemData.getVersion())
+                .color(ContextCompat.getColor(mContext, R.color.colorTextWhite))
+                .customStyle(Typeface.BOLD)
+                .build();
+        holder.mTvNodeVersion.setText(aStyleVersion);
         // Set listeners
         holder.mRootView.setOnClickListener(v -> onRootViewClick(aItemData));
         holder.mBtnConnect.setOnClickListener(v -> onConnectClick(aItemData.getAccountAddress()));
@@ -87,7 +93,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder {
         View mRootView;
         FlagImageView mFvFlag;
-        TextView mTvLocation, mTvBandwidth, mTvEncMethod, mTvLatency;
+        TextView mTvLocation, mTvBandwidth, mTvEncMethod, mTvLatency, mTvNodeVersion;
         Button mBtnConnect;
 
         ViewHolder(View itemView) {
@@ -98,6 +104,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
             mTvBandwidth = itemView.findViewById(R.id.tv_bandwidth);
             mTvEncMethod = itemView.findViewById(R.id.tv_enc_method);
             mTvLatency = itemView.findViewById(R.id.tv_latency);
+            mTvNodeVersion = itemView.findViewById(R.id.tv_node_version);
             mBtnConnect = itemView.findViewById(R.id.btn_connect);
         }
     }

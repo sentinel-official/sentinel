@@ -15,7 +15,7 @@ import co.sentinel.sentinellite.network.model.VpnListEntity;
  * Room Database for storing all the essential application data in it's table defined by the various DAO's.
  */
 @Database(entities = {BonusInfoEntity.class, VpnListEntity.class},
-        version = 1,
+        version = 2,
         exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();

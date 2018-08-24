@@ -96,15 +96,30 @@
             style="@style/CustomTextAppearance.Text12.GrayNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:paddingEnd="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
+            app:layout_constraintBottom_toTopOf="@+id/tv_node_version"
+            app:layout_constraintEnd_toEndOf="@+id/tv_enc_method"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_enc_method" />
+
+        <TextView
+            android:id="@+id/tv_node_version"
+            style="@style/CustomTextAppearance.Text12.GrayNormal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:paddingEnd="@dimen/margin_8"
             android:paddingLeft="@dimen/margin_8"
             android:paddingRight="@dimen/margin_8"
             android:paddingStart="@dimen/margin_8"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tv_enc_method"
+            app:layout_constraintEnd_toEndOf="@+id/tv_latency"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_enc_method" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_latency" />
 
         <Button
             android:id="@+id/btn_connect"
@@ -114,7 +129,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:text="@string/connect"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_latency"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_bandwidth"

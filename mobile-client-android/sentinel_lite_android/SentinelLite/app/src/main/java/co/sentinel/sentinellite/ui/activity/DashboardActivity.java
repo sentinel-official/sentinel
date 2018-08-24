@@ -43,6 +43,7 @@ import de.blinkt.openvpn.LaunchVPN;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.ConnectionStatus;
 import de.blinkt.openvpn.core.IOpenVPNServiceInternal;
+import de.blinkt.openvpn.core.OpenVPNManagement;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.ProfileManager;
 import de.blinkt.openvpn.core.VpnStatus;
@@ -50,9 +51,10 @@ import de.blinkt.openvpn.core.VpnStatus;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_DOUBLE_ACTION_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_PROGRESS_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_SINGLE_ACTION_DIALOG;
+import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 
 public class DashboardActivity extends AppCompatActivity implements OnGenericFragmentInteractionListener,
-        OnVpnConnectionListener, VpnStatus.StateListener, DoubleActionDialogFragment.OnDialogActionListener {
+        OnVpnConnectionListener, VpnStatus.StateListener, VpnStatus.ByteCountListener, DoubleActionDialogFragment.OnDialogActionListener {
 
     private boolean mHasActivityResult;
 
@@ -88,16 +90,28 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     protected void onStart() {
         super.onStart();
         // setup VPN listeners & services
-        VpnStatus.addStateListener(this);
         Intent intent = new Intent(this, OpenVPNService.class);
         intent.setAction(OpenVPNService.START_SERVICE);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
+    protected void onResume() {
+        VpnStatus.addStateListener(this);
+        VpnStatus.addByteCountListener(this);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        VpnStatus.removeStateListener(this);
+        VpnStatus.removeByteCountListener(this);
+        super.onPause();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-        VpnStatus.removeStateListener(this);
         unbindService(mConnection);
     }
 
@@ -457,6 +471,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
 
     @Override
     public void onVpnDisconnectionInitiated() {
+        SentinelLiteApp.isVpnConnected = true;
         stopVPNConnection();
     }
 
@@ -470,16 +485,18 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
         Logger.logError("VPN_STATE", state + " - " + logMessage + " : " + getString(localizedResId), null);
 
         runOnUiThread(() -> {
+            Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
             // Called when the VPN connection terminates
             if (state.equals("USER_VPN_PERMISSION_CANCELLED")
-                    || (state.equals("RECONNECTING") && logMessage.contains("tls-error"))
+                    || (state.equals("CONNECTRETRY"))
                     || (state.equals("NOPROCESS") && SentinelLiteApp.isVpnConnected)) {
                 AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
                 switch (state) {
                     case "USER_VPN_PERMISSION_CANCELLED":
                         loadVpnFragment(getString(localizedResId));
                         break;
-                    case "RECONNECTING":
+                    case "CONNECTRETRY":
+                        onVpnDisconnectionInitiated();
                         loadVpnFragment(getString(R.string.network_lost));
                         break;
                     default:
@@ -488,15 +505,22 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                 }
                 SentinelLiteApp.isVpnInitiated = false;
                 SentinelLiteApp.isVpnConnected = false;
-                SentinelLiteApp.isVpnReconnectFailed=false;
+                SentinelLiteApp.isVpnReconnectFailed = false;
+            } else {
+                if (aFragment != null && aFragment instanceof VpnConnectedFragment) {
+                    runOnUiThread(() -> {
+                        ((VpnConnectedFragment) aFragment).updateStatus(getString(localizedResId));
+                    });
+                }
             }
 
-            if (SentinelLiteApp.isVpnReconnectFailed){
+            if (SentinelLiteApp.isVpnReconnectFailed) {
                 AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
+                onVpnDisconnectionInitiated();
                 loadVpnFragment(getString(R.string.network_lost));
                 SentinelLiteApp.isVpnInitiated = false;
                 SentinelLiteApp.isVpnConnected = false;
-                SentinelLiteApp.isVpnReconnectFailed=false;
+                SentinelLiteApp.isVpnReconnectFailed = false;
             }
 
             // Called when user connects to a VPN node from other activity
@@ -505,6 +529,19 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                 mHasActivityResult = false;
             }
         });
+    }
+
+    @Override
+    public void updateByteCount(long in, long out, long diffIn, long diffOut) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        if (aFragment != null && aFragment instanceof VpnConnectedFragment) {
+            String aDownloadSpeed = humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String aUploadSpeed = humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String aTotalData = humanReadableByteCount(in, false, getResources());
+            runOnUiThread(() -> {
+                ((VpnConnectedFragment) aFragment).updateByteCount(aDownloadSpeed, aUploadSpeed, aTotalData);
+            });
+        }
     }
 
     @Override

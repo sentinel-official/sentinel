@@ -1,4 +1,4 @@
-# Sentinel - Lite Paper
+Sentinel - Lite Paper
 ===
 
 ### Create Public & Private Networks and participate in a Marketplace of distributed Resources powered by dApps

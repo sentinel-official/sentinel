@@ -30,7 +30,6 @@ export async function getTMBalance(address) {
                 'Content-type': 'application/json',
             }
         })
-        console.log("Res...", response)
         return {
             type: types.GET_TMBALANCE,
             payload: response.data
@@ -43,9 +42,9 @@ export async function getTMBalance(address) {
     }
 }
 
-export async function sendAmount(data) {
+export async function sendAmount(data, toAddr) {
     try {
-        let response = await axios.post(TM_URL + '/accounts/send', data, {
+        let response = await axios.post(TM_URL + `/accounts/${toAddr}/send`, data, {
             headers: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json',

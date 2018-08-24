@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { getKeys, sendAmount } from '../Actions/tendermint.action';
+import { getKeys, sendAmount, getTMBalance } from '../Actions/tendermint.action';
 import CustomTextField from './customTextfield';
 import { Button, Snackbar } from '@material-ui/core';
 import { createAccountStyle } from '../Assets/createtm.styles';
@@ -33,18 +33,27 @@ class TMTransactions extends Component {
     }
 
     sendTransaction = () => {
-        console.log("To..",this.state.toAddress);
-        let data = {
-            "amount": [{ "denom": "sentToken", "amount": this.state.amount.toString() }],
-            "name": this.props.keys[0].name,
-            "password": this.state.keyPassword,
-            "chain_id": "sentinel-testnet",
-            "gas": "200000",
-            "address": this.state.toAddress
-        }
-        this.props.sendAmount(data).then(response => {
-            console.log("Result...", response);
-        });
+        this.props.getTMBalance(this.props.keys[0].address).then(res => {
+            console.log("res...p", res);
+            if (res.payload && 'value' in res.payload) {
+                let data = {
+                    "amount": [{ "denom": "SUT", "amount": this.state.amount.toString() }],
+                    "name": this.props.keys[0].name,
+                    "password": this.state.keyPassword,
+                    "chain_id": "sentinel-testnet-1",
+                    "gas": "200000",
+                    "address": this.state.toAddress,
+                    "account_number": res.payload.value.account_number,
+                    "sequence": res.payload.value.sequence
+                }
+                this.props.sendAmount(data, this.state.toAddress).then(response => {
+                    console.log("Result...", response);
+                });
+            }
+            else {
+                this.setState({ openSnack: true, snackMessage: 'Problem faced while doing transaction' })
+            }
+        })
     }
 
     handleClose = (event, reason) => {
@@ -103,7 +112,8 @@ function mapStateToProps(state) {
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         getKeys,
-        sendAmount
+        sendAmount,
+        getTMBalance
     }, dispatch)
 }
 

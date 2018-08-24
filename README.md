@@ -1,23 +1,25 @@
-Sentinel
+Sentinel - Lite Paper
 ===
-### An Interoperable Networking Layer for Distributed Services
+
+### Create Public & Private Networks and participate in a Marketplace of distributed Resources powered by dApps
 
 _____________________
 ![Sentinel Security Group](https://raw.githubusercontent.com/sentinel-official/sentinel/master/docs/Sentinel%20Security%20Group_LitePaper%20v10%20001.jpg)
 _____________________
 
-The Motivation
+Sentinel Service Chain
+===
+
+### The Networking Layer for Distributed Services
+
+Motivation
 --
 
-The first step in executing the vision was to create a strong bandwidth incentivization and resource monitoring protocol. In order to work towards completing this foundation step, Sentinel has launched a prototype of a VPN client with the intention to facilitate the monitoring and incentivization of data between a host node and an end user.
+The first step in executing the vision was to create a strong bandwidth incentivization and resource monitoring protocol. In order to work towards  completing this foundation step Sentinel has launched a prototype of a VPN client with the intention to facilitate the monitoring, and incentivization of data between a host node and an end user.
 
-Based on interoperable blockchain technology, Sentinel Network aims to utilize multiple chains to:
- 
-- manage identity
-- govern and run services with resource incentivization
-- process payments
+Based on interoperable blockchain technology, Sentinel Network aims to utilize multiple blockchains to provide the following services. 
 
-Features of Sentinel
+Features of the Sentinel Network
 ---
 
 - **Distributed, no node stores complete data**
@@ -26,10 +28,9 @@ Features of Sentinel
  
     - User identification data is stored on a separate chain. (AUID) This is discussed further down in the paper. 
     
-    - BFT based consensus using the TenderMint Consensus Engine; where, due to TenderMint's near instant finality and ability to function even when less than 1/3rd of the validators go offline/are malicious, the Sentinel network is capable to function and validate a transaction even when a majority nodes of a specific service fail.
-    
+    - BFT based consensus using the TenderMint Consensus Engine; capability to work even with greater than 2/3<sup>rd</sup> of the nodes failing
 
-    - Any attacks on the network will trigger auto-scaling, network relocation, and isolation of affected nodes.
+    - Any attacks on the network will trigger auto-scaling and network re-location, isolation of affected nodes.
 
 - **Developer friendly SDK**
 
@@ -46,31 +47,31 @@ Features of Sentinel
     - Users can be incentivized if they become *Service Provider* nodes and maintain a good reputation
     - AUID (Anonymous user identification) which is discussed further on in this paper, employs a reputation based incentivization.
   
-  - dVPN is the first implementation of Native Services and 
+  - dVPN is the first implementation of Native Services an 
 
     - Developers can implement the Sentinel SDK in their own applications.
 
     - Can sell and trade applications and resources on the Sentinel Services Marketplace.
     
 Architecture of Sentinel
-=
+===
  
-*Sentinel* employs what is called a multi-chain architecture and is resourceful to secure data exchange between ***people*** and ***applications*** - Legacy, Enterprise Apps, Mobile Apps and dApps. The network solves problems with infrastructure and scaling, thereby achieving production level speed of transaction by implementing:
+*Sentinel* employs what is called a multi-chain architecture and is resourceful to secure data exchange between ***people*** and ***applications*** - Legacy, Enterprise Apps, Mobile Apps and dApps (meaning, the ability to handle centralized and decentralized applications is native to the protocol). The network solves problems with infrastructure and scaling, thereby achieving production level speed of transaction by implementing:
 
-- **Multi-Chain Architecture**
+**Multi-Chain Architecture**
 
 - **Identity Chain** - An Anonymous User ID (AUID) is created and stored in an independent chain which interacts with the other chains to provide access to Services on the Service Chain and for payment processing on the Transaction Chain.
 
 - **Service Chain** - Secure Tunneling of Data with a Underlay and an Overlay Relay Network. Governance will be implemented on top of the Service Chain and a peg Token, called *Sentinel Service Token* ($SENT-SST) will be the Utility token used for Transactions in the Service Chain.
 
-- **Sentinel Transactions Chain** - Payments and related processing of transactions from and to the *Sentinel Transaction Pool*
+- Payments and related processing of sending transactions to the *Sentinel Transaction Pool* and so on is handled by the **Sentinel Transactions Chain**. 
 
 Identity Chain & Anonymous User ID (AUID)
 ===
 
 - AUID will be the single source of access for all *Services* on the Sentinel Network
 
-- The network will be governed by reputation. The higher the reputation, the easier it is to access Services and Masternodes.
+- The network will be governed by Reputation. Higher the reputation,easier the access to Services and Master Nodes.
 
 - The network has monetary incentivization for good behaviour where, higher reputation will mean higher the potential to earn.
 
@@ -78,7 +79,7 @@ Identity Chain & Anonymous User ID (AUID)
 
 - Solves the problem of a single point of failure by distributing the AUID ledger across the Sentinel Node Network
 
-- Bad actors risk reduction in reputation if they engage in spamming or malicious activity
+- Bad actors risk reduction in Reputation if they engage in spamming or malicious activity
 
 - The distributed consensus mechanism of the network quickly and effectively recognizes compromised ID’s. Auto mitigation solutions will kick in to make the network isn’t affected
 
@@ -90,52 +91,21 @@ Sentinel Service Chain
 Sentinel Security Suite
 -
 
-The Sentinel Security Suite is a set of products, developed by the Sentinel community & core team, that functions utilizing protocols and Sentinel Network SDK.
+The Sentinel Security Suite is a set of products that are developed by the Sentinel community and core team and functions utilizing protocols and Sentinel Network SDK.
 
 
 Secure Access - dVPN
 -
 
-A decentralized Virtual private network powered by blockchain technology. The dVPN (decentralized Virtual Private Network) is the first use case built on the blockchain with an extremely distributed network topology with nodes spanning across continents.
-
-Each node can either be a desktop/laptop computer, mobile phone or even a server on the cloud. A ledger of packet/data transactions are stored on the blockchain with a ‘Proof of Traffic’ consensus system, which incentivizes users primarily for the bandwidth served and monetizes any unused bandwidth that they may declare on the Sentinel Network.
-
-### The need for a secure services platform
-
-
-Internet services that are most widely used by users:
-
-- **Aggregate data**
-    - Google, Microsoft, Apple, facebook require the user to divulge information for registration and to use their services. 
-
-- **Buy/Sell and Trade user data**
-    - Even if you dont subscribe to any of the services from the data aggregators above, you are still prone to tracking by cookies.
-
-    - Big.exchange is one such platform that legally trades in user cookies for money.
-
-- **Are powerless to legislative law**
-    - The US CLOUD Act amends the Stored Communications Act to allow federal law enforcement to compel U.S.-based service providers via warrant or subpoena, to provide requested data stored on servers regardless of whether they are located within the U.S. or in foreign countries.[5]
-
-    - In 2000, China passed two censorship laws that allow the governement to monitor and track communication and deny access to many scholarly websites and media sharing services.
-
-- **Are dependent on central servers, the failure of which can cause entire network failure**
-    - Hackers, bot-net, goverment DDOS attacks, node proliferation attacks are some of the many attacks proven to cripple server farms. The loss, or even downtime of which can cause catastrophic consequences. Eg; An outage of 10 seconds in a central server based trading platform can cause millions of dollars in losses.
-
-In light of this, we need:
-
-- A service development layer that isn’t centrally dependent. This service should allow easy resource sharing as well as easy development. 
-
-- A means to secure access to this network and thereby bypass local and international legislative law
-
-- A means to make sure that user data is safe, secure, private and anonymous.
+A decentralized Virtual private network powered by blockchain technology. The dVPN (decentralized Virtual Private Network) is the first use case built on the blockchain with an extremely distributed network topology with nodes spanning across continents. Each node can either be a desktop/laptop computer, mobile phone or even a server on the cloud. A ledger of packet/ data transactions are stored on the blockchain with a ‘Proof of Traffic’ consensus system, which incentivizes users primarily for the bandwidth served and monetizes any unused bandwidth that they may declare on the Sentinel Network.
 
 A working version of the Sentinel Desktop Client (currently in alpha) can be found on the [releases](https://github.com/sentinel-official/sentinel/releases) page of the GitHub profile.
 
-**NOTE :** This version is only a proof of concept and is meant only for testing the functionality of the dVPN and the resource incentivization protocol (with dynamic node pricing). Use it at your own risk and liability of traffic at the exit node is also upon the host.
+NOTE : This version is only a proof of concept and is meant only for Testing the functionality of the dVPN and the resource incentivization protocol (with dynamic node pricing). Use it at your own risk and liability of traffic at the exit node is also upon the host.
 
 We are working towards a fully functional dVPN that we can use everyday to send all of our home traffic through it, but the time is not now.
 
-In case of any issues with the current Sentinel Desktop Client, do let us know by filing an [issue](https://github.com/sentinel-official/sentinel/issues) on the GitHub Repo or by starting a conversation with the Telegram bot and submitting an Issue directly to it - [Sentinel Support Bot](https://t.me/SentinelSupportBot)
+In case of any issues with the current Sentinel Desktop Client, do let us know by filing an [issue](https://github.com/sentinel-official/sentinel/issues) on the GitHub Repo or by starting a conversation with the bot and submitting an Issue directly to the bot - [Sentinel Support Bot](https://t.me/SentinelSupportBot)
 
 **Roadmap for the dVPN**
 
@@ -172,11 +142,11 @@ Native Services are developed by the Sentinel Community and will be working towa
 End-to-End encryption with BFT based consensus
 --
 
-One common issue that is raised in privacy and specially, VPN projects or distributed anonymous network projects is the possible presence of bad actors or malicious nodes. While traffic is encrypted between the entry node and exit node and is passed on through various methods of closed tunneling, there is always the question of what if the exit node is malicious and can pick up other networking variables from the User session that could help the malicious actor generate a user fingerprint.
+One common issue that is raised in privacy and specially, VPN projects or distributed anonymous network projects is the possible presence of bad actors or malicious nodes. While traffic is encrypted between the entry node and exit node and is passed on through various methods of closed tunneling, there is always the question of what if the exit node is malicious and can pick up other networking variables from the User session which could help the malicious actor generate a user fingerprint.
 
 Currently, this issue is addressed by networks like TOR and i2p where there’s a relay of packets and utilizes packet routing techniques to ensure identity of the source and destination is not revealed.
 
-Sentinel is developing a relay network where participants in the network can choose to be a relay or an exit node on which encrypted tunnels traffic between the VPN paid user and an exit node.
+Sentinel is developing a relay network, where participants in the network can choose to be a relay or an exit node on which encrypted tunnels traffic between the VPN paid user and an exit node.
 
 A consensus mechanism coupled with hybrid packet routing
 ---
@@ -206,14 +176,14 @@ For Example:
 - Provider B wishes to cash out 50 $SST into $SENTs and sends the same to Swap Address on the ‘Sentinel Service Chain’ 
 - This triggers a smart contract that will result in Provider B receiving 50 $SENTs into their predefined Sentinel Transaction Chain Wallet.
 
-Governance on the Service Chain : Resource Incentivization Protocol
+Governance on the Service Chain: Resource Incentivization Protocol
 ----
 
 The model of offering services and billing per transaction itself generates the need for increased and efficient Governing mechanisms. Below mentioned are the types of blocks that are utilized during service delivery in the Sentinel Network
 
 #1 Service Block
 -
-These are the root blocks from which service registration blocks are generated. These are sentinel node created blocks. 
+This are the root blocks from which service registration blocks are generated. These are sentinel node created blocks. 
 
 
 #2 Service Registration Block (created by Consumers)
@@ -265,7 +235,7 @@ If there’s an unpaid block on the Service Chain for a specific Consumer/User, 
 #12 Hold
 -
 
-This block is created, when a User sends a Payment to a Service Provider. The payment if first sent to the Sentinel Transaction Pool of current payments and is processed there to be sent to the Service Provider at a later point in time.
+This block is created, when a User sends a Payment to a Service Provider. The payment, if first sent to the Sentinel Transaction Pool of current payments and is processed there to be sent to the Service Provider at a later point in time.
 
 #13 Dispute
 -
@@ -296,76 +266,55 @@ Sentinel Transactions Chain
 
 - The Sentinel Transactions Chain enables users to securely pay for services  using their AUID and related wallets.
 - Transactions on this chain are backed by Solidity based smart contracts on the Ethereum Chain. These transactions are validated by miners on the Ethereum Network.
-- Masternodes will have the ability to run nodes to validate and secure the network.
+- Master Nodes will have the ability to run nodes to validate and secure the network.
 
-Additional Notes
+The Road Ahead
 ===
 
-Current Features
+What features does Sentinel currently have?
 ---
 
-Sentinel's first implementation on the Service Chain is a very secure decentralized VPN service. This VPN is based on a peer to peer technology. This means that the network runs because of people's support instead of on a central server. Centralized servers can be monitored by a Government and can be brought down by hackers.
+Sentinel's first implementation on the Service Chain is a very secure decentralized VPN service. This VPN is based on a peer to peer technology. This means that the network runs because of people's support instead of a central server. Centralized servers can be monitored by a Government and can be brought down by hackers.
 
 Sentinel's dVPN service allows a person to use the VPN service or help the VPN by sharing free, unused internet with other people in the network. This is done in a very secure way with technologies that are very new to the industry.
 
-The person who is sharing his internet with other people is called a *Node*. The *node* can choose the price of the internet he shares. This is done by our cryptocurrency which is called Sentinel Token, represented by $SENT. Eg; The *node* who shares his internet to others may charge the users in $SENTs per Gigabyte of internet shared or simply, $SENTs/GB.
+The person who is sharing his internet with other people is called a *Node*. The *node* can choose the price of the internet he shares. This is done by our crypto-currency which is called Sentinel Token, represented by $SENT. Eg; The *node* who shares his internet to others may charge the users in $SENTs per Gigabyte of internet shared or simply, $SENTs/GB.
 
-At the moment there are over 20 such *nodes* who share secure internet in our network and this number is growing every day. Hordes of people are testing our VPN service and reporting very good results. 
+At the moment there are over 20 such *node*'s who share secure internet in our network and this number is growing every day. Hordes of people are testing our VPN service and reporting very good results. 
 
 Our network lives on the Ethereum Rinkeby Testnet at the moment until we launch our final product.
 
-Our VPN technology is very special and unique because this is the first time blockchain technology is being used for Internet security. Our pricing system (Sents/GB) is the first time a blockchain is being used this way. All communication in a blockchain network takes place via a method called "Smart Contracts". Sentinel's smart contracts to measure internet usage and sharing are very accurate. Such an implementation of smart contracts to charge users the exact amount for their internet usage has never been done before using blockchain technology. 
+Our VPN technology is very special and unique because this is the first time blockchain technology is being used for Internet security. Our pricing system (Sents/GB), is the first time a blockchain is being used this way. All communication in a blockchain network takes place via a method called "Smart Contracts". Sentinel's smart contracts to measure internet usage and sharing are very accurate. Such an implementation of smart contracts to charge users the exact amount for their internet usage has never been done before using blockchain technology. 
 
-Users who use the secure internet and users who share secure internet both are measured very carefully. If any user doesn't pay after using secure internet from a node, his account will be blocked. Sometimes even banned.
+Users who use the secure internet and users who share secure internet both are measured very carefully. If any user, doesn't pay after using secure internet from a node, his account will be blocked or banned.
 
-Future Development Plan
+What features does Sentinel plan to have in the future?
 --
 
 In the future, Sentinel will provide the following features to the network:
 
-1) **Layer-2 TOR Nodes and Masternodes**
+1) Packet Standardization across the Sentinel Network
+    - Packet standardization makes it harder for hackers or legal entities to find your data among all the data in the internet.
 
-    - The current decentralized VPN (dVPN) prototype is meant to showcase the functionality of the blockchain based bandwidth protocols. This prototype is in no way more secure than your conventional VPN client. Now the work towards privacy begins.
- 
-    - Layer 2TOR Entry nodes will be the first provable truly anon use case for the dVPN as the TOR Entry nodes need to run the same check-summed docker version in order to be a *Service Provider* on the network thus proving to user that all traffic is being routed directly to TOR.
-
-    - This feature also gives exit node providers immunity as they will then become an entry node to a layer-2 network.
-    
-    - This masternode system is currently centralized and dependent on one server hosted by the developers for testing purposes. During the TestDrop there was a complete overload of the network to the point that it has not experienced before. There were over 75 active user sessions at one point which the centrally hosted masternode server was not prepared for. This led to loss in key user functions for a period of time. 
-
-    - The masternode system will be made partially decentralized in the v0.0.4 update as trusted community members will be able to run the masternode on the TestSENT rinkeyby chain in order to introduce layers of redundancy provision and further efforts towards a consensus validation. 
-
-    - The end goal of this sequence of actions is of course to decentralize the masternode system completely. 
-
-2) **Centralized on-chain Swaps**
-    
-    - To be able to use the Sentinel Network, tokens will have to be procured and with the introduction to on-chain ERC20 swaps, Sentinel users will be able to utilize TestNet ERC20 tokens like $ETH, $OMG, $GNT and \$ZRX to swap for Sentinel ($SENT) directly from within the wallet. More details on this in an independent post during the release.
-
-3) **Packet Standardization across the Sentinel Network**
-    - Packet standardization makes it harder for hackers or legal entities to find your data among all the data in the internet
-
-4) **Anonymous Mixer**
+2) Anonymous Mixer
     - This feature will mix user identification so that no one will know your identity while browsing.
 
-5) **Decentralized Chat/Messaging System (dChat)**
+3) Resource Incentivization Protocol to incentivize Bandwidth, Storage and Computing
+    - In the future, people will be able to share more than just secure internet on the Sentinel network. Eg; In the future, you will be able to share spare storage, spare CPU power. You can charge for sharing the spare storage or compute power in SENTS.
+   
+4) Decentralized Chat/Messaging System (dChat)
     - We have already begun testing our messaging platform based on blockchain technology. It is very safe, secure and fast. 
   
-6) **Decentralized VoIP/Calling (dVoIP) **
+5) Decentralized VoIP/Calling (dVoIP) 
     - In the future, users will be able to make voice calls on our distributed network
-
-    - The decentralized Chat & VoIP Systems are being developed on the Matrix Server and will be called **Sentrix** (which is short for Sentinel + Matrix)
-
-7) **Resource Incentivization Protocol to incentivize Bandwidth, Storage and Computing**
-
-    - In the future, people will be able to share more than just secure internet on the Sentinel network. Eg; In the future, you will be able to share spare storage, spare CPU power. You can charge for sharing the spare storage or compute power in SENTS.
-       
-8) **Hardware Boxes for Secure Access to multiple devices**
+    
+6) Hardware Boxes for Secure Access to multiple devices
     - We have begun testing a hardware box which we can connect to a router. This will allow any device connected to the router to use secure internet and other services on our network. 
 
-Benefits of features developed by Sentinel
+How does a user benefit from Sentinel's features?
 -
 
-Privacy today is under attack. We cannot fully be secure from the government and hackers using normal tools available today. Sentinel uses the power of blockchain technology to give you great tools that work effectively in protecting your privacy on the internet. It has many other privacy services on the network that have been developed keeping your privacy and safety in mind.
+Privacy today is under attack. We cannot fully be secure from the government and hackers using normal tools available today. Sentinel uses the power of blockchain technology to give you tools that work indubitably in protecting your privacy on the internet. It has various privacy services on the network that have been developed keeping your privacy and safety in mind.
 
 Some of these useful features are:
 * AUID (Anonymous User Identification)
@@ -380,7 +329,9 @@ Some of these useful features are:
 How can a user host a node or be a part of the network?
 -
 
-Users can host nodes by following instructions [here]( https://github.com/sentinel-official/sentinel/blob/master/vpn-node-docker/README.md) or follow the below commands if they are on any linux system with `curl`, `Docker` & `OpenVPN` already installed.
+Users can host nodes by following instructions here - https://github.com/sentinel-official/sentinel/blob/master/vpn-node-docker/README.md
+
+or follow the below commands if they are on any linux system with `curl`, `Docker` & `OpenVPN` already installed.
 
 **Step #1**
 
@@ -405,40 +356,37 @@ If you face any issues, please ping us on [Telegram](https://t.me/SentinelSecuri
 How is Sentinel different from Substratum, Mysterium, Privatix and other VPN competitors?
 -
 
-Sentinel is very different from Mysterium, Privatix etc. You can use VPN services on Sentinel and you can also use many useful service such as dChat, dVOIP, dDNS, etc. These services are all available in Sentinel's Network layer. We will release a software development kit for developers very soon so that other people can also make useful services for our network. We can use Sentinel dVPN with these services to make sure the service is fully secure and anonymous.
+Sentinel is very different from Mysterium, Privatix etc. You can use VPN services on Sentinel and you can also use many useful service such as dChat, dVOIP, dDNS, etc. These services are all available in Sentinel's Network layer. We will realease a software development kit for developers very soon so that other people can also make useful services for our network. We can use Sentinel dVPN with these services to make sure the service is fully secure and anonymous.
 
-Sentinel's development team is working to bring the software development kit to you. We are currently using this development kit to bring these services to you:
+Sentinel's team of developers are working hard on bringing the software development kit to you. We are currently using this development kit to bring bring these services to you:
 
-- Decentralized Chat (dChat)
+1) Decentralized Chat (dChat)
     - To chat with your friends without keeping any logs. Eg; China and Syria has passed laws to keep records of chats and identities too
 
-- Decentralized Voice over Internet Protocol (dVoIP)
-    - Just like Skype, but safer
+2) Decentralized Voice over Internet Protocol (dVoIP)
+    - Just like Skype, but safer. 
 
--Anonymous Mixer
-    - Send tokens to pools when not being used and mix them until withdrawal
-
-- Decentralized Service Marketplace
-    - a *secure* services marketplace to ensure demand meets the supply, conveniently. Each Service Provider can utilize a native or a third party service and host it to get incentivized for sharing resources.
+3) Decentralized File Sharing System (dFiles)
+    - Secure storage that will never fail
 
 Our chat, VOIP and Storage services are really valuable. We will bring these services to you in a package called the "Sentinel Secure Services Suite". We plan to release this by the end of the year. We will also release our software development kit at this time.
 
 These distributed services can focus on privacy first or encrypted data transfer first. It will take the SaaS route of offering VPN for a fixed price.
 
-We have a long-term vision of providing the most secure VPN service apart from offering more services described above. We will have Enterprise level solutions. In the future, both people and companies will use dAPPs and services that live on the Sentinel network.  
+We have a long-term vision of providing the most secure VPN service apart from offering the services described above at enterprise level soltions. In the future, both people and companies will use dAPPs and services that live on the Sentinel network.  
 
-In our timeline, we promised that we would make a hardware device to connect to a router and share secure internet with all devices connected to this router. We are very enthusiastic about this device and we think it will change the world.
+In our time-line, we promised that we would make a hardware device to connect to a router and share secure internet with all devices connected to this router. We are very enthusiastic about this device and we think it will change the world.
 
 As mentioned in the roadmap, Sentinel aims to encrypt data flowing through multiple devices using a hardware box, that will take input from the internet provider and connect to a router. Hence, all data flowing through the router will be encrypted. This hardware box is a huge step in realizing what we see as the potential future.
 
 Uses of Sentinel's Smart Contract in other Industries
 -
 
-When a user uses secure internet, it is called a "transaction". Users may agree the amount they are ready to pay for a transaction. When users use enough secure internet, eg; 1GB or 1TB, the user has to pay this amount to the Masternode in the network. The master node will take a small transaction fee and then send the remaining amount to the service provider node.
+When a user uses secure internet, it is called a "transaction". Users may agree the amount they are ready to pay for a transaction. When users use enough secure internet, eg; 1GB or 1TB, the user has to pay this amount to the Master Node in the network. The master node will take a small transaction fee and then send the remaining amount to the service provider node.
 
 This method is very easy to implement in many industries:
 
-The money that has been spent for this will be collected by the Masternode, with a minor transaction fee for it, which will be distributed to Masternodes (nodes that run the Sentinel Network and related governance systems) and Service Provider Nodes (nodes that run the entire Service)
+The money that has been spent for this will be collected by the Master Node, with a minor transaction fee for it, which will be distributed to Master Nodes (nodes that run the Sentinel Network and related governance systems) and Service Provider Nodes (nodes that run the entire Service)
 
 The model of metering & incentivizing system resources (like bandwidth, storage, computing) can be utilized in multiple industries:
 
@@ -446,11 +394,11 @@ The model of metering & incentivizing system resources (like bandwidth, storage,
 
 2)  Media - Sharing information with journalists and similar people for either whistle blowing or just additionally secure communication
 
-3)  Corporate Communications - Sharing information with team and boards without the knowledge of people within the organization. It is important for corporations that deal with a lot of sensitive data, which shouldn't be known by everyone.
+3)  Corporate Communications - Sharing inforamtion with team and boards without to the knowledge of people within the organization. Pretty important for corporations that deal with a lot of sensitive data, which shouldn't be known by everyone.
 
 
 Sentinel - Decentralized DNS and Content Delivery Network (dDNS and dCDN)
----
+-
 
 The Sentinel dDNS works to eliminate centralized resolution of a domain name's physical location to decentralize domain lookup. Sentinel aims to have nodes as gateway nodes and use DHT (distributed hash tables) on multiple nodes to do this.
 
@@ -465,44 +413,78 @@ Sentinel works towards enabling applications with it's APIs and eventually the S
 
 For example, let's say *DocStore* is a Document Storage app, that uses Sentinel to store data and documents. Users of *DocStore*, can use traditional cloud infrastructure like AWS or S3 to be specific or can use the decentralized storage & network infrastructure provided by Sentinel.
 
-In future, the ability for apps to run models on top of this data will also be provided by the Sentinel Network. Based on the computation resources available, the hardware that's optimized for Machine Learning (ML) algorithms or Deep Learning (DL) algorithms to run, will be automatically identified & matched with the requirement.
-
-Completion of Sentinel 'TestDrop'
----
-
-Sentinel has conducted a successful 'TestDrop' where over 900 tested the Sentinel VPN MVP and provided feedback via a Telegram bot [@SentinelSupportBot](https://t.me/SentinelSupportBot)
-
-Servers maxed out load and peaked at 75 concurrent sessions during a span of 72-96 hours. With feedback from the community, the Sentinel Development team has since then worked on the feedback and released a version (v0.0.32) during the TestDrop and has planned out to address other issues found during the process.
-
-Sentinel is one of the few ERC20 Standard tokens that utilises the Ethereum chain for the purpose of non-fungible data input and validation. In this instance,  Sentinel has used it for the validation of the data transmitted between the service provider (exit node) and the user.
-
-The consensus responsibility required to validate the data at point of measurement is bestowed to the 'Services Chain Payment Gateway' masternode system. 
+In time, the ability for apps to run models on top of this data will also be provided by the Sentinel Network. Based on the computation resources available, the hardware that's optimized for Machine Learning (ML) algorithms or Deep Learning (DL) algorithms to run, will be automatically identified & matched with the requirement.
 
 The Road Ahead
 ===
 
-Immediate Focus
----
+Development of Sentrix
+----
 
-- dVPN v0.0.4 with centralized on-chain ERC20 swaps (ERC20 to $SENT)
-- Sentrix prototype
-- Increase node capabilities to connect to Layer-2 TOR Network
-- Development of Node Network
-- One Pager website to be updated
-- White Paper to be released
+Website
+White Paper
+Development of Node Network
 
 Integration with TenderMint and Cosmos
 ---
 
-As stated by the Cosmos team, “Tendermint is software for securely and consistently replicating an application on many machines. Simply put, Tendermint is a software which can be used to achieve Byzantine fault tolerance (BFT) in any distributed computing platforms.”
+As stated by the Cosmos team, “Tendermint is software for securely and consistently replicating an application on many machines. To simply put Tendermint is a software which can be used to achieve Byzantine fault tolerance (BFT) in any distributed computing platforms.”
 
 Keeping the above and a host of other factors like Cosmos Swap Zones, the interoperability with Cosmos Hubs, etc. in perspective, the Sentinel team has picked up TenderMint to implement the first version (alpha) of the Sentinel Service Chain and continue research and contribute back to the community.
 
-Sentinel's Development Team
----
+Roadmap of Features
+-
 
-The team's sole focus is to output over 300 hours of dev work per week at a minimum and this number will only grow. Keep watching the GitHub and see the new contributors. To accelerate progress, Sentinel will be represented at a renown public event in early May.
+- ERC20 Swap between multiple tokens
+- Sentrix - dChat & dVoIP
+- Sentinel ERC20 Mixer 
 
-Sentinel development team consists of a strong marketing, front-end and back-end development teams. Sentinel does not hire any remote back-end developers and currently all of the developers are working full time on the project.
 
-The team has over 25 individuals composing of full-stack developers, system architects, UI/UX engineers, hardware engineers, legal due-diligence etc. There are already over 500 commits to the Sentinel code in one quarter. This puts Sentinel in the top 25 projects that are committed on GitHub.
+How is Sentinel's Development team?
+-
+
+Sentinel development team consists of a strong marketing, front-end and back-end development teams. Sentinel does not hire any remote back-end developers and currently all of the developers are working out of one location. 
+
+The team has over 25 individuals composing of full-stack developers, system architects, UI/UX engineers, hardware engineers, legal due-diligence etc. There are already over 450 commits to the Sentinel code in one quarter. This puts Sentinel in the top 25 projects that are committed on GitHub.
+
+What's interesting we are working on?
+===
+
+A lot actually.
+
+Website
+-
+
+There will be a new version of the website with complete project information, token details, exchanges listed, partnerships, enterprises and projects Sentinel has collaborated with and of course, the roadmap. Also, we have an exciting new domain and we will be migrating away from SentinelGroup.io eventually.
+
+White Paper
+-
+
+Owing the busy research and product development schedule (and the infinite iterations that are an output of a similar number of discussions), we have put the entire concept on paper and will release the same pretty soon.
+
+MVP
+-
+
+We will be releasing a Minimum Viable Product (or something that can actually sustain the narrative) of the dVPN which is released as a beta, but we believe will be stable for a while. This will constantly receive updates until the next major version.
+
+Node Network
+-
+
+The Sentinel Node Network will also be better developed to work with all operating systems (currently supporting only Linux) and minor issues around the docker utilizing resources of the OS will be addressed when releasing documentation for the same.
+
+References
+-
+
+1. Kelley, Micheal B. "Skype Could Be Helping The Feds Spy On US Citizens By Handing Over Chats." Business Insider, 26 July 2012, [www.businessinsider.com/skype-accused-of-helping-government-spy-on-people-2012-7](http://www.businessinsider.com/skype-accused-of-helping-government-spy-on-people-2012-7)
+
+2. Granville, Kevin. "Facebook and Cambridge Analytica: What You Need to Know As Fallout Widens." _The New York Times - Breaking News, World News & Multimedia_, 19 Mar. 2018, www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html
+
+3. Bank of America to Pay $16.65 Billion in Historic Justice Department Settlement for Financial Fraud Leading Up to and During the Financial Crisis." _U.S. Department of Justice_, www.justice.gov/opa/pr/bank-america-pay-1665-billion-historic-justice-department-settlement-financial-fraud-leading.
+
+4. "26 Amazing Skype Statistics and Facts (November 2017)." _DMR_, 2 Feb. 2016, expandedramblings.com/index.php/skype-statistics/.
+
+5. "CLOUD Act." _Wikipedia, the Free Encyclopedia_, Wikimedia Foundation, Inc, 3 Apr. 2018, en.wikipedia.org/wiki/CLOUD_Act. Accessed 4 Apr. 2018.
+
+# THE END
+
+*******************

@@ -31,7 +31,6 @@ public class CreateAuidRepository {
     private final BonusWebService mBonusWebService;
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<Account>> mAccountLiveEvent;
-    private final SingleLiveEvent<Resource<GenericResponse>> mReferralLiveEvent;
     private final SingleLiveEvent<Boolean> mSessionClearedLiveEvent;
 
     private CreateAuidRepository(DeleteTableDao iDao, GenericWebService iGenericWebService, BonusWebService iBonusWebService, AppExecutors iAppExecutors) {
@@ -40,7 +39,6 @@ public class CreateAuidRepository {
         mBonusWebService = iBonusWebService;
         mAppExecutors = iAppExecutors;
         mAccountLiveEvent = new SingleLiveEvent<>();
-        mReferralLiveEvent = new SingleLiveEvent<>();
         mSessionClearedLiveEvent = new SingleLiveEvent<>();
     }
 
@@ -65,14 +63,10 @@ public class CreateAuidRepository {
         return mSessionClearedLiveEvent;
     }
 
-    public SingleLiveEvent<Resource<GenericResponse>> getReferralLiveEvent() {
-        return mReferralLiveEvent;
-    }
-
     /*
      * Database call
      */
-    private void clearUserSession() {
+    public void clearUserSession() {
         mAppExecutors.diskIO().execute(() -> {
             mDao.deletePinEntities();
             mDao.deleteVpnListEntities();
@@ -119,37 +113,4 @@ public class CreateAuidRepository {
         });
     }
 
-    public void addReferralAddress(GenericRequestBody iRequestBody) {
-        mReferralLiveEvent.postValue(Resource.loading(null));
-        mBonusWebService.addAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
-            @Override
-            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
-                reportSuccessResponse(response);
-            }
-
-            @Override
-            public void onFailure(Call<GenericResponse> call, Throwable t) {
-                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
-            }
-
-            private void reportSuccessResponse(Response<GenericResponse> iResponse) {
-                if (iResponse.isSuccessful()) {
-                    mReferralLiveEvent.postValue(Resource.success(iResponse.body()));
-                } else {
-                    reportErrorResponse(iResponse, null);
-                }
-            }
-
-            private void reportErrorResponse(Response<GenericResponse> iResponse, String iThrowableLocalMessage) {
-                if (iResponse != null) {
-                    ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
-                    mReferralLiveEvent.postValue(Resource.error(aError.getMessage(), iResponse.body()));
-                } else if (iThrowableLocalMessage != null) {
-                    mReferralLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
-                } else {
-                    mReferralLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
-                }
-            }
-        });
-    }
 }

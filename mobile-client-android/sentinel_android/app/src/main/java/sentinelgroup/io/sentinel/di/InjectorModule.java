@@ -94,15 +94,17 @@ public class InjectorModule {
     }
 
     /* Static private getter methods for ViewModelFactory classes */
-    public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory(Context iContext) {
+    public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory(Context iContext, String iDeviceId) {
         CreateAuidRepository aRepository = provideCreateAccountRepository(iContext);
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return new CreateAuidViewModelFactory(aRepository, aAppExecutors);
+        BonusRepository aBonusRepository = provideBonusRepository(iContext, iDeviceId);
+        return new CreateAuidViewModelFactory(aRepository, aAppExecutors, aBonusRepository, iDeviceId);
     }
 
-    public static RestoreKeystoreViewModelFactory provideRestoreKeystoreViewModelFactory() {
+    public static RestoreKeystoreViewModelFactory provideRestoreKeystoreViewModelFactory(Context iContext, String iDeviceId) {
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return new RestoreKeystoreViewModelFactory(aAppExecutors);
+        BonusRepository aBonusRepository = provideBonusRepository(iContext, iDeviceId);
+        return new RestoreKeystoreViewModelFactory(aAppExecutors, aBonusRepository, iDeviceId);
     }
 
     public static SetPinViewModelFactory provideSetPinViewModelFactory(Context iContext) {
@@ -186,6 +188,7 @@ public class InjectorModule {
     public static SplashViewModelFactory provideSplashViewModelFactory(Context iContext, String iDeviceId) {
         BonusRepository aBonusRepository = provideBonusRepository(iContext, iDeviceId);
         AppVersionRepository aAppVersionRepository = provideAppVersionRepository();
-        return new SplashViewModelFactory(aBonusRepository, aAppVersionRepository);
+        CreateAuidRepository aCreateAuidRepository = provideCreateAccountRepository(iContext);
+        return new SplashViewModelFactory(aBonusRepository, aAppVersionRepository, aCreateAuidRepository);
     }
 }

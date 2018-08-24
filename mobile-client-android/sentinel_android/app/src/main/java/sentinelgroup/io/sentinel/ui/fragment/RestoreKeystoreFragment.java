@@ -1,11 +1,13 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -25,11 +27,13 @@ import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 
 import java.io.File;
+import java.util.Objects;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModel;
@@ -105,7 +109,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     }
 
     private void initViewModel() {
-        RestoreKeystoreViewModelFactory aFactory = InjectorModule.provideRestoreKeystoreViewModelFactory();
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        RestoreKeystoreViewModelFactory aFactory = InjectorModule.provideRestoreKeystoreViewModelFactory(getActivity(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(RestoreKeystoreViewModel.class);
 
         mViewModel.getRestoreLiveEvent().observe(this, keystoreResource -> {
@@ -113,8 +120,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                 if (keystoreResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.restoring_accunt));
                 } else if (keystoreResource.data != null && keystoreResource.status.equals(Status.SUCCESS)) {
-                    hideProgressDialog();
-                    loadNextFragment(keystoreResource.data);
+                    mViewModel.addAccountInfo(keystoreResource.data, null);
                 } else if (keystoreResource.message != null && keystoreResource.status.equals(Status.ERROR)) {
                     mTetPassword.setText("");
                     hideProgressDialog();
@@ -123,6 +129,51 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                 }
             }
         });
+
+        mViewModel.getRegisterDeviceIdLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.adding_referral));
+                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                    else {
+                        if (genericResponseResource.message.equals("Device is already registered.")) {
+                            mViewModel.updateAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                        } else {
+                            showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                        }
+                    }
+                }
+            }
+        });
+
+        mViewModel.getUpdateAccountLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.adding_referral));
+                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                    else {
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                    }
+                }
+            }
+        });
+
     }
 
     private boolean isStoragePermissionGranted(int iClickedId) {
@@ -210,6 +261,12 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
             mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
+        }
+    }
+
+    private void showDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        if (mListener != null) {
+            mListener.onShowDoubleActionDialog(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
         }
     }
 

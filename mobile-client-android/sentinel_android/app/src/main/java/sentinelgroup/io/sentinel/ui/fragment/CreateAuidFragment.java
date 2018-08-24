@@ -1,11 +1,13 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -18,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.Objects;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
@@ -94,7 +98,10 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     }
 
     private void initViewModel() {
-        CreateAuidViewModelFactory aFactory = InjectorModule.provideCreateAccountViewModelFactory(getContext());
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        CreateAuidViewModelFactory aFactory = InjectorModule.provideCreateAccountViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(CreateAuidViewModel.class);
 
         mViewModel.getSessionClearedLiveEvent().observe(this, sessionCleared -> {
@@ -128,7 +135,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                     mKeystoreFilePath = accountResource.data.keystoreFilePath;
                     String aReferralAddress = mTetReferral.getText().toString().trim();
                     if (validateReferral(aReferralAddress)) {
-                        mViewModel.addReferralAddress(mAccountAddress, aReferralAddress);
+                        mViewModel.addAccountInfo(mAccountAddress, aReferralAddress);
                     }
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
                     if (accountResource.message.equals(AppConstants.STORAGE_ERROR))
@@ -141,7 +148,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        mViewModel.getReferralLiveEvent().observe(this, genericResponseResource -> {
+        mViewModel.getRegisterDeviceIdLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.adding_referral));
@@ -150,11 +157,39 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                     loadNextFragment();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    clearReferralField();
-                    if (genericResponseResource.message.equals(AppConstants.GENERIC_ERROR))
-                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
-                    else
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                    else {
+                        if (genericResponseResource.message.equals("Device is already registered.")) {
+                            mViewModel.updateAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                        } else {
+                            mTetReferral.setText("");
+                            showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                        }
+                    }
+                }
+            }
+        });
+
+        mViewModel.getUpdateAccountLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.adding_referral));
+                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    loadNextFragment();
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                    else {
+                        mTetReferral.setText("");
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                    }
                 }
             }
         });
@@ -171,7 +206,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             }
         } else {
             if (validateReferral(aReferral)) {
-                mViewModel.addReferralAddress(mAccountAddress, aReferral);
+                mViewModel.addAccountInfo(mAccountAddress, aReferral);
             }
         }
 

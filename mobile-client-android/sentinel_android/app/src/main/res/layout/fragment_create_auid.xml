@@ -81,8 +81,7 @@
             style="@style/CustomTextAppearance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text
-"
+            android:inputType="text"
             android:theme="@style/TextInputEditTextTheme" />
     </android.support.design.widget.TextInputLayout>
 

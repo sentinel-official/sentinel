@@ -32,6 +32,8 @@ public class BonusRepository {
     private final AppExecutors mAppExecutors;
     private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoLiveEvent;
     private final MutableLiveData<BonusInfoEntity> mBonusInfoMutableLiveData;
+    private final SingleLiveEvent<Resource<GenericResponse>> mRegisterDeviceIdLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mUpdateAccountLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mBonusClaimLiveEvent;
     private final String mDeviceId;
 
@@ -40,6 +42,8 @@ public class BonusRepository {
         this.mBonusWebService = iBonusWebService;
         this.mAppExecutors = iAppExecutors;
         mAccountInfoLiveEvent = new SingleLiveEvent<>();
+        mRegisterDeviceIdLiveEvent = new SingleLiveEvent<>();
+        mUpdateAccountLiveEvent = new SingleLiveEvent<>();
         mBonusInfoMutableLiveData = new MutableLiveData<>();
         mBonusClaimLiveEvent = new SingleLiveEvent<>();
         mDeviceId = iDeviceId;
@@ -68,13 +72,21 @@ public class BonusRepository {
         return mBonusInfoMutableLiveData;
     }
 
+    /*
+     * Public getter methods for LiveData and SingleLiveEvents
+     */
     public SingleLiveEvent<Resource<GenericResponse>> getBonusClaimLiveEvent() {
         return mBonusClaimLiveEvent;
     }
 
-    /*
-     * Public getter methods for LiveData and SingleLiveEvents
-     */
+    public SingleLiveEvent<Resource<GenericResponse>> getRegisterDeviceIdLiveEvent() {
+        return mRegisterDeviceIdLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getUpdateAccountLiveEvent() {
+        return mUpdateAccountLiveEvent;
+    }
+
     public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
         return mAccountInfoLiveEvent;
     }
@@ -182,6 +194,74 @@ public class BonusRepository {
                     mBonusClaimLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 } else {
                     mBonusClaimLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
+                }
+            }
+        });
+    }
+
+    public void addAccountInfo(GenericRequestBody iRequestBody) {
+        mRegisterDeviceIdLiveEvent.postValue(Resource.loading(null));
+        mBonusWebService.addAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
+            }
+
+            private void reportSuccessResponse(Response<GenericResponse> iResponse) {
+                if (iResponse.isSuccessful()) {
+                    mRegisterDeviceIdLiveEvent.postValue(Resource.success(iResponse.body()));
+                } else {
+                    reportErrorResponse(iResponse, null);
+                }
+            }
+
+            private void reportErrorResponse(Response<GenericResponse> iResponse, String iThrowableLocalMessage) {
+                if (iResponse != null) {
+                    ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
+                    mRegisterDeviceIdLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
+                } else if (iThrowableLocalMessage != null) {
+                    mRegisterDeviceIdLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                } else {
+                    mRegisterDeviceIdLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+                }
+            }
+        });
+    }
+
+    public void updateAccount(GenericRequestBody iRequestBody) {
+        mUpdateAccountLiveEvent.postValue(Resource.loading(null));
+        mBonusWebService.updateAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
+            }
+
+            private void reportSuccessResponse(Response<GenericResponse> iResponse) {
+                if (iResponse.isSuccessful()) {
+                    mUpdateAccountLiveEvent.postValue(Resource.success(iResponse.body()));
+                } else {
+                    reportErrorResponse(iResponse, null);
+                }
+            }
+
+            private void reportErrorResponse(Response<GenericResponse> iResponse, String iThrowableLocalMessage) {
+                if (iResponse != null) {
+                    ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
+                    mUpdateAccountLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
+                } else if (iThrowableLocalMessage != null) {
+                    mUpdateAccountLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                } else {
+                    mUpdateAccountLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
                 }
             }
         });

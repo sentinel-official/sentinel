@@ -14,6 +14,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.network.model.GenericResponse;
+import sentinelgroup.io.sentinel.repository.BonusRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.util.AppPreferences;
@@ -23,15 +26,35 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 
 public class RestoreKeystoreViewModel extends ViewModel {
     private final AppExecutors mAppExecutors;
+    private final BonusRepository mBonusRepository;
     private final SingleLiveEvent<Resource<String>> mRestoreLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mRegisterDeviceIdLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mUpdateAccountLiveEvent;
+    private final String mDeviceId;
 
-    RestoreKeystoreViewModel(AppExecutors iAppExecutors) {
+    RestoreKeystoreViewModel(AppExecutors iAppExecutors, BonusRepository iBonusRepository, String iDeviceId) {
         mAppExecutors = iAppExecutors;
+        mBonusRepository = iBonusRepository;
         mRestoreLiveEvent = new SingleLiveEvent<>();
+        mRegisterDeviceIdLiveEvent = iBonusRepository.getRegisterDeviceIdLiveEvent();
+        mUpdateAccountLiveEvent = iBonusRepository.getUpdateAccountLiveEvent();
+        mDeviceId = iDeviceId;
     }
+
+    /**
+     * Public Getters
+     */
 
     public LiveData<Resource<String>> getRestoreLiveEvent() {
         return mRestoreLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getRegisterDeviceIdLiveEvent() {
+        return mRegisterDeviceIdLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getUpdateAccountLiveEvent() {
+        return mUpdateAccountLiveEvent;
     }
 
     public void restoreKeystoreFile(String iPassword, String iKeystorePath) {
@@ -66,4 +89,22 @@ public class RestoreKeystoreViewModel extends ViewModel {
             }
         });
     }
+
+    public void addAccountInfo(String iAccountAddress, String iReferredBy) {
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .deviceIdMain(mDeviceId)
+                .address(iAccountAddress)
+                .referredBy(iReferredBy)
+                .build();
+        mBonusRepository.addAccountInfo(aBody);
+    }
+
+    public void updateAccountInfo(String iAccountAddress) {
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .deviceIdMain(mDeviceId)
+                .address(iAccountAddress)
+                .build();
+        mBonusRepository.updateAccount(aBody);
+    }
+
 }

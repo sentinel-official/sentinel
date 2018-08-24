@@ -57,6 +57,23 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
         SplashViewModelFactory aFactory = InjectorModule.provideSplashViewModelFactory(this, aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(SplashViewModel.class);
 
+        mViewModel.getAccountInfoLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    mViewModel.fetchSncVersionInfo();
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                    else {
+                        clearAppData();
+                        mViewModel.fetchSncVersionInfo();
+                    }
+                }
+            }
+        });
+
         mViewModel.getVersionInfoLiveEvent().observe(this, versionInfoResource -> {
             if (versionInfoResource != null) {
                 if (versionInfoResource.data != null && versionInfoResource.status.equals(Status.SUCCESS)) {
@@ -96,6 +113,15 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
         if (aFragment == null)
             DoubleActionDialogFragment.newInstance(iTag, aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
                     .show(getSupportFragmentManager(), DOUBLE_ACTION_DIALOG_TAG);
+    }
+
+    /*
+     * Logout user by clearing all the values in shared preferences and reloading the
+     * LauncherActivity
+     */
+    private void clearAppData() {
+        AppPreferences.getInstance().clearSavedData(this);
+        mViewModel.clearUserSession();
     }
 
     private void loadNextActivityAfterDelay() {

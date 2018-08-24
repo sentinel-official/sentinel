@@ -155,6 +155,7 @@
     <string name="no_scan_results">Результаты сканирования не найдены.</string>
     <string name="not_a_address">Отсканированный результат не является адресом учетной записи. Отбрасывание отсканированных результатов.</string>
     <string name="retry">Повторить</string>
+    <string name="cancel">Отмена</string>
     <string name="vpn_history_main_net_unavailable">В Основной Сети нет истории VPN.</string>
     <string name="vpn_main_net_unavailable">Нет доступных  узлов VPN в Основной Сети, переключитесь на Тестовую Сеть.</string>
     <string name="tx_history_main_net_unavailable">В Основной Сети нет транзакций.</string>

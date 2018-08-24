@@ -84,7 +84,7 @@ public class BonusRepository {
                 .deviceIdReferral(mDeviceId)
                 .referredBy(iReferralCode)
                 .build();
-        addReferralAddress(aRequestBody);
+        addAccountInfo(aRequestBody);
     }
 
     public LiveData<BonusInfoEntity> getBonusInfoEntityLiveData() {
@@ -138,7 +138,7 @@ public class BonusRepository {
         });
     }
 
-    private void addReferralAddress(GenericRequestBody iRequestBody) {
+    private void addAccountInfo(GenericRequestBody iRequestBody) {
         mRegisterDeviceIdLiveEvent.postValue(Resource.loading(null));
         mBonusWebService.addAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
             @Override

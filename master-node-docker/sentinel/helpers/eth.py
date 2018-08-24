@@ -265,6 +265,7 @@ class ETHHelper(object):
         return errors, tx_hashes
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, device_id=None):
+        _sent_bytes, _session_duration, _amount = sent_bytes, session_duration, amount
         error, tx_hash, make_tx, session_id = None, None, False, None
         error, sessions_count = self.get_vpn_sessions_count(to_addr)  # to_addr: client account address
         if error is None:
@@ -308,16 +309,16 @@ class ETHHelper(object):
                     'to_addr': to_addr
                 })
 
-        if to_addr == REFERRAL_DUMMY and sent_bytes >= LIMIT_100MB:
+        if to_addr == REFERRAL_DUMMY:
             _, res = add_session(device_id, session_id)
             _ = db.ref_sessions.insert_one({
                 'device_id': device_id,
                 'session_id': session_id,
                 'from_addr': from_addr,
                 'to_addr': to_addr,
-                'sent_bytes': sent_bytes,
-                'session_duration': session_duration,
-                'amount': amount,
+                'sent_bytes': _sent_bytes,
+                'session_duration': _session_duration,
+                'amount': _amount,
                 'timestamp': timestamp
             })
 

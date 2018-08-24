@@ -1,7 +1,7 @@
 const accountStyles = {
     cardStyle: {
         width: '70%',
-        height: '70%',
+        height: '72%',
         fontFamily: 'Montserrat',
         textAlign: 'center'
     },
@@ -34,6 +34,11 @@ const accountStyles = {
         // padding: 15,
         fontWeight: 'bold',
         fontSize: 20,
+        color: '#0275d8'
+    },
+    notInNetStyle: {
+        fontWeight: 'bold',
+        fontSize: 16,
         color: '#0275d8'
     },
     qrCodeStyle: {

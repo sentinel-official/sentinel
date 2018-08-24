@@ -9,7 +9,7 @@ import { compose } from 'recompose';
 import PropTypes from 'prop-types';
 import { QRCode } from 'react-qr-svg';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getTMBalance } from '../Actions/tendermint.action';
+import { getTMBalance, getKeys } from '../Actions/tendermint.action';
 let lang = require('./../Constants/language');
 
 const customStyles = theme => ({
@@ -26,8 +26,10 @@ class TMAccountView extends Component {
     }
 
     componentWillMount = () => {
-        if (this.props.keys.length !== 0)
-            this.props.getTMBalance(this.props.keys[0].address);
+        this.props.getKeys().then(res => {
+            if (res.payload.length !== 0)
+                this.props.getTMBalance(res.payload[0].address);
+        });
     }
 
     getBalance = () => {
@@ -59,13 +61,13 @@ class TMAccountView extends Component {
                             bgColor="#FFFFFF"
                             level="Q"
                             style={accountStyles.qrCodeStyle}
-                            value={account_key.address}
+                            value={account_key ? account_key.address : 'Loading...'}
                             fgColor="#000000"
                         />
                         <label style={accountStyles.addressStyle}>
-                            {account_key.address}</label>
+                            {account_key ? account_key.address : 'Loading...'}</label>
                         <Tooltip title="Copy">
-                            <CopyToClipboard text={account_key.address}
+                            <CopyToClipboard text={account_key ? account_key.address : 'Loading...'}
                                 onCopy={() => this.setState({
                                     snackMessage: lang[language].Copied,
                                     openSnack: true
@@ -75,9 +77,19 @@ class TMAccountView extends Component {
                                     style={accountStyles.clipBoard} />
                             </CopyToClipboard>
                         </Tooltip>
-                        <p style={accountStyles.balanceStyle}>
-                            {token && 'denom' in token ? token.amount : 'Loading...'}
-                            {token && 'denom' in token ? ' SUTs' : ''}
+
+                        {balance === "" ?
+                            <p style={accountStyles.notInNetStyle}>
+                                This account address does not exist in network
+                            </p>
+                            :
+                            <p style={accountStyles.balanceStyle}>
+                                {token && 'denom' in token ? token.amount : 'Loading...'}
+                                {token && 'denom' in token ? ' SUTs' : ''}
+                            </p>
+                        }
+                        <p>
+                            {balance === "" ? '*Use faucet to get tokens and join the network' : null}
                         </p>
                     </CardContent>
                 </Card>
@@ -107,7 +119,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        getTMBalance
+        getTMBalance,
+        getKeys
     }, dispatch)
 }
 

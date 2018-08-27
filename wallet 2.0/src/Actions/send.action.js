@@ -1,4 +1,4 @@
-import { sendError } from "../helpers/ErrorLog";
+import { sendError } from "./authentication.action";
 import axios from 'axios';
 import * as sendComponentTypes from '../Constants/sendcomponent.types';
 import { B_URL } from '../Constants/constants';

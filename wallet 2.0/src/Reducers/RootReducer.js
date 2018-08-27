@@ -14,6 +14,7 @@ import { initPaymentDetails } from './initPayment.reducer';
 import { VPNUsage } from './vpnUsage'
 import { getKeys, setTMComponent, tmBalance } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
+import { socksReducer } from './SOCKSReducer';
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -32,7 +33,7 @@ const rootReducer = combineReducers({
     getVPNDuePaymentDetails,
     sendComponentReducer,
     setListViewType,
-    setVpnType,
+    vpnType: setVpnType,
     getVpnList,
     testSENTHistory,
     testETHHistory,
@@ -43,7 +44,9 @@ const rootReducer = combineReducers({
     getKeys,
     setTMComponent,
     createTMAccount,
-    tmBalance
+    tmBalance,
+    socksReducer,
+    setVpnStatus
 });
 
 export default rootReducer;

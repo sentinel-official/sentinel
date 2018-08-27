@@ -21,18 +21,37 @@ import SimpleDialogDemo from "./customDialog";
 
 let Country = window.require('countrynames');
 
+let counter = 0;
+function createData(obj) {
+    counter += 1;
+    obj.id = counter;
+    obj.city = obj.location.city;
+    obj.bandwidth = obj.net_speed.download;
+    return obj;
+}
+
+function desc(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+}
+
 function getSorting(order, orderBy) {
-    return order === 'desc' ? (a, b) => b[orderBy] - a[orderBy] : (a, b) => a[orderBy] - b[orderBy];
+    return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
 const columnData = [
     // { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
     { id: 'flag', numeric: false, disablePadding: false, label: 'Flag' },
-    { id: 'location', numeric: false, disablePadding: false, label: 'Location' },
+    { id: 'city', numeric: false, disablePadding: false, label: 'Location' },
     { id: 'bandwidth', numeric: true, disablePadding: false, label: 'Bandwidth (mbps)' },
     { id: 'latency', numeric: true, disablePadding: false, label: 'Latency (ms)' },
-    { id: 'algorithm', numeric: false, disablePadding: false, label: 'Algorithm' },
-    { id: 'price', numeric: true, disablePadding: false, label: 'Price (SENT/GB)' },
+    { id: 'enc_method', numeric: false, disablePadding: false, label: 'Algorithm' },
+    { id: 'price_per_GB', numeric: true, disablePadding: false, label: 'Price (SENTs/GB)' },
 ];
 
 
@@ -42,7 +61,7 @@ class EnhancedTableHead extends React.Component {
     };
 
     render() {
-        const { order, orderBy, classes } = this.props;
+        const { order, orderBy, classes, rowCount } = this.props;
 
         return (
             <TableHead>
@@ -52,26 +71,20 @@ class EnhancedTableHead extends React.Component {
                             <TableCell
                                 key={column.id}
                                 numeric={column.numeric}
-                                padding={"checkbox"}
-                                // padding={column.disablePadding ? 'none' : 'default'}
+                                padding={"default"}
+                                padding={column.disablePadding ? 'none' : 'default'}
                                 sortDirection={orderBy === column.id ? order : false}
-                                // style={{ textAlign: 'center', }}
-                                classes={{ body: classes.center }}
-                                // variant={"body"}
+                            // style={{ textAlign: 'center', }}
+                            // classes={{ head: classes.center }}
+                            // variant={"head"}
                             >
-                                <Tooltip
-                                    title="Sort"
-                                    placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-                                    enterDelay={300}
+                                <TableSortLabel
+                                    active={orderBy === column.id}
+                                    direction={order}
+                                    onClick={this.createSortHandler(column.id)}
                                 >
-                                    <TableSortLabel
-                                        active={orderBy === column.id}
-                                        direction={order}
-                                        onClick={this.createSortHandler(column.id)}
-                                    >
-                                        {column.label}
-                                    </TableSortLabel>
-                                </Tooltip>
+                                    {column.label}
+                                </TableSortLabel>
                             </TableCell>
                         );
                     }, this)}
@@ -82,20 +95,20 @@ class EnhancedTableHead extends React.Component {
 }
 
 EnhancedTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
+    // numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
+    // onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
+    // rowCount: PropTypes.number.isRequired,
 };
 
-const alignStyle = {
+const alignStyle = theme => ({
     center: {
-        // textAlign: 'center'
-        // marginLeft: 25
+        textAlign: 'center',
+        marginLeft: 25
     },
-};
+});
 
 EnhancedTableHead = withStyles(alignStyle)(EnhancedTableHead);
 
@@ -140,10 +153,10 @@ let EnhancedTableToolbar = props => {
                         {numSelected} selected
                     </Typography>
                 ) : (
-                    <Typography variant="title" id="tableTitle">
-                        OpenVPN List
+                        <Typography variant="title" id="tableTitle">
+                            OpenVPN List
                     </Typography>
-                )}
+                    )}
             </div>
             <div className={classes.spacer} />
             <div className={classes.actions}>
@@ -170,7 +183,7 @@ const styles = theme => ({
     root: {
         width: '100%',
         marginTop: theme.spacing.unit * 3,
-        height: 420,
+        height: 365,
         overflowY: 'auto',
     },
     table: {
@@ -188,7 +201,7 @@ class EnhancedTable extends React.Component {
         this.state = {
             openDialog: false,
             order: 'asc',
-            orderBy: 'calories',
+            orderBy: 'price_per_GB',
             selected: [],
             city: '',
             country: '',
@@ -213,83 +226,90 @@ class EnhancedTable extends React.Component {
     };
 
 
-    showConnectDialog = (city, country, speed, latency, price_per_GB, vpn_addr) => {
+    showConnectDialog = async (event, city, country, speed, latency, price_per_GB, vpn_addr) => {
 
         // let data = [].push()
-        this.setState({ openDialog: !this.state.openDialog,
-            data: { 'city': city, 'country': country, 'speed': speed,
-                'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr  }
+        await this.setState({
+            openDialog: !this.state.openDialog,
+            data: {
+                'city': city, 'country': country, 'speed': speed,
+                'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr
+            }
         });
     };
+
+    changeDialog = (value) => {
+        this.setState({ openDialog: value });
+    }
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
         const { classes } = this.props;
-        let data = this.props.data;
+        counter = 0;
+        let data = this.props.data.map(obj => {
+            return createData(obj);
+        });
         const { order, orderBy, selected, rowsPerPage, page } = this.state;
 
         return (
             <Paper className={classes.root}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                {/*<EnhancedTableToolbar numSelected={selected.length} />*/}
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <EnhancedTableHead
-                            numSelected={selected.length}
+                            // numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            onSelectAllClick={this.handleSelectAllClick}
+                            // onSelectAllClick={this.handleSelectAllClick}
                             onRequestSort={this.handleRequestSort}
                             rowCount={data.length}
                         />
                         <TableBody>
                             {
                                 data
-                                .sort(getSorting(order, orderBy))
-                                .map(n => {
-                                    const isSelected = this.isSelected(n.id);
-                                    return (
-                                        <TableRow
-                                            hover
-                                            onClick={() => this.showConnectDialog(n.location.city, n.location.country,
-                                                n.net_speed.download, n.latency, n.price_per_GB, n.account_addr
-                                            )}
-                                            aria-checked={isSelected}
-                                            tabIndex={-1}
-                                            key={n.id}
-                                            selected={isSelected}
-                                        >
-                                            <TableCell style={{ textAlign: 'center' }} component="th" scope="row" padding="none">
-                                                <Flag code={Country.getCode(n.location.country)} height="16" />
-                                            </TableCell>
-                                            <TableCell style={{ textAlign: 'center' }}>
-                                                {`${n.location.city}, `} {n.location.country}
-                                            </TableCell>
-                                            <TableCell style={{ textAlign: 'center' }} numeric>
-                                                {(n.net_speed.download / (1024 * 1024)).toFixed(2)}
-                                            </TableCell>
-                                            <TableCell style={{ textAlign: 'center' }} numeric>
-                                                {n.latency ? n.latency : 'None'}
-                                                {n.latency ? (n.latency === 'Loading...' ? null : '') : null}
-                                            </TableCell>
-                                            <TableCell>
-                                                <p style={{
-                                                        textAlign: 'center',
-                                                        padding: 0,
-                                                        borderRadius: 8,
-                                                }}>{n.enc_method ? n.enc_method : 'None'}</p>
-                                            </TableCell>
-                                            <TableCell style={{ textAlign: 'center' }} numeric>
-                                                {n.price_per_GB ? n.price_per_GB : 100}
-                                            </TableCell>
+                                    .sort(getSorting(order, orderBy))
+                                    .map(n => {
+                                        // const isSelected = this.isSelected(n.id);
+                                        return (
+                                            <TableRow
+                                                hover
+                                                onClick={event => this.showConnectDialog(event, n.location.city, n.location.country,
+                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr
+                                                )}
+                                                role="button"
+                                                // aria-checked={isSelected}
+                                                // tabIndex={-1}
+                                                key={n.id}
+                                            // selected={isSelected}
+                                            >
+                                                <TableCell component="th" scope="row" padding="default">
+                                                    <Flag code={Country.getCode(n.location.country)} height="16" />
+                                                </TableCell>
+                                                <TableCell padding='default'>
+                                                    {`${n.location.city}, `} {n.location.country}
+                                                </TableCell>
+                                                <TableCell numeric padding='default'>
+                                                    {(n.net_speed.download / (1024 * 1024)).toFixed(2)}
+                                                </TableCell>
+                                                <TableCell numeric padding='default'>
+                                                    {n.latency ? n.latency : 'None'}
+                                                    {n.latency ? (n.latency === 'Loading...' ? null : '') : null}
+                                                </TableCell>
+                                                <TableCell padding='default'>
+                                                    {n.enc_method ? n.enc_method : 'None'}
+                                                </TableCell>
+                                                <TableCell numeric padding='default'>
+                                                    {n.price_per_GB ? n.price_per_GB : 100}
+                                                </TableCell>
 
-                                        </TableRow>
-                                    );
-                                })}
+                                            </TableRow>
+                                        );
+                                    })}
                         </TableBody>
                     </Table>
                     <div style={{ width: 280 }} >
-                        <SimpleDialogDemo data={this.state.data} open={this.state.openDialog} />
+                        <SimpleDialogDemo data={this.state.data} open={this.state.openDialog} onUpdate={this.changeDialog} />
                     </div>
                 </div>
             </Paper>

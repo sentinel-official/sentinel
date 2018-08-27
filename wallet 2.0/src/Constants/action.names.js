@@ -31,3 +31,5 @@ export const SET_TM_COMPONENT = 'SET_TM_COMPONENT';
 export const CREATE_TMACCOUNT = 'CREATE_TMACCOUNT';
 export const GET_TMBALANCE = 'GET_TMBALACE';
 export const SEND_TMAMOUNT = 'SEND_TMAMOUNT';
+export const SOCKS5 = 'SOCKS5';
+export const SOCKS5_CREDS = 'SOCKS5_CREDS';

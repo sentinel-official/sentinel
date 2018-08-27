@@ -17,7 +17,7 @@ export const disabledButton = {
     backgroundColor: '#f2f2f2'
 };
 
-export  const historyLabel = {
+export const historyLabel = {
     color: '#626262',
     fontWeight: '700',
     fontFamily: 'Montserrat, Medium',
@@ -26,9 +26,9 @@ export  const historyLabel = {
 };
 
 export const margin = {
-        marginLeft: 10,
-        marginRight: 10,
-        marginTop: 15,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 15,
 };
 
 export const historyValue = {
@@ -37,3 +37,7 @@ export const historyValue = {
     fontWeight: '500',
     fontSize: 13
 };
+
+export const radioStyle = {
+    color: '#2f3245'
+}

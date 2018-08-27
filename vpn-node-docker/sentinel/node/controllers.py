@@ -1,5 +1,5 @@
 # coding=utf-8
-
+import os
 from urlparse import urljoin
 
 from ..config import MASTER_NODE_URL
@@ -31,7 +31,8 @@ def register_node(node):
         'enc_method': node.config['enc_method'],
         'location': node.location,
         'net_speed': node.net_speed,
-        'version': node.version
+        'version': node.version,
+        'lite': os.getenv('LITE_NETWORK')
     }
     url = urljoin(MASTER_NODE_URL, 'node/register')
     try:

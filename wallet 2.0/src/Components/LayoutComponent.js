@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Receive from './Receive';
 import Swaps from './Swaps';
+import TenderMint from './TenderMint';
 import TxnHistory from '../containers/txnHistory'
 import VPNHistory from './VPNHistory';
-import { vpnhistoryStyles }from '../Assets/vpnhistory.style';
+import { vpnhistoryStyles } from '../Assets/vpnhistory.style';
 import SendComponent from './SendComponent';
 import Swixer from './Swixer';
 import VpnList from './VpnList';
@@ -23,7 +24,7 @@ class LayoutComponent extends Component {
         switch (component) {
             case 'history':
                 {
-                    return <TxnHistory/>;
+                    return <TxnHistory />;
                 }
             case 'vpnList':
                 {
@@ -31,11 +32,11 @@ class LayoutComponent extends Component {
                 }
             case 'receive':
                 {
-                    return <Receive/>
+                    return <Receive />
                 }
             case 'vpnHistory':
                 {
-                    return  (
+                    return (
                         <div style={vpnhistoryStyles.contianer}>
                             <VPNHistory />
                         </div>
@@ -49,9 +50,13 @@ class LayoutComponent extends Component {
                 {
                     return <Swaps />
                 }
+            case 'tmint':
+                {
+                    return <TenderMint />
+                }
             default:
                 {
-                    return <div><SendComponent/></div>
+                    return <div><SendComponent /></div>
                 }
         }
     }

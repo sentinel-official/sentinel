@@ -4,6 +4,7 @@ module.exports = {
     S_URL: 'https://api-rinkeby.etherscan.io/api?module=account&action=tokentx&contractaddress=',
     SM_URL: '&address=',
     SE_URL: '&page=1&offset=100&sort=asc&apikey=YourApiKeyToken',
+    TM_URL: 'http://localhost:1317',
     menuItems: [
         {
             'name': 'HISTORY',
@@ -40,5 +41,19 @@ module.exports = {
             'value': 'swaps',
             'icon': 'swapIcon'
         },
+        {
+            'name':'TENDERMINT',
+            'value':'tmint',
+            'icon':'tmintIcon'
+        }
+    ],
+    disabledItemsTest:[
+        'swixer',
+        'swaps'
+    ],
+    disabledItemsMain:[
+        'vpnHistory',
+        'vpnList',
+        'tmint'
     ]
 };

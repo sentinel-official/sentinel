@@ -54,13 +54,13 @@ const theme = createMuiTheme({
     },
 });
 
-const CustomTextfield = ({ classes, onChange, type }) =>  {
+const CustomTextfield = ({ classes, onChange, placeholder, type }) => {
     return (
         <div className={classes.container}>
             <TextField
                 onChange={onChange}
                 type={type}
-                placeholder="search for a dVPN node"
+                placeholder={placeholder}
                 id="bootstrap-input"
                 InputProps={{
                     disableUnderline: true,

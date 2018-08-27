@@ -74,7 +74,8 @@ class VpnList extends Component {
             <div>
                 <div style={{ display: 'flex' }} >
                     <div>
-                        <CustomTextfield type={'text'} onChange={(e) => { this.setState({ dVpnQuery: e.target.value }) }} />
+                        <CustomTextfield type={'text'} placeholder={"search for a dVPN node"}
+                        onChange={ (e) => { this.setState({ dVpnQuery: e.target.value }) } }  />
                     </div>
                     <div style={margin}>
                         <CustomButton color={'#FFFFFF'} label={'LIST'} active={!this.state.isActive}

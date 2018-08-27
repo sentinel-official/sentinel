@@ -12,6 +12,7 @@ import { setTestNet, getETHBalance, getSentBalance } from '../Actions/header.act
 import { setCurrentTab } from './../Actions/sidebar.action';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 
 class Header extends Component {
     constructor(props) {
@@ -42,8 +43,8 @@ class Header extends Component {
         this.props.setTestNet(value);
         this.props.getETHBalance(this.props.walletAddress, value);
         this.props.getSentBalance(this.props.walletAddress, value);
-        if ((value && currentTab === 'swixer' || currentTab === 'swaps') ||
-            (!value && (currentTab === 'vpnList' || currentTab === 'vpnHistory'))) {
+        if ((value && disabledItemsTest.includes(currentTab)) ||
+            (!value && disabledItemsMain.includes(currentTab))) {
             this.props.setCurrentTab('send');
         }
     };

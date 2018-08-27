@@ -6,10 +6,15 @@ const electron = window.require('electron');
 const { exec, execSync } = window.require('child_process');
 const remote = electron.remote;
 const SENT_DIR = getUserHome() + '/.sentinel';
+const TM_DIR = getUserHome() + '/.sentinel/.tendermint';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
 
 
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
+if (!fs.existsSync(TM_DIR)) {
+    fs.mkdirSync(TM_DIR);
+    execSync('chmod 777 ' + TM_DIR);
+}
 if (fs.existsSync(OVPN_FILE)) fs.unlinkSync(OVPN_FILE);
 
 export function getUserHome() {
@@ -20,20 +25,20 @@ export function checkDependencies(packageNames, cb) {
 
     // execSync("export PATH=$PATH:/usr/local/opt/openvpn/sbin");
     packageNames.map((packageName) => {
-            exec("dpkg-query -W -f='${Status}' " + packageName,
-                function (err, stdout, stderr) {
-                    if (err || stderr) {
-                        cb(null, packageName);
-                        execSync('sudo apt-get install ' + packageName + ' -yy');
-                        throw err || stderr ;
-                        // sendError(err || stderr);
-                    }
-                    else {
-                        let brewPath = stdout.trim();
-                        if (brewPath.length > 0) cb(null, true);
-                        else cb(null, false);
-                    }
-                })
+        exec("dpkg-query -W -f='${Status}' " + packageName,
+            function (err, stdout, stderr) {
+                if (err || stderr) {
+                    cb(null, packageName);
+                    execSync('sudo apt-get install ' + packageName + ' -yy');
+                    throw err || stderr;
+                    // sendError(err || stderr);
+                }
+                else {
+                    let brewPath = stdout.trim();
+                    if (brewPath.length > 0) cb(null, true);
+                    else cb(null, false);
+                }
+            })
     });
 }
 
@@ -56,7 +61,7 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
             console.log(response, 'session data')
             if (response.data.success) {
                 if (response.data['node'] === null) {
-                    cb({message: 'Something wrong. Please Try Later'})
+                    cb({ message: 'Something wrong. Please Try Later' })
                 }
                 else {
                     if (remote.process.platform === 'win32' || remote.process.platform === 'darwin') {
@@ -75,7 +80,7 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
                     });
                 }
             } else {
-                cb({message: response.data.message || 'Error occurred while getting OVPN file, may be empty VPN resources.'})
+                cb({ message: response.data.message || 'Error occurred while getting OVPN file, may be empty VPN resources.' })
             }
         })
     }

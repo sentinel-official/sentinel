@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { menuItems, disabledItemsMain, disabledItemsTest } from '../Constants/constants';
+import { menuItems, disabledItemsMain, disabledItemsTest, disabledItemsTM } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -44,12 +44,21 @@ class Sidebar extends Component {
     }
 
     setMenu = (item) => {
-        if (!this.props.isTest &&
-            disabledItemsMain.includes(item.value)) { }
-        else if (this.props.isTest && disabledItemsTest.includes(item.value)) { }
-        else {
-            this.props.setCurrentTab(item.value);
+        if (!this.props.isTenderMint) {
+            if (!this.props.isTest &&
+                disabledItemsMain.includes(item.value)) { }
+            else if (this.props.isTest && disabledItemsTest.includes(item.value)) { }
+            else {
+                this.props.setCurrentTab(item.value);
+            }
         }
+        else {
+            if (disabledItemsTM.includes(item.value)) { }
+            else {
+                this.props.setCurrentTab(item.value);
+            }
+        }
+
     }
 
     toggleDrawer = (value) => () => {
@@ -58,7 +67,7 @@ class Sidebar extends Component {
 
     getIcon = (iconName) => {
         if (iconName === 'tmintIcon') {
-            if (!this.props.isTest)
+            if (!this.props.isTenderMint)
                 return <img src={'../src/Images/tendermint-disable.png'} style={{ width: 24, height: 24 }} />
             else
                 return <img src={'../src/Images/tendermint.png'} style={{ width: 24, height: 24 }} />
@@ -70,9 +79,8 @@ class Sidebar extends Component {
     }
 
     render() {
-        let { classes } = this.props;
+        let { classes, isTest, isTenderMint } = this.props;
         let currentTab = this.props.currentTab;
-        let isTest = this.props.isTest;
         return (
             <div>
                 <div style={sidebarStyles.activeDivStyle}>
@@ -82,10 +90,12 @@ class Sidebar extends Component {
                 </div>
                 {
                     menuItems.map((item) => {
+                        let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
+                            || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
                         return (
                             <div>
                                 <div style={
-                                    !isTest && (item.value === 'vpnList' || item.value === 'vpnHistory') ?
+                                    isDisabled ?
                                         sidebarStyles.disabledDivStyle :
                                         (item.value === currentTab ?
                                             sidebarStyles.currentDivStyle :
@@ -94,8 +104,7 @@ class Sidebar extends Component {
                                     <Tooltip title={item.name}>
                                         <label
                                             style={
-                                                (!isTest && disabledItemsMain.includes(item.value))
-                                                    || (isTest && disabledItemsTest.includes(item.value))
+                                                isDisabled
                                                     ?
                                                     sidebarStyles.disabledLabelStyle :
                                                     (item.value === currentTab ?
@@ -123,10 +132,12 @@ class Sidebar extends Component {
                     >
                         {
                             menuItems.map((item) => {
+                                let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
+                                    || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
                                 return (
                                     <div>
                                         <div style={
-                                            !isTest && (item.value === 'vpnList' || item.value === 'vpnHistory') ?
+                                            isDisabled ?
                                                 sidebarStyles.disabledDivStyle :
                                                 (item.value === currentTab ?
                                                     sidebarStyles.currentDivStyle :
@@ -134,8 +145,7 @@ class Sidebar extends Component {
                                         } onClick={() => { this.setMenu(item); }}>
                                             <label
                                                 style={
-                                                    (!isTest && disabledItemsMain.includes(item.value))
-                                                    || (isTest && disabledItemsTest.includes(item.value))
+                                                    isDisabled
                                                         ?
                                                         sidebarStyles.disabledLabelStyle :
                                                         (item.value === currentTab ?
@@ -165,7 +175,8 @@ function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
         isTest: state.setTestNet,
-        currentTab: state.setCurrentTab
+        currentTab: state.setCurrentTab,
+        isTenderMint: state.setTendermint
     }
 }
 

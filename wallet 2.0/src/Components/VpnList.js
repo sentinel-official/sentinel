@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel } from '@material-ui/core'
+import { CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel, IconButton } from '@material-ui/core'
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
@@ -9,6 +9,7 @@ import { setListViewType, getVpnList, setVpnType } from '../Actions/vpnlist.acti
 import CustomTextfield from "./customTextfield";
 import VpnListView from './VpnListView';
 import VpnMapView from './VpnMapView';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import CustomButton from "./customButton";
 import { margin, radioStyle } from "../Assets/commonStyles";
 
@@ -43,16 +44,16 @@ class VpnList extends Component {
         this.setState({ vpnType: nextProps.vpnType })
     }
     getVPNs = () => {
-        this.props.getVpnList(this.props.vpnType);
+        this.props.getVpnList(this.props.vpnType, this.props.isTM);
     };
 
     componentWillMount = () => {
-        this.props.getVpnList(this.state.vpnType);
+        this.props.getVpnList(this.state.vpnType, this.props.isTM);
     };
 
     handleRadioChange = (event) => {
         this.props.setVpnType(event.target.value);
-        this.props.getVpnList(event.target.value);
+        this.props.getVpnList(event.target.value, this.props.isTM);
 
     };
     handleNetworkChange = (event) => {
@@ -74,8 +75,8 @@ class VpnList extends Component {
             <div>
                 <div style={{ display: 'flex' }} >
                     <div>
-                        <CustomTextfield type={'text'} placeholder={"search for a dVPN node"}
-                        onChange={ (e) => { this.setState({ dVpnQuery: e.target.value }) } }  />
+                        <CustomTextfield type={'text'} placeholder={"search for a dVPN node"} disabled={false}
+                            value={this.state.dVpnQuery} onChange={(e) => { this.setState({ dVpnQuery: e.target.value }) }} />
                     </div>
                     <div style={margin}>
                         <CustomButton color={'#FFFFFF'} label={'LIST'} active={!this.state.isActive}
@@ -100,6 +101,9 @@ class VpnList extends Component {
                             <FormControlLabel value="private" control={<Radio style={radioStyle} />} label="Private" />
                         </RadioGroup>
                     </FormControl>
+                    <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15, outline: 'none' }}>
+                        <RefreshIcon />
+                    </IconButton>
                     <FormControl component="fieldset" className={classes.dVPNFormControl}>
                         {/*<FormLabel className={classes.row} component="legend">dVPN Type</FormLabel>*/}
                         <RadioGroup
@@ -140,7 +144,8 @@ function mapStateToProps(state) {
         isTest: state.setTestNet,
         listView: state.setListViewType,
         vpnType: state.vpnType,
-        vpnList: state.getVpnList
+        vpnList: state.getVpnList,
+        isTM: state.setTendermint
     }
 }
 

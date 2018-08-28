@@ -185,7 +185,9 @@
     <string name="reward_earned">Total reward tokens earned</string>
     <string name="address">Address</string>
     <string name="share_address">Share address</string>
-    <string name="share_string">Hey, check out this new dVPN android app. Use my referral code to get free tokens when you sign up.\nReferral code: %s</string>
+    <string name="share_string">Hey, check out this new dVPN android app. Use my Referral ID to get free tokens when you sign up.\n\nReferral ID: %1$s\n\nLink: %2$s</string>
+    <string name="branch_share_title">Hey, check out this new dVPN Android app.</string>
+    <string name="branch_share_desc">Use my Referral ID to get free tokens when you Sign Up.\nReferral ID: %1$s</string>
     <string name="info_title_1">Share your Referral ID to earn tokens for every Sign Up</string>
     <string name="info_title_2">Secure decentralized VPN with built-in crypto wallet</string>
     <string name="info_desc_1">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network</string>
@@ -203,6 +205,7 @@
     <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
     <string name="downloading_app_tite">Downloading…</string>
     <string name="download">Download</string>
+    <string name="referral_address_invalid">You have entered an invalid Referral ID. Please enter valid Referral Id</string>
     <string name="referral_address_missing">You have not entered a referral code.\n\nDo you wish to continue without applying a referral code?</string>
     <string name="empty_list_message">There are no items to display.</string>
     <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>

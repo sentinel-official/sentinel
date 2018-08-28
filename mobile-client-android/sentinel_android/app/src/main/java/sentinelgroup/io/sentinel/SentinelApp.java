@@ -20,6 +20,7 @@ import java.util.Locale;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.PRNGFixes;
 import de.blinkt.openvpn.core.StatusListener;
+import io.branch.referral.Branch;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
@@ -46,6 +47,7 @@ public class SentinelApp extends MultiDexApplication {
         mStatus.init(getApplicationContext());
         sInstance = this;
         MultiDex.install(this);
+        Branch.getAutoInstance(this);
     }
 
     public static void changeLanguage(Context iContext, String iLanguageCode) {

@@ -185,7 +185,9 @@
     <string name="reward_earned">Заработано токенов</string>
     <string name="address">Адрес</string>
     <string name="share_address">Поделитесь адресом</string>
-    <string name="share_string">Эй, зацени это новое dVPN Android приложение. Используй мой реферальный токен при регистрации.\nРеферальный код: %s</string>
+    <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %1$s\n\nСсылка: %2$s</string>
+    <string name="branch_share_title">Эй, зацени это новое dVPN Андроид-приложение.</string>
+    <string name="branch_share_desc">Используй мой код, чтобы получить бесплатные токены.\nРеферальный код: %1$s</string>
     <string name="info_title_1">Поделись своим реферальным кодом для бесплатных токенов за каждого зарегистрированного пользователя</string>
     <string name="info_title_2">Защищённая децентрализованная VPN-платформа</string>
     <string name="info_desc_1">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети</string>

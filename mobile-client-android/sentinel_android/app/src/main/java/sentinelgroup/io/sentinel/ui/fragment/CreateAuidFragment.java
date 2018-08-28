@@ -98,6 +98,8 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     }
 
     private void initViewModel() {
+        mTetReferral.setText(AppPreferences.getInstance().getString(AppConstants.PREFS_BRANCH_REFERRER_ID));
+
         // init Device ID
         @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -290,6 +292,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     public void loadNextFragment() {
         if (mListener != null) {
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_BRANCH_REFERRER_ID, "");
             AppPreferences.getInstance().saveString(AppConstants.PREFS_ACCOUNT_ADDRESS, mAccountAddress);
             mListener.onLoadNextFragment(SecureKeysFragment.newInstance(mAccountAddress, mPrivateKey, mKeystoreFilePath));
         }

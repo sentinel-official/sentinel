@@ -2,6 +2,7 @@ package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -33,6 +34,7 @@ import java.util.Objects;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Logger;
@@ -48,7 +50,7 @@ import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
  * Use the {@link RestoreKeystoreFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RestoreKeystoreFragment extends Fragment implements TextWatcher, View.OnClickListener {
+public class RestoreKeystoreFragment extends Fragment implements TextWatcher, View.OnClickListener, DoubleActionDialogFragment.OnDialogActionListener {
 
     private RestoreKeystoreViewModel mViewModel;
 
@@ -355,5 +357,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
             mIsRequested = false;
             Toast.makeText(getContext(), R.string.storage_permission_denied, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+
     }
 }

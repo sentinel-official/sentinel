@@ -24,6 +24,7 @@ public class AppConstants {
     public static final String PREFS_IS_HELPER_SHOWN = "is_helper_shown";
     public static final String PREFS_SELECTED_LANGUAGE_CODE = "selected_language";
     public static final String PREFS_REF_ID = "prefs_ref_id";
+    public static final String PREFS_BRANCH_REFERRER_ID = "prefs_branch_referrer_id";
 
     // Request codes
     public static final int REQ_CODE_NULL = -1;
@@ -81,4 +82,7 @@ public class AppConstants {
     public static final String SENT_TX_URL_BUILDER = "https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0x29317B796510afC25794E511e7B10659Ca18048B&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=%1s&topic1_2_opr=or&topic2=%2s";
     public static final String ETHERSCAN_URL_BUILDER = "https://rinkeby.etherscan.io/tx/%1s";
     public static final String HOME = "home";
+
+    // Branch URL constants
+    public static final String BRANCH_REFERRAL_ID = "referralId";
 }

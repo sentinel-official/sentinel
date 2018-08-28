@@ -329,7 +329,9 @@
     <string name="share_id">Share ID</string>
     <string name="address">Address</string>
     <string name="share_address">Share address</string>
-    <string name="share_string">Hey, check out this new dVPN Android app. Use my Referral ID to get free tokens when you Sign Up.\n\nReferral ID: %s\n\nLink: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
+    <string name="share_string">Hey, check out this new dVPN Android app. Use my Referral ID to get free tokens when you Sign Up.\n\nReferral ID: %1$s\n\nLink: %2$s</string>
+    <string name="branch_share_title">Hey, check out this new dVPN Android app.</string>
+    <string name="branch_share_desc">Use my Referral ID to get free tokens when you Sign Up.\nReferral ID: %1$s</string>
     <string name="info_title_1">Share your Referral ID to earn tokens for every Sign Up</string>
     <string name="info_title_2">Secure decentralized VPN with built-in crypto wallet</string>
     <string name="info_desc_1">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network</string>
@@ -347,6 +349,7 @@
     <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
     <string name="downloading_app_tite">Downloading…</string>
     <string name="download">Download</string>
+    <string name="referral_address_invalid">You have entered an invalid Referral ID. Please enter valid Referral Id</string>
     <string name="referral_address_missing">You have not entered a Referral ID.\n\nDo you wish to continue without applying a Referral ID?</string>
     <string name="empty_list_message">There are no items to display.</string>
     <string name="vpn_history_empty_list_message">You currently do not have any VPN history.</string>

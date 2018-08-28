@@ -24,6 +24,7 @@ import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.BranchUrlHelper;
 import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.ReferralViewModel;
@@ -112,7 +113,6 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         mViewModel = ViewModelProviders.of(this, aFactory).get(ReferralViewModel.class);
 
         mTvReferralCode.setText(mViewModel.getReferralId());
-        mShareString = getString(R.string.share_string, mViewModel.getAccountAddress());
 
         mViewModel.getBonusInfoLiveData().observe(this, bonusInfoEntity -> {
             if (bonusInfoEntity != null) {
@@ -149,11 +149,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_share_referral_id:
-                Intent aIntent = new Intent();
-                aIntent.setAction(Intent.ACTION_SEND);
-                aIntent.putExtra(Intent.EXTRA_TEXT, mShareString);
-                aIntent.setType("text/plain");
-                startShareActivity(aIntent);
+                generateLinkAndShare();
                 break;
             case R.id.btn_claim_bonus:
                 mViewModel.claimReferralBonus();
@@ -166,6 +162,20 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
                 showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.referral_desc), AppConstants.VALUE_DEFAULT);
                 break;
         }
+    }
+
+    private void generateLinkAndShare() {
+        new BranchUrlHelper(getActivity()).createLink(mViewModel.getReferralId(), iUrl -> {
+            shareLink(getString(R.string.share_string, mViewModel.getReferralId(), iUrl));
+        });
+    }
+
+    private void shareLink(String iShareString) {
+        Intent aIntent = new Intent();
+        aIntent.setAction(Intent.ACTION_SEND);
+        aIntent.putExtra(Intent.EXTRA_TEXT, iShareString);
+        aIntent.setType("text/plain");
+        startShareActivity(aIntent);
     }
 
     // Interface interaction methods

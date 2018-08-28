@@ -116,7 +116,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 if (genericResponseResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.registering_device));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
-                    AppPreferences.getInstance().saveString(AppConstants.PREFS_BRANCH_REFERRER_ID, "");
                     mViewModel.fetchAccountInfo();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
@@ -136,6 +135,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             if (genericResponseResource != null) {
                 if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
+                    AppPreferences.getInstance().saveString(AppConstants.PREFS_BRANCH_REFERRER_ID, "");
                     AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_NEW_DEVICE, false);
                     loadDashboardActivity();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {

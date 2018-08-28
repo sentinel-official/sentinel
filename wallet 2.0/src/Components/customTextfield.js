@@ -54,14 +54,16 @@ const theme = createMuiTheme({
     },
 });
 
-const CustomTextfield = ({ classes, onChange, placeholder, type }) => {
+const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value }) => {
     return (
         <div className={classes.container}>
             <TextField
                 onChange={onChange}
                 type={type}
+                disabled={disabled}
                 placeholder={placeholder}
                 id="bootstrap-input"
+                value={value}
                 InputProps={{
                     disableUnderline: true,
                     classes: {

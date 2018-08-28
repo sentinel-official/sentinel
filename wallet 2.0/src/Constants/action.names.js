@@ -33,3 +33,6 @@ export const GET_TMBALANCE = 'GET_TMBALACE';
 export const SEND_TMAMOUNT = 'SEND_TMAMOUNT';
 export const SOCKS5 = 'SOCKS5';
 export const SOCKS5_CREDS = 'SOCKS5_CREDS';
+export const TENDERMINT = 'TENDERMINT';
+export const TM_PAY_VPN = 'TM_PAY_VPN';
+export const PAY_VPN = 'PAY_VPN';

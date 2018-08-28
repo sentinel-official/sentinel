@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { Paper, Tabs, Tab } from '@material-ui/core';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { getKeys, setTMComponent } from '../Actions/tendermint.action';
+import { payVPNTM } from '../Actions/vpnlist.action';
 import CreateTMAccount from './CreateTMAccount';
 import TMAccountDetails from './TMAccountDetails';
 import TMAccountView from './TMAccountView';
@@ -19,6 +20,7 @@ class TenderMint extends Component {
 
     handleChange = (event, value) => {
         this.setState({ value });
+        this.props.payVPNTM({ 'isPayment': false })
     };
 
     componentWillMount = () => {
@@ -30,6 +32,12 @@ class TenderMint extends Component {
                 this.props.setTMComponent('home');
             }
         });
+    }
+
+    componentWillReceiveProps = (nextProps) => {
+        if (nextProps.vpnPayment.isPayment) {
+            this.setState({ value: 1 })
+        }
     }
 
     render() {
@@ -79,14 +87,16 @@ function mapStateToProps(state) {
         isTest: state.setTestNet,
         keys: state.getKeys,
         component: state.setTMComponent,
-        account: state.createTMAccount
+        account: state.createTMAccount,
+        vpnPayment: state.payVPNTM
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         getKeys,
-        setTMComponent
+        setTMComponent,
+        payVPNTM
     }, dispatch)
 }
 

@@ -45,7 +45,7 @@ class TMAccountView extends Component {
         let { classes, language, balance } = this.props;
         let balValue = (typeof balance === 'object' && balance !== null) ? ('value' in balance ? balance.value : {}) : {};
         let coins = (typeof balValue === 'object' && balValue !== null) ? ('coins' in balValue ? balValue.coins : []) : [];
-        let token = coins.length !== 0 ? coins.find(o => o.denom === 'SUT') : {};
+        let token = coins.length !== 0 ? coins.find(o => o.denom === 'sentinelToken') : {};
         return (
             <div style={accountStyles.formStyle}>
                 <Card style={accountStyles.cardStyle}>

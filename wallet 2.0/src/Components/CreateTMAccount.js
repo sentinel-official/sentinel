@@ -48,11 +48,11 @@ class CreateTMAccount extends Component {
             <div style={createAccountStyle.formStyle}>
                 <div style={createAccountStyle.secondDivStyle}>
                     <p style={createAccountStyle.headingStyle}>Account Name</p>
-                    <CustomTextField type={'text'} placeholder={''}
+                    <CustomTextField type={'text'} placeholder={''} disabled={false} value={this.state.keyName}
                         onChange={(e) => { this.setState({ keyName: e.target.value }) }}
                     />
                     <p style={createAccountStyle.headingStyle}>Account Password</p>
-                    <CustomTextField type={'password'} placeholder={''}
+                    <CustomTextField type={'password'} placeholder={''} disabled={false} value={this.state.keyPassword}
                         onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
                     />
                     <Button

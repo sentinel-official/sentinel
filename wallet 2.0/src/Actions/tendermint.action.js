@@ -63,3 +63,25 @@ export async function sendAmount(data, toAddr) {
         }
     }
 }
+
+export async function payVPNSession(data, toAddr) {
+    try {
+        let response = await axios.post(TM_URL + `/vpn/pay`, data, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        })
+        return {
+            type: types.PAY_VPN,
+            payload: response.data,
+            error: null
+        }
+    } catch (err) {
+        return {
+            type: types.PAY_VPN,
+            payload: null,
+            error: err.response
+        }
+    }
+}

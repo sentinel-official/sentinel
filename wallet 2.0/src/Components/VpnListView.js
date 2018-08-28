@@ -15,6 +15,15 @@ class VpnListView extends Component {
     componentWillReceiveProps(nextProps) {
 
         let list = nextProps.availableVpns;
+        if (nextProps.isTM) {
+            list.map((node, i) => {
+                node.net_speed = node.netSpeed;
+                node.account_addr = node.accountAddress;
+                node.price_per_GB = node.pricePerGB;
+                node.enc_method = node.encMethod;
+                node.ip = node.IP;
+            })
+        }
         list = list.filter(function (item) {
             return (item.location.city.toLowerCase().search(
                 nextProps.query.toLowerCase()
@@ -26,10 +35,18 @@ class VpnListView extends Component {
     }
 
     componentDidMount() {
-        this.setState({ updatedList: this.props.availableVpns });
-
+        let list = this.props.availableVpns;
+        if (this.props.isTM) {
+            list.map((node, i) => {
+                node.net_speed = node.netSpeed;
+                node.account_addr = node.accountAddress;
+                node.price_per_GB = node.pricePerGB;
+                node.enc_method = node.encMethod;
+                node.ip = node.IP;
+            })
+        }
+        this.setState({ updatedList: list });
     }
-
 
     render() {
         let language = this.props.lang;
@@ -51,7 +68,8 @@ class VpnListView extends Component {
 function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
-        availableVpns: state.getVpnList
+        availableVpns: state.getVpnList,
+        isTM: state.setTendermint
     }
 }
 

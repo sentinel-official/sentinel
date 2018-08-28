@@ -1,6 +1,7 @@
 
 module.exports = {
     B_URL: 'https://api.sentinelgroup.io',
+    TMain_URL:'http://178.32.169.207:8000',
     S_URL: 'https://api-rinkeby.etherscan.io/api?module=account&action=tokentx&contractaddress=',
     SM_URL: '&address=',
     SE_URL: '&page=1&offset=100&sort=asc&apikey=YourApiKeyToken',
@@ -49,11 +50,19 @@ module.exports = {
     ],
     disabledItemsTest:[
         'swixer',
-        'swaps'
+        'swaps',
+        'tmint'
     ],
     disabledItemsMain:[
         'vpnHistory',
         'vpnList',
         'tmint'
+    ],
+    disabledItemsTM:[
+        'history',
+        'send',
+        'receive',
+        'swixer',
+        'swaps'
     ]
 };

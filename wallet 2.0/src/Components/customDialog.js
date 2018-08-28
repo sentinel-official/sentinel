@@ -14,7 +14,7 @@ import ConnectIcon from '@material-ui/icons/SwapVerticalCircle';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { connectSocks } from '../Actions/connectSOCKS';
-import { setVpnStatus } from '../Actions/vpnlist.action';
+import { setVpnStatus, payVPNTM } from '../Actions/vpnlist.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
@@ -254,28 +254,34 @@ class SimpleDialogDemo extends React.Component {
     };
 
     handleListItemClick = (vpn_addr) => {
-        this.setState({ isLoading: true });
-        if (this.props.vpnType === 'openvpn') {
-            connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
+        if (this.props.isTm) {
+            this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
+            this.props.setCurrentTab('tmint');
+        }
+        else {
+            this.setState({ isLoading: true });
+            if (this.props.vpnType === 'openvpn') {
+                connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
 
-                if (res.data && res.data.account_addr) {
-                    this.setState({
-                        pendingInitPayment: res.data.message, isPending: false, open: true,
-                        paymentAddr: res.data.account_addr, isLoading: false
-                    })
-                } else if (res.success) {
-                    this.setState({ isLoading: false });
-                    this.props.setVpnStatus(true)
-                    // setTimeout(() => {  this.setState({ open: false })}, 4000)
-                } else {
-                    this.setState({ open: false, isLoading: false })
-                }
+                    if (res.data && res.data.account_addr) {
+                        this.setState({
+                            pendingInitPayment: res.data.message, isPending: false, open: true,
+                            paymentAddr: res.data.account_addr, isLoading: false
+                        })
+                    } else if (res.success) {
+                        this.setState({ isLoading: false });
+                        this.props.setVpnStatus(true)
+                        // setTimeout(() => {  this.setState({ open: false })}, 4000)
+                    } else {
+                        this.setState({ open: false, isLoading: false })
+                    }
 
-            })
-        } else {
-            this.props.connectSocks(this.props.getAccount, vpn_addr).then(res=>{
-                
-            });
+                })
+            } else {
+                this.props.connectSocks(this.props.getAccount, vpn_addr).then(res => {
+
+                });
+            }
         }
     };
 
@@ -321,11 +327,11 @@ class SimpleDialogDemo extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectSocks }, dispatch)
+    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectSocks, payVPNTM }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus }) {
-    return { connecVPNReducer, getAccount, socksReducer, vpnType, vpnStatus: setVpnStatus }
+function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus, setTendermint }) {
+    return { connecVPNReducer, getAccount, socksReducer, vpnType, vpnStatus: setVpnStatus, isTm: setTendermint }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimpleDialogDemo);

@@ -1,7 +1,7 @@
 const headerStyles = {
     mainDivStyle: {
         height: 70,
-        background: 'linear-gradient(to right,#2f3245 78%,#3d425c 22%)'
+        background: 'linear-gradient(to right,#2f3245 73%,#3d425c 27%)'
     },
     firstRowStyle: {
         paddingTop: 10
@@ -79,11 +79,12 @@ const headerStyles = {
     thumbTrackStyle: {
         backgroundColor: '#4b4e5d'
     },
-    alignRight:{
-        textAlign:'right'
+    alignRight: {
+        textAlign: 'right',
+        marginLeft: 15
     },
-    accountIconColor:{
-        color:'#ddd'
+    accountIconColor: {
+        color: '#ddd'
     }
 }
 

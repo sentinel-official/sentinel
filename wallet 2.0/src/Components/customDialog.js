@@ -267,7 +267,7 @@ class SimpleDialogDemo extends React.Component {
             this.setState({ isLoading: true });
             if (this.props.vpnType === 'openvpn') {
                 connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
-
+                    console.log("Resp///",res);
                     if (res.data && res.data.account_addr) {
                         this.setState({
                             pendingInitPayment: res.data.message, isPending: false, open: true,

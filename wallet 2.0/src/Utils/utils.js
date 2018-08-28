@@ -64,8 +64,11 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
                 }
                 else {
                     if (remote.process.platform === 'win32' || remote.process.platform === 'darwin') {
-                        delete (response.data['node']['vpn']['ovpn'][17]);
-                        delete (response.data['node']['vpn']['ovpn'][18]);
+                        for(var i=15;i<=20;i++){
+                            if(response.data['node']['vpn']['ovpn'][i].split(' ')[0]==='up' || response.data['node']['vpn']['ovpn'][i].split(' ')[0]==='down'){
+                              delete (response.data['node']['vpn']['ovpn'][i]);
+                            }
+                          }
                     }
                     let ovpn = response.data['node']['vpn']['ovpn'].join('');
                     localStorage.setItem('SESSION_NAME', response.data['session_name']);
@@ -84,7 +87,6 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
         })
     }
 }
-
 
 export function getVPNUsageData(account_addr) {
 

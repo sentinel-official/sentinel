@@ -25,10 +25,12 @@ import co.sentinel.sentinellite.di.InjectorModule;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
+import co.sentinel.sentinellite.util.BranchUrlHelper;
 import co.sentinel.sentinellite.util.Converter;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.ReferralViewModel;
 import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
+import io.branch.referral.util.ShareSheetStyle;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -113,7 +115,6 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         mViewModel = ViewModelProviders.of(this, aFactory).get(ReferralViewModel.class);
 
         mTvReferralCode.setText(mViewModel.getReferralId());
-        mShareString = getString(R.string.share_string, mViewModel.getReferralId());
         mViewModel.getBonusInfoLiveData().observe(this, bonusInfoEntity -> {
             if (bonusInfoEntity != null) {
                 mtvReferralCount.setText(String.valueOf(bonusInfoEntity.getRefCount()));
@@ -147,11 +148,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_share_referral_id:
-                Intent aIntent = new Intent();
-                aIntent.setAction(Intent.ACTION_SEND);
-                aIntent.putExtra(Intent.EXTRA_TEXT, mShareString);
-                aIntent.setType("text/plain");
-                startShareActivity(aIntent);
+                generateLinkAndShare();
                 break;
 
             case R.id.btn_claim_bonus:
@@ -166,6 +163,20 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
                 showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.referral_desc), AppConstants.VALUE_DEFAULT);
                 break;
         }
+    }
+
+    private void generateLinkAndShare() {
+        new BranchUrlHelper(getActivity()).createLink(mViewModel.getReferralId(), iUrl -> {
+            shareLink(getString(R.string.share_string, mViewModel.getReferralId(), iUrl));
+        });
+    }
+
+    private void shareLink(String iShareString) {
+        Intent aIntent = new Intent();
+        aIntent.setAction(Intent.ACTION_SEND);
+        aIntent.putExtra(Intent.EXTRA_TEXT, iShareString);
+        aIntent.setType("text/plain");
+        startShareActivity(aIntent);
     }
 
     // Interface interaction methods

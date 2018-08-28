@@ -22,6 +22,7 @@ import co.sentinel.sentinellite.util.AppPreferences;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.PRNGFixes;
 import de.blinkt.openvpn.core.StatusListener;
+import io.branch.referral.Branch;
 
 public class SentinelLiteApp extends MultiDexApplication {
     public static final String TAG = SentinelLiteApp.class.getSimpleName();
@@ -46,6 +47,7 @@ public class SentinelLiteApp extends MultiDexApplication {
         mStatus.init(getApplicationContext());
         sInstance = this;
         MultiDex.install(this);
+        Branch.getAutoInstance(this);
     }
 
     public static void changeLanguage(Context iContext, String iLanguageCode) {

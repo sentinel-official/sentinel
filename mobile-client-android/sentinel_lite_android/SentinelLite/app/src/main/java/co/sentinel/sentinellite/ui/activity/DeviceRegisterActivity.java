@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 
@@ -34,7 +35,7 @@ import static co.sentinel.sentinellite.util.AppConstants.TAG_PROGRESS_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_SINGLE_ACTION_DIALOG;
 
 public class DeviceRegisterActivity extends AppCompatActivity implements View.OnClickListener,
-        DoubleActionDialogFragment.OnDialogActionListener, TextWatcher {
+        DoubleActionDialogFragment.OnDialogActionListener {
     private DeviceRegisterViewModel mViewModel;
 
     private TextInputEditText mTetReferral;
@@ -99,10 +100,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         mTetReferral = findViewById(R.id.tet_referral);
         mTetReferral.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         findViewById(R.id.btn_next).setOnClickListener(this);
-        mTetReferral.addTextChangedListener(this);
     }
 
     private void initViewModel() {
+        mTetReferral.setText(AppPreferences.getInstance().getString(AppConstants.PREFS_BRANCH_REFERRER_ID));
+
         // init Device ID
         @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -114,6 +116,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 if (genericResponseResource.status.equals(Status.LOADING)) {
                     showProgressDialog(true, getString(R.string.registering_device));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    AppPreferences.getInstance().saveString(AppConstants.PREFS_BRANCH_REFERRER_ID, "");
                     mViewModel.fetchAccountInfo();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
@@ -233,7 +236,15 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_next:
-                showDoubleActionError(AppConstants.TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.referral_address_missing), R.string.yes, R.string.no);
+                if (!TextUtils.isEmpty(mTetReferral.getText().toString().trim())) {
+                    if (mTetReferral.getText().toString().trim().length() == AppConstants.REFERRAL_CODE_LENGHT) {
+                        mViewModel.registerDeviceId(mTetReferral.getText().toString().trim());
+                    } else {
+                        showSingleActionError(AppConstants.VALUE_DEFAULT, getString(R.string.referral_address_invalid), R.string.ok);
+                    }
+                } else {
+                    showDoubleActionError(AppConstants.TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.referral_address_missing), R.string.yes, R.string.no);
+                }
                 break;
         }
     }
@@ -254,19 +265,4 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         hideProgressDialog();
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        String aRefId = s.toString().trim();
-        if (aRefId.length() == AppConstants.REFERRAL_CODE_LENGHT) {
-            mViewModel.registerDeviceId(aRefId);
-        }
-    }
 }

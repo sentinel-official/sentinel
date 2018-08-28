@@ -18,6 +18,7 @@ public class AppConstants {
     public static final String PREFS_REF_ID = "prefs_ref_id";
     public static final String PREFS_FILE_URL = "prefs_file_url";
     public static final String PREFS_FILE_NAME = "prefs_file_name";
+    public static final String PREFS_BRANCH_REFERRER_ID = "prefs_branch_referrer_id";
 
     // Request codes
     public static final int REQ_CODE_NULL = -1;
@@ -50,4 +51,7 @@ public class AppConstants {
     public static final String URL_BUILDER = "http://%1s:%d/ovpn";
     public static final String DISCONNECT_URL_BUILDER = "http://%1s:%d/disconnect";
     public static final String HOME = "home";
+
+    // Branch URL constants
+    public static final String BRANCH_REFERRAL_ID = "referralId";
 }

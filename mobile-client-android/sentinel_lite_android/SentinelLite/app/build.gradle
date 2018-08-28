@@ -70,6 +70,8 @@ dependencies {
     implementation 'com.bugsnag:bugsnag-android:4.6.0'
     // ViewPagerIndicator
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:2.0.3'
+    // Branch
+    implementation 'io.branch.sdk.android:library:2.19.3'
     // Android Test Libs
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

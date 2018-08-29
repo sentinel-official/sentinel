@@ -92,7 +92,7 @@ class SimpleDialog extends React.Component {
     };
 
     handleClose = () => {
-        this.props.onClose(this.props.selectedValue);
+        this.props.onClose();
 
     };
 
@@ -105,7 +105,7 @@ class SimpleDialog extends React.Component {
 
         return (
             <Dialog onClose={this.handleClose}
-                aria-labelledby="simple-dialog-title" keepMounted
+                aria-labelledby="simple-dialog-title"
                 {...other} className={{ classes: { paper: classes.container } }}
             >
                 <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
@@ -174,11 +174,12 @@ const SimpleDialogWrapped = withStyles(styles)(SimpleDialog);
 class AlertDialog extends React.Component {
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ open: nextProps.open });
+        this.setState({ open: nextProps.open, op: nextProps.op });
     }
 
     state = {
         open: false,
+        op: false
     };
 
     handleClickOpen = () => {
@@ -186,7 +187,7 @@ class AlertDialog extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({ open: false, isLoading: false });
+        this.setState({ open: false, isLoading: false, op: false });
     };
 
     makeInitPayment = async () => {
@@ -204,7 +205,9 @@ class AlertDialog extends React.Component {
     render() {
         return (
             <Dialog
-                open={this.state.open}
+                // open={this.state.open}
+                // keepMounted
+                open={this.props.op}
                 onClose={this.handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -239,7 +242,6 @@ class SimpleDialogDemo extends React.Component {
 
     state = {
         open: false,
-        selectedValue: emails[1],
         pendingInitPayment: null,
         isPending: false,
         paymentAddr: '',
@@ -253,12 +255,12 @@ class SimpleDialogDemo extends React.Component {
         });
     };
 
-    handleClose = value => {
-        this.setState({ selectedValue: value, open: false });
+    handleClose = () => {
+        this.setState({  open: false, isPending: true});
         this.props.onUpdate(false);
     };
 
-    handleListItemClick = (vpn_addr) => {
+    handleListItemClick = async (vpn_addr) => {
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
             this.props.setCurrentTab('tmint');
@@ -266,13 +268,14 @@ class SimpleDialogDemo extends React.Component {
         else {
             this.setState({ isLoading: true });
             if (this.props.vpnType === 'openvpn') {
-                connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
-                    console.log("Resp///",res);
+                await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
                     if (res.data && res.data.account_addr) {
                         this.setState({
-                            pendingInitPayment: res.data.message, isPending: false, open: true,
+                            pendingInitPayment: res.data.message, open: false,
                             paymentAddr: res.data.account_addr, isLoading: false
                         })
+                        setTimeout(() => { this.setState({ isPending: true }) }, 1500)
+
                     } else if (res.success) {
                         this.setState({ isLoading: false });
                         this.props.setVpnStatus(true)
@@ -333,24 +336,25 @@ class SimpleDialogDemo extends React.Component {
         // }
         return (
             <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }} >
-                {this.state.isPending ?
-                    <AlertDialog
-                        open={this.state.isPending}
-                        message={this.state.pendingInitPayment}
-                        paymentAddr={this.state.paymentAddr}
-                        initPaymentAction={this.props.initPaymentAction}
-                        setCurrentTab={this.props.setCurrentTab}
-                    />
-                    :
+                {!this.state.isPending ?
                     <SimpleDialogWrapped
-                        selectedValue={this.state.selectedValue}
-                        open={this.state.isPending === false && this.state.open}
+                        // selectedValue={this.state.selectedValue}
+                        open={this.state.open}
                         onClose={this.handleClose}
                         data={this.props.data}
                         onClicked={this.handleListItemClick}
                         isLoading={this.state.isLoading}
                         success={this.props.vpnStatus}
                         execIT={this.execIT}
+                    />
+                    :
+                    <AlertDialog
+                        op={this.state.isPending}
+                    // open={this.state.isPending}
+                    message={this.state.pendingInitPayment}
+                    paymentAddr={this.state.paymentAddr}
+                    initPaymentAction={this.props.initPaymentAction}
+                    setCurrentTab={this.props.setCurrentTab}
                     />
                 }
             </div>

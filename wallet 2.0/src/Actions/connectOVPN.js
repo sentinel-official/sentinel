@@ -17,25 +17,16 @@ let connect = {
 let OVPNDelTimer = null;
 
 export async function connectVPN(account_addr, vpn_addr, os, cb) {
-    console.log(os, 'current os')
     switch (os) {
         case 'win32': 
-            // checkDependencies(['openvpn'], async (e, o, se) => {
-            //     if (o) {
-            //         await windowsConnect(account_addr, vpn_addr, (res) => { cb(res) })
-            //     }
-            // })
             await linuxConnect(account_addr, vpn_addr, (res) => {
-                console.log("Res...",res);
                  cb(res);
                 });
                 break;
-
         
         case 'darwin': 
                 break;
         case 'linux': {
-                console.log("Hello...")
             checkDependencies(['openvpn'], async (e, o, se) => {
                 if (o) {
                     await linuxConnect(account_addr, vpn_addr, (res) => { cb(res) });
@@ -111,6 +102,7 @@ export async function linuxConnect(account_addr, vpn_addr, cb) {
                         } // internal else ends here
                         // setTimeout(function () {
                         if (remote.process.platform === 'win32') { checkWindows(resp,cb) }
+                        // else if (remote.process.platform === 'darwin') checkVPNConnection();
                         else{
                         getVPNPIDs(async (err, pids) => {
                             if (err) {}
@@ -125,7 +117,6 @@ export async function linuxConnect(account_addr, vpn_addr, cb) {
                                     data.session_name = localStorage.getItem('SESSION_NAME');
                                     data.vpn_type = 'openvpn';
                                     let keystore = JSON.stringify(data);
-                                    console.log(keystore, 'data to write');
                                     await fs.writeFile(CONFIG_FILE, keystore, (err) => {
                                         cb(err)
                                     });
@@ -147,20 +138,6 @@ export async function linuxConnect(account_addr, vpn_addr, cb) {
         .catch(err => { console.log(err) })
 
 }
-
-function installPackage(packageName, cb) {
-    try {
-        exec(`brew install ${packageName}`,
-            function (err, stdout, stderr) {
-                console.log("Installing: ", packageName, err, stdout, stderr);
-                if (err || stderr) cb(err || stderr, false);
-                else cb(null, true);
-            });
-    } catch (Err) {
-        throw Err
-    }
-}
-
 
 function checkWindows(resp,cb) {
     let count = 0;

@@ -74,9 +74,6 @@ class EnhancedTableHead extends React.Component {
                                 padding={"default"}
                                 padding={column.disablePadding ? 'none' : 'default'}
                                 sortDirection={orderBy === column.id ? order : false}
-                            // style={{ textAlign: 'center', }}
-                            // classes={{ head: classes.center }}
-                            // variant={"head"}
                             >
                                 <TableSortLabel
                                     active={orderBy === column.id}
@@ -240,7 +237,7 @@ class EnhancedTable extends React.Component {
 
     changeDialog = (value) => {
         this.setState({ openDialog: value });
-    }
+    };
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 

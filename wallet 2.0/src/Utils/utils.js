@@ -8,7 +8,7 @@ const remote = electron.remote;
 const SENT_DIR = getUserHome() + '/.sentinel';
 const TM_DIR = getUserHome() + '/.sentinel/.tendermint';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
-
+export const CONFIG_FILE = `${SENT_DIR}/config`;
 
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
 if (!fs.existsSync(TM_DIR)) {
@@ -58,7 +58,6 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
         cb(null);
     } else {
         axios.post(uri, data).then(response => {
-            console.log(response, 'session data')
             if (response.data.success) {
                 if (response.data['node'] === null) {
                     cb({ message: 'Something wrong. Please Try Later' })
@@ -106,6 +105,7 @@ export function getVPNUsageData(account_addr) {
 export function getVPNPIDs(cb) {
     try {
         exec('pidof openvpn', function (err, stdout, stderr) {
+            console.log('stderr in getVPNPid', stderr);
             if (err) cb(err, null);
             else if (stdout) {
                 let pids = stdout.trim();

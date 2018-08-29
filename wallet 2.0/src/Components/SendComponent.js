@@ -19,6 +19,7 @@ import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/lab/Slider'
+import {initPaymentDetails} from "../Reducers/initPayment.reducer";
 
 const muiTheme = createMuiTheme({
   slider: {
@@ -235,6 +236,7 @@ class SendComponent extends React.Component {
   }
 
   render() {
+    console.log(this.props.initPaymentDetails, 'lao bhai')
     const { language, classes } = this.props;
 
     return (
@@ -348,7 +350,7 @@ class SendComponent extends React.Component {
                         }
                       }
                       step={1}
-                      onChange={this.onChangeSlider}></Slider>
+                      onChange={this.onChangeSlider}/>
                   </div>
                 </div>
               </div>
@@ -406,7 +408,8 @@ function mapStateToProps(state) {
     language: state.setLanguage,
     local_address: state.getAccount,
     net: state.setTestNet,
-    payVpn: state.getVPNDuePaymentDetails
+    payVpn: state.getVPNDuePaymentDetails,
+    initPaymentDetails: state.initPaymentDetails,
   }
 }
 

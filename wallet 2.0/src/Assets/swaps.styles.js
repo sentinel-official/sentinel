@@ -103,23 +103,20 @@ const swapsStyles = {
     tokenStyle2: {
         marginTop: '10%',
         marginLeft: '10%',
-        padding: '4% 6%',
-        paddingBottom: 0,
-        width: 343,
-        borderRadius:0,
+        padding: '4% 6% 0px',
+        width: '340px',
+        borderRadius: '0px',
         backgroundColor: '#ececf1',
-        height: 85
+        height: '122px',
     },
     tokenStyle: {
         marginTop: '10%',
         marginLeft: '5%',
-        padding: '0% 6%',
-        marginRight: '10%',
-        paddingBottom: 0,
-        borderRadius:0,
-        width: 343,
+        padding: '4% 6% 0px',
+        width: '340px',
+        borderRadius: '0px',
         backgroundColor: '#ececf1',
-        height: 85
+        height: '122px',
     },
     f_w_b: {
         fontWeight: 'bold',
@@ -143,15 +140,31 @@ const swapsStyles = {
     },
     sentinel: {
         color: 'grey',
-        marginTop: -15,
-        letterSpacing: 2,
-        wordBreak: 'break-all'
+        wordBreak: 'break-all',
+        fontSize: '21px',
+        fontFamily: 'Myriad Pro, Regular',
     },
     sentImg: {
         width: 50,
         height: 50,
         margin: '1% 10%'
-    }
+    },
+    number: {
+        fontSize: '24px',
+        fontWeight: 'bold',
+        fontFamily:'Montserrat, Medium',
+        letterSpacing: '3px',
+        wordBreak: 'break-all',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+    },
+    image:{
+        width: '107px',
+        height: '95px',
+        paddingRight: '20px',
+        paddingBottom: '9px',
+    },
 }
 
 module.exports = {

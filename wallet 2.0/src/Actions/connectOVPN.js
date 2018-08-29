@@ -16,31 +16,61 @@ let connect = {
 };
 let OVPNDelTimer = null;
 
-export function connectVPN(account_addr, vpn_addr, os, cb) {
+export async function connectVPN(account_addr, vpn_addr, os, cb) {
+    console.log(os, 'current os')
     switch (os) {
-        case 'win32': {
+        case 'win32': 
+            // checkDependencies(['openvpn'], async (e, o, se) => {
+            //     if (o) {
+            //         await windowsConnect(account_addr, vpn_addr, (res) => { cb(res) })
+            //     }
+            // })
+            await linuxConnect(account_addr, vpn_addr, (res) => {
+                console.log("Res...",res);
+                 cb(res);
+                });
+                break;
 
-        }
-        case 'darwin': {
-
-        }
+        
+        case 'darwin': 
+                break;
         case 'linux': {
+                console.log("Hello...")
             checkDependencies(['openvpn'], async (e, o, se) => {
                 if (o) {
-                    await testConnect(account_addr, vpn_addr, (res) => { cb(res) });
+                    await linuxConnect(account_addr, vpn_addr, (res) => { cb(res) });
                 } else {
                     console.log("dependecy error")
                 }
-            })
+            });
+            break;
         }
         default: {
-
+            break;
         }
     }
 }
 
 
-export async function testConnect(account_addr, vpn_addr, cb) {
+// export async function windowsConnect(account_addr, vpn_addr, cb) {
+//    let cmd = 'resources\\extras\\bin\\openvpn.exe ' + OVPN_FILE;
+//
+//     exec('cd c:\\Program Files && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (err, stdout, stderr) {
+//         if (stdout.toString() === '') {
+//             exec('cd c:\\Program Files (x86) && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (error, stdout1, stderr1) {
+//                 if (stdout.toString() === '') {
+//                     cb({ message: 'false' }, false, true, false, null);
+//                 }
+//                 else {
+//                     nextStep();
+//                 }
+//             })
+//         } else {
+//             nextStep();
+//         }
+//     })
+// }
+export async function linuxConnect(account_addr, vpn_addr, cb) {
     let data = {
         account_addr: account_addr,
         vpn_addr: vpn_addr
@@ -54,8 +84,7 @@ export async function testConnect(account_addr, vpn_addr, cb) {
     } else {
         command = 'sudo openvpn ' + OVPN_FILE;
     }
-
-
+    console.log("IN Linux")
     axios.post(`${B_URL}/client/vpn`, data)
         .then(resp => {
             if (resp.data.success) {
@@ -81,8 +110,10 @@ export async function testConnect(account_addr, vpn_addr, cb) {
                             });
                         } // internal else ends here
                         // setTimeout(function () {
+                        if (remote.process.platform === 'win32') { checkWindows(resp,cb) }
+                        else{
                         getVPNPIDs(async (err, pids) => {
-                            if (err) cb({ message: err });
+                            if (err) {}
                             else {
                                 getConfig(async function (err, confdata) {
                                     let data = confdata ? JSON.parse(confdata) : {};
@@ -103,7 +134,8 @@ export async function testConnect(account_addr, vpn_addr, cb) {
                             }
                         })
                         // }, 1000)
-                    } // parent else ends here
+                    } 
+                }// parent else ends here
                 })
             } else {
                 if (resp.data.account_addr)
@@ -127,4 +159,36 @@ function installPackage(packageName, cb) {
     } catch (Err) {
         throw Err
     }
+}
+
+
+function checkWindows(resp,cb) {
+    let count = 0;
+    let CONNECTED = false;
+    exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
+        if (stdout.toString() === '') {}
+        else {
+            CONNECTED = true;
+            let data = {};
+            data.isConnected = true;
+            data.ipConnected = localStorage.getItem('IPGENERATED');
+            data.location = localStorage.getItem('LOCATION');
+            data.speed = localStorage.getItem('SPEED');
+            data.connectedAddr = localStorage.getItem('CONNECTED_VPN');
+            data.session_name = localStorage.getItem('SESSION_NAME');
+            data.vpn_type = 'openvpn';
+            let keystore = JSON.stringify(data);
+            fs.writeFile(CONFIG_FILE, keystore, function (err) {
+            });
+            cb({'message':resp.data.message,'success':resp.data.success});
+            count = 4;
+        }
+        count++;
+        if (count < 4) {
+            setTimeout(() => { checkWindows(); }, 5000);
+        }
+        if (count === 4 && CONNECTED === false) {
+            cb({ message: 'Something went wrong.Please Try Again',success:false });
+        }
+    })
 }

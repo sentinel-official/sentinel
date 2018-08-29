@@ -8,10 +8,11 @@ import {
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import { headerStyles } from '../Assets/header.styles';
-import { setTestNet, getETHBalance, getSentBalance } from '../Actions/header.action';
+import { setTestNet, getETHBalance, getSentBalance, setTendermint } from '../Actions/header.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 
 class Header extends Component {
     constructor(props) {
@@ -42,8 +43,20 @@ class Header extends Component {
         this.props.setTestNet(value);
         this.props.getETHBalance(this.props.walletAddress, value);
         this.props.getSentBalance(this.props.walletAddress, value);
-        if ((value && currentTab === 'swixer' || currentTab === 'swaps') ||
-            (!value && (currentTab === 'vpnList' || currentTab === 'vpnHistory'))) {
+        if ((value && disabledItemsTest.includes(currentTab)) ||
+            (!value && disabledItemsMain.includes(currentTab))) {
+            this.props.setCurrentTab('send');
+        }
+    };
+
+    tendermintChange = () => event => {
+        let value = event.target.checked;
+        let currentTab = this.props.currentTab;
+        this.props.setTendermint(value);
+        if (value) {
+            this.props.setCurrentTab('tmint');
+        }
+        else {
             this.props.setCurrentTab('send');
         }
     };
@@ -100,7 +113,7 @@ class Header extends Component {
                                 }</span>
                             </div>
                         </Col>
-                        <Col xs={2} style={headerStyles.alignRight}>
+                        <Col xs={1} style={headerStyles.alignRight}>
                             <div style={headerStyles.columnStyle}>
                                 <p style={headerStyles.toggleLabelisTest}>TESTNET</p>
                             </div>
@@ -109,10 +122,11 @@ class Header extends Component {
                                     checked={this.props.isTest}
                                     onChange={this.testNetChange()}
                                     color="primary"
+                                    disabled={this.props.isTendermint}
                                 />
                             </div>
                         </Col>
-                        <Col xs={1} style={headerStyles.alignRight}>
+                        {/* <Col xs={1} style={headerStyles.alignRight}>
                             <IconButton
                                 style={{ outline: 'none' }}
                                 aria-label="Account"
@@ -139,6 +153,18 @@ class Header extends Component {
                                     </Grow>
                                 )}
                             </Popper>
+                        </Col> */}
+                        <Col xs={1} style={headerStyles.alignRight}>
+                            <div style={headerStyles.columnStyle}>
+                                <p style={headerStyles.toggleLabelisTest}>TENDERMINT</p>
+                            </div>
+                            <div style={headerStyles.toggleStyle}>
+                                <Switch
+                                    checked={this.props.isTendermint}
+                                    onChange={this.tendermintChange()}
+                                    color="primary"
+                                />
+                            </div>
                         </Col>
                     </Row>
                 </Grid>
@@ -160,7 +186,8 @@ function mapStateToProps(state) {
         walletAddress: state.getAccount,
         ethBalance: state.getETHBalance,
         sentBalance: state.getSentBalance,
-        currentTab: state.setCurrentTab
+        currentTab: state.setCurrentTab,
+        isTendermint: state.setTendermint
     }
 }
 
@@ -169,7 +196,8 @@ function mapDispatchToActions(dispatch) {
         setTestNet,
         getETHBalance,
         getSentBalance,
-        setCurrentTab
+        setCurrentTab,
+        setTendermint
     }, dispatch)
 }
 

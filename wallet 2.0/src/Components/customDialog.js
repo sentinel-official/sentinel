@@ -14,15 +14,19 @@ import ConnectIcon from '@material-ui/icons/SwapVerticalCircle';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { connectSocks } from '../Actions/connectSOCKS';
-import { setVpnStatus } from '../Actions/vpnlist.action';
+import { setVpnStatus, payVPNTM } from '../Actions/vpnlist.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
+import { calculateUsage } from '../Actions/calculateUsage';
 
 const electron = window.require('electron');
 const remote = electron.remote;
 
 const emails = ['username@gmail.com', 'user02@gmail.com'];
+let UsageInterval = null;
+let type = '';
+let session = null;
 const styles = theme => ({
     avatar: {
         backgroundColor: blue[100],
@@ -106,40 +110,34 @@ class SimpleDialog extends React.Component {
             >
                 <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
                 <div>
-
                     <List>
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             <ListItemText>
                                 <label style={styles.dialogLabel}>City:&nbsp;</label>
                                 <span style={styles.dialogValue}>{this.props.data.city}</span>
                             </ListItemText>
                         </ListItem>
 
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             <ListItemText>
                                 <label style={styles.dialogLabel}>Country:&nbsp;</label>
                                 <span style={styles.dialogValue}>{this.props.data.country}</span>
                             </ListItemText>
                         </ListItem>
 
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             {/*<ListItemText primary={`Bandwidth: ${this.props.data.speed}`} />*/}
                             <label style={styles.dialogLabel}>Bandwidth:&nbsp;</label>
                             <span style={styles.dialogValue}>{(this.props.data.speed / (1024 * 1024)).toFixed(2)}</span>
                         </ListItem>
 
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             <ListItemText>
                                 <label style={styles.dialogLabel}>Price:&nbsp;</label><span
                                     style={styles.dialogValue}>{this.props.data.price_per_GB}</span>
                             </ListItemText>
                         </ListItem>
-                        <ListItem button onClick={() => {
-                        }}>
+                        <ListItem>
                             <ListItemText> <label style={styles.dialogLabel}>Latency:&nbsp;</label>
                                 <span style={styles.dialogValue}> {this.props.data.latency}</span>
                             </ListItemText>
@@ -147,12 +145,13 @@ class SimpleDialog extends React.Component {
 
                         <div className={classes.listRoot}>
                             <Button disabled={this.props.isLoading} variant="extendedFab" aria-label="Connect"
-                                onClick={() => this.props.onClick(this.props.data.vpn_addr)}
+                                onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
                                 {!this.props.isLoading && this.props.success ? 'Connected' : 'Connect'}
                             </Button>
+                            <Button onClick={this.props.execIT} >Refresh</Button>
                         </div>
                     </List>
                     {/*: ''*/}
@@ -235,7 +234,7 @@ class AlertDialog extends React.Component {
 class SimpleDialogDemo extends React.Component {
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ open: this.props.open })
+        this.setState({ open: nextProps.open })
     }
 
     state = {
@@ -245,7 +244,7 @@ class SimpleDialogDemo extends React.Component {
         isPending: false,
         paymentAddr: '',
         isLoading: false,
-        timer: true,
+        session: false,
     };
 
     handleClickOpen = () => {
@@ -256,43 +255,82 @@ class SimpleDialogDemo extends React.Component {
 
     handleClose = value => {
         this.setState({ selectedValue: value, open: false });
+        this.props.onUpdate(false);
     };
 
     handleListItemClick = (vpn_addr) => {
+        if (this.props.isTm) {
+            this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
+            this.props.setCurrentTab('tmint');
+        }
+        else {
+            this.setState({ isLoading: true });
+            if (this.props.vpnType === 'openvpn') {
+                connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
+                    console.log("Resp///",res);
+                    if (res.data && res.data.account_addr) {
+                        this.setState({
+                            pendingInitPayment: res.data.message, isPending: false, open: true,
+                            paymentAddr: res.data.account_addr, isLoading: false
+                        })
+                    } else if (res.success) {
+                        this.setState({ isLoading: false });
+                        this.props.setVpnStatus(true)
+                        // setTimeout(() => {  this.setState({ open: false })}, 4000)
+                    } else {
+                        this.setState({ open: false, isLoading: false })
+                    }
 
-        this.setState({ isLoading: true });
-        if (this.props.vpnType === 'openvpn') {
-            connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
-
-                if (res.data && res.data.account_addr) {
-                    this.setState({
-                        pendingInitPayment: res.data.message, isPending: false, open: true,
-                        paymentAddr: res.data.account_addr, isLoading: false
-                    })
-                } else if (res.success) {
-                    this.setState({isLoading: false});
-                    this.props.setVpnStatus(true)
-                    // setTimeout(() => {  this.setState({ open: false })}, 4000)
-                } else {
-                    this.setState({open: false, isLoading: false})
-                }
-
-            })
-        } else {
-            this.props.connectSocks(this.props.getAccount, vpn_addr);
+                })
+            } else {
+                connectSocks(this.props.getAccount, vpn_addr).then( async (res) => {
+                    // if (res) {
+                        setTimeout( () => {
+                        session = localStorage.getItem('SESSION_NAME');
+                        type = localStorage.getItem('VPN_TYPE');
+                        this.setState({ session: true })
+                        }, 10000);
+                        // if (session && type === 'SOCKS5') {
+                            calculateUsage(this.props.getAccount, this.props.data.vpn_addr, true )
+                        // }
+                    // }
+                });
+            }
         }
     };
 
+    execIT = () => {
+        calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false )
+    }
+
     render() {
-        console.log(this.props.vpnType)
-        if (this.props.vpnStatus && this.state.timer) {
-            setInterval(() => { this.props.getVPNUsageData(this.props.getAccount)
-                .then(res => {console.log('usage', res)})
-                .catch(err => { console.log('err', err) });
+        if (this.state.session) {
+            UsageInterval = setInterval(() => {
+                if (this.state.session && type === 'SOCKS5') {
+                    calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false)
+                } else {
+                    this.props.getVPNUsageData(this.props.getAccount);
+                }
             }, 3000);
-            this.setState({ timer: false })
         }
-        // console.log('down props', this.props.data );
+
+        if (!this.props.vpnStatus) {
+            if (UsageInterval) {
+                clearInterval(UsageInterval);
+                UsageInterval = null;
+            }
+        }
+
+        // if (!UsageInterval && this.props.status) {
+        //     UsageInterval = setInterval(function () {
+        //         session = localStorage.getItem('SESSION_NAME');
+        //         type = localStorage.getItem('VPN_TYPE');
+        //         if (this.state.isSock)
+        //             that.calculateUsage(false);
+        //         else
+        //
+        //     }, 5000);
+        // }
         return (
             <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }} >
                 {this.state.isPending ?
@@ -309,9 +347,10 @@ class SimpleDialogDemo extends React.Component {
                         open={this.state.isPending === false && this.state.open}
                         onClose={this.handleClose}
                         data={this.props.data}
-                        onClick={this.handleListItemClick}
+                        onClicked={this.handleListItemClick}
                         isLoading={this.state.isLoading}
                         success={this.props.vpnStatus}
+                        execIT={this.execIT}
                     />
                 }
             </div>
@@ -321,11 +360,11 @@ class SimpleDialogDemo extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectSocks }, dispatch)
+    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectVPN, connectSocks, payVPNTM }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus }) {
-    return { connecVPNReducer, getAccount, socksReducer, vpnType, vpnStatus: setVpnStatus }
+function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus, setTendermint }) {
+    return { connecVPNReducer, getAccount, socksReducer, vpnType, vpnStatus: setVpnStatus, isTm: setTendermint }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimpleDialogDemo);

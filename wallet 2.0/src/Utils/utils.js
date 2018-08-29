@@ -6,10 +6,15 @@ const electron = window.require('electron');
 const { exec, execSync } = window.require('child_process');
 const remote = electron.remote;
 const SENT_DIR = getUserHome() + '/.sentinel';
+const TM_DIR = getUserHome() + '/.sentinel/.tendermint';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
-
+export const CONFIG_FILE = `${SENT_DIR}/config`;
 
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
+if (!fs.existsSync(TM_DIR)) {
+    fs.mkdirSync(TM_DIR);
+    execSync('chmod 777 ' + TM_DIR);
+}
 if (fs.existsSync(OVPN_FILE)) fs.unlinkSync(OVPN_FILE);
 
 export function getUserHome() {
@@ -20,20 +25,20 @@ export function checkDependencies(packageNames, cb) {
 
     // execSync("export PATH=$PATH:/usr/local/opt/openvpn/sbin");
     packageNames.map((packageName) => {
-            exec("dpkg-query -W -f='${Status}' " + packageName,
-                function (err, stdout, stderr) {
-                    if (err || stderr) {
-                        cb(null, packageName);
-                        execSync('sudo apt-get install ' + packageName + ' -yy');
-                        throw err || stderr ;
-                        // sendError(err || stderr);
-                    }
-                    else {
-                        let brewPath = stdout.trim();
-                        if (brewPath.length > 0) cb(null, true);
-                        else cb(null, false);
-                    }
-                })
+        exec("dpkg-query -W -f='${Status}' " + packageName,
+            function (err, stdout, stderr) {
+                if (err || stderr) {
+                    cb(null, packageName);
+                    execSync('sudo apt-get install ' + packageName + ' -yy');
+                    throw err || stderr;
+                    // sendError(err || stderr);
+                }
+                else {
+                    let brewPath = stdout.trim();
+                    if (brewPath.length > 0) cb(null, true);
+                    else cb(null, false);
+                }
+            })
     });
 }
 
@@ -53,15 +58,17 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
         cb(null);
     } else {
         axios.post(uri, data).then(response => {
-            console.log(response, 'session data')
             if (response.data.success) {
                 if (response.data['node'] === null) {
-                    cb({message: 'Something wrong. Please Try Later'})
+                    cb({ message: 'Something wrong. Please Try Later' })
                 }
                 else {
                     if (remote.process.platform === 'win32' || remote.process.platform === 'darwin') {
-                        delete (response.data['node']['vpn']['ovpn'][17]);
-                        delete (response.data['node']['vpn']['ovpn'][18]);
+                        for(var i=15;i<=20;i++){
+                            if(response.data['node']['vpn']['ovpn'][i].split(' ')[0]==='up' || response.data['node']['vpn']['ovpn'][i].split(' ')[0]==='down'){
+                              delete (response.data['node']['vpn']['ovpn'][i]);
+                            }
+                          }
                     }
                     let ovpn = response.data['node']['vpn']['ovpn'].join('');
                     localStorage.setItem('SESSION_NAME', response.data['session_name']);
@@ -75,12 +82,11 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
                     });
                 }
             } else {
-                cb({message: response.data.message || 'Error occurred while getting OVPN file, may be empty VPN resources.'})
+                cb({ message: response.data.message || 'Error occurred while getting OVPN file, may be empty VPN resources.' })
             }
         })
     }
 }
-
 
 export function getVPNUsageData(account_addr) {
 
@@ -101,6 +107,7 @@ export function getVPNUsageData(account_addr) {
 export function getVPNPIDs(cb) {
     try {
         exec('pidof openvpn', function (err, stdout, stderr) {
+            console.log('stderr in getVPNPid', stderr);
             if (err) cb(err, null);
             else if (stdout) {
                 let pids = stdout.trim();

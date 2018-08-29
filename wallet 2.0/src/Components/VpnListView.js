@@ -14,25 +14,41 @@ class VpnListView extends Component {
 
     componentWillReceiveProps(nextProps) {
 
-            let list = nextProps.availableVpns;
-            list = list.filter(function (item) {
-                return (item.location.city.toLowerCase().search(
-                    nextProps.query.toLowerCase()
-                ) !== -1) || (item.location.country.toLowerCase().search(
-                    nextProps.query.toLowerCase()
-                ) !== -1);
-            });
-            this.setState({ updatedList: list });
+        let list = nextProps.availableVpns;
+        if (nextProps.isTM) {
+            list.map((node, i) => {
+                node.net_speed = node.netSpeed;
+                node.account_addr = node.accountAddress;
+                node.price_per_GB = node.pricePerGB;
+                node.enc_method = node.encMethod;
+                node.ip = node.IP;
+            })
+        }
+        list = list.filter(function (item) {
+            return (item.location.city.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1) || (item.location.country.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1);
+        });
+        this.setState({ updatedList: list });
     }
 
     componentDidMount() {
-        this.setState({ updatedList: this.props.availableVpns });
-
+        let list = this.props.availableVpns;
+        if (this.props.isTM) {
+            list.map((node) => {
+                node.net_speed = node.netSpeed;
+                node.account_addr = node.accountAddress;
+                node.price_per_GB = node.pricePerGB;
+                node.enc_method = node.encMethod;
+                node.ip = node.IP;
+            })
+        }
+        this.setState({ updatedList: list });
     }
 
-
     render() {
-        console.log('dvpn query', this.props.query);
         let language = this.props.lang;
         let vpnsList = this.state.updatedList;
 
@@ -40,7 +56,7 @@ class VpnListView extends Component {
             <div>
                 {
                     vpnsList.length !== 0 ?
-                        <EnhancedTable data={this.props.availableVpns} />
+                        <EnhancedTable data={vpnsList} />
                         :
                         <div>No dVPN nodes found</div>
                 }
@@ -52,7 +68,8 @@ class VpnListView extends Component {
 function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
-        availableVpns: state.getVpnList
+        availableVpns: state.getVpnList,
+        isTM: state.setTendermint
     }
 }
 

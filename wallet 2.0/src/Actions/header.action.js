@@ -52,3 +52,10 @@ export async function getSentBalance(address, isTest) {
         }
     }
 }
+
+export function setTendermint(value) {
+    return {
+        type: types.TENDERMINT,
+        payload: value
+    }
+}

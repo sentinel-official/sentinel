@@ -1,5 +1,5 @@
 import * as types from './../Constants/action.names';
-import { B_URL } from './../Constants/constants';
+import { B_URL, TMain_URL } from './../Constants/constants';
 import axios from 'axios';
 
 export function setListViewType(component) {
@@ -9,12 +9,12 @@ export function setListViewType(component) {
     }
 }
 
-export async function getVpnList(vpnType) {
+export async function getVpnList(vpnType, isTM) {
     let listUrl;
     if (vpnType === 'socks5')
-        listUrl = B_URL + '/client/vpn/socks-list'
+        listUrl = isTM ? TMain_URL + '/nodes?type=Socks5&status=up' : B_URL + '/client/vpn/socks-list'
     else
-        listUrl = B_URL + '/client/vpn/list'
+        listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : B_URL + '/client/vpn/list'
     let response = await axios.get(listUrl, {
         headers: {
             'Accept': 'application/json',
@@ -24,7 +24,7 @@ export async function getVpnList(vpnType) {
     if (response.data.success) {
         return {
             type: types.GET_VPN_LIST_SUCCESS,
-            payload: response.data.list
+            payload: isTM ? response.data.nodes : response.data.list
         }
     } else {
         return {
@@ -46,5 +46,12 @@ export function setVpnStatus(value) {
     return {
         type: types.SET_VPN_STATUS,
         payload: value
+    }
+}
+
+export function payVPNTM(data) {
+    return {
+        type: types.TM_PAY_VPN,
+        payload: data
     }
 }

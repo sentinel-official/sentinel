@@ -2,7 +2,6 @@ import {SOCKS5, SOCKS5_CREDS} from "../Constants/action.names";
 
 export function socksReducer(state = null, action) {
     let response;
-    console.log('reducer resp: ', action.payload)
     if (action.payload) {
         response = action.payload
     }

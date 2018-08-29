@@ -31,3 +31,12 @@ export function getSentBalance(state = 'Loading...', action) {
             return state
     }
 }
+
+export function setTendermint(state = false, action) {
+    switch (action.type) {
+        case types.TENDERMINT:
+            return action.payload;
+        default:
+            return state
+    }
+}

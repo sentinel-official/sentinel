@@ -37,3 +37,12 @@ export function getVpnList(state = [], action) {
             return state
     }
 }
+
+export function payVPNTM(state = { 'isPayment': false }, action) {
+    switch (action.type) {
+        case types.TM_PAY_VPN:
+            return action.payload;
+        default:
+            return state
+    }
+}

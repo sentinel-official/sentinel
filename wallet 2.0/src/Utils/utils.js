@@ -121,3 +121,36 @@ export function getVPNPIDs(cb) {
         cb(Err)
     }
 }
+
+// function checkVPNConnection(res, isConnected, cb) {
+//     getVPNPIDs(function (err, pids) {
+//         if (err) { }
+//         else {
+//             let CONNECTED = isConnected;
+//             let data = {};
+//             data.isConnected = true;
+//             data.ipConnected = localStorage.getItem('IPGENERATED');
+//             data.location = localStorage.getItem('LOCATION');
+//             data.connectedAddr = localStorage.getItem('CONNECTED_VPN');
+//             data.speed = localStorage.getItem('SPEED');
+//             data.vpn_type = 'openvpn';
+//             data.session_name = localStorage.getItem('SESSION_NAME');
+//             let keystore = JSON.stringify(data);
+//             fs.writeFile(CONFIG_FILE, keystore, function (err) {
+//             });
+//             cb(null, false, false, false, res.message);
+//             count = 2;
+//         }
+//
+//         getOsascriptIDs(function (ERr, pid) {
+//             if (ERr) count++;
+//         })
+//
+//         if (count < 2) {
+//             setTimeout(function () { checkVPNConnection(); }, 5000);
+//         }
+//         if (count == 2 && CONNECTED === false) {
+//             cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
+//         }
+//     });
+// }

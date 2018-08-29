@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import classNames from 'classnames';
 import { DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import {
-    withStyles, Button, Avatar, List, ListItem, ListItemAvatar, ListItemText,
-    DialogTitle, Dialog, CircularProgress
+    withStyles, Button, List, ListItem, ListItemText,
+    DialogTitle, Dialog,
 } from '@material-ui/core';
 import green from '@material-ui/core/colors/green';
 import CheckIcon from '@material-ui/icons/Check';
@@ -22,8 +21,6 @@ import { calculateUsage } from '../Actions/calculateUsage';
 
 const electron = window.require('electron');
 const remote = electron.remote;
-
-const emails = ['username@gmail.com', 'user02@gmail.com'];
 let UsageInterval = null;
 let type = '';
 let session = null;
@@ -97,11 +94,7 @@ class SimpleDialog extends React.Component {
     };
 
     render() {
-        const { classes, onClose, selectedValue, ...other } = this.props;
-        const buttonClassname = classNames({
-            [classes.buttonSuccess]: !this.props.isLoading,
-        });
-
+        const { classes, ...other } = this.props;
 
         return (
             <Dialog onClose={this.handleClose}
@@ -301,7 +294,7 @@ class SimpleDialogDemo extends React.Component {
 
     execIT = () => {
         calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false )
-    }
+    };
 
     render() {
         if (this.state.session) {

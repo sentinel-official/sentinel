@@ -1,9 +1,6 @@
 import React from 'react';
-import { Snackbar, Menu, MenuItem, RaisedButton, TextField, FlatButton, Dialog } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { withStyles } from '@material-ui/core/styles';
-import TransIcon from 'material-ui/svg-icons/action/swap-horiz';
-import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import { sendComponentStyles } from '../Assets/sendcomponent.style';
 import SimpleMenu from './SharedComponents/SimpleMenu';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -11,7 +8,6 @@ import CustomTooltips from './SharedComponents/customTooltip';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import lang from '../Constants/language';
-// import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { payVPNUsage, transferAmount } from '../Actions/send.action';
 import {setVPNDuePayment} from '../Actions/vpnhistory.actions';
 import { getGasCost, ethTransaction, tokenTransaction } from '../Utils/Ethereum';
@@ -19,7 +15,6 @@ import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/lab/Slider'
-import {initPaymentDetails} from "../Reducers/initPayment.reducer";
 
 const muiTheme = createMuiTheme({
   slider: {
@@ -153,9 +148,9 @@ class SendComponent extends React.Component {
   }
   handleOnclick = () => {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
-    let { payVpn, payVPNUsage } = this.props
+    let { payVpn } = this.props;
 
-    console.log('onClik', payVpn)
+    console.log('onClik', payVpn);
 
     this.setState({ label: 'SENDING', isDisabled: true })
     let self = this;

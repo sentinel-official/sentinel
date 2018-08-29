@@ -73,7 +73,6 @@ export async function getSentTransactionHistory(account_addr, isTest, cb) {
   }
 }
 export const compareTransaction = (sessionData, txhash, account_addr, isTest, cb) => {
-  var txId = txhash;
   getSentTransactionHistory('0x' + zfill(account_addr.substring(2), 64), isTest, (err, history) => {
     if (err) {
       cb(null, 'Problem faced in reporting. Try again later')

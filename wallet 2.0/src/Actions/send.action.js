@@ -4,26 +4,26 @@ import * as sendComponentTypes from '../Constants/sendcomponent.types';
 import { B_URL } from '../Constants/constants';
 
 export async function payVPNUsage(data) {
-  try {
+  console.log('post data ', data)
     let response = await axios.post(B_URL + '/client/vpn/pay', data, {
       'Accept': 'application/json',
       'Content-type': 'application/json',
       'Access-Control-Allow-Origin': '*'
     });
     console.log('vpn usage', response)
-    if (response.status === 200) {
-      if (response.data.success === true) {
+    if (response.data.status === 200) {
+      if (response.data.success) {
         return {
           type: sendComponentTypes.TX_SUCCESS,
           payload: response.data['tx_hashes'][0]
         }
       } else {
-        sendError(response.errors);
-        if (response.errors.length > 0) {
-          if (response.errors[0].error) {
+        sendError(response.data.errors);
+        if (response.data.errors.length > 0) {
+          if (response.data.errors[0].error) {
             return {
               type: sendComponentTypes.TX_FAILURE,
-              payload: JSON.parse(response.errors[0].error.split("'").join('"')).message || 'Something went wrong in transaction',
+              payload: JSON.parse(response.data.errors[0].error.split("'").join('"')).message || 'Something went wrong in transaction',
             }
           } else {
             return {
@@ -45,9 +45,6 @@ export async function payVPNUsage(data) {
         payload: response.message || 'Internal Server Error'
       }
     }
-  } catch (Err) {
-    sendError(Err);
-  }
 }
 
 export async function transferAmount(net, data) {

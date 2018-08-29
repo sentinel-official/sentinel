@@ -20,6 +20,7 @@ export const setsnackMessage = (message) => {
     }
   }
 }
+
 export async function getVpnHistory(account_addr) {
   try {
     let data = JSON.stringify({

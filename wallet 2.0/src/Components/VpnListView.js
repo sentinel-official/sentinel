@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { List, ListItem, ListItemText, Divider } from '@material-ui/core';
-import lang from '../Constants/language';
-import Flag from 'react-world-flags';
-import { Grid, Row, Col } from 'react-flexbox-grid';
-import { listStyles } from '../Assets/vpnListView.styles';
 import EnhancedTable from "./customTable";
 let Country = window.require('countrynames');
 
@@ -30,6 +25,10 @@ class VpnListView extends Component {
             this.setState({ updatedList: list });
     }
 
+    componentDidMount() {
+        this.setState({ updatedList: this.props.availableVpns });
+
+    }
 
 
     render() {
@@ -41,9 +40,9 @@ class VpnListView extends Component {
             <div>
                 {
                     vpnsList.length !== 0 ?
-                        <EnhancedTable/>
+                        <EnhancedTable data={this.props.availableVpns} />
                         :
-                        <div/>
+                        <div>No dVPN nodes found</div>
                 }
             </div>
         )

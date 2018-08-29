@@ -82,6 +82,9 @@
         <activity
             android:name=".ui.activity.ReferralActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.VpnUsageActivity"
+            android:screenOrientation="portrait" />
 
         <!-- Declaring components in ics-openVPN -->
         <service

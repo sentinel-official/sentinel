@@ -179,6 +179,13 @@
     <string name="faq">FAQ</string>
     <string name="got_it">Понял</string>
     <string name="retry">Повторить</string>
+    <string name="vpn_usage">Использование VPN</string>
+    <string name="total_duration">Общая длительность сеансов</string>
+    <string name="total_received_data">Общее количество полученных данных</string>
+    <string name="vpn_usage_empty_list_message">В настоящее время у вас нет использования VPN</string>
+    <string name="session_id">ID Сеанса</string>
+    <string name="received_data">Получено данных</string>
+    <string name="duration">Длительность</string>
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
     <string name="referral_id">Реферальный код</string>

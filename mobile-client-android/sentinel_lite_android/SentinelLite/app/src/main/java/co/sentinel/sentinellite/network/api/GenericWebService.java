@@ -27,4 +27,8 @@ public interface GenericWebService {
 
     @POST
     Call<GenericResponse> disconnectVpn(@Url String url, @Body GenericRequestBody iBody);
+
+    @POST(EndPoint.GET_VPN_USAGE_FOR_USER)
+    Call<VpnUsage> getVpnUsageForUser(@Body GenericRequestBody iBody);
+
 }

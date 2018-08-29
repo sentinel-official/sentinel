@@ -76,6 +76,10 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="CustomTextAppearance.Text12.WhiteNormal">
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="CustomTextAppearance.Text14.GrayNormal">
         <item name="android:textColor">@color/colorTextGray</item>
         <item name="android:textStyle">normal</item>

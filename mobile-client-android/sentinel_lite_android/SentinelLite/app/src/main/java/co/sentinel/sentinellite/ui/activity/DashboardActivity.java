@@ -174,6 +174,9 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
      */
     private void handleNavigationItemClick(int itemItemId) {
         switch (itemItemId) {
+            case R.id.nav_vpn_usage:
+                startActivityForResult(new Intent(this, VpnUsageActivity.class), AppConstants.REQ_VPN_USAGE);
+                break;
             case R.id.nav_language:
                 startActivityForResult(new Intent(this,
                         GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_LANGUAGE), AppConstants.REQ_LANGUAGE);

@@ -16,6 +16,7 @@ import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.SplashViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnConnectedViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnListViewModelFactory;
+import co.sentinel.sentinellite.viewmodel.VpnUsageViewModelFactory;
 
 /**
  * Provides static methods to inject the various classes needed for the application.
@@ -39,6 +40,11 @@ public class InjectorModule {
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
         return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aGenericWebService, aAppExecutors, iDeviceId);
+    }
+
+    public static VpnUsageViewModelFactory provideVpnHistoryViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aRepository = provideVpnRepository(iContext, iDeviceId);
+        return new VpnUsageViewModelFactory(aRepository);
     }
 
     /* Static private getter methods for ViewModelFactory classes */

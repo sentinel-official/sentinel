@@ -9,6 +9,7 @@ public class EndPoint {
      */
     public static final String GET_UNOCCUPIED_VPN_SERVERS = "client/vpn/list";
     public static final String GET_VPN_SERVER_CREDENTIALS = "client/vpn";
+    public static final String GET_VPN_USAGE_FOR_USER = "client/vpn/usage";
     /*
      * Bonuses flow
      */

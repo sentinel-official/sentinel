@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@color/colorCardDark"
+        app:cardCornerRadius="@dimen/margin_4"
+        app:cardElevation="@dimen/margin_4"
+        app:cardPreventCornerOverlap="false"
+        app:layout_constraintBottom_toTopOf="@+id/sr_reload"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_total_duration"
+                style="@style/CustomTextAppearance.Text24"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/margin_24"
+                android:gravity="center"
+                android:paddingLeft="@dimen/margin_8"
+                android:paddingRight="@dimen/margin_8"
+                app:layout_constraintBottom_toTopOf="@+id/total_duration"
+                app:layout_constraintEnd_toStartOf="@+id/tv_total_received_data"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/total_duration"
+                style="@style/CustomTextAppearance.Text12.Gray"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="@string/total_duration"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tv_total_duration"
+                app:layout_constraintStart_toStartOf="@+id/tv_total_duration"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_duration" />
+
+            <TextView
+                android:id="@+id/tv_total_received_data"
+                style="@style/CustomTextAppearance.Text24"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="4dp"
+                android:gravity="center"
+                android:paddingLeft="@dimen/margin_8"
+                android:paddingRight="@dimen/margin_8"
+                app:layout_constraintBottom_toTopOf="@+id/total_duration"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_total_duration"
+                app:layout_constraintTop_toTopOf="@+id/tv_total_duration" />
+
+            <TextView
+                android:id="@+id/total_received_data"
+                style="@style/CustomTextAppearance.Text12.Gray"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="@string/total_received_data"
+                app:layout_constraintBottom_toBottomOf="@+id/total_duration"
+                app:layout_constraintEnd_toEndOf="@+id/tv_total_received_data"
+                app:layout_constraintStart_toStartOf="@+id/tv_total_received_data"
+                app:layout_constraintTop_toTopOf="@+id/total_duration" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sr_reload"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <co.sentinel.sentinellite.ui.custom.EmptyRecyclerView
+                android:id="@+id/rv_vpn_history"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_empty_message"
+                style="@style/CustomTextAppearance.Text14.White70Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_32"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/margin_16"
+                android:text="@string/vpn_usage_empty_list_message" />
+        </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</android.support.constraint.ConstraintLayout>

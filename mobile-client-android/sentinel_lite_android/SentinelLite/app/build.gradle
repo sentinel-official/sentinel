@@ -38,6 +38,10 @@ android {
             jni.srcDirs = [] //disable automatic ndk-build }
         }
     }
+    lintOptions {
+        checkReleaseBuilds false // Add this
+        abortOnError false
+    }
 }
 
 dependencies {

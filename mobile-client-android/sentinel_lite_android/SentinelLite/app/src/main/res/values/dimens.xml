@@ -9,6 +9,7 @@
     <dimen name="margin_16">16dp</dimen>
     <dimen name="margin_18">18dp</dimen>
     <dimen name="margin_24">24dp</dimen>
+    <dimen name="margin_32">32dp</dimen>
     <dimen name="margin_48">48dp</dimen>
     <dimen name="margin_64">64dp</dimen>
     <dimen name="margin_128">128dp</dimen>

@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="none">
         <item
+            android:id="@+id/nav_vpn_usage"
+            android:icon="@drawable/menu_vpn_history"
+            android:title="@string/vpn_usage" />
+
+        <item
             android:id="@+id/nav_language"
             android:icon="@drawable/menu_language"
             android:title="@string/language" />

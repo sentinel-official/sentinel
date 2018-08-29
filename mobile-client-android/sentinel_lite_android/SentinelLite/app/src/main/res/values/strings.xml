@@ -179,6 +179,13 @@
     <string name="faq">FAQ</string>
     <string name="got_it">Got it</string>
     <string name="retry">Retry</string>
+    <string name="vpn_usage">VPN Usage</string>
+    <string name="total_duration">Total Duration</string>
+    <string name="total_received_data">Total Received Data</string>
+    <string name="vpn_usage_empty_list_message">You currently do not have any VPN usage</string>
+    <string name="session_id">Session ID</string>
+    <string name="received_data">Received Data</string>
+    <string name="duration">Duration</string>
     <string name="language">Language</string>
     <string name="select_language">Select Language</string>
     <string name="referral_id">Referral ID</string>

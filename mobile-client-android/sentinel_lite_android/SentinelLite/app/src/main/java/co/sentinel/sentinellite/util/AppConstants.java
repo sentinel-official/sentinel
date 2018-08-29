@@ -23,6 +23,7 @@ public class AppConstants {
     // Request codes
     public static final int REQ_CODE_NULL = -1;
     public static final int REQ_CODE_PERMISSION = 100;
+    public static final int REQ_VPN_USAGE = 101;
     public static final int REQ_LANGUAGE = 200;
     public static final int REQ_VPN_CONNECT = 201;
     public static final int REQ_HELPER_SCREENS = 202;

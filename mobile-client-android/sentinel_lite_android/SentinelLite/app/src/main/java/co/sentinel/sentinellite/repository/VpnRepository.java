@@ -15,6 +15,7 @@ import co.sentinel.sentinellite.network.model.Vpn;
 import co.sentinel.sentinellite.network.model.VpnConfig;
 import co.sentinel.sentinellite.network.model.VpnCredentials;
 import co.sentinel.sentinellite.network.model.VpnListEntity;
+import co.sentinel.sentinellite.network.model.VpnUsage;
 import co.sentinel.sentinellite.network.model.VpnUsageEntity;
 import co.sentinel.sentinellite.util.ApiErrorUtils;
 import co.sentinel.sentinellite.util.AppConstants;
@@ -39,8 +40,8 @@ public class VpnRepository {
     private final AppExecutors mAppExecutors;
     private final String mDeviceId;
     private final MutableLiveData<List<VpnListEntity>> mVpnListMutableLiveData;
-    private final MutableLiveData<VpnUsageEntity> mVpnUsageMutableLiveData;
     private final SingleLiveEvent<String> mVpnListErrorLiveEvent;
+    private final SingleLiveEvent<Resource<VpnUsage>> mVpnUsageLiveEvent;
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
     private final SingleLiveEvent<Resource<String>> mDisconnectLiveEvent;
@@ -52,8 +53,8 @@ public class VpnRepository {
         mAppExecutors = iAppExecutors;
         mDeviceId = iDeviceId;
         mVpnListMutableLiveData = new MutableLiveData<>();
-        mVpnUsageMutableLiveData = new MutableLiveData<>();
         mVpnListErrorLiveEvent = new SingleLiveEvent<>();
+        mVpnUsageLiveEvent = new SingleLiveEvent<>();
         mVpnServerCredentialsLiveEvent = new SingleLiveEvent<>();
         mVpnConfigLiveEvent = new SingleLiveEvent<>();
         mDisconnectLiveEvent = new SingleLiveEvent<>();
@@ -97,6 +98,10 @@ public class VpnRepository {
         return mVpnListErrorLiveEvent;
     }
 
+    public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent() {
+        return mVpnUsageLiveEvent;
+    }
+
     public SingleLiveEvent<Resource<VpnCredentials>> getVpnServerCredentialsLiveEvent() {
         return mVpnServerCredentialsLiveEvent;
     }
@@ -111,6 +116,13 @@ public class VpnRepository {
                 .vpnAddress(iVpnAddress)
                 .build();
         getVpnServerCredentials(aBody);
+    }
+
+    public void getVpnUsageForUser() {
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .deviceIdMain(mDeviceId)
+                .build();
+        getVpnUsageForUser(aBody);
     }
 
     public void getVpnConfig(String iVpnAddress, String iToken, String iIp, int iPort) {
@@ -188,6 +200,41 @@ public class VpnRepository {
                     mVpnServerCredentialsLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
                     mVpnServerCredentialsLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+            }
+        });
+    }
+
+    private void getVpnUsageForUser(GenericRequestBody iRequestBody) {
+        mVpnUsageLiveEvent.postValue(Resource.loading(null));
+        mGenericWebService.getVpnUsageForUser(iRequestBody).enqueue(new Callback<VpnUsage>() {
+            @Override
+            public void onResponse(Call<VpnUsage> call, Response<VpnUsage> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<VpnUsage> call, Throwable t) {
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
+            }
+
+            private void reportSuccessResponse(Response<VpnUsage> response) {
+                if (response != null && response.body() != null) {
+                    if (response.body().success) {
+                        mVpnUsageLiveEvent.postValue(Resource.success(response.body()));
+                    } else {
+                        reportErrorResponse(null);
+                    }
+                } else {
+                    reportErrorResponse(null);
+                }
+            }
+
+            private void reportErrorResponse(String iThrowableLocalMessage) {
+                if (iThrowableLocalMessage != null) {
+                    mVpnUsageLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                } else {
+                    mVpnUsageLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+                }
             }
         });
     }

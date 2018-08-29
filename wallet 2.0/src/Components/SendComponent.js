@@ -13,6 +13,7 @@ import { bindActionCreators } from 'redux';
 import lang from '../Constants/language';
 // import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { payVPNUsage, transferAmount } from '../Actions/send.action';
+import {setVPNDuePayment} from '../Actions/vpnhistory.actions';
 import { getGasCost, ethTransaction, tokenTransaction } from '../Utils/Ethereum';
 import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import Input from '@material-ui/core/Input';
@@ -149,7 +150,6 @@ class SendComponent extends React.Component {
       that.setState({ gas: gasLimit })
     })
   }
-
   handleOnclick = () => {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
     let { payVpn, payVPNUsage } = this.props
@@ -203,7 +203,8 @@ class SendComponent extends React.Component {
                 // } else {
                 console.log('in else')
                 transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) })
-                self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
+                self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' ,token:'ETH'});
+                self.props.setVPNDuePayment(null);
               }
               //   }
             });
@@ -222,14 +223,15 @@ class SendComponent extends React.Component {
 
 
   componentWillMount() {
-    // let { payVpn } = this.props;
-    // if (payVpn.isVPNPayment) {
-    //   this.setState({
-    //     sendToAddress: payVpn.data.to_addr,
-    //     token: payVpn.data.unit,
-    //     amount: payVpn.data.amount
-    //   });
-    // }
+    let { payVpn } = this.props;
+    if (payVpn.isVPNPayment) {
+      this.setState({
+        sendToAddress: payVpn.data.account_addr,
+        amount: payVpn.data.amount,
+        token:'SENT'
+      });
+      this.getGasLimit(payVpn.data.amount, payVpn.data.account_addr, 'SENT')
+    }
   }
 
   render() {
@@ -289,7 +291,7 @@ class SendComponent extends React.Component {
                     />
                   </div>
                   <div style={{ width: '191px' }}>
-                    <SimpleMenu token={this.setToken} isSend={true}/>
+                    <SimpleMenu token={this.setToken} isSend={true} isVPN={this.props.payVpn.isVPNPayment} />
                   </div>
                 </div>
               </Col>
@@ -404,14 +406,15 @@ function mapStateToProps(state) {
     language: state.setLanguage,
     local_address: state.getAccount,
     net: state.setTestNet,
-    // payVpn: state.getVPNDuePaymentDetail
+    payVpn: state.getVPNDuePaymentDetails
   }
 }
 
 function mapDispatchToActions(dispatch) {
   return bindActionCreators({
     transferAmount,
-    payVPNUsage
+    payVPNUsage,
+    setVPNDuePayment
   }, dispatch)
 }
 

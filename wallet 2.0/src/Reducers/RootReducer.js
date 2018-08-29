@@ -42,7 +42,6 @@ const rootReducer = combineReducers({
     connectVPNReducer,
     initPaymentDetails,
     VPNUsage,
-    setVpnStatus,
     getKeys,
     setTMComponent,
     createTMAccount,

@@ -190,15 +190,14 @@ class AlertDialog extends React.Component {
         this.setState({ open: false, isLoading: false, op: false });
     };
 
-    makeInitPayment = async () => {
+    makeInitPayment = () => {
 
         let data = {
             account_addr: this.props.paymentAddr,
             amount: 10000000000,
             id: -1
         };
-
-        await this.props.initPaymentAction(data);
+        this.props.initPaymentAction(data);
         this.props.setCurrentTab('send')
     };
 
@@ -271,11 +270,9 @@ class SimpleDialogDemo extends React.Component {
                 await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
                     if (res.data && res.data.account_addr) {
                         this.setState({
-                            pendingInitPayment: res.data.message, open: false,
+                            pendingInitPayment: res.data.message, open: false, isPending: true,
                             paymentAddr: res.data.account_addr, isLoading: false
                         })
-                        setTimeout(() => { this.setState({ isPending: true }) }, 1500)
-
                     } else if (res.success) {
                         this.setState({ isLoading: false });
                         this.props.setVpnStatus(true)
@@ -352,7 +349,7 @@ class SimpleDialogDemo extends React.Component {
                         op={this.state.isPending}
                     // open={this.state.isPending}
                     message={this.state.pendingInitPayment}
-                    paymentAddr={this.state.paymentAddr}
+                     paymentAddr={this.state.paymentAddr}
                     initPaymentAction={this.props.initPaymentAction}
                     setCurrentTab={this.props.setCurrentTab}
                     />

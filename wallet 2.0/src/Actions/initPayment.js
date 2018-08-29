@@ -6,5 +6,4 @@ export const initPaymentAction = (data) => {
         payload: data,
         type: INIT_PAYMENT
     }
-
 };

@@ -23,7 +23,6 @@ const styles = theme => ({
 
 class CustomButton extends Component {
     render() {
-        console.log('all props: ', this.props)
 
         const { classes } = this.props;
         return (

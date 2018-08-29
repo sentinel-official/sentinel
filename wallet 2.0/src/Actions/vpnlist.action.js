@@ -40,3 +40,11 @@ export function setVpnType(vpnType) {
         payload: vpnType
     }
 }
+
+
+export function setVpnStatus(value) {
+    return {
+        type: types.SET_VPN_STATUS,
+        payload: value
+    }
+}

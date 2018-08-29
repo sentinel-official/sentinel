@@ -82,7 +82,7 @@ class Receive extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            <div style={receiveStyles.m_l_290}>
+                            <div style={receiveStyles.m_l_265}>
                                 <label style={receiveStyles.c_f_w}>
                                 {this.state.local_address} <CopyToClipboard text={this.state.local_address}
                                     onCopy={() => this.setState({

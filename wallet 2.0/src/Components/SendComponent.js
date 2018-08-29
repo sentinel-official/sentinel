@@ -130,8 +130,8 @@ class SendComponent extends React.Component {
 
   amountChange = (event) => {
     let amount = event.target.value;
-    if (this.state.unit === 'ETH') amount = amount * Math.pow(10, 18);
-    else amount = amount * Math.pow(10, 8);
+    if (this.state.unit === 'ETH') amount = amount * 1e18;
+    else amount = amount * 1e8;
     this.setState({ amount: amount })
     let trueAddress = this.state.sendToAddress.match(/^0x[a-fA-F0-9]{40}$/)
     if (trueAddress !== null) {
@@ -167,7 +167,7 @@ class SendComponent extends React.Component {
           self.setState({ label: 'SEND', isDisabled: true })
         } else {
           if (self.state.token === 'ETH') {
-            ethTransaction(self.props.local_address, sendToAddress, amount, gwei, gas, privateKey, function (err, result) {
+            ethTransaction(self.props.local_address, sendToAddress, amount, gwei * 1e9, gas, privateKey, function (err, result) {
               if (err) {
                 console.log('Error', err)
                 self.setState({ label: 'SEND', isDisabled: true });
@@ -180,7 +180,7 @@ class SendComponent extends React.Component {
             });
           } else {
             console.log('in else parent')
-            tokenTransaction(self.props.local_address, sendToAddress, amount, gwei, gas, privateKey, function (err, result) {
+            tokenTransaction(self.props.local_address, sendToAddress, amount, gwei * 1e9, gas, privateKey, function (err, result) {
               console.log('in callback', err, result)
               if (err) {
                 console.log('Error', err)
@@ -289,7 +289,7 @@ class SendComponent extends React.Component {
                     />
                   </div>
                   <div style={{ width: '191px' }}>
-                    <SimpleMenu token={this.setToken} />
+                    <SimpleMenu token={this.setToken} isSend={true}/>
                   </div>
                 </div>
               </Col>
@@ -366,6 +366,7 @@ class SendComponent extends React.Component {
                 <div style={sendComponentStyles.gasTextFieldDiv}>
                   <Input
                     type='password'
+                    placeholder='Enter Keystore Password'
                     autoFocus={false}
                     disableUnderline={true}
                     fullWidth={true}

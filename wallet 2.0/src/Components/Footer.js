@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core';
 import DisconnectIcon from '@material-ui/icons/HighlightOff';
-import { getVPNUsageData } from '../Utils/utils';
 import { setVpnStatus } from '../Actions/vpnlist.action';
 import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { footerStyles } from '../Assets/footer.styles';

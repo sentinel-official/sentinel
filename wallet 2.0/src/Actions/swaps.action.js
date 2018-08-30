@@ -2,10 +2,10 @@
 import * as types from './../Constants/action.names';
 import { sendError } from './authentication.action';
 import { B_URL } from './../Constants/constants';
-import { GET_ETH_BALANCE, GET_AVAIL_BALANCE, GET_SENT_BALANCE } from './../Constants/action.names';
+import { GET_AVAIL_BALANCE } from './../Constants/action.names';
 import axios from 'axios';
 const config = require('./../Constants/config');
-var TOKEN_BALANCE_URL;
+let TOKEN_BALANCE_URL;
 
 export function getTokenBalance(contract, addr, decimals, cb) {
   try {

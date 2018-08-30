@@ -61,7 +61,7 @@ class EnhancedTableHead extends React.Component {
     };
 
     render() {
-        const { order, orderBy, classes, rowCount } = this.props;
+        const { order, orderBy } = this.props;
 
         return (
             <TableHead>
@@ -72,7 +72,6 @@ class EnhancedTableHead extends React.Component {
                                 key={column.id}
                                 numeric={column.numeric}
                                 padding={"default"}
-                                padding={column.disablePadding ? 'none' : 'default'}
                                 sortDirection={orderBy === column.id ? order : false}
                             >
                                 <TableSortLabel
@@ -247,7 +246,7 @@ class EnhancedTable extends React.Component {
         let data = this.props.data.map(obj => {
             return createData(obj);
         });
-        const { order, orderBy, selected, rowsPerPage, page } = this.state;
+        const { order, orderBy, } = this.state;
 
         return (
             <Paper className={classes.root}>

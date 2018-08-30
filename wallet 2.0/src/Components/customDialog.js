@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import classNames from 'classnames';
 import { DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import {
-    withStyles, Button, Avatar, List, ListItem, ListItemAvatar, ListItemText,
-    DialogTitle, Dialog, CircularProgress
+    withStyles, Button, List, ListItem, ListItemText,
+    DialogTitle, Dialog,
 } from '@material-ui/core';
 import green from '@material-ui/core/colors/green';
 import CheckIcon from '@material-ui/icons/Check';
@@ -22,8 +21,6 @@ import { calculateUsage } from '../Actions/calculateUsage';
 
 const electron = window.require('electron');
 const remote = electron.remote;
-
-const emails = ['username@gmail.com', 'user02@gmail.com'];
 let UsageInterval = null;
 let type = '';
 let session = null;
@@ -97,11 +94,7 @@ class SimpleDialog extends React.Component {
     };
 
     render() {
-        const { classes, onClose, selectedValue, ...other } = this.props;
-        const buttonClassname = classNames({
-            [classes.buttonSuccess]: !this.props.isLoading,
-        });
-
+        const { classes, ...other } = this.props;
 
         return (
             <Dialog onClose={this.handleClose}
@@ -191,7 +184,6 @@ class AlertDialog extends React.Component {
     };
 
     makeInitPayment = () => {
-
         let data = {
             account_addr: this.props.paymentAddr,
             amount: 10000000000,
@@ -207,7 +199,7 @@ class AlertDialog extends React.Component {
                 // open={this.state.open}
                 // keepMounted
                 open={this.props.op}
-                onClose={this.handleClose}
+                onClose={this.props.onClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -255,8 +247,11 @@ class SimpleDialogDemo extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({  open: false, isPending: true});
+        this.setState({  open: false});
         this.props.onUpdate(false);
+    };
+    handleAlertClose = () => {
+        this.setState({ isPending: false })
     };
 
     handleListItemClick = async (vpn_addr) => {
@@ -274,7 +269,7 @@ class SimpleDialogDemo extends React.Component {
                             paymentAddr: res.data.account_addr, isLoading: false
                         })
                     } else if (res.success) {
-                        this.setState({ isLoading: false });
+                        this.setState({ isLoading: false, isPending: false, open: true });
                         this.props.setVpnStatus(true)
                         // setTimeout(() => {  this.setState({ open: false })}, 4000)
                     } else {
@@ -301,7 +296,7 @@ class SimpleDialogDemo extends React.Component {
 
     execIT = () => {
         calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false )
-    }
+    };
 
     render() {
         if (this.state.session) {
@@ -348,10 +343,11 @@ class SimpleDialogDemo extends React.Component {
                     <AlertDialog
                         op={this.state.isPending}
                     // open={this.state.isPending}
-                    message={this.state.pendingInitPayment}
-                     paymentAddr={this.state.paymentAddr}
-                    initPaymentAction={this.props.initPaymentAction}
-                    setCurrentTab={this.props.setCurrentTab}
+                        onClose={this.handleAlertClose}
+                        message={this.state.pendingInitPayment}
+                        paymentAddr={this.state.paymentAddr}
+                        initPaymentAction={this.props.initPaymentAction}
+                        setCurrentTab={this.props.setCurrentTab}
                     />
                 }
             </div>

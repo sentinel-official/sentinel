@@ -93,6 +93,7 @@ class Receive extends Component {
                                             src={'../src/Images/download.jpeg'}
                                             data-tip data-for="copyImage"
                                             style={receiveStyles.copyIcon}
+                                            alt=''
                                         />
                                     </CopyToClipboard></label>
                                 <ReactTooltip id="copyImage" place="bottom">

@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {
-    Switch, Snackbar, Tooltip, IconButton, Paper, ClickAwayListener, Popper,
-    MenuList, MenuItem, Grow
+    Switch, Snackbar, Tooltip,
 } from '@material-ui/core';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
-import AccountIcon from '@material-ui/icons/AccountCircle';
 import { headerStyles } from '../Assets/header.styles';
 import { setTestNet, getETHBalance, getSentBalance, setTendermint } from '../Actions/header.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
@@ -31,7 +29,7 @@ class Header extends Component {
 
     handleMenuClose = (event) => {
         this.setState({ openAccountMenu: false })
-    }
+    };
 
     handleMenuToggle = () => {
         this.setState(state => ({ openAccountMenu: !state.openAccountMenu }));
@@ -51,7 +49,6 @@ class Header extends Component {
 
     tendermintChange = () => event => {
         let value = event.target.checked;
-        let currentTab = this.props.currentTab;
         this.props.setTendermint(value);
         if (value) {
             this.props.setCurrentTab('tmint');

@@ -4,8 +4,10 @@ package sentinelgroup.io.sentinel.ui.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wang.avi.AVLoadingIndicatorView;
@@ -38,6 +41,7 @@ public class ProgressDialogFragment extends DialogFragment {
 
     private AVLoadingIndicatorView mAvlLoader;
     private TextView mTvLoadingMessage;
+    private ImageView mIvLoader;
 
     public ProgressDialogFragment() {
         // Required empty public constructor
@@ -110,16 +114,32 @@ public class ProgressDialogFragment extends DialogFragment {
      * Show the Custom loader
      */
     private void showLoader() {
-        if (mAvlLoader != null)
-            mAvlLoader.show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Drawable aLoaderDrawable = mIvLoader.getDrawable();
+            if (aLoaderDrawable instanceof Animatable) {
+                ((Animatable) aLoaderDrawable).start();
+            }
+            mAvlLoader.hide();
+        } else {
+            mIvLoader.setVisibility(View.GONE);
+            if (mAvlLoader != null)
+                mAvlLoader.show();
+        }
     }
 
     /*
      * Hide the Custom loader
      */
     private void hideLoader() {
-        if (mAvlLoader != null)
-            mAvlLoader.hide();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Drawable aLoaderDrawable = mIvLoader.getDrawable();
+            if (aLoaderDrawable instanceof Animatable) {
+                ((Animatable) aLoaderDrawable).stop();
+            }
+        } else {
+            if (mAvlLoader != null)
+                mAvlLoader.hide();
+        }
     }
 
     /*
@@ -165,6 +185,7 @@ public class ProgressDialogFragment extends DialogFragment {
     private void initView(View iView) {
         mAvlLoader = iView.findViewById(R.id.avl_loader);
         mTvLoadingMessage = iView.findViewById(R.id.tv_loading_message);
+        mIvLoader = iView.findViewById(R.id.iv_loader);
     }
 
     /**

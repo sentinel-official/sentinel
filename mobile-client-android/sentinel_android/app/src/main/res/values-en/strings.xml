@@ -43,6 +43,7 @@
     <string name="sent_paid_desc">Total SENTs Paid</string>
     <string name="total_duration">Total Duration</string>
     <string name="total_received_data">Total Received Data</string>
+    <string name="vpn_history_empty_list_message">You currently do not have any VPN history.</string>
     <string name="session_id">Session ID</string>
     <string name="received_data">Received Data</string>
     <string name="duration">Duration</string>
@@ -86,13 +87,14 @@
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Bandwidth %s</string>
-    <string name="vpn_bandwidth_connected">Bandwidth\n%s</string>
+    <string name="vpn_bandwidth_connected">Connection Speed</string>
     <string name="vpn_price">Price (SENTs/GB) %s</string>
-    <string name="vpn_price_connected">Price (SENTs/GB)\n%s</string>
+    <string name="vpn_price_connected">Price (SENTs/GB)</string>
     <string name="vpn_latency">Latency %s</string>
     <string name="vpn_node_version">Version %s</string>
-    <string name="vpn_latency_connected">Latency\n%s</string>
-    <string name="vpn_duration_connected">Duration\n%s</string>
+    <string name="vpn_latency_connected">Latency</string>
+    <string name="vpn_enc_method_connected">Encryption</string>
+    <string name="vpn_duration_connected">Duration</string>
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_price_value">%.0f SENTs</string>
     <string name="vpn_latency_value">%.3f ms</string>

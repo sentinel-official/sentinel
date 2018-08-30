@@ -21,6 +21,8 @@
     <dimen name="margin_160">160dp</dimen>
     <dimen name="margin_256">256dp</dimen>
 
+    <dimen name="vpn_connected_flag_height">180dp</dimen>
+
     <!-- Text -->
     <dimen name="text_10">10sp</dimen>
     <dimen name="text_12">12sp</dimen>

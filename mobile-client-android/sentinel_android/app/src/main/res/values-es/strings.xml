@@ -206,12 +206,13 @@
     <string name="vpn_location">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Ancho de banda \t %s</string>
-	<string name="vpn_bandwidth_connected">Ancho de banda\n%s</string>
+	<string name="vpn_bandwidth_connected">Ancho de banda</string>
     <string name="vpn_price">Precio (SENTs/GB) \t %s</string>
-	<string name="vpn_price_connected">Precio (SENTs/GB)\n%s</string>
+	<string name="vpn_price_connected">Precio (SENTs/GB)</string>
     <string name="vpn_latency">Latencia \t %s</string>
-	<string name="vpn_latency_connected">Latencia\n%s</string>
-	<string name="vpn_duration_connected">Duración\n%s</string>
+	<string name="vpn_latency_connected">Latencia</string>
+    <string name="vpn_enc_method_connected">Encryption</string>
+    <string name="vpn_duration_connected">Duración</string>
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_price_value">%.0f SENTs</string>
     <string name="vpn_latency_value">%.3f ms</string>

@@ -184,7 +184,6 @@ class AlertDialog extends React.Component {
     };
 
     makeInitPayment = () => {
-
         let data = {
             account_addr: this.props.paymentAddr,
             amount: 10000000000,
@@ -200,7 +199,7 @@ class AlertDialog extends React.Component {
                 // open={this.state.open}
                 // keepMounted
                 open={this.props.op}
-                onClose={this.handleClose}
+                onClose={this.props.onClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -248,8 +247,11 @@ class SimpleDialogDemo extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({  open: false, isPending: true});
+        this.setState({  open: false});
         this.props.onUpdate(false);
+    };
+    handleAlertClose = () => {
+        this.setState({ isPending: false })
     };
 
     handleListItemClick = async (vpn_addr) => {
@@ -267,7 +269,7 @@ class SimpleDialogDemo extends React.Component {
                             paymentAddr: res.data.account_addr, isLoading: false
                         })
                     } else if (res.success) {
-                        this.setState({ isLoading: false });
+                        this.setState({ isLoading: false, isPending: false, open: true });
                         this.props.setVpnStatus(true)
                         // setTimeout(() => {  this.setState({ open: false })}, 4000)
                     } else {
@@ -341,10 +343,11 @@ class SimpleDialogDemo extends React.Component {
                     <AlertDialog
                         op={this.state.isPending}
                     // open={this.state.isPending}
-                    message={this.state.pendingInitPayment}
-                     paymentAddr={this.state.paymentAddr}
-                    initPaymentAction={this.props.initPaymentAction}
-                    setCurrentTab={this.props.setCurrentTab}
+                        onClose={this.handleAlertClose}
+                        message={this.state.pendingInitPayment}
+                        paymentAddr={this.state.paymentAddr}
+                        initPaymentAction={this.props.initPaymentAction}
+                        setCurrentTab={this.props.setCurrentTab}
                     />
                 }
             </div>

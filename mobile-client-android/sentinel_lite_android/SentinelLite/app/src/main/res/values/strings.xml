@@ -142,6 +142,7 @@
     <string name="no_internet">No internet connectivity. Please try again.</string>
     <string name="please_note">Attention</string>
     <string name="referral_id_copied">Referral ID copied to clipboard</string>
+    <string name="link_copied">Link copied to clipboard</string>
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Bandwidth %s</string>
@@ -190,11 +191,12 @@
     <string name="language">Language</string>
     <string name="select_language">Select Language</string>
     <string name="referral_id">Referral ID</string>
+    <string name="referral_link">Referral Link</string>
     <string name="referrals">Referrals</string>
     <string name="send_to">Send to…</string>
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
-    <string name="share_id">Share ID</string>
+    <string name="share_id">Share Link</string>
     <string name="share_string">Hey, check out this new dVPN Android app. Use my Referral ID to get free tokens when you Sign Up.\n\nReferral ID: %1$s\n\nLink: %2$s</string>
     <string name="branch_share_title">Hey, check out this new dVPN Android app.</string>
     <string name="branch_share_desc">Use my Referral ID to get free tokens when you Sign Up.\nReferral ID: %1$s</string>

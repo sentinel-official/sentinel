@@ -142,6 +142,7 @@
     <string name="no_internet">Нет подключения к интернету. Попробуйте еще раз.</string>
     <string name="please_note">Внимание</string>
     <string name="referral_id_copied">Реферальный код скопирован</string>
+    <string name="link_copied">Link copied to clipboard</string>
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Скорость %s</string>
@@ -190,6 +191,7 @@
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
     <string name="referral_id">Реферальный код</string>
+    <string name="referral_link">Referral Link</string>
     <string name="referrals">Рефералы</string>
     <string name="send_to">Отправить…</string>
     <string name="no_of_referrals">Количество рефералов</string>

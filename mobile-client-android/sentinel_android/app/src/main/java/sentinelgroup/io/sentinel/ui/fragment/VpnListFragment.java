@@ -251,6 +251,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
             Intent aIntent = new Intent(getActivity(), VpnListActivity.class);
             aIntent.putExtra(AppConstants.EXTRA_VPN_LIST, iItemData);
             loadNextActivity(aIntent, AppConstants.REQ_VPN_CONNECT);
+            getActivity().overridePendingTransition(R.anim.enter_right_to_left, R.anim.exit_left_to_right);
         } else {
             loadNextFragment(VpnDetailsFragment.newInstance(iItemData));
         }

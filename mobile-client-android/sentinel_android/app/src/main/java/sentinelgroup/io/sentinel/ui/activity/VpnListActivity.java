@@ -40,6 +40,7 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         super.onBackPressed();
+        overridePendingTransition(R.anim.enter_left_to_right, R.anim.exit_right_to_left);
     }
 
     /*

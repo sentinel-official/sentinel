@@ -268,6 +268,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
 
             case R.id.btn_view_vpn:
                 loadNextActivity(new Intent(getActivity(), VpnListActivity.class), AppConstants.REQ_CODE_NULL);
+                getActivity().overridePendingTransition(R.anim.enter_right_to_left, R.anim.exit_left_to_right);
                 break;
         }
     }

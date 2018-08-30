@@ -124,6 +124,11 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="CustomTextAppearance.Text20.Orange">
+        <item name="android:textColor">@color/colorButtonOrange</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="CustomTextAppearance.Text32.Orange">
         <item name="android:textColor">@color/colorButtonOrange</item>
         <item name="android:textStyle">normal</item>

@@ -42,7 +42,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     private OnGenericFragmentInteractionListener mListener;
 
     private SwipeRefreshLayout mSrReload;
-    private TextView mTvReferralCode, mtvReferralCount, mTvRewardsEarned, mTvCanClaimAfter, mTvReadMore;
+    private TextView mTvReferralCode, mTvReferralLink, mtvReferralCount, mTvRewardsEarned, mTvCanClaimAfter, mTvReadMore;
     private ImageButton mIbCopyReferral;
     private Button mBtnShareAddress, mBtnClaimBonus;
 
@@ -90,6 +90,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     private void initView(View iView) {
         mSrReload = iView.findViewById(R.id.sr_reload);
         mTvReferralCode = iView.findViewById(R.id.tv_referral_code);
+        mTvReferralLink = iView.findViewById(R.id.tv_referral_link);
         mtvReferralCount = iView.findViewById(R.id.tv_referral_count);
         mTvRewardsEarned = iView.findViewById(R.id.tv_rewards_earned);
         mIbCopyReferral = iView.findViewById(R.id.ib_copy_referral);
@@ -113,6 +114,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         mViewModel = ViewModelProviders.of(this, aFactory).get(ReferralViewModel.class);
 
         mTvReferralCode.setText(mViewModel.getReferralId());
+        generateLinkAndShare();
 
         mViewModel.getBonusInfoLiveData().observe(this, bonusInfoEntity -> {
             if (bonusInfoEntity != null) {
@@ -149,13 +151,16 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_share_referral_id:
-                generateLinkAndShare();
+                shareLink(getString(R.string.share_string, mViewModel.getReferralId(), mTvReferralLink.getText().toString().trim()));
                 break;
             case R.id.btn_claim_bonus:
                 mViewModel.claimReferralBonus();
                 break;
             case R.id.ib_copy_referral:
-                copyToClipboard(mTvReferralCode.getText().toString(), R.string.address_copied);
+                copyToClipboard(mTvReferralCode.getText().toString().trim(), R.string.address_copied);
+                break;
+            case R.id.ib_copy_referral_link:
+                copyToClipboard(mTvReferralLink.getText().toString().trim(), R.string.link_copied);
                 break;
 
             case R.id.tv_read_more:
@@ -166,7 +171,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
 
     private void generateLinkAndShare() {
         new BranchUrlHelper(getActivity()).createLink(mViewModel.getReferralId(), iUrl -> {
-            shareLink(getString(R.string.share_string, mViewModel.getReferralId(), iUrl));
+            mTvReferralLink.setText(iUrl);
         });
     }
 

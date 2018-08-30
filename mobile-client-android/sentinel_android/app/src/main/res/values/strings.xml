@@ -197,6 +197,7 @@
     <string name="storage_permission_denied">Storage permission not granted.</string>
     <string name="key_copied">Private Key copied to clipboard</string>
     <string name="address_copied">Address copied to clipboard</string>
+    <string name="link_copied">Link copied to clipboard</string>
     <string name="hash_copied">Transaction Hash copied to clipboard</string>
     <string name="set_app_pin">Set App PIN</string>
     <string name="pin_mismatch">Pin and Confirm Pin did not match</string>
@@ -309,6 +310,7 @@
     <string name="language">Language</string>
     <string name="select_language">Select Language</string>
     <string name="referral_id">Referral ID</string>
+    <string name="referral_link">Referral Link</string>
     <string name="view_tx_history_for">View Tx History for</string>
     <string name="payment_done_success">Payment Done Successfully</string>
     <string name="send_to_hint">Send To or Scan To Send</string>
@@ -326,7 +328,7 @@
     <string name="referral_code_desc">Your referral tokens can be claimed when you make your first VPN payment.</string>
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
-    <string name="share_id">Share ID</string>
+    <string name="share_id">Share Link</string>
     <string name="address">Address</string>
     <string name="share_address">Share address</string>
     <string name="share_string">Hey, check out this new dVPN Android app. Use my Referral ID to get free tokens when you Sign Up.\n\nReferral ID: %1$s\n\nLink: %2$s</string>

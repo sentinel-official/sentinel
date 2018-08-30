@@ -19,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.haipq.android.flagkit.FlagImageView;
-
 import java.util.Objects;
 
 import co.sentinel.sentinellite.R;
@@ -28,6 +26,7 @@ import co.sentinel.sentinellite.SentinelLiteApp;
 import co.sentinel.sentinellite.di.InjectorModule;
 import co.sentinel.sentinellite.network.model.VpnListEntity;
 import co.sentinel.sentinellite.ui.activity.VpnListActivity;
+import co.sentinel.sentinellite.ui.custom.BlurFlagImageView;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.ui.custom.OnVpnConnectionListener;
 import co.sentinel.sentinellite.util.AppConstants;
@@ -37,11 +36,6 @@ import co.sentinel.sentinellite.util.Converter;
 import co.sentinel.sentinellite.util.SpannableStringUtil;
 import co.sentinel.sentinellite.viewmodel.VpnConnectedViewModel;
 import co.sentinel.sentinellite.viewmodel.VpnConnectedViewModelFactory;
-import de.blinkt.openvpn.core.ConnectionStatus;
-import de.blinkt.openvpn.core.OpenVPNManagement;
-import de.blinkt.openvpn.core.VpnStatus;
-
-import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +54,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
 
     private OnVpnConnectionListener mVpnListener;
 
-    private FlagImageView mFvFlag;
+    private BlurFlagImageView mFvFlag;
     private TextView mTvVpnState, mTvLocation, mTvIp, mTvDownloadSpeed, mTvUploadSpeed, mTvDataUsed,
             mTvBandwidth, mTvLatency, mTvEncMethod, mTvDuration;
     private Button mBtnDisconnect, mBtnViewVpn;
@@ -165,29 +159,9 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         // Set country flag
         mFvFlag.setCountryCode(Converter.getCountryCode(iVpnEntity.getLocation().country));
         // Construct and set - Bandwidth SpannableString
-        String aBandwidthValue = getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(iVpnEntity.getNetSpeed().download, Convert.DataUnit.MBPS));
-        String aBandwidth = getString(R.string.vpn_bandwidth_connected, aBandwidthValue);
-        SpannableString aStyledBandwidth = new SpannableStringUtil.SpannableStringUtilBuilder(aBandwidth, aBandwidthValue)
-                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
-                .customStyle(Typeface.BOLD)
-                .build();
-        mTvBandwidth.setText(aStyledBandwidth);
-        // Construct and set - Price SpannableString
-        String aEncryptionValue = iVpnEntity.getEncryptionMethod();
-        String aEncryption = getString(R.string.vpn_enc_method_connected, aEncryptionValue);
-        SpannableString aStyledEncryption = new SpannableStringUtil.SpannableStringUtilBuilder(aEncryption, aEncryptionValue)
-                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
-                .customStyle(Typeface.BOLD)
-                .build();
-        mTvEncMethod.setText(aStyledEncryption);
-        // Construct and set - Latency SpannableString
-        String aLatencyValue = getString(R.string.vpn_latency_value, iVpnEntity.getLatency());
-        String aLatency = getString(R.string.vpn_latency_connected, aLatencyValue);
-        SpannableString aStyleLatency = new SpannableStringUtil.SpannableStringUtilBuilder(aLatency, aLatencyValue)
-                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
-                .customStyle(Typeface.BOLD)
-                .build();
-        mTvLatency.setText(aStyleLatency);
+        mTvBandwidth.setText(getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(iVpnEntity.getNetSpeed().download, Convert.DataUnit.MBPS)));
+        mTvEncMethod.setText(iVpnEntity.getEncryptionMethod());
+        mTvLatency.setText(getString(R.string.vpn_latency_value, iVpnEntity.getLatency()));
     }
 
     public void updateStatus(String iStateMessage) {
@@ -224,17 +198,8 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
                 // Store the VPN connection initiated time
                 mConnectionTime = AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME);
             }
-            String aDurationValue = mConnectionTime == 0 ? "" : Converter.getLongDuration((long) (((double) (System.currentTimeMillis() - mConnectionTime)) / 1000));
-            String aDuration = getString(R.string.vpn_duration_connected, aDurationValue);
-            if (mConnectionTime != 0L) {
-                SpannableString aStyleDuration = new SpannableStringUtil.SpannableStringUtilBuilder(aDuration, aDurationValue)
-                        .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
-                        .customStyle(Typeface.BOLD)
-                        .build();
-                mTvDuration.setText(aStyleDuration);
-            } else {
-                mTvDuration.setText(aDuration);
-            }
+            String aDurationValue = mConnectionTime == 0 ? "0" : Converter.getLongDuration((long) (((double) (System.currentTimeMillis() - mConnectionTime)) / 1000));
+            mTvDuration.setText(aDurationValue);
         }
     }
 

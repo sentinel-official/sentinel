@@ -26,6 +26,7 @@
     <color name="colorCardDark">#363749</color>
     <color name="colorCardShadow">#3D000000</color>
     <color name="colorCardInfoBackground">#1F000000</color>
+    <color name="colorLocationBackgroundAlpha60">#99181818</color>
     <!-- Ripple Mask -->
     <color name="colorRippleMask">#33000000</color>
     <color name="colorRippleMaskLight">#66FFFFFF</color>

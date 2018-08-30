@@ -24,6 +24,10 @@
         <item name="android:textSize">@dimen/text_32</item>
     </style>
 
+    <style name="CustomTextAppearance.Text10">
+        <item name="android:textSize">@dimen/text_10</item>
+    </style>
+
     <style name="CustomTextAppearance.Text12">
         <item name="android:textSize">@dimen/text_12</item>
     </style>

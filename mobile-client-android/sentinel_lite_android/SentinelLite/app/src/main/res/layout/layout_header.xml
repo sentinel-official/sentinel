@@ -34,10 +34,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/app_name"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_app_icon"
         tools:ignore="ContentDescription" />
 
@@ -54,9 +55,10 @@
         android:layout_marginTop="4dp"
         android:text="@string/sentinel"
         android:textAllCaps="true"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_icon" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

@@ -145,13 +145,13 @@
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Скорость %s</string>
-    <string name="vpn_bandwidth_connected">Скорость\n%s</string>
+    <string name="vpn_bandwidth_connected">Скорость соединения</string>
     <string name="vpn_enc_method">Шифрование %s</string>
-    <string name="vpn_enc_method_connected">Шифрование\n%s</string>
+    <string name="vpn_enc_method_connected">Шифрование</string>
     <string name="vpn_latency">Задержка %s</string>
     <string name="vpn_node_version">Версия %s</string>
-    <string name="vpn_latency_connected">Задержка\n%s</string>
-    <string name="vpn_duration_connected">Длительность\n%s</string>
+    <string name="vpn_latency_connected">Задержка</string>
+    <string name="vpn_duration_connected">Длительность</string>
     <string name="vpn_bandwidth_value">%.2f Мб/с</string>
     <string name="vpn_latency_value">%.3f мс</string>
     <string name="generic_loading_message">Загрузка. Подождите…</string>
@@ -179,7 +179,8 @@
     <string name="faq">FAQ</string>
     <string name="got_it">Понял</string>
     <string name="retry">Повторить</string>
-    <string name="vpn_usage">Использование VPN</string>
+    <string name="vpn_usage">Использование dVPN</string>
+    <string name="total_sessions">Total Sessions</string>
     <string name="total_duration">Общая длительность сеансов</string>
     <string name="total_received_data">Общее количество полученных данных</string>
     <string name="vpn_usage_empty_list_message">В настоящее время у вас нет использования VPN</string>

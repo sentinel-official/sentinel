@@ -22,6 +22,7 @@ import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.di.InjectorModule;
 import co.sentinel.sentinellite.network.model.Session;
 import co.sentinel.sentinellite.network.model.Stats;
+import co.sentinel.sentinellite.network.model.VpnUsageEntity;
 import co.sentinel.sentinellite.ui.adapter.VpnUsageListAdapter;
 import co.sentinel.sentinellite.ui.custom.EmptyRecyclerView;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
@@ -38,7 +39,7 @@ public class VpnUsageFragment extends Fragment {
 
     private OnGenericFragmentInteractionListener mListener;
 
-    private TextView mTvTotalDuration, mTvTotalReceivedData;
+    private TextView mTvTotalSessions, mTvTotalDuration, mTvTotalReceivedData;
     private SwipeRefreshLayout mSrReload;
     private EmptyRecyclerView mRvVpnHistory;
 
@@ -79,6 +80,7 @@ public class VpnUsageFragment extends Fragment {
     }
 
     private void initView(View iView) {
+        mTvTotalSessions = iView.findViewById(R.id.tv_total_sessions);
         mTvTotalDuration = iView.findViewById(R.id.tv_total_duration);
         mTvTotalReceivedData = iView.findViewById(R.id.tv_total_received_data);
         mSrReload = iView.findViewById(R.id.sr_reload);
@@ -112,7 +114,7 @@ public class VpnUsageFragment extends Fragment {
                 } else {
                     hideProgressDialog();
                     if (vpnUsage.data != null && vpnUsage.data.usage != null) {
-                        setTotalUsageDetails(vpnUsage.data.usage.getStats());
+                        setTotalUsageDetails(vpnUsage.data.usage);
                         if (vpnUsage.data.usage.getSessions() != null && vpnUsage.data.usage.getSessions().size() > 0)
                             mAdapter.loadData(vpnUsage.data.usage.getSessions());
                     }
@@ -121,9 +123,10 @@ public class VpnUsageFragment extends Fragment {
         });
     }
 
-    private void setTotalUsageDetails(Stats iUsageStats) {
+    private void setTotalUsageDetails(VpnUsageEntity iUsage) {
+        mTvTotalSessions.setText(String.valueOf(iUsage.getSessions().size()));
         // Construct and set - Duration SpannableString
-        String aDuration = Converter.getDuration(iUsageStats.duration);
+        String aDuration = Converter.getDuration(iUsage.getStats().duration);
         String aDurationSubString = aDuration.substring(aDuration.indexOf(' '));
         SpannableString aStyledDuration = new SpannableStringUtil.SpannableStringUtilBuilder(aDuration, aDurationSubString)
                 .color(ContextCompat.getColor(getContext(), R.color.colorTextGray))
@@ -131,7 +134,7 @@ public class VpnUsageFragment extends Fragment {
                 .build();
         mTvTotalDuration.setText(aStyledDuration);
         // Construct and set - Data Size SpannableString
-        String aSize = Converter.getFileSize(iUsageStats.receivedBytes);
+        String aSize = Converter.getFileSize(iUsage.getStats().receivedBytes);
         String aSizeSubString = aSize.substring(aSize.indexOf(' '));
         SpannableString aStyledSize = new SpannableStringUtil.SpannableStringUtilBuilder(aSize, aSizeSubString)
                 .color(ContextCompat.getColor(getContext(), R.color.colorTextGray))

@@ -145,13 +145,13 @@
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Bandwidth %s</string>
-    <string name="vpn_bandwidth_connected">Bandwidth\n%s</string>
-    <string name="vpn_enc_method">Encryption %s</string>
-    <string name="vpn_enc_method_connected">Encryption\n%s</string>
+    <string name="vpn_bandwidth_connected">Connection Speed</string>
+    <string name="vpn_enc_method">Encryption\n\n%s</string>
+    <string name="vpn_enc_method_connected">Encryption</string>
     <string name="vpn_latency">Latency %s</string>
     <string name="vpn_node_version">Version %s</string>
-    <string name="vpn_latency_connected">Latency\n%s</string>
-    <string name="vpn_duration_connected">Duration\n%s</string>
+    <string name="vpn_latency_connected">Latency</string>
+    <string name="vpn_duration_connected">Duration</string>
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_latency_value">%.3f ms</string>
     <string name="generic_loading_message">Please wait. Loading…</string>
@@ -171,15 +171,16 @@
     <string name="upload_speed">Upload Speed</string>
     <string name="vpn_status">VPN Status: %1s</string>
     <string name="vpn_already_connected">You have already connected to a VPN server. Please disconnect from it before connecting to a new VPN server.</string>
-    <string translatable="false" name="telegram_url">https://t.me/sentinel_co</string>
-    <string translatable="false" name="medium_url">https://medium.com/@Sentinel</string>
-    <string translatable="false" name="twitter_url">https://twitter.com/sentinel_co</string>
-    <string translatable="false" name="website_url">https://sentinel.co</string>
+    <string name="telegram_url" translatable="false">https://t.me/sentinel_co</string>
+    <string name="medium_url" translatable="false">https://medium.com/@Sentinel</string>
+    <string name="twitter_url" translatable="false">https://twitter.com/sentinel_co</string>
+    <string name="website_url" translatable="false">https://sentinel.co</string>
     <string name="link_coming_soon">This data will be added soon.</string>
     <string name="faq">FAQ</string>
     <string name="got_it">Got it</string>
     <string name="retry">Retry</string>
-    <string name="vpn_usage">VPN Usage</string>
+    <string name="vpn_usage">dVPN Usage</string>
+    <string name="total_sessions">Total Sessions</string>
     <string name="total_duration">Total Duration</string>
     <string name="total_received_data">Total Received Data</string>
     <string name="vpn_usage_empty_list_message">You currently do not have any VPN usage</string>

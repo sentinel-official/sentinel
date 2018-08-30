@@ -25,9 +25,9 @@
                 android:id="@+id/toolbar_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="0dp"
-                android:src="@drawable/ic_app_icon"
+                android:layout_marginEnd="@dimen/margin_8"
+                android:layout_marginRight="@dimen/margin_8"
+                android:src="@drawable/ic_app_icon_small"
                 android:visibility="gone" />
 
             <TextView

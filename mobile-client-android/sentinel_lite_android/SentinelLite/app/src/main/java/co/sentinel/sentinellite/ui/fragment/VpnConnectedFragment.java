@@ -269,6 +269,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
 
             case R.id.btn_view_vpn:
                 loadNextActivity(new Intent(getActivity(), VpnListActivity.class), AppConstants.REQ_VPN_CONNECT);
+                getActivity().overridePendingTransition(R.anim.enter_right_to_left, R.anim.exit_left_to_right);
                 break;
         }
     }

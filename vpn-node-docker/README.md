@@ -119,13 +119,18 @@ Helpful docker commands to interact with the Sentinel dVPN Node
      ###### Note: stopping a dVPN Node does not remove the container
  
 * remove a particular Sentinel dVPN Node:
-    ```sudo docker rm ContainerID```
+    ```sudo docker rm ContainerID_OR_ContainerName```
 
-    ###### Note: The Sentinel dVPN Node must be stopped to be removed. Alternatively, you can use the `-f` flag to forcefully remove the Node if the node can not be stopped
+    ###### Note: The Sentinel dVPN Node must be stopped to be removed. Alternatively, you can use the `-f` flag to forcefully remove the Node if the node can not be stopped.
+
+* remove node using the force option `-f`:
+
+    ```sudo docker rm -f ContainerID_OR_ContainerName```
 
 * remove all stopped Sentinel dVPN Nodes:
 
     ```sudo docker rm $(sudo docker ps -a -q)```
     
 * stop all the running dVPN Nodes and remove them:
+
     ```sudo docker stop $(sudo docker ps -a -q) && sudo docker rm $(sudo docker ps -a -q)```

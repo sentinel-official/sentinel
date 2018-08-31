@@ -36,6 +36,7 @@ public class GenericRequestBody {
     private String clientAddress;
     private String referredBy;
     private String address;
+    private int rating;
 
     private GenericRequestBody(GenericRequestBodyBuilder iBuilder) {
         password = iBuilder.password;
@@ -55,7 +56,7 @@ public class GenericRequestBody {
         clientAddress = iBuilder.clientAddress;
         referredBy = iBuilder.referredBy;
         address = iBuilder.address;
-        ;
+        rating = iBuilder.rating;
     }
 
     // Getters
@@ -159,6 +160,7 @@ public class GenericRequestBody {
         private String clientAddress = null;
         private String referredBy = null;
         private String address = null;
+        private int rating;
 
         public GenericRequestBodyBuilder password(String password) {
             this.password = password;
@@ -242,6 +244,11 @@ public class GenericRequestBody {
 
         public GenericRequestBodyBuilder address(String address) {
             this.address = address;
+            return this;
+        }
+
+        public GenericRequestBodyBuilder rating(int rating) {
+            this.rating = rating;
             return this;
         }
 

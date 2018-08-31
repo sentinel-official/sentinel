@@ -6,13 +6,16 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +63,8 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     private Button mBtnDisconnect, mBtnViewVpn;
 
     private Long mConnectionTime = 0L;
+
+    private ImageSpan mDownloadSpeedSpan, mUploadSpeedSpan, mDataUsageSpan;
 
     public VpnConnectedFragment() {
         // Required empty public constructor
@@ -130,6 +135,18 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         // set listeners
         mBtnDisconnect.setOnClickListener(this);
         mBtnViewVpn.setOnClickListener(this);
+
+        Drawable aDownloadSpeedDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_download_speed);
+        aDownloadSpeedDrawable.setBounds(0, 0, aDownloadSpeedDrawable.getIntrinsicWidth(), aDownloadSpeedDrawable.getIntrinsicHeight());
+        mDownloadSpeedSpan = new ImageSpan(aDownloadSpeedDrawable, ImageSpan.ALIGN_BASELINE);
+
+        Drawable mUploadSpeedDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_upload_speed);
+        mUploadSpeedDrawable.setBounds(0, 0, mUploadSpeedDrawable.getIntrinsicWidth(), mUploadSpeedDrawable.getIntrinsicHeight());
+        mUploadSpeedSpan = new ImageSpan(mUploadSpeedDrawable, ImageSpan.ALIGN_BASELINE);
+
+        Drawable mDataUsageDrawable = ContextCompat.getDrawable(getActivity(), R.drawable.ic_data_usage);
+        mDataUsageDrawable.setBounds(0, 0, mDataUsageDrawable.getIntrinsicWidth(), mDataUsageDrawable.getIntrinsicHeight());
+        mDataUsageSpan = new ImageSpan(mDataUsageDrawable, ImageSpan.ALIGN_BASELINE);
     }
 
     private void initViewModel() {
@@ -178,6 +195,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
                     .color(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
+//            aDownloadSpannable.setSpan(mDownloadSpeedSpan, 0, 1, 0);
             mTvDownloadSpeed.setText(aDownloadSpannable);
             // Construct and set - Upload Speed SpannableString
             String aUploadSubString = iUploadSpeed.substring(iUploadSpeed.indexOf(' '));
@@ -185,6 +203,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
                     .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
+//            aUploadSpannable.setSpan(mUploadSpeedSpan, 0, 1, 0);
             mTvUploadSpeed.setText(aUploadSpannable);
             // Construct and set - Data used SpannableString
             String aDataUsedSubString = iTotalDataUsed.substring(iTotalDataUsed.indexOf(' '));
@@ -192,6 +211,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
                     .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
+//            aDataUsedSpannable.setSpan(mDataUsageSpan, 0, 1, 0);
             mTvDataUsed.setText(aDataUsedSpannable);
             // Construct and set - Duration SpannableString
             if (mConnectionTime == 0L) {

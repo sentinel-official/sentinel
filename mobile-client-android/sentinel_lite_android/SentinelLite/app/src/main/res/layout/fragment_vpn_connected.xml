@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_16"
         android:layout_marginStart="@dimen/margin_16"
-        android:layout_marginTop="@dimen/margin_16"
+        android:layout_marginTop="@dimen/margin_8"
         android:background="@drawable/selector_vpn_state"
         android:ellipsize="end"
         android:enabled="false"
@@ -33,11 +33,11 @@
         android:id="@+id/fv_flag"
         android:layout_width="match_parent"
         android:layout_height="@dimen/vpn_connected_flag_height"
-        android:layout_marginTop="@dimen/margin_16"
+        android:layout_marginTop="@dimen/margin_8"
         android:paddingBottom="@dimen/margin_8"
         android:paddingTop="@dimen/margin_8"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toTopOf="@+id/tv_download_speed"
+        app:layout_constraintBottom_toTopOf="@+id/fl_download_speed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
@@ -82,21 +82,30 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_download_speed"
-        style="@style/CustomTextAppearance.Text24"
+    <FrameLayout
+        android:id="@+id/fl_download_speed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginStart="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_16"
-        android:drawablePadding="@dimen/margin_8"
-        android:drawableTop="@drawable/ic_download_speed"
-        android:gravity="center_horizontal|bottom"
-        app:layout_constraintEnd_toStartOf="@+id/tv_upload_speed"
+        app:layout_constraintEnd_toStartOf="@+id/fl_upload_speed"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fv_flag" />
+        app:layout_constraintTop_toBottomOf="@+id/fv_flag">
+
+        <TextView
+
+            android:id="@+id/tv_download_speed"
+            style="@style/CustomTextAppearance.Text24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_download_speed"
+            android:drawablePadding="@dimen/margin_8"
+            android:drawableStart="@drawable/ic_download_speed"
+            android:gravity="center_horizontal|bottom" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/download_speed"
@@ -106,26 +115,44 @@
         android:gravity="center"
         android:paddingBottom="@dimen/margin_8"
         android:text="@string/download_speed"
-        app:layout_constraintEnd_toEndOf="@+id/tv_download_speed"
-        app:layout_constraintStart_toStartOf="@+id/tv_download_speed"
-        app:layout_constraintTop_toBottomOf="@+id/tv_download_speed" />
+        app:layout_constraintEnd_toEndOf="@+id/fl_download_speed"
+        app:layout_constraintStart_toStartOf="@+id/fl_download_speed"
+        app:layout_constraintTop_toBottomOf="@+id/fl_download_speed" />
 
-    <TextView
-        android:id="@+id/tv_upload_speed"
-        style="@style/CustomTextAppearance.Text24"
+    <View
+        android:layout_width="@dimen/margin_1"
+        android:layout_height="@dimen/margin_48"
+        android:background="@color/colorCardDark"
+        app:layout_constraintBottom_toBottomOf="@+id/download_speed"
+        app:layout_constraintEnd_toStartOf="@+id/upload_speed"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/download_speed"
+        app:layout_constraintTop_toTopOf="@+id/fl_download_speed"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <FrameLayout
+        android:id="@+id/fl_upload_speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/margin_8"
         android:layout_marginStart="@dimen/margin_8"
-        android:drawablePadding="@dimen/margin_8"
-        android:drawableTop="@drawable/ic_upload_speed"
-        android:gravity="center_horizontal|bottom"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_download_speed"
-        app:layout_constraintEnd_toStartOf="@+id/tv_data_used"
+        app:layout_constraintBottom_toBottomOf="@+id/fl_download_speed"
+        app:layout_constraintEnd_toStartOf="@+id/fl_data_used"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tv_download_speed"
-        app:layout_constraintTop_toTopOf="@+id/tv_download_speed"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/fl_download_speed"
+        app:layout_constraintTop_toTopOf="@+id/fl_download_speed"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/tv_upload_speed"
+            style="@style/CustomTextAppearance.Text24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_upload_speed"
+            android:drawablePadding="@dimen/margin_8"
+            android:drawableStart="@drawable/ic_upload_speed" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/upload_speed"
@@ -136,27 +163,45 @@
         android:paddingBottom="@dimen/margin_8"
         android:text="@string/upload_speed"
         app:layout_constraintBottom_toBottomOf="@+id/download_speed"
-        app:layout_constraintEnd_toEndOf="@+id/tv_upload_speed"
-        app:layout_constraintStart_toStartOf="@+id/tv_upload_speed"
+        app:layout_constraintEnd_toEndOf="@+id/fl_upload_speed"
+        app:layout_constraintStart_toStartOf="@+id/fl_upload_speed"
         app:layout_constraintTop_toTopOf="@+id/download_speed"
         app:layout_constraintVertical_bias="1.0" />
 
-    <TextView
-        android:id="@+id/tv_data_used"
-        style="@style/CustomTextAppearance.Text24"
+    <View
+        android:layout_width="@dimen/margin_1"
+        android:layout_height="@dimen/margin_48"
+        android:background="@color/colorCardDark"
+        app:layout_constraintBottom_toBottomOf="@+id/download_speed"
+        app:layout_constraintEnd_toStartOf="@+id/data_used"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/upload_speed"
+        app:layout_constraintTop_toTopOf="@+id/fl_download_speed"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <FrameLayout
+        android:id="@+id/fl_data_used"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/margin_8"
         android:layout_marginRight="@dimen/margin_8"
-        android:drawablePadding="@dimen/margin_8"
-        android:drawableTop="@drawable/ic_data_usage"
-        android:gravity="center_horizontal|bottom"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_upload_speed"
+        app:layout_constraintBottom_toBottomOf="@+id/fl_upload_speed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tv_upload_speed"
-        app:layout_constraintTop_toTopOf="@+id/tv_upload_speed"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/fl_upload_speed"
+        app:layout_constraintTop_toTopOf="@+id/fl_upload_speed"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/tv_data_used"
+            style="@style/CustomTextAppearance.Text24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_data_usage"
+            android:drawablePadding="@dimen/margin_8"
+            android:drawableStart="@drawable/ic_data_usage" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/data_used"
@@ -167,8 +212,8 @@
         android:paddingBottom="@dimen/margin_8"
         android:text="@string/data_used"
         app:layout_constraintBottom_toBottomOf="@+id/upload_speed"
-        app:layout_constraintEnd_toEndOf="@+id/tv_data_used"
-        app:layout_constraintStart_toStartOf="@+id/tv_data_used"
+        app:layout_constraintEnd_toEndOf="@+id/fl_data_used"
+        app:layout_constraintStart_toStartOf="@+id/fl_data_used"
         app:layout_constraintTop_toTopOf="@+id/upload_speed" />
 
     <TextView
@@ -229,6 +274,17 @@
         app:layout_constraintStart_toStartOf="@+id/latency"
         app:layout_constraintTop_toBottomOf="@+id/latency" />
 
+    <View
+        android:layout_width="@dimen/margin_1"
+        android:layout_height="@dimen/margin_48"
+        android:background="@color/colorCardDark"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_latency"
+        app:layout_constraintEnd_toStartOf="@+id/tv_enc_method"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_latency"
+        app:layout_constraintTop_toTopOf="@+id/latency"
+        app:layout_constraintVertical_bias="0.5" />
+
     <TextView
         android:id="@+id/enc_method"
         style="@style/CustomTextAppearance.Text12.Gray"
@@ -260,6 +316,17 @@
         app:layout_constraintStart_toStartOf="@+id/enc_method"
         app:layout_constraintTop_toTopOf="@+id/tv_latency"
         app:layout_constraintVertical_bias="1.0" />
+
+    <View
+        android:layout_width="@dimen/margin_1"
+        android:layout_height="@dimen/margin_48"
+        android:background="@color/colorCardDark"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_latency"
+        app:layout_constraintEnd_toStartOf="@+id/tv_duration"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_enc_method"
+        app:layout_constraintTop_toTopOf="@+id/latency"
+        app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/duration"

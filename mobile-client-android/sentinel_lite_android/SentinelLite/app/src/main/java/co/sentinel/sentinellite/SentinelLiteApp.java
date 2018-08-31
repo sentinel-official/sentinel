@@ -32,6 +32,12 @@ public class SentinelLiteApp extends MultiDexApplication {
     public static Locale sLocale = null;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         PRNGFixes.apply();
@@ -46,7 +52,6 @@ public class SentinelLiteApp extends MultiDexApplication {
         StatusListener mStatus = new StatusListener();
         mStatus.init(getApplicationContext());
         sInstance = this;
-        MultiDex.install(this);
         Branch.getAutoInstance(this);
     }
 

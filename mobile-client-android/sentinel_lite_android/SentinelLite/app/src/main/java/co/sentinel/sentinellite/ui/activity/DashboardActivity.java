@@ -33,6 +33,7 @@ import co.sentinel.sentinellite.ui.custom.OnVpnConnectionListener;
 import co.sentinel.sentinellite.ui.custom.ProfileAsync;
 import co.sentinel.sentinellite.ui.dialog.DoubleActionDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.ProgressDialogFragment;
+import co.sentinel.sentinellite.ui.dialog.RatingDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.SingleActionDialogFragment;
 import co.sentinel.sentinellite.ui.fragment.VpnConnectedFragment;
 import co.sentinel.sentinellite.ui.fragment.VpnSelectFragment;
@@ -50,6 +51,7 @@ import de.blinkt.openvpn.core.VpnStatus;
 
 import static co.sentinel.sentinellite.util.AppConstants.TAG_DOUBLE_ACTION_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_PROGRESS_DIALOG;
+import static co.sentinel.sentinellite.util.AppConstants.TAG_RATING_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_SINGLE_ACTION_DIALOG;
 import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 
@@ -223,6 +225,13 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
         } else {
             showSingleActionError(AppConstants.VALUE_DEFAULT, iUrl, AppConstants.VALUE_DEFAULT);
         }
+    }
+
+    /**
+     * Shows dialog to give rating for previous dVPN session.
+     */
+    private void showRatingDialog() {
+        RatingDialogFragment.newInstance().show(getSupportFragmentManager(), TAG_RATING_DIALOG);
     }
 
     /**
@@ -503,6 +512,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                         loadVpnFragment(getString(R.string.network_lost));
                         break;
                     default:
+                        showRatingDialog();
                         loadVpnFragment(null);
                         break;
                 }

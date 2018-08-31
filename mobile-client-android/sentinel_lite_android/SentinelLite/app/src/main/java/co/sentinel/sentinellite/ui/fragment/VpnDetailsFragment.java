@@ -22,6 +22,7 @@ import com.haipq.android.flagkit.FlagImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import co.sentinel.sentinellite.R;
@@ -116,7 +117,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         mFvFlag.setCountryCode(Converter.getCountryCode(mVpnListData.getLocation().country));
         mTvLocation.setText(mVpnListData.getLocation().country);
         // setup recyclerview
-        mAdapter = new VpnDetailListAdapter(getContext(),  getListData());
+        mAdapter = new VpnDetailListAdapter(getContext(), getListData());
         mRvVpnDetailsList.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvVpnDetailsList.setAdapter(mAdapter);
         // Set listener
@@ -131,7 +132,13 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         aData.add(new VpnDetailListData(getString(R.string.latency), getString(R.string.vpn_latency_value, mVpnListData.getLatency())));
         aData.add(new VpnDetailListData(getString(R.string.encryption), mVpnListData.getEncryptionMethod()));
         aData.add(new VpnDetailListData(getString(R.string.node_version), mVpnListData.getVersion()));
-//        aData.add(new VpnDetailListData(getString(R.string.price), ""));
+        String aRatingValue;
+        if (mVpnListData.getRating() == 0.0) {
+            aRatingValue = "N/A";
+        } else {
+            aRatingValue = String.format(Locale.getDefault(), "%.1f / %.1f", mVpnListData.getRating(), AppConstants.MAX_NODE_RATING);
+        }
+        aData.add(new VpnDetailListData(getString(R.string.node_rating), aRatingValue));
         return aData;
     }
 

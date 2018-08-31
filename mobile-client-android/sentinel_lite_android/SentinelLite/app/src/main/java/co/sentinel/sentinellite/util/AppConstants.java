@@ -10,6 +10,7 @@ public class AppConstants {
     public static final String PREFS_IS_HELPER_SHOWN = "is_helper_shown";
     public static final String PREFS_CONFIG_PATH = "prefs_config_path";
     public static final String PREFS_VPN_ADDRESS = "prefs_vpn_address";
+    public static final String PREFS_SESSION_NAME = "prefs_session_name";
     public static final String PREFS_CONNECTION_START_TIME = "prefs_connection_start_time_in_millis";
     public static final String PREFS_IP_ADDRESS = "prefs_ip_address";
     public static final String PREFS_IP_PORT = "prefs_ip_port";
@@ -37,6 +38,7 @@ public class AppConstants {
     public static final String TAG_PROGRESS_DIALOG = "co.sentinel.sentinellite.progress_dialog";
     public static final String TAG_SINGLE_ACTION_DIALOG = "co.sentinel.sentinellite.single_action_dialog";
     public static final String TAG_DOUBLE_ACTION_DIALOG = "co.sentinel.sentinellite.double_action_dialog";
+    public static final String TAG_RATING_DIALOG = "co.sentinel.sentinellite.rating_dialog";
     public static final String TAG_ERROR = "error";
     public static final String TAG_UPDATE = "update";
     public static final String TAG_DOWNLOAD = "download";
@@ -52,6 +54,7 @@ public class AppConstants {
     public static final String URL_BUILDER = "http://%1s:%d/ovpn";
     public static final String DISCONNECT_URL_BUILDER = "http://%1s:%d/disconnect";
     public static final String HOME = "home";
+    public static final double MAX_NODE_RATING = 5.0;
 
     // Branch URL constants
     public static final String BRANCH_REFERRAL_ID = "referralId";

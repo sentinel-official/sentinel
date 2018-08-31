@@ -16,9 +16,11 @@ import android.widget.TextView;
 import com.haipq.android.flagkit.FlagImageView;
 
 import java.util.List;
+import java.util.Locale;
 
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.network.model.VpnListEntity;
+import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.Convert;
 import co.sentinel.sentinellite.util.Converter;
 import co.sentinel.sentinellite.util.SpannableStringUtil;
@@ -73,12 +75,26 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvLatency.setText(aStyleLatency);
+        // Construct and set - Node Version SpannableString
         String aVersion = mContext.getString(R.string.vpn_node_version, aItemData.getVersion());
         SpannableString aStyleVersion = new SpannableStringUtil.SpannableStringUtilBuilder(aVersion, aItemData.getVersion())
                 .color(ContextCompat.getColor(mContext, R.color.colorTextWhite))
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvNodeVersion.setText(aStyleVersion);
+        // Construct and set - Node Rating SpannableString
+        String aRatingValue;
+        if (aItemData.getRating() == 0.0) {
+            aRatingValue = "N/A";
+        } else {
+            aRatingValue = String.format(Locale.getDefault(), "%.1f / %.1f", aItemData.getRating(), AppConstants.MAX_NODE_RATING);
+        }
+        String aRating = mContext.getString(R.string.vpn_node_rating, aRatingValue);
+        SpannableString aStyleRating = new SpannableStringUtil.SpannableStringUtilBuilder(aRating, aRatingValue)
+                .color(ContextCompat.getColor(mContext, R.color.colorTextWhite))
+                .customStyle(Typeface.BOLD)
+                .build();
+        holder.mTvNodeRating.setText(aStyleRating);
         // Set listeners
         holder.mRootView.setOnClickListener(v -> onRootViewClick(aItemData));
         holder.mBtnConnect.setOnClickListener(v -> onConnectClick(aItemData.getAccountAddress()));
@@ -93,7 +109,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder {
         View mRootView;
         FlagImageView mFvFlag;
-        TextView mTvLocation, mTvBandwidth, mTvEncMethod, mTvLatency, mTvNodeVersion;
+        TextView mTvLocation, mTvBandwidth, mTvEncMethod, mTvLatency, mTvNodeVersion, mTvNodeRating;
         Button mBtnConnect;
 
         ViewHolder(View itemView) {
@@ -105,6 +121,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
             mTvEncMethod = itemView.findViewById(R.id.tv_enc_method);
             mTvLatency = itemView.findViewById(R.id.tv_latency);
             mTvNodeVersion = itemView.findViewById(R.id.tv_node_version);
+            mTvNodeRating = itemView.findViewById(R.id.tv_node_rating);
             mBtnConnect = itemView.findViewById(R.id.btn_connect);
         }
     }

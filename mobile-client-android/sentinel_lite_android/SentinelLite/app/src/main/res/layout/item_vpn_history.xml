@@ -22,33 +22,30 @@
         <TextView
             android:id="@+id/session_id"
             style="@style/CustomTextAppearance.Text12.GrayNormal"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
             android:text="@string/session_id"
-            app:layout_constraintBottom_toTopOf="@+id/tv_session_id"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_session_id"
+            app:layout_constraintEnd_toStartOf="@+id/tv_session_id"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_session_id"
             style="@style/CustomTextAppearance.Text12.WhiteNormal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="14dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toTopOf="@+id/tv_received_data"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/session_id" />
+            app:layout_constraintStart_toEndOf="@+id/session_id"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/received_data"
@@ -71,7 +68,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toTopOf="@+id/tv_duration"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/received_data"

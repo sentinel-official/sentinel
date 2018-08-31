@@ -13,6 +13,8 @@ import co.sentinel.sentinellite.repository.VpnRepository;
 import co.sentinel.sentinellite.util.AppExecutors;
 import co.sentinel.sentinellite.viewmodel.DeviceRegisterViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
+import co.sentinel.sentinellite.viewmodel.RatingViewModel;
+import co.sentinel.sentinellite.viewmodel.RatingViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.SplashViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnConnectedViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnListViewModelFactory;
@@ -74,5 +76,10 @@ public class InjectorModule {
         BonusRepository aBonusRepository = provideBonusRepository(iContext, aDeviceId);
         AppVersionRepository aAppVersionRepository = provideAppVersionRepository();
         return new BonusViewModelFactory(aBonusRepository, aAppVersionRepository);
+    }
+
+    public static RatingViewModelFactory provideRatingViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aVpnRepository = provideVpnRepository(iContext, iDeviceId);
+        return new RatingViewModelFactory(aVpnRepository);
     }
 }

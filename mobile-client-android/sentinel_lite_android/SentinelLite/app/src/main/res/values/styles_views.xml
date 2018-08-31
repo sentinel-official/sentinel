@@ -211,4 +211,9 @@
     </style>
 
     <!-- RadioButton Theme -->
+
+    <!-- RatingBar Theme -->
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlActivated">@color/colorButtonOrange</item>
+    </style>
 </resources>

@@ -45,6 +45,7 @@ public class VpnRepository {
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
     private final SingleLiveEvent<Resource<String>> mDisconnectLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mRatingLiveEvent;
     private final SingleLiveEvent<String> mVpnUsageErrorLiveEvent;
 
     private VpnRepository(VpnListEntryDao iListDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
@@ -58,6 +59,7 @@ public class VpnRepository {
         mVpnServerCredentialsLiveEvent = new SingleLiveEvent<>();
         mVpnConfigLiveEvent = new SingleLiveEvent<>();
         mDisconnectLiveEvent = new SingleLiveEvent<>();
+        mRatingLiveEvent = new SingleLiveEvent<>();
         mVpnUsageErrorLiveEvent = new SingleLiveEvent<>();
 
         LiveData<List<VpnListEntity>> aVpnListServerData = getVpnListMutableLiveData();
@@ -108,6 +110,10 @@ public class VpnRepository {
 
     public SingleLiveEvent<Resource<VpnConfig>> getVpnConfigLiveEvent() {
         return mVpnConfigLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getRatingLiveEvent() {
+        return mRatingLiveEvent;
     }
 
     public void getVpnServerCredentials(String iVpnAddress) {
@@ -274,5 +280,34 @@ public class VpnRepository {
     private Call<GenericResponse> disconnectVpn(String iUrl, GenericRequestBody iRequestBody) {
         mDisconnectLiveEvent.postValue(Resource.loading(null));
         return mGenericWebService.disconnectVpn(iUrl, iRequestBody);
+    }
+
+    public void rateVpnSession(GenericRequestBody iRequestBody) {
+        mRatingLiveEvent.postValue(Resource.loading(null));
+        mGenericWebService.rateVpnSession(iRequestBody).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
+            }
+
+            private void reportSuccessResponse(Response<GenericResponse> iResponse) {
+                if (iResponse.isSuccessful() && iResponse.body() != null)
+                    mRatingLiveEvent.postValue(Resource.success(iResponse.body()));
+                else
+                    reportErrorResponse(null);
+            }
+
+            private void reportErrorResponse(String iThrowableLocalMessage) {
+                if (iThrowableLocalMessage != null)
+                    mRatingLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                else
+                    mRatingLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+            }
+        });
     }
 }

@@ -31,4 +31,7 @@ public interface GenericWebService {
     @POST(EndPoint.GET_VPN_USAGE_FOR_USER)
     Call<VpnUsage> getVpnUsageForUser(@Body GenericRequestBody iBody);
 
+    @POST(EndPoint.POST_VPN_SESSION_RATING)
+    Call<GenericResponse> rateVpnSession(@Body GenericRequestBody iBody);
+
 }

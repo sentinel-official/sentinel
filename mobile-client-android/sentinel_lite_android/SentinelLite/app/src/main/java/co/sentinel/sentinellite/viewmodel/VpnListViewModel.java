@@ -76,6 +76,7 @@ public class VpnListViewModel extends ViewModel {
     }
 
     public void saveCurrentVpnSessionConfig(VpnConfig data) {
+        AppPreferences.getInstance().saveString(AppConstants.PREFS_SESSION_NAME, data.sessionName);
         mVpnConfigSaveLiveEvent.postValue(Resource.loading(null));
         String aConfigPath = AppPreferences.getInstance().getString(AppConstants.PREFS_CONFIG_PATH);
         mAppExecutors.diskIO().execute(() -> {

@@ -3,6 +3,7 @@ import json
 
 import falcon
 
+from sentinel.server import Disconnect
 from sentinel.server import GenerateOVPN
 from sentinel.server import Token
 from sentinel.utils import JSONTranslator
@@ -23,3 +24,4 @@ server = falcon.API(middleware=[JSONTranslator()])
 server.add_route('/', Up())
 server.add_route('/token', Token())
 server.add_route('/ovpn', GenerateOVPN())
+server.add_route('/disconnect', Disconnect())

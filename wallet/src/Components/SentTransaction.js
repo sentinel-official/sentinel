@@ -189,7 +189,7 @@ class SentTransaction extends Component {
             })
         }
         return (
-            <div style={this.props.isTest ? (this.props.hasExtraDiv ? styles.testOuptutDivExtra : styles.testOutputDiv) : (this.props.hasExtraDiv ? styles.outputDivExtra : styles.outputDiv)}>
+            <div style={this.props.isTest ? styles.testOutputDiv : (this.props.hasExtraDiv ? styles.outputDivExtra : styles.outputDiv)}>
                 {
                     (txData && this.props.currentHash) ?
                         <div style={styles.wholeDiv}>

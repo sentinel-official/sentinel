@@ -28,6 +28,7 @@ def register_node(node):
         'ip': node.ip,
         'account_addr': node.config['account_addr'],
         'price_per_gb': node.config['price_per_gb'],
+        'enc_method': node.config['enc_method'],
         'location': node.location,
         'net_speed': node.net_speed
     }

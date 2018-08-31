@@ -1,4 +1,7 @@
 # coding=utf-8
+from .db import ADDRESS as DB_ADDRESS
+from .db import PASSWORD as DB_PASSWORD
+from .db import USER as DB_USER
 from .eth import ADDRESS as COINBASE_ADDRESS
 from .eth import MAX_TX_TRY
 from .eth import MIN_GAS

@@ -5,6 +5,7 @@ from hashlib import md5
 from redis import Redis
 
 from .referral import add_session
+from .referral import get_vpn_sessions
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
 from ..config import LIMIT_100MB
@@ -188,7 +189,7 @@ class ETHHelper(object):
 
         return error, usage
 
-    def get_vpn_usage(self, account_addr):
+    def get_vpn_usage(self, account_addr, device_id=None):
         error, usage = None, {
             'due': 0,
             'stats': {
@@ -198,6 +199,23 @@ class ETHHelper(object):
             },
             'sessions': []
         }
+        if device_id:
+            sessions = get_vpn_sessions(device_id)
+            sessions_count = len(sessions)
+            for index in range(0, sessions_count):
+                session = sessions[index]
+                usage['stats']['received_bytes'] += session['sent_bytes']
+                usage['stats']['duration'] += session['duration']
+                usage['stats']['amount'] += session['amount']
+                usage['session'].append({
+                    'id': index,
+                    'account_addr': str(session['from_addr']).lower(),
+                    'received_bytes': session['sent_bytes'],
+                    'session_duration': session['duration'],
+                    'amount': session['amount'],
+                    'timestamp': session['timestamp']
+                })
+            return error, usage
 
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
         if error is None:
@@ -248,8 +266,7 @@ class ETHHelper(object):
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, device_id=None):
         error, tx_hash, make_tx, session_id = None, None, False, None
-        error, sessions_count = self.get_vpn_sessions_count(
-            to_addr)  # to_addr: client account address
+        error, sessions_count = self.get_vpn_sessions_count(to_addr)  # to_addr: client account address
         if error is None:
             session_id = get_encoded_session_id(to_addr, sessions_count)
             _usage = db.usage.find_one({
@@ -291,14 +308,24 @@ class ETHHelper(object):
                     'to_addr': to_addr
                 })
 
-        if make_tx is True:
-            if to_addr == REFERRAL_DUMMY:
-                _, res = add_session(device_id, session_id)
-            else:
-                nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
-                error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration,
-                                                                   amount,
-                                                                   timestamp, session_id, nonce)
+        if to_addr == REFERRAL_DUMMY and sent_bytes >= LIMIT_100MB:
+            _, res = add_session(device_id, session_id)
+            _ = db.ref_sessions.insert_one({
+                'device_id': device_id,
+                'session_id': session_id,
+                'from_addr': from_addr,
+                'to_addr': to_addr,
+                'sent_bytes': sent_bytes,
+                'session_duration': session_duration,
+                'amount': amount,
+                'timestamp': timestamp
+            })
+
+        if make_tx is True and to_addr != REFERRAL_DUMMY:
+            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
+            error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration,
+                                                               amount,
+                                                               timestamp, session_id, nonce)
 
         return error, tx_hash
 

@@ -31,13 +31,42 @@ else
         if [ ${#PRICE} -le 0 ]; then
             echo "Price must be a positive number."
             continue
+        else
+            echo "Select Encryption Method Number: 1 (default)"
+            echo "1) AES-256-CBC"
+            echo "2) AES-128-CBC"
+            echo "3) AES-256-GCM"
+            echo "4) AES-128-GCM"
+            read ENCMETHOD
+            case $ENCMETHOD in
+            1)
+                echo "You selected AES-256-CBC as your encryption method"
+                ENCMETHOD=AES-256-CBC
+                ;;
+            2)
+                echo "You selected AES-128-CBC as your encryption method"
+                ENCMETHOD=AES-128-CBC
+                ;;
+            3)
+                echo "You selected AES-256-GCM as your encryption method"
+                ENCMETHOD=AES-256-GCM
+                ;;
+            4)
+                echo "You selected AES-128-GCM as your encryption method"
+                ENCMETHOD=AES-128-GCM
+                ;;
+            *)
+                echo "Default method is selected as: AES-256-CBC"
+                ENCMETHOD=AES-256-CBC
+                ;;
+            esac
         fi
 
         echo -n "Is everything correct ? [Y/N]: "
         read option
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
             touch ${CONFIG_DATA_PATH}
-            echo '{"account_addr": "'${ADDRESS}'", "price_per_gb": '${PRICE}', "token": ""}' > ${CONFIG_DATA_PATH}
+            echo '{"account_addr": "'${ADDRESS}'", "price_per_gb": '${PRICE}', "token": "", "enc_method": "'${ENCMETHOD}'"}' > ${CONFIG_DATA_PATH}
             break
         fi
     done

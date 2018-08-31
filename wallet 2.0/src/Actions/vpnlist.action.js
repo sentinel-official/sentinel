@@ -20,7 +20,7 @@ export async function getVpnList(vpnType, isTM) {
             'Accept': 'application/json',
             'Content-type': 'application/json',
         }
-    })
+    });
     if (response.data.success) {
         return {
             type: types.GET_VPN_LIST_SUCCESS,
@@ -40,7 +40,6 @@ export function setVpnType(vpnType) {
         payload: vpnType
     }
 }
-
 
 export function setVpnStatus(value) {
     return {

@@ -3,6 +3,7 @@ import config from '../Constants/config';
 import axios from 'axios';
 
 export function setTestNet(value) {
+    localStorage.setItem('config', value ? 'TEST' : 'MAIN');
     return {
         type: types.TESTNET,
         payload: value

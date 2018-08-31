@@ -76,9 +76,9 @@ export const calculateUsage = (localAddr, selectedVpn, value) => {
                 'up': 0
             };
             setStartValues(downCur, upCur);
-            stats.startDownload = downCur;
-            stats.startUpload = upCur;
-            stats.usage = usage;
+            stats["startDownload"] = downCur;
+            stats["startUpload"] = upCur;
+            stats["usage"] = usage;
 
         }
         else {

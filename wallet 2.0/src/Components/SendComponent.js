@@ -73,7 +73,7 @@ class SendComponent extends React.Component {
       isDisabled: true,
       label: 'SEND',
       isVPNPayment: false,
-      sessionId:''
+      sessionId: ''
     }
   }
 
@@ -166,32 +166,33 @@ class SendComponent extends React.Component {
           self.setState({ label: 'SEND', isDisabled: true })
         } else {
           if (self.state.token === 'ETH') {
-            ethTransaction(self.props.local_address, sendToAddress, amount, gwei * 1e9, gas, privateKey, function (err, result) {
+            ethTransaction(self.props.local_address, sendToAddress, amount, gwei * 10 ** 9, gas, privateKey, function (err, result) {
               if (err) {
                 console.log('Error', err);
                 self.setState({ label: 'SEND', isDisabled: true });
               } else {
                 transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
-                  console.log(response);
+                  console.log('eth tx complete', response);
                   self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
                 })
               }
             });
           } else {
             console.log('in else parent');
-            tokenTransaction(self.props.local_address, sendToAddress, amount, gwei * 1e9, gas, privateKey, function (err, result) {
+            tokenTransaction(self.props.local_address, sendToAddress, amount, gwei * 10 ** 9, gas, privateKey, function (err, result) {
               console.log('in callback', err, result);
               if (err) {
                 console.log('Error', err);
                 self.setState({ label: 'SEND', isDisabled: true })
               } else {
-                console.log('in tokentx data', initPaymentDetails);
+                console.log('in tokentx data hello', initPaymentDetails);
                 let type;
-                if (initPaymentDetails.id === -1) {
+                if (initPaymentDetails!==null && initPaymentDetails.id === -1) {
                   type = 'init'
                 } else {
                   type = 'normal'
                 }
+                console.log('state', self.state);
                 if (self.state.isVPNPayment) {
                   let data = {
                     from_addr: self.props.local_address,
@@ -229,22 +230,25 @@ class SendComponent extends React.Component {
 
   componentWillMount() {
     let { payVpn, initPaymentDetails } = this.props;
+
+    console.log('component will mount', initPaymentDetails, payVpn)
     if (payVpn.isVPNPayment) {
       this.setState({
         sendToAddress: payVpn.data.account_addr,
         amount: payVpn.data.amount,
         token: 'SENT',
         isVPNPayment: true,
-        sessionId:payVpn.data.sessionId
+        sessionId: payVpn.data.sessionId
       });
       this.getGasLimit(payVpn.data.amount, payVpn.data.account_addr, 'SENT')
-    } else if (initPaymentDetails) {
+    } else if (initPaymentDetails!==null) {
+      console.log('in else if')
       this.setState({
         sendToAddress: initPaymentDetails.account_addr,
         amount: initPaymentDetails.amount,
         token: 'SENT',
         isVPNPayment: true,
-        sessionId:null
+        sessionId: null
       });
       this.getGasLimit(initPaymentDetails.amount, initPaymentDetails.account_addr, 'SENT')
     }

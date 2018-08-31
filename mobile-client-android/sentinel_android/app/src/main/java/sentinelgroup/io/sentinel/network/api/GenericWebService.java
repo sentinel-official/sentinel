@@ -64,4 +64,7 @@ public interface GenericWebService {
 
     @POST
     Call<TxHistory> getTransactionHistory(@Url String url);
+
+    @POST(EndPoint.POST_VPN_SESSION_RATING)
+    Call<GenericResponse> rateVpnSession(@Body GenericRequestBody iBody);
 }

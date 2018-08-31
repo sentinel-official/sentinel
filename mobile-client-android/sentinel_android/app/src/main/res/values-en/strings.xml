@@ -23,8 +23,8 @@
     <string name="view_vpns">VIEW VPNs</string>
     <string name="make_payment">Make Payment</string>
     <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN.\nIf you have already paid, Please wait for a couple of minutes, or you can report the payment</string>
-    <string name="view_vpn_list">VPN List</string>
-    <string name="view_socks5_list">SOCKS5 List</string>
+    <string name="view_vpn_list">VPN Nodes</string>
+    <string name="view_socks5_list">SOCKS5 Nodes</string>
     <string name="connect_to_vpn">Connect to VPN</string>
     <string name="connect">Connect</string>
     <string name="sent_desc">Total SENT Tokens</string>
@@ -60,8 +60,9 @@
     <string name="secure_keys">Secure Your Keys</string>
     <string name="storage_permission_denied">Storage permission not granted.</string>
     <string name="key_copied">Private Key copied to clipboard</string>
+    <string name="referral_id_copied">Referral ID copied to clipboard</string>
     <string name="address_copied">Address copied to clipboard</string>
-    <string name="link_copied">Link copied to clipboard</string>
+    <string name="link_copied">Referral Link copied to clipboard</string>
     <string name="hash_copied">Transaction Hash copied to clipboard</string>
     <string name="set_app_pin">Set App PIN</string>
     <string name="pin_mismatch">Pin and Confirm Pin did not match</string>
@@ -93,6 +94,7 @@
     <string name="vpn_price_connected">Price (SENTs/GB)</string>
     <string name="vpn_latency">Latency %s</string>
     <string name="vpn_node_version">Version %s</string>
+    <string name="vpn_node_rating">Rating %s</string>
     <string name="vpn_latency_connected">Latency</string>
     <string name="vpn_enc_method_connected">Encryption</string>
     <string name="vpn_duration_connected">Duration</string>
@@ -123,6 +125,7 @@
     <string name="node_version">Version:</string>
     <string name="encryption">Encryption:</string>
     <string name="latency">Latency:</string>
+    <string name="node_rating">Rating:</string>
     <string name="price">Price (SENTs / GB):</string>
     <string name="coming_soon">Coming soon…</string>
     <string name="fetching_config">Fetching VPN configurations…</string>
@@ -217,6 +220,10 @@
     <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
     <string name="can_claim_after">Can claim after: %s</string>
     <string name="read_more">Read More</string>
+    <string name="label_rate_session">Please rate your experience with the previous dVPN session</string>
+    <string name="error_select_rating">Please select rating</string>
+    <string name="action_skip">Skip</string>
+    <string name="action_rate">Rate</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

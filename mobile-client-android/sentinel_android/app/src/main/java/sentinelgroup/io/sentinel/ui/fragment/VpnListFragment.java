@@ -88,7 +88,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fragmentLoaded(getString(R.string.vpn_connections));
+        fragmentLoaded(getActivity() instanceof DashboardActivity ? getString(R.string.app_name) : getString(R.string.vpn_connections));
         initViewModel();
     }
 

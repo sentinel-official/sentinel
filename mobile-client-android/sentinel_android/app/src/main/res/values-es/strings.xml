@@ -180,7 +180,8 @@
     <string name="storage_permission_denied">Permiso de almacenamiento no garantizado.</string>
     <string name="key_copied">Clave privada copiada al portapapeles</string>
     <string name="address_copied">Dirección copiada al portapapeles</string>
-    <string name="link_copied">Link copied to clipboard</string>
+    <string name="referral_id_copied">ID de referido copiada al portapapeles</string>
+    <string name="link_copied">Referral Link copied to clipboard</string>
     <string name="hash_copied">Hash de transacción copiado al portapapeles</string>
     <string name="set_app_pin">Establece el PIN de la app</string>
     <string name="pin_mismatch">El Pin y la confirmación del mismo no coinciden</string>
@@ -239,6 +240,8 @@
     <string name="ip">IP:</string>
     <string name="bandwidth">Ancho de banda:</string>
     <string name="latency">Latencia:</string>
+    <string name="node_version">Version:</string>
+    <string name="node_rating">Rating:</string>
     <string name="price">Precio (SENTs / GB):</string>
     <string name="coming_soon">Próximamente…</string>
     <string name="fetching_config">Obteniendo configuraciones del VPN…</string>
@@ -327,12 +330,15 @@
     <string name="v">ver %s</string>
     <string name="cancel">Cancelar</string>
     <string name="encryption">Cifrado:</string>
-    <string name="referral_id_copied">ID de referido copiada al portapapeles</string>
     <string name="registering_device">Configurando dispositivo. Por favor, espera…</string>
     <string name="ok">OK</string>
     <string name="can_claim_after">Puede reclamar después de: %s</string>
     <string name="referral_desc">Comparte la app de Sentinel con tus amigos; usa la app dVPN y recibirás un incentivo por ayudar al desarrollo de la comunidad &amp; descentralización de la red</string>
     <string name="network_lost">Se detectó una pérdida de conexión de la red. La conexión de la VPN se ha desconectado.\nPor favor, vuelva a conectarse.</string>
+    <string name="label_rate_session">Please rate your experience with the previous dVPN session</string>
+    <string name="error_select_rating">Please select rating</string>
+    <string name="action_skip">Skip</string>
+    <string name="action_rate">Rate</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

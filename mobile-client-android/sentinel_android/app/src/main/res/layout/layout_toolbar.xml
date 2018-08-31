@@ -15,12 +15,15 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
         <LinearLayout
+            android:id="@+id/llTitle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="?android:attr/actionBarSize"
-            android:layout_marginRight="?android:attr/actionBarSize"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingEnd="0dp"
+            android:paddingLeft="-56dp"
+            android:paddingRight="0dp"
+            android:paddingStart="-56dp">
 
             <ImageView
                 android:id="@+id/toolbar_icon"
@@ -37,6 +40,7 @@
                 android:id="@+id/toolbar_title"
                 style="@style/CustomTextAppearance.Toolbar"
                 android:text="@string/app_name" />
+
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 

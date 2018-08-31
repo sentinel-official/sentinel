@@ -60,7 +60,8 @@
     <string name="storage_permission_denied">Нет доступа к хранилищу</string>
     <string name="key_copied">Приватный ключ скопирован в буфер обмена</string>
     <string name="address_copied">Адрес скопирован в буфер обмена</string>
-    <string name="link_copied">Link copied to clipboard</string>
+    <string name="referral_id_copied">Referral ID copied to clipboard</string>
+    <string name="link_copied">Referral Link copied to clipboard</string>
     <string name="hash_copied">Хэш транзакции скопирован в буфер обмена</string>
     <string name="set_app_pin">Поставить PIN</string>
     <string name="pin_mismatch">PIN-коды не совпадают</string>
@@ -92,6 +93,7 @@
     <string name="vpn_price_connected">Цена (SENT/ГБ)</string>
     <string name="vpn_latency">Задержка %s</string>
     <string name="vpn_node_version">Версия %s</string>
+    <string name="vpn_node_rating">Rating %s</string>
     <string name="vpn_latency_connected">Задержка</string>
     <string name="vpn_enc_method_connected">Шифрование</string>
     <string name="vpn_duration_connected">Длительность</string>
@@ -122,6 +124,7 @@
     <string name="latency">Задержка:</string>
     <string name="encryption">Шифрование:</string>
     <string name="node_version">Версия:</string>
+    <string name="node_rating">Rating:</string>
     <string name="price">Цена (SENT/ГБ):</string>
     <string name="coming_soon">Скоро добавим…</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
@@ -217,6 +220,10 @@
     <string name="vpn_empty_list_message">В данный момент нет доступных VPN для подключения.</string>
     <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
     <string name="can_claim_after">Можно забрать через: %s</string>
+    <string name="label_rate_session">Please rate your experience with the previous dVPN session</string>
+    <string name="error_select_rating">Please select rating</string>
+    <string name="action_skip">Skip</string>
+    <string name="action_rate">Rate</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

@@ -14,6 +14,7 @@ public class AppConstants {
     public static final String PREFS_IS_FREE_TOKEN_RECEIVED = "prefs_is_free_token_received";
     public static final String PREFS_IS_TEST_NET_ACTIVE = "prefs_is_test_net_active";
     public static final String PREFS_VPN_ADDRESS = "prefs_vpn_address";
+    public static final String PREFS_SESSION_NAME = "prefs_session_name";
     public static final String PREFS_CONNECTION_START_TIME = "prefs_connection_start_time_in_millis";
     public static final String PREFS_GAS_NORMAL = "prefs_standard";
     public static final String PREFS_GAS_FAST = "prefs_fast";
@@ -51,6 +52,7 @@ public class AppConstants {
     public static final String TAG_ADD_REFERRAL = "ADD_REFERRAL";
     public static final String TAG_INIT_PAY = "INIT_PAY";
     public static final String TAG_LOGOUT = "LOGOUT";
+    public static final String TAG_RATING_DIALOG = "co.sentinel.sentinellite.rating_dialog";
 
     // Error Constants
     public static final String ERROR_GENERIC = "error_generic";
@@ -82,6 +84,7 @@ public class AppConstants {
     public static final String SENT_TX_URL_BUILDER = "https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=logs&action=getLogs&fromBlock=0&toBlock=latest&address=0x29317B796510afC25794E511e7B10659Ca18048B&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=%1s&topic1_2_opr=or&topic2=%2s";
     public static final String ETHERSCAN_URL_BUILDER = "https://rinkeby.etherscan.io/tx/%1s";
     public static final String HOME = "home";
+    public static final double MAX_NODE_RATING = 5.0;
 
     // Branch URL constants
     public static final String BRANCH_REFERRAL_ID = "referralId";

@@ -236,4 +236,9 @@
         <item name="android:checkMark">@null</item>
         <item name="android:drawableLeft">@drawable/selector_agree_radio_button</item>
     </style>
+
+    <!-- RatingBar Theme -->
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlActivated">@color/colorButtonOrange</item>
+    </style>
 </resources>

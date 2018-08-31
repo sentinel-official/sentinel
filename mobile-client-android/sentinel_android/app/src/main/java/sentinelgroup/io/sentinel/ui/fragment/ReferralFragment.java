@@ -43,7 +43,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
 
     private SwipeRefreshLayout mSrReload;
     private TextView mTvReferralCode, mTvReferralLink, mtvReferralCount, mTvRewardsEarned, mTvCanClaimAfter, mTvReadMore;
-    private ImageButton mIbCopyReferral;
+    private ImageButton mIbCopyReferral, mIbCopyReferralLink;
     private Button mBtnShareAddress, mBtnClaimBonus;
 
     private String mShareString;
@@ -94,6 +94,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         mtvReferralCount = iView.findViewById(R.id.tv_referral_count);
         mTvRewardsEarned = iView.findViewById(R.id.tv_rewards_earned);
         mIbCopyReferral = iView.findViewById(R.id.ib_copy_referral);
+        mIbCopyReferralLink = iView.findViewById(R.id.ib_copy_referral_link);
         mBtnShareAddress = iView.findViewById(R.id.btn_share_referral_id);
         mTvCanClaimAfter = iView.findViewById(R.id.tv_can_claim_after);
         mBtnClaimBonus = iView.findViewById(R.id.btn_claim_bonus);
@@ -101,6 +102,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         // Set listeners
         mSrReload.setOnRefreshListener(this);
         mIbCopyReferral.setOnClickListener(this);
+        mIbCopyReferralLink.setOnClickListener(this);
         mBtnShareAddress.setOnClickListener(this);
         mBtnClaimBonus.setOnClickListener(this);
         mTvReadMore.setOnClickListener(this);
@@ -157,7 +159,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
                 mViewModel.claimReferralBonus();
                 break;
             case R.id.ib_copy_referral:
-                copyToClipboard(mTvReferralCode.getText().toString().trim(), R.string.address_copied);
+                copyToClipboard(mTvReferralCode.getText().toString().trim(), R.string.referral_id_copied);
                 break;
             case R.id.ib_copy_referral_link:
                 copyToClipboard(mTvReferralLink.getText().toString().trim(), R.string.link_copied);

@@ -18,6 +18,7 @@ import sentinelgroup.io.sentinel.repository.WalletRepository;
 import sentinelgroup.io.sentinel.util.AppExecutors;
 import sentinelgroup.io.sentinel.viewmodel.CreateAuidViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.RatingViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.BonusViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
@@ -190,5 +191,10 @@ public class InjectorModule {
         AppVersionRepository aAppVersionRepository = provideAppVersionRepository();
         CreateAuidRepository aCreateAuidRepository = provideCreateAccountRepository(iContext);
         return new SplashViewModelFactory(aBonusRepository, aAppVersionRepository, aCreateAuidRepository);
+    }
+
+    public static RatingViewModelFactory provideRatingViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aVpnRepository = provideVpnRepository(iContext, iDeviceId);
+        return new RatingViewModelFactory(aVpnRepository);
     }
 }

@@ -111,15 +111,30 @@
             style="@style/CustomTextAppearance.Text12.GrayNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:paddingEnd="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
+            app:layout_constraintBottom_toTopOf="@+id/tv_node_rating"
+            app:layout_constraintEnd_toEndOf="@+id/tv_latency"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_latency" />
+
+        <TextView
+            android:id="@+id/tv_node_rating"
+            style="@style/CustomTextAppearance.Text12.GrayNormal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:paddingEnd="@dimen/margin_8"
             android:paddingLeft="@dimen/margin_8"
             android:paddingRight="@dimen/margin_8"
             android:paddingStart="@dimen/margin_8"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tv_latency"
+            app:layout_constraintEnd_toEndOf="@+id/tv_node_version"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_latency" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_node_version" />
 
         <Button
             android:id="@+id/btn_connect"

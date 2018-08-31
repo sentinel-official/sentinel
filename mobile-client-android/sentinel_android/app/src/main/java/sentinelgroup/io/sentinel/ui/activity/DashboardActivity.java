@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.ui.custom.ProfileAsync;
 import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
+import sentinelgroup.io.sentinel.ui.dialog.RatingDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnConnectedFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
@@ -55,6 +57,7 @@ import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 import static sentinelgroup.io.sentinel.util.AppConstants.DOUBLE_ACTION_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.SINGLE_ACTION_DIALOG_TAG;
+import static sentinelgroup.io.sentinel.util.AppConstants.TAG_RATING_DIALOG;
 
 public class DashboardActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
         OnGenericFragmentInteractionListener, OnVpnConnectionListener, VpnStatus.StateListener, VpnStatus.ByteCountListener, DoubleActionDialogFragment.OnDialogActionListener {
@@ -248,6 +251,13 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         } else {
             showSingleActionError(AppConstants.VALUE_DEFAULT, iUrl, AppConstants.VALUE_DEFAULT);
         }
+    }
+
+    /**
+     * Shows dialog to give rating for previous dVPN session.
+     */
+    private void showRatingDialog() {
+        RatingDialogFragment.newInstance().show(getSupportFragmentManager(), TAG_RATING_DIALOG);
     }
 
     /**
@@ -656,6 +666,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                             loadVpnFragment(getString(R.string.network_lost));
                             break;
                         default:
+                            showRatingDialog();
                             loadVpnFragment(null);
                             break;
                     }

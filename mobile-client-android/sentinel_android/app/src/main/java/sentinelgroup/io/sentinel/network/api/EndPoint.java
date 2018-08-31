@@ -17,6 +17,7 @@ public class EndPoint {
     public static final String GET_VPN_CURRENT_USAGE = "client/vpn/current";
     public static final String MAKE_VPN_USAGE_PAYMENT = "client/vpn/pay";
     public static final String REPORT_PAYMENT = "client/vpn/report";
+    public static final String POST_VPN_SESSION_RATING = "client/vpn/rate";
     /*
      * Bonuses flow
      */

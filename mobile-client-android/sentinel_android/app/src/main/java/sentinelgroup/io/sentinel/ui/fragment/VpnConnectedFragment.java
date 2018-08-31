@@ -19,18 +19,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.haipq.android.flagkit.FlagImageView;
-
 import java.util.Objects;
 
-import de.blinkt.openvpn.core.ConnectionStatus;
-import de.blinkt.openvpn.core.OpenVPNManagement;
-import de.blinkt.openvpn.core.VpnStatus;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.ui.activity.VpnListActivity;
+import sentinelgroup.io.sentinel.ui.custom.BlurFlagImageView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -40,8 +36,6 @@ import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.SpannableStringUtil;
 import sentinelgroup.io.sentinel.viewmodel.VpnConnectedViewModel;
 import sentinelgroup.io.sentinel.viewmodel.VpnConnectedViewModelFactory;
-
-import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,9 +54,9 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
 
     private OnVpnConnectionListener mVpnListener;
 
-    private FlagImageView mFvFlag;
+    private BlurFlagImageView mFvFlag;
     private TextView mTvVpnState, mTvLocation, mTvIp, mTvDownloadSpeed, mTvUploadSpeed, mTvDataUsed,
-            mTvBandwidth, mTvLatency, mTvPrice, mTvDuration;
+            mTvBandwidth, mTvLatency, mTvEncMethod, mTvPrice, mTvDuration;
     private Button mBtnDisconnect, mBtnViewVpn;
 
     private Long mConnectionTime = 0L;
@@ -124,6 +118,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mTvDataUsed = iView.findViewById(R.id.tv_data_used);
         mTvBandwidth = iView.findViewById(R.id.tv_bandwidth);
         mTvLatency = iView.findViewById(R.id.tv_latency);
+        mTvEncMethod = iView.findViewById(R.id.tv_enc_method);
         mTvPrice = iView.findViewById(R.id.tv_price);
         mTvDuration = iView.findViewById(R.id.tv_duration);
         mBtnDisconnect = iView.findViewById(R.id.btn_disconnect);
@@ -159,12 +154,14 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mTvIp.setText(aStyledIp);
         // Set country flag
         mFvFlag.setCountryCode(Converter.getCountryCode(iVpnEntity.getLocation().country));
-        // Construct and set - Bandwidth SpannableString
+        // Set Bandwidth
         mTvBandwidth.setText(getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(iVpnEntity.getNetSpeed().download, Convert.DataUnit.MBPS)));
-        // Construct and set - Price SpannableString
+        // Set Price
         mTvPrice.setText(getString(R.string.vpn_price_value, iVpnEntity.getPricePerGb()));
-        // Construct and set - Latency SpannableString
+        // Set Latency
         mTvLatency.setText(getString(R.string.vpn_latency_value, iVpnEntity.getLatency()));
+        // Set Encryption Method
+        mTvEncMethod.setText(iVpnEntity.getEncryptionMethod());
     }
 
     public void updateStatus(String iState) {

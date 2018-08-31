@@ -40,3 +40,4 @@ export const SOCKS5_CREDS = 'SOCKS5_CREDS';
 export const TENDERMINT = 'TENDERMINT';
 export const TM_PAY_VPN = 'TM_PAY_VPN';
 export const PAY_VPN = 'PAY_VPN';
+export const NETWORK_TYPE = 'NETWORK_TYPE';

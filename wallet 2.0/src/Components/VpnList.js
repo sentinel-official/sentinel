@@ -7,6 +7,7 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
+import { networkChange } from '../Actions/NetworkChange';
 import { setListViewType, getVpnList, setVpnType } from '../Actions/vpnlist.action';
 import CustomTextfield from "./customTextfield";
 import VpnListView from './VpnListView';
@@ -14,6 +15,9 @@ import VpnMapView from './VpnMapView';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import CustomButton from "./customButton";
 import { margin, radioStyle } from "../Assets/commonStyles";
+import {isOnline} from "../Actions/convertErc.action";
+import {checkGateway, getGatewayUrl, isPrivate, setMaster} from "../Utils/utils";
+import NetworkChangeDialog from "./SharedComponents/networkChangeDialog";
 
 const styles = theme => ({
     root: {
@@ -37,13 +41,65 @@ class VpnList extends Component {
         this.state = {
             zoom: 1,
             isGetVPNCalled: false,
-            dVpnQuery: '',
-            vpnType: 'openvpn',
-            networkType: 'public',
             listActive: true,
             mapActive: false,
+            isTest: false,
+            showPopUp: false,
+            openSnack: false,
+            isPrivate: false,
+            isLoading: false,
+            success: false,
+            uri: false,
+            snackMessage: '',
+            authCode: '',
+            vpnType: 'openvpn',
+            networkType: 'public',
+            dVpnQuery: '',
+
         }
     }
+
+    toggleNetwork = (toggle) => {
+        if (this.props.isTest) {
+            if (isOnline()) {
+                if (this.props.networkType === 'private') {
+                    checkGateway((err, data, url) => {
+                        if (err) {
+                            this.setState({ showPopUp: true })
+                        }
+                        else {
+                            this.setState({ authCode: data, isPrivate: true, openSnack: true, snackMessage: 'Private Net is Enabled with ' + url })
+                        }
+                    })
+                    // this.setState({ openSnack: true, snackMessage: lang[this.props.lang].SelectNode })
+                }
+                else {
+                    setMaster( data => {
+                        this.setState({ isPrivate: false, authCode: '' });
+                    })
+                }
+            }
+            else {
+                this.setState({ openSnack: true, snackMessage: 'You Are Offline' })
+            }
+        }
+    };
+
+    getGatewayAddr = async (authCode) => {
+        this.setState({ isLoading: true });
+        await getGatewayUrl(authCode, (err, data, url) => {
+            if (err) {
+                this.setState({ isPrivate: false, showPopUp: false, openSnack: true, snackMessage: err.message || 'Problem in enabling private net' });
+                setTimeout(() => {this.setState({ isLoading: false,})}, 1500)
+            }
+            else {
+                this.setState({ isPrivate: true, showPopUp: false, openSnack: true, snackMessage: 'Private Net is Enabled with ' + url });
+                setTimeout(() => {this.setState({ isLoading: false, success: true, uri: true })}, 1500);
+                setTimeout(() => {this.setState({ open: false })}, 2000)
+            }
+        })
+    };
+
 
     componentWillReceiveProps(nextProps) {
         this.setState({ vpnType: nextProps.vpnType })
@@ -54,6 +110,14 @@ class VpnList extends Component {
 
     componentWillMount = () => {
         this.props.getVpnList(this.state.vpnType, this.props.isTM);
+
+        isPrivate( (isPrivate, authcode) => {
+            if (isPrivate) {
+                this.props.networkChange('private');
+                this.setState({ isPrivate, authcode, success: true });
+
+            }
+        })
     };
 
     handleRadioChange = (event) => {
@@ -62,11 +126,12 @@ class VpnList extends Component {
 
     };
     handleNetworkChange = (event) => {
-        // this.props.setVpnType(event.target.value);
-        // this.props.getVpnList(event.target.value);
-
+        this.props.networkChange(event.target.value);
     };
 
+    closePrivDialog = () => {
+        this.props.networkChange('public');
+    };
     listViewActive = () => {
         this.setState({ listActive: true, mapActive: false });
         this.props.setListViewType('list')
@@ -92,13 +157,7 @@ class VpnList extends Component {
 
     render() {
         const { classes } = this.props;
-        // let self = this;
-        // if (!this.state.isGetVPNCalled && this.props.isTest) {
-        //     setInterval(function () {
-        //         self.getVPNs()
-        //     }, 10000);
-        //     this.setState({ isGetVPNCalled: true });
-        // }
+
         return (
             <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }} >
@@ -107,7 +166,6 @@ class VpnList extends Component {
                             this.state.mapActive ?
 
                                 <FormControl component="fieldset" className={classes.networkFormControl}>
-                                    {/*<FormLabel className={classes.row} component="legend">dVPN Type</FormLabel>*/}
                                     <RadioGroup
                                         aria-label="dVPN Type"
                                         name="nodes"
@@ -125,6 +183,17 @@ class VpnList extends Component {
                                 this.setState({dVpnQuery: e.target.value})
                             }}/>
                         }
+                        { // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
+                            // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
+                            // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
+                            // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
+                            // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
+                        }
+                        <NetworkChangeDialog open={this.props.networkType === 'private' && !this.state.success}
+                                             close={this.closePrivDialog} getGatewayAddr={this.getGatewayAddr}
+                                             isLoading={this.state.isLoading} success={this.state.success}
+                                             uri={this.state.uri} snackbar={this.state.snackMessage}
+                        />
                     </div>
                     <div style={{ display: 'flex' }} >
                         <div style={margin}>
@@ -154,7 +223,7 @@ class VpnList extends Component {
                                 aria-label="dVPN Type"
                                 name="nodes"
                                 className={classes.group}
-                                value={this.state.networkType}
+                                value={this.props.networkType}
                                 onChange={this.handleNetworkChange}
                             >
                                 <FormControlLabel value="public" control={<Radio style={radioStyle}/>} label="Public"/>
@@ -167,7 +236,6 @@ class VpnList extends Component {
                         <RefreshIcon />
                     </IconButton>
                     <FormControl component="fieldset" className={classes.dVPNFormControl}>
-                        {/*<FormLabel className={classes.row} component="legend">dVPN Type</FormLabel>*/}
                         <RadioGroup
                             aria-label="dVPN Type"
                             name="nodes"
@@ -207,7 +275,8 @@ function mapStateToProps(state) {
         listView: state.setListViewType,
         vpnType: state.vpnType,
         vpnList: state.getVpnList,
-        isTM: state.setTendermint
+        isTM: state.setTendermint,
+        networkType: state.networkChange,
     }
 }
 
@@ -215,7 +284,8 @@ function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         setListViewType,
         getVpnList,
-        setVpnType
+        setVpnType,
+        networkChange,
     }, dispatch)
 }
 

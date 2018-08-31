@@ -16,6 +16,7 @@ import { VPNUsage } from './vpnUsage'
 import { getKeys, setTMComponent, tmBalance } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
 import { socksReducer } from './SOCKSReducer';
+import { networkChange } from './NetworkChange'
 
 const rootReducer = combineReducers({
     setLanguage,
@@ -49,7 +50,8 @@ const rootReducer = combineReducers({
     socksReducer,
     setVpnStatus,
     setTendermint,
-    payVPNTM
+    payVPNTM,
+    networkChange,
 });
 
 export default rootReducer;

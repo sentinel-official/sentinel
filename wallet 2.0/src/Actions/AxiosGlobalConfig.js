@@ -1,15 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import { ROOT_URL } from './types';
-axios.defaults.baseURL = ROOT_URL;
+axios.defaults.baseURL = localStorage.getItem('B_URL');
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 axios.defaults.headers.common['Cache-Control'] = 'no-cache';
-import { Snackbar } from 'material-ui';
 
 let authTokenRequest;
 function getAuthToken () {
     if (!authTokenRequest) {
-        authTokenRequest = axios.post('/auth/token', {token: localStorage.getItem('refreshToken')}).then((response) => {
+        authTokenRequest = axios.post('/client/token', { 'address': localStorage.getItem('B_URL'), 'auth_code': localStorage.getItem('authcode') }).then((response) => {
             return response
         }).catch((error) => {
             return error
@@ -27,37 +26,29 @@ function resetAuthTokenRequest () {
 axios.interceptors.response.use(function (response) {
     return response
 }, function (error) {
-    // const originalRequest = error.config
 
-    if (error.toString() === 'Error: Network Error') {
-        <Snackbar open={true} message={"Check Your Internet Connection"} />
-    }
     if (error.response.status === 500) {
-        console.log('ServerError')
+        console.log('ServerError globalconfig')
     }
 
     //expired refresh tokens
-    if (error.response.data.message === 'Something wrong with token.') {
-        console.log('Refresh Token Expired')
-        setTimeout(function () {
+    if (error.response.data.description === 'Invalid payload padding') {
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
-            window.location.href = '/'
-        }, 3000);
-        return
+            return
     }
 
     // xs-token expired
 
-    if (error.response.data.status === 'unauthenticated' && !error.response.config.__isRetryRequest) {
+    if (error.response.data.description === 'Signature has expired' && !error.response.config.__isRetryRequest) {
         return new Promise((resolve, reject) => {
             return getAuthToken().then((response) => {
                 let data = JSON.stringify(response.data);
                 data = JSON.parse(data);
 
                 if (response.status === 200) {
-                    localStorage.removeItem('token');
-                    localStorage.setItem('token', data.token);
+                    localStorage.removeItem('access_token');
+                    localStorage.setItem('access_token', data.token);
                     error.config.__isRetryRequest = true;
                     error.config.headers.Authorization = 'Bearer ' + data.token;
                     resolve(axios(error.config))
@@ -66,9 +57,8 @@ axios.interceptors.response.use(function (response) {
                 reject(error)
             });
         });
-    } else if(error.response.data.status === 'unauthenticated') {
+    } else if(error.response.data.status === 'Signature verification failed') {
         localStorage.clear();
-        window.location.href='/';
     }
 
     return Promise.reject(error)

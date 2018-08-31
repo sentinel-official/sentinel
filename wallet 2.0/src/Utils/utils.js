@@ -194,6 +194,33 @@ export function checkGateway(cb) {
     });
 }
 
+export function isPrivate(cb) {
+    getConfig(function (err, data) {
+        if (err) { cb(false) }
+        else {
+            let configData = JSON.parse(data);
+            if (configData.hasOwnProperty('isPrivate')) {
+                if (configData.isPrivate) {
+                    localStorage.setItem( 'B_URL', configData.gatewayUrl);
+                    localStorage.setItem('isPrivate', 'true');
+                    localStorage.setItem('authcode', configData.authcode);
+                    getClientToken(configData.authcode, configData.gatewayUrl, (error, data) => {
+                        cb(true, configData.authcode)
+                    })
+                }
+                else {
+                    getMasterUrl();
+                    cb(false, '')
+                }
+            }
+            else {
+                getMasterUrl();
+                cb(false, '')
+            }
+        }
+    })
+}
+
 export async function getGatewayUrl(authCode, cb) {
         console.log('got the code: ', authCode)
         axios.post(BOOT_URL + '/master', { 'authCode': authCode } ).then(function (response) {

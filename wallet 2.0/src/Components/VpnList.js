@@ -16,7 +16,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import CustomButton from "./customButton";
 import { margin, radioStyle } from "../Assets/commonStyles";
 import {isOnline} from "../Actions/convertErc.action";
-import {checkGateway, getGatewayUrl, setMaster} from "../Utils/utils";
+import {checkGateway, getGatewayUrl, isPrivate, setMaster} from "../Utils/utils";
 import NetworkChangeDialog from "./SharedComponents/networkChangeDialog";
 
 const styles = theme => ({
@@ -60,28 +60,15 @@ class VpnList extends Component {
     }
 
     toggleNetwork = (toggle) => {
-        console.log('toggle called')
         if (this.props.isTest) {
-            console.log('6')
-
             if (isOnline()) {
-                console.log('5')
-
                 if (this.props.networkType === 'private') {
-                    console.log('4')
-
                     checkGateway((err, data, url) => {
-                        console.log('3')
-
                         if (err) {
                             this.setState({ showPopUp: true })
-                            console.log('2', err)
                         }
                         else {
-                            console.log('1')
-
                             this.setState({ authCode: data, isPrivate: true, openSnack: true, snackMessage: 'Private Net is Enabled with ' + url })
-                            // this.props.privateChange(true)
                         }
                     })
                     // this.setState({ openSnack: true, snackMessage: lang[this.props.lang].SelectNode })
@@ -89,7 +76,6 @@ class VpnList extends Component {
                 else {
                     setMaster( data => {
                         this.setState({ isPrivate: false, authCode: '' });
-                        // this.props.privateChange(true)
                     })
                 }
             }
@@ -99,9 +85,9 @@ class VpnList extends Component {
         }
     };
 
-    getGatewayAddr = (authCode) => {
+    getGatewayAddr = async (authCode) => {
         this.setState({ isLoading: true });
-        getGatewayUrl(authCode, (err, data, url) => {
+        await getGatewayUrl(authCode, (err, data, url) => {
             if (err) {
                 this.setState({ isPrivate: false, showPopUp: false, openSnack: true, snackMessage: err.message || 'Problem in enabling private net' });
                 setTimeout(() => {this.setState({ isLoading: false,})}, 1500)
@@ -110,8 +96,6 @@ class VpnList extends Component {
                 this.setState({ isPrivate: true, showPopUp: false, openSnack: true, snackMessage: 'Private Net is Enabled with ' + url });
                 setTimeout(() => {this.setState({ isLoading: false, success: true, uri: true })}, 1500);
                 setTimeout(() => {this.setState({ open: false })}, 2000)
-
-                // this.props.privateChange(true)
             }
         })
     };
@@ -126,6 +110,14 @@ class VpnList extends Component {
 
     componentWillMount = () => {
         this.props.getVpnList(this.state.vpnType, this.props.isTM);
+
+        isPrivate( (isPrivate, authcode) => {
+            if (isPrivate) {
+                this.props.networkChange('private');
+                this.setState({ isPrivate, authcode, success: true });
+
+            }
+        })
     };
 
     handleRadioChange = (event) => {
@@ -134,13 +126,7 @@ class VpnList extends Component {
 
     };
     handleNetworkChange = (event) => {
-        // this.props.setVpnType(event.target.value);
         this.props.networkChange(event.target.value);
-        // if(this.props.networkType === 'private') {
-        //     this.setState({ showPopUp: true })
-        // }
-        // this.props.getVpnList(event.target.value);
-
     };
 
     closePrivDialog = () => {
@@ -170,8 +156,6 @@ class VpnList extends Component {
     };
 
     render() {
-        console.log(this.props.networkType, 'networkType');
-        console.log(this.state, 'state');
         const { classes } = this.props;
 
         return (

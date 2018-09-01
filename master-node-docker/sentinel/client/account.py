@@ -2,9 +2,11 @@
 import json
 
 import falcon
+import requests
 
 from ..helpers import eth_helper
 
+from ..config import MAIN_URL,RINKEBY_URL,ETH_TRANS_URL,SENT_TRANS_URL1,SENT_TRANS_URL2
 
 class CreateNewAccount(object):
     def on_post(self, req, resp):
@@ -59,3 +61,56 @@ class GetBalance(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
+
+class GetETHHistory(object):
+    def on_post(self,req,resp):
+        """
+        @api {post} /client/account/history/eth Get account balances.
+        @apiName GetETHHistory
+        @apiGroup Account
+        @apiParam {String} account_addr Address of the account.
+        @apiParam {String} network Network.
+        @apiParam {Integer} page Page Number of history.
+        @apiSuccess {Object} balances Account balances.
+        """
+
+        account_addr = str(req.body['account_addr'])
+        network = str(req.body['network'])
+        page = int(req.body['page'])
+
+        if network === 'main':
+            url = MAIN_URL + ETH_TRANS_URL+account_addr+'&page='+page
+        else:
+            url = RINKEBY_URL + ETH_TRANS_URL+account_addr+'&page='+page
+        
+        res = requests.get(url)
+        response = res.json()
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(response)
+
+class GetSentHistory(object):
+    def on_post(self,req,resp):
+        """
+        @api {post} /client/account/history/sent Get account balances.
+        @apiName GetSentHistory
+        @apiGroup Account
+        @apiParam {String} account_addr Address of the account.
+        @apiParam {String} network Network.
+        @apiSuccess {Object} balances Account balances.
+        """
+
+        account_addr = str(req.body['account_addr'])
+        network = str(req.body['network'])
+
+        if network === 'main':
+            url = MAIN_URL + SENT_TRANS_URL1 + account_addr + SENT_TRANS_URL2 + account_addr
+        else:
+            url = RINKEBY_URL + SENT_TRANS_URL1 + account_addr + SENT_TRANS_URL2 + account_addr
+        
+        res = requests.get(url)
+        response = res.json()
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(response)

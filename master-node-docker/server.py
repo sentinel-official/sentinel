@@ -19,6 +19,8 @@ from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.client import UpdateConnection
 from sentinel.client import RateVPNSession
+from sentinel.client import GetETHHistory
+from sentinel.client import GetSentHistory
 from sentinel.dev import GetFreeAmount
 from sentinel.logs import LogTheError
 from sentinel.mixer import DeRegisterMixerNode
@@ -79,6 +81,8 @@ server.add_route('/', Up())
 # Clients
 server.add_route('/client/account', CreateNewAccount())
 server.add_route('/client/account/balance', GetBalance())
+server.add_route('/client/account/history/eth', GetETHHistory())
+server.add_route('/client/account/history/sent', GetSentHistory())
 server.add_route('/client/raw-transaction', RawTransaction())
 server.add_route('/client/vpn', GetVpnCredentials())
 server.add_route('/client/vpn/current', GetVpnCurrentUsage())
@@ -87,7 +91,7 @@ server.add_route('/client/vpn/socks-list', GetSocksList())
 server.add_route('/client/vpn/usage', GetVpnUsage())
 server.add_route('/client/vpn/pay', PayVpnUsage())
 server.add_route('/client/vpn/report', ReportPayment())
-server.add_route('/client/vpn/rate',RateVPNSession())
+server.add_route('/client/vpn/rate', RateVPNSession())
 server.add_route('/client/update-connection', UpdateConnection())
 
 # Nodes

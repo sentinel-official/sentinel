@@ -1,6 +1,8 @@
 # coding=utf-8
 from .account import CreateNewAccount
 from .account import GetBalance
+from .account import GetETHHistory
+from .account import GetSentHistory
 from .connection import UpdateConnection
 from .mixer import GetMixerNodessList
 from .mixer import GetMixerToAddress

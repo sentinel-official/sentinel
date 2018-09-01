@@ -4,7 +4,8 @@ import json
 import falcon
 import requests
 
-from ..config import MAIN_URL, RINKEBY_URL, ETH_TRANS_URL, SENT_TRANS_URL1, RINKEBY_SENT_URL2, MAIN_SENT_URL2, SENT_TRANS_URL3
+from ..config import MAIN_URL, RINKEBY_URL, ETH_TRANS_URL, SENT_TRANS_URL1, RINKEBY_SENT_URL2, MAIN_SENT_URL2, \
+    SENT_TRANS_URL3
 from ..helpers import eth_helper
 
 
@@ -26,23 +27,17 @@ class CreateNewAccount(object):
 
         if error is None:
             message = {
-                'success':
-                True,
-                'account_addr':
-                account_addr,
-                'private_key':
-                private_key,
-                'keystore':
-                json.dumps(keystore),
-                'message':
-                'Account created successfully. Please store the Private key and Keystore data safely.'
+                'success': True,
+                'account_addr': account_addr,
+                'private_key': private_key,
+                'keystore': json.dumps(keystore),
+                'message': 'Account created successfully. Please store the Private key and Keystore data safely.'
             }
         else:
             message = {
                 'success': False,
                 'error': error,
-                'message':
-                'Error occurred while create wallet. Please try again.'
+                'message': 'Error occurred while create wallet. Please try again.'
             }
 
         resp.status = falcon.HTTP_200
@@ -61,7 +56,10 @@ class GetBalance(object):
         account_addr = str(req.body['account_addr'])
 
         balances = eth_helper.get_balances(account_addr)
-        message = {'success': True, 'balances': balances}
+        message = {
+            'success': True,
+            'balances': balances
+        }
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
@@ -80,7 +78,7 @@ class GetETHHistory(object):
         """
         account_addr = str(req.body['account_addr']).lower()
         network = str(req.body['network']).lower()
-        page = int(req.body['page'])
+        page = str(int(req.body['page']))
 
         if network == 'main':
             url = MAIN_URL + ETH_TRANS_URL + account_addr + '&page=' + page
@@ -90,7 +88,12 @@ class GetETHHistory(object):
         try:
             result = requests.get(url).json()
         except Exception as _:
-            result = {'status': 0, 'message': 'No records found', 'result': []}
+            result = {
+                'status': 0,
+                'message': 'No records found',
+                'result': []
+            }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(result)
 
@@ -109,13 +112,19 @@ class GetSentHistory(object):
         network = str(req.body['network']).lower()
 
         if network == 'main':
-            url = MAIN_URL + SENT_TRANS_URL1 +MAIN_SENT_URL2 account_addr + SENT_TRANS_URL3 + account_addr
+            url = MAIN_URL + SENT_TRANS_URL1 + MAIN_SENT_URL2
+            account_addr + SENT_TRANS_URL3 + account_addr
         else:
             url = RINKEBY_URL + SENT_TRANS_URL1 + RINKEBY_SENT_URL2 + account_addr + SENT_TRANS_URL3 + account_addr
 
         try:
             result = requests.get(url).json()
         except Exception as _:
-            result = {'status': 0, 'message': 'No records found', 'result': []}
+            result = {
+                'status': 0,
+                'message': 'No records found',
+                'result': []
+            }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(result)

@@ -1,5 +1,6 @@
 import * as types from './../Constants/action.names';
 import { B_URL, TMain_URL } from './../Constants/constants';
+import { removeSessionLocal } from './../Utils/DisconnectVpn';
 import axios from 'axios';
 
 export function setListViewType(component) {
@@ -53,5 +54,28 @@ export function payVPNTM(data) {
     return {
         type: types.TM_PAY_VPN,
         payload: data
+    }
+}
+
+export async function rateVPNSession(value, cb) {
+    let data = {
+        vpn_addr: localStorage.getItem('CONNECTED_VPN'),
+        rating: value,
+        session_name: localStorage.getItem('SESSION_NAME')
+    }
+    let response = await axios.post(B_URL + '/client/vpn/rate', data, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+            'Authorization': localStorage.getItem('access_token')
+        }
+    })
+    if (response.data.success) {
+        cb(null);
+        removeSessionLocal();
+    }
+    else {
+        cb({ message: 'Error occured while submitting rating' });
+        removeSessionLocal();
     }
 }

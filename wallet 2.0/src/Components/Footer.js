@@ -8,13 +8,25 @@ import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { footerStyles } from '../Assets/footer.styles';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import lang from '../Constants/language';
+import RatingDialog from './RatingDialog';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import { compose } from 'recompose';
+
+const styles = theme => ({
+    paper: {
+        width: '80%',
+        maxHeight: 335,
+    },
+});
 
 class Footer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             openSnack: false,
-            snackMessage: ''
+            snackMessage: '',
+            rateDialog: false
         }
     }
 
@@ -22,13 +34,21 @@ class Footer extends Component {
         this.setState({ openSnack: false });
     };
 
+    handleDialogClose = () => {
+        this.setState({ rateDialog: false });
+    };
+
+    snackOpenDialog = (message) => {
+        this.setState({ openSnack: true, snackMessage: message })
+    }
+
     disconnect = () => {
         disconnectVPN((res) => {
             if (res) {
                 this.setState({ openSnack: true, snackMessage: res });
             }
             else {
-                this.setState({ openSnack: true, snackMessage: 'Disconnected VPN' });
+                this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
                 this.props.setVpnStatus(false);
             }
         })
@@ -36,7 +56,7 @@ class Footer extends Component {
 
     render() {
         let language = this.props.lang;
-        let { vpnStatus, currentUsage } = this.props;
+        let { vpnStatus, currentUsage, classes } = this.props;
         return (
             <div style={footerStyles.mainDivStyle}>
                 <Grid>
@@ -102,9 +122,21 @@ class Footer extends Component {
                     onClose={this.handleClose}
                     message={this.state.snackMessage}
                 />
+                <RatingDialog
+                    classes={{
+                        paper: classes.paper,
+                    }}
+                    open={this.state.rateDialog}
+                    onClose={this.handleDialogClose}
+                    snackOpenDialog={this.snackOpenDialog}
+                />
             </div>
         )
     }
+}
+
+Footer.propTypes = {
+    classes: PropTypes.object.isRequired,
 }
 
 function mapStateToProps(state) {
@@ -122,4 +154,4 @@ function mapDispatchToActions(dispatch) {
     }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToActions)(Footer);
+export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToActions))(Footer);

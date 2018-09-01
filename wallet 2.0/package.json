@@ -23,6 +23,7 @@
     "countrynames": "^0.1.1",
     "electron-hot-loader": "^0.8.0",
     "ip": "^1.1.5",
+    "material-ui-rating": "^2.0.0",
     "net-stat": "^2.0.1",
     "path": "^0.12.7",
     "react-proxy": "^1.1.8",

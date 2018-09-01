@@ -4,9 +4,9 @@ import json
 import falcon
 import requests
 
+from ..config import MAIN_URL, RINKEBY_URL, ETH_TRANS_URL, SENT_TRANS_URL1, SENT_TRANS_URL2
 from ..helpers import eth_helper
 
-from ..config import MAIN_URL,RINKEBY_URL,ETH_TRANS_URL,SENT_TRANS_URL1,SENT_TRANS_URL2
 
 class CreateNewAccount(object):
     def on_post(self, req, resp):
@@ -64,7 +64,7 @@ class GetBalance(object):
 
 
 class GetETHHistory(object):
-    def on_post(self,req,resp):
+    def on_post(self, req, resp):
         """
         @api {post} /client/account/history/eth Get account balances.
         @apiName GetETHHistory
@@ -74,24 +74,31 @@ class GetETHHistory(object):
         @apiParam {Integer} page Page Number of history.
         @apiSuccess {Object} balances Account balances.
         """
-
-        account_addr = str(req.body['account_addr'])
-        network = str(req.body['network'])
+        account_addr = str(req.body['account_addr']).lower()
+        network = str(req.body['network']).lower()
         page = int(req.body['page'])
 
-        if network === 'main':
-            url = MAIN_URL + ETH_TRANS_URL+account_addr+'&page='+page
+        if network == 'main':
+            url = MAIN_URL + ETH_TRANS_URL + account_addr + '&page=' + page
         else:
-            url = RINKEBY_URL + ETH_TRANS_URL+account_addr+'&page='+page
-        
-        res = requests.get(url)
-        response = res.json()
-
+            url = RINKEBY_URL + ETH_TRANS_URL + account_addr + '&page=' + page
+        try:
+            result = requests.get(url).json()
+            message = {
+                'success': True,
+                'data': result
+            }
+        except Exception as _:
+            message = {
+                'success': False,
+                'data': None
+            }
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps(response)
+        resp.body = json.dumps(message)
+
 
 class GetSentHistory(object):
-    def on_post(self,req,resp):
+    def on_post(self, req, resp):
         """
         @api {post} /client/account/history/sent Get account balances.
         @apiName GetSentHistory
@@ -100,17 +107,24 @@ class GetSentHistory(object):
         @apiParam {String} network Network.
         @apiSuccess {Object} balances Account balances.
         """
+        account_addr = str(req.body['account_addr']).lower()
+        network = str(req.body['network']).lower()
 
-        account_addr = str(req.body['account_addr'])
-        network = str(req.body['network'])
-
-        if network === 'main':
+        if network == 'main':
             url = MAIN_URL + SENT_TRANS_URL1 + account_addr + SENT_TRANS_URL2 + account_addr
         else:
             url = RINKEBY_URL + SENT_TRANS_URL1 + account_addr + SENT_TRANS_URL2 + account_addr
-        
-        res = requests.get(url)
-        response = res.json()
 
+        try:
+            result = requests.get(url).json()
+            message = {
+                'success': True,
+                'data': result
+            }
+        except Exception as _:
+            message = {
+                'success': False,
+                'data': None
+            }
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps(response)
+        resp.body = json.dumps(message)

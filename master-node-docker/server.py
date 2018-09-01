@@ -6,8 +6,10 @@ from falcon_cors import CORS
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
+from sentinel.client import GetETHHistory
 from sentinel.client import GetMixerNodessList
 from sentinel.client import GetMixerToAddress
+from sentinel.client import GetSentHistory
 from sentinel.client import GetSocksList
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnCurrentUsage
@@ -15,12 +17,10 @@ from sentinel.client import GetVpnUsage
 from sentinel.client import GetVpnsList
 from sentinel.client import InitiateMix
 from sentinel.client import PayVpnUsage
+from sentinel.client import RateVPNSession
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.client import UpdateConnection
-from sentinel.client import RateVPNSession
-from sentinel.client import GetETHHistory
-from sentinel.client import GetSentHistory
 from sentinel.dev import GetFreeAmount
 from sentinel.logs import LogTheError
 from sentinel.mixer import DeRegisterMixerNode

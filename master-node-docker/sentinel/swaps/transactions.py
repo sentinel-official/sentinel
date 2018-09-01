@@ -33,20 +33,29 @@ class TokenSwapRawTransaction(object):
         if balance >= value:
             error, tx_hash = eth_helper.raw_transaction(tx_data, 'main')
             if error is None:
-                _ = db.swaps.insert_one({
-                    'from_symbol': from_token['symbol'],
-                    'to_symbol': to_token['symbol'],
-                    'from_address': SWAP_ADDRESS,
-                    'to_address': to_address,
-                    'tx_hash_0': tx_hash,  # Only for ERC20 based
-                    'time_0': int(time.time()),
-                    'status': 0
+                tx = db.swaps.find_one({
+                    'tx_hash_0': tx_hash
                 })
-                message = {
-                    'success': True,
-                    'tx_hash': tx_hash,
-                    'message': 'Transaction initiated successfully.'
-                }
+                if tx is None:
+                    _ = db.swaps.insert_one({
+                        'from_symbol': from_token['symbol'],
+                        'to_symbol': to_token['symbol'],
+                        'from_address': SWAP_ADDRESS,
+                        'to_address': to_address,
+                        'tx_hash_0': tx_hash,  # Only for ERC20 based
+                        'time_0': int(time.time()),
+                        'status': 0
+                    })
+                    message = {
+                        'success': True,
+                        'tx_hash': tx_hash,
+                        'message': 'Transaction initiated successfully.'
+                    }
+                else:
+                    message = {
+                        'success': False,
+                        'message': 'Tx is already in pool.'
+                    }
             else:
                 message = {
                     'success': False,

@@ -82,19 +82,17 @@ class GetETHHistory(object):
             url = MAIN_URL + ETH_TRANS_URL + account_addr + '&page=' + page
         else:
             url = RINKEBY_URL + ETH_TRANS_URL + account_addr + '&page=' + page
+
         try:
             result = requests.get(url).json()
-            message = {
-                'success': True,
-                'data': result
-            }
         except Exception as _:
-            message = {
-                'success': False,
-                'data': None
+            result = {
+                'status': 0,
+                'message': 'No records found',
+                'result': []
             }
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+        resp.body = json.dumps(result)
 
 
 class GetSentHistory(object):
@@ -117,14 +115,11 @@ class GetSentHistory(object):
 
         try:
             result = requests.get(url).json()
-            message = {
-                'success': True,
-                'data': result
-            }
         except Exception as _:
-            message = {
-                'success': False,
-                'data': None
+            result = {
+                'status': 0,
+                'message': 'No records found',
+                'result': []
             }
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps(message)
+        resp.body = json.dumps(result)

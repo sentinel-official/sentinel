@@ -37,6 +37,7 @@ class RegisterNode(object):
         token = uuid4().hex
         latency = get_latency(ip)
         joined_on = int(time.time())
+        lite = req.body['lite'] if 'lite' in req.body else False
         enc_method = str(
             req.body['enc_method']
         ) if 'enc_method' in req.body else 'aes-256-cfb' if vpn_type == 'socks5' else 'AES-128-CBC'
@@ -56,7 +57,8 @@ class RegisterNode(object):
                 'location': location,
                 'net_speed': net_speed,
                 'enc_method': enc_method,
-                'version': version
+                'version': version,
+                'lite': lite
             })
         else:
             _ = db.nodes.find_one_and_update({
@@ -71,7 +73,8 @@ class RegisterNode(object):
                     'location': location,
                     'net_speed': net_speed,
                     'enc_method': enc_method,
-                    'version': version
+                    'version': version,
+                    'lite': lite
                 }
             })
         message = {

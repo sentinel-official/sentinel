@@ -17,7 +17,7 @@
     <string name="restore_password_hint">Enter Keystore Password</string>
     <string name="vpn">VPN</string>
     <string name="transaction_history">Transaction History</string>
-    <string name="vpn_history">VPN History</string>
+    <string name="vpn_history">dVPN History</string>
     <string name="reset_pin">Reset PIN</string>
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">VIEW VPNs</string>

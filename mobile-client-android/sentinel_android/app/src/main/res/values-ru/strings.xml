@@ -17,7 +17,7 @@
     <string name="restore_password_hint">Введите пароль от хранилища</string>
     <string name="vpn">VPN</string>
     <string name="transaction_history">История Транзакций</string>
-    <string name="vpn_history">История VPN</string>
+    <string name="vpn_history">История dVPN</string>
     <string name="reset_pin">Сбросить PIN</string>
     <string name="disconnect">Отключиться</string>
     <string name="view_vpns">Список VPN</string>

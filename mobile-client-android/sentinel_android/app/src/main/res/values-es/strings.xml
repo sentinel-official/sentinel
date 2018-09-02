@@ -136,7 +136,7 @@
     <string name="restore_password_hint">Introduce la contraseña keystore</string>
     <string name="vpn">VPN</string>
     <string name="transaction_history">Historial de transacciones</string>
-    <string name="vpn_history">Historial VPN</string>
+    <string name="vpn_history">Historial dVPN</string>
     <string name="reset_pin">Modificar PIN</string>
     <string name="help">Ayuda</string>
     <string name="disconnect">Desconectar</string>

@@ -136,10 +136,11 @@
 
     <!-- Navigation Drawer Item Theme -->
     <style name="DrawerItemTheme">
-        <item name="android:textSize">@dimen/text_14</item>
+        <item name="android:textSize">@dimen/text_18</item>
         <item name="android:fontFamily">@font/dinpro</item>
         <item name="android:listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
         <item name="listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
+        <item name="android:textColor">@color/colorTextInfoWhite</item>
     </style>
 
     <!-- TextInputLayout And TextInputEditText Theme -->

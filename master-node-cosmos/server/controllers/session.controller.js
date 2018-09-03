@@ -36,7 +36,7 @@ let getSession = (req, res) => {
     }, (payment, next) => {
       nodeDbo.getNode({
         accountAddress: payment.to,
-        info: { status: 'up' }
+        'info.status': 'up'
       }, (error, node) => {
         if (error) next({
           status: 500,
@@ -50,9 +50,10 @@ let getSession = (req, res) => {
       });
     }, (payment, node, next) => {
       let token = sessionHelper.generateToken();
-      sessionHelper.sendUserDetails(node.apiUrl + '/session', {
-        accountAddress: payment.from,
-        sessionId: payment.sessionId,
+      let url = `http://${node.IP}:3000/session`;
+      sessionHelper.sendUserDetails(url, {
+        'account_addr': payment.from,
+        'session_id': payment.sessionId,
         token
       }, (error) => {
         if (error) next({
@@ -61,7 +62,7 @@ let getSession = (req, res) => {
         });
         else next(null, {
           status: 200,
-          url: `http://${node.IP}:3000/session/credentials`,
+          url: url + '/credentials',
           sessionId: payment.sessionId,
           token
         });

@@ -142,7 +142,7 @@
     <string name="no_internet">Нет подключения к интернету. Попробуйте еще раз.</string>
     <string name="please_note">Внимание</string>
     <string name="referral_id_copied">Реферальный код скопирован</string>
-    <string name="link_copied">Referral Link copied to clipboard</string>
+    <string name="link_copied">реферальная ссылка скопирована</string>
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Скорость %s</string>
@@ -151,7 +151,7 @@
     <string name="vpn_enc_method_connected">Шифрование</string>
     <string name="vpn_latency">Задержка %s</string>
     <string name="vpn_node_version">Версия %s</string>
-    <string name="vpn_node_rating">Rating %s</string>
+    <string name="vpn_node_rating">Оценка %s</string>
     <string name="vpn_latency_connected">Задержка</string>
     <string name="vpn_duration_connected">Длительность</string>
     <string name="vpn_bandwidth_value">%.2f Мб/с</string>
@@ -165,7 +165,7 @@
     <string name="latency">Задержка:</string>
     <string name="encryption">Шифрование:</string>
     <string name="node_version">Версия:</string>
-    <string name="node_rating">Rating:</string>
+    <string name="node_rating">Оценка:</string>
     <string name="coming_soon">Скоро добавим</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
     <string name="saving_config">Сохранение конфигураций VPN…</string>
@@ -183,7 +183,7 @@
     <string name="got_it">Понял</string>
     <string name="retry">Повторить</string>
     <string name="vpn_usage">Использование dVPN</string>
-    <string name="total_sessions">Total Sessions</string>
+    <string name="total_sessions">Общее количество сеансов</string>
     <string name="total_duration">Общая длительность сеансов</string>
     <string name="total_received_data">Общее количество полученных данных</string>
     <string name="vpn_usage_empty_list_message">В настоящее время у вас нет использования VPN</string>
@@ -193,7 +193,7 @@
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
     <string name="referral_id">Реферальный код</string>
-    <string name="referral_link">Referral Link</string>
+    <string name="referral_link">реферальная ссылка</string>
     <string name="referrals">Рефералы</string>
     <string name="send_to">Отправить…</string>
     <string name="no_of_referrals">Количество рефералов</string>
@@ -225,8 +225,8 @@
     <string name="download_desc">Скачайте и установите Sentinel Network Client на это же устройство, чтобы забрать свой бонусные токены и получить доступ к полноценной версии.</string>
     <string name="referral_desc">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети.</string>
     <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
-    <string name="label_rate_session">Please rate your experience with the previous dVPN session</string>
+    <string name="label_rate_session">Оцените качество данного подключения к dVPN</string>
     <string name="error_select_rating">Please select rating</string>
-    <string name="action_skip">Skip</string>
-    <string name="action_rate">Rate</string>
+    <string name="action_skip">Пропустить</string>
+    <string name="action_rate">Оценить</string>
 </resources>

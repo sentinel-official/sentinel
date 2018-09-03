@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -171,28 +172,34 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     }
 
     public void updateByteCount(String iDownloadSpeed, String iUploadSpeed, String iTotalDataUsed) {
-        if (mTvDownloadSpeed != null && mTvUploadSpeed != null && mTvDataUsed != null) {
+        if (mTvDownloadSpeed != null && !TextUtils.isEmpty(iDownloadSpeed)) {
             // Construct and set - Download Speed SpannableString
             String aDownloadSubString = iDownloadSpeed.substring(iDownloadSpeed.indexOf(' '));
             SpannableString aDownloadSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iDownloadSpeed, aDownloadSubString)
-                    .color(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorTextWhiteWithAlpha70))
+                    .color(ContextCompat.getColor(SentinelApp.getAppContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
             mTvDownloadSpeed.setText(aDownloadSpannable);
+        }
+        if (mTvUploadSpeed != null && !TextUtils.isEmpty(iUploadSpeed)) {
             // Construct and set - Upload Speed SpannableString
             String aUploadSubString = iUploadSpeed.substring(iUploadSpeed.indexOf(' '));
             SpannableString aUploadSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iUploadSpeed, aUploadSubString)
-                    .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
+                    .color(ContextCompat.getColor(SentinelApp.getAppContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
             mTvUploadSpeed.setText(aUploadSpannable);
+        }
+        if (mTvDataUsed != null && !TextUtils.isEmpty(iTotalDataUsed)) {
             // Construct and set - Data used SpannableString
             String aDataUsedSubString = iTotalDataUsed.substring(iTotalDataUsed.indexOf(' '));
             SpannableString aDataUsedSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iTotalDataUsed, aDataUsedSubString)
-                    .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
+                    .color(ContextCompat.getColor(SentinelApp.getAppContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
             mTvDataUsed.setText(aDataUsedSpannable);
+        }
+        if (mTvDuration != null) {
             // Construct and set - Duration SpannableString
             if (mConnectionTime == 0L) {
                 // Store the VPN connection initiated time

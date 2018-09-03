@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,7 +91,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         setContentView(R.layout.activity_dashboard);
         shouldShowHelper();
         initView();
-        loadVpnFragment(null);
+        loadVpnSelectFragment(null, "onCreate");
     }
 
     @Override
@@ -109,12 +108,14 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             mIntentExtra = getIntent().getStringExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY);
         }
         if (mIntentExtra != null && mIntentExtra.equals(AppConstants.HOME)) {
-            loadVpnFragment(null);
+            loadVpnSelectFragment(null, "onResume hasIntentExtras");
         }
         // initialize/update the TESTNET switch
         setupTestNetSwitch();
         // check and toggle TESTNET switch state (if needed) when returning from other activity
         toggleTestNetSwitch(!(getSupportFragmentManager().findFragmentById(R.id.fl_container) instanceof VpnConnectedFragment));
+
+        initListeners();
     }
 
     @Override
@@ -167,6 +168,12 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         // instantiate toolbar
         setupToolbar();
+    }
+
+    /**
+     * Setup Listeners for all views
+     */
+    private void initListeners() {
         // add listeners
         mSwitchNet.setOnCheckedChangeListener(this);
         mNavMenuView.setItemIconTintList(null);
@@ -348,8 +355,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     /*
      * Replaces the existing fragment in the container with VpnSelectFragment
      */
-    private void loadVpnFragment(String iMessage) {
+    private void loadVpnSelectFragment(String iMessage, String iLocation) {
         loadFragment(VpnSelectFragment.newInstance(iMessage));
+        Logger.logInfo("loadVpnSelectFragment", iLocation);
     }
 
     /*
@@ -389,7 +397,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case R.id.action_vpn:
                 if ((aFragment instanceof WalletFragment)) {
                     toggleItemState(item.getItemId());
-                    loadVpnFragment(null);
+                    loadVpnSelectFragment(null, "onOptionsItemSelected action_vpn");
                 }
                 return true;
 
@@ -494,7 +502,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case AppConstants.REQ_VPN_HISTORY:
                 if (resultCode == RESULT_OK) {
                     if (!(aFragment instanceof WalletFragment))
-                        loadVpnFragment(null);
+                        loadVpnSelectFragment(null, "onActivityResult REQ_VPN_HISTORY");
                 }
                 break;
             case AppConstants.REQ_RESET_PIN:
@@ -509,7 +517,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case AppConstants.REQ_VPN_PAY:
                 if (resultCode == RESULT_OK) {
-                    loadVpnFragment(null);
+                    loadVpnSelectFragment(null, "onActivityResult REQ_VPN_PAY");
                 }
                 break;
             case AppConstants.REQ_VPN_INIT_PAY:
@@ -526,7 +534,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 if (resultCode == RESULT_OK) {
                     refreshMenuTitles();
                     if (!(aFragment instanceof WalletFragment))
-                        loadVpnFragment(null);
+                        loadVpnSelectFragment(null, "onActivityResult REQ_LANGUAGE");
                     else
                         loadWalletFragment();
                 }
@@ -576,7 +584,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         if (aFragment instanceof WalletFragment) {
             ((WalletFragment) aFragment).updateBalance();
         } else if (!(aFragment instanceof VpnConnectedFragment))
-            loadVpnFragment(null);
+            loadVpnSelectFragment(null, "onCheckedChanged");
     }
 
 
@@ -660,14 +668,14 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 if (!(aFragment instanceof WalletFragment)) {
                     switch (state) {
                         case "USER_VPN_PERMISSION_CANCELLED":
-                            loadVpnFragment(getString(localizedResId));
+                            loadVpnSelectFragment(getString(localizedResId), "updateState USER_VPN_PERMISSION_CANCELLED");
                             break;
                         case "CONNECTRETRY":
-                            loadVpnFragment(getString(R.string.network_lost));
+                            loadVpnSelectFragment(getString(R.string.network_lost), "updateState CONNECTRETRY");
                             break;
                         default:
                             showRatingDialog();
-                            loadVpnFragment(null);
+                            loadVpnSelectFragment(null, "updateState default");
                             break;
                     }
                 }

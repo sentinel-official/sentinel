@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="refer.sentinel.army"
+                    android:host="refer.sentinel.co"
                     android:scheme="https" />
                 <data
                     android:host="hitr-alternate.app.link"

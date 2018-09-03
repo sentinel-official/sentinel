@@ -36,7 +36,7 @@ public class GenericRequestBody {
     private String clientAddress;
     private String referredBy;
     private String address;
-    private int rating;
+    private Integer rating;
 
     private GenericRequestBody(GenericRequestBodyBuilder iBuilder) {
         password = iBuilder.password;
@@ -160,7 +160,7 @@ public class GenericRequestBody {
         private String clientAddress = null;
         private String referredBy = null;
         private String address = null;
-        private int rating;
+        private Integer rating;
 
         public GenericRequestBodyBuilder password(String password) {
             this.password = password;

@@ -147,10 +147,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                     hideProgressDialog();
                     if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC)) {
                         Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ERROR_GENERIC");
-                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                        showDoubleActionDialog(AppConstants.TAG_GET_ACCOUNT, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
                     } else if (genericResponseResource.message.equals(getString(R.string.no_internet))) {
                         Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: NO INTERNET");
-                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                        showDoubleActionDialog(AppConstants.TAG_GET_ACCOUNT, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
                     } else {
                         Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ELSE");
                         mViewModel.addAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS), null);
@@ -169,9 +169,9 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
-                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                        showDoubleActionDialog(AppConstants.TAG_ADD_ACCOUNT, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
                     else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
-                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                        showDoubleActionDialog(AppConstants.TAG_ADD_ACCOUNT, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
                     else {
                         if (genericResponseResource.message.equals("Device is already registered.")) {
                             mViewModel.updateAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
@@ -194,10 +194,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                     hideProgressDialog();
                     if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC)) {
                         Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ERROR_GENERIC");
-                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                        showDoubleActionDialog(AppConstants.TAG_UPDATE_ACCOUNT, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
                     } else if (genericResponseResource.message.equals(getString(R.string.no_internet))) {
                         Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: NO INTERNET");
-                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                        showDoubleActionDialog(AppConstants.TAG_UPDATE_ACCOUNT, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
                     } else {
                         Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ELSE");
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
@@ -361,6 +361,19 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
 
     @Override
     public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
-
+        iDialog.dismiss();
+        if (isPositiveButton) {
+            switch (iTag) {
+                case AppConstants.TAG_GET_ACCOUNT:
+                    mViewModel.fetchAccountInfo();
+                    break;
+                case AppConstants.TAG_ADD_ACCOUNT:
+                    mViewModel.addAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS), null);
+                    break;
+                case AppConstants.TAG_UPDATE_ACCOUNT:
+                    mViewModel.updateAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                    break;
+            }
+        }
     }
 }

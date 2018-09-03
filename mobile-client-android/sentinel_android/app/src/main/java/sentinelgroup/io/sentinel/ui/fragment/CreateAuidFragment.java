@@ -132,6 +132,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             if (accountResource != null) {
                 hideProgressDialog();
                 if (accountResource.data != null && accountResource.status.equals(Status.SUCCESS)) {
+                    AppPreferences.getInstance().saveString(AppConstants.PREFS_ACCOUNT_ADDRESS, accountResource.data.accountAddress);
                     mAccountAddress = accountResource.data.accountAddress;
                     mPrivateKey = accountResource.data.privateKey;
                     mKeystoreFilePath = accountResource.data.keystoreFilePath;

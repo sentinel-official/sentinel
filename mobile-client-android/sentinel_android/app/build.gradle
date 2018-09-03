@@ -20,14 +20,15 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            useProguard false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     productFlavors {
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
     sourceSets {
         main {
@@ -35,6 +36,10 @@ android {
             jniLibs.srcDirs = ['src/main/ovpnlibs/jniLibs']
             jni.srcDirs = [] //disable automatic ndk-build }
         }
+    }
+    lintOptions {
+        checkReleaseBuilds false // Add this
+        abortOnError false
     }
 
     dependencies {

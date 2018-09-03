@@ -1,14 +1,16 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.RestoreKeystoreFragment;
 
-public class RestoreKeystoreActivity extends SimpleBaseActivity {
+public class RestoreKeystoreActivity extends SimpleBaseActivity implements DoubleActionDialogFragment.OnDialogActionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,14 @@ public class RestoreKeystoreActivity extends SimpleBaseActivity {
         if (iIntent != null) {
             startActivity(iIntent);
             finish();
+        }
+    }
+
+    @Override
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        if (aFragment instanceof RestoreKeystoreFragment) {
+            ((RestoreKeystoreFragment) aFragment).onActionButtonClicked(iTag, iDialog, isPositiveButton);
         }
     }
 }

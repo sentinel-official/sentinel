@@ -50,6 +50,9 @@ public class AppConstants {
 
     // Fragment Tags
     public static final String TAG_ADD_REFERRAL = "ADD_REFERRAL";
+    public static final String TAG_GET_ACCOUNT = "GET_ACCOUNT";
+    public static final String TAG_ADD_ACCOUNT = "ADD_ACCOUNT";
+    public static final String TAG_UPDATE_ACCOUNT = "UPDATE_ACCOUNT";
     public static final String TAG_INIT_PAY = "INIT_PAY";
     public static final String TAG_LOGOUT = "LOGOUT";
     public static final String TAG_RATING_DIALOG = "co.sentinel.sentinellite.rating_dialog";

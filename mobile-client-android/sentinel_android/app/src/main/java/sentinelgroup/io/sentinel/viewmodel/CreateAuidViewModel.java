@@ -78,7 +78,7 @@ public class CreateAuidViewModel extends ViewModel {
 
     public void addAccountInfo(String iAccountAddress, String iReferredBy) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
-                .deviceIdMain(mDeviceId)
+                .deviceIdReferral(mDeviceId)
                 .address(iAccountAddress)
                 .referredBy(iReferredBy)
                 .build();
@@ -87,7 +87,7 @@ public class CreateAuidViewModel extends ViewModel {
 
     public void updateAccountInfo(String iAccountAddress) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
-                .deviceIdMain(mDeviceId)
+                .deviceIdReferral(mDeviceId)
                 .address(iAccountAddress)
                 .build();
         mBonusRepository.updateAccount(aBody);

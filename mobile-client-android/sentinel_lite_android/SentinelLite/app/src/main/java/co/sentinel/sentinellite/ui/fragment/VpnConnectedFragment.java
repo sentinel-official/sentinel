@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -188,7 +189,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     }
 
     public void updateByteCount(String iDownloadSpeed, String iUploadSpeed, String iTotalDataUsed) {
-        if (mTvDownloadSpeed != null && mTvUploadSpeed != null && mTvDataUsed != null) {
+        if (mTvDownloadSpeed != null && !TextUtils.isEmpty(iDownloadSpeed)) {
             // Construct and set - Download Speed SpannableString
             String aDownloadSubString = iDownloadSpeed.substring(iDownloadSpeed.indexOf(' '));
             SpannableString aDownloadSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iDownloadSpeed, aDownloadSubString)
@@ -197,6 +198,8 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
                     .build();
 //            aDownloadSpannable.setSpan(mDownloadSpeedSpan, 0, 1, 0);
             mTvDownloadSpeed.setText(aDownloadSpannable);
+        }
+        if (mTvUploadSpeed != null && !TextUtils.isEmpty(iUploadSpeed)) {
             // Construct and set - Upload Speed SpannableString
             String aUploadSubString = iUploadSpeed.substring(iUploadSpeed.indexOf(' '));
             SpannableString aUploadSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iUploadSpeed, aUploadSubString)
@@ -205,6 +208,8 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
                     .build();
 //            aUploadSpannable.setSpan(mUploadSpeedSpan, 0, 1, 0);
             mTvUploadSpeed.setText(aUploadSpannable);
+        }
+        if (mTvDataUsed != null && !TextUtils.isEmpty(iTotalDataUsed)) {
             // Construct and set - Data used SpannableString
             String aDataUsedSubString = iTotalDataUsed.substring(iTotalDataUsed.indexOf(' '));
             SpannableString aDataUsedSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iTotalDataUsed, aDataUsedSubString)
@@ -213,7 +218,9 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
                     .build();
 //            aDataUsedSpannable.setSpan(mDataUsageSpan, 0, 1, 0);
             mTvDataUsed.setText(aDataUsedSpannable);
-            // Construct and set - Duration SpannableString
+        }
+        if (mTvDuration != null) {
+//            Construct and set - Duration SpannableString
             if (mConnectionTime == 0L) {
                 // Store the VPN connection initiated time
                 mConnectionTime = AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME);

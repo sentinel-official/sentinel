@@ -261,7 +261,7 @@ class SimpleDialogDemo extends React.Component {
         else {
             this.setState({ isLoading: true });
             if (this.props.vpnType === 'openvpn') {
-                connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
+                connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (res) => {
 
                     if (res.data && res.data.account_addr) {
                         this.setState({
@@ -288,7 +288,7 @@ class SimpleDialogDemo extends React.Component {
     render() {
         if (this.props.vpnStatus && !UsageInterval) {
             UsageInterval = setInterval(() => {
-                this.props.getVPNUsageData(this.props.getAccount);
+                this.props.getVPNUsageData(this.props.isTm ? this.props.account.address : this.props.getAccount);
             }, 3000);
         }
 
@@ -330,8 +330,8 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectSocks, payVPNTM }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus, setTendermint }) {
-    return { connecVPNReducer, getAccount, socksReducer, vpnType, vpnStatus: setVpnStatus, isTm: setTendermint }
+function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus, setTendermint, setTMAccount }) {
+    return { connecVPNReducer, getAccount, socksReducer, vpnType, vpnStatus: setVpnStatus, isTm: setTendermint, account: setTMAccount }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimpleDialogDemo);

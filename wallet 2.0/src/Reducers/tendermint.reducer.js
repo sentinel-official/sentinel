@@ -26,3 +26,12 @@ export function tmBalance(state = null, action) {
             return state
     }
 }
+
+export function setTMAccount(state = null, action) {
+    switch (action.type) {
+        case types.SET_TM_ACCOUNT:
+            return action.payload;
+        default:
+            return state
+    }
+}

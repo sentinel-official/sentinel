@@ -44,6 +44,9 @@ const accountStyles = {
     qrCodeStyle: {
         width: 200,
         marginTop: -50
+    },
+    outlineNone:{
+        outline:'none'
     }
 }
 

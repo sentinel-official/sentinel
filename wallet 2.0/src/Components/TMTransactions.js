@@ -2,14 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { getKeys, sendAmount, getTMBalance, payVPNSession } from '../Actions/tendermint.action';
-import { payVPNTM } from '../Actions/vpnlist.action';
+import { sendAmount, getTMBalance } from '../Actions/tendermint.action';
+import { payVPNSession, getSessionInfo } from './../Actions/tmvpn.action';
+import { payVPNTM, setVpnStatus } from '../Actions/vpnlist.action';
+import { connectVPN } from './../Actions/connectOVPN';
 import CustomTextField from './customTextfield';
 import { Button, Snackbar } from '@material-ui/core';
 import { createAccountStyle } from '../Assets/createtm.styles';
 import { accountStyles } from '../Assets/tmaccount.styles';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
+
+const electron = window.require('electron');
+const remote = electron.remote;
+
 
 const Customstyles = theme => ({
     button: {
@@ -31,12 +37,12 @@ class TMTransactions extends Component {
     }
 
     componentWillMount = () => {
-        this.props.getKeys();
     }
 
     componentWillReceiveProps = (nextProps) => {
+        console.log("Ne//", nextProps.vpnPayment);
         if (nextProps.vpnPayment.isPayment) {
-            this.setState({ toAddress: nextProps.vpnPayment.data.vpn_addr, amount: 100, isTextDisabled: true })
+            this.setState({ toAddress: nextProps.vpnPayment.data.vpn_addr, amount: 101, isTextDisabled: true })
         }
         else {
             this.setState({ isTextDisabled: false })
@@ -44,41 +50,50 @@ class TMTransactions extends Component {
     }
 
     sendTransaction = () => {
-        this.props.getTMBalance(this.props.keys[0].address).then(res => {
-            console.log("res...p", res);
-            if (res.payload && 'value' in res.payload) {
-                if (this.props.vpnPayment.isPayment) {
-                    let data = {
-                        "amount": [{ "denom": "sentinelToken", "amount": this.state.amount.toString() }],
-                        "name": this.props.keys[0].name,
-                        "password": this.state.keyPassword,
-                        "gas": "200000",
-                        "vaddress": this.state.toAddress
-                    }
-                    this.props.payVPNSession(data).then(response => {
-                        console.log("Pay VPN...", response);
+        if (this.props.vpnPayment.isPayment) {
+            let data = {
+                "amount": this.state.amount.toString() + 'sut',
+                "name": this.props.account.name,
+                "password": this.state.keyPassword,
+                "gas": 200000,
+                "vaddress": this.state.toAddress,
+                "sig_name": Math.random().toString(36).substring(4),
+                "sig_password": Math.random().toString(36).substring(2)
+            }
+            this.props.payVPNSession(data).then(response => {
+                console.log("Pay VPN...", response);
+                if (response.error)
+                    console.log("VPN Error...", response);
+                else {
+                    localStorage.setItem('SIGNAME', data.sig_name)
+                    localStorage.setItem('SIGPWD', data.sig_password)
+                    this.props.getSessionInfo(response.payload.hash).then(sesRes => {
+                        if (sesRes.error)
+                            console.log("Ses..Error", sesRes.error)
+                        else {
+                            let data = sesRes.payload;
+                            let vpn_data = this.props.vpnPayment.data;
+                            let session_data = sesRes.payload
+                            connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (res) => {
+                                this.props.setVpnStatus(true)
+                            })
+                        }
                     })
                 }
-                else {
-                    let data = {
-                        "amount": [{ "denom": "sentinelToken", "amount": this.state.amount.toString() }],
-                        "name": this.props.keys[0].name,
-                        "password": this.state.keyPassword,
-                        "chain_id": "test-chain-3GuVCm",
-                        "gas": "200000",
-                        "address": this.state.toAddress,
-                        "account_number": res.payload.value.account_number,
-                        "sequence": res.payload.value.sequence
-                    }
-                    this.props.sendAmount(data, this.state.toAddress).then(response => {
-                        console.log("Result...", response);
-                    });
-                }
+            })
+        }
+        else {
+            let data = {
+                "amount": this.state.amount.toString() + 'sut',
+                "name": this.props.account.name,
+                "password": this.state.keyPassword,
+                "gas": 200000,
+                "to": this.state.toAddress
             }
-            else {
-                this.setState({ openSnack: true, snackMessage: 'Problem faced while doing transaction' })
-            }
-        })
+            this.props.sendAmount(data, this.state.toAddress).then(response => {
+                console.log("Result...", response);
+            });
+        }
     }
 
     handleClose = (event, reason) => {
@@ -130,18 +145,19 @@ function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
         isTest: state.setTestNet,
-        keys: state.getKeys,
+        account: state.setTMAccount,
         vpnPayment: state.payVPNTM
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        getKeys,
         sendAmount,
         getTMBalance,
         payVPNTM,
-        payVPNSession
+        payVPNSession,
+        getSessionInfo,
+        setVpnStatus
     }, dispatch)
 }
 

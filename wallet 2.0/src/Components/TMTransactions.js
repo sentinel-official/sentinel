@@ -51,23 +51,23 @@ class TMTransactions extends Component {
 
     sendTransaction = () => {
         if (this.props.vpnPayment.isPayment) {
-            let data = {
-                "amount": this.state.amount.toString() + 'sut',
-                "name": this.props.account.name,
-                "password": this.state.keyPassword,
-                "gas": 200000,
-                "vaddress": this.state.toAddress,
-                "sig_name": Math.random().toString(36).substring(4),
-                "sig_password": Math.random().toString(36).substring(2)
-            }
-            this.props.payVPNSession(data).then(response => {
-                console.log("Pay VPN...", response);
-                if (response.error)
-                    console.log("VPN Error...", response);
-                else {
-                    localStorage.setItem('SIGNAME', data.sig_name)
-                    localStorage.setItem('SIGPWD', data.sig_password)
-                    this.props.getSessionInfo(response.payload.hash).then(sesRes => {
+            // let data = {
+            //     "amount": this.state.amount.toString() + 'sut',
+            //     "name": this.props.account.name,
+            //     "password": this.state.keyPassword,
+            //     "gas": 200000,
+            //     "vaddress": this.state.toAddress,
+            //     "sig_name": Math.random().toString(36).substring(4),
+            //     "sig_password": Math.random().toString(36).substring(2)
+            // }
+            // this.props.payVPNSession(data).then(response => {
+            //     console.log("Pay VPN...", response);
+            //     if (response.error)
+            //         console.log("VPN Error...", response);
+            //     else {
+            //         localStorage.setItem('SIGNAME', data.sig_name)
+            //         localStorage.setItem('SIGPWD', data.sig_password)
+                    this.props.getSessionInfo('95BD5477A9B3C126ADAF9F8AEDDA0BE1BD866BBD').then(sesRes => {
                         if (sesRes.error)
                             console.log("Ses..Error", sesRes.error)
                         else {
@@ -79,8 +79,8 @@ class TMTransactions extends Component {
                             })
                         }
                     })
-                }
-            })
+            //     }
+            // })
         }
         else {
             let data = {

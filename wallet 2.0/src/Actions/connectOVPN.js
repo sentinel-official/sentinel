@@ -18,19 +18,21 @@ let OVPNDelTimer = null;
 
 export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
     switch (os) {
-        case 'win32': 
+        case 'win32':
             await testConnect(account_addr, vpn_addr, (res) => {
-                 cb(res);
-                });
-                break;
-        
-        case 'darwin': 
-                break;
+                cb(res);
+            });
+            break;
+
+        case 'darwin':
+            break;
         case 'linux': {
             checkDependencies(['openvpn'], async (e, o, se) => {
                 if (o) {
-                    if (localStorage.getItem('isTM'))
-                        await tmConnect(account_addr, vpn_addr, data, (res) => { cb(res) });
+                    if (localStorage.getItem('isTM') === 'true'){
+                        console.log("Value...",localStorage.getItem('isTM'));
+                        await tmConnect(account_addr, vpn_addr, data, (res) => { console.log("VPn Re..", res); cb(res) });
+                    }
                     else
                         await testConnect(account_addr, vpn_addr, (res) => { cb(res) });
                 } else {
@@ -140,38 +142,37 @@ export function connectwithOVPN(err, resp, cb) {
             });
         } // internal else ends here
         // setTimeout(function () {
-        if (remote.process.platform === 'win32') { checkWindows(resp,cb) }
+        if (remote.process.platform === 'win32') { checkWindows(resp, cb) }
         // else if (remote.process.platform === 'darwin') checkVPNConnection();
-        else{
-        getVPNPIDs(async (err, pids) => {
-            if (err) cb({ message: err });
-            else {
-                getConfig(async function (err, confdata) {
-                    let data = confdata ? JSON.parse(confdata) : {};
-                    data.isConnected = true;
-                    data.ipConnected = localStorage.getItem('IPGENERATED');
-                    data.location = localStorage.getItem('LOCATION');
-                    data.speed = localStorage.getItem('SPEED');
-                    data.connectedAddr = localStorage.getItem('CONNECTED_VPN');
-                    data.session_name = localStorage.getItem('SESSION_NAME');
-                    data.vpn_type = 'openvpn';
-                    let keystore = JSON.stringify(data);
-                    console.log(keystore, 'data to write');
-                    await fs.writeFile(CONFIG_FILE, keystore, (err) => {
-                        cb(err)
-                    });
-                    cb({ 'message': resp.message, 'success': resp.success });
-                })
-            }
-        })
+        else {
+            getVPNPIDs(async (err, pids) => {
+                if (err) cb({ message: err });
+                else {
+                    getConfig(async function (err, confdata) {
+                        let data = confdata ? JSON.parse(confdata) : {};
+                        data.isConnected = true;
+                        data.ipConnected = localStorage.getItem('IPGENERATED');
+                        data.location = localStorage.getItem('LOCATION');
+                        data.speed = localStorage.getItem('SPEED');
+                        data.connectedAddr = localStorage.getItem('CONNECTED_VPN');
+                        data.session_name = localStorage.getItem('SESSION_NAME');
+                        data.vpn_type = 'openvpn';
+                        let keystore = JSON.stringify(data);
+                        console.log(keystore, 'data to write');
+                        await fs.writeFile(CONFIG_FILE, keystore, (err) => {
+                        });
+                        cb({ 'message': resp.message, 'success': resp.success });
+                    })
+                }
+            })
         }
     }
 }
-function checkWindows(resp,cb) {
+function checkWindows(resp, cb) {
     let count = 0;
     let CONNECTED = false;
     exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
-        if (stdout.toString() === '') {}
+        if (stdout.toString() === '') { }
         else {
             CONNECTED = true;
             let data = {};
@@ -185,7 +186,7 @@ function checkWindows(resp,cb) {
             let keystore = JSON.stringify(data);
             fs.writeFile(CONFIG_FILE, keystore, function (err) {
             });
-            cb({'message':resp.data.message,'success':resp.data.success});
+            cb({ 'message': resp.data.message, 'success': resp.data.success });
             count = 4;
         }
         count++;
@@ -193,7 +194,7 @@ function checkWindows(resp,cb) {
             setTimeout(() => { checkWindows(); }, 5000);
         }
         if (count === 4 && CONNECTED === false) {
-            cb({ message: 'Something went wrong.Please Try Again',success:false });
+            cb({ message: 'Something went wrong.Please Try Again', success: false });
         }
     })
 }

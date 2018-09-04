@@ -54,3 +54,10 @@ export function payVPNTM(data) {
         payload: data
     }
 }
+
+export function setActiveVpn(data) {
+    return {
+        type: types.SET_ACTIVE_VPN,
+        payload: data
+    }
+}

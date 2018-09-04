@@ -266,6 +266,7 @@
         android:layout_height="0dp"
         android:enabled="false"
         android:text="@string/claim_bonus"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/btn_share_referral_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_share_referral_id"

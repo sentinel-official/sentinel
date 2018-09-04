@@ -59,10 +59,10 @@ from sentinel.node import UpdateNodeInfo
 from sentinel.swaps import GetAvailableTokens
 from sentinel.swaps import GetExchangeValue
 from sentinel.swaps import GetNewAddress
-from sentinel.swaps import SwapStatus
-from sentinel.swaps import TokenSwapRawTransaction
 from sentinel.swaps import GetPendingTransactions
 from sentinel.swaps import GetSwapAddressBalance
+from sentinel.swaps import SwapStatus
+from sentinel.swaps import TokenSwapRawTransaction
 from sentinel.utils import JSONTranslator
 
 

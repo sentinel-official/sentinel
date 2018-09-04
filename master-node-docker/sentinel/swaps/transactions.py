@@ -80,27 +80,22 @@ class GetPendingTransactions(object):
         @apiGroup Transactions
         @apiSuccess {Array} list Pending transactions list.
         """
-        message = {}
-        error, pending_list = db.swaps.find({
+        error, list = db.swaps.find({
             'status': 0
         }, {
-            'from_symbol': 1,
-            'to_symbol': 1,
-            'from_address': 1,
-            'to_address': 1,
-            'status': 1,
-            'time_0': 1
-        }).sort('_id', -1)
+            '_id': 0
+        }).sort('time_0', -1)
 
         if error is None:
             message = {
                 'success': True,
-                'list': pending_list
+                'list': list
             }
         else:
             message = {
                 'success': False,
-                'message': 'Error in getting pending transactions list'
+                'message': 'Error in getting pending transactions list.'
             }
+
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

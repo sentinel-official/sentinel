@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { getKeys } from '../Actions/tendermint.action';
+import { setTMAccount } from '../Actions/tendermint.action';
 import { createTMAccount } from '../Actions/createTM.action';
+import { setTMConfig } from '../Utils/UserConfig';
 import CustomTextField from './customTextfield';
 import { Button, Snackbar } from '@material-ui/core';
 import { createAccountStyle } from '../Assets/createtm.styles';
@@ -34,6 +35,16 @@ class CreateTMAccount extends Component {
         this.props.createTMAccount(this.state.keyName, this.state.keyPassword).then(res => {
             if (res.error) {
                 this.setState({ openSnack: true, snackMessage: res.error.data })
+            }
+            else {
+                setTMConfig(this.state.keyName);
+                let data = {
+                    name: res.payload.name,
+                    type: res.payload.type,
+                    address: res.payload.address,
+                    pub_key: res.payload.pub_key
+                }
+                this.props.setTMAccount(data);
             }
         });
     }
@@ -88,8 +99,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        getKeys,
-        createTMAccount
+        createTMAccount,
+        setTMAccount
     }, dispatch)
 }
 

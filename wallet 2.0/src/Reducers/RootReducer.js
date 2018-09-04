@@ -13,9 +13,10 @@ import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 import { connectVPNReducer } from './connectVPN.reducer'
 import { initPaymentDetails } from './initPayment.reducer';
 import { VPNUsage } from './vpnUsage'
-import { getKeys, setTMComponent, tmBalance } from './tendermint.reducer';
+import { getKeys, setTMComponent, tmBalance, setTMAccount } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
 import { socksReducer } from './SOCKSReducer';
+import { getSessionInfo } from './tmvpn.reducer';
 import { networkChange } from './NetworkChange'
 
 const rootReducer = combineReducers({
@@ -51,6 +52,8 @@ const rootReducer = combineReducers({
     setVpnStatus,
     setTendermint,
     payVPNTM,
+    setTMAccount,
+    sessionInfo: getSessionInfo,
     networkChange,
 });
 

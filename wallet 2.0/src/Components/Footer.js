@@ -37,6 +37,7 @@ class Footer extends Component {
     render() {
         let language = this.props.lang;
         let { vpnStatus, currentUsage } = this.props;
+        console.log("Usage..", this.props.currentUsage);
         return (
             <div style={footerStyles.mainDivStyle}>
                 <Grid>

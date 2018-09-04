@@ -6,7 +6,7 @@ android {
         applicationId "co.sentinel.sentinellite"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 3
+        versionCode 4
         versionName '0.1.7'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // Enable Vector drawable

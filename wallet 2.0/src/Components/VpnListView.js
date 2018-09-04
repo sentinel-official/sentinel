@@ -37,7 +37,7 @@ class VpnListView extends Component {
     componentDidMount() {
         let list = this.props.availableVpns;
         if (this.props.isTM) {
-            list.map((node, i) => {
+            list.map((node) => {
                 node.net_speed = node.netSpeed;
                 node.account_addr = node.accountAddress;
                 node.price_per_GB = node.pricePerGB;

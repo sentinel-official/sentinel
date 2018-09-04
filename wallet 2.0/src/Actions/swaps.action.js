@@ -2,10 +2,10 @@
 import * as types from './../Constants/action.names';
 import { sendError } from './authentication.action';
 import { B_URL } from './../Constants/constants';
-import { GET_ETH_BALANCE, GET_AVAIL_BALANCE, GET_SENT_BALANCE } from './../Constants/action.names';
+import { GET_AVAIL_BALANCE } from './../Constants/action.names';
 import axios from 'axios';
 const config = require('./../Constants/config');
-var TOKEN_BALANCE_URL;
+let TOKEN_BALANCE_URL;
 
 export function getTokenBalance(contract, addr, decimals, cb) {
   try {
@@ -32,12 +32,14 @@ export function getTokenBalance(contract, addr, decimals, cb) {
   }
 }
 
-export function getAvailableTokens() {
+export async function getAvailableTokens() {
   try {
-    let request = axios({
+    let request = await axios({
       url: B_URL + '/swaps/available',
       method: 'GET'
     })
+
+    console.log(request);
 
     return {
       type: GET_AVAIL_BALANCE,
@@ -48,9 +50,9 @@ export function getAvailableTokens() {
   }
 }
 
-export function getSentValue(from, to, value, decimals) {
+export async function getSentValue(from, to, value, decimals) {
   try {
-    let response = axios({
+    let response = await axios({
       url: B_URL + '/swaps/exchange?from=' + from + '&to=' + to + '&value=' + value,
       method: 'GET',
       headers: {

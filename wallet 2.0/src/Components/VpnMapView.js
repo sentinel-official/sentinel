@@ -9,42 +9,80 @@ import {
     Markers,
     Marker
 } from 'react-simple-maps';
+import SimpleDialogDemo from "./customDialog";
 
 class VpnMapView extends Component {
     constructor(props) {
         super(props);
         this.state = {
             zoom: 1,
-            markersList: []
+            markersList: [],
+            openDialog: false,
+            data: {},
         }
     }
 
     componentWillReceiveProps = (nextProps) => {
+        let list = nextProps.availableVpns;
+        if (this.props.isTM) {
+            list.map((node) => {
+                node.net_speed = node.netSpeed;
+                node.account_addr = node.accountAddress;
+                node.price_per_GB = node.pricePerGB;
+                node.enc_method = node.encMethod;
+                node.ip = node.IP;
+            })
+        }
         let markers = [];
-        if (nextProps.availableVpns.length !== 0) {
-            nextProps.availableVpns.map((vpn, i) => {
-                var vpnServer = {
+        if (list.length !== 0) {
+            list.map((vpn) => {
+                let vpnServer = {
                     name: vpn.location.city,
                     vpn: vpn,
                     coordinates: [vpn.location.longitude, vpn.location.latitude]
-                }
+                };
                 markers.push(vpnServer);
+            });
+            this.setState({ markersList: markers, zoom: nextProps.zoom });
+        }
+    };
+
+    componentDidMount() {
+        let list = this.props.availableVpns;
+        if (this.props.isTM) {
+            list.map((node) => {
+                node.net_speed = node.netSpeed;
+                node.account_addr = node.accountAddress;
+                node.price_per_GB = node.pricePerGB;
+                node.enc_method = node.encMethod;
+                node.ip = node.IP;
             })
+        }
+        let markers = [];
+        if (list.length !== 0) {
+            list.map((vpn) => {
+                let vpnServer = {
+                    name: vpn.location.city,
+                    vpn: vpn,
+                    coordinates: [vpn.location.longitude, vpn.location.latitude]
+                };
+                markers.push(vpnServer);
+            });
             this.setState({ markersList: markers });
         }
     }
 
-    handleZoomIn() {
-        this.setState({
-            zoom: this.state.zoom * 2,
-        })
-    }
+    handleClick = (marker, event) => {
 
-    handleZoomOut() {
-        this.setState({
-            zoom: this.state.zoom / 2,
-        })
-    }
+        this.setState({ openDialog: true,  data: {
+                    'city': marker.vpn.location.city, 'country': marker.vpn.location.country,
+            'speed': marker.vpn.bandwidth, 'latency': marker.vpn.latency, 'price_per_GB': marker.vpn.price_per_GB, 'vpn_addr': marker.vpn.account_addr
+            } })
+    };
+
+    changeDialog = (value) => {
+        this.setState({ openDialog: value });
+    };
 
     render() {
         return (
@@ -54,7 +92,6 @@ class VpnMapView extends Component {
                     style={{
                         width: "100%",
                         height: 420,
-                        marginTop: '4%'
                     }}
                 >
                     <ZoomableGroup zoom={this.state.zoom}>
@@ -98,7 +135,7 @@ class VpnMapView extends Component {
                                     }}
                                     key={i}
                                     marker={marker}
-                                    // onClick={this.handleClick.bind(this)}
+                                    onClick={this.handleClick}
                                     style={{
                                         hover: { stroke: "#FF5722" },
                                         pressed: { stroke: 'transparent' }
@@ -145,6 +182,9 @@ class VpnMapView extends Component {
                         </Markers>
                     </ZoomableGroup>
                 </ComposableMap>
+                <div style={{ width: 280 }} >
+                    <SimpleDialogDemo data={this.state.data} open={this.state.openDialog} onUpdate={this.changeDialog} />
+                </div>
             </div>
         )
     }
@@ -153,7 +193,8 @@ class VpnMapView extends Component {
 function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
-        availableVpns: state.getVpnList
+        availableVpns: state.getVpnList,
+        isTM:state.setTendermint
     }
 }
 

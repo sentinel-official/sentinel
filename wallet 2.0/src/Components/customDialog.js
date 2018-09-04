@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import classNames from 'classnames';
 import { DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import {
-    withStyles, Button, Avatar, List, ListItem, ListItemAvatar, ListItemText,
-    DialogTitle, Dialog, CircularProgress
+    withStyles, Button, List, ListItem, ListItemText,
+    DialogTitle, Dialog,
 } from '@material-ui/core';
 import green from '@material-ui/core/colors/green';
 import CheckIcon from '@material-ui/icons/Check';
@@ -18,12 +17,13 @@ import { setVpnStatus, payVPNTM } from '../Actions/vpnlist.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
+import { calculateUsage } from '../Actions/calculateUsage';
 
 const electron = window.require('electron');
 const remote = electron.remote;
-
-const emails = ['username@gmail.com', 'user02@gmail.com'];
 let UsageInterval = null;
+let type = '';
+let session = null;
 const styles = theme => ({
     avatar: {
         backgroundColor: blue[100],
@@ -89,20 +89,16 @@ class SimpleDialog extends React.Component {
     };
 
     handleClose = () => {
-        this.props.onClose(this.props.selectedValue);
+        this.props.onClose();
 
     };
 
     render() {
-        const { classes, onClose, selectedValue, ...other } = this.props;
-        const buttonClassname = classNames({
-            [classes.buttonSuccess]: !this.props.isLoading,
-        });
-
+        const { classes, ...other } = this.props;
 
         return (
             <Dialog onClose={this.handleClose}
-                aria-labelledby="simple-dialog-title" keepMounted
+                aria-labelledby="simple-dialog-title"
                 {...other} className={{ classes: { paper: classes.container } }}
             >
                 <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
@@ -148,6 +144,7 @@ class SimpleDialog extends React.Component {
                                     className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
                                 {!this.props.isLoading && this.props.success ? 'Connected' : 'Connect'}
                             </Button>
+                            <Button onClick={this.props.execIT} >Refresh</Button>
                         </div>
                     </List>
                     {/*: ''*/}
@@ -170,11 +167,12 @@ const SimpleDialogWrapped = withStyles(styles)(SimpleDialog);
 class AlertDialog extends React.Component {
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ open: nextProps.open });
+        this.setState({ open: nextProps.open, op: nextProps.op });
     }
 
     state = {
         open: false,
+        op: false
     };
 
     handleClickOpen = () => {
@@ -182,26 +180,26 @@ class AlertDialog extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({ open: false, isLoading: false });
+        this.setState({ open: false, isLoading: false, op: false });
     };
 
-    makeInitPayment = async () => {
-
+    makeInitPayment = () => {
         let data = {
             account_addr: this.props.paymentAddr,
             amount: 10000000000,
             id: -1
         };
-
-        await this.props.initPaymentAction(data);
+        this.props.initPaymentAction(data);
         this.props.setCurrentTab('send')
     };
 
     render() {
         return (
             <Dialog
-                open={this.state.open}
-                onClose={this.handleClose}
+                // open={this.state.open}
+                // keepMounted
+                open={this.props.op}
+                onClose={this.props.onClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -235,11 +233,11 @@ class SimpleDialogDemo extends React.Component {
 
     state = {
         open: false,
-        selectedValue: emails[1],
         pendingInitPayment: null,
         isPending: false,
         paymentAddr: '',
-        isLoading: false
+        isLoading: false,
+        session: false,
     };
 
     handleClickOpen = () => {
@@ -248,12 +246,15 @@ class SimpleDialogDemo extends React.Component {
         });
     };
 
-    handleClose = value => {
-        this.setState({ selectedValue: value, open: false });
+    handleClose = () => {
+        this.setState({  open: false});
         this.props.onUpdate(false);
     };
+    handleAlertClose = () => {
+        this.setState({ isPending: false })
+    };
 
-    handleListItemClick = (vpn_addr) => {
+    handleListItemClick = async (vpn_addr) => {
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
             this.props.setCurrentTab('tmint');
@@ -261,15 +262,14 @@ class SimpleDialogDemo extends React.Component {
         else {
             this.setState({ isLoading: true });
             if (this.props.vpnType === 'openvpn') {
-                connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (res) => {
-
+               await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform,null, (res) => {
                     if (res.data && res.data.account_addr) {
                         this.setState({
-                            pendingInitPayment: res.data.message, isPending: false, open: true,
+                            pendingInitPayment: res.data.message, open: false, isPending: true,
                             paymentAddr: res.data.account_addr, isLoading: false
                         })
                     } else if (res.success) {
-                        this.setState({ isLoading: false });
+                        this.setState({ isLoading: false, isPending: false, open: true });
                         this.props.setVpnStatus(true)
                         // setTimeout(() => {  this.setState({ open: false })}, 4000)
                     } else {
@@ -278,17 +278,34 @@ class SimpleDialogDemo extends React.Component {
 
                 })
             } else {
-                this.props.connectSocks(this.props.getAccount, vpn_addr).then(res => {
-
+                connectSocks(this.props.getAccount, vpn_addr).then( async (res) => {
+                    // if (res) {
+                        setTimeout( () => {
+                        session = localStorage.getItem('SESSION_NAME');
+                        type = localStorage.getItem('VPN_TYPE');
+                        this.setState({ session: true })
+                        }, 10000);
+                        // if (session && type === 'SOCKS5') {
+                            calculateUsage(this.props.getAccount, this.props.data.vpn_addr, true )
+                        // }
+                    // }
                 });
             }
         }
     };
 
+    execIT = () => {
+        calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false )
+    };
+
     render() {
-        if (this.props.vpnStatus && !UsageInterval) {
+        if (this.state.session) {
             UsageInterval = setInterval(() => {
-                this.props.getVPNUsageData(this.props.isTm ? this.props.account.address : this.props.getAccount);
+                if (this.state.session && type === 'SOCKS5') {
+                    calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false)
+                } else {
+                    this.props.getVPNUsageData(this.props.isTm ? this.props.account.address : this.props.getAccount);
+                }
             }, 3000);
         }
 
@@ -298,26 +315,39 @@ class SimpleDialogDemo extends React.Component {
                 UsageInterval = null;
             }
         }
-        // console.log('down props', this.props.data );
+
+        // if (!UsageInterval && this.props.status) {
+        //     UsageInterval = setInterval(function () {
+        //         session = localStorage.getItem('SESSION_NAME');
+        //         type = localStorage.getItem('VPN_TYPE');
+        //         if (this.state.isSock)
+        //             that.calculateUsage(false);
+        //         else
+        //
+        //     }, 5000);
+        // }
         return (
             <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }} >
-                {this.state.isPending ?
-                    <AlertDialog
-                        open={this.state.isPending}
-                        message={this.state.pendingInitPayment}
-                        paymentAddr={this.state.paymentAddr}
-                        initPaymentAction={this.props.initPaymentAction}
-                        setCurrentTab={this.props.setCurrentTab}
-                    />
-                    :
+                {!this.state.isPending ?
                     <SimpleDialogWrapped
-                        selectedValue={this.state.selectedValue}
-                        open={this.state.isPending === false && this.state.open}
+                        // selectedValue={this.state.selectedValue}
+                        open={this.state.open}
                         onClose={this.handleClose}
                         data={this.props.data}
                         onClicked={this.handleListItemClick}
                         isLoading={this.state.isLoading}
                         success={this.props.vpnStatus}
+                        execIT={this.execIT}
+                    />
+                    :
+                    <AlertDialog
+                        op={this.state.isPending}
+                    // open={this.state.isPending}
+                        onClose={this.handleAlertClose}
+                        message={this.state.pendingInitPayment}
+                        paymentAddr={this.state.paymentAddr}
+                        initPaymentAction={this.props.initPaymentAction}
+                        setCurrentTab={this.props.setCurrentTab}
                     />
                 }
             </div>
@@ -327,7 +357,7 @@ class SimpleDialogDemo extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectSocks, payVPNTM }, dispatch)
+    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectVPN, connectSocks, payVPNTM }, dispatch)
 }
 
 function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus, setTendermint, setTMAccount }) {

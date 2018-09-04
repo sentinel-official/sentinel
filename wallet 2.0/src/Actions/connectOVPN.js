@@ -16,14 +16,16 @@ let connect = {
 };
 let OVPNDelTimer = null;
 
-export function connectVPN(account_addr, vpn_addr, os, data, cb) {
+export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
     switch (os) {
-        case 'win32': {
-
-        }
-        case 'darwin': {
-
-        }
+        case 'win32': 
+            await testConnect(account_addr, vpn_addr, (res) => {
+                 cb(res);
+                });
+                break;
+        
+        case 'darwin': 
+                break;
         case 'linux': {
             checkDependencies(['openvpn'], async (e, o, se) => {
                 if (o) {
@@ -34,21 +36,39 @@ export function connectVPN(account_addr, vpn_addr, os, data, cb) {
                 } else {
                     console.log("dependecy error")
                 }
-            })
+            });
+            break;
         }
         default: {
-
+            break;
         }
     }
 }
 
 
+// export async function windowsConnect(account_addr, vpn_addr, cb) {
+//    let cmd = 'resources\\extras\\bin\\openvpn.exe ' + OVPN_FILE;
+//
+//     exec('cd c:\\Program Files && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (err, stdout, stderr) {
+//         if (stdout.toString() === '') {
+//             exec('cd c:\\Program Files (x86) && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (error, stdout1, stderr1) {
+//                 if (stdout.toString() === '') {
+//                     cb({ message: 'false' }, false, true, false, null);
+//                 }
+//                 else {
+//                     nextStep();
+//                 }
+//             })
+//         } else {
+//             nextStep();
+//         }
+//     })
+// }
 export async function testConnect(account_addr, vpn_addr, cb) {
     let data = {
         account_addr: account_addr,
         vpn_addr: vpn_addr
     };
-
     axios.post(`${B_URL}/client/vpn`, data)
         .then(resp => {
             if (resp.data.success) {
@@ -120,6 +140,9 @@ export function connectwithOVPN(err, resp, cb) {
             });
         } // internal else ends here
         // setTimeout(function () {
+        if (remote.process.platform === 'win32') { checkWindows(resp,cb) }
+        // else if (remote.process.platform === 'darwin') checkVPNConnection();
+        else{
         getVPNPIDs(async (err, pids) => {
             if (err) cb({ message: err });
             else {
@@ -141,5 +164,36 @@ export function connectwithOVPN(err, resp, cb) {
                 })
             }
         })
+        }
     }
+}
+function checkWindows(resp,cb) {
+    let count = 0;
+    let CONNECTED = false;
+    exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
+        if (stdout.toString() === '') {}
+        else {
+            CONNECTED = true;
+            let data = {};
+            data.isConnected = true;
+            data.ipConnected = localStorage.getItem('IPGENERATED');
+            data.location = localStorage.getItem('LOCATION');
+            data.speed = localStorage.getItem('SPEED');
+            data.connectedAddr = localStorage.getItem('CONNECTED_VPN');
+            data.session_name = localStorage.getItem('SESSION_NAME');
+            data.vpn_type = 'openvpn';
+            let keystore = JSON.stringify(data);
+            fs.writeFile(CONFIG_FILE, keystore, function (err) {
+            });
+            cb({'message':resp.data.message,'success':resp.data.success});
+            count = 4;
+        }
+        count++;
+        if (count < 4) {
+            setTimeout(() => { checkWindows(); }, 5000);
+        }
+        if (count === 4 && CONNECTED === false) {
+            cb({ message: 'Something went wrong.Please Try Again',success:false });
+        }
+    })
 }

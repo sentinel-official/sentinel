@@ -1,9 +1,6 @@
 import React from 'react';
-import { Snackbar, Menu, MenuItem, RaisedButton, TextField, FlatButton, Dialog } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { withStyles } from '@material-ui/core/styles';
-import TransIcon from 'material-ui/svg-icons/action/swap-horiz';
-import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import { sendComponentStyles } from '../Assets/sendcomponent.style';
 import SimpleMenu from './SharedComponents/SimpleMenu';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -11,8 +8,8 @@ import CustomTooltips from './SharedComponents/customTooltip';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import lang from '../Constants/language';
-// import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { payVPNUsage, transferAmount } from '../Actions/send.action';
+import { setVPNDuePayment } from '../Actions/vpnhistory.actions';
 import { getGasCost, ethTransaction, tokenTransaction } from '../Utils/Ethereum';
 import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import Input from '@material-ui/core/Input';
@@ -74,29 +71,31 @@ class SendComponent extends React.Component {
       password: '',
       gas: 21000,
       isDisabled: true,
-      label: 'SEND'
+      label: 'SEND',
+      isVPNPayment: false,
+      sessionId: ''
     }
   }
 
   addressChange = (event) => {
     this.setState({ sendToAddress: event.target.value });
-    let trueAddress = event.target.value.match(/^0x[a-zA-Z0-9]{40}$/)
+    let trueAddress = event.target.value.match(/^0x[a-zA-Z0-9]{40}$/);
     if (trueAddress !== null) {
       this.enableButton();
       if (this.state.amount !== '') {
         this.getGasLimit(this.state.amount, event.target.value, this.state.token)
       }
     }
-  }
+  };
 
   enableButton = () => {
-    let { token, amount, sendToAddress, password, gwei, gas } = this.state
+    let { token, amount, sendToAddress, password, gwei, gas } = this.state;
     if (token && amount && sendToAddress && password && gwei && gas) {
       this.setState({ isDisabled: false })
     } else {
       this.setState({ isDisabled: true })
     }
-  }
+  };
 
   setToken = (token) => {
     this.setState({ token });
@@ -108,39 +107,39 @@ class SendComponent extends React.Component {
         that.enableButton();
       }, 50);
     }
-  }
+  };
 
   callEnable = () => {
     setTimeout(() => {
       this.enableButton();
     }, 50);
-  }
+  };
 
   setPassword = (event) => {
 
     this.setState({ password: event.target.value });
 
     this.callEnable();
-  }
+  };
 
   setGasLimit = (event) => {
     this.setState({ gas: event.target.value });
     this.callEnable();
-  }
+  };
 
   amountChange = (event) => {
     let amount = event.target.value;
-    if (this.state.unit === 'ETH') amount = amount * Math.pow(10, 18);
-    else amount = amount * Math.pow(10, 8);
-    this.setState({ amount: amount })
-    let trueAddress = this.state.sendToAddress.match(/^0x[a-fA-F0-9]{40}$/)
+    if (this.state.unit === 'ETH') amount = amount * 1e18;
+    else amount = amount * 1e8;
+    this.setState({ amount: amount });
+    let trueAddress = this.state.sendToAddress.match(/^0x[a-fA-F0-9]{40}$/);
     if (trueAddress !== null) {
       this.getGasLimit(amount, this.state.sendToAddress, this.state.token)
     }
 
     this.callEnable();
 
-  }
+  };
 
   getGasLimit = (amount, to, unit) => {
     var from = this.props.local_address;
@@ -148,15 +147,15 @@ class SendComponent extends React.Component {
     getGasCost(from, to, amount, unit, function (gasLimit) {
       that.setState({ gas: gasLimit })
     })
-  }
+  };
 
   handleOnclick = () => {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
-    let { payVpn, payVPNUsage } = this.props
+    let { payVpn, payVPNUsage, initPaymentDetails } = this.props;
 
-    console.log('onClik', payVpn)
+    console.log('onClik', payVpn);
 
-    this.setState({ label: 'SENDING', isDisabled: true })
+    this.setState({ label: 'SENDING', isDisabled: true });
     let self = this;
 
     setTimeout(() => {
@@ -167,69 +166,92 @@ class SendComponent extends React.Component {
           self.setState({ label: 'SEND', isDisabled: true })
         } else {
           if (self.state.token === 'ETH') {
-            ethTransaction(self.props.local_address, sendToAddress, amount, gwei, gas, privateKey, function (err, result) {
+            ethTransaction(self.props.local_address, sendToAddress, amount, gwei * 10 ** 9, gas, privateKey, function (err, result) {
               if (err) {
-                console.log('Error', err)
+                console.log('Error', err);
                 self.setState({ label: 'SEND', isDisabled: true });
               } else {
                 transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
-                  console.log(response)
+                  console.log('eth tx complete', response);
                   self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
                 })
               }
             });
           } else {
-            console.log('in else parent')
-            tokenTransaction(self.props.local_address, sendToAddress, amount, gwei, gas, privateKey, function (err, result) {
-              console.log('in callback', err, result)
+            console.log('in else parent');
+            tokenTransaction(self.props.local_address, sendToAddress, amount, gwei * 10 ** 9, gas, privateKey, function (err, result) {
+              console.log('in callback', err, result);
               if (err) {
-                console.log('Error', err)
+                console.log('Error', err);
                 self.setState({ label: 'SEND', isDisabled: true })
               } else {
-                // console.log('in tokentx data',payVpn.isVPNPayment)
-                // if (payVpn.isVPNPayment) {
-                //   let data = {
-                //     from_addr: self.props.local_address,
-                //     amount: self.state.amount,
-                //     session_id: payVpn.data.sessionId,
-                //     tx_data: result,
-                //     net: self.props.net ? 'rinkeby' : 'main',
-                //     payment_type: 'normal'
-                //   }
-                //   payVPNUsage(data).then((response) => {
-                //     console.log(response)
-                //     self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
-                //   })
-                // } else {
-                console.log('in else')
-                transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) })
-                self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
+                console.log('in tokentx data hello', initPaymentDetails);
+                let type;
+                if (initPaymentDetails!==null && initPaymentDetails.id === -1) {
+                  type = 'init'
+                } else {
+                  type = 'normal'
+                }
+                console.log('state', self.state);
+                if (self.state.isVPNPayment) {
+                  let data = {
+                    from_addr: self.props.local_address,
+                    amount: self.state.amount,
+                    session_id: self.state.sessionId,
+                    tx_data: result,
+                    net: self.props.net ? 'rinkeby' : 'main',
+                    payment_type: type
+                  };
+                  payVPNUsage(data).then((response) => {
+                    console.log(response);
+                    self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false });
+                  })
+                } else {
+                  console.log('in else');
+                  transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) });
+                  self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', token: 'ETH' });
+                  self.props.setVPNDuePayment(null);
+                }
               }
-              //   }
             });
           }
         }
       });
 
     }, 50);
-  }
+  };
 
   onChangeSlider = (event, value) => {
     this.setState({
       gwei: value
     })
-  }
+  };
 
 
   componentWillMount() {
-    // let { payVpn } = this.props;
-    // if (payVpn.isVPNPayment) {
-    //   this.setState({
-    //     sendToAddress: payVpn.data.to_addr,
-    //     token: payVpn.data.unit,
-    //     amount: payVpn.data.amount
-    //   });
-    // }
+    let { payVpn, initPaymentDetails } = this.props;
+
+    console.log('component will mount', initPaymentDetails, payVpn)
+    if (payVpn.isVPNPayment) {
+      this.setState({
+        sendToAddress: payVpn.data.account_addr,
+        amount: payVpn.data.amount,
+        token: 'SENT',
+        isVPNPayment: true,
+        sessionId: payVpn.data.sessionId
+      });
+      this.getGasLimit(payVpn.data.amount, payVpn.data.account_addr, 'SENT')
+    } else if (initPaymentDetails!==null) {
+      console.log('in else if')
+      this.setState({
+        sendToAddress: initPaymentDetails.account_addr,
+        amount: initPaymentDetails.amount,
+        token: 'SENT',
+        isVPNPayment: true,
+        sessionId: null
+      });
+      this.getGasLimit(initPaymentDetails.amount, initPaymentDetails.account_addr, 'SENT')
+    }
   }
 
   render() {
@@ -289,7 +311,7 @@ class SendComponent extends React.Component {
                     />
                   </div>
                   <div style={{ width: '191px' }}>
-                    <SimpleMenu token={this.setToken} />
+                    <SimpleMenu token={this.setToken} isSend={true} isVPN={this.state.isVPNPayment} />
                   </div>
                 </div>
               </Col>
@@ -346,7 +368,7 @@ class SendComponent extends React.Component {
                         }
                       }
                       step={1}
-                      onChange={this.onChangeSlider}></Slider>
+                      onChange={this.onChangeSlider} />
                   </div>
                 </div>
               </div>
@@ -366,6 +388,7 @@ class SendComponent extends React.Component {
                 <div style={sendComponentStyles.gasTextFieldDiv}>
                   <Input
                     type='password'
+                    placeholder='Enter Keystore Password'
                     autoFocus={false}
                     disableUnderline={true}
                     fullWidth={true}
@@ -393,7 +416,7 @@ class SendComponent extends React.Component {
             </Row>
           </Grid>
         </div>
-      </MuiThemeProvider >
+      </MuiThemeProvider>
     );
   }
 }
@@ -403,14 +426,16 @@ function mapStateToProps(state) {
     language: state.setLanguage,
     local_address: state.getAccount,
     net: state.setTestNet,
-    // payVpn: state.getVPNDuePaymentDetail
+    payVpn: state.getVPNDuePaymentDetails,
+    initPaymentDetails: state.initPaymentDetails,
   }
 }
 
 function mapDispatchToActions(dispatch) {
   return bindActionCreators({
     transferAmount,
-    payVPNUsage
+    payVPNUsage,
+    setVPNDuePayment
   }, dispatch)
 }
 

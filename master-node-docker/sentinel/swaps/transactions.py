@@ -88,7 +88,8 @@ class GetPendingTransactions(object):
             'to_symbol': 1,
             'from_address': 1,
             'to_address': 1,
-            'status': 1
+            'status': 1,
+            'time_0': 1
         }).sort('_id', -1)
 
         if error is None:

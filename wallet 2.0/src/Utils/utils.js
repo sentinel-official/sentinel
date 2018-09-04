@@ -124,8 +124,8 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
 export function ovpnSave(vpn_data, session_id, ovpn, cb) {
     if (remote.process.platform === 'win32' || remote.process.platform === 'darwin') {
         for(var i=15;i<=20;i++){
-          if(response.data['node']['vpn']['ovpn'][i].split(' ')[0]==='up' || response.data['node']['vpn']['ovpn'][i].split(' ')[0]==='down'){
-            delete (response.data['node']['vpn']['ovpn'][i]);
+          if(ovpn[i].split(' ')[0]==='up' || ovpn[i].split(' ')[0]==='down'){
+            delete (ovpn[i]);
           }
         }
     }

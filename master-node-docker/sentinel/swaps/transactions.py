@@ -70,3 +70,26 @@ class TokenSwapRawTransaction(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
+
+
+class GetPendingTransactions(object):
+    def on_get(self, req, resp):
+        """
+        @api {post} /tokens/swaps/pending route to get pending txns.
+        @apiName GetPendingTransactions
+        @apiGroup Transactions
+        @apiSuccess {Array} list Pending transactions list.
+        """
+        _list = db.swaps.find({
+            'status': 0
+        }, {
+            '_id': 0
+        }).sort('time_0', -1)
+
+        message = {
+            'success': True,
+            'list': list(_list)
+        }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)

@@ -114,6 +114,8 @@ class VpnList extends Component {
         isPrivate( (isPrivate, authcode) => {
             if (isPrivate) {
                 this.props.networkChange('private');
+                localStorage.setItem('networkType', 'private');
+                this.props.getVpnList(this.state.vpnType, this.props.isTM);
                 this.setState({ isPrivate, authcode, success: true });
 
             }
@@ -126,7 +128,19 @@ class VpnList extends Component {
 
     };
     handleNetworkChange = (event) => {
+        localStorage.setItem('networkType', event.target.value);
         this.props.networkChange(event.target.value);
+        // this.props.networkChange(event.target.value);
+
+        setTimeout(() =>
+            this.props.getVpnList(this.state.vpnType, this.props.isTM
+                , this.props.isTM), 1000);
+
+        isPrivate( (isPrivate, authcode) => {
+            if (isPrivate) {
+                this.props.getVpnList(this.state.vpnType, this.props.isTM);
+            }
+        })
     };
 
     closePrivDialog = () => {
@@ -182,12 +196,6 @@ class VpnList extends Component {
                                              value={this.state.dVpnQuery} onChange={(e) => {
                                 this.setState({dVpnQuery: e.target.value})
                             }}/>
-                        }
-                        { // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
-                            // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
-                            // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
-                            // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
-                            // right skdfjjjjjjjk////////////////////////////////////////////////////////////////////////////////////  }
                         }
                         <NetworkChangeDialog open={this.props.networkType === 'private' && !this.state.success}
                                              close={this.closePrivDialog} getGatewayAddr={this.getGatewayAddr}
@@ -250,7 +258,7 @@ class VpnList extends Component {
 
                 </div>
                 {
-                    this.props.vpnList.length === 0 ?
+                    !this.props.vpnList ?
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> :
                         this.props.listView === 'list' ?
                             <div style={{ maxWidth: 895, marginLeft: 20 }} >

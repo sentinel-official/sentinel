@@ -1,7 +1,7 @@
 import * as types from './../Constants/action.names';
 import { B_URL, TMain_URL } from './../Constants/constants';
-import axios from 'axios';
-
+// import axios from 'axios';
+import { axiosInstance } from './AxiosGlobalConfig'
 export function setListViewType(component) {
     return {
         type: types.LIST_TYPE,
@@ -11,11 +11,16 @@ export function setListViewType(component) {
 
 export async function getVpnList(vpnType, isTM) {
     let listUrl;
+    // let uri = localStorage.getItem('B_URL')
+    // if (uri && uri === B_URL) {
+
+    // }
+    let uri = await localStorage.getItem('B_URL');
     if (vpnType === 'socks5')
-        listUrl = isTM ? TMain_URL + '/nodes?type=Socks5&status=up' : B_URL + '/client/vpn/socks-list'
+        listUrl = isTM ? TMain_URL + '/nodes?type=Socks5&status=up' : '/client/vpn/socks-list';
     else
-        listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : B_URL + '/client/vpn/list'
-    let response = await axios.get(listUrl, {
+        listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : '/client/vpn/list';
+    let response = await axiosInstance.get( uri + listUrl, {
         headers: {
             'Accept': 'application/json',
             'Content-type': 'application/json',

@@ -14,6 +14,9 @@ import { coinType, decimals, nodeAddress } from '../Constants/swix.constant';
 import { swixRate, swix } from '../Actions/swix.details';
 import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import { transferAmount } from '../Actions/send.action';
+import PositionedSnackbar from './SharedComponents/simpleSnackbar';
+import { TX_SUCCESS } from '../Constants/sendcomponent.types';
+const shell   = window.require('electron').shell;
 
 
 const styles1 = theme => ({
@@ -82,7 +85,12 @@ class Pivx extends Component {
 			swapAmount: 0,
 			address: this.props.local_address,
 			isValidAddress: false,
-			label: 'SWAP'
+			label: 'SWAP',
+			open: false,
+			snackMessage: '',
+			checkTxStatus: 'https://rinkeby.etherscan.io/tx/',
+			url: false,
+			txHash: ''
 		}
 	}
 
@@ -200,7 +208,7 @@ class Pivx extends Component {
 				getPrivateKeyWithoutCallback(this.state.password, function (err, privateKey) {
 					if (err) {
 						console.log(err.message);
-						self.setState({ label: 'SWAP', isSwap: false })
+						self.setState({ label: 'SWAP', isSwap: false, open: true, snackMessage: err.message })
 					} else {
 						if (response.payload.success) {
 
@@ -215,7 +223,11 @@ class Pivx extends Component {
 										} else {
 											transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
 												console.log(response)
-												self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '' });
+												if (response.type === TX_SUCCESS) {
+													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+												} else {
+													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+												}
 											})
 										}
 									});
@@ -228,8 +240,13 @@ class Pivx extends Component {
 											self.setState({ label: 'SWAP', isSwap: false })
 										} else {
 											console.log('in else')
-											transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) })
-											self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '' });
+											transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response)
+												if (response.type === TX_SUCCESS) {
+													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+												} else {
+													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+												}
+											})
 										}
 										//   }
 									});
@@ -392,6 +409,7 @@ class Pivx extends Component {
 
 				</div>
 			}
+			<PositionedSnackbar open={this.state.open} message={this.state.snackMessage} close={this.handleSnackClose} url={this.state.url} checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
 		</div>
 	}
 }

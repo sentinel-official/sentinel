@@ -138,7 +138,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
             if (genericResponseResource != null) {
                 if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
-                    if (genericResponseResource.data.account.address != null && !TextUtils.isEmpty(genericResponseResource.data.account.address) && !TextUtils.isEmpty(genericResponseResource.data.account.deviceId) && AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS).equals(genericResponseResource.data.account.address) && aDeviceId.equals(genericResponseResource.data.account.deviceId)) {
+                    if (genericResponseResource.data.account != null && genericResponseResource.data.account.referralId != null) {
+                        AppPreferences.getInstance().saveString(AppConstants.PREFS_REF_ID, genericResponseResource.data.account.referralId);
+                    }
+                    if (genericResponseResource.data.account != null && genericResponseResource.data.account.address != null && !TextUtils.isEmpty(genericResponseResource.data.account.address) && !TextUtils.isEmpty(genericResponseResource.data.account.deviceId) && AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS).equals(genericResponseResource.data.account.address) && aDeviceId.equals(genericResponseResource.data.account.deviceId)) {
                         loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
                     } else {
                         mViewModel.addAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS), null);

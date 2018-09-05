@@ -17,16 +17,22 @@ public class ReferralViewModel extends ViewModel {
     private final String mAddress;
     private final LiveData<BonusInfoEntity> mReferralInfoLiveData;
     private final SingleLiveEvent<Resource<GenericResponse>> mReferralClaimLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoLiveEvent;
 
     ReferralViewModel(BonusRepository iRepository) {
         mRepository = iRepository;
         mAddress = AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS);
         mReferralInfoLiveData = iRepository.getBonusInfoEntityLiveData();
         mReferralClaimLiveEvent = iRepository.getBonusClaimLiveEvent();
+        mAccountInfoLiveEvent = iRepository.getAccountInfoLiveEvent();
     }
 
     public LiveData<BonusInfoEntity> getBonusInfoLiveData() {
         return mReferralInfoLiveData;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
+        return mAccountInfoLiveEvent;
     }
 
     public SingleLiveEvent<Resource<GenericResponse>> getReferralClaimLiveEvent() {
@@ -39,6 +45,10 @@ public class ReferralViewModel extends ViewModel {
 
     public void updateReferralInfo() {
         mRepository.fetchBonusInfo();
+    }
+
+    public void updateAccountInfo() {
+        mRepository.fetchAccountInfo();
     }
 
     public void claimReferralBonus() {

@@ -304,7 +304,7 @@
     <string name="reward_earned">Total de las recompensas de tokens obtenidas</string>
     <string name="address">Dirección</string>
     <string name="share_id">Comparte tu Link</string>
-    <string name="share_string">Hey, prueba esta nueva app dVPN para Android. Usa mi código de referido para conseguir tokens gratis cuando te registres.\nCódigo de referido: %1s</string>
+    <string name="share_string">Hey, prueba esta nueva app dVPN para Android. Usa mi código de referido para conseguir tokens gratis cuando te registres.\n\nCódigo de referido: %1$s\n\nLink: %2$s</string>
     <string name="info_title_1">Comparte tu código de referido para conseguir tokens por cada registro logrado</string>
     <string name="info_title_2">Wallet de código abierto y plataforma VPN segura</string>
     <string name="info_desc_1">Comparte la app de Sentinel con tus amigos; usa la app dVPN y recibirás un incentivo por ayudar al desarrollo de la comunidad &amp; descentralización de la red</string>

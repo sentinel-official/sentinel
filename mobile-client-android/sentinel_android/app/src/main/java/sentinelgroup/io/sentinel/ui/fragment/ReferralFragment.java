@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.BranchUrlHelper;
 import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.Status;
@@ -115,8 +117,16 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         BonusViewModelFactory aFactory = InjectorModule.provideBonusViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(ReferralViewModel.class);
 
-        mTvReferralCode.setText(mViewModel.getReferralId());
-        generateLinkAndShare();
+        setReferralIdAndLink(true);
+
+        mViewModel.getAccountInfoLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS) && genericResponseResource.data.account != null && genericResponseResource.data.account.referralId != null) {
+                    AppPreferences.getInstance().saveString(AppConstants.PREFS_REF_ID, genericResponseResource.data.account.referralId);
+                    setReferralIdAndLink(false);
+                }
+            }
+        });
 
         mViewModel.getBonusInfoLiveData().observe(this, bonusInfoEntity -> {
             if (bonusInfoEntity != null) {
@@ -168,6 +178,15 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
             case R.id.tv_read_more:
                 showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.referral_desc), AppConstants.VALUE_DEFAULT);
                 break;
+        }
+    }
+
+    private void setReferralIdAndLink(boolean toCheckForEmpty) {
+        if (toCheckForEmpty && TextUtils.isEmpty(mViewModel.getReferralId())) {
+            mViewModel.updateAccountInfo();
+        } else {
+            mTvReferralCode.setText(mViewModel.getReferralId());
+            generateLinkAndShare();
         }
     }
 

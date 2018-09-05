@@ -41,7 +41,7 @@ class Dashboard extends Component {
                 if (this.props.vpnType === 'SOCKS5') {
                     calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false)
                 } else {
-                    this.props.getVPNUsageData(this.props.isTm ? this.props.account.address : this.props.walletAddress);
+                    this.props.getVPNUsageData(this.props.isTm ? this.props.tmAccount.address : this.props.walletAddress);
                 }
             }, 3000);
         }

@@ -14,7 +14,10 @@ import { getGasCost, ethTransaction, tokenTransaction } from '../Utils/Ethereum'
 import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
-import Slider from '@material-ui/lab/Slider'
+import Slider from '@material-ui/lab/Slider';
+import PositionedSnackbar from './SharedComponents/simpleSnackbar';
+import { TX_SUCCESS } from '../Constants/sendcomponent.types';
+const shell   = window.require('electron').shell;
 
 const muiTheme = createMuiTheme({
   slider: {
@@ -73,7 +76,12 @@ class SendComponent extends React.Component {
       isDisabled: true,
       label: 'SEND',
       isVPNPayment: false,
-      sessionId: ''
+      sessionId: '',
+      open: false,
+      snackMessage: '',
+      checkTxStatus: 'https://rinkeby.etherscan.io/tx/',
+      url: false,
+      txHash: ''
     }
   }
 
@@ -98,12 +106,19 @@ class SendComponent extends React.Component {
   };
 
   setToken = (token) => {
+
+    let value;
+    if (token === 'SENT') {
+      value = this.state.amount * 10 ** 8;
+    } else {
+      value = this.state.amount * 10 ** 18
+    }
     this.setState({ token });
     setgas();
     let that = this;
     function setgas() {
       setTimeout(() => {
-        that.getGasLimit(that.state.amount, that.state.sendToAddress, that.state.token);
+        that.getGasLimit(value, that.state.sendToAddress, that.state.token);
         that.enableButton();
       }, 50);
     }
@@ -127,18 +142,32 @@ class SendComponent extends React.Component {
     this.callEnable();
   };
 
+  openInExternalBrowser(url) {
+    console.log('in open external browser', url);
+    shell.openExternal(url);
+    this.setState({ txHash: '' });
+  };
+
   amountChange = (event) => {
     let amount = event.target.value;
-    if (this.state.unit === 'ETH') amount = amount * 1e18;
-    else amount = amount * 1e8;
+    let value;
+    if (this.state.token === 'SENT') {
+      value = amount * 10 ** 8;
+    } else {
+      value = amount * 10 ** 18
+    }
     this.setState({ amount: amount });
     let trueAddress = this.state.sendToAddress.match(/^0x[a-fA-F0-9]{40}$/);
     if (trueAddress !== null) {
-      this.getGasLimit(amount, this.state.sendToAddress, this.state.token)
+      this.getGasLimit(value, this.state.sendToAddress, this.state.token)
     }
 
     this.callEnable();
 
+  };
+
+  handleSnackClose = () => {
+    this.setState({ open: false, txHash: '', url: false });
   };
 
   getGasLimit = (amount, to, unit) => {
@@ -162,32 +191,36 @@ class SendComponent extends React.Component {
 
       getPrivateKeyWithoutCallback(password, function (err, privateKey) {
         if (err) {
-          console.log(err.message);
-          self.setState({ label: 'SEND', isDisabled: true })
+          console.log('password mismatch ', err.message.toString());
+          self.setState({ label: 'SEND', isDisabled: true, open: true, snackMessage: err.message.toString() })
         } else {
           if (self.state.token === 'ETH') {
-            ethTransaction(self.props.local_address, sendToAddress, amount, gwei * 10 ** 9, gas, privateKey, function (err, result) {
+            ethTransaction(self.props.local_address, sendToAddress, amount * 10 ** 18, gwei * 10 ** 9, gas, privateKey, function (err, result) {
               if (err) {
                 console.log('Error', err);
-                self.setState({ label: 'SEND', isDisabled: true });
+                self.setState({ label: 'SEND', isDisabled: true, open: true, snackMessage: err.message });
               } else {
                 transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
                   console.log('eth tx complete', response);
-                  self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '' });
+                  if (response.type === TX_SUCCESS) {
+                    self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+                  } else {
+                    self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+                  }
                 })
               }
             });
           } else {
             console.log('in else parent');
-            tokenTransaction(self.props.local_address, sendToAddress, amount, gwei * 10 ** 9, gas, privateKey, function (err, result) {
+            tokenTransaction(self.props.local_address, sendToAddress, amount * 10 ** 8, gwei * 10 ** 9, gas, privateKey, function (err, result) {
               console.log('in callback', err, result);
               if (err) {
                 console.log('Error', err);
-                self.setState({ label: 'SEND', isDisabled: true })
+                self.setState({ label: 'SEND', isDisabled: true, open: true, snackMessage: err.message.toString() })
               } else {
                 console.log('in tokentx data hello', initPaymentDetails);
                 let type;
-                if (initPaymentDetails!==null && initPaymentDetails.id === -1) {
+                if (initPaymentDetails !== null && initPaymentDetails.id === -1) {
                   type = 'init'
                 } else {
                   type = 'normal'
@@ -203,13 +236,19 @@ class SendComponent extends React.Component {
                     payment_type: type
                   };
                   payVPNUsage(data).then((response) => {
-                    console.log(response);
-                    self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false });
+                    console.log('vpn payment', response);
+                    self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
                   })
                 } else {
                   console.log('in else');
-                  transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) });
-                  self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', token: 'ETH' });
+                  transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
+                    console.log(response)
+                    if (response.type === TX_SUCCESS) {
+                      self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+                    } else {
+                      self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+                    }
+                  });
                   self.props.setVPNDuePayment(null);
                 }
               }
@@ -241,7 +280,7 @@ class SendComponent extends React.Component {
         sessionId: payVpn.data.sessionId
       });
       this.getGasLimit(payVpn.data.amount, payVpn.data.account_addr, 'SENT')
-    } else if (initPaymentDetails!==null) {
+    } else if (initPaymentDetails !== null) {
       console.log('in else if')
       this.setState({
         sendToAddress: initPaymentDetails.account_addr,
@@ -256,6 +295,7 @@ class SendComponent extends React.Component {
 
   render() {
     const { language, classes } = this.props;
+
 
     return (
 
@@ -305,9 +345,7 @@ class SendComponent extends React.Component {
                       inputProps={{ style: sendComponentStyles.textInputStyleForNumber }}
                       value={
                         (this.state.amount === null || this.state.amount === 0) ? null :
-                          (this.state.unit === 'ETH' ? parseFloat(this.state.amount / (10 ** 18)) :
-                            parseFloat(this.state.amount / (10 ** 8)))
-                      }
+                          this.state.amount}
                     />
                   </div>
                   <div style={{ width: '191px' }}>
@@ -415,6 +453,7 @@ class SendComponent extends React.Component {
               </div>
             </Row>
           </Grid>
+          <PositionedSnackbar open={this.state.open} message={this.state.snackMessage} close={this.handleSnackClose} url={this.state.url} checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
         </div>
       </MuiThemeProvider>
     );

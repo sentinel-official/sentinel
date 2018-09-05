@@ -102,7 +102,7 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
 export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     try {
         setWeb3();
-        console.log('in ethTransaction')
+        console.log('in ethTransaction',amount)
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
             gasPrice: gas_price,

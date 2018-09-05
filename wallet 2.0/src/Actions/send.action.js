@@ -61,10 +61,10 @@ export async function transferAmount(net, data) {
           payload: response.data.tx_hash
         }
       } else {
-        sendError(response.error);
+        sendError(response.data.error);
         return {
           type: sendComponentTypes.TX_FAILURE,
-          payload: JSON.parse(response.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.'
+          payload: JSON.parse(response.data.error.error.split("'").join('"')).message || 'Error occurred while initiating transfer amount.'
         }
       }
     } else {

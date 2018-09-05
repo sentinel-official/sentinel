@@ -1,5 +1,6 @@
 # coding=utf-8
 import time
+from os import path
 from thread import start_new_thread
 
 from sentinel.config import DEFAULT_GAS
@@ -9,6 +10,7 @@ from sentinel.node import list_node
 from sentinel.node import node
 from sentinel.node import update_node
 from sentinel.vpn import OpenVPN
+from sentinel.vpn import get_connections
 
 
 def alive_job():
@@ -18,6 +20,17 @@ def alive_job():
         except Exception as err:
             print(str(err))
         time.sleep(30)
+
+
+def connections_job():
+    while True:
+        try:
+            vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
+            if vpn_status_file is True:
+                _ = get_connections()
+        except Exception as err:
+            print(str(err))
+        time.sleep(5)
 
 
 if __name__ == '__main__':
@@ -84,6 +97,7 @@ if __name__ == '__main__':
     openvpn = OpenVPN()
     openvpn.start()
     start_new_thread(alive_job, ())
+    start_new_thread(connections_job, ())
 
     while True:
         line = openvpn.vpn_proc.stdout.readline().strip()

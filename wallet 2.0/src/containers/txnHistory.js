@@ -94,7 +94,7 @@ class TxnHistory extends Component {
                 <div style={styles.historyContainer} >
                     {
                         this.props.testETHHistory && this.props.testETHHistory.data.result.length > 0 ?
-                            !this.state.isActive ? sentTxns : ethTxns : <div>No Transactions yet</div>
+                            !this.state.isActive ? sentTxns : ethTxns : <div style={styles.noTxYet}>No Transactions yet</div>
                     }
                     {/*<History data = {this.props.testETHHistory && this.props.testETHHistory.data.result.length > 0 ? this.props.testETHHistory.data.result : [] }  />*/}
                 </div>
@@ -114,10 +114,13 @@ const styles = {
         height: 450,
         flexDirection: 'column',
         paddingTop: 200,
+        paddingLeft:'45px',
         marginTop: 20,
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+    },
+    noTxYet:{
+        marginTop:'-600px'
     }
 };
 

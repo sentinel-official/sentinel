@@ -67,6 +67,7 @@ class TMTransactions extends Component {
                 else {
                     localStorage.setItem('SIGNAME', data.sig_name)
                     localStorage.setItem('SIGPWD', data.sig_password)
+                    // this.props.getSessionInfo('783B5A64D3CA4C02EAB2DF433B940C8C7349A8A4').then(sesRes => {
                     this.props.getSessionInfo(response.payload.hash).then(sesRes => {
                         if (sesRes.error)
                             console.log("Ses..Error", sesRes.error)

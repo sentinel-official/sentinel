@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { setActiveVpn } from '../Actions/vpnlist.action';
 import {
     ComposableMap,
     ZoomableGroup,
@@ -73,11 +74,15 @@ class VpnMapView extends Component {
     }
 
     handleClick = (marker, event) => {
-
-        this.setState({ openDialog: true,  data: {
-                    'city': marker.vpn.location.city, 'country': marker.vpn.location.country,
-            'speed': marker.vpn.bandwidth, 'latency': marker.vpn.latency, 'price_per_GB': marker.vpn.price_per_GB, 'vpn_addr': marker.vpn.account_addr
-            } })
+        let data = {
+            'city': marker.vpn.location.city, 'country': marker.vpn.location.country,
+            'speed': marker.vpn.bandwidth, 'latency': marker.vpn.latency,
+            'price_per_GB': marker.vpn.price_per_GB, 'vpn_addr': marker.vpn.account_addr
+        }
+        this.props.setActiveVpn(data);
+        this.setState({
+            openDialog: true, data: data
+        })
     };
 
     changeDialog = (value) => {
@@ -183,7 +188,7 @@ class VpnMapView extends Component {
                     </ZoomableGroup>
                 </ComposableMap>
                 <div style={{ width: 280 }} >
-                    <SimpleDialogDemo data={this.state.data} open={this.state.openDialog} onUpdate={this.changeDialog} />
+                    <SimpleDialogDemo open={this.state.openDialog} onUpdate={this.changeDialog} />
                 </div>
             </div>
         )
@@ -194,12 +199,13 @@ function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
         availableVpns: state.getVpnList,
-        isTM:state.setTendermint
+        isTM: state.setTendermint
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
+        setActiveVpn
     }, dispatch)
 }
 

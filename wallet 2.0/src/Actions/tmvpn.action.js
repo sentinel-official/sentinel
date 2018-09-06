@@ -45,3 +45,56 @@ export async function getSessionInfo(hash) {
         }
     }
 }
+
+export async function getSignHash(amount, counter, isfinal) {
+    let data = {
+        amount: amount.toString() + 'sut',
+        session_id: localStorage.getItem('SESSION_NAME'),
+        counter: counter,
+        isfinal: isfinal,
+        name: localStorage.getItem('SIGNAME'),
+        password: localStorage.getItem('SIGPWD')
+    }
+    try {
+        let response = await axios.post(TM_URL + `/send-sign`, data, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        })
+        return {
+            type: types.GET_SIGN_HASH,
+            payload: response.data,
+            error: null
+        }
+    } catch (err) {
+        return {
+            type: types.GET_SIGN_HASH,
+            payload: null,
+            error: err.response
+        }
+    }
+}
+
+export async function addSignature(data) {
+    try {
+        let url = localStorage.getItem('TM_VPN_URL');
+        let response = await axios.post(url + `/session/sign`, data, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        })
+        return {
+            type: types.SEND_SIGNATURE,
+            payload: response.data,
+            error: null
+        }
+    } catch (err) {
+        return {
+            type: types.SEND_SIGNATURE,
+            payload: null,
+            error: err.response
+        }
+    }
+}

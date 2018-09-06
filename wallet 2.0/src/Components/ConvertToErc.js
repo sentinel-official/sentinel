@@ -60,7 +60,7 @@ class ConvertToErc extends Component {
 		this.props.swixRate(token.symbol, 'SENT', myValue.noExponents())
 	}
 	componentDidMount() {
-		console.log(this.props.token)
+		console.log('erc20 did mount',this.props.token)
 	}
 
 	componentWillUnmount() {

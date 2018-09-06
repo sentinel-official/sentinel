@@ -16,7 +16,7 @@ import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import { transferAmount } from '../Actions/send.action';
 import PositionedSnackbar from './SharedComponents/simpleSnackbar';
 import { TX_SUCCESS } from '../Constants/sendcomponent.types';
-const shell   = window.require('electron').shell;
+const shell = window.require('electron').shell;
 
 
 const styles1 = theme => ({
@@ -203,7 +203,7 @@ class Pivx extends Component {
 		}
 
 		this.props.swix(data).then((response) => {
-			
+
 			if (coinType[this.state.from] === 'ethereum') {
 				getPrivateKeyWithoutCallback(this.state.password, function (err, privateKey) {
 					if (err) {
@@ -240,7 +240,8 @@ class Pivx extends Component {
 											self.setState({ label: 'SWAP', isSwap: false })
 										} else {
 											console.log('in else')
-											transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response)
+											transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
+												console.log(response)
 												if (response.type === TX_SUCCESS) {
 													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
 												} else {
@@ -253,17 +254,17 @@ class Pivx extends Component {
 								}
 							});
 						} else {
-							console.log('Error in fetching account');
+							self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Error in fetching account.' });
+
 						}
 					}
 				});
 
 			} else {
-				if(response.payload.success)
-				{
-					this.setState({showAddress:true,pivxAddress:response.payload.address})
+				if (response.payload.success) {
+					this.setState({ label: 'SWAP', address: '', swapAmount: '', password: '', showAddress: true, pivxAddress: response.payload.address })
 				} else {
-					this.setState({showAddress:false,pivxAddress:''})
+					this.setState({ label: 'SWAP', address: '', swapAmount: '', password: '', showAddress: false, pivxAddress: '' })
 				}
 			}
 		});
@@ -384,11 +385,11 @@ class Pivx extends Component {
 					</div>}
 			</div>
 			{this.state.showAddress ?
-				<span style={{ fontWeight: 'bold' }}>Send {this.state.pivxScreenAmount} PIVX Tokens to <span style={{ color: 'green' }}>{this.state.pivxSendAddr}</span>
-					<CopyToClipboard text={this.state.pivxSendAddr}
+				<span style={{ fontWeight: 'bold' }}>Send {this.state.swapAmount} PIVX Tokens to <span style={{ color: 'green' }}>{this.state.pivxAddress}</span>
+					<CopyToClipboard text={this.state.pivxAddress}
 						onCopy={() => this.setState({
 							snackMessage: 'Copied to Clipboard Successfully',
-							snackOpen: true
+							open: true
 						})} >
 						<img
 							src={'../src/Images/download.jpeg'}

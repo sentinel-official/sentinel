@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { axiosInstance } from '../Actions/AxiosGlobalConfig';
 import { VPN_USAGE } from '../Constants/action.names'
 import {B_URL, BOOT_URL} from '../Constants/constants'
 const fs = window.require('fs');
@@ -85,7 +86,8 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
     if (fs.existsSync(OVPN_FILE)) {
         cb(null);
     } else {
-        axios.post(uri, data).then(response => {
+        axiosInstance.post(uri, data).then(response => {
+            console.log('calling the axios global instance')
             if (response.data.success) {
                 if (response.data['node'] === null) {
                     cb({ message: 'Something wrong. Please Try Later' })
@@ -319,7 +321,7 @@ export function getClientToken(authCode, address, cb) {
     axios.post(`${address}/client/token`, { 'auth_code': authCode, 'address': address})
        .then((response) => {
             if (response.data.success) {
-                localStorage.setItem('access_token', `Bearer ${response.data.token}`);
+                localStorage.setItem('access_token', `${response.data.token}`);
                 cb(null, true)
             } else {
                 cb({ message: response.data.message || 'Wrong details' }, null)

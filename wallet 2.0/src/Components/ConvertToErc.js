@@ -11,6 +11,9 @@ import { getPrivateKeyWithoutCallback } from '../Utils/Keystore';
 import { decimals, nodeAddress } from '../Constants/swix.constant';
 import { transferAmount } from '../Actions/send.action';
 import { tokenTransaction, ethTransaction, getGasCost } from './../Utils/Ethereum';
+import PositionedSnackbar from './SharedComponents/simpleSnackbar';
+import { TX_SUCCESS } from '../Constants/sendcomponent.types';
+const shell   = window.require('electron').shell;
 
 
 let lang = require('./../Constants/language');
@@ -42,6 +45,11 @@ class ConvertToErc extends Component {
 			tokenBalances: {},
 			convertPass: '',
 			converting: false,
+			open: false,
+			snackMessage: '',
+			checkTxStatus: 'https://rinkeby.etherscan.io/tx/',
+			url: false,
+			txHash: ''
 		}
 	}
 
@@ -52,12 +60,22 @@ class ConvertToErc extends Component {
 		this.props.swixRate(token.symbol, 'SENT', myValue.noExponents())
 	}
 	componentDidMount() {
-		console.log(this.props.token)
+		console.log('erc20 did mount',this.props.token)
 	}
 
 	componentWillUnmount() {
 		this.props.swixRate(this.props.token.symbol, 'SENT', 0)
 	}
+
+	openInExternalBrowser(url) {
+		console.log('in open external browser', url);
+		shell.openExternal(url);
+		this.setState({ txHash: '' });
+	};
+
+	handleSnackClose = () => {
+		this.setState({ open: false, txHash: '', url: false });
+	};
 
 
 	onClickConvert = () => {
@@ -80,7 +98,7 @@ class ConvertToErc extends Component {
 			getPrivateKeyWithoutCallback(self.state.convertPass, function (err, privateKey) {
 				if (err) {
 					console.log('private key error', err.message);
-					self.setState({ converting: false })
+					self.setState({ converting: false, open: true, snackMessage: err.message })
 				} else {
 					if (response.payload.success) {
 
@@ -95,7 +113,11 @@ class ConvertToErc extends Component {
 									} else {
 										transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
 											console.log(response)
-											self.setState({ converting: false, swapAmount: '', convertPass: '' });
+											if (response.type === TX_SUCCESS) {
+												self.setState({ converting: false, swapAmount: '', convertPass: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+											} else {
+												self.setState({ converting: false, swapAmount: '', convertPass: '', open: true, snackMessage: 'Transaction Failure.' });
+											}
 										})
 									}
 								});
@@ -108,8 +130,14 @@ class ConvertToErc extends Component {
 										self.setState({ converting: false })
 									} else {
 										console.log('in else')
-										transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => { console.log(response) })
-										self.setState({ converting: false, swapAmount: '', convertPass: '' });
+										transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
+											console.log(response)
+											if (response.type === TX_SUCCESS) {
+												self.setState({ converting: false, swapAmount: '', convertPass: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+											} else {
+												self.setState({ converting: false, swapAmount: '', convertPass: '', open: true, snackMessage: 'Transaction Failure.' });
+											}
+										})
 									}
 									//   }
 								});
@@ -216,7 +244,9 @@ class ConvertToErc extends Component {
 						</Col>
 					</Row>
 				</div>
+				<PositionedSnackbar open={this.state.open} message={this.state.snackMessage} close={this.handleSnackClose} url={this.state.url} checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
 			</div>
+
 		)
 	}
 }

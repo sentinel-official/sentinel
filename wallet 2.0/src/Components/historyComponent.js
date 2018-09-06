@@ -4,7 +4,6 @@ import { historyLabel, historyValue } from '../Assets/commonStyles'
 History = ({ date, to, from, gas, amount, status, tx, ownWallet, data }) => {
     console.log('data: ', data);
         return (
-            <div>
                 <div>
                     <div>
                         <label style={ to === ownWallet ? styles.inStyle : styles.outStyle}>{ to === ownWallet ? 'IN' : 'OUT' }&nbsp;
@@ -23,7 +22,6 @@ History = ({ date, to, from, gas, amount, status, tx, ownWallet, data }) => {
 
                     </div>
                 </div>
-            </div>
         )
 };
 
@@ -32,14 +30,14 @@ const styles = {
         color: 'red',
         fontFamily: 'Montserrat, Medium',
         fontSize: 15,
-        paddingRight: 10,
+        marginRight: 10,
         fontWeight: '700'
     },
     inStyle: {
         color: 'green',
         fontFamily: 'Montserrat, Medium',
         fontSize: 15,
-        paddingRight: 10,
+        marginRight: 10,
         fontWeight: '700'
     },
     recepientStyle: {

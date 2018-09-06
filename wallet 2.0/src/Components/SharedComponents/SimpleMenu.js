@@ -63,9 +63,11 @@ class SimpleListMenu extends React.Component {
   };
 
   componentWillMount() {
-    this.props.token('ETH');
-    if (this.props.isVPN) {
-      this.props.token('SENT');
+    if (this.props.isSend) {
+      this.props.token('ETH');
+      if (this.props.isVPN) {
+        this.props.token('SENT');
+      }
     }
   }
 

@@ -34,8 +34,11 @@ class Footer extends Component {
     }
 
     sendSignature = (downData, isFinal) => {
-        let amount = this.props.activeVpn.price_per_GB / (downData / 1024);
-        this.props.getSignHash(Math.round(amount), this.state.counter, isFinal, (res) => {
+        console.log("Price..", this.props.activeVpn.price_per_GB, downData);
+        let amount = (this.props.activeVpn.price_per_GB * downData) / 1024;
+        console.log("Amount...", amount);
+        this.props.getSignHash(Math.round(amount), this.state.counter, isFinal).then(res => {
+            console.log("Sign...", res);
             if (res.error) {
                 console.log("SignError...", res.error);
             }
@@ -52,7 +55,7 @@ class Footer extends Component {
                         final: isFinal
                     }
                 }
-                this.props.addSignature(data, (response) => {
+                this.props.addSignature(data).then(response => {
                     if (response.error) {
                         console.log("Send SignError...", response.error);
                     }

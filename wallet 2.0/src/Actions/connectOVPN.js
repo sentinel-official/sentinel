@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { CONNECT_VPN } from '../Constants/action.names';
-import { checkDependencies, getOVPNAndSave, getUserHome, getVPNPIDs, getOVPNTM } from '../Utils/utils';
+import { checkDependencies, getOVPNAndSave, getUserHome, getOVPNTM } from '../Utils/utils';
+import { getVPNPIDs } from '../Utils/VpnConfig';
 import { getConfig } from '../Utils/UserConfig';
 import { B_URL } from './../Constants/constants';
 const electron = window.require('electron');
@@ -41,7 +42,7 @@ export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
 
         case 'darwin':
             checkMacDependencies(async (err) => {
-                if (err) cb(null, err, null);
+                if (err) cb(err, false, null);
                 else {
                     if (localStorage.getItem('isTM') === 'true') {
                         await tmConnect(account_addr, vpn_addr, data, (err, res) => {
@@ -81,7 +82,7 @@ export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
 }
 
 
-export async function checkOpenvpn(account_addr, vpn_addr, cb) {
+export async function checkOpenvpn(cb) {
     exec('cd c:\\Program Files && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (err, stdout, stderr) {
         if (stdout.toString() === '') {
             exec('cd c:\\Program Files (x86) && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (error, stdout1, stderr1) {
@@ -108,7 +109,7 @@ export async function testConnect(account_addr, vpn_addr, cb) {
             if (resp.data.success) {
                 getOVPNAndSave(account_addr, resp.data['ip'], resp.data['port'], resp.data['vpn_addr'], resp.data['token'], (err) => {
                     if (err) cb(err, null);
-                    else connectwithOVPN(err, resp.data, cb);
+                    else connectwithOVPN(resp.data, cb);
                 })
             } else {
                 if (resp.data.account_addr)
@@ -129,64 +130,62 @@ export async function tmConnect(account_addr, vpn_data, session_data, cb) {
                 success: true,
                 message: 'Connected to VPN'
             }
-            connectwithOVPN(err, resp, cb);
+            connectwithOVPN(resp, cb);
         }
     })
 }
 
-export function connectwithOVPN(err, resp, cb) {
-    if (err) cb(err);
-    else {
-        let command;
-        if (remote.process.platform === 'darwin') {
-            let ovpncommand = 'export PATH=$PATH:/usr/local/opt/openvpn/sbin && openvpn ' + OVPN_FILE;
-            command = `/usr/bin/osascript -e 'do shell script "${ovpncommand}" with administrator privileges'`
-        } else if (remote.process.platform === 'win32') {
-            command = 'resources\\extras\\bin\\openvpn.exe ' + OVPN_FILE;
-        } else {
-            command = 'sudo openvpn ' + OVPN_FILE;
-        }
-        if (OVPNDelTimer) clearInterval(OVPNDelTimer);
-        if (remote.process.platform === 'win32') {
-            sudo.exec(command, connect,
-                function (error, stdout, stderr) {
-                    console.log('Err...', error, 'Stdout..', stdout, 'Stderr..', stderr)
-                    OVPNDelTimer = setTimeout(function () {
-                        fs.unlinkSync(OVPN_FILE);
-                    }, 5 * 1000);
-                }
-            );
-        } else {
-            exec(command, function (err, stdout, stderr) {
-                console.log('Err...', err, 'Stdout..', stdout, 'Stderr..', stderr)
+export function connectwithOVPN(resp, cb) {
+    let command;
+    if (remote.process.platform === 'darwin') {
+        let ovpncommand = 'export PATH=$PATH:/usr/local/opt/openvpn/sbin && openvpn ' + OVPN_FILE;
+        command = `/usr/bin/osascript -e 'do shell script "${ovpncommand}" with administrator privileges'`
+    } else if (remote.process.platform === 'win32') {
+        command = 'resources\\extras\\bin\\openvpn.exe ' + OVPN_FILE;
+    } else {
+        command = 'sudo openvpn ' + OVPN_FILE;
+    }
+    if (OVPNDelTimer) clearInterval(OVPNDelTimer);
+    if (remote.process.platform === 'win32') {
+        sudo.exec(command, connect,
+            function (error, stdout, stderr) {
+                console.log('Err...', error, 'Stdout..', stdout, 'Stderr..', stderr)
                 OVPNDelTimer = setTimeout(function () {
                     fs.unlinkSync(OVPN_FILE);
-                }, 1000);
-            });
-        } // internal else ends here
-        // setTimeout(function () {
-        CONNECTED = false;
-        count = 0;
-        if (remote.process.platform === 'win32') { checkWindows(resp, cb) }
-        else if (remote.process.platform === 'darwin') checkVPNConnection(resp, cb);
-        else {
-            getVPNPIDs(async (err, pids) => {
-                if (err) { }
-                else {
-                    CONNECTED = true;
-                    await writeConf();
-                    cb(null, resp.message);
-                }
-            })
-        }
+                }, 5 * 1000);
+            }
+        );
+    } else {
+        exec(command, function (err, stdout, stderr) {
+            console.log('Err...', err, 'Stdout..', stdout, 'Stderr..', stderr)
+            OVPNDelTimer = setTimeout(function () {
+                fs.unlinkSync(OVPN_FILE);
+            }, 1000);
+        });
+    } // internal else ends here
+    // setTimeout(function () {
+    CONNECTED = false;
+    count = 0;
+    if (remote.process.platform === 'win32') { checkWindows(resp, cb) }
+    else if (remote.process.platform === 'darwin') checkVPNConnection(resp, cb);
+    else {
+        getVPNPIDs(async (err, pids) => {
+            if (err) { }
+            else {
+                CONNECTED = true;
+                await writeConf('openvpn');
+                cb(null, resp.message);
+            }
+        })
     }
 }
+
 function checkWindows(resp, cb) {
     exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', async function (err, stdout, stderr) {
         if (stdout.toString() === '') { }
         else {
             CONNECTED = true;
-            await writeConf();
+            await writeConf('openvpn');
             cb(null, resp.message);
             count = 4;
         }
@@ -200,7 +199,7 @@ function checkWindows(resp, cb) {
     })
 }
 
-function writeConf() {
+export function writeConf(type) {
     getConfig(async function (err, confdata) {
         let data = confdata ? JSON.parse(confdata) : {};
         data.isConnected = true;
@@ -209,7 +208,7 @@ function writeConf() {
         data.speed = localStorage.getItem('SPEED');
         data.connectedAddr = localStorage.getItem('CONNECTED_VPN');
         data.session_name = localStorage.getItem('SESSION_NAME');
-        data.vpn_type = 'openvpn';
+        data.vpn_type = type;
         let config = JSON.stringify(data);
         await fs.writeFile(CONFIG_FILE, config, (err) => {
         });
@@ -221,7 +220,7 @@ function checkVPNConnection(resp, cb) {
         if (err) { }
         else {
             CONNECTED = true;
-            await writeConf();
+            await writeConf('openvpn');
             cb(null, resp.message);
             count = 2;
         }

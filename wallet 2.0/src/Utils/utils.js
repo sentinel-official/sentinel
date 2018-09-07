@@ -62,11 +62,11 @@ export function setMaster(cb) {
 export function getMasterUrl() {
     axios.post(`${BOOT_URL}/master`, { 'authCode': null }).then(function (res) {
         // let B_URL;
-        if (res.success) {
-            localStorage.setItem('isPrivate', 'false');
-            localStorage.setItem('authCode', null);
-            localStorage.setItem('access_token', null);
-            localStorage.setItem('B_URL', res.url)
+        if (res.data.success) {
+            localStorage.setItem('networkType', 'public');
+            localStorage.setItem('authcode', null);
+            // localStorage.setItem('access_token', null);
+            localStorage.setItem('B_URL', res.data.url)
         }
     })
 }
@@ -185,24 +185,6 @@ export async function getVPNUsageData(account_addr) {
 }
 
 
-export function getVPNPIDs(cb) {
-    try {
-        exec('pidof openvpn', function (err, stdout, stderr) {
-            console.log('stderr in getVPNPid', stderr);
-            if (err) cb(err, null);
-            else if (stdout) {
-                let pids = stdout.trim();
-                cb(null, pids);
-            }
-            else {
-                cb(true, null);
-            }
-        });
-    } catch (Err) {
-        cb(Err)
-    }
-}
-
 export const isOnline = function () {
     try {
         return window.navigator.onLine;
@@ -214,28 +196,25 @@ export const isOnline = function () {
 export function checkGateway(cb) {
     getConfig((err, data) => {
         if (err) {
-            console.log('check gagteway error', err)
             cb(true, null, null);
         }
         else {
             let configData = JSON.parse(data);
-            console.log(configData, 'configData');
             if (configData.hasOwnProperty('gatewayUrl')) {
-                console.log('a')
                 if (configData.gatewayUrl) {
-                    console.log('b')
+                    console.log("Confi..", configData.gatewayUrl)
                     localStorage.setItem('B_URL', configData.gatewayUrl);
                     configData.isPrivate = true;
-                    localStorage.setItem('isPrivate', true);
+                    localStorage.setItem('networkType', 'private');
                     localStorage.setItem('authcode', configData.authcode);
                     fs.writeFile(CONFIG_FILE, JSON.stringify(configData), (errR) => {
                         getClientToken(configData.authcode, configData.gatewayUrl, (error, data) => {
+                            console.log("True...")
                             cb(null, configData.authcode, configData.gatewayUrl)
                         })
                     })
                 }
                 else {
-                    console.log('c')
                     cb(true, null, null)
                 }
             }
@@ -255,7 +234,7 @@ export function isPrivate(cb) {
             if (configData.hasOwnProperty('isPrivate')) {
                 if (configData.isPrivate) {
                     localStorage.setItem('B_URL', configData.gatewayUrl);
-                    localStorage.setItem('isPrivate', 'true');
+                    localStorage.setItem('networkType', 'private');
                     localStorage.setItem('authcode', configData.authcode);
                     getClientToken(configData.authcode, configData.gatewayUrl, (error, data) => {
                         cb(true, configData.authcode)
@@ -277,7 +256,6 @@ export function isPrivate(cb) {
 export async function getGatewayUrl(authCode, cb) {
     axios.post(BOOT_URL + '/master', { 'authCode': authCode }).then(function (response) {
         if (response.data.success) {
-            localStorage.setItem('B_URL', response.data.url);
             getConfig((err, data) => {
                 if (err) { }
                 else {
@@ -286,8 +264,9 @@ export async function getGatewayUrl(authCode, cb) {
                     configData.isPrivate = true;
                     configData.authcode = authCode;
                     fs.writeFile(CONFIG_FILE, JSON.stringify(configData), function (err) {
-                        localStorage.setItem('isPrivate', true);
+                        localStorage.setItem('networkType', 'private');
                         localStorage.setItem('authcode', authCode);
+                        localStorage.setItem('B_URL', response.data.url);
                         getClientToken(authCode, response.data.url, function (error, data) {
                             cb(error, data, response.data.url);
                         })

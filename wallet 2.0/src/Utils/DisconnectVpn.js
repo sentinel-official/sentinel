@@ -1,4 +1,5 @@
-import { getUserHome, getVPNPIDs } from './utils';
+import { getUserHome} from './utils';
+import { getVPNPIDs } from './VpnConfig';
 import { getConfig } from './UserConfig';
 const fs = window.require('fs');
 const electron = window.require('electron');

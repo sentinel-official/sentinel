@@ -8,7 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CheckIcon from '@material-ui/icons/CheckCircleOutline';
 import WarningIcon from '@material-ui/icons/ErrorOutline';
-import {networkChange} from "../../Actions/NetworkChange";
+import { networkChange } from "../../Actions/NetworkChange";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import green from "@material-ui/core/es/colors/green";
 import blue from "@material-ui/core/es/colors/blue";
@@ -25,8 +25,10 @@ export default class NetworkChangeDialog extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ open: nextProps.open, isLoading: nextProps.isLoading, success: nextProps.success,
-            uri: nextProps.uri, snackbar: nextProps.snackbar })
+        this.setState({
+            open: nextProps.open, isLoading: nextProps.isLoading,
+            uri: nextProps.uri, snackbar: nextProps.snackbar
+        })
     }
     handleClickOpen = () => {
         this.setState({ open: true });
@@ -72,16 +74,13 @@ export default class NetworkChangeDialog extends React.Component {
                         </Button>
                         {/*<div className={styles.wrapper}>*/}
                         <Button
-                            variant={ !this.state.success ? 'text' : 'contained' }
+                            variant={!this.state.success ? 'text' : 'contained'}
                             disabled={this.state.isLoading}
                             onClick={() => this.props.getGatewayAddr(this.state.authCode)}
-                            color={ 'primary' }
-                            style={ this.state.snackbar  !== 'networkError' ? { minWidth: 100 } : {minWidth: 100, backgroundColor: '#f57c00'}}
+                            color={'primary'}
+                            style={{ minWidth: 100 }}
                         >
-                            { !this.state.isLoading ?
-                                !this.state.success && this.state.snackbar !== 'networkError' ? 'Connect' :
-                                    this.state.uri  ? <CheckIcon/> : <WarningIcon style={{color: '#FAFAFA' }} /> :
-                                <CircularProgress size={24} style={styles.buttonProgress} /> }
+                            Connect
                                 </Button>
                         {/*</div>*/}
                     </DialogActions>

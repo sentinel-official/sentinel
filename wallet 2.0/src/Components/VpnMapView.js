@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setActiveVpn } from '../Actions/vpnlist.action';
+import { setCurrentVpn } from '../Actions/vpnlist.action';
 import {
     ComposableMap,
     ZoomableGroup,
@@ -79,7 +79,7 @@ class VpnMapView extends Component {
             'speed': marker.vpn.bandwidth, 'latency': marker.vpn.latency,
             'price_per_GB': marker.vpn.price_per_GB, 'vpn_addr': marker.vpn.account_addr
         }
-        this.props.setActiveVpn(data);
+        this.props.setCurrentVpn(data);
         this.setState({
             openDialog: true, data: data
         })
@@ -205,7 +205,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setActiveVpn
+        setCurrentVpn
     }, dispatch)
 }
 

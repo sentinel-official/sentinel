@@ -40,6 +40,7 @@ export async function getVpnList(vpnType, isTM) {
 }
 
 export function setVpnType(vpnType) {
+    localStorage.setItem('VPN_TYPE', vpnType);
     return {
         type: types.SET_VPN_TYPE,
         payload: vpnType
@@ -63,6 +64,13 @@ export function payVPNTM(data) {
 export function setActiveVpn(data) {
     return {
         type: types.SET_ACTIVE_VPN,
+        payload: data
+    }
+}
+
+export function setCurrentVpn(data) {
+    return {
+        type: types.SET_CURRENT_VPN,
         payload: data
     }
 }

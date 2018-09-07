@@ -20,7 +20,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Flag from 'react-world-flags';
 import SimpleDialogDemo from "./customDialog";
 import { compose } from 'recompose';
-import { setActiveVpn } from '../Actions/vpnlist.action';
+import { setCurrentVpn } from '../Actions/vpnlist.action';
 
 let Country = window.require('countrynames');
 
@@ -232,7 +232,7 @@ class EnhancedTable extends React.Component {
             'city': city, 'country': country, 'speed': speed,
             'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr
         }
-        this.props.setActiveVpn(data);
+        this.props.setCurrentVpn(data);
         await this.setState({
             openDialog: !this.state.openDialog,
             data: data
@@ -331,7 +331,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setActiveVpn
+        setCurrentVpn
     }, dispatch)
 }
 

@@ -7,7 +7,7 @@ import { getFreeAmount } from './receive.reducer';
 import { getAvailableTokens, getSentValue } from './swaps.reducer';
 import { getVPNHistory, getSnackMessage, getVPNDuePaymentDetails } from './vpnHistory.reducer';
 import { sendComponentReducer } from './sendcomponent.reducer';
-import { setListViewType, setVpnType, getVpnList, setVpnStatus, payVPNTM, getActiveVpn } from './vpnlist.reducer';
+import { setListViewType, setVpnType, getVpnList, setVpnStatus, payVPNTM, getActiveVpn, getCurrentVpn } from './vpnlist.reducer';
 import { swixRateInState } from './swixReducer';
 import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 import { connectVPNReducer } from './connectVPN.reducer'
@@ -15,7 +15,6 @@ import { initPaymentDetails } from './initPayment.reducer';
 import { VPNUsage } from './vpnUsage'
 import { getKeys, setTMComponent, tmBalance, setTMAccount } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
-import { socksReducer } from './SOCKSReducer';
 import { getSessionInfo } from './tmvpn.reducer';
 import { networkChange } from './NetworkChange'
 
@@ -48,14 +47,14 @@ const rootReducer = combineReducers({
     setTMComponent,
     createTMAccount,
     tmBalance,
-    socksReducer,
     setVpnStatus,
     setTendermint,
     payVPNTM,
     setTMAccount,
     sessionInfo: getSessionInfo,
     networkChange,
-    getActiveVpn
+    getActiveVpn,
+    getCurrentVpn
 });
 
 export default rootReducer;

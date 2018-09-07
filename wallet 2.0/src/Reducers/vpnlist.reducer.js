@@ -55,3 +55,12 @@ export function getActiveVpn(state = {}, action) {
             return state
     }
 }
+
+export function getCurrentVpn(state = {}, action) {
+    switch (action.type) {
+        case types.SET_CURRENT_VPN:
+            return action.payload;
+        default:
+            return state
+    }
+}

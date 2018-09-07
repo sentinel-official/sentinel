@@ -5,7 +5,10 @@ import Footer from './Footer';
 import LayoutComponent from './LayoutComponent';
 import { getAccount } from '../Actions/dashboard.action';
 import { getVPNUsageData } from "../Utils/utils";
-import { calculateUsage } from '../Actions/calculateUsage';
+import { getVPNConnectedData } from '../Utils/VpnConfig';
+import { setTestNet } from '../Actions/header.action';
+import { setActiveVpn, setVpnType, setVpnStatus } from './../Actions/vpnlist.action';
+import { calculateUsage, getStartValues, socksVpnUsage } from '../Actions/calculateUsage';
 import { dashboardStyles } from '../Assets/dashboard.styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -31,14 +34,25 @@ class Dashboard extends Component {
 
     componentWillMount = () => {
         this.props.getAccount();
-        localStorage.setItem('isTM', false)
-        localStorage.setItem('config', 'MAIN');
+        localStorage.setItem('isTM', false);
+        getVPNConnectedData((err, data, sock) => {
+            if (err) { }
+            else {
+                this.props.setTestNet(true);
+                this.props.setActiveVpn(data);
+                this.props.setVpnType(sock ? 'socks5' : 'openvpn');
+                this.props.setVpnStatus(true);
+                getStartValues();
+            }
+        })
     }
     render() {
         if (this.props.vpnStatus && !UsageInterval) {
-            UsageInterval = setInterval(() => {
-                if (this.props.vpnType === 'SOCKS5') {
-                    calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false)
+            UsageInterval = setInterval(async () => {
+                if (this.props.vpnType === 'socks5') {
+                    calculateUsage(this.props.getAccount, false, (usage) => {
+                        this.props.socksVpnUsage(usage);
+                    });
                 } else {
                     this.props.getVPNUsageData(this.props.isTm ? this.props.tmAccount.address : this.props.walletAddress);
                 }
@@ -84,7 +98,12 @@ function mapStateToProps(state) {
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         getAccount,
-        getVPNUsageData
+        getVPNUsageData,
+        setActiveVpn,
+        setTestNet,
+        setVpnStatus,
+        setVpnType,
+        socksVpnUsage
     }, dispatch)
 }
 

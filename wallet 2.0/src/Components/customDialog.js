@@ -13,11 +13,11 @@ import ConnectIcon from '@material-ui/icons/SwapVerticalCircle';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { connectSocks } from '../Actions/connectSOCKS';
-import { setVpnStatus, payVPNTM } from '../Actions/vpnlist.action';
+import { setVpnStatus, payVPNTM, setActiveVpn } from '../Actions/vpnlist.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
-import { calculateUsage } from '../Actions/calculateUsage';
+import { calculateUsage, socksVpnUsage } from '../Actions/calculateUsage';
 
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -263,13 +263,17 @@ class SimpleDialogDemo extends React.Component {
             this.setState({ isLoading: true });
             if (this.props.vpnType === 'openvpn') {
                 await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (err, platformErr, res) => {
-                    if (err && 'account_addr' in err) {
+                    if (platformErr) {
+                        console.log("Platform err...", platformErr)
+                    }
+                    else if (err && 'account_addr' in err) {
                         this.setState({
                             pendingInitPayment: err.message, open: false, isPending: true,
                             paymentAddr: err.account_addr, isLoading: false
                         })
                     } else if (res) {
                         this.setState({ isLoading: false, isPending: false, open: true });
+                        this.props.setActiveVpn(this.props.data);
                         this.props.setVpnStatus(true)
                     } else {
                         this.setState({ open: false, isLoading: false })
@@ -277,13 +281,24 @@ class SimpleDialogDemo extends React.Component {
 
                 })
             } else {
-                connectSocks(this.props.getAccount, vpn_addr).then(async (res) => {
-                    setTimeout(() => {
-                        session = localStorage.getItem('SESSION_NAME');
-                        type = localStorage.getItem('VPN_TYPE');
-                        this.setState({ session: true })
-                    }, 10000);
-                    calculateUsage(this.props.getAccount, this.props.data.vpn_addr, true)
+                await connectSocks(this.props.getAccount, vpn_addr, remote.process.platform, (err, res) => {
+                    console.log("Socks..res..", err, res);
+                    if (err && 'account_addr' in err) {
+                        this.setState({
+                            pendingInitPayment: err.message, open: false, isPending: true,
+                            paymentAddr: err.account_addr, isLoading: false
+                        })
+                    } else if (res) {
+                        console.log("Socks...", res);
+                        this.setState({ isLoading: false, isPending: false, open: true });
+                        this.props.setActiveVpn(this.props.data);
+                        this.props.setVpnStatus(true);
+                        calculateUsage(this.props.getAccount, true, (usage) => {
+                            this.props.socksVpnUsage(usage);
+                        });
+                    } else {
+                        this.setState({ open: false, isLoading: false })
+                    }
                 });
             }
         }
@@ -353,12 +368,15 @@ class SimpleDialogDemo extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectVPN, connectSocks, payVPNTM }, dispatch)
+    return bindActionCreators({
+        setCurrentTab, initPaymentAction, getVPNUsageData,
+        setVpnStatus, connectVPN, connectSocks, payVPNTM, setActiveVpn, socksVpnUsage
+    }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus, getActiveVpn, setTendermint, setTMAccount }) {
+function mapStateToProps({ connecVPNReducer, getAccount, vpnType, setVpnStatus, getCurrentVpn, setTendermint, setTMAccount }) {
     return {
-        connecVPNReducer, getAccount, socksReducer, vpnType, data: getActiveVpn,
+        connecVPNReducer, getAccount, vpnType, data: getCurrentVpn,
         vpnStatus: setVpnStatus, isTm: setTendermint, account: setTMAccount
     }
 }

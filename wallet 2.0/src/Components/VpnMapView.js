@@ -44,8 +44,8 @@ class VpnMapView extends Component {
                 };
                 markers.push(vpnServer);
             });
-            this.setState({ markersList: markers, zoom: nextProps.zoom });
         }
+        this.setState({ markersList: markers, zoom: nextProps.zoom });
     };
 
     componentDidMount() {

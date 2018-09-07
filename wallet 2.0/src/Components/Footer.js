@@ -33,11 +33,11 @@ class Footer extends Component {
         }
     }
 
-    sendSignature = (downData, isFinal) => {
+    sendSignature = (downData, isFinal, counter) => {
         console.log("Price..", this.props.activeVpn.price_per_GB, downData);
         let amount = (this.props.activeVpn.price_per_GB * downData) / 1024;
         console.log("Amount...", amount);
-        this.props.getSignHash(Math.round(amount), this.state.counter, isFinal).then(res => {
+        this.props.getSignHash(Math.round(amount), counter, isFinal).then(res => {
             console.log("Sign...", res);
             if (res.error) {
                 console.log("SignError...", res.error);
@@ -50,7 +50,7 @@ class Footer extends Component {
                     token: localStorage.getItem('TOKEN'),
                     signature: {
                         hash: res.payload,
-                        index: this.state.counter,
+                        index: counter,
                         amount: Math.round(amount).toString() + 'sut',
                         final: isFinal
                     }
@@ -61,7 +61,7 @@ class Footer extends Component {
                     }
                     else {
                         if (response.payload.success) {
-                            this.setState({ counter: this.state.counter + 1 })
+                            this.setState({ counter: counter + 1 })
                         }
                         else {
                             console.log("False...", response.payload);
@@ -74,8 +74,7 @@ class Footer extends Component {
 
     disconnect = async () => {
         if (this.props.isTm) {
-            console.log("Hello..")
-            await this.sendSignature(downloadData, true);
+            await this.sendSignature(downloadData, true, this.state.counter);
             disconnectVPN((res) => {
                 if (res) {
                     this.setState({ openSnack: true, snackMessage: res });
@@ -103,10 +102,9 @@ class Footer extends Component {
         let language = this.props.lang;
         let { vpnStatus, currentUsage, isTm } = this.props;
         let counter = this.state.counter;
-        console.log("Usage..", currentUsage);
         downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
         if (vpnStatus && isTm && downloadData >= counter * 10) {
-            this.sendSignature(downloadData, false);
+            this.sendSignature(downloadData, false, counter);
         }
         return (
             <div style={footerStyles.mainDivStyle}>

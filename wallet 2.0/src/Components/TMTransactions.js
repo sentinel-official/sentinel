@@ -75,8 +75,13 @@ class TMTransactions extends Component {
                             let data = sesRes.payload;
                             let vpn_data = this.props.vpnPayment.data;
                             let session_data = sesRes.payload
-                            connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (res) => {
-                                this.props.setVpnStatus(true)
+                            connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
+                                if (err) {
+                                    console.log("Err..message", err.message);
+                                }
+                                else {
+                                    this.props.setVpnStatus(true)
+                                }
                             })
                         }
                     })

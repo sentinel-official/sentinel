@@ -35,15 +35,12 @@ function resetAuthTokenRequest () {
 }
 
 axios.interceptors.response.use(async function (response) {
-    console.log('network type => ', networkType);
     networkType = await localStorage.getItem('networkType');
     B_URL = await localStorage.getItem('B_URL');
     if ( networkType === 'public' ) {
-        console.log('if block', B_URL);
         localStorage.setItem('B_URL', 'https://api.sentinelgroup.io');
     } else if ( networkType === 'private' ) {
         axios.defaults
-        console.log('else block', B_URL);
         // axios.defaults.baseURL = localStorage.getItem('B_URL');
         // localStorage.setItem('B_URL', B_URL)
         axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;

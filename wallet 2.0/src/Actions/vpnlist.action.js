@@ -17,10 +17,10 @@ export async function getVpnList(vpnType, isTM) {
     // }
     let uri = await localStorage.getItem('B_URL');
     if (vpnType === 'socks5')
-        listUrl = isTM ? TMain_URL + '/nodes?type=Socks5&status=up' : '/client/vpn/socks-list';
+        listUrl = isTM ? TMain_URL + '/nodes?type=Socks5&status=up' : uri + '/client/vpn/socks-list';
     else
-        listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : '/client/vpn/list';
-    let response = await axiosInstance.get( uri + listUrl, {
+        listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : uri + '/client/vpn/list';
+    let response = await axiosInstance.get(listUrl, {
         headers: {
             'Accept': 'application/json',
             'Content-type': 'application/json',

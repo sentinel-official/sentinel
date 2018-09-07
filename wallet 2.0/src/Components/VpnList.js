@@ -15,8 +15,8 @@ import VpnMapView from './VpnMapView';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import CustomButton from "./customButton";
 import { margin, radioStyle } from "../Assets/commonStyles";
-import {isOnline} from "../Actions/convertErc.action";
-import {checkGateway, getGatewayUrl, isPrivate, setMaster} from "../Utils/utils";
+import { isOnline } from "../Actions/convertErc.action";
+import { checkGateway, getGatewayUrl, isPrivate, setMaster } from "../Utils/utils";
 import NetworkChangeDialog from "./SharedComponents/networkChangeDialog";
 
 const styles = theme => ({
@@ -74,7 +74,7 @@ class VpnList extends Component {
                     // this.setState({ openSnack: true, snackMessage: lang[this.props.lang].SelectNode })
                 }
                 else {
-                    setMaster( data => {
+                    setMaster(data => {
                         this.setState({ isPrivate: false, authCode: '' });
                     })
                 }
@@ -90,12 +90,12 @@ class VpnList extends Component {
         await getGatewayUrl(authCode, (err, data, url) => {
             if (err) {
                 this.setState({ isPrivate: false, showPopUp: false, openSnack: true, snackMessage: err.message || 'Problem in enabling private net' });
-                setTimeout(() => {this.setState({ isLoading: false,})}, 1500)
+                setTimeout(() => { this.setState({ isLoading: false, }) }, 1500)
             }
             else {
                 this.setState({ isPrivate: true, showPopUp: false, openSnack: true, snackMessage: 'Private Net is Enabled with ' + url });
-                setTimeout(() => {this.setState({ isLoading: false, success: true, uri: true })}, 1500);
-                setTimeout(() => {this.setState({ open: false })}, 2000)
+                setTimeout(() => { this.setState({ isLoading: false, success: true, uri: true }) }, 1500);
+                setTimeout(() => { this.setState({ open: false }) }, 2000)
             }
         })
     };
@@ -111,13 +111,16 @@ class VpnList extends Component {
     componentWillMount = () => {
         this.props.getVpnList(this.state.vpnType, this.props.isTM);
 
-        isPrivate( (isPrivate, authcode) => {
+        isPrivate((isPrivate, authcode) => {
             if (isPrivate) {
                 this.props.networkChange('private');
                 localStorage.setItem('networkType', 'private');
                 this.props.getVpnList(this.state.vpnType, this.props.isTM);
                 this.setState({ isPrivate, authcode, success: true });
 
+            }
+            else {
+                localStorage.setItem('networkType', 'public');
             }
         })
     };
@@ -133,10 +136,9 @@ class VpnList extends Component {
         // this.props.networkChange(event.target.value);
 
         setTimeout(() =>
-            this.props.getVpnList(this.state.vpnType, this.props.isTM
-                , this.props.isTM), 1000);
+            this.props.getVpnList(this.state.vpnType, this.props.isTM), 1000);
 
-        isPrivate( (isPrivate, authcode) => {
+        isPrivate((isPrivate, authcode) => {
             if (isPrivate) {
                 this.props.getVpnList(this.state.vpnType, this.props.isTM);
             }
@@ -152,7 +154,7 @@ class VpnList extends Component {
     };
 
     mapViewActive = () => {
-        this.setState({ listActive: false, mapActive: true});
+        this.setState({ listActive: false, mapActive: true });
         this.props.setListViewType('map')
 
     };
@@ -184,7 +186,7 @@ class VpnList extends Component {
                                         aria-label="dVPN Type"
                                         name="nodes"
                                         className={classes.group}
-                                        value={this.state.networkType}
+                                        value={this.props.networkType}
                                         onChange={this.handleNetworkChange}
                                     >
                                         <FormControlLabel value="public" control={<Radio style={radioStyle} />} label="Public" />
@@ -192,25 +194,25 @@ class VpnList extends Component {
                                     </RadioGroup>
                                 </FormControl>
                                 :
-                            <CustomTextfield type={'text'} placeholder={"search for a dVPN node"} disabled={false}
-                                             value={this.state.dVpnQuery} onChange={(e) => {
-                                this.setState({dVpnQuery: e.target.value})
-                            }}/>
+                                <CustomTextfield type={'text'} placeholder={"search for a dVPN node"} disabled={false}
+                                    value={this.state.dVpnQuery} onChange={(e) => {
+                                        this.setState({ dVpnQuery: e.target.value })
+                                    }} />
                         }
                         <NetworkChangeDialog open={this.props.networkType === 'private' && !this.state.success}
-                                             close={this.closePrivDialog} getGatewayAddr={this.getGatewayAddr}
-                                             isLoading={this.state.isLoading} success={this.state.success}
-                                             uri={this.state.uri} snackbar={this.state.snackMessage}
+                            close={this.closePrivDialog} getGatewayAddr={this.getGatewayAddr}
+                            isLoading={this.state.isLoading} success={this.state.success}
+                            uri={this.state.uri} snackbar={this.state.snackMessage}
                         />
                     </div>
                     <div style={{ display: 'flex' }} >
                         <div style={margin}>
                             <CustomButton color={'#FFFFFF'} label={'LIST'} active={this.state.listActive}
-                                          onClick={this.listViewActive} />
+                                onClick={this.listViewActive} />
                         </div>
                         <div style={margin}>
                             <CustomButton color={'#F2F2F2'} label={'MAP'} active={this.state.mapActive}
-                                          onClick={this.mapViewActive} />
+                                onClick={this.mapViewActive} />
                         </div>
                     </div>
                 </div>
@@ -218,27 +220,27 @@ class VpnList extends Component {
                     {
                         this.state.mapActive ?
                             <div>
-                                <IconButton onClick={ this.handleZoomIn } style={{ marginTop: 15, outline: 'none' }}>
-                                    <ZoomInIcon/>
+                                <IconButton onClick={this.handleZoomIn} style={{ marginTop: 15, outline: 'none' }}>
+                                    <ZoomInIcon />
                                 </IconButton>
-                                <IconButton onClick={ this.handleZoomOut } style={{ marginTop: 15, outline: 'none' }}>
-                                    <ZoomOutIcon/>
+                                <IconButton onClick={this.handleZoomOut} style={{ marginTop: 15, outline: 'none' }}>
+                                    <ZoomOutIcon />
                                 </IconButton>
                             </div> :
-                        <FormControl component="fieldset" className={classes.networkFormControl}>
-                            {/*<FormLabel className={classes.row} component="legend">dVPN Type</FormLabel>*/}
-                            <RadioGroup
-                                aria-label="dVPN Type"
-                                name="nodes"
-                                className={classes.group}
-                                value={this.props.networkType}
-                                onChange={this.handleNetworkChange}
-                            >
-                                <FormControlLabel value="public" control={<Radio style={radioStyle}/>} label="Public"/>
-                                <FormControlLabel value="private" control={<Radio style={radioStyle}/>}
-                                                  label="Private"/>
-                            </RadioGroup>
-                        </FormControl>
+                            <FormControl component="fieldset" className={classes.networkFormControl}>
+                                {/*<FormLabel className={classes.row} component="legend">dVPN Type</FormLabel>*/}
+                                <RadioGroup
+                                    aria-label="dVPN Type"
+                                    name="nodes"
+                                    className={classes.group}
+                                    value={this.props.networkType}
+                                    onChange={this.handleNetworkChange}
+                                >
+                                    <FormControlLabel value="public" control={<Radio style={radioStyle} />} label="Public" />
+                                    <FormControlLabel value="private" control={<Radio style={radioStyle} />}
+                                        label="Private" />
+                                </RadioGroup>
+                            </FormControl>
                     }
                     <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15, outline: 'none' }}>
                         <RefreshIcon />

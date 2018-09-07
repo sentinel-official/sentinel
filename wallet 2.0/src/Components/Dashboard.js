@@ -35,7 +35,6 @@ class Dashboard extends Component {
         localStorage.setItem('config', 'MAIN');
     }
     render() {
-        console.log("Status...", this.props.vpnStatus);
         if (this.props.vpnStatus && !UsageInterval) {
             UsageInterval = setInterval(() => {
                 if (this.props.vpnType === 'SOCKS5') {

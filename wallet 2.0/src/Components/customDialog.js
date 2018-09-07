@@ -262,16 +262,15 @@ class SimpleDialogDemo extends React.Component {
         else {
             this.setState({ isLoading: true });
             if (this.props.vpnType === 'openvpn') {
-                await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (res) => {
-                    if (res.data && res.data.account_addr) {
+                await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (err, platformErr, res) => {
+                    if (err && 'account_addr' in err) {
                         this.setState({
-                            pendingInitPayment: res.data.message, open: false, isPending: true,
-                            paymentAddr: res.data.account_addr, isLoading: false
+                            pendingInitPayment: err.message, open: false, isPending: true,
+                            paymentAddr: err.account_addr, isLoading: false
                         })
-                    } else if (res.success) {
+                    } else if (res) {
                         this.setState({ isLoading: false, isPending: false, open: true });
                         this.props.setVpnStatus(true)
-                        // setTimeout(() => {  this.setState({ open: false })}, 4000)
                     } else {
                         this.setState({ open: false, isLoading: false })
                     }
@@ -279,16 +278,12 @@ class SimpleDialogDemo extends React.Component {
                 })
             } else {
                 connectSocks(this.props.getAccount, vpn_addr).then(async (res) => {
-                    // if (res) {
                     setTimeout(() => {
                         session = localStorage.getItem('SESSION_NAME');
                         type = localStorage.getItem('VPN_TYPE');
                         this.setState({ session: true })
                     }, 10000);
-                    // if (session && type === 'SOCKS5') {
                     calculateUsage(this.props.getAccount, this.props.data.vpn_addr, true)
-                    // }
-                    // }
                 });
             }
         }

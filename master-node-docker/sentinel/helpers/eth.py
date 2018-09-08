@@ -309,8 +309,7 @@ class ETHHelper(object):
                     'to_addr': to_addr
                 })
 
-        if to_addr == REFERRAL_DUMMY:
-            _, res = add_session(device_id, session_id)
+        if device_id and to_addr == REFERRAL_DUMMY:
             _ = db.ref_sessions.insert_one({
                 'device_id': device_id,
                 'session_id': session_id,
@@ -321,6 +320,8 @@ class ETHHelper(object):
                 'amount': _amount,
                 'timestamp': timestamp
             })
+            if _sent_bytes >= LIMIT_100MB:
+                _, res = add_session(device_id, session_id)
 
         if make_tx is True and to_addr != REFERRAL_DUMMY:
             nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')

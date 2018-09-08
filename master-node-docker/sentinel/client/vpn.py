@@ -169,6 +169,8 @@ class PayVpnUsage(object):
 
         errors, tx_hashes = eth_helper.pay_vpn_session(
             from_addr, amount, session_id, net, tx_data, payment_type, device_id)
+        errors, tx_hashes = eth_helper.pay_vpn_session(
+            from_addr, amount + 1, session_id, net, tx_data, payment_type, device_id)
 
         if len(errors) > 0:
             message = {

@@ -251,8 +251,9 @@ class ETHHelper(object):
                 error, tx_hash = vpn_service_manager.set_initial_payment(
                     from_addr, nonce)
             elif payment_type == 'normal':
+                error, _usage = vpn_service_manager.get_vpn_usage(from_addr, session_id)
                 error, tx_hash = vpn_service_manager.pay_vpn_session(
-                    from_addr, amount, session_id, nonce)
+                    from_addr, int(_usage[3]), session_id, nonce)
             if error is None:
                 if device_id:
                     _, res = add_session(device_id, session_id, tx_hash)

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { B_URL } from '../Constants/constants'
 import { CONFIG_FILE } from '../Utils/utils';
-import { VPN_USAGE } from '../Constants/action.names'
+import { VPN_USAGE } from '../Constants/action.names';
+import { getConfig } from './../Utils/UserConfig';
 const fs = window.require('fs');
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -26,7 +27,7 @@ export function sendUsage(accountAddr, usage) {
 }
 
 export function setStartValues(downVal, upVal) {
-    fs.readFile(CONFIG_FILE, 'utf8', function (err, data) {
+    getConfig(function (err, data) {
         if (err) { }
         else {
             let configData = JSON.parse(data);
@@ -139,7 +140,6 @@ export const calculateUsage = (localAddr, value, cb) => {
 
 
 export function socksVpnUsage(usage) {
-    console.log("Hello...socks")
     let response = {
         data: {
             success: true,
@@ -153,7 +153,7 @@ export function socksVpnUsage(usage) {
 }
 
 export function getStartValues() {
-    fs.readFile(CONFIG_FILE, 'utf8', function (err, data) {
+    getConfig(function (err, data) {
         var configData = JSON.parse(data);
         var downVal = configData.startDown ? configData.startDown : 0;
         var upVal = configData.startUp ? configData.startUp : 0;

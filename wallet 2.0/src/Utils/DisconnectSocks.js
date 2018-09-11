@@ -13,23 +13,23 @@ var disconnect = {
 
 export async function disconnectSocks(account_addr, cb) {
     if (remote.process.platform === 'win32') {
-        await disconnectSocksWin(account_addr, (res) => { cb(res) });
+        disconnectSocksWin(account_addr, (res) => { cb(res) });
     }
     else {
-        await disconnectSoclsNonWin(account_addr, (res) => { cb(res) });
+        disconnectSocksNonWin(account_addr, (res) => {console.log("Res..",res); cb(res) });
     }
 }
 
 export async function disconnectSocksWin(addr, cb) {
     let cmd1 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 0';
     exec(`net stop sentinelSocks`, disconnect,
-        async function (error, stdout, stderr) {
+        function (error, stdout, stderr) {
             if (error) cb({ message: error.toString() || 'Disconnecting failed' });
             else {
                 sendUsage(addr, null);
-                setTimeout(() => {
+                setTimeout(async () => {
                     removeItemsLocal();
-                    await clearConfig();
+                    clearConfig();
                     exec(cmd1, function (stderr, stdout, error) {
                         cb(null);
                     })
@@ -58,18 +58,18 @@ export async function disconnectSocksNonWin(addr, cb) {
                                 var currentService = stdoutput.trim();
                                 exec(`networksetup -setsocksfirewallproxystate '${currentService}' off`, function (runError, Stdout, Stderr) {
                                     sendUsage(addr, null);
-                                    setTimeout(() => {
+                                    setTimeout(async () => {
                                         removeItemsLocal();
-                                        await clearConfig();
+                                        clearConfig();
                                         cb(null);
                                     }, 1000);
                                 })
                             }
                             else {
                                 sendUsage(addr, null);
-                                setTimeout(() => {
+                                setTimeout(async () => {
                                     removeItemsLocal();
-                                    await clearConfig();
+                                    clearConfig();
                                     cb(null);
                                 }, 1000);
                             }
@@ -77,9 +77,9 @@ export async function disconnectSocksNonWin(addr, cb) {
                     }
                     else {
                         sendUsage(addr, null);
-                        setTimeout(() => {
+                        setTimeout(async () => {
                             removeItemsLocal();
-                            await clearConfig();
+                            clearConfig();
                             cb(null);
                         }, 1000);
                     }

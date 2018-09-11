@@ -23,16 +23,16 @@ let count = 0;
 export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
     switch (os) {
         case 'win32':
-            checkOpenvpn(async (error) => {
+            checkOpenvpn((error) => {
                 if (error) cb(null, error, null);
                 else {
                     if (localStorage.getItem('isTM') === 'true') {
-                        await tmConnect(account_addr, vpn_addr, data, (err, res) => {
+                        tmConnect(account_addr, vpn_addr, data, (err, res) => {
                             cb(err, false, res)
                         });
                     }
                     else {
-                        await testConnect(account_addr, vpn_addr, (err, res) => {
+                        testConnect(account_addr, vpn_addr, (err, res) => {
                             cb(err, false, res)
                         });
                     }
@@ -41,31 +41,31 @@ export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
             break;
 
         case 'darwin':
-            checkMacDependencies(async (err) => {
+            checkMacDependencies((err) => {
                 if (err) cb(err, false, null);
                 else {
                     if (localStorage.getItem('isTM') === 'true') {
-                        await tmConnect(account_addr, vpn_addr, data, (err, res) => {
+                        tmConnect(account_addr, vpn_addr, data, (err, res) => {
                             cb(err, false, res)
                         });
                     }
                     else {
-                        await testConnect(account_addr, vpn_addr, (err, res) => {
+                        testConnect(account_addr, vpn_addr, (err, res) => {
                             cb(err, false, res)
                         });
                     }
                 }
             })
         case 'linux': {
-            checkDependencies(['openvpn'], async (e, o, se) => {
+            checkDependencies(['openvpn'], (e, o, se) => {
                 if (o) {
                     if (localStorage.getItem('isTM') === 'true') {
-                        await tmConnect(account_addr, vpn_addr, data, (err, res) => {
+                        tmConnect(account_addr, vpn_addr, data, (err, res) => {
                             cb(err, false, res)
                         });
                     }
                     else {
-                        await testConnect(account_addr, vpn_addr, (err, res) => {
+                        testConnect(account_addr, vpn_addr, (err, res) => {
                             cb(err, false, res)
                         });
                     }
@@ -169,25 +169,27 @@ export function connectwithOVPN(resp, cb) {
     if (remote.process.platform === 'win32') { checkWindows(resp, cb) }
     else if (remote.process.platform === 'darwin') checkVPNConnection(resp, cb);
     else {
-        getVPNPIDs(async (err, pids) => {
+        getVPNPIDs((err, pids) => {
             if (err) { }
             else {
                 CONNECTED = true;
-                await writeConf('openvpn');
-                cb(null, resp.message);
+                writeConf('openvpn', (res) => {
+                    cb(null, resp.message);
+                });
             }
         })
     }
 }
 
 function checkWindows(resp, cb) {
-    exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', async function (err, stdout, stderr) {
+    exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
         if (stdout.toString() === '') { }
         else {
             CONNECTED = true;
-            await writeConf('openvpn');
-            cb(null, resp.message);
-            count = 4;
+            writeConf('openvpn', (res) => {
+                cb(null, resp.message);
+                count = 4;
+            });
         }
         count++;
         if (count < 4) {
@@ -199,10 +201,9 @@ function checkWindows(resp, cb) {
     })
 }
 
-export function writeConf(type) {
-    getConfig(async function (err, confdata) {
+export function writeConf(type, cb) {
+    getConfig(function (err, confdata) {
         let data = confdata ? JSON.parse(confdata) : {};
-        console.log("Here...")
         data.isConnected = true;
         data.ipConnected = localStorage.getItem('IPGENERATED');
         data.location = localStorage.getItem('LOCATION');
@@ -211,8 +212,9 @@ export function writeConf(type) {
         data.session_name = localStorage.getItem('SESSION_NAME');
         data.vpn_type = type;
         let config = JSON.stringify(data);
-        console.log("Config...",config);
-        await fs.writeFile(CONFIG_FILE, config, (err) => {
+        console.log("Write...", config);
+        fs.writeFile(CONFIG_FILE, config, (err) => {
+            cb(null)
         });
     })
 }
@@ -222,7 +224,7 @@ function checkVPNConnection(resp, cb) {
         if (err) { }
         else {
             CONNECTED = true;
-            await writeConf('openvpn');
+            writeConf('openvpn');
             cb(null, resp.message);
             count = 2;
         }

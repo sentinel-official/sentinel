@@ -61,7 +61,7 @@ class VpnList extends Component {
 
     getGatewayAddr = async (authCode) => {
         this.setState({ isLoading: true });
-        await getGatewayUrl(authCode, (err, data, url) => {
+        getGatewayUrl(authCode, (err, data, url) => {
             if (err) {
                 this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: err.message || 'Problem in enabling private net' });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
@@ -85,9 +85,9 @@ class VpnList extends Component {
     };
 
     componentWillMount = () => {
-        isVPNConnected(async (err, data) => {
+        isVPNConnected((err, data) => {
             if (err) {
-                await getMasterUrl();
+                getMasterUrl();
                 setTimeout(() => { this.getVPNs(); }, 500);
             }
             else if (data) {
@@ -165,7 +165,7 @@ class VpnList extends Component {
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, isTM } = this.props;
 
         return (
             <div>
@@ -183,7 +183,7 @@ class VpnList extends Component {
                                         onChange={this.handleNetworkChange}
                                     >
                                         <FormControlLabel value="public" control={<Radio style={radioStyle} />} label="Public" />
-                                        <FormControlLabel value="private" control={<Radio style={radioStyle} />} label="Private" />
+                                        <FormControlLabel value="private" control={<Radio disabled={isTM} style={radioStyle} />} label="Private" />
                                     </RadioGroup>
                                 </FormControl>
                                 :
@@ -230,7 +230,7 @@ class VpnList extends Component {
                                     onChange={this.handleNetworkChange}
                                 >
                                     <FormControlLabel value="public" control={<Radio style={radioStyle} />} label="Public" />
-                                    <FormControlLabel value="private" control={<Radio style={radioStyle} />}
+                                    <FormControlLabel value="private" control={<Radio style={radioStyle} disabled={isTM}/>}
                                         label="Private" />
                                 </RadioGroup>
                             </FormControl>
@@ -247,7 +247,7 @@ class VpnList extends Component {
                             onChange={this.handleRadioChange}
                         >
                             <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label="OpenVPN" />
-                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} />} label="SOCKS5" />
+                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM}/>} label="SOCKS5" />
                         </RadioGroup>
                     </FormControl>
 

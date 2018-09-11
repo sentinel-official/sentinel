@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+import { DialogContent, DialogContentText, DialogActions, Snackbar } from '@material-ui/core';
 import {
     withStyles, Button, List, ListItem, ListItemText,
     DialogTitle, Dialog,
@@ -137,14 +137,13 @@ class SimpleDialog extends React.Component {
                         </ListItem>
 
                         <div className={classes.listRoot}>
-                            <Button disabled={this.props.isLoading} variant="extendedFab" aria-label="Connect"
+                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="extendedFab" aria-label="Connect"
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
                                 {!this.props.isLoading && this.props.success ? 'Connected' : 'Connect'}
                             </Button>
-                            <Button onClick={this.props.execIT} >Refresh</Button>
                         </div>
                     </List>
                     {/*: ''*/}
@@ -238,6 +237,8 @@ class SimpleDialogDemo extends React.Component {
         paymentAddr: '',
         isLoading: false,
         session: false,
+        snackOpen: false,
+        snackMessage: ''
     };
 
     handleClickOpen = () => {
@@ -254,7 +255,7 @@ class SimpleDialogDemo extends React.Component {
         this.setState({ isPending: false })
     };
 
-    handleListItemClick = async (vpn_addr) => {
+    handleListItemClick = (vpn_addr) => {
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
             this.props.setCurrentTab('tmint');
@@ -262,17 +263,24 @@ class SimpleDialogDemo extends React.Component {
         else {
             this.setState({ isLoading: true });
             if (this.props.vpnType === 'openvpn') {
-                await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (err, platformErr, res) => {
+                connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (err, platformErr, res) => {
+                    console.log("VPn..res..", err, platformErr, res);
                     if (platformErr) {
                         console.log("Platform err...", platformErr)
                     }
-                    else if (err && 'account_addr' in err) {
-                        this.setState({
-                            pendingInitPayment: err.message, open: false, isPending: true,
-                            paymentAddr: err.account_addr, isLoading: false
-                        })
+                    else if (err) {
+                        if ('account_addr' in err)
+                            this.setState({
+                                pendingInitPayment: err.message, open: false, isPending: true,
+                                paymentAddr: err.account_addr, isLoading: false
+                            })
+                        else
+                            this.setState({ open: false, isLoading: false, snackMessage: err.message, snackOpen: true })
                     } else if (res) {
-                        this.setState({ isLoading: false, isPending: false, open: true });
+                        this.setState({
+                            isLoading: false, isPending: false, open: false,
+                            snackMessage: 'Connected VPN', snackOpen: true
+                        });
                         this.props.setActiveVpn(this.props.data);
                         this.props.setVpnStatus(true)
                     } else {
@@ -281,16 +289,22 @@ class SimpleDialogDemo extends React.Component {
 
                 })
             } else {
-                await connectSocks(this.props.getAccount, vpn_addr, remote.process.platform, (err, res) => {
+                connectSocks(this.props.getAccount, vpn_addr, remote.process.platform, (err, res) => {
                     console.log("Socks..res..", err, res);
-                    if (err && 'account_addr' in err) {
-                        this.setState({
-                            pendingInitPayment: err.message, open: false, isPending: true,
-                            paymentAddr: err.account_addr, isLoading: false
-                        })
+                    if (err) {
+                        if ('account_addr' in err)
+                            this.setState({
+                                pendingInitPayment: err.message, open: false, isPending: true,
+                                paymentAddr: err.account_addr, isLoading: false
+                            })
+                        else
+                            this.setState({ open: false, isLoading: false, snackMessage: err.message, snackOpen: true })
                     } else if (res) {
                         console.log("Socks...", res);
-                        this.setState({ isLoading: false, isPending: false, open: true });
+                        this.setState({
+                            isLoading: false, isPending: false, open: false,
+                            snackMessage: 'Connected Socks', snackOpen: 'true'
+                        });
                         this.props.setActiveVpn(this.props.data);
                         this.props.setVpnStatus(true);
                         calculateUsage(this.props.getAccount, true, (usage) => {
@@ -302,6 +316,10 @@ class SimpleDialogDemo extends React.Component {
                 });
             }
         }
+    };
+
+    handleSnackClose = (event, reason) => {
+        this.setState({ snackOpen: false });
     };
 
     execIT = () => {
@@ -349,10 +367,11 @@ class SimpleDialogDemo extends React.Component {
                         isLoading={this.state.isLoading}
                         success={this.props.vpnStatus}
                         execIT={this.execIT}
+                        vpnStatus={this.props.vpnStatus}
                     />
                     :
                     <AlertDialog
-                        op={this.state.isPending}
+                        open={this.state.isPending}
                         // open={this.state.isPending}
                         onClose={this.handleAlertClose}
                         message={this.state.pendingInitPayment}
@@ -361,6 +380,12 @@ class SimpleDialogDemo extends React.Component {
                         setCurrentTab={this.props.setCurrentTab}
                     />
                 }
+                <Snackbar
+                    open={this.state.snackOpen}
+                    autoHideDuration={4000}
+                    onClose={this.handleSnackClose}
+                    message={this.state.snackMessage}
+                />
             </div>
         );
     }

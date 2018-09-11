@@ -113,7 +113,8 @@ const alignStyle = theme => ({
         marginLeft: 25
     },
     head: {
-        padding: 15
+        padding: 7,
+        textAlign:'center'
     }
 });
 
@@ -200,7 +201,8 @@ const styles = theme => ({
         overflowY: 'auto',
     },
     head: {
-        padding: 15
+        padding: 5,
+        textAlign:'center'
     }
 });
 
@@ -236,7 +238,7 @@ class EnhancedTable extends React.Component {
     };
 
 
-    showConnectDialog = async (event, city, country, speed, latency, price_per_GB, vpn_addr) => {
+    showConnectDialog = (event, city, country, speed, latency, price_per_GB, vpn_addr) => {
 
         // let data = [].push()
         let data = {
@@ -244,7 +246,7 @@ class EnhancedTable extends React.Component {
             'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr
         }
         this.props.setCurrentVpn(data);
-        await this.setState({
+        this.setState({
             openDialog: !this.state.openDialog,
             data: data
         });

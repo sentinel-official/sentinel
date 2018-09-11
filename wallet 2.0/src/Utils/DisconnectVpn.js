@@ -1,4 +1,4 @@
-import { getUserHome} from './utils';
+import { getUserHome } from './utils';
 import { getVPNPIDs } from './VpnConfig';
 import { getConfig } from './UserConfig';
 const fs = window.require('fs');
@@ -14,10 +14,10 @@ var disconnect = {
 
 export async function disconnectVPN(cb) {
     if (remote.process.platform === 'win32') {
-        await disconnectVPNWin((res) => { cb(res) });
+        disconnectVPNWin((res) => { cb(res) });
     }
     else {
-        await disconnectVPNNonWin((res) => { cb(res) });
+        disconnectVPNNonWin((res) => { cb(res) });
     }
 }
 
@@ -27,7 +27,7 @@ export async function disconnectVPNWin(cb) {
             if (error) cb({ message: error.toString() || 'Disconnecting failed' });
             else {
                 removeItemsLocal();
-                await clearConfig();
+                clearConfig();
                 cb(null);
             }
         });
@@ -47,7 +47,7 @@ export async function disconnectVPNNonWin(cb) {
                 }
                 else {
                     removeItemsLocal();
-                    await clearConfig();
+                    clearConfig();
                     cb(null);
                 }
             });
@@ -61,18 +61,20 @@ export function removeItemsLocal() {
     localStorage.removeItem('SPEED');
 }
 
-export function removeSessionLocal(){
+export function removeSessionLocal() {
     localStorage.removeItem('SESSION_NAME');
     localStorage.removeItem('CONNECTED_VPN');
 }
 
 export async function clearConfig() {
-    getConfig(async function (err, confdata) {
+    getConfig(function (err, confdata) {
+        let newData = {};
         let data = confdata ? JSON.parse(confdata) : {};
-        data.isConnected = null;
-        data.connectedAddr = null;
-        let keystore = JSON.stringify(data);
-        await fs.writeFile(CONFIG_FILE, keystore, function (err) {
+        newData.isConnected = null;
+        newData.connectedAddr = null;
+        newData.tmUserName = 'tmUserName' in data? data.tmUserName:"";
+        let keystore = JSON.stringify(newData);
+        fs.writeFile(CONFIG_FILE, keystore, function (err) {
         });
     })
 }

@@ -12,6 +12,7 @@ import { calculateUsage, getStartValues, socksVpnUsage } from '../Actions/calcul
 import { dashboardStyles } from '../Assets/dashboard.styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { B_URL } from './../Constants/constants';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 let UsageInterval = null;
@@ -35,6 +36,7 @@ class Dashboard extends Component {
     componentWillMount = () => {
         this.props.getAccount();
         localStorage.setItem('isTM', false);
+        localStorage.setItem('B_URL',B_URL);
         getVPNConnectedData((err, data, sock) => {
             if (err) { }
             else {

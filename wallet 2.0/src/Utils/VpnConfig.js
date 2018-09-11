@@ -1,4 +1,4 @@
-import { getConfig } from './utils';
+import { getConfig } from './UserConfig';
 const fs = window.require('fs');
 const electron = window.require('electron');
 const { exec, execSync } = window.require('child_process');

@@ -80,7 +80,7 @@ axios.interceptors.response.use(async function (response) {
             });
         });
     } else if (error.response.data.status === 'Signature verification failed') {
-        localStorage.clear();
+        
     }
 
     return Promise.reject(error)

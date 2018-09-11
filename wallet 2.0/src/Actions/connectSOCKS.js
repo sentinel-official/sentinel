@@ -17,24 +17,24 @@ let count = 0;
 export async function connectSocks(account_addr, vpn_addr, os, cb) {
     switch (os) {
         case 'win32':
-            checksentinelSocks(async (error) => {
-                await socksConnect(account_addr, vpn_addr, (err, res) => {
+            checksentinelSocks((error) => {
+                socksConnect(account_addr, vpn_addr, (err, res) => {
                     cb(err, res)
                 });
             })
             break;
 
         case 'darwin':
-            checkMacDependencies(async (err) => {
+            checkMacDependencies((err) => {
                 if (err) cb(err, null);
                 else {
-                    await socksConnect(account_addr, vpn_addr, (err, res) => {
+                    socksConnect(account_addr, vpn_addr, (err, res) => {
                         cb(err, res)
                     });
                 }
             })
         case 'linux':
-            await socksConnect(account_addr, vpn_addr, (err, res) => {
+            socksConnect(account_addr, vpn_addr, (err, res) => {
                 cb(err, res)
             });
             break;
@@ -163,7 +163,7 @@ export async function socksConnect(account_addr, vpn_addr, cb) {
 
 export function connectwithSocks(data, cb) {
     if (remote.process.platform === 'win32') {
-        fs.readFile('resources\\extras\\socks5\\gui-config.json', 'utf8', async function (err, conf) {
+        fs.readFile('resources\\extras\\socks5\\gui-config.json', 'utf8', function (err, conf) {
             if (err) { }
             else {
                 var configData = JSON.parse(conf);
@@ -173,7 +173,7 @@ export function connectwithSocks(data, cb) {
                 configData.configs[0].method = data['method'];
                 configData.global = true;
                 var config = JSON.stringify(configData);
-                await fs.writeFile('resources\\extras\\socks5\\gui-config.json', config, function (writeErr) {
+                fs.writeFile('resources\\extras\\socks5\\gui-config.json', config, function (writeErr) {
                     exec('net start sentinelSocks', function (servErr, serveOut, serveStd) {
                     })
                 });
@@ -199,28 +199,30 @@ export function connectwithSocks(data, cb) {
     count = 0;
     if (remote.process.platform === 'win32') checkSocksWindows();
     else {
-        getSocksPIDs(async function (err, pids) {
+        getSocksPIDs(function (err, pids) {
             if (err) { }
             else {
                 CONNECTED = true;
-                await writeConf('socks5');
-                cb(null, 'Connected to Socks');
+                writeConf('socks5', (res) => {
+                    cb(null, 'Connected to Socks');
+                });
             }
         });
     }
 }
 
 function checkSocksWindows(resp, cb) {
-    getSocksProcesses(async function (err, pids) {
+    getSocksProcesses(function (err, pids) {
         if (err) { }
         else {
             CONNECTED = true;
-            await writeConf('socks5');
-            let cmd1 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 1';
-            let cmd2 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyServer /t REG_SZ /d 127.0.0.1:1080';
-            exec(`${cmd1} && ${cmd2}`, function (stderr, stdout, error) {
-                cb(null, 'Connected to Socks');
-                count = 4;
+            writeConf('socks5', (res) => {
+                let cmd1 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 1';
+                let cmd2 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyServer /t REG_SZ /d 127.0.0.1:1080';
+                exec(`${cmd1} && ${cmd2}`, function (stderr, stdout, error) {
+                    cb(null, 'Connected to Socks');
+                    count = 4;
+                });
             });
         }
         count++;

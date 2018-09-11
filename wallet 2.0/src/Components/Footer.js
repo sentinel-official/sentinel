@@ -13,6 +13,7 @@ import RatingDialog from './RatingDialog';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
+import { disconnectSocks } from '../Utils/DisconnectSocks';
 
 const styles = theme => ({
     paper: {
@@ -88,29 +89,41 @@ class Footer extends Component {
         })
     }
 
-    disconnect = async () => {
+    disconnect = () => {
         if (this.props.isTm) {
-            await this.sendSignature(downloadData, true, this.state.counter);
+            this.sendSignature(downloadData, true, this.state.counter);
             disconnectVPN((res) => {
                 if (res) {
                     this.setState({ openSnack: true, snackMessage: res });
                 }
                 else {
-                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN'});
+                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN' });
                     this.props.setVpnStatus(false);
                 }
             })
         }
         else {
-            disconnectVPN((res) => {
-                if (res) {
-                    this.setState({ openSnack: true, snackMessage: res });
-                }
-                else {
-                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
-                    this.props.setVpnStatus(false);
-                }
-            })
+            if (this.props.vpnType === 'openvpn') {
+                disconnectVPN((res) => {
+                    if (res) {
+                        this.setState({ openSnack: true, snackMessage: res });
+                    }
+                    else {
+                        this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
+                        this.props.setVpnStatus(false);
+                    }
+                })
+            } else {
+                disconnectSocks(this.props.walletAddr, (res) => {
+                    if (res) {
+                        this.setState({ openSnack: true, snackMessage: res });
+                    }
+                    else {
+                        this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
+                        this.props.setVpnStatus(false);
+                    }
+                })
+            }
         }
     }
 
@@ -212,7 +225,9 @@ function mapStateToProps(state) {
         vpnStatus: state.setVpnStatus,
         isTm: state.setTendermint,
         activeVpn: state.getActiveVpn,
-        account: state.setTMAccount
+        account: state.setTMAccount,
+        vpnType: state.vpnType,
+        walletAddr: state.getAccount
     }
 }
 

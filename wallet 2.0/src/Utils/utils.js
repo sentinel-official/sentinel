@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { axiosInstance } from '../Actions/AxiosGlobalConfig';
 import { VPN_USAGE } from '../Constants/action.names'
-import { B_URL, BOOT_URL } from '../Constants/constants'
+import { B_URL, BOOT_URL } from '../Constants/constants';
+import { getConfig } from './UserConfig';
 const fs = window.require('fs');
 const electron = window.require('electron');
 const { exec, execSync } = window.require('child_process');
@@ -68,6 +69,13 @@ export function getMasterUrl() {
             // localStorage.setItem('access_token', null);
             localStorage.setItem('B_URL', res.data.url)
         }
+        else{
+            localStorage.setItem('B_URL', B_URL);
+        }
+    })
+    .catch((err)=>{
+        localStorage.setItem('networkType', 'public');
+        localStorage.setItem('B_URL', B_URL);
     })
 }
 
@@ -292,24 +300,4 @@ export function getClientToken(authCode, address, cb) {
                 cb({ message: response.data.message || 'Wrong details' }, null)
             }
         })
-}
-
-
-export function getConfig(cb) {
-    try {
-        fs.readFile(CONFIG_FILE, 'utf8', function (err, data) {
-            if (err) {
-                console.log("Er..", err);
-                err.toString().includes('ENOENT') ?
-                    fs.writeFile(CONFIG_FILE, JSON.stringify({ isConnected: false }), function (Er) { })
-                    : null;
-                cb(err, null);
-            }
-            else {
-                cb(null, data);
-            }
-        });
-    } catch (Err) {
-        cb(Err)
-    }
 }

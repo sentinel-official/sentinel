@@ -30,6 +30,7 @@ export function setStartValues(downVal, upVal) {
         if (err) { }
         else {
             let configData = JSON.parse(data);
+            configData.isConnected = true;
             configData.startDown = downVal;
             configData.startUp = upVal;
             localStorage.setItem('startDown', downVal);

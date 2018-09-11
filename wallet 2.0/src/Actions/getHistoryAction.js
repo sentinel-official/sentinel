@@ -3,8 +3,7 @@ import config from '../Constants/config'
 import axios from 'axios';
 
 
-export function testSENTTxns(data) {
-
+export async function testSENTTxns(data) {
     let uri = ``;
 
     if (data.isTest) {
@@ -12,16 +11,15 @@ export function testSENTTxns(data) {
     } else {
         uri = `${config.main.sentTransUrl1}${data.account_addr}&topic1_2_opr=or&topic2=${data.account_addr}`;
     }
-    const request = axios.get(uri);
+    const request = await axios.get(uri);
 
     return {
-        payload: request,
+        payload: request.data,
         type: SENT_TEST_HISTORY
     }
 }
 
-export function testETHTxns(data) {
-
+export async function testETHTxns(data) {
     let uri = ``;
 
     if (data.isTest) {
@@ -29,10 +27,10 @@ export function testETHTxns(data) {
     } else {
         uri = `${config.main.ethTransUrl}${data.account_addr}&sort=desc`
     }
-    const request = axios.get(uri);
+    const request = await axios.get(uri);
 
     return {
-        payload: request,
+        payload: request.data,
         type: ETH_TEST_HISTORY
     }
 }

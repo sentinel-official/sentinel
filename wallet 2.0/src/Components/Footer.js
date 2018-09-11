@@ -34,16 +34,12 @@ class Footer extends Component {
     }
 
     sendSignature = (downData, isFinal, counter) => {
-        console.log("Price..", this.props.activeVpn.price_per_GB, downData);
         let amount = (this.props.activeVpn.price_per_GB * downData) / 1024;
-        console.log("Amount...", amount);
         this.props.getSignHash(Math.round(amount), counter, isFinal).then(res => {
-            console.log("Sign...", res);
             if (res.error) {
                 console.log("SignError...", res.error);
             }
             else {
-                console.log("True...", res);
                 let data = {
                     account_addr: this.props.account.address,
                     session_id: localStorage.getItem('SESSION_NAME'),

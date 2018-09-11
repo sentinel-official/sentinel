@@ -29,7 +29,7 @@ function createData(obj) {
     counter += 1;
     obj.id = counter;
     obj.city = obj.location.city;
-    obj.bandwidth = obj.net_speed.download;
+    obj.bandwidth = obj.net_speed ? ('download' in obj.net_speed ? obj.net_speed.download : 0) : 0;
     return obj;
 }
 
@@ -291,7 +291,7 @@ class EnhancedTable extends React.Component {
                                                     {`${n.location.city}, `} {n.location.country}
                                                 </TableCell>
                                                 <TableCell numeric padding='default'>
-                                                    {(n.net_speed.download / (1024 * 1024)).toFixed(2)}
+                                                    {((n.net_speed ? ('download' in n.net_speed ? n.net_speed.download : 0) : 0) / (1024 * 1024)).toFixed(2)}
                                                 </TableCell>
                                                 <TableCell numeric padding='default'>
                                                     {n.latency ? n.latency : 'None'}

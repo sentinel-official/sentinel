@@ -202,6 +202,7 @@ function checkWindows(resp, cb) {
 export function writeConf(type) {
     getConfig(async function (err, confdata) {
         let data = confdata ? JSON.parse(confdata) : {};
+        console.log("Here...")
         data.isConnected = true;
         data.ipConnected = localStorage.getItem('IPGENERATED');
         data.location = localStorage.getItem('LOCATION');
@@ -210,6 +211,7 @@ export function writeConf(type) {
         data.session_name = localStorage.getItem('SESSION_NAME');
         data.vpn_type = type;
         let config = JSON.stringify(data);
+        console.log("Config...",config);
         await fs.writeFile(CONFIG_FILE, config, (err) => {
         });
     })

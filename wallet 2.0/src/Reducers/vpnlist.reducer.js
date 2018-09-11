@@ -46,3 +46,21 @@ export function payVPNTM(state = { 'isPayment': false }, action) {
             return state
     }
 }
+
+export function getActiveVpn(state = {}, action) {
+    switch (action.type) {
+        case types.SET_ACTIVE_VPN:
+            return action.payload;
+        default:
+            return state
+    }
+}
+
+export function getCurrentVpn(state = {}, action) {
+    switch (action.type) {
+        case types.SET_CURRENT_VPN:
+            return action.payload;
+        default:
+            return state
+    }
+}

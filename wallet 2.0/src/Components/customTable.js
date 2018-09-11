@@ -2,6 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -17,7 +19,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Flag from 'react-world-flags';
 import SimpleDialogDemo from "./customDialog";
-
+import { compose } from 'recompose';
+import { setCurrentVpn } from '../Actions/vpnlist.action';
 
 let Country = window.require('countrynames');
 
@@ -26,8 +29,8 @@ function createData(obj) {
     counter += 1;
     obj.id = counter;
     obj.city = obj.location.city;
-    obj.bandwidth = obj.net_speed.download;
     obj.rating = parseFloat(obj.rating).toFixed(2);
+    obj.bandwidth = obj.net_speed ? ('download' in obj.net_speed ? obj.net_speed.download : 0) : 0;
     return obj;
 }
 
@@ -236,12 +239,14 @@ class EnhancedTable extends React.Component {
     showConnectDialog = async (event, city, country, speed, latency, price_per_GB, vpn_addr) => {
 
         // let data = [].push()
+        let data = {
+            'city': city, 'country': country, 'speed': speed,
+            'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr
+        }
+        this.props.setCurrentVpn(data);
         await this.setState({
             openDialog: !this.state.openDialog,
-            data: {
-                'city': city, 'country': country, 'speed': speed,
-                'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr
-            }
+            data: data
         });
     };
 
@@ -296,8 +301,8 @@ class EnhancedTable extends React.Component {
                                                 <TableCell padding="dense" className={classes.head}>
                                                     {`${n.location.city}, `} {n.location.country}
                                                 </TableCell>
-                                                <TableCell numeric padding="dense" className={classes.head}>
-                                                    {(n.net_speed.download / (1024 * 1024)).toFixed(2)}
+                                                <TableCell numeric padding='default'>
+                                                    {((n.net_speed ? ('download' in n.net_speed ? n.net_speed.download : 0) : 0) / (1024 * 1024)).toFixed(2)}
                                                 </TableCell>
                                                 <TableCell numeric padding="dense" className={classes.head}>
                                                     {n.latency ? n.latency : 'None'}
@@ -321,7 +326,7 @@ class EnhancedTable extends React.Component {
                         </TableBody>
                     </Table>
                     <div style={{ width: 280 }} >
-                        <SimpleDialogDemo data={this.state.data} open={this.state.openDialog} onUpdate={this.changeDialog} />
+                        <SimpleDialogDemo open={this.state.openDialog} onUpdate={this.changeDialog} />
                     </div>
                 </div>
             </Paper>
@@ -333,4 +338,17 @@ EnhancedTable.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(EnhancedTable);
+function mapStateToProps(state) {
+    return {
+        lang: state.setLanguage,
+        isTest: state.setTestNet
+    }
+}
+
+function mapDispatchToActions(dispatch) {
+    return bindActionCreators({
+        setCurrentVpn
+    }, dispatch)
+}
+
+export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToActions))(EnhancedTable);

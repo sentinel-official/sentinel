@@ -3,6 +3,7 @@ import config from '../Constants/config';
 import axios from 'axios';
 
 export function setTestNet(value) {
+    localStorage.setItem('config', value ? 'TEST' : 'MAIN');
     return {
         type: types.TESTNET,
         payload: value
@@ -54,6 +55,7 @@ export async function getSentBalance(address, isTest) {
 }
 
 export function setTendermint(value) {
+    localStorage.setItem('isTM', value);
     return {
         type: types.TENDERMINT,
         payload: value

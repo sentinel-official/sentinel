@@ -15,7 +15,7 @@ const styles = theme => ({
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
-    marginTop:'-3px',
+    marginTop: '-3px',
   },
   icon: {
     fill: 'white',
@@ -63,10 +63,11 @@ class SimpleListMenu extends React.Component {
   };
 
   componentWillMount() {
-    this.setState({ token: 'SENT'});
-
-    if (this.props.isVPN) {
-      this.props.token('SENT');
+    if (this.props.isSend) {
+      this.props.token('ETH');
+      if (this.props.isVPN) {
+        this.props.token('SENT');
+      }
     }
   }
 
@@ -74,7 +75,7 @@ class SimpleListMenu extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
     console.log('pivx menu', event.target.value)
     let tokens = event.target.value.split('to')
-    this.props.setSwap(tokens[0].trim(),tokens[1].trim());
+    this.props.setSwap(tokens[0].trim(), tokens[1].trim());
     this.props.rate()
   }
 

@@ -37,7 +37,9 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
     if (unit === 'ETH') {
         try {
             gasCost = web3.eth.estimateGas({ to: to_addr, value: amount })
+            console.log('gas cost',gasCost)
         } catch (err) {
+            console.log('gas cost err',err)
             gasCost = 21000
         }
 
@@ -47,8 +49,11 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
 
         try {
             gasCost = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
+            console.log('gas cost',gasCost)
         } catch (err) {
             gasCost = 38119
+            console.log('gas cost err',err)
+
         }
 
         cb(gasCost)
@@ -64,22 +69,26 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
         setContract();
 
         var SENTINEL_ADDRESS = getSENTContractAddress();
-        var data = contract.transfer.getData(to_addr, amount, { from: from_addr });
+        console.log('to addr, amount', to_addr, amount)
+        var data = contract.transfer.getData(to_addr, amount);
+
+        console.log('in tokentransact', data)
 
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-            gasPrice: gas_price,
-            gasLimit: gas,
-            from: from_addr,
+            gasPrice: web3.toHex(20 * 1e9),
+            gasLimit: web3.toHex(6 * 1e4),
             to: SENTINEL_ADDRESS,
-            value: '0x00',
+            value: web3.toHex(0 * 1e18),
             data: data
         }
+        console.log('in tokentransact', txParams);
 
         var tx = new EthereumTx(txParams);
         tx.sign(privateKey);
         var serializedTx = '0x' + tx.serialize().toString('hex');
-
+        console.log('privatekey', privateKey.toString('hex'));
+        console.log('serial', serializedTx);
         if (serializedTx) {
             cb(null, serializedTx)
         } else {
@@ -93,7 +102,7 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
 export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     try {
         setWeb3();
-
+        console.log('in ethTransaction',amount)
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
             gasPrice: gas_price,
@@ -208,3 +217,4 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
     }
 }
 
+//3e044f87c24f84ecd833ef59fd53f665076c547c59b00e67b65b9d21182d60d8

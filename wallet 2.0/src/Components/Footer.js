@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core';
 import DisconnectIcon from '@material-ui/icons/HighlightOff';
 import { setVpnStatus } from '../Actions/vpnlist.action';
+import { getSignHash, addSignature } from '../Actions/tmvpn.action';
 import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { footerStyles } from '../Assets/footer.styles';
 import { Grid, Row, Col } from 'react-flexbox-grid';
@@ -20,13 +21,17 @@ const styles = theme => ({
     },
 });
 
+let downloadData = 0;
+
 class Footer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             openSnack: false,
             snackMessage: '',
-            rateDialog: false
+            rateDialog: false,
+            status: false,
+            counter: 1
         }
     }
 
@@ -42,21 +47,81 @@ class Footer extends Component {
         this.setState({ openSnack: true, snackMessage: message })
     }
 
-    disconnect = () => {
-        disconnectVPN((res) => {
-            if (res) {
-                this.setState({ openSnack: true, snackMessage: res });
+    componentWillReceiveProps = (next) => {
+        if (this.state.status !== next.vpnStatus) {
+            this.setState({ status: next.vpnStatus, counter: 1 })
+        }
+    }
+
+    sendSignature = (downData, isFinal, counter) => {
+        let amount = (this.props.activeVpn.price_per_GB * downData) / 1024;
+        this.props.getSignHash(Math.round(amount), counter, isFinal).then(res => {
+            if (res.error) {
+                console.log("SignError...", res.error);
             }
             else {
-                this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
-                this.props.setVpnStatus(false);
+                let data = {
+                    account_addr: this.props.account.address,
+                    session_id: localStorage.getItem('SESSION_NAME'),
+                    token: localStorage.getItem('TOKEN'),
+                    signature: {
+                        hash: res.payload,
+                        index: counter,
+                        amount: Math.round(amount).toString() + 'sut',
+                        final: isFinal
+                    }
+                }
+                this.props.addSignature(data).then(response => {
+                    if (response.error) {
+                        console.log("Send SignError...", response.error);
+                    }
+                    else {
+                        if (response.payload.success) {
+                            this.setState({ counter: counter + 1 })
+                        }
+                        else {
+                            console.log("False...", response.payload);
+                        }
+                    }
+                })
             }
         })
     }
 
+    disconnect = async () => {
+        if (this.props.isTm) {
+            await this.sendSignature(downloadData, true, this.state.counter);
+            disconnectVPN((res) => {
+                if (res) {
+                    this.setState({ openSnack: true, snackMessage: res });
+                }
+                else {
+                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN'});
+                    this.props.setVpnStatus(false);
+                }
+            })
+        }
+        else {
+            disconnectVPN((res) => {
+                if (res) {
+                    this.setState({ openSnack: true, snackMessage: res });
+                }
+                else {
+                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
+                    this.props.setVpnStatus(false);
+                }
+            })
+        }
+    }
+
     render() {
         let language = this.props.lang;
-        let { vpnStatus, currentUsage, classes } = this.props;
+        let { vpnStatus, currentUsage, isTm, classes } = this.props;
+        let counter = this.state.counter;
+        downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
+        if (vpnStatus && isTm && downloadData >= counter * 10) {
+            this.sendSignature(downloadData, false, counter);
+        }
         return (
             <div style={footerStyles.mainDivStyle}>
                 <Grid>
@@ -144,13 +209,18 @@ function mapStateToProps(state) {
         lang: state.setLanguage,
         isTest: state.setTestNet,
         currentUsage: state.VPNUsage,
-        vpnStatus: state.setVpnStatus
+        vpnStatus: state.setVpnStatus,
+        isTm: state.setTendermint,
+        activeVpn: state.getActiveVpn,
+        account: state.setTMAccount
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setVpnStatus
+        setVpnStatus,
+        getSignHash,
+        addSignature
     }, dispatch)
 }
 

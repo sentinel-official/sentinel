@@ -1,6 +1,7 @@
 
 module.exports = {
     B_URL: 'https://api.sentinelgroup.io',
+    BOOT_URL: 'https://bootnode-gateway.sentinelgroup.io',
     TMain_URL:'http://178.32.169.207:8000',
     S_URL: 'https://api-rinkeby.etherscan.io/api?module=account&action=tokentx&contractaddress=',
     SM_URL: '&address=',

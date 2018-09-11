@@ -9,7 +9,7 @@ import { compose } from 'recompose';
 import PropTypes from 'prop-types';
 import { QRCode } from 'react-qr-svg';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getTMBalance, getKeys } from '../Actions/tendermint.action';
+import { getTMBalance } from '../Actions/tendermint.action';
 let lang = require('./../Constants/language');
 
 const customStyles = theme => ({
@@ -26,14 +26,11 @@ class TMAccountView extends Component {
     }
 
     componentWillMount = () => {
-        this.props.getKeys().then(res => {
-            if (res.payload.length !== 0)
-                this.props.getTMBalance(res.payload[0].address);
-        });
+        this.props.getTMBalance(this.props.account.address);
     }
 
     getBalance = () => {
-        this.props.getTMBalance(this.props.keys[0].address);
+        this.props.getTMBalance(this.props.account.address);
     }
 
     handleClose = (event, reason) => {
@@ -41,17 +38,17 @@ class TMAccountView extends Component {
     };
 
     render() {
-        let account_key = this.props.keys.length !== 0 ? this.props.keys[0] : null;
+        let account_key = this.props.account;
         let { classes, language, balance } = this.props;
         let balValue = (typeof balance === 'object' && balance !== null) ? ('value' in balance ? balance.value : {}) : {};
         let coins = (typeof balValue === 'object' && balValue !== null) ? ('coins' in balValue ? balValue.coins : []) : [];
-        let token = coins.length !== 0 ? coins.find(o => o.denom === 'sentinelToken') : {};
+        let token = coins.length !== 0 ? coins.find(o => o.denom === 'sut') : {};
         return (
             <div style={accountStyles.formStyle}>
                 <Card style={accountStyles.cardStyle}>
                     <CardHeader
                         action={
-                            <IconButton onClick={() => { this.getBalance() }}>
+                            <IconButton onClick={() => { this.getBalance() }} style={accountStyles.outlineNone}>
                                 <RefreshIcon />
                             </IconButton>
                         }
@@ -112,15 +109,14 @@ function mapStateToProps(state) {
     return {
         language: state.setLanguage,
         isTest: state.setTestNet,
-        keys: state.getKeys,
+        account: state.setTMAccount,
         balance: state.tmBalance
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        getTMBalance,
-        getKeys
+        getTMBalance
     }, dispatch)
 }
 

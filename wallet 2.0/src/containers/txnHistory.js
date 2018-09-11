@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, IconButton  } from '@material-ui/core'
+import { Button, IconButton } from '@material-ui/core'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import { bindActionCreators } from 'redux';
 import { testSENTTxns, testETHTxns } from '../Actions/getHistoryAction'
 import { label, buttonStyle, disabledButton } from '../Assets/commonStyles'
 import History from "../Components/historyComponent";
-import CustomButton from '../Components/customButton'
+import CustomButton from '../Components/customButton';
+import { historyStyles } from '../Assets/txhistory.styles';
+let zfill = require('zfill');
 
 class TxnHistory extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -18,14 +20,17 @@ class TxnHistory extends Component {
         }
     }
 
-    testSentHistory = () => {
+    componentWillMount = () => {
+        this.testSentHistory();
+    }
 
+    testSentHistory = () => {
         this.setState({ isActive: false });
         let data = {
-            account_addr: this.props.getAccount,
+            account_addr: '0x' + zfill(this.props.getAccount.substring(2), 64),
             isTest: this.props.setTestNet
         };
-      this.props.testSENTTxns(data)
+        this.props.testSENTTxns(data)
         // .then(res => { console.log('res', res) })
         // .catch(err => { console.log('err', err) });
 
@@ -39,94 +44,90 @@ class TxnHistory extends Component {
             isTest: this.props.setTestNet
         };
         this.props.testETHTxns(data)
-            // .then(res => { console.log('res', res) })
-            // .catch(err => { console.log('err', err) });
+        // .then(res => { console.log('res', res) })
+        // .catch(err => { console.log('err', err) });
     };
 
+    onClickRefresh = () => {
+        if (this.state.isActive)
+            this.testEthHistory();
+        else
+            this.testSentHistory();
+    }
+
     render() {
-        let ethTxns;
-        let sentTxns;
-
-        if (this.props.testETHHistory) {
-            ethTxns = this.props.testETHHistory.data.result.map(data => {
-                // console.log(data, 'see this');
-                return (
-                    <div style={{ marginTop: 20, marginBottom: 20 }}>
-                        <History ownWallet={this.props.getAccount} date={new Date().toISOString()} to={data.to}
-                                 gas={data.gas} from={data.from} amount={data.value} status={'success'} tx={data.hash} />
-                    </div>
-                )
-        })
+        let output;
+        if (this.state.isActive) {
+            if (this.props.testETHHistory && this.props.testETHHistory.result.length > 0) {
+                output = this.props.testETHHistory.result.map(data => {
+                    // console.log(data, 'see this');
+                    return (
+                        <div style={historyStyles.data}>
+                            <History ownWallet={this.props.getAccount} date={data.timeStamp} to={data.to}
+                                gas={parseInt(data.gasPrice) / (10 ** 9)} from={data.from}
+                                amount={parseInt(data.value) / (10 ** 18)} status={'success'} tx={data.hash} />
+                        </div>
+                    )
+                })
+            } else {
+                output = <div style={historyStyles.noTxYet}>No Transactions yet</div>
+            }
         }
-
-        if (this.props.testSENTHistory) {
-            sentTxns = this.props.testSENTHistory.data.result.map(data => {
-                return (
-                    <div style={{ marginTop: 20, marginBottom: 20 }}>
-                        <History ownWallet={this.props.getAccount} date={new Date().toISOString()} to={data.to}
-                                 from={data.to} gas={data.gas} amount={data.value} status={'success'} tx={data.hash} />
-                    </div>
-                )
-            })
+        if (!this.state.isActive) {
+            if (this.props.testSENTHistory && this.props.testSENTHistory.result.length > 0) {
+                output = this.props.testSENTHistory.result.map(sentData => {
+                    return (
+                        <div style={historyStyles.data}>
+                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp}
+                                to={`0x${sentData.topics[2].substring(26)}`} from={`0x${sentData.topics[1].substring(26)}`}
+                                gas={parseInt(sentData.gasPrice) / (10 ** 9)} amount={(parseInt(sentData.data) / (10 ** 9)).toFixed(3)}
+                                status={'success'} tx={sentData.transactionHash} />
+                        </div>
+                    )
+                })
+            } else {
+                output = <div historyStyles={historyStyles.noTxYet}>No Transactions yet</div>
+            }
         }
         return (
-            <div style={{ margin: 10 }} >
-                <div style={{ display: 'flex', justifyContent: 'space-between' }} >
+            <div style={historyStyles.wholeDiv} >
+                <div style={historyStyles.secondDiv} >
                     <div>
-                        <label style={label} >{ !this.state.isActive ? "SENT" : "ETH"} Transactions</label>
+                        <label style={label} >{!this.state.isActive ? "SENT" : "ETH"} Transactions</label>
                     </div>
-                    <div style={{ display: 'flex' }}>
-                        <div style={ styles.margin }>
-                            <IconButton style={{ outline: 'none' }} aria-label="Refresh">
-                                <RefreshIcon style={{ outline: 'none' }}/>
+                    <div style={historyStyles.flex}>
+                        <div style={historyStyles.margin}>
+                            <IconButton
+                                style={historyStyles.outlineNone}
+                                aria-label="Refresh"
+                                onClick={this.onClickRefresh}>
+                                <RefreshIcon style={historyStyles.outlineNone} />
                             </IconButton>
                         </div>
-                        <div style={ styles.margin }>
-                            <CustomButton color={'#FFFFFF'}  label={'SENT'} active={!this.state.isActive}
-                                          onClick={this.testSentHistory} />
+                        <div style={historyStyles.margin}>
+                            <CustomButton color={'#FFFFFF'} label={'SENT'} active={this.state.isActive}
+                                onClick={this.testSentHistory} />
                         </div>
-                        <div style={ styles.margin }>
-                            <CustomButton color={'#F2F2F2'} label={'ETH'} active={this.state.isActive}
-                                          onClick={this.testEthHistory}/>
+                        <div style={historyStyles.margin}>
+                            <CustomButton color={'#F2F2F2'} label={'ETH'} active={!this.state.isActive}
+                                onClick={this.testEthHistory} />
                         </div>
                     </div>
                 </div>
-                <div style={styles.historyContainer} >
-                    {
-                        this.props.testETHHistory && this.props.testETHHistory.data.result.length > 0 ?
-                            !this.state.isActive ? sentTxns : ethTxns : <div>No Transactions yet</div>
-                    }
-                    {/*<History data = {this.props.testETHHistory && this.props.testETHHistory.data.result.length > 0 ? this.props.testETHHistory.data.result : [] }  />*/}
+                <div style={historyStyles.historyContainer} >
+                    {output}
                 </div>
             </div>
         )
     }
 }
 
-
-const styles = {
-    margin: {
-        marginLeft: 10,
-        marginRight: 10,
-    },
-    historyContainer: {
-        overflowY: 'auto',
-        height: 450,
-        flexDirection: 'column',
-        paddingTop: 200,
-        marginTop: 20,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-};
-
 const mapDispatchToProps = (dispatch) => {
 
     return bindActionCreators({ testSENTTxns, testETHTxns }, dispatch)
 };
 
-const mapStateToProps = ( { testSENTHistory, testETHHistory, getAccount, setTestNet } ) => {
+const mapStateToProps = ({ testSENTHistory, testETHHistory, getAccount, setTestNet }) => {
 
     return { testSENTHistory, testETHHistory, getAccount, setTestNet }
 };

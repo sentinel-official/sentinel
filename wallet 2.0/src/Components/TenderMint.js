@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Paper, Tabs, Tab } from '@material-ui/core';
 import { sidebarStyles } from '../Assets/sidebar.styles';
-import { getKeys, setTMComponent } from '../Actions/tendermint.action';
+import { getKeys, setTMComponent, getTendermintAccount, setTMAccount } from '../Actions/tendermint.action';
 import { payVPNTM } from '../Actions/vpnlist.action';
 import CreateTMAccount from './CreateTMAccount';
 import TMAccountDetails from './TMAccountDetails';
@@ -26,7 +26,19 @@ class TenderMint extends Component {
     componentWillMount = () => {
         this.props.getKeys().then(res => {
             if (res.payload.length !== 0) {
-                this.props.setTMComponent('dashboard');
+                getTendermintAccount((name) => {
+                    if (name) {
+                        let mainAccount = res.payload.find(obj => obj.name === name)
+                        if (mainAccount) {
+                            this.props.setTMAccount(mainAccount);
+                            this.props.setTMComponent('dashboard');
+                        }
+                        else {
+                            this.props.setTMAccount(res.payload[res.payload.length - 1]);
+                            this.props.setTMComponent('dashboard');
+                        }
+                    }
+                });
             }
             else {
                 this.props.setTMComponent('home');
@@ -64,6 +76,7 @@ class TenderMint extends Component {
                         </div>
                     )
                 }
+                break;
 
             default: {
                 return (
@@ -96,7 +109,8 @@ function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         getKeys,
         setTMComponent,
-        payVPNTM
+        payVPNTM,
+        setTMAccount
     }, dispatch)
 }
 

@@ -13,11 +13,11 @@ import ConnectIcon from '@material-ui/icons/SwapVerticalCircle';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { connectSocks } from '../Actions/connectSOCKS';
-import { setVpnStatus, payVPNTM } from '../Actions/vpnlist.action';
+import { setVpnStatus, payVPNTM, setActiveVpn } from '../Actions/vpnlist.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
-import { calculateUsage } from '../Actions/calculateUsage';
+import { calculateUsage, socksVpnUsage } from '../Actions/calculateUsage';
 
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -247,7 +247,7 @@ class SimpleDialogDemo extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({  open: false});
+        this.setState({ open: false });
         this.props.onUpdate(false);
     };
     handleAlertClose = () => {
@@ -262,59 +262,70 @@ class SimpleDialogDemo extends React.Component {
         else {
             this.setState({ isLoading: true });
             if (this.props.vpnType === 'openvpn') {
-                await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, (res) => {
-                    if (res.data && res.data.account_addr) {
+                await connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (err, platformErr, res) => {
+                    if (platformErr) {
+                        console.log("Platform err...", platformErr)
+                    }
+                    else if (err && 'account_addr' in err) {
                         this.setState({
-                            pendingInitPayment: res.data.message, open: false, isPending: true,
-                            paymentAddr: res.data.account_addr, isLoading: false
+                            pendingInitPayment: err.message, open: false, isPending: true,
+                            paymentAddr: err.account_addr, isLoading: false
                         })
-                    } else if (res.success) {
+                    } else if (res) {
                         this.setState({ isLoading: false, isPending: false, open: true });
+                        this.props.setActiveVpn(this.props.data);
                         this.props.setVpnStatus(true)
-                        // setTimeout(() => {  this.setState({ open: false })}, 4000)
                     } else {
                         this.setState({ open: false, isLoading: false })
                     }
 
                 })
             } else {
-                connectSocks(this.props.getAccount, vpn_addr).then( async (res) => {
-                    // if (res) {
-                        setTimeout( () => {
-                        session = localStorage.getItem('SESSION_NAME');
-                        type = localStorage.getItem('VPN_TYPE');
-                        this.setState({ session: true })
-                        }, 10000);
-                        // if (session && type === 'SOCKS5') {
-                            calculateUsage(this.props.getAccount, this.props.data.vpn_addr, true )
-                        // }
-                    // }
+                await connectSocks(this.props.getAccount, vpn_addr, remote.process.platform, (err, res) => {
+                    console.log("Socks..res..", err, res);
+                    if (err && 'account_addr' in err) {
+                        this.setState({
+                            pendingInitPayment: err.message, open: false, isPending: true,
+                            paymentAddr: err.account_addr, isLoading: false
+                        })
+                    } else if (res) {
+                        console.log("Socks...", res);
+                        this.setState({ isLoading: false, isPending: false, open: true });
+                        this.props.setActiveVpn(this.props.data);
+                        this.props.setVpnStatus(true);
+                        calculateUsage(this.props.getAccount, true, (usage) => {
+                            this.props.socksVpnUsage(usage);
+                        });
+                    } else {
+                        this.setState({ open: false, isLoading: false })
+                    }
                 });
             }
         }
     };
 
     execIT = () => {
-        calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false )
+        calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false)
     };
 
     render() {
-        if (this.state.session) {
-            UsageInterval = setInterval(() => {
-                if (this.state.session && type === 'SOCKS5') {
-                    calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false)
-                } else {
-                    this.props.getVPNUsageData(this.props.getAccount);
-                }
-            }, 3000);
-        }
+        // console.log("Status...", this.props.vpnStatus);
+        // if (this.props.vpnStatus && !UsageInterval) {
+        //     UsageInterval = setInterval(() => {
+        //         if (this.state.session && type === 'SOCKS5') {
+        //             calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false)
+        //         } else {
+        //             this.props.getVPNUsageData(this.props.isTm ? this.props.account.address : this.props.getAccount);
+        //         }
+        //     }, 3000);
+        // }
 
-        if (!this.props.vpnStatus) {
-            if (UsageInterval) {
-                clearInterval(UsageInterval);
-                UsageInterval = null;
-            }
-        }
+        // if (!this.props.vpnStatus) {
+        //     if (UsageInterval) {
+        //         clearInterval(UsageInterval);
+        //         UsageInterval = null;
+        //     }
+        // }
 
         // if (!UsageInterval && this.props.status) {
         //     UsageInterval = setInterval(function () {
@@ -332,8 +343,8 @@ class SimpleDialogDemo extends React.Component {
                     <SimpleDialogWrapped
                         // selectedValue={this.state.selectedValue}
                         open={this.state.open}
-                        onClose={this.handleClose}
                         data={this.props.data}
+                        onClose={this.handleClose}
                         onClicked={this.handleListItemClick}
                         isLoading={this.state.isLoading}
                         success={this.props.vpnStatus}
@@ -342,7 +353,7 @@ class SimpleDialogDemo extends React.Component {
                     :
                     <AlertDialog
                         op={this.state.isPending}
-                    // open={this.state.isPending}
+                        // open={this.state.isPending}
                         onClose={this.handleAlertClose}
                         message={this.state.pendingInitPayment}
                         paymentAddr={this.state.paymentAddr}
@@ -357,11 +368,17 @@ class SimpleDialogDemo extends React.Component {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ setCurrentTab, initPaymentAction, getVPNUsageData, setVpnStatus, connectVPN, connectSocks, payVPNTM }, dispatch)
+    return bindActionCreators({
+        setCurrentTab, initPaymentAction, getVPNUsageData,
+        setVpnStatus, connectVPN, connectSocks, payVPNTM, setActiveVpn, socksVpnUsage
+    }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer, getAccount, socksReducer, vpnType, setVpnStatus, setTendermint }) {
-    return { connecVPNReducer, getAccount, socksReducer, vpnType, vpnStatus: setVpnStatus, isTm: setTendermint }
+function mapStateToProps({ connecVPNReducer, getAccount, vpnType, setVpnStatus, getCurrentVpn, setTendermint, setTMAccount }) {
+    return {
+        connecVPNReducer, getAccount, vpnType, data: getCurrentVpn,
+        vpnStatus: setVpnStatus, isTm: setTendermint, account: setTMAccount
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SimpleDialogDemo);

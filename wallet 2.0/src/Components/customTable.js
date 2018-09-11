@@ -29,6 +29,7 @@ function createData(obj) {
     counter += 1;
     obj.id = counter;
     obj.city = obj.location.city;
+    obj.rating = parseFloat(obj.rating).toFixed(2);
     obj.bandwidth = obj.net_speed ? ('download' in obj.net_speed ? obj.net_speed.download : 0) : 0;
     return obj;
 }
@@ -54,6 +55,8 @@ const columnData = [
     { id: 'bandwidth', numeric: true, disablePadding: false, label: 'Bandwidth (mbps)' },
     { id: 'latency', numeric: true, disablePadding: false, label: 'Latency (ms)' },
     { id: 'enc_method', numeric: false, disablePadding: false, label: 'Algorithm' },
+    { id: 'version', numeric: false, disablePadding: false, label: 'Version' },
+    { id: 'rating', numeric: true, disablePadding: false, label: 'Rating' },
     { id: 'price_per_GB', numeric: true, disablePadding: false, label: 'Price (SENTs/GB)' },
 ];
 
@@ -64,7 +67,7 @@ class EnhancedTableHead extends React.Component {
     };
 
     render() {
-        const { order, orderBy } = this.props;
+        const { order, orderBy, classes } = this.props;
 
         return (
             <TableHead>
@@ -74,8 +77,9 @@ class EnhancedTableHead extends React.Component {
                             <TableCell
                                 key={column.id}
                                 numeric={column.numeric}
-                                padding={"default"}
                                 sortDirection={orderBy === column.id ? order : false}
+                                padding={"dense"}
+                                className={classes.head}
                             >
                                 <TableSortLabel
                                     active={orderBy === column.id}
@@ -99,6 +103,7 @@ EnhancedTableHead.propTypes = {
     // onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
+    classes: PropTypes.object.isRequired,
     // rowCount: PropTypes.number.isRequired,
 };
 
@@ -107,6 +112,9 @@ const alignStyle = theme => ({
         textAlign: 'center',
         marginLeft: 25
     },
+    head: {
+        padding: 15
+    }
 });
 
 EnhancedTableHead = withStyles(alignStyle)(EnhancedTableHead);
@@ -191,6 +199,9 @@ const styles = theme => ({
     tableWrapper: {
         overflowY: 'auto',
     },
+    head: {
+        padding: 15
+    }
 });
 
 class EnhancedTable extends React.Component {
@@ -284,26 +295,31 @@ class EnhancedTable extends React.Component {
                                                 key={n.id}
                                             // selected={isSelected}
                                             >
-                                                <TableCell component="th" scope="row" padding="default">
+                                                <TableCell padding="dense" className={classes.head}>
                                                     <Flag code={Country.getCode(n.location.country)} height="16" />
                                                 </TableCell>
-                                                <TableCell padding='default'>
+                                                <TableCell padding="dense" className={classes.head}>
                                                     {`${n.location.city}, `} {n.location.country}
                                                 </TableCell>
                                                 <TableCell numeric padding='default'>
                                                     {((n.net_speed ? ('download' in n.net_speed ? n.net_speed.download : 0) : 0) / (1024 * 1024)).toFixed(2)}
                                                 </TableCell>
-                                                <TableCell numeric padding='default'>
+                                                <TableCell numeric padding="dense" className={classes.head}>
                                                     {n.latency ? n.latency : 'None'}
                                                     {n.latency ? (n.latency === 'Loading...' ? null : '') : null}
                                                 </TableCell>
-                                                <TableCell padding='default'>
+                                                <TableCell padding="dense" className={classes.head}>
                                                     {n.enc_method ? n.enc_method : 'None'}
                                                 </TableCell>
-                                                <TableCell numeric padding='default'>
+                                                <TableCell padding="dense" className={classes.head}>
+                                                    {n.version ? n.version : 'None'}
+                                                </TableCell>
+                                                <TableCell numeric padding="dense" className={classes.head}>
+                                                    {n.rating ? n.rating : 'None'}
+                                                </TableCell>
+                                                <TableCell numeric padding="dense" className={classes.head}>
                                                     {n.price_per_GB ? n.price_per_GB : 100}
                                                 </TableCell>
-
                                             </TableRow>
                                         );
                                     })}

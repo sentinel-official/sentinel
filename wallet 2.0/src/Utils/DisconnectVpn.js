@@ -56,11 +56,14 @@ export async function disconnectVPNNonWin(cb) {
 }
 
 export function removeItemsLocal() {
-    localStorage.removeItem('CONNECTED_VPN');
     localStorage.removeItem('IPGENERATED');
     localStorage.removeItem('LOCATION');
     localStorage.removeItem('SPEED');
+}
+
+export function removeSessionLocal(){
     localStorage.removeItem('SESSION_NAME');
+    localStorage.removeItem('CONNECTED_VPN');
 }
 
 export async function clearConfig() {

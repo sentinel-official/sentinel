@@ -9,6 +9,17 @@ import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { footerStyles } from '../Assets/footer.styles';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import lang from '../Constants/language';
+import RatingDialog from './RatingDialog';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import { compose } from 'recompose';
+
+const styles = theme => ({
+    paper: {
+        width: '80%',
+        maxHeight: 335,
+    },
+});
 
 let downloadData = 0;
 
@@ -18,6 +29,7 @@ class Footer extends Component {
         this.state = {
             openSnack: false,
             snackMessage: '',
+            rateDialog: false,
             status: false,
             counter: 1
         }
@@ -26,6 +38,14 @@ class Footer extends Component {
     handleClose = (event, reason) => {
         this.setState({ openSnack: false });
     };
+
+    handleDialogClose = () => {
+        this.setState({ rateDialog: false });
+    };
+
+    snackOpenDialog = (message) => {
+        this.setState({ openSnack: true, snackMessage: message })
+    }
 
     componentWillReceiveProps = (next) => {
         if (this.state.status !== next.vpnStatus) {
@@ -76,7 +96,7 @@ class Footer extends Component {
                     this.setState({ openSnack: true, snackMessage: res });
                 }
                 else {
-                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN' });
+                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN'});
                     this.props.setVpnStatus(false);
                 }
             })
@@ -87,7 +107,7 @@ class Footer extends Component {
                     this.setState({ openSnack: true, snackMessage: res });
                 }
                 else {
-                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN' });
+                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
                     this.props.setVpnStatus(false);
                 }
             })
@@ -96,7 +116,7 @@ class Footer extends Component {
 
     render() {
         let language = this.props.lang;
-        let { vpnStatus, currentUsage, isTm } = this.props;
+        let { vpnStatus, currentUsage, isTm, classes } = this.props;
         let counter = this.state.counter;
         downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
         if (vpnStatus && isTm && downloadData >= counter * 10) {
@@ -167,9 +187,21 @@ class Footer extends Component {
                     onClose={this.handleClose}
                     message={this.state.snackMessage}
                 />
+                <RatingDialog
+                    classes={{
+                        paper: classes.paper,
+                    }}
+                    open={this.state.rateDialog}
+                    onClose={this.handleDialogClose}
+                    snackOpenDialog={this.snackOpenDialog}
+                />
             </div>
         )
     }
+}
+
+Footer.propTypes = {
+    classes: PropTypes.object.isRequired,
 }
 
 function mapStateToProps(state) {
@@ -192,4 +224,4 @@ function mapDispatchToActions(dispatch) {
     }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToActions)(Footer);
+export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToActions))(Footer);

@@ -251,8 +251,9 @@ class ETHHelper(object):
                 error, tx_hash = vpn_service_manager.set_initial_payment(
                     from_addr, nonce)
             elif payment_type == 'normal':
+                error, _usage = vpn_service_manager.get_vpn_usage(from_addr, session_id)
                 error, tx_hash = vpn_service_manager.pay_vpn_session(
-                    from_addr, amount, session_id, nonce)
+                    from_addr, int(_usage[3]), session_id, nonce)
             if error is None:
                 if device_id:
                     _, res = add_session(device_id, session_id, tx_hash)
@@ -309,8 +310,7 @@ class ETHHelper(object):
                     'to_addr': to_addr
                 })
 
-        if to_addr == REFERRAL_DUMMY:
-            _, res = add_session(device_id, session_id)
+        if device_id and to_addr == REFERRAL_DUMMY:
             _ = db.ref_sessions.insert_one({
                 'device_id': device_id,
                 'session_id': session_id,
@@ -321,6 +321,8 @@ class ETHHelper(object):
                 'amount': _amount,
                 'timestamp': timestamp
             })
+            if _sent_bytes >= LIMIT_100MB:
+                _, res = add_session(device_id, session_id)
 
         if make_tx is True and to_addr != REFERRAL_DUMMY:
             nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')

@@ -42,7 +42,7 @@ let updateNodes = (findObj, updateObj, cb) => {
   NodeModel.updateMany(findObj, {
     $set: updateObj
   }, (error, result) => {
-    if(error) cb(error);
+    if (error) cb(error);
     else cb(null, result);
   });
 };

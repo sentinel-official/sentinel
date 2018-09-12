@@ -46,10 +46,11 @@ def getAverageNodeCount():
 
     return message
 
+
 def getAverageActiveNodeCount():
     avg_count = []
 
-    result = db.statistics.aggregate([{'$group':{'_id':0,'average':{'$avg':'$nodes.up'}}}])
+    result = db.statistics.aggregate([{'$group': {'_id': 0, 'average': {'$avg': '$nodes.up'}}}])
 
     for doc in result:
         avg_count.append(doc)

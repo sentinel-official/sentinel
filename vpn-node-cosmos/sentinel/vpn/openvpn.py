@@ -32,8 +32,7 @@ class OpenVPN(object):
             self.vpn_proc, self.pid = None, None
         return kill_proc.returncode
 
-    @staticmethod
-    def revoke(client_name):
+    def revoke(self, client_name):
         return revoke(client_name)
 
 

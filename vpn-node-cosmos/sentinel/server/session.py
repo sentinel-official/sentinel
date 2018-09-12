@@ -102,7 +102,7 @@ class AddSessionPaymentSign(object):
         session_id = str(req.body['session_id'])
         token = str(req.body['token'])
         signature = {
-            'hash': str(req.body['signature']['value']),
+            'hash': str(req.body['signature']['hash']),
             'index': int(req.body['signature']['index']),
             'amount': str(req.body['signature']['amount']),
             'final': req.body['signature']['final']
@@ -135,6 +135,9 @@ class AddSessionPaymentSign(object):
                     'password': node.config['account']['password'],
                     'signature': signature['hash']
                 })
+            message = {
+                'success': True
+            }
         else:
             message = {
                 'success': False,

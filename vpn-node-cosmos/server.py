@@ -3,11 +3,11 @@ import json
 
 import falcon
 
+from sentinel.server import AddSessionDetails
+from sentinel.server import AddSessionPaymentSign
 from sentinel.server import DisconnectClient
 from sentinel.server import GetCurrentUsage
-from sentinel.server import AddSessionDetails
 from sentinel.server import GetVpnCredentials
-from sentinel.server import AddSessionPaymentSign
 from sentinel.utils import JSONTranslator
 
 

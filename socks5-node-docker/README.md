@@ -20,7 +20,7 @@ Below are the instructions on installing docker.
 
 `sudo usermod -aG docker $USER`
 
-### Running Sentinel VPN node
+### Running Sentinel Socks node
 
 You can setup and run VPN node in two ways
 
@@ -32,7 +32,7 @@ Using existing docker image
 
 `mkdir -p $HOME/.sentinel`
 
-`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4000:4000 -p 4001:4001 -p 4002:4002 -p 4003:4003 sentinelofficial/sentinel-vpn-node`
+`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4200:4200 -p 4201:4201 -p 4202:4202 -p 4203:4203 sentinelofficial/sentinel-vpn-node`
 
 #### Method #2
 
@@ -48,9 +48,9 @@ Building your own docker image
 
 `mkdir -p $HOME/.sentinel`
 
-`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4000:4000 -p 4001:4001 -p 4002:4002 -p 4003:4003 sentinel-socks-node`
+`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4200:4200 -p 4201:4201 -p 4202:4202 -p 4203:4203 sentinel-socks-node`
 
-### Updating existing Sentinel VPN node
+### Updating existing Sentinel Socks node
 
 `sudo docker pull sentinelofficial/sentinel-socks-node`
 

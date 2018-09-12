@@ -81,7 +81,7 @@ class TMAccountView extends Component {
                             </p>
                             :
                             <p style={accountStyles.balanceStyle}>
-                                {token && 'denom' in token ? token.amount : 'Loading...'}
+                                {token && 'denom' in token ? (parseInt(token.amount)/(10**8)).toFixed(3) : 'Loading...'}
                                 {token && 'denom' in token ? ' SUTs' : ''}
                             </p>
                         }

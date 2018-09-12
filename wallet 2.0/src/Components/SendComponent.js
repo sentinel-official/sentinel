@@ -269,8 +269,7 @@ class SendComponent extends React.Component {
 
   componentWillMount() {
     let { payVpn, initPaymentDetails } = this.props;
-
-    console.log('component will mount', initPaymentDetails, payVpn)
+    // console.log('component will mount', initPaymentDetails, payVpn)
     if (payVpn.isVPNPayment) {
       this.setState({
         sendToAddress: payVpn.data.account_addr,

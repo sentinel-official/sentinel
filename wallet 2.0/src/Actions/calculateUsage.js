@@ -10,7 +10,6 @@ const { execSync } = window.require('child_process');
 const os = window.require('os');
 const netStat = window.require('net-stat');
 
-
 export function sendUsage(accountAddr, usage) {
     let uri = `${B_URL}/client/update-connection`;
     let connections = [{
@@ -23,7 +22,7 @@ export function sendUsage(accountAddr, usage) {
         'connections': connections
     };
 
-    axios.post(uri, data).then(res => { console.log(res.data, "usage submitted to master node") });
+    axios.post(uri, data).then(res => { });
 }
 
 export function setStartValues(downVal, upVal) {

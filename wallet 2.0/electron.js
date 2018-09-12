@@ -31,48 +31,72 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.0.43", resizable: false, maximizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel-alpha-0.1.0", resizable: false, maximizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
       slashes: true
     }));
 
-    this.window.on('close', (e) => {
+    this.window.on('close', async (e) => {
       let self = this;
-      exec('killall gaiacli',(err,std,sto)=>{});
-      isVPNConnected(function (isConnected) {
-        if (showPrompt && isConnected) {
-          // e.preventDefault();
-          let res = dialog.showMessageBox({
-            type: 'question',
-            buttons: ['Disconnect', 'Run in Background'],
-            title: 'Confirm',
-            message: 'You are currently connected to a VPN'
-          })
-          if (!res) {
-            showPrompt = false;
+      exec('killall gaiacli', (err, std, sto) => { });
+      let isTM = await getTmLocal();
+      if (isTM === 'true') {
+        isTMVPNConnected(function (isConnected) {
+          if (isConnected) {
             stopVPN(function (err) {
               self.window = null;
               app.quit();
             });
+          } else {
+            self.window = null;
+            showPrompt = false;
+            app.quit();
+          }
+        })
+      } else {
+        isVPNConnected(function (isConnected) {
+          if (showPrompt && isConnected) {
+            // e.preventDefault();
+            let res = dialog.showMessageBox({
+              type: 'question',
+              buttons: ['Disconnect', 'Run in Background'],
+              title: 'Confirm',
+              message: 'You are currently connected to a VPN'
+            })
+            if (!res) {
+              showPrompt = false;
+              stopVPN(function (err) {
+                self.window = null;
+                app.quit();
+              });
+            }
+            else {
+              self.window = null;
+              showPrompt = false;
+              app.quit();
+            }
           }
           else {
             self.window = null;
             showPrompt = false;
             app.quit();
           }
-        }
-        else {
-          self.window = null;
-          showPrompt = false;
-          app.quit();
-        }
-      });
+        });
+      }
     });
   }
 }
 
+
+function getTmLocal() {
+  return mainWindow.window.webContents.executeJavaScript(`localStorage.getItem('isTM')`).then(
+    (value) => {
+      return value;
+    }
+  )
+}
 
 function getConfig(cb) {
   fs.readFile(CONFIG_FILE, function (err, data) {
@@ -144,6 +168,35 @@ function isVPNConnected(cb) {
       } catch (error) {
         cb(false)
       }
+    }
+  }
+}
+
+function isTMVPNConnected(cb) {
+  if (process.platform === 'win32') {
+    try {
+      let stdout = execSync('tasklist /v /fo csv | findstr /i "openvpn.exe"');
+      if (stdout) {
+        cb(true)
+      }
+      else {
+        cb(false)
+      }
+    } catch (err) {
+      cb(false)
+    }
+  }
+  else {
+    try {
+      let stdout = execSync('pidof openvpn').toString();
+      if (stdout) {
+        cb(true);
+      }
+      else {
+        cb(false);
+      }
+    } catch (err) {
+      cb(false)
     }
   }
 }
@@ -272,7 +325,7 @@ app.on('ready', function () {
           m.items[1].submenu.items[3].checked = false;
           mainWindow.window.webContents.send('lang', 'ja');
         }
-      },{
+      }, {
         label: 'Spanish', type: 'checkbox', checked: false, click() {
           m.items[1].submenu.items[0].checked = false;
           m.items[1].submenu.items[1].checked = false;
@@ -280,7 +333,7 @@ app.on('ready', function () {
           m.items[1].submenu.items[3].checked = false;
           mainWindow.window.webContents.send('lang', 'es');
         }
-      },{
+      }, {
         label: 'Russian', type: 'checkbox', checked: false, click() {
           m.items[1].submenu.items[0].checked = false;
           m.items[1].submenu.items[1].checked = false;

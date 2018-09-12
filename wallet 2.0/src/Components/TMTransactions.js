@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { sendAmount, getTMBalance } from '../Actions/tendermint.action';
 import { payVPNSession, getSessionInfo } from './../Actions/tmvpn.action';
-import { payVPNTM, setVpnStatus } from '../Actions/vpnlist.action';
+import { payVPNTM, setVpnStatus, setActiveVpn } from '../Actions/vpnlist.action';
 import { connectVPN } from './../Actions/connectOVPN';
 import CustomTextField from './customTextfield';
 import { Button, Snackbar } from '@material-ui/core';
@@ -32,7 +32,8 @@ class TMTransactions extends Component {
             amount: '',
             openSnack: false,
             snackMessage: '',
-            isTextDisabled: false
+            isTextDisabled: false,
+            sending: false
         }
     }
 
@@ -40,9 +41,8 @@ class TMTransactions extends Component {
     }
 
     componentWillReceiveProps = (nextProps) => {
-        console.log("Ne//", nextProps.vpnPayment);
         if (nextProps.vpnPayment.isPayment) {
-            this.setState({ toAddress: nextProps.vpnPayment.data.vpn_addr, amount: 101, isTextDisabled: true })
+            this.setState({ toAddress: nextProps.vpnPayment.data.vpn_addr, amount: 100, isTextDisabled: true })
         }
         else {
             this.setState({ isTextDisabled: false })
@@ -50,9 +50,10 @@ class TMTransactions extends Component {
     }
 
     sendTransaction = () => {
+        this.setState({ sending: true })
         if (this.props.vpnPayment.isPayment) {
             let data = {
-                "amount": this.state.amount.toString() + 'sut',
+                "amount": (parseInt(this.state.amount) * (10 ** 8)).toString() + 'sut',
                 "name": this.props.account.name,
                 "password": this.state.keyPassword,
                 "gas": 200000,
@@ -62,25 +63,33 @@ class TMTransactions extends Component {
             }
             this.props.payVPNSession(data).then(response => {
                 console.log("Pay VPN...", response);
-                if (response.error)
+                if (response.error) {
                     console.log("VPN Error...", response);
+                    this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
+                }
                 else {
                     localStorage.setItem('SIGNAME', data.sig_name)
                     localStorage.setItem('SIGPWD', data.sig_password)
                     // this.props.getSessionInfo('783B5A64D3CA4C02EAB2DF433B940C8C7349A8A4').then(sesRes => {
                     this.props.getSessionInfo(response.payload.hash).then(sesRes => {
-                        if (sesRes.error)
-                            console.log("Ses..Error", sesRes.error)
+                        console.log("Ses..=", sesRes);
+                        if (sesRes.error) {
+                            console.log("Ses..Error", sesRes.error);
+                            this.setState({ sending: false, openSnack: true, snackMessage: 'Something went wrong' });
+                        }
                         else {
                             let data = sesRes.payload;
                             let vpn_data = this.props.vpnPayment.data;
                             let session_data = sesRes.payload
                             connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
+                                console.log("Response...", err, platformErr, res);
                                 if (err) {
-                                    console.log("Err..message", err.message);
+                                    this.setState({ sending: false, openSnack: true, snackMessage: err.message });
                                 }
                                 else {
-                                    this.props.setVpnStatus(true)
+                                    this.props.setActiveVpn(vpn_data);
+                                    this.props.setVpnStatus(true);
+                                    this.setState({ sending: false, toAddress: '', keyPassword: '', amount: '', openSnack: true, snackMessage: 'Connected VPN' });
                                 }
                             })
                         }
@@ -90,14 +99,19 @@ class TMTransactions extends Component {
         }
         else {
             let data = {
-                "amount": this.state.amount.toString() + 'sut',
+                "amount": (parseInt(this.state.amount) * (10 ** 8)).toString() + 'sut',
                 "name": this.props.account.name,
                 "password": this.state.keyPassword,
                 "gas": 200000,
                 "to": this.state.toAddress
             }
             this.props.sendAmount(data, this.state.toAddress).then(response => {
-                console.log("Result...", response);
+                if (response.error) {
+                    this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
+                }
+                else {
+                    this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction done successfully' });
+                }
             });
         }
     }
@@ -121,14 +135,15 @@ class TMTransactions extends Component {
                     />
                     <p style={createAccountStyle.headingStyle}>Account Password</p>
                     <CustomTextField type={'password'} placeholder={''} disabled={false}
-                        value={this.state.password} onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
+                        value={this.state.keyPassword} onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
                     />
                     <Button
                         variant="outlined"
                         color="primary"
+                        disabled={this.state.sending}
                         onClick={() => { this.sendTransaction() }}
-                        className={classes.button} style={{ margin: 20, outline: 'none' }}>
-                        Send
+                        className={classes.button} style={createAccountStyle.buttonStyle}>
+                        {this.state.sending ? 'Sending' : 'Send'}
                     </Button>
                 </div>
                 <Snackbar
@@ -163,7 +178,8 @@ function mapDispatchToActions(dispatch) {
         payVPNTM,
         payVPNSession,
         getSessionInfo,
-        setVpnStatus
+        setVpnStatus,
+        setActiveVpn
     }, dispatch)
 }
 

@@ -69,14 +69,14 @@ export function getMasterUrl() {
             // localStorage.setItem('access_token', null);
             localStorage.setItem('B_URL', res.data.url)
         }
-        else{
+        else {
             localStorage.setItem('B_URL', B_URL);
         }
     })
-    .catch((err)=>{
-        localStorage.setItem('networkType', 'public');
-        localStorage.setItem('B_URL', B_URL);
-    })
+        .catch((err) => {
+            localStorage.setItem('networkType', 'public');
+            localStorage.setItem('B_URL', B_URL);
+        })
 }
 
 //getOVPNAndSave needs following args => AccountAddr, VPN_IP, VPN_PORT, VPN_ADDR, NONCE, CB
@@ -131,6 +131,7 @@ export function ovpnSave(vpn_data, session_id, ovpn, cb) {
     localStorage.setItem('IPGENERATED', ovpn[3].split(' ')[1]);
     localStorage.setItem('LOCATION', vpn_data.city);
     localStorage.setItem('SPEED', Number(vpn_data.speed / (1024 * 1024)).toFixed(2) + ' Mbps');
+    localStorage.setItem('VPN_TYPE', 'openvpn');
     fs.writeFile(OVPN_FILE, joinedOvpn, function (err) {
         if (err) cb({ message: 'Error in fetching ovpn file' });
         else cb(null);

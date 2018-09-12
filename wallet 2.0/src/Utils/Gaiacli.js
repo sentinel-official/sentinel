@@ -5,8 +5,8 @@ const remote = electron.remote;
 export function runGaiacli() {
     if (remote.process.platform === 'linux') {
         execSync('chmod +x public/gaiacli');
-        exec('public/gaiacli advanced rest-server --node tcp://185.222.24.69:26657 --chain-id=Sentinel-testnet-1',function(err,stdout,stderr){
-            console.log('Command..',err,stdout,stderr)
+        exec('public/gaiacli advanced rest-server --node tcp://185.222.24.68:26657 --chain-id=Sentinel-testnet-1',function(err,stdout,stderr){
+            
         })
     }
 }

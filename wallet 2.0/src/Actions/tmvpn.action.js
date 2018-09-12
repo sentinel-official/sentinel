@@ -98,3 +98,16 @@ export async function addSignature(data) {
         }
     }
 }
+
+export function deleteTmAccount() {
+    let data = {
+        password: localStorage.getItem('SIGPWD')
+    }
+
+    axios.delete(TM_URL + '/keys/' + localStorage.getItem('SIGNAME'), data, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        }
+    })
+}

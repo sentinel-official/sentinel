@@ -10,7 +10,7 @@ export function setTestNet(state = false, action) {
 }
 
 
-export function getETHBalance(state = 'Loading...', action) {
+export function getETHBalance(state = 'Loading', action) {
     switch (action.type) {
         case types.GET_ETH_BAL_SUCCESS:
             return action.payload
@@ -21,7 +21,7 @@ export function getETHBalance(state = 'Loading...', action) {
     }
 }
 
-export function getSentBalance(state = 'Loading...', action) {
+export function getSentBalance(state = 'Loading', action) {
     switch (action.type) {
         case types.GET_SENT_BAL_SUCCESS:
             return action.payload

@@ -224,9 +224,10 @@ function checkVPNConnection(resp, cb) {
         if (err) { }
         else {
             CONNECTED = true;
-            writeConf('openvpn');
-            cb(null, resp.message);
-            count = 2;
+            writeConf('openvpn', (res) => {
+                cb(null, resp.message);
+                count = 2;
+            });
         }
 
         getOsascriptIDs(function (ERr, pid) {

@@ -8,6 +8,7 @@ import { label, buttonStyle, disabledButton } from '../Assets/commonStyles'
 import History from "../Components/historyComponent";
 import CustomButton from '../Components/customButton';
 import { historyStyles } from '../Assets/txhistory.styles';
+import lang from '../Constants/language';
 let zfill = require('zfill');
 
 class TxnHistory extends Component {
@@ -57,6 +58,7 @@ class TxnHistory extends Component {
 
     render() {
         let output;
+        let { language } = this.props;
         if (this.state.isActive) {
             if (this.props.testETHHistory && this.props.testETHHistory.result.length > 0) {
                 output = this.props.testETHHistory.result.map(data => {
@@ -64,8 +66,8 @@ class TxnHistory extends Component {
                     return (
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={data.timeStamp} to={data.to}
-                                gas={parseInt(data.gasPrice) / (10 ** 9)} from={data.from}
-                                amount={parseInt(data.value) / (10 ** 18)} status={'success'} tx={data.hash} />
+                                gas={parseInt(data.gasPrice) / (10 ** 9)} from={data.from} unit={'ETHS'}
+                                amount={parseInt(data.value) / (10 ** 18)} status={'Success'} tx={data.hash} />
                         </div>
                     )
                 })
@@ -78,10 +80,10 @@ class TxnHistory extends Component {
                 output = this.props.testSENTHistory.result.map(sentData => {
                     return (
                         <div style={historyStyles.data}>
-                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp}
+                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={'SENTS'}
                                 to={`0x${sentData.topics[2].substring(26)}`} from={`0x${sentData.topics[1].substring(26)}`}
                                 gas={parseInt(sentData.gasPrice) / (10 ** 9)} amount={(parseInt(sentData.data) / (10 ** 9)).toFixed(3)}
-                                status={'success'} tx={sentData.transactionHash} />
+                                status={'Success'} tx={sentData.transactionHash} />
                         </div>
                     )
                 })
@@ -93,7 +95,8 @@ class TxnHistory extends Component {
             <div style={historyStyles.wholeDiv} >
                 <div style={historyStyles.secondDiv} >
                     <div>
-                        <label style={label} >{!this.state.isActive ? "SENT" : "ETH"} Transactions</label>
+                        <label style={label} >{!this.state.isActive ?
+                            lang[language].SentTransactions : lang[language].EthTransactions}</label>
                     </div>
                     <div style={historyStyles.flex}>
                         <div style={historyStyles.margin}>
@@ -127,9 +130,9 @@ const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({ testSENTTxns, testETHTxns }, dispatch)
 };
 
-const mapStateToProps = ({ testSENTHistory, testETHHistory, getAccount, setTestNet }) => {
+const mapStateToProps = ({ testSENTHistory, testETHHistory, getAccount, setTestNet, setLanguage }) => {
 
-    return { testSENTHistory, testETHHistory, getAccount, setTestNet }
+    return { testSENTHistory, testETHHistory, getAccount, setTestNet, language: setLanguage }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TxnHistory);

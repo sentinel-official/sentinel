@@ -19,6 +19,7 @@ import { isOnline } from "../Actions/convertErc.action";
 import { checkGateway, getGatewayUrl, isPrivate, setMaster, getMasterUrl } from "../Utils/utils";
 import { isVPNConnected } from '../Utils/VpnConfig';
 import NetworkChangeDialog from "./SharedComponents/networkChangeDialog";
+import lang from '../Constants/language';
 
 const styles = theme => ({
     root: {
@@ -165,7 +166,7 @@ class VpnList extends Component {
     };
 
     render() {
-        const { classes, isTM } = this.props;
+        const { classes, isTM, language } = this.props;
 
         return (
             <div>
@@ -200,11 +201,11 @@ class VpnList extends Component {
                     </div>
                     <div style={{ display: 'flex' }} >
                         <div style={margin}>
-                            <CustomButton color={'#FFFFFF'} label={'LIST'} active={this.state.listActive}
+                            <CustomButton color={'#FFFFFF'} label={lang[language].List} active={this.state.mapActive}
                                 onClick={this.listViewActive} />
                         </div>
                         <div style={margin}>
-                            <CustomButton color={'#F2F2F2'} label={'MAP'} active={this.state.mapActive}
+                            <CustomButton color={'#F2F2F2'} label={lang[language].Map} active={this.state.listActive}
                                 onClick={this.mapViewActive} />
                         </div>
                     </div>
@@ -230,7 +231,7 @@ class VpnList extends Component {
                                     onChange={this.handleNetworkChange}
                                 >
                                     <FormControlLabel value="public" control={<Radio style={radioStyle} />} label="Public" />
-                                    <FormControlLabel value="private" control={<Radio style={radioStyle} disabled={isTM}/>}
+                                    <FormControlLabel value="private" control={<Radio style={radioStyle} disabled={isTM} />}
                                         label="Private" />
                                 </RadioGroup>
                             </FormControl>
@@ -247,7 +248,7 @@ class VpnList extends Component {
                             onChange={this.handleRadioChange}
                         >
                             <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label="OpenVPN" />
-                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM}/>} label="SOCKS5" />
+                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label="SOCKS5" />
                         </RadioGroup>
                     </FormControl>
 
@@ -273,7 +274,7 @@ VpnList.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage,
+        language: state.setLanguage,
         isTest: state.setTestNet,
         listView: state.setListViewType,
         vpnType: state.vpnType,

@@ -2,7 +2,7 @@
 module.exports = {
     B_URL: 'https://api.sentinelgroup.io',
     BOOT_URL: 'https://bootnode-gateway.sentinelgroup.io',
-    TMain_URL:'http://178.32.169.207:8000',
+    TMain_URL: 'http://185.222.24.72:8000',
     S_URL: 'https://api-rinkeby.etherscan.io/api?module=account&action=tokentx&contractaddress=',
     SM_URL: '&address=',
     SE_URL: '&page=1&offset=100&sort=asc&apikey=YourApiKeyToken',
@@ -44,22 +44,22 @@ module.exports = {
             'icon': 'swapIcon'
         },
         {
-            'name':'TENDERMINT',
-            'value':'tmint',
-            'icon':'tmintIcon'
+            'name': 'TENDERMINT',
+            'value': 'tmint',
+            'icon': 'tmintIcon'
         }
     ],
-    disabledItemsTest:[
+    disabledItemsTest: [
         'swixer',
         'swaps',
         'tmint'
     ],
-    disabledItemsMain:[
+    disabledItemsMain: [
         'vpnHistory',
         'vpnList',
         'tmint'
     ],
-    disabledItemsTM:[
+    disabledItemsTM: [
         'history',
         'send',
         'receive',

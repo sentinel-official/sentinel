@@ -34,9 +34,11 @@ class TenderMint extends Component {
                             this.props.setTMComponent('dashboard');
                         }
                         else {
-                            this.props.setTMAccount(res.payload[res.payload.length - 1]);
-                            this.props.setTMComponent('dashboard');
+                            this.props.setTMComponent('home');
                         }
+                    }
+                    else {
+                        this.props.setTMComponent('home');
                     }
                 });
             }

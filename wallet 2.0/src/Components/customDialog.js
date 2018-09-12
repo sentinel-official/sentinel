@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DialogContent, DialogContentText, DialogActions, Snackbar } from '@material-ui/core';
+import OpenvpnAlert from './OpenvpnAlert';
 import {
     withStyles, Button, List, ListItem, ListItemText,
     DialogTitle, Dialog,
@@ -17,6 +18,7 @@ import { setVpnStatus, payVPNTM, setActiveVpn } from '../Actions/vpnlist.action'
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
+import lang from '../Constants/language';
 import { calculateUsage, socksVpnUsage } from '../Actions/calculateUsage';
 
 const electron = window.require('electron');
@@ -94,7 +96,7 @@ class SimpleDialog extends React.Component {
     };
 
     render() {
-        const { classes, ...other } = this.props;
+        const { classes, language, ...other } = this.props;
 
         return (
             <Dialog onClose={this.handleClose}
@@ -106,32 +108,32 @@ class SimpleDialog extends React.Component {
                     <List>
                         <ListItem>
                             <ListItemText>
-                                <label style={styles.dialogLabel}>City:&nbsp;</label>
+                                <label style={styles.dialogLabel}>{`${lang[language].City}:`}&nbsp;</label>
                                 <span style={styles.dialogValue}>{this.props.data.city}</span>
                             </ListItemText>
                         </ListItem>
 
                         <ListItem>
                             <ListItemText>
-                                <label style={styles.dialogLabel}>Country:&nbsp;</label>
+                                <label style={styles.dialogLabel}>{`${lang[language].Country}:`}&nbsp;</label>
                                 <span style={styles.dialogValue}>{this.props.data.country}</span>
                             </ListItemText>
                         </ListItem>
 
                         <ListItem>
                             {/*<ListItemText primary={`Bandwidth: ${this.props.data.speed}`} />*/}
-                            <label style={styles.dialogLabel}>Bandwidth:&nbsp;</label>
+                            <label style={styles.dialogLabel}>{`${lang[language].Bandwidth}:`}&nbsp;</label>
                             <span style={styles.dialogValue}>{(this.props.data.speed / (1024 * 1024)).toFixed(2)}</span>
                         </ListItem>
 
                         <ListItem>
                             <ListItemText>
-                                <label style={styles.dialogLabel}>Price:&nbsp;</label><span
+                                <label style={styles.dialogLabel}>{`${lang[language].Cost}:`}&nbsp;</label><span
                                     style={styles.dialogValue}>{this.props.data.price_per_GB}</span>
                             </ListItemText>
                         </ListItem>
                         <ListItem>
-                            <ListItemText> <label style={styles.dialogLabel}>Latency:&nbsp;</label>
+                            <ListItemText> <label style={styles.dialogLabel}>{`${lang[language].Latency}:`}&nbsp;</label>
                                 <span style={styles.dialogValue}> {this.props.data.latency}</span>
                             </ListItemText>
                         </ListItem>
@@ -142,7 +144,7 @@ class SimpleDialog extends React.Component {
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
-                                {!this.props.isLoading && this.props.success ? 'Connected' : 'Connect'}
+                                {!this.props.isLoading && this.props.success ? 'Connected' : lang[language].Connect}
                             </Button>
                         </div>
                     </List>
@@ -238,7 +240,8 @@ class SimpleDialogDemo extends React.Component {
         isLoading: false,
         session: false,
         snackOpen: false,
-        snackMessage: ''
+        snackMessage: '',
+        openvpnAlert: false
     };
 
     handleClickOpen = () => {
@@ -255,6 +258,10 @@ class SimpleDialogDemo extends React.Component {
         this.setState({ isPending: false })
     };
 
+    handleDialogClose = () => {
+        this.setState({ openvpnAlert: false });
+    }
+
     handleListItemClick = (vpn_addr) => {
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
@@ -266,7 +273,7 @@ class SimpleDialogDemo extends React.Component {
                 connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (err, platformErr, res) => {
                     console.log("VPn..res..", err, platformErr, res);
                     if (platformErr) {
-                        console.log("Platform err...", platformErr)
+                        this.setState({ open: false, isLoading: false, openvpnAlert: true })
                     }
                     else if (err) {
                         if ('account_addr' in err)
@@ -367,6 +374,7 @@ class SimpleDialogDemo extends React.Component {
                         isLoading={this.state.isLoading}
                         success={this.props.vpnStatus}
                         execIT={this.execIT}
+                        language={this.props.language}
                         vpnStatus={this.props.vpnStatus}
                     />
                     :
@@ -386,6 +394,10 @@ class SimpleDialogDemo extends React.Component {
                     onClose={this.handleSnackClose}
                     message={this.state.snackMessage}
                 />
+                <OpenvpnAlert
+                    open={this.state.openvpnAlert}
+                    onClose={this.handleDialogClose}
+                />
             </div>
         );
     }
@@ -399,9 +411,9 @@ function mapDispatchToProps(dispatch) {
     }, dispatch)
 }
 
-function mapStateToProps({ connecVPNReducer, getAccount, vpnType, setVpnStatus, getCurrentVpn, setTendermint, setTMAccount }) {
+function mapStateToProps({ connecVPNReducer, getAccount, vpnType, setLanguage, setVpnStatus, getCurrentVpn, setTendermint, setTMAccount }) {
     return {
-        connecVPNReducer, getAccount, vpnType, data: getCurrentVpn,
+        connecVPNReducer, getAccount, vpnType, data: getCurrentVpn, language: setLanguage,
         vpnStatus: setVpnStatus, isTm: setTendermint, account: setTMAccount
     }
 }

@@ -37,9 +37,7 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
     if (unit === 'ETH') {
         try {
             gasCost = web3.eth.estimateGas({ to: to_addr, value: amount })
-            console.log('gas cost',gasCost)
         } catch (err) {
-            console.log('gas cost err',err)
             gasCost = 21000
         }
 
@@ -49,10 +47,8 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
 
         try {
             gasCost = contract.transfer.estimateGas(to_addr, amount, { from: from_addr })
-            console.log('gas cost',gasCost)
         } catch (err) {
             gasCost = 38119
-            console.log('gas cost err',err)
 
         }
 
@@ -63,16 +59,11 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
 export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     try {
         // amount = amount * Math.pow(10, 8);
-        console.log('in token trans', from_addr, to_addr);
-
         setWeb3();
         setContract();
 
         var SENTINEL_ADDRESS = getSENTContractAddress();
-        console.log('to addr, amount', to_addr, amount)
         var data = contract.transfer.getData(to_addr, amount);
-
-        console.log('in tokentransact', data)
 
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
@@ -82,7 +73,6 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
             value: web3.toHex(0 * 1e18),
             data: data
         }
-        console.log('in tokentransact', txParams);
 
         var tx = new EthereumTx(txParams);
         tx.sign(privateKey);
@@ -102,7 +92,6 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
 export function ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     try {
         setWeb3();
-        console.log('in ethTransaction',amount)
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
             gasPrice: gas_price,

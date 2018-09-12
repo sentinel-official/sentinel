@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core';
 import DisconnectIcon from '@material-ui/icons/HighlightOff';
 import { setVpnStatus } from '../Actions/vpnlist.action';
-import { getSignHash, addSignature } from '../Actions/tmvpn.action';
+import { getSignHash, addSignature, deleteTmAccount } from '../Actions/tmvpn.action';
 import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { footerStyles } from '../Assets/footer.styles';
 import { Grid, Row, Col } from 'react-flexbox-grid';
@@ -56,7 +56,8 @@ class Footer extends Component {
 
     sendSignature = (downData, isFinal, counter) => {
         let amount = (this.props.activeVpn.price_per_GB * downData) / 1024;
-        this.props.getSignHash(Math.round(amount), counter, isFinal).then(res => {
+        console.log("Dat..", this.props.activeVpn.price_per_GB, downData, amount);
+        this.props.getSignHash(amount * (10 ** 8), counter, isFinal).then(res => {
             if (res.error) {
                 console.log("SignError...", res.error);
             }
@@ -68,7 +69,7 @@ class Footer extends Component {
                     signature: {
                         hash: res.payload,
                         index: counter,
-                        amount: Math.round(amount).toString() + 'sut',
+                        amount: (amount * (10 ** 8)).toString() + 'sut',
                         final: isFinal
                     }
                 }
@@ -97,8 +98,9 @@ class Footer extends Component {
                     this.setState({ openSnack: true, snackMessage: res });
                 }
                 else {
-                    this.setState({ openSnack: true, snackMessage: 'Disconnected VPN' });
+                    this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN });
                     this.props.setVpnStatus(false);
+                    deleteTmAccount();
                 }
             })
         }
@@ -109,7 +111,7 @@ class Footer extends Component {
                         this.setState({ openSnack: true, snackMessage: res });
                     }
                     else {
-                        this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
+                        this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, rateDialog: true });
                         this.props.setVpnStatus(false);
                     }
                 })
@@ -119,7 +121,7 @@ class Footer extends Component {
                         this.setState({ openSnack: true, snackMessage: res });
                     }
                     else {
-                        this.setState({ openSnack: true, snackMessage: 'Disconnected VPN', rateDialog: true });
+                        this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, rateDialog: true });
                         this.props.setVpnStatus(false);
                     }
                 })
@@ -128,7 +130,7 @@ class Footer extends Component {
     }
 
     render() {
-        let language = this.props.lang;
+        let language = this.props.language;
         let { vpnStatus, currentUsage, isTm, classes } = this.props;
         let counter = this.state.counter;
         downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
@@ -147,7 +149,7 @@ class Footer extends Component {
                         {
                             vpnStatus ?
                                 <Col xs={1}>
-                                    <Tooltip title="Disconnect">
+                                    <Tooltip title={lang[language].Disconnect}>
                                         <IconButton onClick={() => { this.disconnect() }}>
                                             <DisconnectIcon />
                                         </IconButton>
@@ -219,7 +221,7 @@ Footer.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage,
+        language: state.setLanguage,
         isTest: state.setTestNet,
         currentUsage: state.VPNUsage,
         vpnStatus: state.setVpnStatus,

@@ -16,11 +16,15 @@ const createAccountStyle = {
         fontWeight: 'bold',
         color: '#ec801d',
         fontSize: 16,
-        marginTop:'2%'
+        marginTop: '2%'
     },
     detailsText: {
         fontSize: 14,
         wordBreak: 'break-all'
+    },
+    buttonStyle: {
+        margin: 20,
+        outline: 'none'
     }
 }
 

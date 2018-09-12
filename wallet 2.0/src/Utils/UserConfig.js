@@ -27,7 +27,6 @@ export function getConfig(cb) {
             cb(err, null);
         }
         else {
-            console.log("Data..",data);
             cb(null, data);
         }
     });

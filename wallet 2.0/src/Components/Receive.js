@@ -11,7 +11,7 @@ import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { receiveStyles } from './../Assets/receive.styles';
-var lang = require('./../Constants/language');
+import lang from '../Constants/language';
 
 class Receive extends Component {
 
@@ -97,7 +97,7 @@ class Receive extends Component {
                                         />
                                     </CopyToClipboard></label>
                                 <ReactTooltip id="copyImage" place="bottom">
-                                    <span>Copy</span>
+                                    <span>{lang[language].Copy}</span>
                                 </ReactTooltip>
                             </div>
                         </Col>

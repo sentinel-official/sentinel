@@ -19,6 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import Flag from 'react-world-flags';
 import SimpleDialogDemo from "./customDialog";
+import lang from '../Constants/language';
 import { compose } from 'recompose';
 import { setCurrentVpn } from '../Actions/vpnlist.action';
 
@@ -48,18 +49,6 @@ function getSorting(order, orderBy) {
     return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
-const columnData = [
-    // { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
-    { id: 'flag', numeric: false, disablePadding: false, label: 'Flag' },
-    { id: 'city', numeric: false, disablePadding: false, label: 'Location' },
-    { id: 'bandwidth', numeric: true, disablePadding: false, label: 'Bandwidth (mbps)' },
-    { id: 'latency', numeric: true, disablePadding: false, label: 'Latency (ms)' },
-    { id: 'enc_method', numeric: false, disablePadding: false, label: 'Algorithm' },
-    { id: 'version', numeric: false, disablePadding: false, label: 'Version' },
-    { id: 'rating', numeric: true, disablePadding: false, label: 'Rating' },
-    { id: 'price_per_GB', numeric: true, disablePadding: false, label: 'Price (SENTs/GB)' },
-];
-
 
 class EnhancedTableHead extends React.Component {
     createSortHandler = property => event => {
@@ -67,7 +56,19 @@ class EnhancedTableHead extends React.Component {
     };
 
     render() {
-        const { order, orderBy, classes } = this.props;
+        const { order, orderBy, classes, language } = this.props;
+
+        let columnData = [
+            // { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
+            { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
+            { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
+            { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth} (mbps)` },
+            { id: 'latency', numeric: true, disablePadding: false, label: `${lang[language].Latency} (ms)` },
+            { id: 'enc_method', numeric: false, disablePadding: false, label: 'Algorithm' },
+            { id: 'version', numeric: false, disablePadding: false, label: 'Version' },
+            { id: 'rating', numeric: true, disablePadding: false, label: 'Rating' },
+            { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
+        ];
 
         return (
             <TableHead>
@@ -114,7 +115,7 @@ const alignStyle = theme => ({
     },
     head: {
         padding: 7,
-        textAlign:'center'
+        textAlign: 'center'
     }
 });
 
@@ -202,7 +203,7 @@ const styles = theme => ({
     },
     head: {
         padding: 5,
-        textAlign:'center'
+        textAlign: 'center'
     }
 });
 
@@ -277,6 +278,7 @@ class EnhancedTable extends React.Component {
                             orderBy={orderBy}
                             // onSelectAllClick={this.handleSelectAllClick}
                             onRequestSort={this.handleRequestSort}
+                            language={this.props.language}
                             rowCount={data.length}
                         />
                         <TableBody>
@@ -342,7 +344,7 @@ EnhancedTable.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage,
+        language: state.setLanguage,
         isTest: state.setTestNet
     }
 }

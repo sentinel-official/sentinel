@@ -59,11 +59,10 @@ class Header extends Component {
     };
 
     render() {
-        let self = this;
         if (!this.state.isGetBalanceCalled) {
-            setInterval(function () {
-                self.props.getETHBalance(self.props.walletAddress, self.props.isTest);
-                self.props.getSentBalance(self.props.walletAddress, self.props.isTest);
+            setInterval(() => {
+                this.props.getETHBalance(this.props.walletAddress, this.props.isTest);
+                this.props.getSentBalance(this.props.walletAddress, this.props.isTest);
             }, 5000);
 
             this.setState({ isGetBalanceCalled: true });
@@ -160,6 +159,7 @@ class Header extends Component {
                                     checked={this.props.isTendermint}
                                     onChange={this.tendermintChange()}
                                     color="primary"
+                                    disabled={this.props.vpnStatus}
                                 />
                             </div>
                         </Col>
@@ -184,7 +184,8 @@ function mapStateToProps(state) {
         ethBalance: state.getETHBalance,
         sentBalance: state.getSentBalance,
         currentTab: state.setCurrentTab,
-        isTendermint: state.setTendermint
+        isTendermint: state.setTendermint,
+        vpnStatus: state.setVpnStatus
     }
 }
 

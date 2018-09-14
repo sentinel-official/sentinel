@@ -12,6 +12,7 @@ import { readFile } from './Utils/Keystore';
 import { KEYSTORE_FILE } from './Utils/Keystore';
 import Dashboard from './Components/Dashboard';
 import { runGaiacli } from './Utils/Gaiacli';
+import { B_URL } from './../Constants/constants';
 const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
@@ -25,6 +26,8 @@ class App extends Component {
     }
     componentWillMount = () => {
         let that = this;
+        localStorage.setItem('isTM', false);
+        localStorage.setItem('B_URL', B_URL);
         document.getElementById('home').style.display = 'none';
         runGaiacli();
         // Read keystore file

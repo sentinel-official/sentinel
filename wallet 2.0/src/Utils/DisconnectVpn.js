@@ -72,7 +72,6 @@ export async function clearConfig() {
         let data = confdata ? JSON.parse(confdata) : {};
         newData.isConnected = null;
         newData.connectedAddr = null;
-        newData.tmUserName = 'tmUserName' in data? data.tmUserName:"";
         let keystore = JSON.stringify(newData);
         fs.writeFile(CONFIG_FILE, keystore, function (err) {
         });

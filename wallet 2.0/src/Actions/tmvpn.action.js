@@ -47,9 +47,11 @@ export async function getSessionInfo(hash) {
 }
 
 export async function getSignHash(amount, counter, isfinal) {
+    let sessionBuffer = new Buffer(localStorage.getItem('SESSION_NAME'), 'base64');
+    let session_name = sessionBuffer.toString();
     let data = {
         amount: amount.toString() + 'sut',
-        session_id: localStorage.getItem('SESSION_NAME'),
+        session_id: session_name,
         counter: counter,
         isfinal: isfinal,
         name: localStorage.getItem('SIGNAME'),

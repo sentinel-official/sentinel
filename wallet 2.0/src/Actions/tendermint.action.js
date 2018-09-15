@@ -1,6 +1,6 @@
 import * as types from './../Constants/action.names';
 import { TM_URL } from '../Constants/constants';
-import { getConfig } from './../Utils/UserConfig';
+import { getTMConfig } from './../Utils/UserConfig';
 import axios from 'axios';
 
 export async function getKeys() {
@@ -66,7 +66,7 @@ export async function sendAmount(data, toAddr) {
 }
 
 export function getTendermintAccount(cb) {
-    getConfig((err, data) => {
+    getTMConfig((err, data) => {
         let configData = JSON.parse(data);
         if ('tmUserName' in configData)
             cb(configData.tmUserName)
@@ -75,7 +75,7 @@ export function getTendermintAccount(cb) {
     })
 }
 
-export function setTMAccount(data){
+export function setTMAccount(data) {
     return {
         type: types.SET_TM_ACCOUNT,
         payload: data

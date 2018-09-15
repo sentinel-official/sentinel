@@ -21,66 +21,102 @@ let CONNECTED = false;
 let count = 0;
 
 export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
+    checkVPNDependencies(os, (otherErr, winErr) => {
+        if (otherErr) cb(otherErr, false, null);
+        else if (winErr) cb(null, winErr, null);
+        else {
+            if (localStorage.getItem('isTM') === 'true') {
+                tmConnect(account_addr, vpn_addr, data, (err, res) => {
+                    cb(err, false, res)
+                });
+            }
+            else {
+                testConnect(account_addr, vpn_addr, (err, res) => {
+                    cb(err, false, res)
+                });
+            }
+        }
+    })
+    // switch (os) {
+    //     case 'win32':
+    //         checkOpenvpn((error) => {
+    //             if (error) cb(null, error, null);
+    //             else {
+
+    //             }
+    //         })
+    //         break;
+
+    //     case 'darwin':
+    //         checkMacDependencies((err) => {
+    //             if (err) cb(err, false, null);
+    //             else {
+    //                 if (localStorage.getItem('isTM') === 'true') {
+    //                     tmConnect(account_addr, vpn_addr, data, (err, res) => {
+    //                         cb(err, false, res)
+    //                     });
+    //                 }
+    //                 else {
+    //                     testConnect(account_addr, vpn_addr, (err, res) => {
+    //                         cb(err, false, res)
+    //                     });
+    //                 }
+    //             }
+    //         })
+    //     case 'linux': {
+    //         checkDependencies(['openvpn'], (e, o, se) => {
+    //             if (o) {
+    //                 if (localStorage.getItem('isTM') === 'true') {
+    //                     tmConnect(account_addr, vpn_addr, data, (err, res) => {
+    //                         cb(err, false, res)
+    //                     });
+    //                 }
+    //                 else {
+    //                     testConnect(account_addr, vpn_addr, (err, res) => {
+    //                         cb(err, false, res)
+    //                     });
+    //                 }
+    //             } else {
+    //                 console.log("dependecy error")
+    //             }
+    //         });
+    //         break;
+    //     }
+    //     default: {
+    //         break;
+    //     }
+    // }
+}
+
+export async function checkVPNDependencies(os, cb) {
     switch (os) {
-        case 'win32':
+        case 'win32': {
             checkOpenvpn((error) => {
-                if (error) cb(null, error, null);
-                else {
-                    if (localStorage.getItem('isTM') === 'true') {
-                        tmConnect(account_addr, vpn_addr, data, (err, res) => {
-                            cb(err, false, res)
-                        });
-                    }
-                    else {
-                        testConnect(account_addr, vpn_addr, (err, res) => {
-                            cb(err, false, res)
-                        });
-                    }
-                }
+                if (error) cb(null, error);
+                else cb(null, null);
             })
             break;
-
-        case 'darwin':
+        }
+        case 'darwin': {
             checkMacDependencies((err) => {
-                if (err) cb(err, false, null);
-                else {
-                    if (localStorage.getItem('isTM') === 'true') {
-                        tmConnect(account_addr, vpn_addr, data, (err, res) => {
-                            cb(err, false, res)
-                        });
-                    }
-                    else {
-                        testConnect(account_addr, vpn_addr, (err, res) => {
-                            cb(err, false, res)
-                        });
-                    }
-                }
+                if (err) cb(err, null);
+                else cb(null, null);
             })
+            break;
+        }
         case 'linux': {
             checkDependencies(['openvpn'], (e, o, se) => {
-                if (o) {
-                    if (localStorage.getItem('isTM') === 'true') {
-                        tmConnect(account_addr, vpn_addr, data, (err, res) => {
-                            cb(err, false, res)
-                        });
-                    }
-                    else {
-                        testConnect(account_addr, vpn_addr, (err, res) => {
-                            cb(err, false, res)
-                        });
-                    }
-                } else {
-                    console.log("dependecy error")
-                }
-            });
+                if (o) cb(null, null);
+                else cb({ message: 'Openvpn is not installed.' }, null);
+            })
             break;
         }
         default: {
+            cb({ message: "Can't detect current os platform." }, null)
             break;
         }
     }
 }
-
 
 export async function checkOpenvpn(cb) {
     exec('cd c:\\Program Files && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (err, stdout, stderr) {
@@ -212,7 +248,6 @@ export function writeConf(type, cb) {
         data.session_name = localStorage.getItem('SESSION_NAME');
         data.vpn_type = type;
         let config = JSON.stringify(data);
-        console.log("Write...", config);
         fs.writeFile(CONFIG_FILE, config, (err) => {
             cb(null)
         });

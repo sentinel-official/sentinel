@@ -26,17 +26,18 @@ export function getAccount(cb) {
 
 export function getFreeAmount(account_addr) {
     try {
+        let BURL = localStorage.getItem('B_URL');
         let request = axios({
-            url: FREE_AMOUNT_API,
+            url: BURL + FREE_AMOUNT_API,
             method: 'POST',
             data: {
                 account_addr: account_addr
             }
         })
-        
+
         return {
             type: GET_FREE_AMOUNT,
-            payload:  request
+            payload: request
         }
     } catch (Err) {
         sendError(Err);

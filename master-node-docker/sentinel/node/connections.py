@@ -37,7 +37,7 @@ class UpdateConnections(object):
                     connection['server_usage'] = connection['usage']
                     connection.pop('usage')
 
-                if 'client_addr' in connection and len(connection['client_addr']) == 16:  # Fixes for SLC
+                if 'client_addr' in connection and len(connection['client_addr']) < 35:  # Fixes for SLC
                     connection['device_id'] = connection['client_addr']
                     connection['client_addr'] = REFERRAL_DUMMY
 

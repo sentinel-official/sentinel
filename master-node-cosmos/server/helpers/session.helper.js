@@ -17,8 +17,9 @@ let getPaymentDetails = (hash, cb) => {
     if (error) cb(error);
     else {
       let data = Buffer.from(result.result.data, 'base64');
-      let sessionId = result.result.tags[1].value;
+      let sessionId = Buffer.from(result.result.tags[1].value, 'base64');
       data = JSON.parse(data.toString()).value;
+      sessionId = sessionId.toString();
       result = {
         from: data.From,
         to: data.Vpnaddr,

@@ -5,7 +5,6 @@ from ethereum.transactions import Transaction
 from .eth import eth_manager
 from ..config import MAIN_TOKENS
 from ..config import RINKEBY_TOKENS
-from ..helpers import redis_manager
 
 
 class ERC20Manager(object):
@@ -33,6 +32,7 @@ class ERC20Manager(object):
 
     def transfer_amount(self, from_addr, to_addr, amount, private_key):
         try:
+            from ..helpers import redis_manager
             nonce = redis_manager.get_nonce(from_addr, self.net.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,

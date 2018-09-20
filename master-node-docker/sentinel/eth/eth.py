@@ -8,8 +8,6 @@ from ethereum.tools import keys
 from ethereum.transactions import Transaction
 from web3 import HTTPProvider, IPCProvider, Web3
 
-from ..helpers import redis_manager
-
 
 class ETHManager(object):
     def __init__(self, provider=None, data_dir=None, rpc_url=None, chain=None):
@@ -90,6 +88,7 @@ class ETHManager(object):
 
     def transfer_amount(self, from_addr, to_addr, amount, private_key):
         try:
+            from ..helpers import redis_manager
             nonce = redis_manager.get_nonce(from_addr, self.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.web3.eth.gasPrice,

@@ -6,7 +6,6 @@ from .eth import eth_manager
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
 from ..config import VPN_SERVICE
-from ..helpers import redis_manager
 
 
 class VpnServiceManager(object):
@@ -17,6 +16,7 @@ class VpnServiceManager(object):
 
     def pay_vpn_session(self, account_addr, amount, session_id):
         try:
+            from ..helpers import redis_manager
             nonce = redis_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,
@@ -39,6 +39,7 @@ class VpnServiceManager(object):
 
     def set_initial_payment(self, account_addr, is_paid=True):
         try:
+            from ..helpers import redis_manager
             nonce = redis_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,
@@ -129,6 +130,7 @@ class VpnServiceManager(object):
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id):
         try:
+            from ..helpers import redis_manager
             nonce = redis_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,

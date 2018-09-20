@@ -8,9 +8,6 @@ from ethereum.tools import keys
 from ethereum.transactions import Transaction
 from web3 import HTTPProvider, IPCProvider, Web3
 
-from ..helpers import get_nonce
-from ..helpers import set_nonce
-
 
 class ETHManager(object):
     def __init__(self, provider=None, data_dir=None, rpc_url=None, chain=None):
@@ -89,26 +86,25 @@ class ETHManager(object):
         return None, tx_hash
 
     def transfer_amount(self, from_addr, to_addr, amount, private_key):
-        while True:
-            try:
-                nonce = get_nonce(from_addr, self.chain)
-                tx = Transaction(nonce=nonce,
-                                 gasprice=self.web3.eth.gasPrice,
-                                 startgas=1000000,
-                                 to=to_addr,
-                                 value=amount,
-                                 data='')
-                tx.sign(private_key)
-                raw_tx = self.web3.toHex(rlp.encode(tx))
-                tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
-                set_nonce(from_addr, self.chain, nonce + 1)
-                break
-            except Exception as err:
-                set_nonce(from_addr, self.chain)
-                return {
-                           'code': 107,
-                           'error': str(err)
-                       }, None
+        from ..helpers import nonce_manager
+        try:
+            nonce = nonce_manager.get_nonce(from_addr, self.chain)
+            tx = Transaction(nonce=nonce,
+                             gasprice=self.web3.eth.gasPrice,
+                             startgas=1000000,
+                             to=to_addr,
+                             value=amount,
+                             data='')
+            tx.sign(private_key)
+            raw_tx = self.web3.toHex(rlp.encode(tx))
+            tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
+            nonce_manager.set_nonce(from_addr, self.chain, nonce + 1)
+        except Exception as err:
+            nonce_manager.set_nonce(from_addr, self.chain)
+            return {
+                       'code': 107,
+                       'error': str(err)
+                   }, None
         return None, tx_hash
 
     def get_tx_receipt(self, tx_hash):

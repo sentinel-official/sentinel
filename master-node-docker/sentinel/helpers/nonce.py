@@ -1,29 +1,34 @@
 # coding=utf-8
 
-import requests
+from threading import Lock
+
+from ..helpers import eth_helper
 
 
-def get_nonce(account_addr, net):
-    try:
-        url = "http://127.0.0.1:3000/nonce?account_addr={}&net={}".format(account_addr, net)
-        resp = requests.get(url)
-        resp = resp.json()
-        return resp["nonce"]
-    except Exception as err:
-        return None
+class NonceManager(object):
+    def __init__(self):
+        self.nonces = {}
+        self.locks = {}
 
-
-def set_nonce(account_addr, net, nonce=None):
-    try:
-        url = "http://127.0.0.1:3000/nonce"
-        body = {
-            "account_addr": account_addr,
-            "net": net
-        }
+    def set_nonce(self, account_addr, net, nonce=None):
+        key = account_addr + '@' + net
         if nonce:
-            body["nonce"] = nonce
-        resp = requests.put(url, json=body)
-        resp = resp.json()
-        return resp["nonce"]
-    except Exception as err:
-        return None
+            self.nonces[key] = nonce
+        if key not in self.locks:
+            self.locks[key] = Lock()
+        self.locks[key].release()
+
+    def get_nonce(self, account_addr, net):
+        key = account_addr + '@' + net
+        if key not in self.locks:
+            self.locks[key] = Lock()
+        self.locks[key].acquire()
+        if key not in self.nonces:
+            nonce = eth_helper.get_tx_count(account_addr, net)
+        else:
+            nonce = self.nonces[key]
+
+        return nonce
+
+
+nonce_manager = NonceManager()

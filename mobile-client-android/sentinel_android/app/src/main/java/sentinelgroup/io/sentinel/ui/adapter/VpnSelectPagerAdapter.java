@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.fragment.VpnListFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnMapFragment;
@@ -24,16 +27,28 @@ public class VpnSelectPagerAdapter extends FragmentPagerAdapter {
         mContext = iContext;
     }
 
+    private Map<Integer, Fragment> mFragmentMap = new HashMap<>();
+
     @Override
     public Fragment getItem(int position) {
         Fragment aFragment = null;
         switch (position) {
             case 0:
-                aFragment = VpnListFragment.newInstance();
-                break;
+                if (mFragmentMap.containsKey(position)) {
+                    return mFragmentMap.get(position);
+                } else {
+                    aFragment = VpnListFragment.newInstance();
+                    mFragmentMap.put(position, aFragment);
+                    return aFragment;
+                }
             case 1:
-                aFragment = VpnMapFragment.newInstance("", "");
-                break;
+                if (mFragmentMap.containsKey(position)) {
+                    return mFragmentMap.get(position);
+                } else {
+                    aFragment = VpnMapFragment.newInstance("", "");
+                    mFragmentMap.put(position, aFragment);
+                    return aFragment;
+                }
         }
         return aFragment;
     }

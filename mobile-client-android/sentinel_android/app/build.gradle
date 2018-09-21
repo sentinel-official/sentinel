@@ -5,8 +5,8 @@ android {
         applicationId "sentinelgroup.io.sentinel"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 4
-        versionName '0.1.7'
+        versionCode 5
+        versionName '0.1.8'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // Enable Vector drawable
         vectorDrawables.useSupportLibrary = true

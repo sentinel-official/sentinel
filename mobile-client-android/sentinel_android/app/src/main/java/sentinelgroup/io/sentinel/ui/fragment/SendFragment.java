@@ -52,9 +52,10 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
     private static final String ARG_IS_INIT = "is_init";
     private static final String ARG_AMOUNT = "arg_amount";
     private static final String ARG_SESSION_ID = "session_id";
+    private static final String ARG_TO_ADDRESS = "to_address";
 
     private boolean mIsVpnPay, mIsInit;
-    private String mAmount, mSessionId;
+    private String mAmount, mSessionId, mToAddress;
     private int mNormal, mFast, mFastest;
     private boolean mTransactionSuccess = false;
 
@@ -86,13 +87,14 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
      * @param iSessionId
      * @return A new instance of fragment SendFragment.
      */
-    public static SendFragment newInstance(boolean isVpnPay, boolean isInit, String iAmount, String iSessionId) {
+    public static SendFragment newInstance(boolean isVpnPay, boolean isInit, String iAmount, String iSessionId, String iToAddress) {
         SendFragment aFragment = new SendFragment();
         Bundle args = new Bundle();
         args.putBoolean(ARG_IS_VPN_PAY, isVpnPay);
         args.putBoolean(ARG_IS_INIT, isInit);
         args.putString(ARG_AMOUNT, iAmount);
         args.putString(ARG_SESSION_ID, iSessionId);
+        args.putString(ARG_TO_ADDRESS, iToAddress);
         aFragment.setArguments(args);
         return aFragment;
     }
@@ -105,6 +107,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
             mIsInit = getArguments().getBoolean(ARG_IS_INIT);
             mAmount = getArguments().getString(ARG_AMOUNT);
             mSessionId = getArguments().getString(ARG_SESSION_ID);
+            mToAddress = getArguments().getString(ARG_TO_ADDRESS);
         }
     }
 
@@ -232,7 +235,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
             // disable touch listener
             mCsTokens.setOnTouchListener((v, event) -> true);
             // set to address
-            mTetToAddress.setText(mViewModel.getSentinelAddress());
+            mTetToAddress.setText(mToAddress);
             mTetToAddress.setEnabled(false);
             // set amount
             mTetAmount.setText(mAmount);

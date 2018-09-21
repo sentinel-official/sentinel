@@ -224,8 +224,6 @@
     <string name="restoring_accunt">Restaurando cuenta. Por favor, espera…</string>
     <string name="verifying_credentials">Verificando credenciales. Por favor, espera…</string>
     <string name="resetting_pin">Restableciendo el PIN de la app. Por favor, espera…</string>
-    <string name="gas_limit_sents">42000</string>
-    <string name="gas_limit_eth">21000</string>
     <string name="sending">Enviando…</string>
     <string name="signing_transaction">Validando &amp; y firmando la transacción. Por favor, espera…</string>
     <string name="init_vpn_pay">100</string>

@@ -243,8 +243,8 @@
     <string name="restoring_accunt">Restoring account. Please wait…</string>
     <string name="verifying_credentials">Verifying credentials. Please wait…</string>
     <string name="resetting_pin">Resetting app PIN. Please wait…</string>
-    <string name="gas_limit_sents">42000</string>
-    <string name="gas_limit_eth">21000</string>
+    <string name="gas_limit_sents" translatable="false">1000000</string>
+    <string name="gas_limit_eth" translatable="false">21000</string>
     <string name="sending">Sending…</string>
     <string name="signing_transaction">Validating &amp; signing transaction. Please wait…</string>
     <string name="init_vpn_pay">100</string>
@@ -291,10 +291,10 @@
     <string name="receive_sent">Receive SENT</string>
     <string name="tx_details">Transaction Details</string>
     <string name="view_on_etherscan">View on Etherscan</string>
-    <string translatable="false" name="telegram_url">https://t.me/sentinel_co</string>
-    <string translatable="false" name="medium_url">https://medium.com/@Sentinel</string>
-    <string translatable="false" name="twitter_url">https://twitter.com/sentinel_co</string>
-    <string translatable="false" name="website_url">https://sentinel.co</string>
+    <string name="telegram_url" translatable="false">https://t.me/sentinel_co</string>
+    <string name="medium_url" translatable="false">https://medium.com/@Sentinel</string>
+    <string name="twitter_url" translatable="false">https://twitter.com/sentinel_co</string>
+    <string name="website_url" translatable="false">https://sentinel.co</string>
     <string name="link_coming_soon">This data will be added soon.</string>
     <string name="faq">FAQ</string>
     <string name="check_for_updates">Check for Updates</string>

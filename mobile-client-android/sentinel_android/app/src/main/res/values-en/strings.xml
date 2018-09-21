@@ -107,8 +107,6 @@
     <string name="restoring_accunt">Restoring account. Please wait…</string>
     <string name="verifying_credentials">Verifying credentials. Please wait…</string>
     <string name="resetting_pin">Resetting app PIN. Please wait…</string>
-    <string name="gas_limit_sents">42000</string>
-    <string name="gas_limit_eth">21000</string>
     <string name="sending">Sending…</string>
     <string name="signing_transaction">Validating &amp; signing transaction. Please wait…</string>
     <string name="init_vpn_pay">100</string>

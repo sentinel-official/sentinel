@@ -29,6 +29,7 @@ import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.VpnDetailListData;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
+import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnDetailListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -59,6 +60,8 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     private Button mBtnConnect;
 
     private VpnDetailListAdapter mAdapter;
+
+    private String mToAddress;
 
     public VpnDetailsFragment() {
         // Required empty public constructor
@@ -116,7 +119,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         mFvFlag.setCountryCode(Converter.getCountryCode(mVpnListData.getLocation().country));
         mTvLocation.setText(mVpnListData.getLocation().country);
         // setup recyclerview
-        mAdapter = new VpnDetailListAdapter(getContext(),  getListData());
+        mAdapter = new VpnDetailListAdapter(getContext(), getListData());
         mRvVpnDetailsList.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvVpnDetailsList.setAdapter(mAdapter);
         // Set listener
@@ -157,11 +160,12 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                     mViewModel.getVpnConfig(vpnCredentialsResource.data);
                 } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    if (vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR))
+                    if (vpnCredentialsResource.data != null && vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR)) {
+                        mToAddress = vpnCredentialsResource.data.accountAddr;
                         showDoubleActionDialog(AppConstants.TAG_INIT_PAY, AppConstants.VALUE_DEFAULT,
                                 getString(R.string.init_vpn_pay_pending_message),
                                 R.string.pay, AppConstants.VALUE_DEFAULT);
-                    else if (vpnCredentialsResource.message.equals(AppConstants.GENERIC_ERROR))
+                    } else if (vpnCredentialsResource.message.equals(AppConstants.GENERIC_ERROR))
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
                     else
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnCredentialsResource.message, AppConstants.VALUE_DEFAULT);
@@ -189,13 +193,28 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                     showProgressDialog(true, getString(R.string.saving_config));
                 } else if (vpnConfigSaveResource.data != null && vpnConfigSaveResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
-                    loadNextActivity(null);
+                    loadNextActivity(null, AppConstants.REQ_CODE_NULL);
                 } else if (vpnConfigSaveResource.message != null && vpnConfigSaveResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigSaveResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
+    }
+
+    private Intent getIntent() {
+        Intent aIntent = new Intent(getActivity(), SendActivity.class);
+        Bundle aBundle = new Bundle();
+        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
+        aBundle.putString(AppConstants.EXTRA_AMOUNT, getString(R.string.init_vpn_pay));
+        aBundle.putString(AppConstants.EXTRA_TO_ADDRESS, mToAddress);
+        aIntent.putExtras(aBundle);
+        return aIntent;
+    }
+
+    public void makeInitPayment() {
+        loadNextActivity(getIntent(), AppConstants.REQ_VPN_INIT_PAY);
     }
 
     // Interface interaction methods
@@ -229,9 +248,9 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    public void loadNextActivity(Intent iIntent) {
+    public void loadNextActivity(Intent iIntent, int iReqCode) {
         if (mListener != null) {
-            mListener.onLoadNextActivity(iIntent, AppConstants.REQ_VPN_INIT_PAY);
+            mListener.onLoadNextActivity(iIntent, iReqCode);
         }
     }
 

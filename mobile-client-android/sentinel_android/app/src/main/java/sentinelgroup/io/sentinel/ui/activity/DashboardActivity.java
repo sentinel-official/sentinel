@@ -647,13 +647,15 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     @Override
     public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (isPositiveButton) {
-            if (iTag.equals(AppConstants.TAG_INIT_PAY) && aFragment instanceof VpnSelectFragment)
-                ((VpnSelectFragment) aFragment).makeInitPayment();
-            else if (iTag.equals(AppConstants.TAG_LOGOUT))
-                logoutUser();
+        if (aFragment instanceof VpnSelectFragment)
+            ((VpnSelectFragment) aFragment).onActionButtonClicked(iTag, iDialog, isPositiveButton);
+        else {
+            if (isPositiveButton) {
+                if (iTag.equals(AppConstants.TAG_LOGOUT))
+                    logoutUser();
+            }
+            iDialog.dismiss();
         }
-        iDialog.dismiss();
     }
 
     @Override

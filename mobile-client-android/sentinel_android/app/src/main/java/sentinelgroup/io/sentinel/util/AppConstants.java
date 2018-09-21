@@ -43,6 +43,7 @@ public class AppConstants {
     public static final String EXTRA_IS_VPN_PAY = "is_vpn_pay";
     public static final String EXTRA_IS_INIT = "is_init";
     public static final String EXTRA_AMOUNT = "amount";
+    public static final String EXTRA_TO_ADDRESS = "toAddress";
     public static final String EXTRA_SESSION_ID = "session_id";
     public static final String EXTRA_VPN_LIST = "vpn_list";
     public static final String EXTRA_NOTIFICATION_ACTIVITY = "notification_activity";

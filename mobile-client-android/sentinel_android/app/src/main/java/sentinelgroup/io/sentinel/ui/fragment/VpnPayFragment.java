@@ -51,7 +51,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
     private SwipeRefreshLayout mSrReload;
     private Button mBtnMakePayment, mBtnReportPayment, mBtnViewVpn;
 
-    private String mValue, mSessionId;
+    private String mValue, mSessionId, mToAddress;
 
     public VpnPayFragment() {
         // Required empty public constructor
@@ -148,6 +148,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setupVpnUsageData(Session iSession) {
+        mToAddress = iSession.accountAddress;
         // Construct and set - Sent Due SpannableString
         String aSentDue = getString(R.string.sents, Converter.getFormattedTokenString(iSession.amount));
         String aSentDueSubString = aSentDue.substring(aSentDue.indexOf(' '));
@@ -194,6 +195,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
         aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
         aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, false);
         aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
+        aBundle.putString(AppConstants.EXTRA_TO_ADDRESS, mToAddress);
         if (iSessionId != null)
             aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
         aIntent.putExtras(aBundle);

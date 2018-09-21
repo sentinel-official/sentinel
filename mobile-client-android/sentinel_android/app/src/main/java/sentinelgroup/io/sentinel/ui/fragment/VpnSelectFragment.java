@@ -1,6 +1,7 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -164,20 +165,6 @@ public class VpnSelectFragment extends Fragment {
         }
     }
 
-    private Intent getIntent() {
-        Intent aIntent = new Intent(getActivity(), SendActivity.class);
-        Bundle aBundle = new Bundle();
-        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
-        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
-        aBundle.putString(AppConstants.EXTRA_AMOUNT, getString(R.string.init_vpn_pay));
-        aIntent.putExtras(aBundle);
-        return aIntent;
-    }
-
-    public void makeInitPayment() {
-        loadNextActivity(getIntent(), AppConstants.REQ_VPN_INIT_PAY);
-    }
-
     // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
@@ -212,6 +199,15 @@ public class VpnSelectFragment extends Fragment {
     public void loadNextActivity(Intent iIntent, int iReqCode) {
         if (mListener != null)
             mListener.onLoadNextActivity(iIntent, iReqCode);
+    }
+
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+        if (isPositiveButton && iTag.equals(AppConstants.TAG_INIT_PAY)) {
+            if (mAdapter.getItem(mVpVpnSelect.getCurrentItem()) instanceof VpnListFragment) {
+                ((VpnListFragment) mAdapter.getItem(mVpVpnSelect.getCurrentItem())).makeInitPayment();
+            }
+        }
+        iDialog.dismiss();
     }
 
     @Override

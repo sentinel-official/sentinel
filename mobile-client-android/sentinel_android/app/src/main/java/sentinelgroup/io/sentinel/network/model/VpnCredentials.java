@@ -10,4 +10,6 @@ public class VpnCredentials {
     @SerializedName("vpn_addr")
     public String vpnAddress;
     public String message;
+    @SerializedName("account_addr")
+    public String accountAddr;
 }

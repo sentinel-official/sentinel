@@ -146,12 +146,13 @@ public class VpnSessionDetailsFragment extends Fragment implements View.OnClickL
         });
     }
 
-    private Intent constructSendActivityIntent(String iAmount, String iSessionId) {
+    private Intent constructSendActivityIntent(String iAmount, String iSessionId, String iToAddress) {
         Intent aIntent = new Intent(getActivity(), SendActivity.class);
         Bundle aBundle = new Bundle();
         aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
         aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, false);
         aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
+        aBundle.putString(AppConstants.EXTRA_TO_ADDRESS, iToAddress);
         if (iSessionId != null)
             aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
         aIntent.putExtras(aBundle);
@@ -218,7 +219,7 @@ public class VpnSessionDetailsFragment extends Fragment implements View.OnClickL
         String aValue = Converter.getFormattedTokenString(mSessionData.amount);
         switch (v.getId()) {
             case R.id.btn_make_payment:
-                loadNextActivity(constructSendActivityIntent(aValue, mSessionData.sessionId), AppConstants.REQ_VPN_PAY);
+                loadNextActivity(constructSendActivityIntent(aValue, mSessionData.sessionId, mSessionData.accountAddress), AppConstants.REQ_VPN_PAY);
                 break;
 
             case R.id.btn_report_payment:

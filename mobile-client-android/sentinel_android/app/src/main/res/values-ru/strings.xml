@@ -106,8 +106,6 @@
     <string name="restoring_accunt">Восстановление аккаунта. Подождите…</string>
     <string name="verifying_credentials">Проверка подписей. Подождите…</string>
     <string name="resetting_pin">Сброс PIN-кода.Подождите… </string>
-    <string name="gas_limit_sents">42000</string>
-    <string name="gas_limit_eth">21000</string>
     <string name="sending">Отправка…</string>
     <string name="signing_transaction">Проверка и подпись транзакции. Подождите…</string>
     <string name="init_vpn_pay">100</string>

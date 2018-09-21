@@ -143,12 +143,13 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
         mTvTotalReceivedData.setText(aStyledSize);
     }
 
-    private Intent constructSendActivityIntent(String iAmount, String iSessionId) {
+    private Intent constructSendActivityIntent(String iAmount, String iSessionId, String iToAddress) {
         Intent aIntent = new Intent(getActivity(), SendActivity.class);
         Bundle aBundle = new Bundle();
         aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
         aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, false);
         aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
+        aBundle.putString(AppConstants.EXTRA_TO_ADDRESS, iToAddress);
         if (iSessionId != null)
             aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
         aIntent.putExtras(aBundle);
@@ -210,7 +211,7 @@ public class VpnHistoryFragment extends Fragment implements VpnHistoryListAdapte
     }
 
     @Override
-    public void onPayClicked(String iValue, String iSessionId) {
-        loadNextActivity(constructSendActivityIntent(iValue, iSessionId), AppConstants.REQ_VPN_PAY);
+    public void onPayClicked(String iValue, String iSessionId, String iToAddress) {
+        loadNextActivity(constructSendActivityIntent(iValue, iSessionId, iToAddress), AppConstants.REQ_VPN_PAY);
     }
 }

@@ -205,7 +205,7 @@ public class VpnRepository {
 
             private void reportErrorResponse(Response<VpnCredentials> response, String iThrowableLocalMessage) {
                 if (response != null && response.body() != null) {
-                    mVpnServerCredentialsLiveEvent.postValue(Resource.error(response.body().message, null));
+                    mVpnServerCredentialsLiveEvent.postValue(Resource.error(response.body().message, response.body()));
                 } else if (iThrowableLocalMessage != null)
                     mVpnServerCredentialsLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else

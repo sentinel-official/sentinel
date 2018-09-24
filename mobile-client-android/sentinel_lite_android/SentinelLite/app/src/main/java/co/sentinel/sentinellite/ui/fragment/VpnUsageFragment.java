@@ -115,8 +115,10 @@ public class VpnUsageFragment extends Fragment {
                     hideProgressDialog();
                     if (vpnUsage.data != null && vpnUsage.data.usage != null) {
                         setTotalUsageDetails(vpnUsage.data.usage);
-                        if (vpnUsage.data.usage.getSessions() != null && vpnUsage.data.usage.getSessions().size() > 0)
+                        if (vpnUsage.data.usage.getSessions() != null && vpnUsage.data.usage.getSessions().size() > 0) {
                             mAdapter.loadData(vpnUsage.data.usage.getSessions());
+                            mRvVpnHistory.scrollToPosition(0);
+                        }
                     }
                 }
             }

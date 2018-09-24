@@ -1,5 +1,6 @@
 # coding=utf-8
 import json
+import time
 from uuid import uuid4
 
 import falcon
@@ -25,9 +26,15 @@ def get_vpns_list(vpn_type):
         'location': 1,
         'net_speed.upload': 1,
         'latency': 1,
+        'rating': 1,
         'net_speed.download': 1,
-        'enc_method': 1
-    })
+        'enc_method': 1,
+        'version': 1
+    }).sort([
+        ('rating', -1),
+        ('version', -1),
+    ])
+
     return list(_list)
 
 
@@ -85,8 +92,7 @@ class GetVpnCredentials(object):
                             'message': 'Currently VPN server is not available. Please try after sometime.'
                         }
                     else:
-                        error, is_paid = eth_helper.get_initial_payment(
-                            account_addr)
+                        error, is_paid = eth_helper.get_initial_payment(account_addr)
                         if error is None:
                             if is_paid is True:
                                 try:
@@ -98,8 +104,7 @@ class GetVpnCredentials(object):
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)
-                                    _ = requests.post(
-                                        url, json=body, timeout=10)
+                                    _ = requests.post(url, json=body, timeout=10)
                                     message = {
                                         'success': True,
                                         'ip': ip,
@@ -159,13 +164,12 @@ class PayVpnUsage(object):
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net']).lower()
         from_addr = str(req.body['from_addr']).lower()
-        amount = int(req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
         session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
             'session_id'] is not None else None
         device_id = str(req.body['device_id']) if 'device_id' in req.body else None
 
-        errors, tx_hashes = eth_helper.pay_vpn_session(
-            from_addr, amount, session_id, net, tx_data, payment_type, device_id)
+        errors, tx_hashes = eth_helper.pay_vpn_session(from_addr, session_id, net, tx_data, payment_type,
+                                                       device_id)
 
         if len(errors) > 0:
             message = {
@@ -201,9 +205,7 @@ class ReportPayment(object):
         amount = int(req.body['amount'])
         session_id = str(req.body['session_id'])
 
-        nonce = eth_helper.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
-        error, tx_hash = vpn_service_manager.pay_vpn_session(
-            from_addr, amount, session_id, nonce)
+        error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, amount, session_id)
 
         if error is None:
             message = {
@@ -237,7 +239,10 @@ class GetVpnUsage(object):
         error, usage = eth_helper.get_vpn_usage(account_addr, device_id)
 
         if error is None:
-            message = {'success': True, 'usage': usage}
+            message = {
+                'success': True,
+                'usage': usage
+            }
         else:
             message = {
                 'success': False,
@@ -312,6 +317,73 @@ class GetVpnCurrentUsage(object):
             'success': True,
             'usage': usage
         }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
+class RateVPNSession(object):
+    def on_post(self, req, resp):
+        """
+        @api {post} /client/vpn/rate Rate vpn session.
+        @apiName RateVPNSession
+        @apiGroup VPN
+        @apiParam {String} vpn_addr VPN Account Address.
+        @apiParam {String} session_name Session name of the VPN connection.
+        @apiParam {String} rating Rating to the session.
+        @apiSuccess {Object} message Response of the request.
+        """
+        vpn_addr = str(req.body['vpn_addr']).lower()
+        session_name = str(req.body['session_name'])
+        rating = int(req.body['rating'])
+
+        session = db.connections.find_one({
+            'vpn_addr': vpn_addr,
+            'session_name': session_name
+        })
+
+        if session is None:
+            message = {
+                'success': False,
+                'message': 'No session found with the given details'
+            }
+
+        else:
+            _ = db.ratings.insert_one({
+                'vpn_addr': vpn_addr,
+                'session_name': session_name,
+                'rating': rating,
+                'timestamp': int(time.time())
+            })
+
+            count_dict = []
+
+            output = db.ratings.aggregate([
+                {'$match': {'vpn_addr': vpn_addr}},
+                {'$project': {'totalRating': '$rating'}},
+                {'$group': {'_id': 0, 'rating_count': {'$sum': '$totalRating'}}}
+            ])
+
+            for doc in output:
+                count_dict.append(doc)
+
+            vpn_total_ratings = int(count_dict[0]['rating_count'])
+            vpn_total_times = db.ratings.find({'vpn_addr': vpn_addr}).count()
+
+            average_rating = vpn_total_ratings / vpn_total_times
+
+            _ = db.nodes.find_one_and_update({
+                'account_addr': vpn_addr
+            }, {
+                '$set': {
+                    'rating': average_rating
+                }
+            })
+
+            message = {
+                'success': True,
+                'message': 'Rated Successfully'
+            }
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)

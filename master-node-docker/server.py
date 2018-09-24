@@ -6,8 +6,10 @@ from falcon_cors import CORS
 
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
+from sentinel.client import GetETHHistory
 from sentinel.client import GetMixerNodessList
 from sentinel.client import GetMixerToAddress
+from sentinel.client import GetSentHistory
 from sentinel.client import GetSocksList
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnCurrentUsage
@@ -15,6 +17,7 @@ from sentinel.client import GetVpnUsage
 from sentinel.client import GetVpnsList
 from sentinel.client import InitiateMix
 from sentinel.client import PayVpnUsage
+from sentinel.client import RateVPNSession
 from sentinel.client import RawTransaction
 from sentinel.client import ReportPayment
 from sentinel.client import UpdateConnection
@@ -56,6 +59,8 @@ from sentinel.node import UpdateNodeInfo
 from sentinel.swaps import GetAvailableTokens
 from sentinel.swaps import GetExchangeValue
 from sentinel.swaps import GetNewAddress
+from sentinel.swaps import GetPendingTransactions
+from sentinel.swaps import GetSwapAddressBalance
 from sentinel.swaps import SwapStatus
 from sentinel.swaps import TokenSwapRawTransaction
 from sentinel.utils import JSONTranslator
@@ -78,6 +83,8 @@ server.add_route('/', Up())
 # Clients
 server.add_route('/client/account', CreateNewAccount())
 server.add_route('/client/account/balance', GetBalance())
+server.add_route('/client/account/history/eth', GetETHHistory())
+server.add_route('/client/account/history/sent', GetSentHistory())
 server.add_route('/client/raw-transaction', RawTransaction())
 server.add_route('/client/vpn', GetVpnCredentials())
 server.add_route('/client/vpn/current', GetVpnCurrentUsage())
@@ -86,6 +93,7 @@ server.add_route('/client/vpn/socks-list', GetSocksList())
 server.add_route('/client/vpn/usage', GetVpnUsage())
 server.add_route('/client/vpn/pay', PayVpnUsage())
 server.add_route('/client/vpn/report', ReportPayment())
+server.add_route('/client/vpn/rate', RateVPNSession())
 server.add_route('/client/update-connection', UpdateConnection())
 
 # Nodes
@@ -130,6 +138,8 @@ server.add_route('/swaps/exchange', GetExchangeValue())
 server.add_route('/swaps/raw-transaction', TokenSwapRawTransaction())
 server.add_route('/swaps/status', SwapStatus())
 server.add_route('/swaps/new-address', GetNewAddress())
+server.add_route('/swaps/pending', GetPendingTransactions())
+server.add_route('/swaps/balance', GetSwapAddressBalance())
 
 # Mixer
 server.add_route('/mixer', Up())

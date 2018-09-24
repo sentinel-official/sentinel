@@ -6,6 +6,13 @@ from .eth import ADDRESS as COINBASE_ADDRESS
 from .eth import MAX_TX_TRY
 from .eth import MIN_GAS
 from .eth import PRIVATE_KEY as COINBASE_PRIVATE_KEY
+from .history import ETH_TRANS_URL
+from .history import MAIN_SENT_URL2
+from .history import MAIN_URL
+from .history import RINKEBY_SENT_URL2
+from .history import RINKEBY_URL
+from .history import SENT_TRANS_URL1
+from .history import SENT_TRANS_URL3
 from .mixer import ADDRESS as MIXER_ADDRESS
 from .mixer import PRIVATE_KEY as MIXER_PRIVATE_KEY
 from .referral import REFERRAL_DUMMY

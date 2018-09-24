@@ -61,7 +61,11 @@ else
                 ;;
             esac
         fi
-
+        echo -n "Do you want to participate in dVPN Lite network? [Y/N]: "
+        read option
+        if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
+            export LITE_NETWORK=true
+        fi
         echo -n "Is everything correct ? [Y/N]: "
         read option
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then

@@ -47,6 +47,19 @@ def getAverageNodeCount():
     return message
 
 
+def getAverageActiveNodeCount():
+    avg_count = []
+
+    result = db.statistics.aggregate([{'$group': {'_id': 0, 'average': {'$avg': '$nodes.up'}}}])
+
+    for doc in result:
+        avg_count.append(doc)
+
+    message = {'success': True, 'average': avg_count[0]['average']}
+
+    return message
+
+
 def getActiveNodeCount():
     count = db.nodes.find({'vpn.status': 'up'}).count()
     message = {'success': True, 'count': count}
@@ -375,7 +388,7 @@ class GetDailyActiveNodeCount(object):
                 message = {'success': True, 'stats': daily_count}
 
         elif interval is not None and format is not None:
-            message = getAverageNodeCount()
+            message = getAverageActiveNodeCount()
         else:
             message = {'success': False, 'message': 'No params found'}
 

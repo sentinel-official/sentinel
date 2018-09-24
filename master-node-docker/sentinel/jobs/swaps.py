@@ -45,12 +45,12 @@ class Swaps(object):
 
     def update_status(self, key, status, tx_hash=None):
         print(key, status, tx_hash)
-        find_obj = None
+        find_obj = {'status': 0}
         if len(key) == 66:
-            find_obj = {'tx_hash_0': key}
-        elif len(key) == 34:
-            find_obj = {'from_address': key}
-        _ = db.swaps.find_one_and_update(find_obj, {
+            find_obj['tx_hash_0'] = key
+        else:
+            find_obj['from_address'] = key
+        _ = db.swaps.update_many(find_obj, {
             '$set': {
                 'status': status['status'],
                 'message': status['message'],

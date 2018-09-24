@@ -6,7 +6,6 @@ from .eth import eth_manager
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
 from ..config import VPN_SERVICE
-from ..helpers import redis_manager
 
 
 class VpnServiceManager(object):
@@ -16,8 +15,9 @@ class VpnServiceManager(object):
         self.contract = net.web3.eth.contract(contract_name=name, abi=abi, address=address)
 
     def pay_vpn_session(self, account_addr, amount, session_id):
+        from ..helpers import nonce_manager
         try:
-            nonce = redis_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
+            nonce = nonce_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,
                              startgas=1000000,
@@ -29,8 +29,9 @@ class VpnServiceManager(object):
             tx.sign(COINBASE_PRIVATE_KEY)
             raw_tx = self.net.web3.toHex(rlp.encode(tx))
             tx_hash = self.net.web3.eth.sendRawTransaction(raw_tx)
-            redis_manager.set_nonce(COINBASE_ADDRESS, self.net.chain, nonce + 1)
+            nonce_manager.set_nonce(COINBASE_ADDRESS, self.net.chain, nonce + 1)
         except Exception as err:
+            nonce_manager.set_nonce(COINBASE_ADDRESS, self.net.chain)
             return {
                        'code': 301,
                        'error': str(err)
@@ -38,8 +39,9 @@ class VpnServiceManager(object):
         return None, tx_hash
 
     def set_initial_payment(self, account_addr, is_paid=True):
+        from ..helpers import nonce_manager
         try:
-            nonce = redis_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
+            nonce = nonce_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,
                              startgas=1000000,
@@ -51,8 +53,9 @@ class VpnServiceManager(object):
             tx.sign(COINBASE_PRIVATE_KEY)
             raw_tx = self.net.web3.toHex(rlp.encode(tx))
             tx_hash = self.net.web3.eth.sendRawTransaction(raw_tx)
-            redis_manager.set_nonce(COINBASE_ADDRESS, self.net.chain, nonce + 1)
+            nonce_manager.set_nonce(COINBASE_ADDRESS, self.net.chain, nonce + 1)
         except Exception as err:
+            nonce_manager.set_nonce(COINBASE_ADDRESS, self.net.chain)
             return {
                        'code': 302,
                        'error': str(err)
@@ -128,8 +131,9 @@ class VpnServiceManager(object):
         return None, usage
 
     def add_vpn_usage(self, from_addr, to_addr, sent_bytes, session_duration, amount, timestamp, session_id):
+        from ..helpers import nonce_manager
         try:
-            nonce = redis_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
+            nonce = nonce_manager.get_nonce(COINBASE_ADDRESS, self.net.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,
                              startgas=1000000,
@@ -143,8 +147,9 @@ class VpnServiceManager(object):
             tx.sign(COINBASE_PRIVATE_KEY)
             raw_tx = self.net.web3.toHex(rlp.encode(tx))
             tx_hash = self.net.web3.eth.sendRawTransaction(raw_tx)
-            redis_manager.set_nonce(COINBASE_ADDRESS, self.net.chain, nonce + 1)
+            nonce_manager.set_nonce(COINBASE_ADDRESS, self.net.chain, nonce + 1)
         except Exception as err:
+            nonce_manager.set_nonce(COINBASE_ADDRESS, self.net.chain)
             return {
                        'code': 307,
                        'error': str(err)

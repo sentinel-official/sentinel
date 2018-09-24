@@ -5,7 +5,6 @@ from ethereum.transactions import Transaction
 from .eth import eth_manager
 from ..config import MAIN_TOKENS
 from ..config import RINKEBY_TOKENS
-from ..helpers import redis_manager
 
 
 class ERC20Manager(object):
@@ -32,8 +31,9 @@ class ERC20Manager(object):
         return None, balance
 
     def transfer_amount(self, from_addr, to_addr, amount, private_key):
+        from ..helpers import nonce_manager
         try:
-            nonce = redis_manager.get_nonce(from_addr, self.net.chain)
+            nonce = nonce_manager.get_nonce(from_addr, self.net.chain)
             tx = Transaction(nonce=nonce,
                              gasprice=self.net.web3.eth.gasPrice,
                              startgas=1000000,
@@ -44,12 +44,14 @@ class ERC20Manager(object):
             tx.sign(private_key)
             raw_tx = self.net.web3.toHex(rlp.encode(tx))
             tx_hash = self.net.web3.eth.sendRawTransaction(raw_tx)
-            redis_manager.set_nonce(from_addr, self.net.chain, nonce + 1)
+            nonce_manager.set_nonce(from_addr, self.net.chain, nonce + 1)
         except Exception as err:
-            return {
-                       'code': 202,
-                       'error': str(err)
-                   }, None
+            nonce_manager.set_nonce(from_addr, self.net.chain)
+            if '-32000' not in str(err):
+                return {
+                           'code': 202,
+                           'error': str(err)
+                       }, None
         return None, tx_hash
 
 

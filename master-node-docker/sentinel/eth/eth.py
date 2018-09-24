@@ -8,17 +8,17 @@ from ethereum.tools import keys
 from ethereum.transactions import Transaction
 from web3 import HTTPProvider, IPCProvider, Web3
 
-from ..config import MAX_TX_TRY
+from ..helpers import redis_manager
 
 
 class ETHManager(object):
-    def __init__(self, provider=None, data_dir=None, rpc_url=None):
+    def __init__(self, provider=None, data_dir=None, rpc_url=None, chain=None):
+        self.chain = chain
         self.data_dir = path.join(path.expanduser(
             '~'), '.ethereum') if data_dir is None else data_dir
         self.provider = 'ipc' if provider is None else provider
         self.ipc_path = path.join(self.data_dir, 'geth.ipc')
-        self.web3 = Web3(IPCProvider(self.ipc_path)) if self.provider == 'ipc' else Web3(
-            HTTPProvider(rpc_url))
+        self.web3 = Web3(IPCProvider(self.ipc_path)) if self.provider == 'ipc' else Web3(HTTPProvider(rpc_url))
 
     def create_account(self, password):
         try:
@@ -88,30 +88,24 @@ class ETHManager(object):
                    }, None
         return None, tx_hash
 
-    def transfer_amount(self, to_addr, amount, private_key, nonce):
-        count, tx_hash = 0, None
-        while count < MAX_TX_TRY:
-            try:
-                tx = Transaction(nonce=nonce + count,
-                                 gasprice=self.web3.eth.gasPrice,
-                                 startgas=1000000,
-                                 to=to_addr,
-                                 value=amount,
-                                 data='')
-                tx.sign(private_key)
-                raw_tx = self.web3.toHex(rlp.encode(tx))
-                tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
-                if len(tx_hash) > 0:
-                    break
-            except Exception as err:
-                err = str(err)
-                if '-32000' in err:
-                    count += 1
-                if (count >= MAX_TX_TRY) or ('-32000' not in err):
-                    return {
-                               'code': 107,
-                               'error': err
-                           }, None
+    def transfer_amount(self, from_addr, to_addr, amount, private_key):
+        try:
+            nonce = redis_manager.get_nonce(from_addr, self.chain)
+            tx = Transaction(nonce=nonce,
+                             gasprice=self.web3.eth.gasPrice,
+                             startgas=1000000,
+                             to=to_addr,
+                             value=amount,
+                             data='')
+            tx.sign(private_key)
+            raw_tx = self.web3.toHex(rlp.encode(tx))
+            tx_hash = self.web3.eth.sendRawTransaction(raw_tx)
+            redis_manager.set_nonce(from_addr, self.chain, nonce + 1)
+        except Exception as err:
+            return {
+                       'code': 107,
+                       'error': str(err)
+                   }, None
         return None, tx_hash
 
     def get_tx_receipt(self, tx_hash):
@@ -136,6 +130,6 @@ class ETHManager(object):
 
 
 eth_manager = {
-    'main': ETHManager(provider='rpc', rpc_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy'),
-    'rinkeby': ETHManager(provider='rpc', rpc_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy')
+    'main': ETHManager(provider='rpc', rpc_url='https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy', chain='main'),
+    'rinkeby': ETHManager(provider='rpc', rpc_url='https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy', chain='rinkeby')
 }

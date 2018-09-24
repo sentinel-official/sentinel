@@ -1,8 +1,5 @@
 # coding=utf-8
-import time
 from hashlib import md5
-
-from redis import Redis
 
 from .referral import add_session
 from .referral import get_vpn_sessions
@@ -19,7 +16,7 @@ from ..eth import vpn_service_manager
 
 
 def get_encoded_session_id(account_addr, index):
-    account_addr = str(account_addr).lower().encode('utf-8')
+    account_addr = str(account_addr).lower().encode()
     index = str(index).encode('utf-8')
     session_id = md5(account_addr + index + SESSIONS_SALT).hexdigest()
 
@@ -27,12 +24,8 @@ def get_encoded_session_id(account_addr, index):
 
 
 class ETHHelper(object):
-    def __init__(self):
-        self.redis = Redis()
-
     def create_account(self, password):
-        error, account_addr, private_key, keystore = eth_manager['main'].create_account(
-            password)
+        error, account_addr, private_key, keystore = eth_manager['main'].create_account(password)
 
         return error, account_addr, private_key, keystore
 
@@ -71,28 +64,6 @@ class ETHHelper(object):
 
         return tx_count
 
-    def get_valid_nonce(self, account_addr, net):
-        key = account_addr + '@' + net
-        previous_nonce = self.redis.get(key)
-        if previous_nonce is not None:
-            previous_nonce = int(previous_nonce)
-
-        if net == 'main':
-            error, nonce = eth_manager['main'].get_transaction_count(
-                account_addr)
-        elif net == 'rinkeby':
-            error, nonce = eth_manager['rinkeby'].get_transaction_count(
-                account_addr)
-        else:
-            error, nonce = None, 0
-
-        if (error is None) and ((previous_nonce is None) or (nonce > previous_nonce)):
-            self.redis.set(key, nonce)
-            return nonce
-        else:
-            time.sleep(1)
-            return self.get_valid_nonce(account_addr, net)
-
     def get_balances(self, account_addr):
         balances = {
             'main': {
@@ -104,41 +75,32 @@ class ETHHelper(object):
                 'sents': None
             }
         }
-        _, balances['main']['eths'] = eth_manager['main'].get_balance(
-            account_addr)
-        _, balances['main']['sents'] = erc20_manger['main']['SENT'].get_balance(
-            account_addr)
-        _, balances['rinkeby']['eths'] = eth_manager['rinkeby'].get_balance(
-            account_addr)
-        _, balances['rinkeby']['sents'] = erc20_manger['rinkeby']['SENT'].get_balance(
-            account_addr)
+        _, balances['main']['eths'] = eth_manager['main'].get_balance(account_addr)
+        _, balances['main']['sents'] = erc20_manger['main']['SENT'].get_balance(account_addr)
+        _, balances['rinkeby']['eths'] = eth_manager['rinkeby'].get_balance(account_addr)
+        _, balances['rinkeby']['sents'] = erc20_manger['rinkeby']['SENT'].get_balance(account_addr)
 
         return balances
 
     def transfer(self, from_addr, to_addr, amount, symbol, private_key, net):
         if symbol == 'ETH':
-            error, tx_hash = self.transfer_eths(
-                from_addr, to_addr, amount, private_key, net)
+            error, tx_hash = self.transfer_eths(from_addr, to_addr, amount, private_key, net)
         else:
-            error, tx_hash = self.transfer_erc20(
-                from_addr, to_addr, amount, symbol, private_key, net)
-        return error, tx_hash
+            error, tx_hash = self.transfer_erc20(from_addr, to_addr, amount, symbol, private_key, net)
 
-    def transfer_erc20(self, from_addr, to_addr, amount, symbol, private_key, net):
-        nonce = self.get_valid_nonce(from_addr, net)
-        error, tx_hash = erc20_manger[net][symbol].transfer_amount(
-            to_addr, amount, private_key, nonce)
         return error, tx_hash
 
     def transfer_eths(self, from_addr, to_addr, amount, private_key, net):
         error, tx_hash = None, None
-        nonce = self.get_valid_nonce(from_addr, net)
         if net == 'main':
-            error, tx_hash = eth_manager['main'].transfer_amount(
-                to_addr, amount, private_key, nonce)
+            error, tx_hash = eth_manager['main'].transfer_amount(from_addr, to_addr, amount, private_key)
         elif net == 'rinkeby':
-            error, tx_hash = eth_manager['rinkeby'].transfer_amount(
-                to_addr, amount, private_key, nonce)
+            error, tx_hash = eth_manager['rinkeby'].transfer_amount(from_addr, to_addr, amount, private_key)
+
+        return error, tx_hash
+
+    def transfer_erc20(self, from_addr, to_addr, amount, symbol, private_key, net):
+        error, tx_hash = erc20_manger[net][symbol].transfer_amount(from_addr, to_addr, amount, private_key)
 
         return error, tx_hash
 
@@ -147,8 +109,7 @@ class ETHHelper(object):
         if net == 'main':
             error, tx_hash = eth_manager['main'].send_raw_transaction(tx_data)
         elif net == 'rinkeby':
-            error, tx_hash = eth_manager['rinkeby'].send_raw_transaction(
-                tx_data)
+            error, tx_hash = eth_manager['rinkeby'].send_raw_transaction(tx_data)
 
         return error, tx_hash
 
@@ -163,8 +124,7 @@ class ETHHelper(object):
         return error, due_amount
 
     def get_vpn_sessions_count(self, account_addr):
-        error, sessions_count = vpn_service_manager.get_vpn_sessions_count(
-            account_addr)
+        error, sessions_count = vpn_service_manager.get_vpn_sessions_count(account_addr)
 
         return error, sessions_count
 
@@ -172,10 +132,8 @@ class ETHHelper(object):
         error, usage = None, None
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
         if (error is None) and (sessions_count > 0):
-            session_id = get_encoded_session_id(
-                account_addr, sessions_count - 1)
-            error, _usage = vpn_service_manager.get_vpn_usage(
-                account_addr, session_id)
+            session_id = get_encoded_session_id(account_addr, sessions_count - 1)
+            error, _usage = vpn_service_manager.get_vpn_usage(account_addr, session_id)
             if error is None:
                 usage = {
                     'id': session_id,
@@ -215,14 +173,14 @@ class ETHHelper(object):
                     'amount': session['amount'],
                     'timestamp': session['timestamp']
                 })
+
             return error, usage
 
         error, sessions_count = self.get_vpn_sessions_count(account_addr)
         if error is None:
             for index in range(0, sessions_count):
                 session_id = get_encoded_session_id(account_addr, index)
-                error, _usage = vpn_service_manager.get_vpn_usage(
-                    account_addr, session_id)
+                error, _usage = vpn_service_manager.get_vpn_usage(account_addr, session_id)
                 if error is None:
                     if _usage[5] is False:
                         usage['due'] += _usage[3]
@@ -241,19 +199,16 @@ class ETHHelper(object):
 
         return error, usage
 
-    def pay_vpn_session(self, from_addr, amount, session_id, net, tx_data, payment_type, device_id=None):
+    def pay_vpn_session(self, from_addr, session_id, net, tx_data, payment_type, device_id=None):
         errors, tx_hashes = [], []
         error, tx_hash = self.raw_transaction(tx_data, net)
         if error is None:
             tx_hashes.append(tx_hash)
-            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
             if payment_type == 'init':
-                error, tx_hash = vpn_service_manager.set_initial_payment(
-                    from_addr, nonce)
+                error, tx_hash = vpn_service_manager.set_initial_payment(from_addr)
             elif payment_type == 'normal':
                 error, _usage = vpn_service_manager.get_vpn_usage(from_addr, session_id)
-                error, tx_hash = vpn_service_manager.pay_vpn_session(
-                    from_addr, int(_usage[3]), session_id, nonce)
+                error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, int(_usage[3]), session_id)
             if error is None:
                 if device_id:
                     _, res = add_session(device_id, session_id, tx_hash)
@@ -325,23 +280,20 @@ class ETHHelper(object):
                 _, res = add_session(device_id, session_id)
 
         if make_tx is True and to_addr != REFERRAL_DUMMY:
-            nonce = self.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
-            error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration,
-                                                               amount,
-                                                               timestamp, session_id, nonce)
+            error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration, amount,
+                                                               timestamp, session_id)
 
         return error, tx_hash
 
     # DEV
     def free(self, to_addr, eths, sents):
         errors, tx_hashes = [], []
-        error, tx_hash = self.transfer_eths(
-            COINBASE_ADDRESS, to_addr, eths, COINBASE_PRIVATE_KEY, 'rinkeby')
+        error, tx_hash = self.transfer_eths(COINBASE_ADDRESS, to_addr, eths, COINBASE_PRIVATE_KEY, 'rinkeby')
 
         if error is None:
             tx_hashes.append(tx_hash)
-            error, tx_hash = self.transfer_erc20(
-                COINBASE_ADDRESS, to_addr, sents, 'SENT', COINBASE_PRIVATE_KEY, 'rinkeby')
+            error, tx_hash = self.transfer_erc20(COINBASE_ADDRESS, to_addr, sents, 'SENT', COINBASE_PRIVATE_KEY,
+                                                 'rinkeby')
             if error is None:
                 tx_hashes.append(tx_hash)
             else:

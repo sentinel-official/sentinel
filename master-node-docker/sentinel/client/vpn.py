@@ -30,7 +30,11 @@ def get_vpns_list(vpn_type):
         'net_speed.download': 1,
         'enc_method': 1,
         'version': 1
-    })
+    }).sort([
+        ('rating', -1),
+        ('version', -1),
+    ])
+
     return list(_list)
 
 
@@ -88,8 +92,7 @@ class GetVpnCredentials(object):
                             'message': 'Currently VPN server is not available. Please try after sometime.'
                         }
                     else:
-                        error, is_paid = eth_helper.get_initial_payment(
-                            account_addr)
+                        error, is_paid = eth_helper.get_initial_payment(account_addr)
                         if error is None:
                             if is_paid is True:
                                 try:
@@ -101,8 +104,7 @@ class GetVpnCredentials(object):
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)
-                                    _ = requests.post(
-                                        url, json=body, timeout=10)
+                                    _ = requests.post(url, json=body, timeout=10)
                                     message = {
                                         'success': True,
                                         'ip': ip,
@@ -162,13 +164,12 @@ class PayVpnUsage(object):
         tx_data = str(req.body['tx_data'])
         net = str(req.body['net']).lower()
         from_addr = str(req.body['from_addr']).lower()
-        amount = int(req.body['amount']) if 'amount' in req.body and req.body['amount'] is not None else None
         session_id = str(req.body['session_id']) if 'session_id' in req.body and req.body[
             'session_id'] is not None else None
         device_id = str(req.body['device_id']) if 'device_id' in req.body else None
 
-        errors, tx_hashes = eth_helper.pay_vpn_session(
-            from_addr, amount, session_id, net, tx_data, payment_type, device_id)
+        errors, tx_hashes = eth_helper.pay_vpn_session(from_addr, session_id, net, tx_data, payment_type,
+                                                       device_id)
 
         if len(errors) > 0:
             message = {
@@ -204,9 +205,7 @@ class ReportPayment(object):
         amount = int(req.body['amount'])
         session_id = str(req.body['session_id'])
 
-        nonce = eth_helper.get_valid_nonce(COINBASE_ADDRESS, 'rinkeby')
-        error, tx_hash = vpn_service_manager.pay_vpn_session(
-            from_addr, amount, session_id, nonce)
+        error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, amount, session_id)
 
         if error is None:
             message = {
@@ -240,7 +239,10 @@ class GetVpnUsage(object):
         error, usage = eth_helper.get_vpn_usage(account_addr, device_id)
 
         if error is None:
-            message = {'success': True, 'usage': usage}
+            message = {
+                'success': True,
+                'usage': usage
+            }
         else:
             message = {
                 'success': False,

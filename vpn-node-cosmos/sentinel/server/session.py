@@ -13,8 +13,8 @@ from ..vpn import disconnect_client
 
 class AddSessionDetails(object):
     def on_post(self, req, res):
-        account_addr = str(req.body['accountAddress']).lower()
-        session_id = str(req.body['sessionId'])
+        account_addr = str(req.body['account_addr']).lower()
+        session_id = str(req.body['session_id'])
         token = str(req.body['token'])
 
         _ = db.clients.insert_one({
@@ -45,7 +45,7 @@ class GetVpnCredentials(object):
         @apiSuccess {String[]} ovpn OVPN data.
         """
         account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['sessionId'])
+        session_id = str(req.body['session_id'])
         token = str(req.body['token'])
 
         client = db.clients.find_one({
@@ -99,10 +99,10 @@ class AddSessionPaymentSign(object):
         @apiSuccess {Boolean} success Success key.
         """
         account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['sessionId'])
+        session_id = str(req.body['session_id'])
         token = str(req.body['token'])
         signature = {
-            'hash': str(req.body['signature']['value']),
+            'hash': str(req.body['signature']['hash']),
             'index': int(req.body['signature']['index']),
             'amount': str(req.body['signature']['amount']),
             'final': req.body['signature']['final']
@@ -135,6 +135,9 @@ class AddSessionPaymentSign(object):
                     'password': node.config['account']['password'],
                     'signature': signature['hash']
                 })
+            message = {
+                'success': True
+            }
         else:
             message = {
                 'success': False,

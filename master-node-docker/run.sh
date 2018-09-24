@@ -17,9 +17,7 @@ python3 app.py &
 gunicorn -b 0.0.0.0:${PORT} \
          --reload \
          --log-level DEBUG \
-         --workers ${WORKERS} \
-         --worker-class gevent \
+         --worker-class gthread \
          --threads ${THREADS} \
          --access-logfile /root/access.log \
          server:server;
-

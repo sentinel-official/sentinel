@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.widget.TextView;
 
 import org.json.JSONException;
 
@@ -52,6 +53,9 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
     }
 
     private void initViewModel() {
+        String aVersionName = getString(R.string.app_version, BuildConfig.VERSION_NAME);
+        ((TextView) findViewById(R.id.tv_app_version)).setText(aVersionName);
+
         // init download manager
         mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 

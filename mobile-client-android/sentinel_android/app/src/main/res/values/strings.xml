@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Sentinel</string>
     <string name="default_language" translatable="false">en</string>
+    <string name="app_version" translatable="false">v %s</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

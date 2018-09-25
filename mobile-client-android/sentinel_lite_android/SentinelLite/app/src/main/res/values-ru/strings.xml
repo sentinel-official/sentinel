@@ -4,22 +4,6 @@
     <string name="lite">Lite Client v %s</string>
     <string name="default_language">en</string>
 
-    <!-- String Array -->
-    <string-array name="language">
-        <!--<item>Chinese</item>-->
-        <item>English</item>
-        <!--<item>Japanese</item>-->
-        <item>Russian</item>
-        <!--<item>Spanish</item>-->
-    </string-array>
-    <string-array name="language_code">
-        <!--<item>zh</item>-->
-        <item>en</item>
-        <!--<item>ja</item>-->
-        <item>ru</item>
-        <!--<item>es</item>-->
-    </string-array>
-
     <!-- ics_openVPN strings -->
     <string name="fetching_server_details">Получение данных от VPN-сервера</string>
     <string name="channel_name_background">Статистика подключений</string>
@@ -174,10 +158,6 @@
     <string name="upload_speed">Скорость исходящих данных</string>
     <string name="vpn_status">Статус VPN: %1s</string>
     <string name="vpn_already_connected">Вы уже подключены к VPN-серверу. Перед подключением к новому VPN-серверу отключите старый.</string>
-    <string name="telegram_url">https://t.me/sentinel_co</string>
-    <string name="medium_url">https://medium.com/@Sentinel</string>
-    <string name="twitter_url">https://twitter.com/sentinel_co</string>
-    <string name="website_url">https://sentinel.co</string>
     <string name="link_coming_soon">Скоро добавим.</string>
     <string name="faq">FAQ</string>
     <string name="got_it">Понял</string>
@@ -229,4 +209,6 @@
     <string name="error_select_rating">Please select rating</string>
     <string name="action_skip">Пропустить</string>
     <string name="action_rate">Оценить</string>
+    <string name="referral_address_invalid">Неправильно введен реферальный код. Попробуйте ещё раз.</string>
+    <string name="read_more">Узнать больше</string>
 </resources>

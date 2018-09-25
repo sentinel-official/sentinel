@@ -20,7 +20,7 @@
         <!--<item>ja</item>-->
         <item>ru</item>
         <!--<item>es</item>-->
-        <item>zh</item>
+        <item>cn</item>
         <!--<item>cn</item>-->
     </string-array>
 
@@ -207,7 +207,7 @@
     <string name="share_id">Share Link</string>
     <string name="share_string">Hey, check out this new dVPN Android app. Use my Referral ID to get free tokens when you Sign Up.\n\nReferral ID: %1$s\n\nLink: %2$s</string>
     <string name="branch_share_title">Hey, check out this new dVPN Android app.</string>
-    <string name="branch_share_desc">Use my Referral ID to get free tokens when you Sign Up. Referral ID: %1$s</string>
+    <string name="branch_share_desc">Use my Referral ID to get free tokens when you Sign Up.\nReferral ID: %1$s</string>
     <string name="info_title_1">Share your Referral ID to earn tokens for every Sign Up</string>
     <string name="info_title_2">Secure decentralized VPN</string>
     <string name="info_desc_1">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network</string>

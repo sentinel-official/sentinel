@@ -422,6 +422,8 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
      */
     private void refreshMenuTitles() {
         Menu aMenu = mNavMenuView.getMenu();
+        MenuItem aMenuVpnUsage = aMenu.findItem(R.id.nav_vpn_usage);
+        aMenuVpnUsage.setTitle(R.string.vpn_usage);
         MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
         aMenuLanguage.setTitle(R.string.language);
         MenuItem aMenuReferral = aMenu.findItem(R.id.nav_referral);

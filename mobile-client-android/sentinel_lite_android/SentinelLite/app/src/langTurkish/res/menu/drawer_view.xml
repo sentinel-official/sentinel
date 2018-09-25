@@ -8,7 +8,8 @@
         <item
             android:id="@+id/nav_language"
             android:icon="@drawable/menu_language"
-            android:title="@string/language" />
+            android:title="@string/language"
+            android:visible="false" />
         <item
             android:id="@+id/nav_referral"
             android:icon="@drawable/menu_referrals"

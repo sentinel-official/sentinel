@@ -13,6 +13,28 @@ let getSession = (req, res, next) => {
   else next();
 };
 
+let updateSessions = (req, res, next) => {
+  let session = joi.object().keys({
+    sessionId: joi.string().required(),
+    usage: {
+      download: joi.number().required(),
+      upload: joi.number().required()
+    }.required()
+  });
+  let updateSessionsSchema = joi.object().keys({
+    accountAddress: joi.string().required(),
+    token: joi.string().required(),
+    sessions: joi.array().items(session).required()
+  });
+  let { error } = joi.validate(req.body, updateSessionsSchema);
+  if (error) res.status(422).send({
+    success: false,
+    error
+  });
+  else next();
+}
+
 module.exports = {
-  getSession
+  getSession,
+  updateSessions
 };

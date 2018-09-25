@@ -1,5 +1,6 @@
 let async = require('async');
 let nodeDbo = require('../dbos/node.dbo');
+let sessionDbo = require('../dbos/session.dbo');
 let sessionHelper = require('../helpers/session.helper');
 
 
@@ -60,14 +61,91 @@ let getSession = (req, res) => {
           status: 500,
           message: 'Error occurred while sending the session details to the node.'
         });
-        else next(null, {
-          status: 200,
-          sessionId: payment.sessionId,
-          url,
-          token
-        });
+        else
+          next(null, url, {
+            sessionId: payment.sessionId,
+            clientAccountAddress: payment.from,
+            nodeAccountAddress: payment.to,
+            token,
+          });
       });
-    },
+    }, (url, session, next) => {
+      sessionDbo.addSession(session,
+        (error, result) => {
+          if (error) next({
+            status: 500,
+            message: 'Error occurred while saving the session details.'
+          });
+          else next(null, {
+            status: 200,
+            sessionId: session.sessionId,
+            token: session.token,
+            url
+          });
+        });
+    }
+  ], (error, success) => {
+    let response = Object.assign({
+      success: !error
+    }, error || success);
+    let status = response.status;
+    delete (response.status);
+    res.status(status).send(response);
+  });
+};
+
+let updateSessions = (req, res) => {
+  let { accountAddress,
+    token,
+    sessions } = req.body;
+  async.waterfall([
+    (next) => {
+      nodeDbo.getNode({
+        accountAddress,
+        token
+      }, (error, node) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while fetching node details.'
+        });
+        else next(null);
+      });
+    }, (next) => {
+      sessionHelper.updateSessionsUsage(accountAddress, sessions,
+        (error) => {
+          if (error) next({
+            status: 500,
+            message: 'Error occurred while updating session usage.'
+          });
+          else next(null);
+        });
+    }, (next) => {
+      let sessionIds = lodash.map(sessions, 'sessionId');
+      sessionDbo.updateSessions({
+        nodeAccountAddress: accountAddress,
+        sessionId: {
+          $nin: sessionIds
+        },
+        startedOn: {
+          $exists: true
+        },
+        endedOn: {
+          $exists: false
+        }
+      }, {
+          $set: {
+            endedOn: new Date()
+          }
+        }, (error, result) => {
+          if (error) next({
+            status: 500,
+            message: 'Error occurred while ending sessions.'
+          });
+          else next(null, {
+            status: 200
+          });
+        });
+    }
   ], (error, success) => {
     let response = Object.assign({
       success: !error
@@ -79,5 +157,6 @@ let getSession = (req, res) => {
 };
 
 module.exports = {
-  getSession
+  getSession,
+  updateSessions
 };

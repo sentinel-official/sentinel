@@ -1,5 +1,6 @@
 let axios = require('axios');
 let cosmos = require('../../cosmos');
+let sessionDbo = require('../dbos/session.dbo');
 
 
 let generateToken = () => {
@@ -50,8 +51,47 @@ let sendUserDetails = (url, details, cb) => {
     });
 };
 
+let updateSessionUsage = (nodeAccountAddress, sessionId, usage, cb) => {
+  sessionDbo.updateSession({
+    sessionId,
+    nodeAccountAddress,
+    startedOn: {
+      $exists: true
+    },
+    endedOn: {
+      $exists: false
+    }
+  }, {
+      $set: {
+        usage,
+        updatedOn: new Date()
+      }
+    }, (error, result) => {
+      if (error) cb({
+        code: 3,
+        message: 'Error occurred while updating session usage.'
+      });
+      else next(null);
+    });
+};
+
+let updateSessionsUsage = (nodeAccountAddress, sessions, cb) => {
+  async.forEach(sessions,
+    (session, next) => {
+      let { sessionId,
+        usage } = session;
+      updateSessionUsage(nodeAccountAddress, sessionId, usage,
+        (error) => {
+          next(error);
+        });
+    }, (error) => {
+      cb(error);
+    });
+};
+
 module.exports = {
   generateToken,
   getPaymentDetails,
-  sendUserDetails
+  sendUserDetails,
+  updateSessionsUsage
 };

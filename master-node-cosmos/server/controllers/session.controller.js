@@ -94,6 +94,33 @@ let getSession = (req, res) => {
   });
 };
 
+let getSessions = (req, res) => {
+  let { accountAddress } = req.query;
+  async.waterfall([
+    (next) => {
+      sessionDbo.getSessions({
+        clientAccountAddress: accountAddress
+      }, (error, result) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while fetching sessions.'
+        });
+        else next({
+          status: 200,
+          sessions: result
+        });
+      });
+    }
+  ], (error, success) => {
+    let response = Object.assign({
+      success: !error
+    }, error || success);
+    let status = response.status;
+    delete (response.status);
+    res.status(status).send(response);
+  });
+};
+
 let updateSessions = (req, res) => {
   let { accountAddress,
     token,
@@ -158,5 +185,6 @@ let updateSessions = (req, res) => {
 
 module.exports = {
   getSession,
+  getSessions,
   updateSessions
 };

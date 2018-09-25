@@ -17,7 +17,7 @@ let initServer = () => {
     port,
     dbName } = mongoDbConfig;
   mongoDbUrl = `mongodb://${address}:${port}/${dbName}`;
-  if(username.length && password.length) mongoDbUrl = `mongodb://${username}:${password}@${address}:${port}/${dbName}`;
+  if (username.length && password.length) mongoDbUrl = `mongodb://${username}:${password}@${address}:${port}/${dbName}`;
   let server = express();
   let corsOptions = {
     'origin': '*',
@@ -25,7 +25,10 @@ let initServer = () => {
   };
 
   mongoose.connect(mongoDbUrl, {
-    useNewUrlParser: true
+    poolSize: 24,
+    reconnectTries: Number.MAX_VALUE,
+    reconnectInterval: 500,
+    useNewUrlParser: true,
   }, (error, db) => {
     if (error) console.log(error);
     else console.log(`Connected to database URL: ${mongoDbUrl}`);

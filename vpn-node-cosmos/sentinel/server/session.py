@@ -133,7 +133,7 @@ class AddSessionPaymentSign(object):
                     'gas': DEFAULT_GAS,
                     'isfinal': True,
                     'password': node.config['account']['password'],
-                    'signature': signature['hash']
+                    'sign': signature['hash']
                 })
                 print (error, data)
             message = {

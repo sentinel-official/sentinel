@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core';
 import DisconnectIcon from '@material-ui/icons/HighlightOff';
-import { setVpnStatus } from '../Actions/vpnlist.action';
+import { setVpnStatus, clearUsage } from '../Actions/vpnlist.action';
 import { getSignHash, addSignature, deleteTmAccount } from '../Actions/tmvpn.action';
 import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { footerStyles } from '../Assets/footer.styles';
@@ -97,7 +97,8 @@ class Footer extends Component {
                     this.setState({ openSnack: true, snackMessage: res });
                 }
                 else {
-                    this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN });
+                    this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, counter: 1 });
+                    this.props.clearUsage();
                     this.props.setVpnStatus(false);
                     deleteTmAccount();
                 }
@@ -111,6 +112,7 @@ class Footer extends Component {
                     }
                     else {
                         this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, rateDialog: true });
+                        this.props.clearUsage();
                         this.props.setVpnStatus(false);
                     }
                 })
@@ -121,6 +123,7 @@ class Footer extends Component {
                     }
                     else {
                         this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, rateDialog: true });
+                        this.props.clearUsage();
                         this.props.setVpnStatus(false);
                     }
                 })
@@ -133,8 +136,11 @@ class Footer extends Component {
         let { vpnStatus, currentUsage, isTm, classes } = this.props;
         let counter = this.state.counter;
         downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
-        if (vpnStatus && isTm && downloadData >= counter * 10) {
+        if (vpnStatus && isTm && downloadData >= counter * 10 && downloadData < (counter + 1) * 10) {
             this.sendSignature(downloadData, false, counter);
+        }
+        if (!vpnStatus) {
+            downloadData = 0;
         }
         return (
             <div style={footerStyles.mainDivStyle}>
@@ -236,7 +242,8 @@ function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         setVpnStatus,
         getSignHash,
-        addSignature
+        addSignature,
+        clearUsage
     }, dispatch)
 }
 

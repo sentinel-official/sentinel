@@ -82,7 +82,7 @@ export async function rateVPNSession(value, cb) {
     else {
         cb({ message: 'Error occured while submitting rating' });
         removeSessionLocal();
-     }
+    }
 }
 
 export function setActiveVpn(data) {
@@ -95,6 +95,19 @@ export function setActiveVpn(data) {
 export function setCurrentVpn(data) {
     return {
         type: types.SET_CURRENT_VPN,
+        payload: data
+    }
+}
+
+export function clearUsage() {
+    let data = {
+        data: {
+            success: true,
+            usage: {}
+        }
+    }
+    return {
+        type: types.VPN_USAGE,
         payload: data
     }
 }

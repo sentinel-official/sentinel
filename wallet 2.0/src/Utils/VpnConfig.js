@@ -6,7 +6,7 @@ const remote = electron.remote;
 
 export function getVPNPIDs(cb) {
     exec('pidof openvpn', function (err, stdout, stderr) {
-        if (err) cb(err, null);
+        if (err) cb(true, null);
         else if (stdout) {
             let pids = stdout.trim();
             cb(null, pids);

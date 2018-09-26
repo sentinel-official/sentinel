@@ -147,8 +147,8 @@ export async function testConnect(account_addr, vpn_addr, cb) {
             if (resp.data.success) {
                 getOVPNAndSave(account_addr, resp.data['ip'], resp.data['port'], resp.data['vpn_addr'], resp.data['token'], (err) => {
                     if (err) cb(err, null);
-                    else connectwithOVPN(resp.data, (error,response)=>{
-                        cb(error,response);
+                    else connectwithOVPN(resp.data, (error, response) => {
+                        cb(error, response);
                     });
                 })
             } else {
@@ -170,8 +170,8 @@ export async function tmConnect(account_addr, vpn_data, session_data, cb) {
                 success: true,
                 message: 'Connected to VPN'
             }
-            connectwithOVPN(resp, (error,response)=>{
-                cb(error,response);
+            connectwithOVPN(resp, (error, response) => {
+                cb(error, response);
             });
         }
     })
@@ -211,15 +211,17 @@ export function connectwithOVPN(resp, cb) {
     if (remote.process.platform === 'win32') { checkWindows(resp, cb) }
     else if (remote.process.platform === 'darwin') checkVPNConnection(resp, cb);
     else {
-        getVPNPIDs((err, pids) => {
-            if (err) { }
-            else {
-                CONNECTED = true;
-                cb(null, resp.message);
-                writeConf('openvpn', (res) => {
-                    console.log("Sending Response..");
-                });
-            }
+        setTimeout(() => {
+            getVPNPIDs((err, pids) => {
+                if (err) { }
+                else {
+                    CONNECTED = true;
+                    writeConf('openvpn', (res) => {
+                        cb(null, resp.message);
+                        console.log("Sending Response..");
+                    });
+                }
+            }, 2000)
         })
     }
 }

@@ -45,7 +45,13 @@ def get_sessions(client_name=None):
             if client['usage']['down'] >= LIMIT_1GB:
                 client_name = 'client' + client['session_id']
                 disconnect_client(client_name)
-            sessions.append(client)
+            sessions.append({
+                'sessionId': client['session_id'],
+                'usage': {
+                    'download': client['usage']['down'],
+                    'upload': client['usage']['up']
+                }
+            })
         elif 'ROUTING TABLE' in line:
             break
     return sessions

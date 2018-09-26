@@ -4,10 +4,10 @@ let nodeHelper = require('../helpers/node.helper');
 
 
 let addNode = (req, res) => {
-  let {hash} = req.body;
+  let { hash } = req.body;
   async.waterfall([
     (next) => {
-      nodeDbo.getNode({txHash: hash},
+      nodeDbo.getNode({ txHash: hash },
         (error, node) => {
           if (error) next({
             status: 500,
@@ -68,7 +68,7 @@ let updateNode = (req, res) => {
   else if (type === 'details') details['info.startOn'] = new Date();
   async.waterfall([
     (next) => {
-      nodeDbo.getNode({accountAddress, token},
+      nodeDbo.getNode({ accountAddress, token },
         (error, node) => {
           if (error) next({
             status: 500,
@@ -76,12 +76,12 @@ let updateNode = (req, res) => {
           });
           else if (node) next(null);
           else next({
-              status: 400,
-              message: 'Node doesn\'t exists.'
-            });
+            status: 400,
+            message: 'Node doesn\'t exists.'
+          });
         });
     }, (next) => {
-      nodeDbo.updateNode({accountAddress}, details,
+      nodeDbo.updateNode({ accountAddress }, details,
         (error, result) => {
           if (error) next({
             status: 500,
@@ -127,9 +127,9 @@ let getNodes = (req, res) => {
   } = req.query;
   let findObj = {
     '$and': [{
-      '$or': type === 'any' ? [{'nodeType': 'OpenVPN'}, {'nodeType': 'Socks5'}] : [{'nodeType': type}]
+      '$or': type === 'any' ? [{ 'nodeType': 'OpenVPN' }, { 'nodeType': 'Socks5' }] : [{ 'nodeType': type }]
     }, {
-      '$or': status === 'any' ? [{'info.status': 'up'}, {'info.status': 'down'}] : [{'info.status': status}]
+      '$or': status === 'any' ? [{ 'info.status': 'up' }, { 'info.status': 'down' }] : [{ 'info.status': status }]
     }]
   };
 

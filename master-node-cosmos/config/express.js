@@ -18,7 +18,7 @@ let initServer = () => {
     port,
     dbName
   } = mongoDbConfig;
-  mongoDbUrl = `mongodb://${address}:${port}/${dbName}`;
+  let mongoDbUrl = `mongodb://${address}:${port}/${dbName}`;
   if (username.length && password.length) mongoDbUrl = `mongodb://${username}:${password}@${address}:${port}/${dbName}`;
   let server = express();
   let corsOptions = {

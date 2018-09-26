@@ -36,7 +36,7 @@ let sendUserDetails = (url, details, cb) => {
   axios.post(url, details)
     .then((response) => {
       if (response.status === 200) {
-        let {data} = response;
+        let { data } = response;
         if (data.success) cb(null);
         else cb({
           code: 2,
@@ -63,15 +63,15 @@ let updateSessionUsage = (nodeAccountAddress, sessionId, usage, cb) => {
       $exists: false
     }
   }, {
-    usage,
-    updatedOn: new Date()
-  }, (error, result) => {
-    if (error) cb({
-      code: 3,
-      message: 'Error occurred while updating session usage.'
+      usage,
+      updatedOn: new Date()
+    }, (error, result) => {
+      if (error) cb({
+        code: 3,
+        message: 'Error occurred while updating session usage.'
+      });
+      else cb(null);
     });
-    else next(null);
-  });
 };
 
 let updateSessionsUsage = (nodeAccountAddress, sessions, cb) => {

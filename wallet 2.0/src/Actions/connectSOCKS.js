@@ -199,15 +199,17 @@ export function connectwithSocks(data, cb) {
     count = 0;
     if (remote.process.platform === 'win32') checkSocksWindows(cb);
     else {
-        getSocksPIDs(function (err, pids) {
-            if (err) { }
-            else {
-                CONNECTED = true;
-                writeConf('socks5', (res) => {
-                    cb(null, 'Connected to Socks');
-                });
-            }
-        });
+        setTimeout(() => {
+            getSocksPIDs(function (err, pids) {
+                if (err) { }
+                else {
+                    CONNECTED = true;
+                    writeConf('socks5', (res) => {
+                        cb(null, 'Connected to Socks');
+                    });
+                }
+            });
+        }, 2000)
     }
 }
 

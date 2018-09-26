@@ -40,7 +40,10 @@ function windowManager() {
 
     this.window.on('close', async (e) => {
       let self = this;
-      exec('killall gaiacli', (err, std, sto) => { });
+      if (process.platform === 'win32')
+        exec('taskkill /IM gaiacli.exe /F', (err, std, sto) => { });
+      else
+        exec('killall gaiacli', (err, std, sto) => { });
       let isTM = await getTmLocal();
       if (isTM === 'true') {
         isTMVPNConnected(function (isConnected) {

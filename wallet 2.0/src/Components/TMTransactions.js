@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 import { sendAmount, getTMBalance } from '../Actions/tendermint.action';
 import { payVPNSession, getSessionInfo } from './../Actions/tmvpn.action';
 import { payVPNTM, setVpnStatus, setActiveVpn } from '../Actions/vpnlist.action';
-import { connectVPN } from './../Actions/connectOVPN';
+import { connectVPN, checkVPNDependencies } from './../Actions/connectOVPN';
 import CustomTextField from './customTextfield';
 import { Button, Snackbar } from '@material-ui/core';
 import { createAccountStyle } from '../Assets/createtm.styles';
 import { accountStyles } from '../Assets/tmaccount.styles';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
+import OpenvpnAlert from './OpenvpnAlert';
 
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -33,7 +34,8 @@ class TMTransactions extends Component {
             openSnack: false,
             snackMessage: '',
             isTextDisabled: false,
-            sending: false
+            sending: false,
+            openvpnAlert: false
         }
     }
 
@@ -49,47 +51,59 @@ class TMTransactions extends Component {
         }
     }
 
+    handleDialogClose = () => {
+        this.setState({ openvpnAlert: false });
+    }
+
     sendTransaction = () => {
         this.setState({ sending: true })
         if (this.props.vpnPayment.isPayment) {
-            let data = {
-                "amount": (parseInt(this.state.amount) * (10 ** 8)).toString() + 'sut',
-                "name": this.props.account.name,
-                "password": this.state.keyPassword,
-                "gas": 200000,
-                "vaddress": this.state.toAddress,
-                "sig_name": Math.random().toString(36).substring(4),
-                "sig_password": Math.random().toString(36).substring(2)
-            }
-            this.props.payVPNSession(data).then(response => {
-                console.log("Pay VPN...", response);
-                if (response.error) {
-                    console.log("VPN Error...", response);
-                    this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
+            checkVPNDependencies(remote.process.platform, (otherErr, winErr) => {
+                if (otherErr) {
+                    this.setState({ sending: false, openSnack: true, snackMessage: otherErr.message });
+                }
+                else if (winErr) {
+                    this.setState({ sending: false, openvpnAlert: true })
                 }
                 else {
-                    localStorage.setItem('SIGNAME', data.sig_name)
-                    localStorage.setItem('SIGPWD', data.sig_password)
-                    // this.props.getSessionInfo('783B5A64D3CA4C02EAB2DF433B940C8C7349A8A4').then(sesRes => {
-                    this.props.getSessionInfo(response.payload.hash).then(sesRes => {
-                        console.log("Ses..=", sesRes);
-                        if (sesRes.error) {
-                            console.log("Ses..Error", sesRes.error);
-                            this.setState({ sending: false, openSnack: true, snackMessage: 'Something went wrong' });
+                    let data = {
+                        "amount": (parseInt(this.state.amount) * (10 ** 8)).toString() + 'sut',
+                        "name": this.props.account.name,
+                        "password": this.state.keyPassword,
+                        "gas": 200000,
+                        "vaddress": this.state.toAddress,
+                        "sig_name": Math.random().toString(36).substring(4),
+                        "sig_password": Math.random().toString(36).substring(2)
+                    }
+                    this.props.payVPNSession(data).then(response => {
+                        if (response.error) {
+                            console.log("Pay VPN Error...", response);
+                            this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
                         }
                         else {
-                            let data = sesRes.payload;
-                            let vpn_data = this.props.vpnPayment.data;
-                            let session_data = sesRes.payload
-                            connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
-                                console.log("Response...", err, platformErr, res);
-                                if (err) {
-                                    this.setState({ sending: false, openSnack: true, snackMessage: err.message });
+                            localStorage.setItem('SIGNAME', data.sig_name)
+                            localStorage.setItem('SIGPWD', data.sig_password)
+                            this.props.getSessionInfo(response.payload.hash).then(sesRes => {
+                                if (sesRes.error) {
+                                    console.log("Ses..Error", sesRes.error);
+                                    this.setState({ sending: false, openSnack: true, snackMessage: 'Something went wrong' });
                                 }
                                 else {
-                                    this.props.setActiveVpn(vpn_data);
-                                    this.props.setVpnStatus(true);
-                                    this.setState({ sending: false, toAddress: '', keyPassword: '', amount: '', openSnack: true, snackMessage: 'Connected VPN' });
+                                    let data = sesRes.payload;
+                                    let vpn_data = this.props.vpnPayment.data;
+                                    let session_data = sesRes.payload
+                                    connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
+                                        if (err) {
+                                            console.log("Connect VPN Err...", err, platformErr, res);
+                                            this.setState({ sending: false, openSnack: true, snackMessage: err.message });
+                                        }
+                                        else {
+                                            this.props.setActiveVpn(vpn_data);
+                                            localStorage.setItem('lockedAmount', 100);
+                                            this.props.setVpnStatus(true);
+                                            this.setState({ sending: false, toAddress: '', keyPassword: '', amount: '', openSnack: true, snackMessage: 'Connected VPN' });
+                                        }
+                                    })
                                 }
                             })
                         }
@@ -110,7 +124,10 @@ class TMTransactions extends Component {
                     this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
                 }
                 else {
-                    this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction done successfully' });
+                    this.setState({
+                        sending: false, openSnack: true, snackMessage: 'Transaction done successfully',
+                        toAddress: '', keyPassword: '', amount: '',
+                    });
                 }
             });
         }
@@ -151,6 +168,10 @@ class TMTransactions extends Component {
                     autoHideDuration={4000}
                     onClose={this.handleClose}
                     message={this.state.snackMessage}
+                />
+                <OpenvpnAlert
+                    open={this.state.openvpnAlert}
+                    onClose={this.handleDialogClose}
                 />
             </div>
         )

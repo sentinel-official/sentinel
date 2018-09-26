@@ -7,3 +7,7 @@ wallet/release-builds/
 wallet/package-lock.json
 **/.idea
 **/.vscode/
+wallet\ 2.0/release-builds/
+wallet\ 2.0/package-lock.json
+wallet\ 2.0/build/
+wallet\ 2.0/keys/

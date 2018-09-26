@@ -56,8 +56,7 @@ class Footer extends Component {
 
     sendSignature = (downData, isFinal, counter) => {
         let amount = (this.props.activeVpn.price_per_GB * downData) / 1024;
-        console.log("Dat..", this.props.activeVpn.price_per_GB, downData, amount);
-        this.props.getSignHash(amount * (10 ** 8), counter, isFinal).then(res => {
+        this.props.getSignHash(Math.round(amount * (10 ** 8)), counter, isFinal).then(res => {
             if (res.error) {
                 console.log("SignError...", res.error);
             }
@@ -69,7 +68,7 @@ class Footer extends Component {
                     signature: {
                         hash: res.payload,
                         index: counter,
-                        amount: (amount * (10 ** 8)).toString() + 'sut',
+                        amount: (Math.round(amount * (10 ** 8))).toString() + 'sut',
                         final: isFinal
                     }
                 }

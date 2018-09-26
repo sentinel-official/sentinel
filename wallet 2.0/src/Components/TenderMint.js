@@ -9,6 +9,7 @@ import CreateTMAccount from './CreateTMAccount';
 import TMAccountDetails from './TMAccountDetails';
 import TMAccountView from './TMAccountView';
 import TMTransactions from './TMTransactions';
+import TMSessions from './TMSessions';
 
 class TenderMint extends Component {
     constructor(props) {
@@ -71,10 +72,12 @@ class TenderMint extends Component {
                                 >
                                     <Tab label="Account" style={sidebarStyles.outlineNone} />
                                     <Tab label="Transactions" style={sidebarStyles.outlineNone} />
+                                    <Tab label="Sessions" style={sidebarStyles.outlineNone} />
                                 </Tabs>
                             </Paper>
                             {value === 0 && <TMAccountView />}
                             {value === 1 && <TMTransactions />}
+                            {value === 2 && <TMSessions />}
                         </div>
                     )
                 }

@@ -19,7 +19,7 @@ export async function payVPNSession(data, toAddr) {
         return {
             type: types.PAY_VPN,
             payload: null,
-            error: err.response
+            error: err.response || 'Something went wrong'
         }
     }
 }
@@ -41,15 +41,18 @@ export async function getSessionInfo(hash) {
         return {
             type: types.GET_SESSION_INFO,
             payload: null,
-            error: err.response
+            error: err.response || 'Something went wrong'
         }
     }
 }
 
 export async function getSignHash(amount, counter, isfinal) {
+    // let sessionBuffer = new Buffer(localStorage.getItem('SESSION_NAME'), 'base64');
+    // let session_name = sessionBuffer.toString();
+    let session_name = localStorage.getItem('SESSION_NAME');
     let data = {
         amount: amount.toString() + 'sut',
-        session_id: localStorage.getItem('SESSION_NAME'),
+        session_id: session_name,
         counter: counter,
         isfinal: isfinal,
         name: localStorage.getItem('SIGNAME'),
@@ -71,7 +74,7 @@ export async function getSignHash(amount, counter, isfinal) {
         return {
             type: types.GET_SIGN_HASH,
             payload: null,
-            error: err.response
+            error: err.response || 'Something went wrong'
         }
     }
 }
@@ -94,7 +97,7 @@ export async function addSignature(data) {
         return {
             type: types.SEND_SIGNATURE,
             payload: null,
-            error: err.response
+            error: err.response || 'Something went wrong'
         }
     }
 }
@@ -104,10 +107,33 @@ export function deleteTmAccount() {
         password: localStorage.getItem('SIGPWD')
     }
 
-    axios.delete(TM_URL + '/keys/' + localStorage.getItem('SIGNAME'), data, {
+    axios.delete(TM_URL + '/keys/' + localStorage.getItem('SIGNAME'), { data: data }, {
         headers: {
             'Accept': 'application/json',
             'Content-type': 'application/json',
         }
     })
+}
+
+export async function getSessionHistory(account_addr) {
+    try {
+        let response = await axios({
+            url: `${TMain_URL}/sessions?accountAddress=${account_addr}`,
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            },
+            timeout: 12000
+        })
+        return {
+            type: types.GET_SESSION_HISTORY,
+            payload: response.data.sessions
+        }
+    } catch (err) {
+        return {
+            type: types.GET_SESSION_HISTORY,
+            payload: []
+        }
+    }
 }

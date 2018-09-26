@@ -187,7 +187,7 @@ class AlertDialog extends React.Component {
     makeInitPayment = () => {
         let data = {
             account_addr: this.props.paymentAddr,
-            amount: 10000000000,
+            amount: 100,
             id: -1
         };
         this.props.initPaymentAction(data);
@@ -199,7 +199,7 @@ class AlertDialog extends React.Component {
             <Dialog
                 // open={this.state.open}
                 // keepMounted
-                open={this.props.op}
+                open={this.props.open}
                 onClose={this.props.onClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"

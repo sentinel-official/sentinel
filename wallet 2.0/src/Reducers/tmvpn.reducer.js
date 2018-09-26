@@ -8,3 +8,12 @@ export function getSessionInfo(state = null, action) {
             return state
     }
 }
+
+export function sessionHistory(state = [], action) {
+    switch (action.type) {
+        case types.GET_SESSION_HISTORY:
+            return action.payload;
+        default:
+            return state
+    }
+}

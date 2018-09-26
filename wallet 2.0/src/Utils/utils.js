@@ -95,7 +95,6 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
         cb(null);
     } else {
         axiosInstance.post(uri, data).then(response => {
-            console.log('calling the axios global instance')
             if (response.data.success) {
                 if (response.data['node'] === null) {
                     cb({ message: 'Something wrong. Please Try Later' })
@@ -107,6 +106,7 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
                         vpn_addr: vpn_addr
                     }
                     ovpnSave(vpn_data, response.data['session_name'], response.data['node']['vpn']['ovpn'], (res) => {
+                        console.log("OVPN Saved....");
                         cb(res);
                     })
                 }
@@ -150,10 +150,14 @@ export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
     } else {
         axios.post(session_data.url + '/session/credentials', data)
             .then(response => {
+                console.log("Getting Session Credentials...")
                 if (response.data.success) {
                     localStorage.setItem('TOKEN', session_data.token);
                     localStorage.setItem('TM_VPN_URL', session_data.url);
-                    ovpnSave(vpn_data, session_data.sessionId, response.data.ovpn, cb);
+                    ovpnSave(vpn_data, session_data.sessionId, response.data.ovpn, (res) => {
+                        console.log("OVPN Saved....");
+                        cb(res);
+                    });
                 }
                 else {
                     cb({ message: 'Error occured while getting ovpn' })

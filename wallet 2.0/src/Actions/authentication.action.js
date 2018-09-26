@@ -55,8 +55,9 @@ export function setComponent(component) {
 
 export const createAccount = (password) => {
     try {
+        let BURL = localStorage.getItem('B_URL');
         let request = axios({
-            url: URL.CREATE_ACCOUNT,
+            url: BURL + URL.CREATE_ACCOUNT,
             method: 'POST',
             headers: {
                 'Access-Control-Allow-Origin': '*',

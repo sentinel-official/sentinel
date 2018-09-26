@@ -1,9 +1,11 @@
 import { sendError } from './../Actions/authentication.action';
 import { getUserHome } from './utils';
+import { dark } from '@material-ui/core/styles/createPalette';
 const fs = window.require('fs');
 const { exec } = window.require('child_process');
 const SENT_DIR = getUserHome() + '/.sentinel';
 const CONFIG_FILE = SENT_DIR + '/config';
+const TM_CONFIG_FILE = SENT_DIR + '/tmConfig';
 
 export const isOnline = function () {
     try {
@@ -32,12 +34,27 @@ export function getConfig(cb) {
     });
 }
 
+export function getTMConfig(cb) {
+    fs.readFile(TM_CONFIG_FILE, 'utf8', function (err, data) {
+        if (err) {
+            err.toString().includes('ENOENT') ?
+                fs.writeFile(TM_CONFIG_FILE, JSON.stringify({ isCreated: false }), function (Er) { })
+                : null
+            cb(err, null);
+        }
+        else {
+            cb(null, data);
+        }
+    });
+}
+
 export function setTMConfig(username) {
-    getConfig(function (error, configData) {
+    getTMConfig(function (error, configData) {
         let data = JSON.parse(configData);
         data.tmUserName = username;
+        data.isCreated = true;
         let config = JSON.stringify(data);
-        fs.writeFile(CONFIG_FILE, config, function (keyErr) {
+        fs.writeFile(TM_CONFIG_FILE, config, function (keyErr) {
         });
     })
 }

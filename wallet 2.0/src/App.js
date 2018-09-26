@@ -12,7 +12,7 @@ import { readFile } from './Utils/Keystore';
 import { KEYSTORE_FILE } from './Utils/Keystore';
 import Dashboard from './Components/Dashboard';
 import { runGaiacli } from './Utils/Gaiacli';
-import { B_URL } from './../Constants/constants';
+import { B_URL } from './Constants/constants';
 const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
@@ -57,8 +57,8 @@ class App extends Component {
                 }
             case 'authenticate':
                 {
-                    // return <Authenticate />
-                    return <Dashboard />
+                    return <Authenticate />
+                    // return <Dashboard />
                 }
             case 'dashboard':
                 {

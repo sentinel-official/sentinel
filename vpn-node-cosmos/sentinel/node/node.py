@@ -24,7 +24,9 @@ class Node(object):
         with open(CONFIG_DATA_PATH, 'w') as f:
             json.dump(self.config, f, indent=4, sort_keys=True, ensure_ascii=False)
 
-    def update_info(self, info_type=None, info={}):
+    def update_info(self, info_type=None, info=None):
+        if info is None:
+            info = {}
         if info_type == 'location':
             web_url = 'http://ip-api.com/json'
             response = json.load(urlopen(web_url))

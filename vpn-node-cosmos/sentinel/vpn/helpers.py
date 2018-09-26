@@ -22,8 +22,8 @@ def revoke(client_name):
     return revoke_proc.returncode
 
 
-def get_connections(client_name=None):
-    connections = []
+def get_sessions(client_name=None):
+    sessions = []
     status_log = open('/etc/openvpn/openvpn-status.log', 'r').readlines()
     for line in status_log:
         line = line.strip()
@@ -45,7 +45,7 @@ def get_connections(client_name=None):
             if client['usage']['down'] >= LIMIT_1GB:
                 client_name = 'client' + client['session_id']
                 disconnect_client(client_name)
-            connections.append(client)
+            sessions.append(client)
         elif 'ROUTING TABLE' in line:
             break
-    return connections
+    return sessions

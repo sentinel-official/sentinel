@@ -135,6 +135,7 @@ class AddSessionPaymentSign(object):
                     'password': node.config['account']['password'],
                     'signature': signature['hash']
                 })
+                print (error, data)
             message = {
                 'success': True
             }

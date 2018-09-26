@@ -63,3 +63,28 @@ def update_node(update_type):
                }, None
     except Exception as error:
         return str(error), None
+
+
+def update_sessions(sessions):
+    body = {
+        'accountAddress': node.config['account']['address'],
+        'token': node.config['register']['token'],
+        'sessions': sessions
+    }
+    url = urljoin(MASTER_NODE_URL, 'sessions')
+    try:
+        response = fetch().put(url, json=body)
+        if response and response.status_code == 200:
+            data = response.json()
+            if data['success']:
+                return None, data
+            return {
+                       'code': 2,
+                       'message': 'Response data success is False.'
+                   }, None
+        return {
+                   'code': 2,
+                   'message': 'Response status code is not 200.'
+               }, None
+    except Exception as error:
+        return str(error), None

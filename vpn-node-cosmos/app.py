@@ -9,8 +9,9 @@ from sentinel.cosmos import call as cosmos_call
 from sentinel.node import list_node
 from sentinel.node import node
 from sentinel.node import update_node
+from sentinel.node import update_sessions
 from sentinel.vpn import OpenVPN
-from sentinel.vpn import get_connections
+from sentinel.vpn import get_sessions
 
 
 def alive_job():
@@ -22,12 +23,17 @@ def alive_job():
         time.sleep(30)
 
 
-def connections_job():
+def sessions_job():
+    extra = 5
     while True:
         try:
             vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
             if vpn_status_file is True:
-                _ = get_connections()
+                sessions = get_sessions()
+                sessions_len = len(sessions)
+                if (sessions_len > 0) or (extra > 0):
+                    update_sessions(sessions)
+                    extra = 5 if sessions_len > 0 else extra - 1
         except Exception as err:
             print(str(err))
         time.sleep(5)
@@ -97,7 +103,7 @@ if __name__ == '__main__':
     openvpn = OpenVPN()
     openvpn.start()
     start_new_thread(alive_job, ())
-    start_new_thread(connections_job, ())
+    start_new_thread(sessions_job, ())
 
     while True:
         line = openvpn.vpn_proc.stdout.readline().strip()

@@ -1,6 +1,7 @@
 let axios = require('axios');
-let cosmos = require('../../cosmos');
+let async = require('async');
 let sessionDbo = require('../dbos/session.dbo');
+let cosmos = require('../../cosmos');
 
 
 let generateToken = () => {
@@ -35,7 +36,7 @@ let sendUserDetails = (url, details, cb) => {
   axios.post(url, details)
     .then((response) => {
       if (response.status === 200) {
-        let { data } = response;
+        let {data} = response;
         if (data.success) cb(null);
         else cb({
           code: 2,
@@ -62,24 +63,24 @@ let updateSessionUsage = (nodeAccountAddress, sessionId, usage, cb) => {
       $exists: false
     }
   }, {
-      $set: {
-        usage,
-        updatedOn: new Date()
-      }
-    }, (error, result) => {
-      if (error) cb({
-        code: 3,
-        message: 'Error occurred while updating session usage.'
-      });
-      else next(null);
+    usage,
+    updatedOn: new Date()
+  }, (error, result) => {
+    if (error) cb({
+      code: 3,
+      message: 'Error occurred while updating session usage.'
     });
+    else next(null);
+  });
 };
 
 let updateSessionsUsage = (nodeAccountAddress, sessions, cb) => {
   async.forEach(sessions,
     (session, next) => {
-      let { sessionId,
-        usage } = session;
+      let {
+        sessionId,
+        usage
+      } = session;
       updateSessionUsage(nodeAccountAddress, sessionId, usage,
         (error) => {
           next(error);

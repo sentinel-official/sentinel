@@ -1,4 +1,5 @@
 let async = require('async');
+let lodash = require('lodash');
 let nodeDbo = require('../dbos/node.dbo');
 let sessionDbo = require('../dbos/session.dbo');
 let sessionHelper = require('../helpers/session.helper');

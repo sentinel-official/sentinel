@@ -31,6 +31,7 @@ export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
                 });
             }
             else {
+                console.log("Connecting..");
                 testConnect(account_addr, vpn_addr, (err, res) => {
                     cb(err, false, res)
                 });
@@ -142,10 +143,13 @@ export async function testConnect(account_addr, vpn_addr, cb) {
     };
     axios.post(`${B_URL}/client/vpn`, data)
         .then(resp => {
+            console.log("Getting VPN Details...");
             if (resp.data.success) {
                 getOVPNAndSave(account_addr, resp.data['ip'], resp.data['port'], resp.data['vpn_addr'], resp.data['token'], (err) => {
                     if (err) cb(err, null);
-                    else connectwithOVPN(resp.data, cb);
+                    else connectwithOVPN(resp.data, (error,response)=>{
+                        cb(error,response);
+                    });
                 })
             } else {
                 if (resp.data.account_addr)
@@ -166,7 +170,9 @@ export async function tmConnect(account_addr, vpn_data, session_data, cb) {
                 success: true,
                 message: 'Connected to VPN'
             }
-            connectwithOVPN(resp, cb);
+            connectwithOVPN(resp, (error,response)=>{
+                cb(error,response);
+            });
         }
     })
 }
@@ -209,8 +215,9 @@ export function connectwithOVPN(resp, cb) {
             if (err) { }
             else {
                 CONNECTED = true;
+                cb(null, resp.message);
                 writeConf('openvpn', (res) => {
-                    cb(null, resp.message);
+                    console.log("Sending Response..");
                 });
             }
         })
@@ -238,9 +245,11 @@ function checkWindows(resp, cb) {
 }
 
 export function writeConf(type, cb) {
+    console.log("Writing Config...");
     getConfig(function (err, confdata) {
-        let data = confdata ? JSON.parse(confdata) : {};
+        let data = JSON.parse(confdata);
         data.isConnected = true;
+        console.log("Updating Config...");
         data.ipConnected = localStorage.getItem('IPGENERATED');
         data.location = localStorage.getItem('LOCATION');
         data.speed = localStorage.getItem('SPEED');
@@ -249,6 +258,7 @@ export function writeConf(type, cb) {
         data.vpn_type = type;
         let config = JSON.stringify(data);
         fs.writeFile(CONFIG_FILE, config, (err) => {
+            console.log("Updated Conf...");
             cb(null)
         });
     })

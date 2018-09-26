@@ -1,9 +1,10 @@
 const accountStyles = {
     cardStyle: {
         width: '70%',
-        height: '72%',
+        minHeight: 245,
         fontFamily: 'Montserrat',
-        textAlign: 'center'
+        textAlign: 'center',
+
     },
     formStyle: {
         display: 'flex',
@@ -42,11 +43,13 @@ const accountStyles = {
         color: '#0275d8'
     },
     qrCodeStyle: {
-        width: 200,
-        marginTop: -50
+        width: 200
     },
-    outlineNone:{
-        outline:'none'
+    outlineNone: {
+        outline: 'none'
+    },
+    lastDiv: {
+        marginTop: 8
     }
 }
 

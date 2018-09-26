@@ -59,7 +59,7 @@ class Receive extends Component {
             <div>
                 <Button
                     onClick={this.getFree.bind(this)}
-                    disabled={this.props.isTest}
+                    disabled={!this.props.isTest}
                     style={
                         this.props.isTest ? 
                         receiveStyles.flatButtonStyleOnTest: 
@@ -125,7 +125,7 @@ function mapDispatchToActions(dispatch) {
 function mapStateToProps(state) {
     return {
         language: state.setLanguage,
-        isTest: state.isTest,
+        isTest: state.setTestNet,
         getFreeAmountRes: state.getFreeAmount
     }
 }

@@ -7,6 +7,7 @@ module.exports = {
     SM_URL: '&address=',
     SE_URL: '&page=1&offset=100&sort=asc&apikey=YourApiKeyToken',
     TM_URL: 'http://localhost:1317',
+    TM_FREE_TOKEN_URL: 'https://api-tm.sentinelgroup.io',
     menuItems: [
         {
             'name': 'HISTORY',

@@ -11,10 +11,12 @@ const receiveStyles = {
     },
     flatButtonStyleOnTest: {
         backgroundColor:  '#2f3245',
-        position: 'absolute', right: 0, marginTop: 10, marginRight: 20
+        position: 'absolute', right: 0, marginTop: 10, marginRight: 20,
+        color:'white'
     },
     flatButtonStyleOffTest: {
         backgroundColor:  'rgba(47, 50, 69, 0.34)',
+        cursor:'not-allowed',
         position: 'absolute', right: 0, marginTop: 10, marginRight: 20
     },
     QRCodeDiv:{

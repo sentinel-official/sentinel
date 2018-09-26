@@ -7,10 +7,14 @@ import {
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { headerStyles } from '../Assets/header.styles';
 import { setTestNet, getETHBalance, getSentBalance, setTendermint } from '../Actions/header.action';
+import { getTMBalance } from '../Actions/tendermint.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
+
+let notTMInterval = null;
+let TMInterval = null;
 
 class Header extends Component {
     constructor(props) {
@@ -59,14 +63,34 @@ class Header extends Component {
     };
 
     render() {
-        if (!this.state.isGetBalanceCalled) {
-            setInterval(() => {
-                this.props.getETHBalance(this.props.walletAddress, this.props.isTest);
-                this.props.getSentBalance(this.props.walletAddress, this.props.isTest);
+        let { balance, isTendermint, tmAccountDetails, isTest, walletAddress } = this.props;
+        if (!this.props.isTendermint && !notTMInterval) {
+            notTMInterval = setInterval(() => {
+                this.props.getETHBalance(walletAddress, isTest);
+                this.props.getSentBalance(walletAddress, isTest);
             }, 5000);
-
-            this.setState({ isGetBalanceCalled: true });
         }
+
+        if (this.props.isTendermint && !TMInterval && tmAccountDetails) {
+            TMInterval = setInterval(() => {
+                this.props.getTMBalance(tmAccountDetails.address);
+            }, 5000);
+        }
+
+        if (this.props.isTendermint) {
+            if (notTMInterval) {
+                clearInterval(notTMInterval);
+                notTMInterval = null;
+            }
+        } else {
+            if (TMInterval) {
+                clearInterval(TMInterval);
+                TMInterval = null;
+            }
+        }
+        let balValue = (typeof balance === 'object' && balance !== null) ? ('value' in balance ? balance.value : {}) : {};
+        let coins = (typeof balValue === 'object' && balValue !== null) ? ('coins' in balValue ? balValue.coins : []) : [];
+        let token = coins && coins.length !== 0 ? coins.find(o => o.denom === 'sut') : {};
         return (
             <div style={headerStyles.mainDivStyle}>
                 <Grid>
@@ -81,33 +105,59 @@ class Header extends Component {
                             <Row>
                                 <Col xs={8}><span
                                     style={headerStyles.walletAddress}>
-                                    {this.props.walletAddress}</span>
+                                    {
+                                        isTendermint ?
+                                            (tmAccountDetails ? tmAccountDetails.address : 'Loading...') :
+                                            this.props.walletAddress
+
+                                    }</span>
                                 </Col>
                                 <Col xs={4}>
-                                    <Tooltip title="Copy">
-                                        <CopyToClipboard text={this.props.walletAddress}
-                                            onCopy={() => this.setState({
-                                                snackMessage: 'Copied Successfully',
-                                                openSnack: true
-                                            })} >
-                                            <CopyIcon style={headerStyles.clipBoard} />
-                                        </CopyToClipboard>
-                                    </Tooltip>
+                                    {isTendermint && !tmAccountDetails ? null :
+                                        <Tooltip title="Copy">
+                                            <CopyToClipboard text={
+                                                isTendermint ?
+                                                    (tmAccountDetails ? tmAccountDetails.address : 'Loading...') :
+                                                    this.props.walletAddress
+
+                                            }
+                                                onCopy={() => this.setState({
+                                                    snackMessage: 'Copied Successfully',
+                                                    openSnack: true
+                                                })} >
+                                                <CopyIcon style={headerStyles.clipBoard} />
+                                            </CopyToClipboard>
+                                        </Tooltip>
+                                    }
                                 </Col>
                             </Row>
                         </Col>
                         <Col xs={4}>
-                            <div style={headerStyles.sentBalance}>
-                                <span>{this.props.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
-                                <span style={headerStyles.balanceText}>{this.props.sentBalance}</span>
-                            </div>
-                            <div style={headerStyles.ethBalance}>
-                                <span>{this.props.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
-                                <span style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading'
-                                    ? this.props.ethBalance :
-                                    parseFloat(this.props.ethBalance).toFixed(8)
-                                }</span>
-                            </div>
+                            {isTendermint ?
+                                (tmAccountDetails ?
+                                    < div style={headerStyles.ethBalance} >
+                                        <span>{'tmTESTSENT: '}</span>
+                                        <span style={headerStyles.balanceText}>
+                                            {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
+                                            {token && 'denom' in token ? ' SUTs' : ''}
+                                        </span>
+                                    </div>
+                                    : null)
+                                :
+                                <div>
+                                    <div style={headerStyles.sentBalance}>
+                                        <span>{this.props.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
+                                        <span style={headerStyles.balanceText}>{this.props.sentBalance}</span>
+                                    </div>
+                                    <div style={headerStyles.ethBalance}>
+                                        <span>{this.props.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
+                                        <span style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading'
+                                            ? this.props.ethBalance :
+                                            parseFloat(this.props.ethBalance).toFixed(8)
+                                        }</span>
+                                    </div>
+                                </div>
+                            }
                         </Col>
                         <Col xs={1} style={headerStyles.alignRight}>
                             <div style={headerStyles.columnStyle}>
@@ -185,7 +235,9 @@ function mapStateToProps(state) {
         sentBalance: state.getSentBalance,
         currentTab: state.setCurrentTab,
         isTendermint: state.setTendermint,
-        vpnStatus: state.setVpnStatus
+        vpnStatus: state.setVpnStatus,
+        balance: state.tmBalance,
+        tmAccountDetails: state.setTMAccount,
     }
 }
 
@@ -195,7 +247,8 @@ function mapDispatchToActions(dispatch) {
         getETHBalance,
         getSentBalance,
         setCurrentTab,
-        setTendermint
+        setTendermint,
+        getTMBalance
     }, dispatch)
 }
 

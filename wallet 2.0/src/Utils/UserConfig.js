@@ -54,7 +54,7 @@ export function setTMConfig(username) {
         data.tmUserName = username;
         data.isCreated = true;
         let config = JSON.stringify(data);
-        fs.writeFile(CONFIG_FILE, config, function (keyErr) {
+        fs.writeFile(TM_CONFIG_FILE, config, function (keyErr) {
         });
     })
 }

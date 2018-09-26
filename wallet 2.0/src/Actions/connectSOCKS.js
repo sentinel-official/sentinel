@@ -197,7 +197,7 @@ export function connectwithSocks(data, cb) {
     }
     CONNECTED = false;
     count = 0;
-    if (remote.process.platform === 'win32') checkSocksWindows();
+    if (remote.process.platform === 'win32') checkSocksWindows(cb);
     else {
         getSocksPIDs(function (err, pids) {
             if (err) { }
@@ -211,7 +211,7 @@ export function connectwithSocks(data, cb) {
     }
 }
 
-function checkSocksWindows(resp, cb) {
+function checkSocksWindows(cb) {
     getSocksProcesses(function (err, pids) {
         if (err) { }
         else {
@@ -227,7 +227,7 @@ function checkSocksWindows(resp, cb) {
         }
         count++;
         if (count < 4) {
-            setTimeout(function () { checkSocksWindows(); }, 5000);
+            setTimeout(function () { checkSocksWindows(cb); }, 5000);
         }
         if (count == 4 && CONNECTED === false) {
             cb({ message: 'Something went wrong.Please Try Again' }, null);

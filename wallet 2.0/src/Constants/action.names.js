@@ -45,3 +45,5 @@ export const SET_ACTIVE_VPN = 'SET_ACTIVE_VPN';
 export const GET_SIGN_HASH = 'GET_SIGN_HASH';
 export const SEND_SIGNATURE = 'SEND_SIGNATURE';
 export const SET_CURRENT_VPN = 'SET_CURRENT_VPN';
+export const GET_TOKENS = 'GET_TOKENS';
+export const GET_SESSION_HISTORY = 'GET_SESSION_HISTORY';

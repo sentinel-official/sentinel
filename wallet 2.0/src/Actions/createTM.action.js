@@ -23,7 +23,7 @@ export async function createTMAccount(name, password) {
         return {
             type: types.CREATE_TMACCOUNT,
             payload: null,
-            error: err.response
+            error: err.response || 'Something went wrong'
         }
     }
 }

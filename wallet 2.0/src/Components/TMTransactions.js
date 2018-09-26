@@ -99,6 +99,7 @@ class TMTransactions extends Component {
                                         }
                                         else {
                                             this.props.setActiveVpn(vpn_data);
+                                            localStorage.setItem('lockedAmount', 100);
                                             this.props.setVpnStatus(true);
                                             this.setState({ sending: false, toAddress: '', keyPassword: '', amount: '', openSnack: true, snackMessage: 'Connected VPN' });
                                         }
@@ -123,7 +124,10 @@ class TMTransactions extends Component {
                     this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
                 }
                 else {
-                    this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction done successfully' });
+                    this.setState({
+                        sending: false, openSnack: true, snackMessage: 'Transaction done successfully',
+                        toAddress: '', keyPassword: '', amount: '',
+                    });
                 }
             });
         }

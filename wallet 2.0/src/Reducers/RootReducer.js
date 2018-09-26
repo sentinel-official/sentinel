@@ -15,7 +15,7 @@ import { initPaymentDetails } from './initPayment.reducer';
 import { VPNUsage } from './vpnUsage'
 import { getKeys, setTMComponent, tmBalance, setTMAccount } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
-import { getSessionInfo } from './tmvpn.reducer';
+import { getSessionInfo, sessionHistory } from './tmvpn.reducer';
 import { networkChange } from './NetworkChange'
 
 const rootReducer = combineReducers({
@@ -54,7 +54,8 @@ const rootReducer = combineReducers({
     sessionInfo: getSessionInfo,
     networkChange,
     getActiveVpn,
-    getCurrentVpn
+    getCurrentVpn,
+    sessionHistory
 });
 
 export default rootReducer;

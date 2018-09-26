@@ -5,7 +5,7 @@ let addNode = (req, res, next) => {
   let addNodeSchema = joi.object().keys({
     hash: joi.string().required(),
   });
-  let { error } = joi.validate(req.body, addNodeSchema);
+  let {error} = joi.validate(req.body, addNodeSchema);
   if (error) res.status(422).send({
     success: false,
     error
@@ -35,7 +35,7 @@ let updateNode = (req, res, next) => {
       version: joi.string(),
     })
   });
-  let { error } = joi.validate(req.body, updateNodeSchema);
+  let {error} = joi.validate(req.body, updateNodeSchema);
   if (error) res.status(422).send({
     success: false,
     error
@@ -49,7 +49,7 @@ let getNodes = (req, res, next) => {
     status: joi.string().required()
   });
 
-  let { error } = joi.validate(req.query, getNodesSchema);
+  let {error} = joi.validate(req.query, getNodesSchema);
   if (error) res.status(422).send({
     success: false,
     error

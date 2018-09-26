@@ -46,8 +46,8 @@ let sessionSchema = new mongoose.Schema({
     default: Date.now
   }
 }, {
-    strict: true,
-    versionKey: false
-  });
+  strict: true,
+  versionKey: false
+});
 
 module.exports = mongoose.model('Session', sessionSchema);

@@ -11,11 +11,13 @@ let mongoDbConfig = require('./vars').mongoDb;
 
 
 let initServer = () => {
-  let { username,
+  let {
+    username,
     password,
     address,
     port,
-    dbName } = mongoDbConfig;
+    dbName
+  } = mongoDbConfig;
   mongoDbUrl = `mongodb://${address}:${port}/${dbName}`;
   if (username.length && password.length) mongoDbUrl = `mongodb://${username}:${password}@${address}:${port}/${dbName}`;
   let server = express();

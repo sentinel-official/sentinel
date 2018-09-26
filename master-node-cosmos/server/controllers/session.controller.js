@@ -24,7 +24,7 @@ let sessionHelper = require('../helpers/session.helper');
  *   }
  */
 let getSession = (req, res) => {
-  let { hash } = req.query;
+  let {hash} = req.query;
   async.waterfall([
     (next) => {
       sessionHelper.getPaymentDetails(hash,
@@ -46,9 +46,9 @@ let getSession = (req, res) => {
         });
         else if (node) next(null, payment, node);
         else next({
-          status: 400,
-          message: 'Node doesn\'t exists or node is down.'
-        });
+            status: 400,
+            message: 'Node doesn\'t exists or node is down.'
+          });
       });
     }, (payment, node, next) => {
       let token = sessionHelper.generateToken();
@@ -96,7 +96,7 @@ let getSession = (req, res) => {
 };
 
 let getSessions = (req, res) => {
-  let { accountAddress } = req.query;
+  let {accountAddress} = req.query;
   async.waterfall([
     (next) => {
       sessionDbo.getSessions({
@@ -123,9 +123,11 @@ let getSessions = (req, res) => {
 };
 
 let updateSessions = (req, res) => {
-  let { accountAddress,
+  let {
+    accountAddress,
     token,
-    sessions } = req.body;
+    sessions
+  } = req.body;
   async.waterfall([
     (next) => {
       nodeDbo.getNode({
@@ -161,18 +163,18 @@ let updateSessions = (req, res) => {
           $exists: false
         }
       }, {
-          $set: {
-            endedOn: new Date()
-          }
-        }, (error, result) => {
-          if (error) next({
-            status: 500,
-            message: 'Error occurred while ending sessions.'
-          });
-          else next(null, {
-            status: 200
-          });
+        $set: {
+          endedOn: new Date()
+        }
+      }, (error, result) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while ending sessions.'
         });
+        else next(null, {
+          status: 200
+        });
+      });
     }
   ], (error, success) => {
     let response = Object.assign({

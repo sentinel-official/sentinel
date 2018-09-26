@@ -1,6 +1,8 @@
 let axios = require('axios');
-let { chainUrl,
-  localUrl } = require('./config/cosmos');
+let {
+  chainUrl,
+  localUrl
+} = require('./config/cosmos');
 
 
 let routes = {
@@ -51,7 +53,7 @@ let routes = {
 };
 
 let call = (name, data, cb) => {
-  let { url, method } = routes[name];
+  let {url, method} = routes[name];
 
   switch (name) {
     case 'verifyHash':
@@ -73,7 +75,7 @@ let call = (name, data, cb) => {
     .then((response) => {
       console.log(response.status, response.data, name);
       if (response.status === 200) {
-        let { data } = response;
+        let {data} = response;
         switch (name) {
           case 'generateSeed':
             cb(null, {

@@ -5,8 +5,9 @@ let nodeDeadThread = () => {
       $lt: minTime
     }
   }, {
-      'info.status': 'down'
-    }, (error, result) => { });
+    'info.status': 'down'
+  }, (error, result) => {
+  });
 };
 
 setInterval(nodeDeadThread, MAX_SECS / 2);

@@ -29,6 +29,6 @@ let getAccountTxhashes = (accountAddress, cb) => {
 };
 
 module.exports = {
-  addAccountTxHash,
-  getAccountTxhashes
+  addTxHash,
+  getTxhashes
 };

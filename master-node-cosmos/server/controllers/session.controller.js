@@ -24,10 +24,10 @@ let sessionHelper = require('../helpers/session.helper');
  *   }
  */
 let getSession = (req, res) => {
-  let { hash } = req.query;
+  let { txHash } = req.params;
   async.waterfall([
     (next) => {
-      sessionHelper.getPaymentDetails(hash,
+      sessionHelper.getPaymentDetails(txHash,
         (error, details) => {
           if (error) next({
             status: 500,
@@ -95,97 +95,6 @@ let getSession = (req, res) => {
   });
 };
 
-let getSessions = (req, res) => {
-  let { accountAddress } = req.query;
-  async.waterfall([
-    (next) => {
-      sessionDbo.getSessions({
-        clientAccountAddress: accountAddress
-      }, (error, result) => {
-        if (error) next({
-          status: 500,
-          message: 'Error occurred while fetching sessions.'
-        });
-        else next({
-          status: 200,
-          sessions: result
-        });
-      });
-    }
-  ], (error, success) => {
-    let response = Object.assign({
-      success: !error
-    }, error || success);
-    let status = response.status;
-    delete (response.status);
-    res.status(status).send(response);
-  });
-};
-
-let updateSessions = (req, res) => {
-  let {
-    accountAddress,
-    token,
-    sessions
-  } = req.body;
-  async.waterfall([
-    (next) => {
-      nodeDbo.getNode({
-        accountAddress,
-        token
-      }, (error, node) => {
-        if (error) next({
-          status: 500,
-          message: 'Error occurred while fetching node details.'
-        });
-        else next(null);
-      });
-    }, (next) => {
-      sessionHelper.updateSessionsUsage(accountAddress, sessions,
-        (error) => {
-          if (error) next({
-            status: 500,
-            message: 'Error occurred while updating session usage.'
-          });
-          else next(null);
-        });
-    }, (next) => {
-      let sessionIds = lodash.map(sessions, 'sessionId');
-      sessionDbo.updateSessions({
-        nodeAccountAddress: accountAddress,
-        sessionId: {
-          $nin: sessionIds
-        },
-        startedOn: {
-          $exists: true
-        },
-        endedOn: {
-          $exists: false
-        }
-      }, {
-          endedOn: new Date()
-        }, (error, result) => {
-          if (error) next({
-            status: 500,
-            message: 'Error occurred while ending sessions.'
-          });
-          else next(null, {
-            status: 200
-          });
-        });
-    }
-  ], (error, success) => {
-    let response = Object.assign({
-      success: !error
-    }, error || success);
-    let status = response.status;
-    delete (response.status);
-    res.status(status).send(response);
-  });
-};
-
 module.exports = {
-  getSession,
-  getSessions,
-  updateSessions
+  getSession
 };

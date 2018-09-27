@@ -1,15 +1,12 @@
 let async = require('async');
 let accountDbo = require('../dbos/account.dbo');
 
-
-let addAccountTxHash = (req, res) => {
-  let {
-    accountAddress,
-    txHash
-  } = req.body;
+let addTxHash = (req, res) => {
+  let { accountAddress } = req.params;
+  let { txHash } = req.body;
   async.waterfall([
     (next) => {
-      accountDbo.addAccountTxHash(accountAddress, txHash,
+      accountDbo.addTxHash(accountAddress, txHash,
         (error, result) => {
           if (error) next({
             status: 500,
@@ -30,11 +27,11 @@ let addAccountTxHash = (req, res) => {
   });
 };
 
-let getAccountTxHashes = (req, res) => {
-  let { accountAddress } = req.query;
+let getTxHashes = (req, res) => {
+  let { accountAddress } = req.params;
   async.waterfall([
     (next) => {
-      accountDbo.getAccountTxhashes(accountAddress,
+      accountDbo.getTxhashes(accountAddress,
         (error, result) => {
           if (error) next({
             status: 500,
@@ -56,7 +53,35 @@ let getAccountTxHashes = (req, res) => {
   });
 };
 
+let getSessions = (req, res) => {
+  let { accountAddress } = req.params;
+  async.waterfall([
+    (next) => {
+      sessionDbo.getSessions({
+        clientAccountAddress: accountAddress
+      }, (error, result) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while fetching sessions.'
+        });
+        else next({
+          status: 200,
+          sessions: result
+        });
+      });
+    }
+  ], (error, success) => {
+    let response = Object.assign({
+      success: !error
+    }, error || success);
+    let status = response.status;
+    delete (response.status);
+    res.status(status).send(response);
+  });
+};
+
 module.exports = {
-  addAccountTxHash,
-  getAccountTxHashes
+  addTxHash,
+  getTxHashes,
+  getSessions
 };

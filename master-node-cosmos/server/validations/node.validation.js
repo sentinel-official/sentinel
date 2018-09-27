@@ -3,7 +3,7 @@ let joi = require('joi');
 
 let addNode = (req, res, next) => {
   let addNodeSchema = joi.object().keys({
-    hash: joi.string().required(),
+    txHash: joi.string().required(),
   });
   let { error } = joi.validate(req.body, addNodeSchema);
   if (error) res.status(422).send({
@@ -35,7 +35,7 @@ let updateNode = (req, res, next) => {
       version: joi.string(),
     })
   });
-  let { error } = joi.validate(req.body, updateNodeSchema);
+  let { error } = joi.validate(req.body.concat(req.params), updateNodeSchema);
   if (error) res.status(422).send({
     success: false,
     error
@@ -57,8 +57,30 @@ let getNodes = (req, res, next) => {
   else next();
 };
 
+let updateNodeSessions = (req, res, next) => {
+  let session = joi.object().keys({
+    sessionId: joi.string().required(),
+    usage: joi.object().keys({
+      download: joi.number().required(),
+      upload: joi.number().required()
+    }).required()
+  });
+  let updateNodeSessionsSchema = joi.object().keys({
+    accountAddress: joi.string().required(),
+    token: joi.string().required(),
+    sessions: joi.array().items(session).required()
+  });
+  let { error } = joi.validate(req.body.concat(req.params), updateNodeSessionsSchema);
+  if (error) res.status(422).send({
+    success: false,
+    error
+  });
+  else next();
+};
+
 module.exports = {
   addNode,
   updateNode,
-  getNodes
+  getNodes,
+  updateNodeSessions
 };

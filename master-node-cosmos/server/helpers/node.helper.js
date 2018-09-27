@@ -9,9 +9,9 @@ let generateToken = () => {
   return token;
 };
 
-let getNodeDetails = (hash, cb) => {
+let getNodeDetails = (txHash, cb) => {
   cosmos.call('verifyHash', {
-    hash
+    txHash
   }, (error, result) => {
     console.log(error, result);
     if (error) cb(error);

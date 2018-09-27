@@ -12,9 +12,9 @@ let generateToken = () => {
   return token;
 };
 
-let getPaymentDetails = (hash, cb) => {
+let getPaymentDetails = (txHash, cb) => {
   cosmos.call('verifyHash', {
-    hash
+    txHash
   }, (error, result) => {
     if (error) cb(error);
     else {

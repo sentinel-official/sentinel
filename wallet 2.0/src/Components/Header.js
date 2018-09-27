@@ -136,10 +136,10 @@ class Header extends Component {
                             {isTendermint ?
                                 (tmAccountDetails ?
                                     < div style={headerStyles.ethBalance} >
-                                        <span>{'tmTESTSENT: '}</span>
+                                        <span>{'SUT: '}</span>
                                         <span style={headerStyles.balanceText}>
                                             {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
-                                            {token && 'denom' in token ? ' SUTs' : ''}
+                                            {token && 'denom' in token ? '' : ''}
                                         </span>
                                     </div>
                                     : null)

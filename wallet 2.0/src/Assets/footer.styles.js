@@ -34,11 +34,19 @@ const footerStyles = {
         fontSize: 14,
         marginBottom: 0,
         textAlign: 'center',
-        overflow:'hidden',
-        textOverflow:'ellipsis'
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     },
-    textCenter:{
-        textAlign:'center'
+    textCenter: {
+        textAlign: 'center'
+    },
+    disconnectStyle: {
+        color: 'rgb(206, 122, 122)',
+        border: '1px solid rgb(214, 147, 147)',
+        padding: 2,
+        marginLeft: -15,
+        marginTop: 8,
+        minHeight: 30
     }
 }
 

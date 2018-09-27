@@ -65,6 +65,7 @@ module.exports = {
         'send',
         'receive',
         'swixer',
-        'swaps'
+        'swaps',
+        'vpnHistory'
     ]
 };

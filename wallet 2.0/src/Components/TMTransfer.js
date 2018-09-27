@@ -24,7 +24,7 @@ const Customstyles = theme => ({
     }
 });
 
-class TMTransactions extends Component {
+class TMTransfer extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -178,7 +178,7 @@ class TMTransactions extends Component {
     }
 }
 
-TMTransactions.propTypes = {
+TMTransfer.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
@@ -204,4 +204,4 @@ function mapDispatchToActions(dispatch) {
     }, dispatch)
 }
 
-export default compose(withStyles(Customstyles), connect(mapStateToProps, mapDispatchToActions))(TMTransactions);
+export default compose(withStyles(Customstyles), connect(mapStateToProps, mapDispatchToActions))(TMTransfer);

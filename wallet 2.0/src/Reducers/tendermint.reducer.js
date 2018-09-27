@@ -1,5 +1,14 @@
 import * as types from "../Constants/action.names";
 
+export function getTxInfo(state = [], action) {
+    switch (action.type) {
+        case types.GET_TX_DATA:
+            return action.payload;
+        default:
+            return state
+    }
+}
+
 export function getKeys(state = [], action) {
     switch (action.type) {
         case types.GET_KEYS:

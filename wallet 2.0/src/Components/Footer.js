@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IconButton, Tooltip, Snackbar } from '@material-ui/core';
+import { Button, Tooltip, Snackbar } from '@material-ui/core';
 import DisconnectIcon from '@material-ui/icons/HighlightOff';
 import { setVpnStatus, clearUsage } from '../Actions/vpnlist.action';
 import { getSignHash, addSignature, deleteTmAccount } from '../Actions/tmvpn.action';
@@ -148,16 +148,18 @@ class Footer extends Component {
                     <Row>
                         <Col xs={3} style={footerStyles.firstColumn}>
                             <p style={footerStyles.testLabelStyle}>
-                                {this.props.isTest ? 'Test Net Activated' : 'Test Net NOT Activated'}
+                                {
+                                    this.props.isTm? 'Tendermint Activated' :  this.props.isTest ? 'Test Net Activated' : 'Test Net NOT Activated'
+                                }
                             </p>
                         </Col>
                         {
                             vpnStatus ?
                                 <Col xs={1}>
                                     <Tooltip title={lang[language].Disconnect}>
-                                        <IconButton onClick={() => { this.disconnect() }}>
-                                            <DisconnectIcon />
-                                        </IconButton>
+                                        <Button style={footerStyles.disconnectStyle} onClick={() => { this.disconnect() }}>
+                                           <DisconnectIcon/> Disconnect
+                                        </Button>
                                     </Tooltip>
                                 </Col>
                                 : null

@@ -96,7 +96,7 @@ class TMAccountView extends Component {
 
                             {balance === "" ?
                                 <p style={accountStyles.notInNetStyle}>
-                                    This account address does not exist in network
+                                    Note: Your account balance is 0 SUT. You can get 150 SUT for free, click on GET TOKENs above.
                             </p>
                                 :
                                 // <p style={accountStyles.balanceStyle}>

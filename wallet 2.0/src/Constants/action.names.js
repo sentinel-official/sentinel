@@ -47,3 +47,4 @@ export const SEND_SIGNATURE = 'SEND_SIGNATURE';
 export const SET_CURRENT_VPN = 'SET_CURRENT_VPN';
 export const GET_TOKENS = 'GET_TOKENS';
 export const GET_SESSION_HISTORY = 'GET_SESSION_HISTORY';
+export const GET_TX_DATA = 'GET_TX_DATA';

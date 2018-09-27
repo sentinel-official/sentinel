@@ -8,7 +8,8 @@ import { payVPNTM } from '../Actions/vpnlist.action';
 import CreateTMAccount from './CreateTMAccount';
 import TMAccountDetails from './TMAccountDetails';
 import TMAccountView from './TMAccountView';
-import TMTransactions from './TMTransactions';
+import TMTransfer from './TMTransfer'
+import TMTransactionsHistory from './TMTransactionsHistory'
 import TMSessions from './TMSessions';
 
 class TenderMint extends Component {
@@ -71,13 +72,15 @@ class TenderMint extends Component {
                                     onChange={this.handleChange}
                                 >
                                     <Tab label="Account" style={sidebarStyles.outlineNone} />
-                                    <Tab label="Transactions" style={sidebarStyles.outlineNone} />
+                                    <Tab label="Transfer" style={sidebarStyles.outlineNone} />
                                     <Tab label="Sessions" style={sidebarStyles.outlineNone} />
+                                    <Tab label="Transactions History" style={sidebarStyles.outlineNone} />
                                 </Tabs>
                             </Paper>
                             {value === 0 && <TMAccountView />}
-                            {value === 1 && <TMTransactions />}
+                            {value === 1 && <TMTransfer />}
                             {value === 2 && <TMSessions />}
+                            {value === 3 && <TMTransactionsHistory />}
                         </div>
                     )
                 }

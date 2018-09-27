@@ -53,9 +53,8 @@ let getSession = (req, res) => {
     }, (payment, node, next) => {
       let token = sessionHelper.generateToken();
       let url = `http://${node.IP}:3000`;
-      sessionHelper.sendUserDetails(`${url}/session`, {
-        'account_addr': payment.from,
-        'session_id': payment.sessionId,
+
+      sessionHelper.sendUserDetails(`${url}/clients/${payment.from}/sessions/${payment.sessionId}`, {
         token
       }, (error) => {
         if (error) next({

@@ -13,8 +13,8 @@ from ..vpn import disconnect_client
 
 class AddSessionDetails(object):
     def on_post(self, req, res):
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(req.params['account_addr']).lower()
+        session_id = str(req.params['session_id'])
         token = str(req.body['token'])
 
         _ = db.clients.insert_one({
@@ -44,8 +44,8 @@ class GetVpnCredentials(object):
         @apiSuccess {Boolean} success Success key.
         @apiSuccess {String[]} ovpn OVPN data.
         """
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(req.params['account_addr']).lower()
+        session_id = str(req.params['session_id'])
         token = str(req.body['token'])
 
         client = db.clients.find_one({
@@ -98,8 +98,8 @@ class AddSessionPaymentSign(object):
         @apiParam {Boolean} signature.final Whether Final signature or not.
         @apiSuccess {Boolean} success Success key.
         """
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(req.params['account_addr']).lower()
+        session_id = str(req.params['session_id'])
         token = str(req.body['token'])
         signature = {
             'hash': str(req.body['signature']['hash']),

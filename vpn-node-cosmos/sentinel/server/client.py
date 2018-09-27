@@ -19,8 +19,8 @@ class GetCurrentUsage(object):
         @apiSuccess {Boolean} success Success key.
         @apiSuccess {Object} usage Usage of the current session.
         """
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(req.params['account_addr']).lower()
+        session_id = str(req.params['session_id'])
         token = str(req.body['token'])
 
         client = db.clients.find_one({
@@ -54,8 +54,8 @@ class DisconnectClient(object):
         @apiParam {String} token Token for communication with node.
         @apiSuccess {Boolean} success Success key.
         """
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(req.params['account_addr']).lower()
+        session_id = str(req.params['session_id'])
         token = str(req.body['token'])
 
         client = db.clients.find_one({

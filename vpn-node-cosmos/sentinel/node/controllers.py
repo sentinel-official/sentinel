@@ -1,5 +1,4 @@
 # coding=utf-8
-from urlparse import urljoin
 
 from .node import node
 from ..config import MASTER_NODE_URL
@@ -11,7 +10,7 @@ def list_node():
     body = {
         'hash': node.config['register']['hash']
     }
-    url = urljoin(MASTER_NODE_URL, 'node')
+    url = MASTER_NODE_URL + '/nodes'
     try:
         response = fetch().post(url, json=body)
         if response and response.status_code == 200:
@@ -32,7 +31,6 @@ def list_node():
 
 def update_node(update_type):
     body = {
-        'accountAddress': node.config['account']['address'],
         'token': node.config['register']['token'],
         'type': update_type
     }
@@ -46,7 +44,7 @@ def update_node(update_type):
             'version': VERSION
         }
 
-    url = urljoin(MASTER_NODE_URL, 'node')
+    url = MASTER_NODE_URL, '/nodes/' + node.config['account']['address']
     try:
         response = fetch().put(url, json=body)
         if response and response.status_code == 200:
@@ -67,11 +65,10 @@ def update_node(update_type):
 
 def update_sessions(sessions):
     body = {
-        'accountAddress': node.config['account']['address'],
         'token': node.config['register']['token'],
         'sessions': sessions
     }
-    url = urljoin(MASTER_NODE_URL, 'sessions')
+    url = MASTER_NODE_URL + '/nodes/' + node.config['account']['address'] + '/sessions'
     try:
         response = fetch().put(url, json=body)
         if response and response.status_code == 200:

@@ -6,7 +6,7 @@ import falcon
 from sentinel.server import AddSessionDetails
 from sentinel.server import AddSessionPaymentSign
 from sentinel.server import DisconnectClient
-from sentinel.server import GetCurrentUsage
+from sentinel.server import GetSessionUsage
 from sentinel.server import GetVpnCredentials
 from sentinel.utils import JSONTranslator
 
@@ -25,7 +25,7 @@ server = falcon.API(middleware=[JSONTranslator()])
 
 server.add_route('/', Up())
 server.add_route('/clients/{account_addr}/sessions/{session_id}', AddSessionDetails())
-server.add_route('/clients/{account_addr}/sessions/{session_id}/usage', GetCurrentUsage())
+server.add_route('/clients/{account_addr}/sessions/{session_id}/usage', GetSessionUsage())
 server.add_route('/clients/{account_addr}/sessions/{session_id}/disconnect', DisconnectClient())
 server.add_route('/clients/{account_addr}/sessions/{session_id}/credentials', GetVpnCredentials())
 server.add_route('/clients/{account_addr}/sessions/{session_id}/sign', AddSessionPaymentSign())

@@ -7,11 +7,11 @@ from ..db import db
 from ..vpn import disconnect_client
 
 
-class GetCurrentUsage(object):
+class GetSessionUsage(object):
     def on_post(self, req, res):
         """
-        @api {POST} /client/usage Usage of the current session
-        @apiName GetCurrentUsage
+        @api {POST} /clients/{account_addr}/sessions/{session_id}/usage Usage of the current session
+        @apiName GetSessionUsage
         @apiGroup Client
         @apiParam {String} account_addr Cosmos account address of the client.
         @apiParam {String} session_id Unique session ID.
@@ -46,7 +46,7 @@ class GetCurrentUsage(object):
 class DisconnectClient(object):
     def on_post(self, req, res):
         """
-        @api {POST} /client/disconnect Disconnect a client
+        @api {POST} /clients/{account_addr}/sessions/{session_id}/disconnect Disconnect a client
         @apiName DisconnectClient
         @apiGroup Client
         @apiParam {String} account_addr Cosmos account address of the client.

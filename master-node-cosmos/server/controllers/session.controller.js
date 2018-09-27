@@ -6,10 +6,9 @@ let sessionHelper = require('../helpers/session.helper');
 
 
 /**
- * @api {GET} /session Get info of a new session
+ * @api {POST} /sessions/:txHash Get info of a new session
  * @apiName getSession
  * @apiGroup Session
- * @apiParam {String} hash Transaction hash of the initial session payment.
  * @apiSuccess {Boolean} success Success key.
  * @apiSuccess {String} url URL of the node endpoint.
  * @apiSuccess {String} sessionId Unique session ID.
@@ -18,9 +17,9 @@ let sessionHelper = require('../helpers/session.helper');
  *   HTTP/1.1 200 OK
  *   {
  *     success: true,
- *     url: 
- *     sessionId: 
- *     token: 
+ *     url: ''
+ *     sessionId: ''
+ *     token: ''
  *   }
  */
 let getSession = (req, res) => {

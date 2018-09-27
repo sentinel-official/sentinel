@@ -104,7 +104,7 @@ let updateNode = (req, res) => {
 };
 
 /**
- * @api {GET} /nodes Get Information of nodes
+ * @api {GET} /nodes?type=&status= Get Information of nodes
  * @apiName getNodes
  * @apiGroup Node
  * @apiParam {String} type Node type [OpenVPN, Socks5].
@@ -115,9 +115,7 @@ let updateNode = (req, res) => {
  *   HTTP/1.1 200 OK
  *   {
  *     success: true,
- *     nodes: [
- *       
- *     ]
+ *     nodes: [ ]
  *   }
  */
 let getNodes = (req, res) => {

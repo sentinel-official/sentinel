@@ -3,5 +3,5 @@ let sessionValidation = require('../validations/session.validation');
 
 
 module.exports = (server) => {
-  server.get('/sessions/:txHash', sessionValidation.getSession, sessionContoller.getSession);
+  server.post('/sessions/:txHash', sessionValidation.getSession, sessionContoller.getSession);
 };

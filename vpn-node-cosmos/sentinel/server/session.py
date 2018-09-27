@@ -35,7 +35,7 @@ class AddSessionDetails(object):
 class GetVpnCredentials(object):
     def on_post(self, req, res):
         """
-        @api {POST} /session/credentials VPN Session credentials
+        @api {POST} /clients/{account_addr}/sessions/{session_id}/credentials VPN Session credentials
         @apiName GetVpnCredentials
         @apiGroup Session
         @apiParam {String} account_addr Cosmos account address of the client.
@@ -85,7 +85,7 @@ class GetVpnCredentials(object):
 class AddSessionPaymentSign(object):
     def on_post(self, req, res):
         """
-        @api {POST} /session/sign Add payment signature for the session
+        @api {POST} /clients/{account_addr}/sessions/{session_id}/sign Add payment signature for the session
         @apiName AddSessionPaymentSigns
         @apiGroup Session
         @apiParam {String} account_addr Cosmos account address of the client.

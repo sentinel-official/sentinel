@@ -1,7 +1,7 @@
 let AccountModel = require('../models/account.model');
 
 
-let addAccountTxHash = (accountAddress, txHash, cb) => {
+let addTxHash = (accountAddress, txHash, cb) => {
   AccountModel.findOneAndUpdate({
     accountAddress
   }, {
@@ -16,7 +16,7 @@ let addAccountTxHash = (accountAddress, txHash, cb) => {
     });
 };
 
-let getAccountTxhashes = (accountAddress, cb) => {
+let getTxhashes = (accountAddress, cb) => {
   AccountModel.findOne({
     accountAddress
   }, {

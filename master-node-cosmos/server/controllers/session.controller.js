@@ -6,9 +6,10 @@ let sessionHelper = require('../helpers/session.helper');
 
 
 /**
- * @api {POST} /sessions/:txHash Get info of a new session
- * @apiName getSession
+ * @api {POST} /sessions Get info of a new session
+ * @apiName addSession
  * @apiGroup Session
+ * @apiParam {String} txHash Session payment transaction hash.
  * @apiSuccess {Boolean} success Success key.
  * @apiSuccess {String} url URL of the node endpoint.
  * @apiSuccess {String} sessionId Unique session ID.
@@ -22,8 +23,8 @@ let sessionHelper = require('../helpers/session.helper');
  *     token: ''
  *   }
  */
-let getSession = (req, res) => {
-  let { txHash } = req.params;
+let addSession = (req, res) => {
+  let { txHash } = req.body;
   async.waterfall([
     (next) => {
       sessionHelper.getPaymentDetails(txHash,
@@ -92,6 +93,48 @@ let getSession = (req, res) => {
   });
 };
 
+/**
+ * @api {GET} /accounts/:accountAddress/sessions Get VPN sessions of an account address
+ * @apiName getSessions
+ * @apiGroup Session
+ * @apiParam {String} accountAddress Account address.
+ * @apiSuccess {Boolean} success Success key.
+ * @apiSuccess {Object[]} sessions List of VPN sessions.
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+ *   {
+ *     success: true
+ *     sessions: []
+ *   }
+ */
+let getSessions = (req, res) => {
+  let { accountAddress } = req.query;
+  async.waterfall([
+    (next) => {
+      sessionDbo.getSessions({
+        clientAccountAddress: accountAddress
+      }, (error, sessions) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while fetching sessions.'
+        });
+        else next({
+          status: 200,
+          sessions
+        });
+      });
+    }
+  ], (error, success) => {
+    let response = Object.assign({
+      success: !error
+    }, error || success);
+    let status = response.status;
+    delete (response.status);
+    res.status(status).send(response);
+  });
+};
+
 module.exports = {
-  getSession
+  addSession,
+  getSessions
 };

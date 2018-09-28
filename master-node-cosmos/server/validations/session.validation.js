@@ -1,11 +1,23 @@
 let joi = require('joi');
 
 
-let getSession = (req, res, next) => {
-  let getSessionSchema = joi.object().keys({
+let addSession = (req, res, next) => {
+  let addSessionSchema = joi.object().keys({
     txHash: joi.string().required()
   });
-  let { error } = joi.validate(req.params, getSessionSchema);
+  let { error } = joi.validate(req.body, addSessionSchema);
+  if (error) res.status(422).send({
+    success: false,
+    error
+  });
+  else next();
+};
+
+let getSessions = (req, res, next) => {
+  let getSessionsSchema = joi.object().keys({
+    accountAddress: joi.string().required()
+  });
+  let { error } = joi.validate(req.params, getSessionsSchema);
   if (error) res.status(422).send({
     success: false,
     error
@@ -14,5 +26,6 @@ let getSession = (req, res, next) => {
 };
 
 module.exports = {
-  getSession,
+  addSession,
+  getSessions
 };

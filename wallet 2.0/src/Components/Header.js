@@ -12,6 +12,7 @@ import { setCurrentTab } from './../Actions/sidebar.action';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 let notTMInterval = null;
 let TMInterval = null;
@@ -68,13 +69,13 @@ class Header extends Component {
             notTMInterval = setInterval(() => {
                 this.props.getETHBalance(walletAddress, isTest);
                 this.props.getSentBalance(walletAddress, isTest);
-            }, 5000);
+            }, 15000);
         }
 
         if (this.props.isTendermint && !TMInterval && tmAccountDetails) {
             TMInterval = setInterval(() => {
                 this.props.getTMBalance(tmAccountDetails.address);
-            }, 5000);
+            }, 30000);
         }
 
         if (this.props.isTendermint) {
@@ -140,6 +141,10 @@ class Header extends Component {
                                         <span style={headerStyles.balanceText}>
                                             {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
                                             {token && 'denom' in token ? '' : ''}
+                                            {' '}
+                                            <IconButton onClick={() => { this.getHistory() }} style={headerStyles.buttonRefresh}>
+                                                <RefreshIcon />
+                                            </IconButton>
                                         </span>
                                     </div>
                                     : null)

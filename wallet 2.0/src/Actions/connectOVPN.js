@@ -213,7 +213,11 @@ export async function connectwithOVPN(resp, cb) {
     })
     CONNECTED = false;
     count = 0;
-    if (remote.process.platform === 'win32') { checkWindows(resp, cb) }
+    if (remote.process.platform === 'win32') {
+        setTimeout(() => {
+            checkWindows(resp, cb)
+        }, 2000);
+    }
     else if (remote.process.platform === 'darwin') checkVPNConnection(resp, cb);
     else {
         setTimeout(() => {
@@ -250,8 +254,8 @@ function checkWindows(resp, cb) {
                 CONNECTED = true;
                 writeConf('openvpn', (res) => {
                     cb(null, resp.message);
-                    count = 4;
                 });
+                count = 4;
             }
         }
         count++;
@@ -291,8 +295,8 @@ function checkVPNConnection(resp, cb) {
             CONNECTED = true;
             writeConf('openvpn', (res) => {
                 cb(null, resp.message);
-                count = 2;
             });
+            count = 2;
         }
 
         getOsascriptIDs(function (ERr, pid) {

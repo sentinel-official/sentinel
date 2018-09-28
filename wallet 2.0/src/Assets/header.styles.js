@@ -10,6 +10,13 @@ const headerStyles = {
         alignItems: 'center',
         justifyContent: 'center'
     },
+    buttonRefresh: {
+        borderRadius: 50,
+        border: 0,
+        transition: '2000',
+        color: '#ddd',
+        outline: 'none'
+    },
     logoStyle: {
         width: 50,
         height: 50,

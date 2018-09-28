@@ -142,7 +142,7 @@ class Header extends Component {
                                             {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
                                             {token && 'denom' in token ? '' : ''}
                                             {' '}
-                                            <IconButton onClick={() => { this.getHistory() }} style={headerStyles.buttonRefresh}>
+                                            <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
                                                 <RefreshIcon />
                                             </IconButton>
                                         </span>

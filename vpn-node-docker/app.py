@@ -27,7 +27,7 @@ def alive_job():
 
 
 def connections_job():
-    extra = 2
+    extra = 5
     while True:
         try:
             vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
@@ -36,7 +36,7 @@ def connections_job():
                 connections_len = len(connections)
                 if (connections_len > 0) or (extra > 0):
                     send_connections_info(node.config['account_addr'], node.config['token'], connections)
-                    extra = 2 if connections_len > 0 else extra - 1
+                    extra = 5 if connections_len > 0 else extra - 1
         except Exception as err:
             print(str(err))
         time.sleep(5)
@@ -80,7 +80,9 @@ if __name__ == "__main__":
     })
     start_new_thread(alive_job, ())
     start_new_thread(connections_job, ())
-    while openvpn.vpn_proc.poll() is None:
+    while True:
+        if openvpn.vpn_proc.poll() is not None:
+            openvpn.start()
         line = openvpn.vpn_proc.stdout.readline().strip()
         line_len = len(line)
         if line_len > 0:

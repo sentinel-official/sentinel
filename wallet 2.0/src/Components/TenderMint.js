@@ -36,15 +36,18 @@ class TenderMint extends Component {
                             this.props.setTMComponent('dashboard');
                         }
                         else {
+                            console.log("Account...", mainAccount, name)
                             this.props.setTMComponent('home');
                         }
                     }
                     else {
+                        console.log("No Account in TMConfig..", name)
                         this.props.setTMComponent('home');
                     }
                 });
             }
             else {
+                console.log("No Keys")
                 this.props.setTMComponent('home');
             }
         });

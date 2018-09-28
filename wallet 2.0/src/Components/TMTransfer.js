@@ -93,6 +93,7 @@ class TMTransfer extends Component {
                                     let vpn_data = this.props.vpnPayment.data;
                                     let session_data = sesRes.payload
                                     connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
+                                        console.log("VPN Response...", err, platformErr, res);
                                         if (err) {
                                             console.log("Connect VPN Err...", err, platformErr, res);
                                             this.setState({ sending: false, openSnack: true, snackMessage: err.message });

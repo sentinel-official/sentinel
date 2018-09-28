@@ -3,6 +3,7 @@ import { CONNECT_VPN } from '../Constants/action.names';
 import { checkDependencies, getOVPNAndSave, getUserHome, getOVPNTM } from '../Utils/utils';
 import { getVPNPIDs } from '../Utils/VpnConfig';
 import { getConfig } from '../Utils/UserConfig';
+import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { B_URL } from './../Constants/constants';
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -18,6 +19,7 @@ let connect = {
 };
 let OVPNDelTimer = null;
 let CONNECTED = false;
+let outputCount = 0;
 let count = 0;
 
 export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
@@ -177,8 +179,15 @@ export async function tmConnect(account_addr, vpn_data, session_data, cb) {
     })
 }
 
-export function connectwithOVPN(resp, cb) {
+export async function connectwithOVPN(resp, cb) {
     let command;
+    let initialIP = '';
+    // let ipRes;
+    // try {
+    //     ipRes = await axios.get('https://ipinfo.io/json/')
+    //     initialIP = ipRes.data.ip ? ipRes.data.ip : ''
+    // } catch (err) {
+    // }
     if (remote.process.platform === 'darwin') {
         let ovpncommand = 'export PATH=$PATH:/usr/local/opt/openvpn/sbin && openvpn ' + OVPN_FILE;
         command = `/usr/bin/osascript -e 'do shell script "${ovpncommand}" with administrator privileges'`
@@ -188,60 +197,69 @@ export function connectwithOVPN(resp, cb) {
         command = 'sudo openvpn ' + OVPN_FILE;
     }
     if (OVPNDelTimer) clearInterval(OVPNDelTimer);
-    if (remote.process.platform === 'win32') {
-        sudo.exec(command, connect,
-            function (error, stdout, stderr) {
-                console.log('Err...', error, 'Stdout..', stdout, 'Stderr..', stderr)
-                OVPNDelTimer = setTimeout(function () {
-                    fs.unlinkSync(OVPN_FILE);
-                }, 5 * 1000);
-            }
-        );
-    } else {
-        exec(command, function (err, stdout, stderr) {
-            console.log('Err...', err, 'Stdout..', stdout, 'Stderr..', stderr)
-            OVPNDelTimer = setTimeout(function () {
-                fs.unlinkSync(OVPN_FILE);
-            }, 1000);
-        });
-    } // internal else ends here
-    // setTimeout(function () {
+
+    outputCount = 0;
+    let openProcess = exec(command);
+    openProcess.stdout.on('data', (data) => {
+        outputCount++;
+    })
+    openProcess.stderr.on('data', (data) => {
+    })
+
+    openProcess.on('exit', (code) => {
+        OVPNDelTimer = setTimeout(function () {
+            fs.unlinkSync(OVPN_FILE);
+        }, 1000);
+    })
     CONNECTED = false;
     count = 0;
     if (remote.process.platform === 'win32') { checkWindows(resp, cb) }
     else if (remote.process.platform === 'darwin') checkVPNConnection(resp, cb);
     else {
         setTimeout(() => {
-            getVPNPIDs((err, pids) => {
+            getVPNPIDs(async (err, pids) => {
                 if (err) { }
                 else {
-                    CONNECTED = true;
-                    writeConf('openvpn', (res) => {
-                        cb(null, resp.message);
-                        console.log("Sending Response..");
-                    });
+                    if (outputCount <= 5) {
+                        cb({ message: 'Currently server has some network issues.Please try other server.' }, null);
+                        disconnectVPN((res) => { })
+                    }
+                    else {
+                        CONNECTED = true;
+                        writeConf('openvpn', (res) => {
+                            cb(null, resp.message);
+                        });
+                    }
                 }
-            }, 2000)
-        })
+            })
+        }, 2000);
     }
 }
 
 function checkWindows(resp, cb) {
+    let message = null;
     exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
         if (stdout.toString() === '') { }
         else {
-            CONNECTED = true;
-            writeConf('openvpn', (res) => {
-                cb(null, resp.message);
+            if (outputCount <= 5) {
+                message = 'Currently server has some network issues.Please try other server.';
+                disconnectVPN((res) => { })
                 count = 4;
-            });
+            }
+            else {
+                CONNECTED = true;
+                writeConf('openvpn', (res) => {
+                    cb(null, resp.message);
+                    count = 4;
+                });
+            }
         }
         count++;
         if (count < 4) {
             setTimeout(() => { checkWindows(resp, cb); }, 5000);
         }
-        if (count === 4 && CONNECTED === false) {
-            cb({ message: 'Something went wrong.Please Try Again' }, null);
+        if (count >= 4 && CONNECTED === false) {
+            cb({ message: message || 'Something went wrong.Please Try Again' }, null);
         }
     })
 }
@@ -284,7 +302,7 @@ function checkVPNConnection(resp, cb) {
         if (count < 2) {
             setTimeout(function () { checkVPNConnection(resp, cb); }, 5000);
         }
-        if (count == 2 && CONNECTED === false) {
+        if (count >= 2 && CONNECTED === false) {
             cb({ message: 'Something went wrong.Please Try Again' }, null)
         }
     });

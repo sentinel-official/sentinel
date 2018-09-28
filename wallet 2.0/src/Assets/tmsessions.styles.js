@@ -49,7 +49,7 @@ const sessionStyles = {
         cursor: 'pointer'
     },
     history: {
-        maxHeight: '300px',
+        maxHeight: '410px',
         width: '100%',
         overflow: 'auto'
     },

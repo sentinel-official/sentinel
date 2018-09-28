@@ -286,7 +286,7 @@ class SimpleDialogDemo extends React.Component {
                     } else if (res) {
                         this.setState({
                             isLoading: false, isPending: false, open: false,
-                            snackMessage: 'Connected VPN', snackOpen: true
+                            snackMessage: res, snackOpen: true
                         });
                         this.props.setActiveVpn(this.props.data);
                         this.props.setVpnStatus(true)

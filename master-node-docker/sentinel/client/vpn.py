@@ -29,10 +29,13 @@ def get_vpns_list(vpn_type):
         'rating': 1,
         'net_speed.download': 1,
         'enc_method': 1,
-        'version': 1
+        'version': 1,
+        'load': 1,
+        'active_connections': 1
     }).sort([
-        ('rating', -1),
         ('version', -1),
+        ('load.cpu', 1),
+        ('rating', -1),
     ])
 
     return list(_list)

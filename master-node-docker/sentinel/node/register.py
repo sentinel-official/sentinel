@@ -41,6 +41,8 @@ class RegisterNode(object):
         enc_method = str(
             req.body['enc_method']
         ) if 'enc_method' in req.body else 'aes-256-cfb' if vpn_type == 'socks5' else 'AES-128-CBC'
+        cpus = int(req.body['cpus']) if 'cpus' in req.body else None
+        memory = int(req.body['memory']) if 'memory' in req.body else None
 
         node = db.nodes.find_one({'account_addr': account_addr})
         if location['city'] == 'None':
@@ -58,7 +60,9 @@ class RegisterNode(object):
                 'net_speed': net_speed,
                 'enc_method': enc_method,
                 'version': version,
-                'lite': lite
+                'lite': lite,
+                'cpus': cpus,
+                'memory': memory
             })
         else:
             _ = db.nodes.find_one_and_update({
@@ -74,7 +78,9 @@ class RegisterNode(object):
                     'net_speed': net_speed,
                     'enc_method': enc_method,
                     'version': version,
-                    'lite': lite
+                    'lite': lite,
+                    'cpus': cpus,
+                    'memory': memory
                 }
             })
         message = {

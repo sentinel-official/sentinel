@@ -70,7 +70,7 @@ class OpenVPN(object):
                     'token': 0
                 },
                     return_document=ReturnDocument.AFTER)
-                if client['usage']['down'] >= LIMIT_1GB:
+                if client and client['usage']['down'] >= LIMIT_1GB:
                     self.disconnect_client(client['session_name'])
                 connections.append(client)
             elif 'ROUTING TABLE' in line:

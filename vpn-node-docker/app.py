@@ -80,7 +80,7 @@ if __name__ == "__main__":
     })
     start_new_thread(alive_job, ())
     start_new_thread(connections_job, ())
-    while True:
+    while openvpn.vpn_proc.poll() is None:
         line = openvpn.vpn_proc.stdout.readline().strip()
         line_len = len(line)
         if line_len > 0:

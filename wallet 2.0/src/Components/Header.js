@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {
-    Switch, Snackbar, Tooltip,
+    Switch, Snackbar, Tooltip, IconButton
 } from '@material-ui/core';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { headerStyles } from '../Assets/header.styles';

@@ -103,7 +103,7 @@ class GetVpnCredentials(object):
                                     ip, port = str(node['ip']), 3000
                                     body = {
                                         'account_addr': device_id if account_addr == REFERRAL_DUMMY else account_addr,
-                                        # Fixes for SLC
+                                    # Fixes for SLC
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)
@@ -171,8 +171,7 @@ class PayVpnUsage(object):
             'session_id'] is not None else None
         device_id = str(req.body['device_id']) if 'device_id' in req.body else None
 
-        errors, tx_hashes = eth_helper.pay_vpn_session(from_addr, session_id, net, tx_data, payment_type,
-                                                       device_id)
+        errors, tx_hashes = eth_helper.pay_vpn_session(from_addr, session_id, net, tx_data, payment_type, device_id)
 
         if len(errors) > 0:
             message = {

@@ -22,8 +22,7 @@ class CreateNewAccount(object):
         """
         password = str(req.body['password'])
 
-        error, account_addr, private_key, keystore = eth_helper.create_account(
-            password)
+        error, account_addr, private_key, keystore = eth_helper.create_account(password)
 
         if error is None:
             message = {
@@ -87,7 +86,8 @@ class GetETHHistory(object):
 
         try:
             result = requests.get(url).json()
-        except Exception as _:
+        except Exception as err:
+            print(err)
             result = {
                 'status': 0,
                 'message': 'No records found',
@@ -119,7 +119,8 @@ class GetSentHistory(object):
 
         try:
             result = requests.get(url).json()
-        except Exception as _:
+        except Exception as err:
+            print(err)
             result = {
                 'status': 0,
                 'message': 'No records found',

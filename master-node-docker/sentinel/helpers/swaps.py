@@ -10,8 +10,8 @@ def is_valid_ethereum_swap(tx_hash):
         if receipt['status'] == 1:
             error, tx = eth_helper.get_tx(tx_hash, 'main')
             if (error is None) and (tx is not None):
-                from_address, to_address, tx_value, tx_input = str(tx['from']).lower(), str(
-                    tx['to']).lower(), int(tx['value']), str(tx['input'])
+                from_address, to_address, tx_value, tx_input = str(tx['from']).lower(), str(tx['to']).lower(), int(
+                    tx['value']), str(tx['input'])
                 if tx_value > 0 and (len(tx_input) == 2 or int(tx_input, 16) == 0):
                     if to_address == SWAP_ADDRESS:
                         return None, [from_address, tx_value, tokens.get_token('ETH')]
@@ -24,10 +24,8 @@ def is_valid_ethereum_swap(tx_hash):
                     token = tokens.get_token(address=to_address)
                     if token is not None:
                         if tx_input[:10] == '0xa9059cbb':
-                            to_address = (
-                                    '0x' + tx_input[10:74].lstrip('0').zfill(40)).lower()
-                            token_value = int(
-                                '0x' + tx_input[74:138].lstrip('0'), 0)
+                            to_address = ('0x' + tx_input[10:74].lstrip('0').zfill(40)).lower()
+                            token_value = int('0x' + tx_input[74:138].lstrip('0'), 0)
                             if to_address == SWAP_ADDRESS:
                                 return None, [from_address, token_value, token]
                             else:

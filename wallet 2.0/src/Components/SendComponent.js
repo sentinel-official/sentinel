@@ -312,7 +312,7 @@ class SendComponent extends React.Component {
             <Row style={sendComponentStyles.textFieldDiv}>
               <Input
                 type={'text'}
-                placeholder="Example: 0x6b6df9e25f7bf23343mfkr45"
+                placeholder="Example: 0x6b6df9e25f7bf2e363ec1a52a7da4c4a64f3955f3"
                 autoFocus={false}
                 disableUnderline={true}
                 className={classes.textField}

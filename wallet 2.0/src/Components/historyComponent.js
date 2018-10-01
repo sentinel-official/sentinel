@@ -22,7 +22,7 @@ class History extends React.Component {
                 <div>
                     <label style={historyLabel} >{to === ownWallet ? `${lang[language].From}:` : `${lang[language].To}:`}&nbsp;
                             <span style={historyStyles.recepientStyle}>{to === ownWallet ? from : to}</span></label>
-                    <label style={historyLabel}>{`${lang[language].GasPrice}:`}&nbsp;<span style={historyValue}>{gas} GWEI</span></label>
+                    <label style={historyLabel}>{`${lang[language].GasPrice}:`}&nbsp;<span style={historyValue}>{gas}</span></label>
                 </div>
                 <div>
                     <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{amount} {unit}</span></label>

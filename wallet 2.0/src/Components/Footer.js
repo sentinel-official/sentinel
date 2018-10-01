@@ -62,8 +62,6 @@ class Footer extends Component {
             }
             else {
                 let data = {
-                    account_addr: this.props.account.address,
-                    session_id: localStorage.getItem('SESSION_NAME'),
                     token: localStorage.getItem('TOKEN'),
                     signature: {
                         hash: res.payload,
@@ -72,7 +70,7 @@ class Footer extends Component {
                         final: isFinal
                     }
                 }
-                this.props.addSignature(data).then(response => {
+                this.props.addSignature(data, this.props.account.address).then(response => {
                     if (response.error) {
                         console.log("Send SignError...", response.error);
                     }
@@ -149,7 +147,7 @@ class Footer extends Component {
                         <Col xs={3} style={footerStyles.firstColumn}>
                             <p style={footerStyles.testLabelStyle}>
                                 {
-                                    this.props.isTm? 'Tendermint Activated' :  this.props.isTest ? 'Test Net Activated' : 'Test Net NOT Activated'
+                                    this.props.isTm ? 'Tendermint Activated' : this.props.isTest ? 'Test Net Activated' : 'Test Net NOT Activated'
                                 }
                             </p>
                         </Col>
@@ -158,7 +156,7 @@ class Footer extends Component {
                                 <Col xs={1}>
                                     <Tooltip title={lang[language].Disconnect}>
                                         <Button style={footerStyles.disconnectStyle} onClick={() => { this.disconnect() }}>
-                                           <DisconnectIcon/> Disconnect
+                                            <DisconnectIcon /> Disconnect
                                         </Button>
                                     </Tooltip>
                                 </Col>

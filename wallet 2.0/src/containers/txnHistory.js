@@ -66,7 +66,7 @@ class TxnHistory extends Component {
                     return (
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={data.timeStamp} to={data.to}
-                                gas={parseInt(data.gasPrice) / (10 ** 9)} from={data.from} unit={'ETHS'}
+                                gas={`${parseInt(data.gasPrice) / (10 ** 9)} GWEI`} from={data.from} unit={'ETHS'}
                                 amount={parseInt(data.value) / (10 ** 18)} status={'Success'} tx={data.hash} />
                         </div>
                     )
@@ -82,7 +82,7 @@ class TxnHistory extends Component {
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={'SENTS'}
                                 to={`0x${sentData.topics[2].substring(26)}`} from={`0x${sentData.topics[1].substring(26)}`}
-                                gas={parseInt(sentData.gasPrice) / (10 ** 9)} amount={(parseInt(sentData.data) / (10 ** 9)).toFixed(3)}
+                                gas={`${parseInt(sentData.gasPrice) / (10 ** 9)} GWEI`} amount={(parseInt(sentData.data) / (10 ** 9)).toFixed(3)}
                                 status={'Success'} tx={sentData.transactionHash} />
                         </div>
                     )

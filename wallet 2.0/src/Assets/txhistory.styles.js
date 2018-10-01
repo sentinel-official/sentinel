@@ -10,6 +10,13 @@ const historyStyles = {
         paddingLeft: '45px',
         display: 'flex'
     },
+    tmHistoryCont: {
+        overflowY: 'auto',
+        height: 400,
+        flexDirection: 'column',
+        paddingLeft: '45px',
+        display: 'flex'
+    },
     noTxYet: {
         marginTop: '50px'
     },
@@ -23,8 +30,8 @@ const historyStyles = {
     flex: {
         display: 'flex'
     },
-    outlineNone:{ outline: 'none' },
-    data:{
+    outlineNone: { outline: 'none' },
+    data: {
         marginTop: 20,
         marginBottom: 20
     },

@@ -141,14 +141,13 @@ export function ovpnSave(vpn_data, session_id, ovpn, cb) {
 
 export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
     let data = {
-        account_addr: account_addr,
-        session_id: session_data.sessionId,
         token: session_data.token
     }
     if (fs.existsSync(OVPN_FILE)) {
         cb(null);
     } else {
-        axios.post(session_data.url + '/session/credentials', data)
+        let sess_id = session_data.sessionId;
+        axios.post(session_data.url + `/clients/${account_addr}/sessions/${sess_id}/credentials`, data)
             .then(response => {
                 console.log("Getting Session Credentials...")
                 if (response.data.success) {
@@ -173,10 +172,9 @@ export async function getVPNUsageData(account_addr) {
     let uri, data;
     if (localStorage.getItem('isTM') === 'true') {
         let url = localStorage.getItem('TM_VPN_URL');
-        uri = url + '/client/usage';
+        let sess_id = localStorage.getItem('SESSION_NAME');
+        uri = url + `/clients/${account_addr}/sessions/${sess_id}/usage`;
         data = {
-            account_addr: account_addr,
-            session_id: localStorage.getItem('SESSION_NAME'),
             token: localStorage.getItem('TOKEN')
         }
     }

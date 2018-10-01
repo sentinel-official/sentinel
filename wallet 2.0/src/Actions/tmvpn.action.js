@@ -26,7 +26,7 @@ export async function payVPNSession(data, toAddr) {
 
 export async function getSessionInfo(hash) {
     try {
-        let response = await axios.get(TMain_URL + `/session?hash=` + hash, {
+        let response = await axios.post(TMain_URL + `/sessions`, { txHash: hash }, {
             headers: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json',
@@ -79,10 +79,11 @@ export async function getSignHash(amount, counter, isfinal) {
     }
 }
 
-export async function addSignature(data) {
+export async function addSignature(data, account_addr) {
     try {
         let url = localStorage.getItem('TM_VPN_URL');
-        let response = await axios.post(url + `/session/sign`, data, {
+        let sess_id = localStorage.getItem('SESSION_NAME');
+        let response = await axios.post(url + `/clients/${account_addr}/sessions/${sess_id}/sign`, data, {
             headers: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json',
@@ -118,7 +119,7 @@ export function deleteTmAccount() {
 export async function getSessionHistory(account_addr) {
     try {
         let response = await axios({
-            url: `${TMain_URL}/sessions?accountAddress=${account_addr}`,
+            url: `${TMain_URL}/accounts/${account_addr}/sessions`,
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { sendAmount, getTMBalance } from '../Actions/tendermint.action';
+import { sendAmount, getTMBalance, addTransaction } from '../Actions/tendermint.action';
 import { payVPNSession, getSessionInfo } from './../Actions/tmvpn.action';
 import { payVPNTM, setVpnStatus, setActiveVpn } from '../Actions/vpnlist.action';
 import { connectVPN, checkVPNDependencies } from './../Actions/connectOVPN';
@@ -83,6 +83,11 @@ class TMTransfer extends Component {
                         else {
                             localStorage.setItem('SIGNAME', data.sig_name)
                             localStorage.setItem('SIGPWD', data.sig_password)
+                            addTransaction({
+                                fromAccountAddress: this.props.account.address,
+                                toAccountAddress: '',
+                                txHash: response.payload.hash
+                            })
                             this.props.getSessionInfo(response.payload.hash).then(sesRes => {
                                 if (sesRes.error) {
                                     console.log("Ses..Error", sesRes.error);
@@ -125,6 +130,11 @@ class TMTransfer extends Component {
                     this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
                 }
                 else {
+                    addTransaction({
+                        fromAccountAddress: this.props.account.address,
+                        toAccountAddress: this.state.toAddress,
+                        txHash: response.payload.hash
+                    })
                     this.setState({
                         sending: false, openSnack: true, snackMessage: 'Transaction done successfully',
                         toAddress: '', keyPassword: '', amount: '',

@@ -1,44 +1,10 @@
 import * as types from './../Constants/action.names';
-import { TM_URL, TM_FREE_TOKEN_URL } from '../Constants/constants';
+import { TM_URL, TM_FREE_TOKEN_URL, TMain_URL } from '../Constants/constants';
 import { getTMConfig } from './../Utils/UserConfig';
 import axios from 'axios';
 
 // Fetch TxHash from MN API
 // Iterate For loop to get info of TxHash Locally [1317/txs/:hash]
-
-var txs = [
-    { from: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', to: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', hash: '0FD368A16E6E8DE0CC44E7E85B1785119284E4EE' },
-    { from: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', to: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', hash: '0FD368A16E6E8DE0CC44E7E85B1785119284E4EE' },
-    { from: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', to: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', hash: '0FD368A16E6E8DE0CC44E7E85B1785119284E4EE' },
-    { from: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', to: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', hash: '0FD368A16E6E8DE0CC44E7E85B1785119284E4EE' },
-    { from: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', to: 'cosmosaccaddr13395u2hjqa29pxp6qew6dt3vd48ht6zchjupg3', hash: '0FD368A16E6E8DE0CC44E7E85B1785119284E4EE' }
-]
-var responses = []
-
-export async function getTxInfo() {
-    for (let i = 0; i < txs.length; i++) {
-        let response = await axios.get(TM_URL + '/txs/' + txs[i].hash, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json',
-            }
-        })
-        responses.push({
-            hash: response.data.hash,
-            amount : response.data.tx.value.msg[0].value.Coins[0].amount,
-            from : response.data.tx.value.msg[0].value.From,
-            to: response.data.tx.value.msg[0].value.To,
-            gas: response.data.result.gas_used
-        })
-        
-    }
-    console.log("Data from redux: ", responses)
-    return {
-        type: types.GET_TX_DATA,
-        payload: responses
-    }
-}
-
 
 export async function getKeys() {
     let response = await axios.get(TM_URL + '/keys', {
@@ -144,5 +110,59 @@ export async function getFreeTokens(account_addr) {
             payload: null,
             error: err.response || 'Something went wrong while getting tokens'
         }
+    }
+}
+
+export function addTransaction(data) {
+    axios.post(`${TMain_URL}/txes`, data, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        }
+    }).then(res => { })
+        .catch(err => { })
+}
+
+export function getTransactions(account_addr, cb) {
+    axios.get(`${TMain_URL}/txes?fromAccountAddress=${account_addr}&toAccountAddress=${account_addr}`, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        }
+    }).then(async (res) => {
+        if (res.data.txes.length > 0) {
+            let txData = await res.data.txes.map(async (details) => {
+                let txInfo = await getTxInfo(details.txHash, details.addedOn);
+                return txInfo;
+            })
+            Promise.all(txData).then((data) => { cb(data) })
+        } else {
+            cb([])
+        }
+    })
+        .catch(err => { cb([]) })
+}
+
+export async function getTxInfo(hash, time) {
+    try {
+        let response = await axios({
+            url: TM_URL + '/txs/' + hash,
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            },
+            timeout: 12000
+        })
+        return ({
+            hash: response.data.hash,
+            amount: response.data.tx.value.msg[0].value.Coins[0].amount,
+            from: response.data.tx.value.msg[0].value.From,
+            to: response.data.tx.value.msg[0].value.To,
+            gas: response.data.result.gas_used,
+            timestamp: time
+        })
+    } catch (err) {
+        return null
     }
 }

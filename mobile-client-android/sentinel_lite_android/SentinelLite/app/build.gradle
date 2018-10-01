@@ -42,16 +42,6 @@ android {
             jniLibs.srcDirs = ['src/main/ovpnlibs/jniLibs']
             jni.srcDirs = [] //disable automatic ndk-build }
         }
-//        langAll {
-//            assets.srcDirs = ['src/main/ovpnlibs/assets']
-//            jniLibs.srcDirs = ['src/main/ovpnlibs/jniLibs']
-//            jni.srcDirs = [] //disable automatic ndk-build }
-//        }
-//        langTurkish {
-//            assets.srcDirs = ['src/main/ovpnlibs/assets']
-//            jniLibs.srcDirs = ['src/main/ovpnlibs/jniLibs']
-//            jni.srcDirs = [] //disable automatic ndk-build }
-//        }
     }
     lintOptions {
         checkReleaseBuilds false // Add this

@@ -16,6 +16,7 @@ import org.json.JSONException;
 
 import co.sentinel.sentinellite.BuildConfig;
 import co.sentinel.sentinellite.R;
+import co.sentinel.sentinellite.SentinelLiteApp;
 import co.sentinel.sentinellite.di.InjectorModule;
 import co.sentinel.sentinellite.ui.dialog.DoubleActionDialogFragment;
 import co.sentinel.sentinellite.util.AppConstants;
@@ -39,8 +40,18 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupAppLanguage();
         setContentView(R.layout.activity_splash);
         initViewModel();
+    }
+
+    /*
+     * Set the default Language for the App to "English" if language is not set by the user
+     */
+    private void setupAppLanguage() {
+        if (SentinelLiteApp.getSelectedLanguage().isEmpty())
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, getString(R.string.default_language));
+        SentinelLiteApp.changeLanguage(this, SentinelLiteApp.getSelectedLanguage());
     }
 
     private void initViewModel() {

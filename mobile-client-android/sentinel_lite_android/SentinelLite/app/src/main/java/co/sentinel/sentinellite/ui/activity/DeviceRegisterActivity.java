@@ -46,7 +46,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setInfoShownBoolean();
-        setupAppLanguage();
         setContentView(R.layout.activity_device_register);
         initializePathIfNeeded();
         checkDeviceRegistrationState();
@@ -60,15 +59,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      */
     private void setInfoShownBoolean() {
         AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_INFO_SHOWN, true);
-    }
-
-    /*
-     * Set the default Language for the App to "English" if language is not set by the user
-     */
-    private void setupAppLanguage() {
-        if (SentinelLiteApp.getSelectedLanguage().isEmpty())
-            AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, getString(R.string.default_language));
-        SentinelLiteApp.changeLanguage(this, SentinelLiteApp.getSelectedLanguage());
     }
 
     /*

@@ -110,12 +110,6 @@
     <string name="error_rsa_sign">Error al firmar con la clave keystore de Android %1$s: %2$s</string>
 
     <!-- App strings -->
-    <string name="app_name" translatable="false">Sentinel</string>
-    <string name="default_language" translatable="false">en</string>
-    <string name="telegram_url" translatable="false">https://t.me/sentinel_co</string>
-    <string name="medium_url" translatable="false">https://medium.com/@Sentinel</string>
-    <string name="twitter_url" translatable="false">https://twitter.com/sentinel_co</string>
-    <string name="website_url" translatable="false">https://sentinel.co</string>
 
     <!-- Translatable strings -->
     <string name="app_sub_name">Wallet de código abierto y plataforma VPN segura</string>
@@ -325,11 +319,9 @@
     <string name="vpn_history_empty_list_message">Actualmente no tienes ningún historial VPN.</string>
     <string name="tx_history_empty_list_message">Actualmente no tienes ningún historial de transacciones.</string>
     <string name="vpn_empty_list_message">No hay VPNs disponibles en este momento.</string>
-    <string name="v">ver %s</string>
     <string name="cancel">Cancelar</string>
     <string name="encryption">Cifrado:</string>
     <string name="registering_device">Configurando dispositivo. Por favor, espera…</string>
-    <string name="ok">OK</string>
     <string name="can_claim_after">Puede reclamar después de: %s</string>
     <string name="referral_desc">Comparte la app de Sentinel con tus amigos; usa la app dVPN y recibirás un incentivo por ayudar al desarrollo de la comunidad &amp; descentralización de la red</string>
     <string name="network_lost">Se detectó una pérdida de conexión de la red. La conexión de la VPN se ha desconectado.\nPor favor, vuelva a conectarse.</string>

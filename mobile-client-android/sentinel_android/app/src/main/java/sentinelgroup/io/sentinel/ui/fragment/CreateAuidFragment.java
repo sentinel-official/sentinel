@@ -138,7 +138,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                     mKeystoreFilePath = accountResource.data.keystoreFilePath;
                     String aReferralAddress = mTetReferral.getText().toString().trim();
                     if (validateReferral(aReferralAddress)) {
-                        mViewModel.addAccountInfo(mAccountAddress, aReferralAddress);
+                        addAccountInfo(aReferralAddress);
                     }
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
                     if (accountResource.message.equals(AppConstants.STORAGE_ERROR))
@@ -198,6 +198,10 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
         });
     }
 
+    public void addAccountInfo(String iReferralAddress) {
+        mViewModel.addAccountInfo(mAccountAddress, iReferralAddress);
+    }
+
     private void createNewAccount() {
         String aPassword = mTetPassword.getText().toString().trim();
         String aPassword2 = mTetConfirmPassword.getText().toString().trim();
@@ -209,7 +213,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             }
         } else {
             if (validateReferral(aReferral)) {
-                mViewModel.addAccountInfo(mAccountAddress, aReferral);
+                addAccountInfo(aReferral);
             }
         }
 

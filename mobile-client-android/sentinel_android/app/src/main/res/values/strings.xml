@@ -352,7 +352,7 @@
     <string name="claim_bonus">Claim Bonus</string>
     <string name="update_available">Update Available</string>
     <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
-    <string name="downloading_app_tite">Downloading…</string>
+    <string name="downloading_app_title">Downloading…</string>
     <string name="download">Download</string>
     <string name="referral_address_invalid">You have entered an invalid Referral ID. Please enter valid Referral Id</string>
     <string name="referral_address_missing">You have not entered a Referral ID.\n\nDo you wish to continue without applying a Referral ID?</string>
@@ -367,4 +367,8 @@
     <string name="error_select_rating">Please select rating</string>
     <string name="action_skip">Skip</string>
     <string name="action_rate">Rate</string>
+    <string name="node_version">Version:</string>
+    <string name="help">Help</string>
+    <string name="ok">OK</string>
+    <string name="registering_device">Setting-up Device. Please wait…</string>
 </resources>

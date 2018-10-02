@@ -108,7 +108,7 @@ public class BonusRepository {
      * Network call
      */
     private void getAccountDetails() {
-        mBonusWebService.getAccountInfo(mDeviceId).enqueue(new Callback<GenericResponse>() {
+        mBonusWebService.getAccountInfoByDeviceIdAddress("deviceId", mDeviceId).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 reportSuccessResponse(response);
@@ -237,9 +237,9 @@ public class BonusRepository {
         });
     }
 
-    public void updateAccount(GenericRequestBody iRequestBody) {
+    public void updateAccount(String iDeviceId, GenericRequestBody iRequestBody) {
         mUpdateAccountLiveEvent.postValue(Resource.loading(null));
-        mBonusWebService.updateAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
+        mBonusWebService.updateAccount(iDeviceId, iRequestBody).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 reportSuccessResponse(response);

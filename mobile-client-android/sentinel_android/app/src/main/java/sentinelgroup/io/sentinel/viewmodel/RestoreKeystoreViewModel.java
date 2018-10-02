@@ -110,10 +110,9 @@ public class RestoreKeystoreViewModel extends ViewModel {
 
     public void updateAccountInfo(String iAccountAddress) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
-                .deviceIdReferral(mDeviceId)
                 .address(iAccountAddress)
                 .build();
-        mBonusRepository.updateAccount(aBody);
+        mBonusRepository.updateAccount(mDeviceId, aBody);
     }
 
 }

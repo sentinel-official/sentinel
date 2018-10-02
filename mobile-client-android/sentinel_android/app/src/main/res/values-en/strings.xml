@@ -341,4 +341,11 @@
     <string name="pkcs12_file_encryption_key">PKCS12 File Encryption Key</string>
     <string name="private_key_password">Private Key Password</string>
     <string name="error_rsa_sign">Error signing with Android keystore key %1$s: %2$s</string>
+    <string name="help">Help</string>
+    <string name="tx_history_empty_list_message">You currently do not have any Transaction history.</string>
+    <string name="vpn_empty_list_message">There are no unoccupied VPNs available at the moment.</string>
+    <string name="vpn_enc_method">Encryption %s</string>
+    <string name="ok">OK</string>
+    <string name="registering_device">Setting-up Device. Please wait…</string>
+    <string name="downloading_app_title">Downloading…</string>
 </resources>

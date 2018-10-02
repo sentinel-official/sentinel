@@ -87,10 +87,9 @@ public class CreateAuidViewModel extends ViewModel {
 
     public void updateAccountInfo(String iAccountAddress) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
-                .deviceIdReferral(mDeviceId)
                 .address(iAccountAddress)
                 .build();
-        mBonusRepository.updateAccount(aBody);
+        mBonusRepository.updateAccount(mDeviceId, aBody);
     }
 
     public void saveAccount(Account iData) {

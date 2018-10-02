@@ -209,7 +209,7 @@
     <string name="claim_bonus">Забрать бонус</string>
     <string name="update_available">Доступно обновление</string>
     <string name="update_desc">Новая версия уже доступна для скачивания.\n\nПожалуйста, скачайте и установите новую версию для стабильной работы приложения.</string>
-    <string name="downloading_app_tite">Скачивается…</string>
+    <string name="downloading_app_title">Скачивается…</string>
     <string name="download">Скачать</string>
     <string name="referral_address_missing">Вы не ввели реферальный код.\n\n Вы хотите продолжить без реферального кода?</string>
     <string name="empty_list_message">Нет истории для показа.</string>
@@ -341,4 +341,8 @@
     <string name="pkcs12_file_encryption_key">Ключ шифрования файлов PKCS12</string>
     <string name="private_key_password">Пароль приватного ключа</string>
     <string name="error_rsa_sign">Ошибка при входе с ключом Android хранилища %1$s: %2$s</string>
+    <string name="referral_address_invalid">Неправильно введен реферальный код. Попробуйте ещё раз.</string>
+    <string name="read_more">Узнать больше</string>
+    <string name="vpn_enc_method">Шифрование %s</string>
+    <string name="registering_device">Подготавливаем ваше устройство. Подождите…</string>
 </resources>

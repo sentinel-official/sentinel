@@ -160,7 +160,7 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
         else
             aDownloadUri = Uri.parse("https://" + mFileUrl);
         DownloadManager.Request aRequest = new DownloadManager.Request(aDownloadUri);
-        aRequest.setTitle(getString(R.string.downloading_app_tite))
+        aRequest.setTitle(getString(R.string.downloading_app_title))
                 .setDescription(mFileName)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Sentinel/" + "/" + mFileName);

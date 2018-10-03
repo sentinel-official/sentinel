@@ -1,5 +1,5 @@
 import { getUserHome } from './utils';
-import { getVPNPIDs } from './VpnConfig';
+import { getVPNPIDs, getVPNProcesses } from './VpnConfig';
 import { getConfig } from './UserConfig';
 const fs = window.require('fs');
 const electron = window.require('electron');
@@ -22,15 +22,20 @@ export async function disconnectVPN(cb) {
 }
 
 export async function disconnectVPNWin(cb) {
-    sudo.exec('taskkill /IM openvpn.exe /f', disconnect,
-        async function (error, stdout, stderr) {
-            if (error) cb({ message: error.toString() || 'Disconnecting failed' });
-            else {
-                removeItemsLocal();
-                clearConfig();
-                cb(null);
-            }
-        });
+    getVPNProcesses(function (err, pids) {
+        if (err) cb({ message: 'Disconnecting failed' });
+        else {
+            sudo.exec('taskkill /IM openvpn.exe /f', disconnect,
+                async function (error, stdout, stderr) {
+                    if (error) cb({ message: error.toString() || 'Disconnecting failed' });
+                    else {
+                        removeItemsLocal();
+                        clearConfig();
+                        cb(null);
+                    }
+                });
+        }
+    })
 }
 
 export async function disconnectVPNNonWin(cb) {

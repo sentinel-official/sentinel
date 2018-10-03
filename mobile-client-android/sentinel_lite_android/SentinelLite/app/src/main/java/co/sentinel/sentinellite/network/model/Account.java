@@ -6,4 +6,5 @@ public class Account {
     public String address;
     public String referredBy;
     public String addedOn;
+    public boolean linked;
 }

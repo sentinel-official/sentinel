@@ -4,6 +4,10 @@ public class AppConstants {
     // Tag used for logging
     public static final String TAG = "SENTINEL_LITE_DEBUG";
 
+    public static final int POSITIVE_BUTTON = 1;
+    public static final int NEGATIVE_BUTTON = -1;
+    public static final int NEUTRAL_BUTTON = 0;
+
     // Keys used in SharedPreference
     public static final String PREFS_IS_NEW_DEVICE = "prefs_is_new_device";
     public static final String PREFS_IS_INFO_SHOWN = "prefs_is_info_shown";
@@ -38,10 +42,13 @@ public class AppConstants {
     public static final String TAG_PROGRESS_DIALOG = "co.sentinel.sentinellite.progress_dialog";
     public static final String TAG_SINGLE_ACTION_DIALOG = "co.sentinel.sentinellite.single_action_dialog";
     public static final String TAG_DOUBLE_ACTION_DIALOG = "co.sentinel.sentinellite.double_action_dialog";
+    public static final String TAG_TRIPLE_ACTION_DIALOG = "co.sentinel.sentinellite.triple_action_dialog";
     public static final String TAG_RATING_DIALOG = "co.sentinel.sentinellite.rating_dialog";
+    public static final String TAG_ADDRESS_TO_CLAIM = "co.sentinel.sentinellite.address_to_claim";
     public static final String TAG_ERROR = "error";
     public static final String TAG_UPDATE = "update";
     public static final String TAG_DOWNLOAD = "download";
+    public static final String TAG_LINK_ACCOUNT_CONFIRMATION = "link_account_confirmation";
 
     // Error Constants
     public static final String ERROR_GENERIC = "error_generic";

@@ -79,7 +79,12 @@ public class GenericListActivity extends BaseActivity {
 
     @Override
     public void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-        // Unimplemented method
+        showDoubleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
+    }
+
+    @Override
+    public void onShowTripleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        showTripleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId, iNeutralOptionId);
     }
 
     @Override
@@ -99,7 +104,7 @@ public class GenericListActivity extends BaseActivity {
     }
 
     @Override
-    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, int iButtonType) {
         // Unimplemented method
     }
 }

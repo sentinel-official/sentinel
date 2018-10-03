@@ -15,17 +15,19 @@ import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.ui.dialog.DoubleActionDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.ProgressDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.SingleActionDialogFragment;
+import co.sentinel.sentinellite.ui.dialog.TripleActionDialogFragment;
 
 import static co.sentinel.sentinellite.util.AppConstants.TAG_DOUBLE_ACTION_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_PROGRESS_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_SINGLE_ACTION_DIALOG;
+import static co.sentinel.sentinellite.util.AppConstants.TAG_TRIPLE_ACTION_DIALOG;
 
 /**
  * All the Activities in the app which needs to show just the toolbar must extend this
  * BaseActivity
  */
 public abstract class BaseActivity extends AppCompatActivity implements OnGenericFragmentInteractionListener,
-        DoubleActionDialogFragment.OnDialogActionListener {
+        DoubleActionDialogFragment.OnDialogActionListener, TripleActionDialogFragment.OnDialogActionListener {
     private Toolbar mToolbar;
     private TextView mToolbarTitle;
     private ProgressDialogFragment mPrgDialog;
@@ -153,6 +155,27 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
         if (aFragment == null)
             DoubleActionDialogFragment.newInstance(iTag, aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
                     .show(getSupportFragmentManager(), TAG_DOUBLE_ACTION_DIALOG);
+    }
+
+    /**
+     * Shows a dialog with a Three buttons
+     *
+     * @param iTag              [String] The Tag assigned to the fragment when it's added to the container
+     * @param iTitleId          [int] The resource id of the title to be displayed (default - "Please Note")
+     * @param iMessage          [String] The error message to be displayed
+     * @param iPositiveOptionId [int] The resource id of the positive button text (default - "Yes")
+     * @param iNegativeOptionId [int] The resource id of the negative button text (default - "No")
+     * @param iNeutralOptionId  [int] The resource id of the neutral button text (default - "Cancel")
+     */
+    protected void showTripleActionError(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(TAG_TRIPLE_ACTION_DIALOG);
+        int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
+        int aPositiveOptionId = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.yes;
+        int aNegativeOptionId = iNegativeOptionId != -1 ? iNegativeOptionId : android.R.string.no;
+        int aNeutralOptionId = iNeutralOptionId != -1 ? iNeutralOptionId : android.R.string.cancel;
+        if (aFragment == null)
+            TripleActionDialogFragment.newInstance(iTag, aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId, aNeutralOptionId)
+                    .show(getSupportFragmentManager(), TAG_TRIPLE_ACTION_DIALOG);
     }
 
     /**

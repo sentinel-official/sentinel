@@ -106,6 +106,11 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
     }
 
     @Override
+    public void onShowTripleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        showTripleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId, iNeutralOptionId);
+    }
+
+    @Override
     public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
         copyToClipboard(iCopyString, iToastTextId);
     }
@@ -126,7 +131,7 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
     }
 
     @Override
-    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, int iButtonType) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         iDialog.dismiss();
     }

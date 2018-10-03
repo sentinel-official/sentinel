@@ -57,6 +57,11 @@ public class VpnUsageActivity extends BaseActivity {
     }
 
     @Override
+    public void onShowTripleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        showTripleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId, iNeutralOptionId);
+    }
+
+    @Override
     public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
 
     }
@@ -72,7 +77,7 @@ public class VpnUsageActivity extends BaseActivity {
     }
 
     @Override
-    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, int iButtonType) {
 
     }
 }

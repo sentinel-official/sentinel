@@ -14,9 +14,11 @@ public class EndPoint {
     /*
      * Bonuses flow
      */
-    public static final String ACCOUNT = "account";
-    public static final String GET_BONUS_INFO = "bonus/info";
+    public static final String ADD_ACCOUNT = "accounts";
+    public static final String GET_ACCOUNT_INFO = "accounts/{type}/{value}";
+    public static final String GET_BONUS_INFO = "accounts/{deviceId}/bonuses/info";
     public static final String CLAIM_BONUS = "bonus/claim";
+    public static final String LINK_ACCOUNT = "/accounts/link/{sncRefId}/{slcRefId}";
     /*
      * App details Flow
      */

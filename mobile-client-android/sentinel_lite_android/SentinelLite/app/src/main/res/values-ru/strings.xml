@@ -126,7 +126,7 @@
     <string name="no_internet">Нет подключения к интернету. Попробуйте еще раз.</string>
     <string name="please_note">Внимание</string>
     <string name="referral_id_copied">Реферальный код скопирован</string>
-    <string name="link_copied">реферальная ссылка скопирована</string>
+    <string name="link_copied">Реферальная ссылка скопирована</string>
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Скорость %s</string>
@@ -173,7 +173,7 @@
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
     <string name="referral_id">Реферальный код</string>
-    <string name="referral_link">реферальная ссылка</string>
+    <string name="referral_link">Реферальная ссылка</string>
     <string name="referrals">Рефералы</string>
     <string name="send_to">Отправить…</string>
     <string name="no_of_referrals">Количество рефералов</string>
@@ -193,11 +193,11 @@
     <string name="update_available">Доступно обновление</string>
     <string name="update_desc">Новая версия уже доступна для скачивания.\n\nПожалуйста, скачайте и установите новую версию для стабильной работы приложения.</string>
     <string name="downloading_app_tite">Скачивается…</string>
-    <string name="download">Скачать</string>
+    <string name="action_download">Скачать</string>
     <string name="referral_address_missing">Вы не ввели реферальный код.\n\n Вы хотите продолжить без реферального кода?</string>
     <string name="empty_list_message">Нет истории для показа.</string>
     <string name="vpn_empty_list_message">В данный момент нет доступных VPN для подключения.</string>
-    <string name="cancel">Отмена</string>
+    <string name="action_cancel">Отмена</string>
     <string name="registering_device">Подготавливаем ваше устройство. Подождите…</string>
     <string name="add_referral_desc">У вас есть реферальный код? \nВведите его при регистрации для получения бонусов.</string>
     <string name="ok">ОК</string>

@@ -29,7 +29,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class WebClient {
     private static final String GENERIC_BASE_URL = "https://api.sentinelgroup.io/";
-    private static final String REFERRAL_BASE_URL = "https://refer-api.sentinelgroup.io/";
+    private static final String REFERRAL_BASE_URL_LIVE = "https://refer-api.sentinelgroup.io/";
+    private static final String REFERRAL_BASE_URL_TEST = "http://185.144.156.148:9000";
+    private static final String REFERRAL_BASE_URL = REFERRAL_BASE_URL_TEST;
     private static final String App_VERSION_BASE_URL = "https://version-api.sentinelgroup.io/";
 
     private static OkHttpClient sHttpClient = enableTls12OnPreLollipop(new OkHttpClient.Builder()

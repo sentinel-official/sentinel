@@ -35,6 +35,7 @@ import co.sentinel.sentinellite.ui.dialog.DoubleActionDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.ProgressDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.RatingDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.SingleActionDialogFragment;
+import co.sentinel.sentinellite.ui.dialog.TripleActionDialogFragment;
 import co.sentinel.sentinellite.ui.fragment.VpnConnectedFragment;
 import co.sentinel.sentinellite.ui.fragment.VpnSelectFragment;
 import co.sentinel.sentinellite.util.AppConstants;
@@ -53,6 +54,7 @@ import static co.sentinel.sentinellite.util.AppConstants.TAG_DOUBLE_ACTION_DIALO
 import static co.sentinel.sentinellite.util.AppConstants.TAG_PROGRESS_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_RATING_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_SINGLE_ACTION_DIALOG;
+import static co.sentinel.sentinellite.util.AppConstants.TAG_TRIPLE_ACTION_DIALOG;
 import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 
 public class DashboardActivity extends AppCompatActivity implements OnGenericFragmentInteractionListener,
@@ -309,6 +311,27 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     /**
+     * Shows a dialog with a Three buttons
+     *
+     * @param iTag              [String] The Tag assigned to the fragment when it's added to the container
+     * @param iTitleId          [int] The resource id of the title to be displayed (default - "Please Note")
+     * @param iMessage          [String] The error message to be displayed
+     * @param iPositiveOptionId [int] The resource id of the positive button text (default - "Yes")
+     * @param iNegativeOptionId [int] The resource id of the negative button text (default - "No")
+     * @param iNeutralOptionId  [int] The resource id of the neutral button text (default - "Cancel")
+     */
+    protected void showTripleActionError(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(TAG_TRIPLE_ACTION_DIALOG);
+        int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
+        int aPositiveOptionId = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.yes;
+        int aNegativeOptionId = iNegativeOptionId != -1 ? iNegativeOptionId : android.R.string.no;
+        int aNeutralOptionId = iNeutralOptionId != -1 ? iNeutralOptionId : android.R.string.cancel;
+        if (aFragment == null)
+            TripleActionDialogFragment.newInstance(iTag, aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId, aNeutralOptionId)
+                    .show(getSupportFragmentManager(), TAG_TRIPLE_ACTION_DIALOG);
+    }
+
+    /**
      * Replace the existing fragment in the container with the new fragment passed in this method's
      * parameters
      *
@@ -459,6 +482,11 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     @Override
+    public void onShowTripleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        showTripleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId, iNeutralOptionId);
+    }
+
+    @Override
     public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
 
     }
@@ -490,7 +518,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     @Override
-    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, int iButtonType) {
         // unimplemented interface method
     }
 

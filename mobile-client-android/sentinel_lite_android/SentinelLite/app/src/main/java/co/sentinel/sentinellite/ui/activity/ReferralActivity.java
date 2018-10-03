@@ -16,14 +16,17 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import co.sentinel.sentinellite.R;
+import co.sentinel.sentinellite.ui.dialog.AddressToClaimDialogFragment;
 import co.sentinel.sentinellite.ui.fragment.ReferralFragment;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
 
+import static co.sentinel.sentinellite.util.AppConstants.NEUTRAL_BUTTON;
+import static co.sentinel.sentinellite.util.AppConstants.POSITIVE_BUTTON;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_DOWNLOAD;
-import static co.sentinel.sentinellite.util.AppConstants.TAG_UPDATE;
+import static co.sentinel.sentinellite.util.AppConstants.TAG_LINK_ACCOUNT_CONFIRMATION;
 
-public class ReferralActivity extends BaseActivity {
+public class ReferralActivity extends BaseActivity implements AddressToClaimDialogFragment.OnAddressSubmitListener {
     private DownloadManager mDownloadManager;
 
     @Override
@@ -129,6 +132,11 @@ public class ReferralActivity extends BaseActivity {
     }
 
     @Override
+    public void onShowTripleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        showTripleActionError(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId, iNeutralOptionId);
+    }
+
+    @Override
     public void onCopyToClipboardClicked(String iCopyString, int iToastTextId) {
         copyToClipboard(iCopyString, iToastTextId);
     }
@@ -146,14 +154,37 @@ public class ReferralActivity extends BaseActivity {
     }
 
     @Override
-    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
-        iDialog.dismiss();
-        if (isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, int iButtonType) {
+        if (iButtonType == NEUTRAL_BUTTON) {
             if (iTag.equals(TAG_DOWNLOAD)) {
                 if (checkForPermissionGrant()) {
                     downloadApp();
+                    iDialog.dismiss();
                 }
             }
+        } else if (iButtonType == POSITIVE_BUTTON) {
+            if (iTag.equals(TAG_DOWNLOAD)) {
+                Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+                if (aFragment instanceof ReferralFragment) {
+                    ((ReferralFragment) aFragment).showEnterAddressDialog();
+                    iDialog.dismiss();
+                }
+            } else if (iTag.equals(TAG_LINK_ACCOUNT_CONFIRMATION)) {
+                Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+                if (aFragment instanceof ReferralFragment) {
+                    ((ReferralFragment) aFragment).linkSncSlcAccounts(iDialog);
+                }
+            }
+        } else {
+            iDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onAddressSubmitted(String iAddress) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        if (aFragment instanceof ReferralFragment) {
+            ((ReferralFragment) aFragment).onAddressSubmitted(iAddress);
         }
     }
 }

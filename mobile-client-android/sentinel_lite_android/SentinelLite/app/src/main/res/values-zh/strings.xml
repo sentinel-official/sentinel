@@ -182,11 +182,11 @@ PKCS12文件加密密钥</string>
     <string name="update_available">可用更新</string>
     <string name="update_desc">新版本发布.\n\n请下载并安装最新版本.</string>
     <string name="downloading_app_tite">下载中…</string>
-    <string name="download">下载</string>
+    <string name="action_download">下载</string>
     <string name="referral_address_missing">您并没有输入邀请码.\n\是否跳过?</string>
     <string name="empty_list_message">目前没有项目显示.</string>
     <string name="vpn_empty_list_message">目前没有可以使用的VPN节点.</string>
-    <string name="cancel">取消</string>
+    <string name="action_cancel">取消</string>
     <string name="registering_device">正在设置请等待…</string>
     <string name="add_referral_desc">您有邀请码吗?\n填写邀请码可获得奖励.</string>
     <string name="ok">Ok</string>

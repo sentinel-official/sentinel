@@ -9,30 +9,30 @@ import android.provider.Settings;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 
 import java.io.File;
 
 import co.sentinel.sentinellite.R;
-import co.sentinel.sentinellite.SentinelLiteApp;
 import co.sentinel.sentinellite.di.InjectorModule;
 import co.sentinel.sentinellite.ui.dialog.DoubleActionDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.ProgressDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.SingleActionDialogFragment;
+import co.sentinel.sentinellite.ui.dialog.TripleActionDialogFragment;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.DeviceRegisterViewModel;
 import co.sentinel.sentinellite.viewmodel.DeviceRegisterViewModelFactory;
 
+import static co.sentinel.sentinellite.util.AppConstants.POSITIVE_BUTTON;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_DOUBLE_ACTION_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_ERROR;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_PROGRESS_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_SINGLE_ACTION_DIALOG;
+import static co.sentinel.sentinellite.util.AppConstants.TAG_TRIPLE_ACTION_DIALOG;
 
 public class DeviceRegisterActivity extends AppCompatActivity implements View.OnClickListener,
         DoubleActionDialogFragment.OnDialogActionListener {
@@ -110,9 +110,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
-                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
                     else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
-                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
                     else {
                         mTetReferral.setText("");
                         showSingleActionError(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
@@ -121,7 +121,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             }
         });
 
-        mViewModel.getAccountInfoLiveEvent().observe(this, genericResponseResource -> {
+        mViewModel.getAccountInfoByDeviceIdLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
@@ -130,9 +130,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                     loadDashboardActivity();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
-                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
                     else {
-                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
                     }
                 }
             }
@@ -172,6 +172,27 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         if (aFragment == null)
             DoubleActionDialogFragment.newInstance(iTag, aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId)
                     .show(getSupportFragmentManager(), TAG_DOUBLE_ACTION_DIALOG);
+    }
+
+    /**
+     * Shows a dialog with a Three buttons
+     *
+     * @param iTag              [String] The Tag assigned to the fragment when it's added to the container
+     * @param iTitleId          [int] The resource id of the title to be displayed (default - "Please Note")
+     * @param iMessage          [String] The error message to be displayed
+     * @param iPositiveOptionId [int] The resource id of the positive button text (default - "Yes")
+     * @param iNegativeOptionId [int] The resource id of the negative button text (default - "No")
+     * @param iNeutralOptionId  [int] The resource id of the neutral button text (default - "Cancel")
+     */
+    protected void showTripleActionError(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        Fragment aFragment = getSupportFragmentManager().findFragmentByTag(TAG_TRIPLE_ACTION_DIALOG);
+        int aTitleId = iTitleId != -1 ? iTitleId : R.string.please_note;
+        int aPositiveOptionId = iPositiveOptionId != -1 ? iPositiveOptionId : android.R.string.yes;
+        int aNegativeOptionId = iNegativeOptionId != -1 ? iNegativeOptionId : android.R.string.no;
+        int aNeutralOptionId = iNeutralOptionId != -1 ? iNeutralOptionId : android.R.string.cancel;
+        if (aFragment == null)
+            TripleActionDialogFragment.newInstance(iTag, aTitleId, iMessage, aPositiveOptionId, aNegativeOptionId, aNeutralOptionId)
+                    .show(getSupportFragmentManager(), TAG_TRIPLE_ACTION_DIALOG);
     }
 
     /*
@@ -240,9 +261,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     @Override
-    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+    public void onActionButtonClicked(String iTag, Dialog iDialog, int iButtonType) {
         iDialog.dismiss();
-        if (isPositiveButton) {
+        if (iButtonType == POSITIVE_BUTTON) {
             if (iTag.equals(TAG_ERROR)) {
                 mViewModel.registerDeviceId(null);
             }

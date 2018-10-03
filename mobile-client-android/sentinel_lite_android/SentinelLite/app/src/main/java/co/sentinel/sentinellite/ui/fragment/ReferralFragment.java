@@ -2,6 +2,7 @@ package co.sentinel.sentinellite.ui.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -22,15 +23,18 @@ import java.util.Objects;
 
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.di.InjectorModule;
+import co.sentinel.sentinellite.network.model.Account;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
+import co.sentinel.sentinellite.ui.dialog.AddressToClaimDialogFragment;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
 import co.sentinel.sentinellite.util.BranchUrlHelper;
 import co.sentinel.sentinellite.util.Converter;
 import co.sentinel.sentinellite.util.Status;
-import co.sentinel.sentinellite.viewmodel.ReferralViewModel;
 import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
-import io.branch.referral.util.ShareSheetStyle;
+import co.sentinel.sentinellite.viewmodel.ReferralViewModel;
+
+import static co.sentinel.sentinellite.util.AppConstants.TAG_ADDRESS_TO_CLAIM;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +52,15 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     private ImageButton mIbCopyReferral, mIbCopyReferralLink;
     private Button mBtnShareAddress, mBtnClaimBonus;
 
+    private AddressToClaimDialogFragment mAddressToClaimDialogFragment;
+
+    private Account mAccountFromAddress;
+
     private String mShareString;
+
+    private String mDeviceId;
+
+    private Dialog mLinkAccountConfirmationDialog;
 
     public ReferralFragment() {
         // Required empty public constructor
@@ -110,11 +122,12 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         mTvReadMore.setOnClickListener(this);
     }
 
+    @SuppressLint("HardwareIds")
     private void initViewModel() {
         // init Device ID
-        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
+        mDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        BonusViewModelFactory aFactory = InjectorModule.provideBonusViewModelFactory(getContext(), aDeviceId);
+        BonusViewModelFactory aFactory = InjectorModule.provideBonusViewModelFactory(getContext(), mDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(ReferralViewModel.class);
 
         mTvReferralCode.setText(mViewModel.getReferralId());
@@ -124,7 +137,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
             if (bonusInfoEntity != null) {
                 mtvReferralCount.setText(String.valueOf(bonusInfoEntity.getRefCount()));
                 mTvRewardsEarned.setText(Converter.getFormattedTokenString(bonusInfoEntity.getBonuses().getTotalTokens()));
-                mBtnClaimBonus.setEnabled(bonusInfoEntity.isCanClaim());
+//                mBtnClaimBonus.setVisibility(bonusInfoEntity.isCanClaim() ? View.VISIBLE : View.GONE);
                 if (bonusInfoEntity.getCanClaimAfter() != null) {
                     String aFormattedTime = Converter.getFormattedTimeInUTC(bonusInfoEntity.getCanClaimAfter());
                     if (aFormattedTime != null)
@@ -138,12 +151,54 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
                 if (versionInfoResource.data != null && versionInfoResource.status.equals(Status.SUCCESS)) {
                     AppPreferences.getInstance().saveString(AppConstants.PREFS_FILE_URL, versionInfoResource.data.fileUrl);
                     AppPreferences.getInstance().saveString(AppConstants.PREFS_FILE_NAME, versionInfoResource.data.fileName);
-                    showDoubleActionDialog(AppConstants.TAG_DOWNLOAD, AppConstants.VALUE_DEFAULT, getString(R.string.download_desc), R.string.download, R.string.cancel);
+                    showTripleActionDialog(AppConstants.TAG_DOWNLOAD, AppConstants.VALUE_DEFAULT, getString(R.string.download_desc), R.string.action_enter_address, R.string.action_cancel, R.string.action_download);
                 } else if (versionInfoResource.message != null && versionInfoResource.status.equals(Status.ERROR)) {
                     if (versionInfoResource.message.equals(AppConstants.ERROR_GENERIC))
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
                     else
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, versionInfoResource.message, AppConstants.VALUE_DEFAULT);
+                }
+            }
+        });
+
+        mViewModel.getAccountInfoByAddressLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.status.equals((Status.LOADING))) {
+                    showProgressDialog(true, getString(R.string.generic_loading_message));
+                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    mAddressToClaimDialogFragment.dismiss();
+                    mAccountFromAddress = genericResponseResource.data.account;
+                    if (mAccountFromAddress.linked) {
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.label_already_linked, mAccountFromAddress.address, mAccountFromAddress.referralId, mTvReferralCode.getText().toString().trim()), AppConstants.VALUE_DEFAULT);
+                    } else {
+                        showDoubleActionDialog(AppConstants.TAG_LINK_ACCOUNT_CONFIRMATION, AppConstants.VALUE_DEFAULT, getString(R.string.label_confirm_link_account, mAccountFromAddress.referralId), R.string.action_confirm, R.string.action_cancel);
+                    }
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                }
+            }
+        });
+
+        mViewModel.getLinkAccountLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.status.equals((Status.LOADING))) {
+                    showProgressDialog(true, getString(R.string.generic_loading_message));
+                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    mLinkAccountConfirmationDialog.dismiss();
+                    mLinkAccountConfirmationDialog = null;
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.label_link_account_success), AppConstants.VALUE_DEFAULT);
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -171,6 +226,16 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
                 showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.referral_desc), AppConstants.VALUE_DEFAULT);
                 break;
         }
+    }
+
+    public void showEnterAddressDialog() {
+        mAddressToClaimDialogFragment = AddressToClaimDialogFragment.newInstance();
+        mAddressToClaimDialogFragment.show(getFragmentManager(), TAG_ADDRESS_TO_CLAIM);
+    }
+
+    public void linkSncSlcAccounts(Dialog iDialogFragment) {
+        mLinkAccountConfirmationDialog = iDialogFragment;
+        mViewModel.linkSncSlcAccounts(mAccountFromAddress.referralId, mTvReferralCode.getText().toString().trim(), mAccountFromAddress.address, mDeviceId);
     }
 
     private void generateLinkAndShare() {
@@ -218,6 +283,12 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+    public void showTripleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        if (mListener != null) {
+            mListener.onShowTripleActionDialog(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId, iNeutralOptionId);
+        }
+    }
+
     public void copyToClipboard(String iCopyString, int iToastTextId) {
         if (mListener != null) {
             mListener.onCopyToClipboardClicked(iCopyString, iToastTextId);
@@ -228,6 +299,10 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         if (mListener != null) {
             mListener.onLoadNextActivity(iShareIntent, AppConstants.REQ_CODE_NULL);
         }
+    }
+
+    public void onAddressSubmitted(String iAddress) {
+        mViewModel.getAccountInfoByAddress(iAddress);
     }
 
     @Override

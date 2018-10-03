@@ -25,22 +25,23 @@ import co.sentinel.sentinellite.util.AppConstants;
  * Activities that contain this fragment must implement the
  * {@link OnDialogActionListener} interface
  * to handle interaction events.
- * Use the {@link DoubleActionDialogFragment#newInstance} factory method to
+ * Use the {@link TripleActionDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DoubleActionDialogFragment extends DialogFragment {
+public class TripleActionDialogFragment extends DialogFragment {
     public static final String ARG_TAG = "tag";
     private static final String ARG_TITLE = "title_id";
     private static final String ARG_MESSAGE = "message";
     private static final String ARG_POSITIVE_OPTION = "positive_option_id";
     private static final String ARG_NEGATIVE_OPTION = "negative_option_id";
+    private static final String ARG_NEUTRAL_OPTION = "neutral_option_id";
 
-    private int mTitleId, mPositiveOptionId, mNegativeOptionId;
+    private int mTitleId, mPositiveOptionId, mNegativeOptionId, mNeutralOptionId;
     private String mTag, mMessage;
 
     private OnDialogActionListener mListener;
 
-    public DoubleActionDialogFragment() {
+    public TripleActionDialogFragment() {
         // Required empty public constructor
     }
 
@@ -53,16 +54,17 @@ public class DoubleActionDialogFragment extends DialogFragment {
      * @param iMessage          message text
      * @param iPositiveOptionId positive option id
      * @param iNegativeOptionId negative option id
-     * @return A new instance of fragment DoubleActionDialogFragment.
+     * @return A new instance of fragment TripleActionDialogFragment.
      */
-    public static DoubleActionDialogFragment newInstance(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
-        DoubleActionDialogFragment fragment = new DoubleActionDialogFragment();
+    public static TripleActionDialogFragment newInstance(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId) {
+        TripleActionDialogFragment fragment = new TripleActionDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TAG, iTag);
         args.putInt(ARG_TITLE, iTitleId);
         args.putString(ARG_MESSAGE, iMessage);
         args.putInt(ARG_POSITIVE_OPTION, iPositiveOptionId);
         args.putInt(ARG_NEGATIVE_OPTION, iNegativeOptionId);
+        args.putInt(ARG_NEUTRAL_OPTION, iNeutralOptionId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,6 +78,7 @@ public class DoubleActionDialogFragment extends DialogFragment {
             mMessage = getArguments().getString(ARG_MESSAGE);
             mPositiveOptionId = getArguments().getInt(ARG_POSITIVE_OPTION);
             mNegativeOptionId = getArguments().getInt(ARG_NEGATIVE_OPTION);
+            mNeutralOptionId = getArguments().getInt(ARG_NEUTRAL_OPTION);
         }
     }
 
@@ -83,7 +86,7 @@ public class DoubleActionDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_double_action_dialog, container, false);
+        return inflater.inflate(R.layout.fragment_triple_action_dialog, container, false);
     }
 
     @Override
@@ -130,12 +133,15 @@ public class DoubleActionDialogFragment extends DialogFragment {
         TextView aTvDialogBody = iView.findViewById(R.id.tv_dialog_body);
         Button aBtnPositive = iView.findViewById(R.id.btn_dialog_positive);
         Button aBtnNegative = iView.findViewById(R.id.btn_dialog_negative);
+        Button aBtnNeutral = iView.findViewById(R.id.btn_dialog_neutral);
         aTvDialogTitle.setText(mTitleId);
         aTvDialogBody.setText(mMessage);
         aBtnPositive.setText(mPositiveOptionId);
         aBtnNegative.setText(mNegativeOptionId);
+        aBtnNeutral.setText(mNeutralOptionId);
         aBtnPositive.setOnClickListener(v -> onActionButtonClick(AppConstants.POSITIVE_BUTTON));
         aBtnNegative.setOnClickListener(v -> onActionButtonClick(AppConstants.NEGATIVE_BUTTON));
+        aBtnNeutral.setOnClickListener(v -> onActionButtonClick(AppConstants.NEUTRAL_BUTTON));
     }
 
     // Interface interaction method

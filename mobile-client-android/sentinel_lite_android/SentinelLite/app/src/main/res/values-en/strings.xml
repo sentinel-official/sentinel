@@ -190,20 +190,25 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="claim_bonus">Claim Bonus</string>
+    <string name="label_enter_address_claim">Enter the Wallet Address obtained from the Sentinel Network App.</string>
+    <string name="hint_enter_address_claim">Wallet Address</string>
+    <string name="label_already_linked">You have already claimed the tokens. Your tokens will deposited shortly.\nAddress: %1$s\nSNC Referral ID: %2$s\nSLC Referral ID: %3$s</string>
+    <string name="label_confirm_link_account">1. The referral ID for the given address is, %1$s.\n2. If this referral ID is different from that shown in the Sentinel Network App from GitHub, contact us on our telegram channel.\n3. Tap on Confirm, if you would like to link the entered address with this lite app and deposit the earned tokens.</string>
+    <string name="label_link_account_success">Congratulations! Your Sentinel Lite Client and Sentinel Network client app is now linked with the entered address. Tokens will be deposited once airdrop ends.</string>
     <string name="update_available">Update Available</string>
     <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
     <string name="downloading_app_tite">Downloading…</string>
-    <string name="download">Download</string>
+    <string name="action_download">Download</string>
     <string name="referral_address_invalid">You have entered an invalid Referral ID. Please enter valid Referral Id</string>
     <string name="referral_address_missing">You have not entered a Referral ID.\n\nDo you wish to continue without applying a Referral ID?</string>
     <string name="empty_list_message">There are no items to display.</string>
     <string name="vpn_empty_list_message">There are no unoccupied VPNs available at the moment.</string>
-    <string name="cancel">Cancel</string>
+    <string name="action_cancel">Cancel</string>
     <string name="registering_device">Setting-up Device. Please wait…</string>
     <string name="add_referral_desc">Have a Referral ID?\nApply it to get added bonuses.</string>
     <string name="ok">OK</string>
     <string name="can_claim_after">Can claim after: %s</string>
-    <string name="download_desc">Download and install the Sentinel Network Client on the same device to claim your bonus tokens and access all features.</string>
+    <string name="download_desc">1. Download the Sentinel Network App from Github by tapping on the \"Download\" button. Skip this if you already have the app.\n2. Create an address and paste the wallet address by tapping on the \"Enter Address\" button.</string>
     <string name="referral_desc">Welcome to the Sentinel Referral Utility Drop.\n\nUsers who test this Lite Client will be able to claim their reward(s) after 21 or so days from the time that they had first installed the application and consumed a minimum of 100 MB of data from the Sentinel dVPN community hosted network.\n\nThe referral air drop reward schedule is as follows: \n\n500 SENT : For downloading the Sentinel Android Google Play Client and using 100 MB of data \n\n300 SENT : For downloading the Sentinel Network Client which includes a mobile ERC20 wallet. This client will have to be downloaded by users in order to claim $SENT\n\n200 SENT : For every referral who downloads either SLC or SNC</string>
     <string name="network_lost">A loss of network connection was detected.The VPN connection has been dropped.\nPlease reconnect.</string>
     <string name="read_more">Read More</string>
@@ -211,4 +216,6 @@
     <string name="error_select_rating">Please select rating</string>
     <string name="action_skip">Skip</string>
     <string name="action_rate">Rate</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_enter_address">Enter Address</string>
 </resources>

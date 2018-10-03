@@ -8,7 +8,7 @@ from ..vpn import disconnect_client
 
 
 class GetSessionUsage(object):
-    def on_post(self, req, res):
+    def on_post(self, req, res, account_addr, session_id):
         """
         @api {POST} /clients/{account_addr}/sessions/{session_id}/usage Usage of the current session
         @apiName GetSessionUsage
@@ -19,8 +19,8 @@ class GetSessionUsage(object):
         @apiSuccess {Boolean} success Success key.
         @apiSuccess {Object} usage Usage of the current session.
         """
-        account_addr = str(req.params['account_addr']).lower()
-        session_id = str(req.params['session_id'])
+        account_addr = str(account_addr)
+        session_id = str(session_id)
         token = str(req.body['token'])
 
         client = db.clients.find_one({
@@ -44,7 +44,7 @@ class GetSessionUsage(object):
 
 
 class DisconnectClient(object):
-    def on_post(self, req, res):
+    def on_post(self, req, res, account_addr, session_id):
         """
         @api {POST} /clients/{account_addr}/sessions/{session_id}/disconnect Disconnect a client
         @apiName DisconnectClient
@@ -54,8 +54,8 @@ class DisconnectClient(object):
         @apiParam {String} token Token for communication with node.
         @apiSuccess {Boolean} success Success key.
         """
-        account_addr = str(req.params['account_addr']).lower()
-        session_id = str(req.params['session_id'])
+        account_addr = str(account_addr)
+        session_id = str(session_id)
         token = str(req.body['token'])
 
         client = db.clients.find_one({

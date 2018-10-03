@@ -8,7 +8,7 @@ from ..utils import fetch
 
 def list_node():
     body = {
-        'hash': node.config['register']['hash']
+        'txHash': node.config['register']['hash']
     }
     url = MASTER_NODE_URL + '/nodes'
     try:
@@ -44,7 +44,7 @@ def update_node(update_type):
             'version': VERSION
         }
 
-    url = MASTER_NODE_URL, '/nodes/' + node.config['account']['address']
+    url = MASTER_NODE_URL + '/nodes/' + node.config['account']['address']
     try:
         response = fetch().put(url, json=body)
         if response and response.status_code == 200:

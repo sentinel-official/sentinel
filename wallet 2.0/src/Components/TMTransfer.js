@@ -78,7 +78,10 @@ class TMTransfer extends Component {
                     this.props.payVPNSession(data).then(response => {
                         if (response.error) {
                             console.log("Pay VPN Error...", response);
-                            this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
+                            if (response.error.data === 'Ciphertext decryption failed')
+                                this.setState({ sending: false, openSnack: true, snackMessage: 'Incorrect Password' });
+                            else
+                                this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
                         }
                         else {
                             localStorage.setItem('SIGNAME', data.sig_name)
@@ -127,7 +130,10 @@ class TMTransfer extends Component {
             }
             this.props.sendAmount(data, this.state.toAddress).then(response => {
                 if (response.error) {
-                    this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
+                    if (response.error.data === 'Ciphertext decryption failed')
+                        this.setState({ sending: false, openSnack: true, snackMessage: 'Incorrect Password' });
+                    else
+                        this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
                 }
                 else {
                     addTransaction({

@@ -32,7 +32,8 @@ class Footer extends Component {
             snackMessage: '',
             rateDialog: false,
             status: false,
-            counter: 1
+            counter: 1,
+            showAlert: false
         }
     }
 
@@ -56,6 +57,11 @@ class Footer extends Component {
 
     sendSignature = (downData, isFinal, counter) => {
         let amount = (this.props.activeVpn.price_per_GB * downData) / 1024;
+        if (amount >= parseInt(localStorage.getItem('lockedAmount')) && !this.state.showAlert)
+            this.setState({
+                openSnack: true, showAlert: true,
+                snackMessage: 'You have used all of your locked SUTs. Please reconnect and pay.'
+            })
         this.props.getSignHash(Math.round(amount * (10 ** 8)), counter, isFinal).then(res => {
             if (res.error) {
                 console.log("SignError...", res.error);
@@ -95,7 +101,10 @@ class Footer extends Component {
                     this.setState({ openSnack: true, snackMessage: res });
                 }
                 else {
-                    this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, counter: 1 });
+                    this.setState({
+                        openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
+                        counter: 1, showAlert: false
+                    });
                     this.props.clearUsage();
                     this.props.setVpnStatus(false);
                     deleteTmAccount();

@@ -106,6 +106,8 @@ if __name__ == '__main__':
     start_new_thread(sessions_job, ())
 
     while True:
+        if openvpn.vpn_proc.poll() is not None:
+            openvpn.start()
         line = openvpn.vpn_proc.stdout.readline().strip()
         line_len = len(line)
         if line_len > 0:

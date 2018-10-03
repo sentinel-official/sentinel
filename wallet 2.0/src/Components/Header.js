@@ -69,7 +69,7 @@ class Header extends Component {
             notTMInterval = setInterval(() => {
                 this.props.getETHBalance(walletAddress, isTest);
                 this.props.getSentBalance(walletAddress, isTest);
-            }, 15000);
+            }, 10000);
         }
 
         if (this.props.isTendermint && !TMInterval && tmAccountDetails) {
@@ -137,7 +137,7 @@ class Header extends Component {
                             {isTendermint ?
                                 (tmAccountDetails ?
                                     < div style={headerStyles.ethBalance} >
-                                        <span>{'SUT: '}</span>
+                                        <span>{'TSENT: '}</span>
                                         <span style={headerStyles.balanceText}>
                                             {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
                                             {token && 'denom' in token ? '' : ''}

@@ -158,7 +158,8 @@ class TMTransfer extends Component {
         const { classes } = this.props;
         return (
             <div style={accountStyles.formStyle}>
-                <div style={createAccountStyle.secondDivStyle}>
+                <div style={createAccountStyle.secondDivStyle}
+                    onKeyPress={(ev) => { if (ev.key === 'Enter') this.sendTransaction() }}>
                     <p style={createAccountStyle.headingStyle}>To Address</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={this.state.isTextDisabled}
                         value={this.state.toAddress} onChange={(e) => { this.setState({ toAddress: e.target.value }) }}

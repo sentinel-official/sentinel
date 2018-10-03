@@ -96,7 +96,7 @@ class TMAccountView extends Component {
 
                             {balance === "" ?
                                 <p style={accountStyles.notInNetStyle}>
-                                    Note: Your account balance is 0 SUT. You can get 150 SUT for free, click on GET TOKENs above.
+                                    Note: Your account balance is 0 TSENT. You can get 300 TSENTs for free, click on GET TOKENs above.
                             </p>
                                 :
                                 // <p style={accountStyles.balanceStyle}>
@@ -109,9 +109,9 @@ class TMAccountView extends Component {
                             {
                                 vpnStatus ?
                                     <div style={accountStyles.lastDiv}>
-                                        <p><span style={accountStyles.notInNetStyle}>Total Tokens Locked: </span>
+                                        <p><span style={accountStyles.notInNetStyle}>Total TSENTs Locked: </span>
                                             {localStorage.getItem('lockedAmount')}</p>
-                                        <p><span style={accountStyles.notInNetStyle}>Current Session Usage (SUTs): </span>
+                                        <p><span style={accountStyles.notInNetStyle}>Current Session Usage (TSENTs): </span>
                                             {usedTokens}</p>
                                     </div> :
                                     null

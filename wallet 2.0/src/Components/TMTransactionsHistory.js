@@ -45,7 +45,7 @@ class TMTransactionsHistory extends React.Component {
                         return (
                             <div style={historyStyles.data}>
                                 <History ownWallet={this.props.account.address} date={parseInt(Date.parse(data.timestamp) / 1000)}
-                                    to={data.to?data.to:'Paid to chain'} gas={data.gas} from={data.from} unit={'SUTs'}
+                                    to={data.to?data.to:'Paid to chain'} gas={data.gas} from={data.from} unit={'TSENTs'}
                                     amount={parseInt(data.amount) / (10 ** 8)} status={'Success'} tx={data.hash} />
                             </div>
                         )

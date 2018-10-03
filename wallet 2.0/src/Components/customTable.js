@@ -30,7 +30,7 @@ function createData(obj) {
     counter += 1;
     obj.id = counter;
     obj.city = obj.location.city;
-    obj.rating = parseFloat(obj.rating).toFixed(2);
+    obj.rating = obj.rating ? parseFloat(obj.rating).toFixed(2) : null;
     obj.bandwidth = obj.net_speed ? ('download' in obj.net_speed ? obj.net_speed.download : 0) : 0;
     return obj;
 }

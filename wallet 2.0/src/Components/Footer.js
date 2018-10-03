@@ -60,7 +60,7 @@ class Footer extends Component {
         if (amount >= parseInt(localStorage.getItem('lockedAmount')) && !this.state.showAlert)
             this.setState({
                 openSnack: true, showAlert: true,
-                snackMessage: 'You have used all of your locked SUTs. Please reconnect and pay.'
+                snackMessage: 'You have used all of your locked TSENTs. Please reconnect and pay.'
             })
         this.props.getSignHash(Math.round(amount * (10 ** 8)), counter, isFinal).then(res => {
             if (res.error) {

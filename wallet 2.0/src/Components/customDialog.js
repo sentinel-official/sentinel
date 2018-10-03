@@ -134,7 +134,7 @@ class SimpleDialog extends React.Component {
                         </ListItem>
                         <ListItem>
                             <ListItemText> <label style={styles.dialogLabel}>{`${lang[language].Latency}:`}&nbsp;</label>
-                                <span style={styles.dialogValue}> {this.props.data.latency}</span>
+                                <span style={styles.dialogValue}> {this.props.data.latency ? this.props.data.latency : 'None'}</span>
                             </ListItemText>
                         </ListItem>
 

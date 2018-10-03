@@ -34,16 +34,16 @@ module.exports = {
             'value': 'vpnHistory',
             'icon': 'vpnHisIcon'
         },
-        {
-            'name': 'SWIXER',
-            'value': 'swixer',
-            'icon': 'swixerIcon'
-        },
-        {
-            'name': 'SWAPS',
-            'value': 'swaps',
-            'icon': 'swapIcon'
-        },
+        // {
+        //     'name': 'SWIXER',
+        //     'value': 'swixer',
+        //     'icon': 'swixerIcon'
+        // },
+        // {
+        //     'name': 'SWAPS',
+        //     'value': 'swaps',
+        //     'icon': 'swapIcon'
+        // },
         {
             'name': 'TENDERMINT',
             'value': 'tmint',

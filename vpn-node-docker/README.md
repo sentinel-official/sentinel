@@ -9,7 +9,7 @@ Setup Instructions
 Here are the steps involved in getting a Sentinel dVPN OpenVPN Node up and running:
 
 1. Install docker
-2. Build / pull the **Sentinel dVPN** docker image
+2. Build/pull the **Sentinel dVPN** docker image
 3. Configure Node
 
 
@@ -35,7 +35,7 @@ Below are the instructions on installing docker:
 Running the Sentinel dVPN Node
 ---
 
-You can setup and run VPN node in two ways:
+You can set up and run VPN node in two ways:
 
 1. Quick Run - download docker image from Docker Hub
 2. DIY - build your own docker image from the Sentinel code repository
@@ -58,7 +58,7 @@ You can setup and run VPN node in two ways:
 
 Do-it-Yourself setup by building your own docker image
 
-1. Navigate to the root folder or anywhere that you want to setup the project and download code from the repository
+1. Navigate to the root folder or anywhere that you want to set up the project and download code from the repository
 
     `cd ~`
 2. Clone the Sentinel repository
@@ -73,7 +73,7 @@ Do-it-Yourself setup by building your own docker image
 
     `sudo docker build --file Dockerfile.prod --tag sentinel-vpn-node --force-rm --no-cache .`
 
-5. Navigate to the folder where the docker container was setup. In our case it is the User's home directory.
+5. Navigate to the folder where the docker container was set up. In our case, it is the User's home directory.
 
     `mkdir -p $HOME/.sentinel`
 
@@ -84,21 +84,25 @@ Do-it-Yourself setup by building your own docker image
 Updating an existing Sentinel dVPN OpenVPN Node
 ===
 
-1. Pull the latest version of docker
+1. Stop the running docker container
 
-    `sudo docker pull sentinelofficial/sentinel-vpn-node`
+    `sudo docker stop $(sudo docker ps -aq -f ancestor=sentinelofficial/sentinel-vpn-node)`
 
-2. Stop the existing version of docker
+2. Remove the older version of docker container
 
-    `sudo docker stop $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-vpn-node")`
+    `sudo docker rm -f $(sudo docker ps -aq -f ancestor=sentinelofficial/sentinel-vpn-node)`
+
+3. Remove the older version of docker image
+
+    `sudo docker rmi -f $(sudo docker images -aq -f reference=sentinelofficial/sentinel-vpn-node)`
+
+4. Set the token value to _null_ in the config file
+
+    Config file location: $HOME/.sentinel/config.data
     
-    ###### Note: The Sentinel dVPN Node must be stopped to be removed, otherwise you should use a -f flag to forcefuly remove the Node
+    Example: {"token": null, "enc_method": "AES-256-CBC", "account_addr": "0x656b756e6c6335302e676c343572357232786970", "price_per_gb": 125.0}
 
-3. Remove the older version of docker
-
-    `sudo docker rm $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-vpn-node")`
-
-After running the above commands please follow the insturctions on either Method #1 Medthod #2 to get the node up and running again.
+After completing the above steps please follow the instructions on Method #1 to get the node up and running again.
 
 Helpful docker commands to interact with the Sentinel dVPN Node
 ===
@@ -121,7 +125,7 @@ Helpful docker commands to interact with the Sentinel dVPN Node
 * remove a particular Sentinel dVPN Node:
     ```sudo docker rm ContainerID_OR_ContainerName```
 
-    ###### Note: The Sentinel dVPN Node must be stopped to be removed. Alternatively, you can use the `-f` flag to forcefully remove the Node if the node can not be stopped.
+    ###### Note: The Sentinel dVPN Node must be stopped to be removed. Alternatively, you can use the `-f` flag to forcefully remove the Node if the node cannot be stopped.
 
 * remove node using the force option `-f`:
 

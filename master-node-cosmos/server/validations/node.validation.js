@@ -35,7 +35,8 @@ let updateNode = (req, res, next) => {
       version: joi.string(),
     })
   });
-  let { error } = joi.validate(req.body.concat(req.params), updateNodeSchema);
+  let body = Object.assign({}, req.body, req.params);
+  let { error } = joi.validate(body, updateNodeSchema);
   if (error) res.status(422).send({
     success: false,
     error
@@ -70,7 +71,8 @@ let updateNodeSessions = (req, res, next) => {
     token: joi.string().required(),
     sessions: joi.array().items(session).required()
   });
-  let { error } = joi.validate(req.body.concat(req.params), updateNodeSessionsSchema);
+  let body = Object.assign({}, req.body, req.params);
+  let { error } = joi.validate(body, updateNodeSessionsSchema);
   if (error) res.status(422).send({
     success: false,
     error

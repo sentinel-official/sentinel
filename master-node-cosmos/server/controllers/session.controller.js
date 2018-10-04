@@ -108,7 +108,7 @@ let addSession = (req, res) => {
  *   }
  */
 let getSessions = (req, res) => {
-  let { accountAddress } = req.query;
+  let { accountAddress } = req.params;
   async.waterfall([
     (next) => {
       sessionDbo.getSessions({

@@ -1,7 +1,9 @@
 let async = require('async');
+let lodash = require('lodash');
 let nodeDbo = require('../dbos/node.dbo');
+let sessionDbo = require('../dbos/session.dbo');
 let nodeHelper = require('../helpers/node.helper');
-
+let sessionHelper = require('../helpers/session.helper');
 
 let addNode = (req, res) => {
   let { txHash } = req.body;

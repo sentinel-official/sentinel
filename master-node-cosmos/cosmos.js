@@ -57,7 +57,7 @@ let call = (name, data, cb) => {
 
   switch (name) {
     case 'verifyHash':
-      url += `/${data.hash}`;
+      url += `/${data.txHash}`;
       break;
     case 'getBalance':
       url += `/${data.address}`;

@@ -30,6 +30,7 @@ import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
 import co.sentinel.sentinellite.util.BranchUrlHelper;
 import co.sentinel.sentinellite.util.Converter;
+import co.sentinel.sentinellite.util.FlavourHelper;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.ReferralViewModel;
@@ -137,7 +138,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
             if (bonusInfoEntity != null) {
                 mtvReferralCount.setText(String.valueOf(bonusInfoEntity.getRefCount()));
                 mTvRewardsEarned.setText(Converter.getFormattedTokenString(bonusInfoEntity.getBonuses().getTotalTokens()));
-//                mBtnClaimBonus.setVisibility(bonusInfoEntity.isCanClaim() ? View.VISIBLE : View.GONE);
+                mBtnClaimBonus.setVisibility(FlavourHelper.isMainFlavour() ? View.VISIBLE : View.GONE);
                 if (bonusInfoEntity.getCanClaimAfter() != null) {
                     String aFormattedTime = Converter.getFormattedTimeInUTC(bonusInfoEntity.getCanClaimAfter());
                     if (aFormattedTime != null)

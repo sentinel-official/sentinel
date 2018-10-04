@@ -2,26 +2,19 @@
     <string name="app_name">Sentinel Lite</string>
     <string name="sentinel">Sentinel</string>
     <string name="lite">Lite Client v %s</string>
-    <string name="default_language">en</string>
 
     <!-- String Array -->
     <string-array name="language" translatable="false">
-        <!--<item>Chinese</item>-->
         <item>English</item>
-        <!--<item>Japanese</item>-->
         <item>Russian</item>
-        <!--<item>Japanese</item>-->
         <item>Chinese</item>
-        <!--<item>Spanish</item>-->
+        <item>Turkish</item>
     </string-array>
     <string-array name="language_code" translatable="false">
-        <!--<item>zh</item>-->
         <item>en</item>
-        <!--<item>ja</item>-->
         <item>ru</item>
-        <!--<item>es</item>-->
         <item>zh</item>
-        <!--<item>cn</item>-->
+        <item>tr</item>
     </string-array>
 
     <string name="telegram_url" translatable="false">https://t.me/sentinel_co</string>

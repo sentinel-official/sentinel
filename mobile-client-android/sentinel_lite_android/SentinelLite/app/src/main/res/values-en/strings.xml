@@ -2,7 +2,6 @@
     <string name="app_name">Sentinel Lite</string>
     <string name="sentinel">Sentinel</string>
     <string name="lite">Lite Client v %s</string>
-    <string name="default_language">en</string>
 
     <!-- ics_openVPN strings -->
     <string name="channel_name_background">Connection Statistics</string>

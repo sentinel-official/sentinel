@@ -22,6 +22,7 @@ import co.sentinel.sentinellite.ui.dialog.DoubleActionDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.TripleActionDialogFragment;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
+import co.sentinel.sentinellite.util.FlavourHelper;
 import co.sentinel.sentinellite.util.Logger;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.SplashViewModel;
@@ -50,11 +51,11 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
     }
 
     /*
-     * Set the default Language for the App to "English" if language is not set by the user
+     * Set the default Language for the App depending on flavour if language is not set by the user
      */
     private void setupAppLanguage() {
         if (SentinelLiteApp.getSelectedLanguage().isEmpty())
-            AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, getString(R.string.default_language));
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, FlavourHelper.getDefaultLanguageCode());
         SentinelLiteApp.changeLanguage(this, SentinelLiteApp.getSelectedLanguage());
     }
 

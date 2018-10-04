@@ -34,8 +34,8 @@ def get_vpns_list(vpn_type):
         'active_connections': 1
     }).sort([
         ('version', -1),
-        ('load.cpu', 1),
         ('rating', -1),
+        ('load.cpu', 1),
     ])
 
     return list(_list)

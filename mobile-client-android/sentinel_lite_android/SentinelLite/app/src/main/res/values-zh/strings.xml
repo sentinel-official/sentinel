@@ -214,4 +214,11 @@ PKCS12文件加密密钥</string>
     <string name="error_select_rating">请选择星级</string>
     <string name="action_skip">下次</string>
     <string name="action_rate">估价</string>
+    <string name="label_enter_address_claim">输入从哨兵网络应用程序中获得的钱包地址。</string>
+    <string name="hint_enter_address_claim">钱包地址</string>
+    <string name="label_confirm_link_account">1. 地址查询, %1$s.\\n2. 如果这个ID不是哨兵钱包的地址请与我的电报联系.\\n3. 如果你想把输入的地址链接到这个Lite应用程序，并存入赚取的令牌.</string>
+    <string name="label_already_linked">您的代币将不久存入到您的地址中.\\钱包地址: %1$s\\nSNC Referral ID: %2$s\\nSLC Referral ID: %3$s</string>
+    <string name="label_link_account_success">祝贺你！你的哨兵Lite客户端和哨兵网络客户端应用程序现在与输入的地址联系起来。请等待空投结束.</string>
+    <string name="action_confirm">确认</string>
+    <string name="action_enter_address">确认地址</string>
 </resources>

@@ -17,7 +17,7 @@ import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/lab/Slider';
 import PositionedSnackbar from './SharedComponents/simpleSnackbar';
 import { TX_SUCCESS } from '../Constants/sendcomponent.types';
-const shell   = window.require('electron').shell;
+const shell = window.require('electron').shell;
 
 const muiTheme = createMuiTheme({
   slider: {
@@ -182,8 +182,6 @@ class SendComponent extends React.Component {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
     let { payVpn, payVPNUsage, initPaymentDetails } = this.props;
 
-    console.log('onClik', payVpn);
-
     this.setState({ label: 'SENDING', isDisabled: true });
     let self = this;
 
@@ -211,21 +209,17 @@ class SendComponent extends React.Component {
               }
             });
           } else {
-            console.log('in else parent');
             tokenTransaction(self.props.local_address, sendToAddress, amount * 10 ** 8, gwei * 10 ** 9, gas, privateKey, function (err, result) {
-              console.log('in callback', err, result);
               if (err) {
                 console.log('Error', err);
                 self.setState({ label: 'SEND', isDisabled: true, open: true, snackMessage: err.message.toString() })
               } else {
-                console.log('in tokentx data hello', initPaymentDetails);
                 let type;
                 if (initPaymentDetails !== null && initPaymentDetails.id === -1) {
                   type = 'init'
                 } else {
                   type = 'normal'
                 }
-                console.log('state', self.state);
                 if (self.state.isVPNPayment) {
                   let data = {
                     from_addr: self.props.local_address,
@@ -240,7 +234,6 @@ class SendComponent extends React.Component {
                     self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
                   })
                 } else {
-                  console.log('in else');
                   transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
                     console.log(response)
                     if (response.type === TX_SUCCESS) {
@@ -273,10 +266,10 @@ class SendComponent extends React.Component {
     if (payVpn.isVPNPayment) {
       this.setState({
         sendToAddress: payVpn.data.account_addr,
-        amount: payVpn.data.amount,
+        amount: payVpn.data.amount / (10 ** 8),
         token: 'SENT',
         isVPNPayment: true,
-        sessionId: payVpn.data.sessionId
+        sessionId: payVpn.data.id
       });
       this.getGasLimit(payVpn.data.amount, payVpn.data.account_addr, 'SENT')
     } else if (initPaymentDetails !== null) {

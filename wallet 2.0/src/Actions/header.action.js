@@ -10,7 +10,9 @@ export function setTestNet(value) {
     }
 }
 
-export async function getETHBalance(address, isTest) {
+export async function getETHBalance(address) {
+    console.log("Test value..", isTest);
+    let isTest = localStorage.getItem('config') === 'MAIN' ? false : true;
     let ETH_BALANCE_URL = isTest ? config.test.ethBalanceUrl : config.main.ethBalanceUrl;
     let response = await axios.get(ETH_BALANCE_URL + address, {
         headers: {
@@ -32,7 +34,8 @@ export async function getETHBalance(address, isTest) {
     }
 }
 
-export async function getSentBalance(address, isTest) {
+export async function getSentBalance(address) {
+    let isTest = localStorage.getItem('config') === 'MAIN' ? false : true;
     let SENT_BALANCE_URL = isTest ? config.test.sentBalanceUrl : config.main.sentBalanceUrl;
     let response = await axios.get(SENT_BALANCE_URL + address, {
         headers: {

@@ -45,7 +45,6 @@ export function getPrivateKeyWithoutCallback(password, cb) {
             let keystore = JSON.parse(data)
             try {
                 let privateKey = await keythereum.recover(password, keystore);
-                console.log(privateKey.toString('hex'), typeof (privateKey), ' in get')
                 setTimeout(function () { cb(null, privateKey) }, 1000);
             }
             catch (err) {

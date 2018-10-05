@@ -28,6 +28,10 @@ class Header extends Component {
         }
     }
 
+    componentWillMount = () => {
+        this.getERCBalances()
+    }
+
     handleClose = (event, reason) => {
         this.setState({ openSnack: false });
     };
@@ -44,8 +48,8 @@ class Header extends Component {
         let value = event.target.checked;
         let currentTab = this.props.currentTab;
         this.props.setTestNet(value);
-        this.props.getETHBalance(this.props.walletAddress, value);
-        this.props.getSentBalance(this.props.walletAddress, value);
+        this.props.getETHBalance(this.props.walletAddress);
+        this.props.getSentBalance(this.props.walletAddress);
         if ((value && disabledItemsTest.includes(currentTab)) ||
             (!value && disabledItemsMain.includes(currentTab))) {
             this.props.setCurrentTab('send');
@@ -63,13 +67,18 @@ class Header extends Component {
         }
     };
 
+    getERCBalances = () => {
+        this.props.getETHBalance(this.props.walletAddress);
+        this.props.getSentBalance(this.props.walletAddress);
+    }
+
     render() {
         let { balance, isTendermint, tmAccountDetails, isTest, walletAddress } = this.props;
         if (!this.props.isTendermint && !notTMInterval) {
             notTMInterval = setInterval(() => {
-                this.props.getETHBalance(walletAddress, isTest);
-                this.props.getSentBalance(walletAddress, isTest);
-            }, 10000);
+                this.props.getETHBalance(walletAddress);
+                this.props.getSentBalance(walletAddress);
+            }, 30000);
         }
 
         if (this.props.isTendermint && !TMInterval && tmAccountDetails) {
@@ -136,32 +145,43 @@ class Header extends Component {
                         <Col xs={4}>
                             {isTendermint ?
                                 (tmAccountDetails ?
-                                    < div style={headerStyles.ethBalance} >
+                                    < div style={headerStyles.tmBalance} >
                                         <span>{'TSENT: '}</span>
                                         <span style={headerStyles.balanceText}>
                                             {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
                                             {token && 'denom' in token ? '' : ''}
                                             {' '}
-                                            <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
-                                                <RefreshIcon />
-                                            </IconButton>
+                                            <Tooltip title="Refresh Balance">
+                                                <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
+                                                    <RefreshIcon />
+                                                </IconButton>
+                                            </Tooltip>
                                         </span>
                                     </div>
                                     : null)
                                 :
-                                <div>
-                                    <div style={headerStyles.sentBalance}>
-                                        <span>{this.props.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
-                                        <span style={headerStyles.balanceText}>{this.props.sentBalance}</span>
-                                    </div>
-                                    <div style={headerStyles.ethBalance}>
-                                        <span>{this.props.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
-                                        <span style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading'
-                                            ? this.props.ethBalance :
-                                            parseFloat(this.props.ethBalance).toFixed(8)
-                                        }</span>
-                                    </div>
-                                </div>
+                                <Row>
+                                    <Col xs={this.props.isTest ? 8 : 6}>
+                                        <div style={headerStyles.sentBalance}>
+                                            <span>{this.props.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
+                                            <span style={headerStyles.balanceText}>{this.props.sentBalance}</span>
+                                        </div>
+                                        <div style={headerStyles.ethBalance}>
+                                            <span>{this.props.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
+                                            <span style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading'
+                                                ? this.props.ethBalance :
+                                                parseFloat(this.props.ethBalance).toFixed(8)
+                                            }</span>
+                                        </div>
+                                    </Col>
+                                    <Col xs={4}>
+                                        <Tooltip title="Refresh Balance">
+                                            <IconButton onClick={() => { this.getERCBalances() }} style={headerStyles.buttonRefresh}>
+                                                <RefreshIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Col>
+                                </Row>
                             }
                         </Col>
                         <Col xs={1} style={headerStyles.alignRight}>

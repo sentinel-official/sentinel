@@ -55,7 +55,13 @@ const headerStyles = {
         fontSize: 14,
         fontWeight: '600',
         color: '#FAFAFA',
-        marginTop: '3%'
+        marginTop: '5%'
+    },
+    tmBalance: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#FAFAFA',
+        marginTop: '2%'
     },
     sentBalance: {
         fontSize: 14,

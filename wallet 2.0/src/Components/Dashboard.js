@@ -34,6 +34,7 @@ class Dashboard extends Component {
 
     componentWillMount = () => {
         this.props.getAccount();
+        this.props.setTestNet(false);
         getVPNConnectedData((err, data, sock) => {
             if (err) { }
             else {

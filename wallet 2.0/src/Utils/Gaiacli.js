@@ -6,8 +6,8 @@ const path = window.require('path');
 export function runGaiacli(cb) {
     if (remote.process.platform === 'linux') {
         try {
-            execSync('chmod +x public/gaiacli');
-            exec('public/gaiacli advanced rest-server --node tcp://185.222.24.68:26657 --chain-id=Sentinel-testnet-1',
+            execSync('chmod +x /usr/lib/sentinel/public/gaiacli');
+            exec('/usr/lib/sentinel/public/gaiacli advanced rest-server --node tcp://185.222.24.68:26657 --chain-id=Sentinel-testnet-1',
                 function (err, stdout, stderr) {
                     if (err) {
                         cb(true)

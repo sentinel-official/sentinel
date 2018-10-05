@@ -14,8 +14,8 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import co.sentinel.sentinellite.network.api.AppVersionWebService;
-import co.sentinel.sentinellite.network.api.GenericWebService;
 import co.sentinel.sentinellite.network.api.BonusWebService;
+import co.sentinel.sentinellite.network.api.GenericWebService;
 import co.sentinel.sentinellite.util.Logger;
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
@@ -35,9 +35,9 @@ public class WebClient {
     private static final String App_VERSION_BASE_URL = "https://version-api.sentinelgroup.io/";
 
     private static OkHttpClient sHttpClient = enableTls12OnPreLollipop(new OkHttpClient.Builder()
-            .connectTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS)
-            .writeTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .retryOnConnectionFailure(false)
             .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(new AuthInterceptor())).build();

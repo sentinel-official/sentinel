@@ -189,6 +189,11 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="claim_bonus">Забрать бонус</string>
+    <string name="label_enter_address_claim">Введите адрес кошелька, полученного из приложения Sentinel Network.</string>
+    <string name="hint_enter_address_claim">Адрес кошелька</string>
+    <string name="label_already_linked">Вы уже забронировали свои токены. Дождитесь пополнения баланса.\nАдрес: %1$s\nSNC Реферальный код: %2$s\nSLC Реферальный код: %3$s</string>
+    <string name="label_confirm_link_account">1. Ваш реферальный код для данного адреса: %1$s.\n2. Если данный реферальный код отличается от указанного в приложении Sentinel Network с GitHub, свяжитесь с нами в телеграмме.\n3. Нажмите «Подтвердить», если вы хотите привязать введенный адрес с Lite-версией и перевести туда заработанные токены.</string>
+    <string name="label_link_account_success">Поздравляем! Ваши приложения Sentinel Lite и Sentinel Network теперь привязаны друг к другу. Токены будут зачислены после окончания аирдропа.</string>
     <string name="update_available">Доступно обновление</string>
     <string name="update_desc">Новая версия уже доступна для скачивания.\n\nПожалуйста, скачайте и установите новую версию для стабильной работы приложения.</string>
     <string name="downloading_app_tite">Скачивается…</string>
@@ -210,4 +215,6 @@
     <string name="action_rate">Оценить</string>
     <string name="referral_address_invalid">Неправильно введен реферальный код. Попробуйте ещё раз.</string>
     <string name="read_more">Узнать больше</string>
+    <string name="action_confirm">Подтвердить</string>
+    <string name="action_enter_address">Введите адрес</string>
 </resources>

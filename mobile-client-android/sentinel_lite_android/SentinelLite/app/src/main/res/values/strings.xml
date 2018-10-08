@@ -7,13 +7,13 @@
     <string-array name="language" translatable="false">
         <item>English</item>
         <item>Russian</item>
-        <item>Chinese</item>
+        <!--<item>Chinese</item>-->
         <!--<item>Turkish</item>-->
     </string-array>
     <string-array name="language_code" translatable="false">
         <item>en</item>
         <item>ru</item>
-        <item>zh</item>
+        <!--<item>zh</item>-->
         <!--<item>tr</item>-->
     </string-array>
 

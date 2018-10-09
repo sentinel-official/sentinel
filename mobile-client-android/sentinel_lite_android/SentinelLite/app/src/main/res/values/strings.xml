@@ -7,14 +7,14 @@
     <string-array name="language" translatable="false">
         <item>English</item>
         <item>Russian</item>
-        <!--<item>Chinese</item>-->
-        <!--<item>Turkish</item>-->
+        <item>Chinese</item>
+        <item>Turkish</item>
     </string-array>
     <string-array name="language_code" translatable="false">
         <item>en</item>
         <item>ru</item>
-        <!--<item>zh</item>-->
-        <!--<item>tr</item>-->
+        <item>zh</item>
+        <item>tr</item>
     </string-array>
 
     <string name="telegram_url" translatable="false">https://t.me/sentinel_co</string>

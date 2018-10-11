@@ -166,7 +166,7 @@
     <string name="no_of_referrals">Referansların saıyısı</string>
     <string name="reward_earned">Kazanılan toplam ödül tokeni</string>
     <string name="share_id">ID paylaş</string>
-    <string name="share_string">Hey, bu yeni dVPN android uygulamasını kontrol edin. Kaydolurken ücretsiz token almak için Referans ID imi kullan.\n\nReferans ID: %s\n\nLink: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
+    <string name="share_string">Hey, bu yeni dVPN android uygulamasını kontrol edin. Kaydolurken ücretsiz token almak için Referans ID imi kullan.\n\nReferans ID: %1$s\n\nLink: %2$s</string>
     <string name="info_title_1">Her yeni kayıtta token kazanmak için Referans ID nizi paylaşın</string>
     <string name="info_title_2">Güvenli merkezi VPN</string>
     <string name="info_desc_1">Sentinel uygulamasını arkadaşlarınızla paylaşın, dVPN Uygulamasını kullanın ve topluluk gelişimi ve ağın merkezileşmesi için topluluğu teşvik edin</string>

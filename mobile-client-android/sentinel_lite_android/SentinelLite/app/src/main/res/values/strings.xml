@@ -9,12 +9,14 @@
         <item>Russian</item>
         <item>Chinese</item>
         <item>Turkish</item>
+        <item>Persian</item>
     </string-array>
     <string-array name="language_code" translatable="false">
         <item>en</item>
         <item>ru</item>
         <item>zh</item>
         <item>tr</item>
+        <item>fa</item>
     </string-array>
 
     <string name="telegram_url" translatable="false">https://t.me/sentinel_co</string>

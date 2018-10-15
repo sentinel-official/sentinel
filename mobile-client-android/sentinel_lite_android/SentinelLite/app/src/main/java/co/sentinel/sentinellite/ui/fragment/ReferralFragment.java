@@ -168,7 +168,9 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
                     showProgressDialog(true, getString(R.string.generic_loading_message));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
-                    mAddressToClaimDialogFragment.dismiss();
+                    if (mAddressToClaimDialogFragment != null) {
+                        mAddressToClaimDialogFragment.dismiss();
+                    }
                     mAccountFromAddress = genericResponseResource.data.account;
                     if (mAccountFromAddress.linked) {
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.label_already_linked, mAccountFromAddress.address, mAccountFromAddress.referralId, mTvReferralCode.getText().toString().trim()), AppConstants.VALUE_DEFAULT);

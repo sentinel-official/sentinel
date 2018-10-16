@@ -147,7 +147,16 @@ export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
         cb(null);
     } else {
         let sess_id = session_data.sessionId;
-        axios.post(session_data.url + `/clients/${account_addr}/sessions/${sess_id}/credentials`, data)
+        axios({
+            url: session_data.url + `/clients/${account_addr}/sessions/${sess_id}/credentials`,
+            method: 'POST',
+            data: data,
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            },
+            timeout: 10000
+        })
             .then(response => {
                 console.log("Getting Session Credentials...")
                 if (response.data.success) {

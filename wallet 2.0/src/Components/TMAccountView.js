@@ -22,7 +22,8 @@ class TMAccountView extends Component {
         super(props);
         this.state = {
             openSnack: false,
-            snackMessage: ''
+            snackMessage: '',
+            isFreeLoading: false
         }
     }
 
@@ -39,10 +40,11 @@ class TMAccountView extends Component {
     };
 
     getFree() {
+        this.setState({ isFreeLoading: true })
         this.props.getFreeTokens(this.props.account.address)
             .then((res) => {
-                if (res.error) this.setState({ openSnack: true, snackMessage: res.error })
-                else this.setState({ openSnack: true, snackMessage: res.payload })
+                if (res.error) this.setState({ openSnack: true, snackMessage: res.error, isFreeLoading: false })
+                else this.setState({ openSnack: true, snackMessage: res.payload, isFreeLoading: false })
             })
     }
 
@@ -60,9 +62,10 @@ class TMAccountView extends Component {
         return (
             <div>
                 <Button
+                    disabled={this.state.isFreeLoading}
                     onClick={this.getFree.bind(this)}
-                    style={receiveStyles.flatButtonStyleOnTest}
-                >{lang[language].GetTokens}</Button>
+                    style={this.state.isFreeLoading ? receiveStyles.flatButtonStyleOffTest : receiveStyles.flatButtonStyleOnTest}
+                >{this.state.isFreeLoading ? 'Loading...' : lang[language].GetTokens}</Button>
                 <div style={accountStyles.formStyle}>
                     <Card style={accountStyles.cardStyle}>
                         {/* <CardHeader

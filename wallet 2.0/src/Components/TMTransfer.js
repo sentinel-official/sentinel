@@ -88,7 +88,7 @@ class TMTransfer extends Component {
                             localStorage.setItem('SIGPWD', data.sig_password)
                             addTransaction({
                                 fromAccountAddress: this.props.account.address,
-                                toAccountAddress: '',
+                                toAccountAddress: 'VPN_PAYMENT',
                                 txHash: response.payload.hash
                             })
                             this.props.getSessionInfo(response.payload.hash).then(sesRes => {

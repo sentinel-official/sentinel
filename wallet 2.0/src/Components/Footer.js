@@ -143,7 +143,7 @@ class Footer extends Component {
         let { vpnStatus, currentUsage, isTm, classes } = this.props;
         let counter = this.state.counter;
         downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
-        if (vpnStatus && isTm && downloadData >= counter * 10 && downloadData < (counter + 1) * 10) {
+        if (vpnStatus && isTm && downloadData >= counter * 10) {
             this.sendSignature(downloadData, false, counter);
         }
         if (!vpnStatus) {

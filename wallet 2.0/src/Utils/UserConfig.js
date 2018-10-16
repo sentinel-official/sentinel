@@ -38,7 +38,7 @@ export function getTMConfig(cb) {
     fs.readFile(TM_CONFIG_FILE, 'utf8', function (err, data) {
         if (err) {
             err.toString().includes('ENOENT') ?
-                fs.writeFile(TM_CONFIG_FILE, JSON.stringify({ isCreated: false }), function (Er) { })
+                fs.writeFileSync(TM_CONFIG_FILE, JSON.stringify({ isCreated: false }))
                 : null
             cb(err, null);
         }
@@ -54,8 +54,7 @@ export function setTMConfig(username) {
         data.tmUserName = username;
         data.isCreated = true;
         let config = JSON.stringify(data);
-        fs.writeFile(TM_CONFIG_FILE, config, function (keyErr) {
-        });
+        fs.writeFileSync(TM_CONFIG_FILE, config);
     })
 }
 

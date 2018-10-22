@@ -6,6 +6,8 @@ from thread import start_new_thread
 from sentinel.config import DEFAULT_GAS
 from sentinel.config import VERSION
 from sentinel.cosmos import call as cosmos_call
+from sentinel.helpers import end_session
+from sentinel.helpers import update_session_status
 from sentinel.node import list_node
 from sentinel.node import node
 from sentinel.node import update_node
@@ -115,9 +117,12 @@ if __name__ == '__main__':
             if 'Peer Connection Initiated with' in line:
                 client_name = line.split()[6][1:-1]
                 if 'client' in client_name:
+                    session_id = client_name[6:]
+                    update_session_status(session_id, 'CONNECTED')
                     print('*' * 128)
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
                 if 'client' in client_name:
+                    session_id = client_name[6:]
+                    end_session(session_id)
                     print('*' * 128)
-                    openvpn.revoke(client_name)

@@ -3,13 +3,9 @@ import json
 
 import falcon
 
-from ..config import DEFAULT_GAS
-from ..cosmos import call as cosmos_call
 from ..db import db
-from ..node import add_tx
-from ..node import node
+from ..helpers import end_session
 from ..vpn import Keys
-from ..vpn import disconnect_client
 
 
 class AddSessionDetails(object):
@@ -143,27 +139,7 @@ class AddSessionPaymentSign(object):
                 }
             })
             if signature['final']:
-                client_name = 'client' + session_id
-                disconnect_client(client_name)
-
-                error, data = cosmos_call('get_vpn_payment', {
-                    'amount': signature['amount'],
-                    'session_id': session_id,
-                    'counter': signature['index'],
-                    'name': node.config['account']['name'],
-                    'gas': DEFAULT_GAS,
-                    'isfinal': True,
-                    'password': node.config['account']['password'],
-                    'sign': signature['hash']
-                })
-                if error is None:
-                    tx = {
-                        'from_account_address': 'VPN_PAYMENT',
-                        'to_account_address': account_addr,
-                        'tx_hash': data['hash'].encode()
-                    }
-                    error, data = add_tx(tx)
-                print(error, data)
+                end_session(session_id)
             message = {
                 'success': True
             }

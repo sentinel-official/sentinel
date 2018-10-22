@@ -4,7 +4,7 @@ import json
 import falcon
 
 from ..db import db
-from ..vpn import disconnect_client
+from ..helpers import end_session
 
 
 class GetSessionUsage(object):
@@ -71,8 +71,7 @@ class DisconnectClient(object):
                 'message': 'Wrong details.'
             }
         else:
-            client_name = 'client' + session_id
-            disconnect_client(client_name)
+            end_session(session_id)
             message = {
                 'success': True,
                 'message': 'Disconnected successfully.'

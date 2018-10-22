@@ -26,7 +26,8 @@ class GetSessionUsage(object):
         client = db.clients.find_one({
             'account_addr': account_addr,
             'session_id': session_id,
-            'token': token
+            'token': token,
+            'status': 'CONNECTED'
         })
         if client is None:
             message = {
@@ -61,7 +62,8 @@ class DisconnectClient(object):
         client = db.clients.find_one({
             'account_addr': account_addr,
             'session_id': session_id,
-            'token': token
+            'token': token,
+            'status': 'CONNECTED'
         })
         if client is None:
             message = {

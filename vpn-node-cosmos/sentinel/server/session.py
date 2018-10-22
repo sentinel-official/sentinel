@@ -6,6 +6,7 @@ import falcon
 from ..config import DEFAULT_GAS
 from ..cosmos import call as cosmos_call
 from ..db import db
+from ..node import add_tx
 from ..node import node
 from ..vpn import Keys
 from ..vpn import disconnect_client
@@ -17,11 +18,15 @@ class AddSessionDetails(object):
         session_id = str(session_id)
         token = str(req.body['token'])
 
-        _ = db.clients.insert_one({
+        _ = db.clients.find_one_and_update({
             'account_addr': account_addr,
-            'session_id': session_id,
-            'token': token
-        })
+            'session_id': session_id
+        }, {
+            '$set': {
+                'token': token,
+                'status': 'ADDED_SESSION_DETAILS'
+            }
+        }, upsert=True)
 
         message = {
             'success': True,
@@ -51,23 +56,36 @@ class GetVpnCredentials(object):
         client = db.clients.find_one({
             'account_addr': account_addr,
             'session_id': session_id,
-            'token': token
+            'token': token,
+            'status': {
+                '$in': [
+                    'ADDED_SESSION_DETAILS',
+                    'SHARED_VPN_CREDS'
+                ]
+            }
         })
         if client is not None:
+            keys = Keys(session_id)
+            keys.generate()
             _ = db.clients.find_one_and_update({
                 'account_addr': account_addr,
                 'session_id': session_id,
-                'token': token
+                'token': token,
+                'status': {
+                    '$in': [
+                        'ADDED_SESSION_DETAILS',
+                        'SHARED_VPN_CREDS'
+                    ]
+                }
             }, {
                 '$set': {
                     'usage': {
                         'up': 0,
                         'down': 0
-                    }
+                    },
+                    'status': 'SHARED_VPN_CREDS'
                 }
             })
-            keys = Keys(session_id)
-            keys.generate()
             message = {
                 'success': True,
                 'ovpn': keys.ovpn()
@@ -110,13 +128,15 @@ class AddSessionPaymentSign(object):
         client = db.clients.find_one({
             'account_addr': account_addr,
             'session_id': session_id,
-            'token': token
+            'token': token,
+            'status': 'CONNECTED'
         })
         if client:
             _ = db.clients.find_one_and_update({
                 'account_addr': account_addr,
                 'session_id': session_id,
-                'token': token
+                'token': token,
+                'status': 'CONNECTED'
             }, {
                 '$push': {
                     'signatures': signature
@@ -125,6 +145,7 @@ class AddSessionPaymentSign(object):
             if signature['final']:
                 client_name = 'client' + session_id
                 disconnect_client(client_name)
+
                 error, data = cosmos_call('get_vpn_payment', {
                     'amount': signature['amount'],
                     'session_id': session_id,
@@ -135,7 +156,14 @@ class AddSessionPaymentSign(object):
                     'password': node.config['account']['password'],
                     'sign': signature['hash']
                 })
-                print (error, data)
+                if error is None:
+                    tx = {
+                        'from_account_address': 'VPN_PAYMENT',
+                        'to_account_address': account_addr,
+                        'tx_hash': data['hash'].encode()
+                    }
+                    error, data = add_tx(tx)
+                print(error, data)
             message = {
                 'success': True
             }

@@ -22,9 +22,9 @@ def end_session(session_id):
         'status': 'CONNECTED'
     })
     if session is not None:
+        update_session_status(session_id, 'DISCONNECTED')
         client_name = 'client' + session_id
         disconnect_client(client_name)
-        update_session_status(session_id, 'DISCONNECTED')
         if 'signatures' in session and len(session['signatures']) > 0:
             signature = session['signatures'][-1]
             error, data = cosmos_call('get_vpn_payment', {

@@ -34,18 +34,18 @@ class TMTransactionsHistory extends React.Component {
 
     render() {
         let output;
-        let transactions = _.sortBy(this.state.txData, obj => obj.timestamp).reverse();
         if (this.state.loading) {
             output = <div style={sessionStyles.noSessionsStyle}>Loading...</div>
         }
         else {
+            let transactions = _.sortBy(this.state.txData, obj => obj ? obj.timestamp : null).reverse();
             if (transactions && transactions.length > 0) {
                 output = transactions.map(data => {
                     if (data) {
                         return (
                             <div style={historyStyles.data}>
                                 <History ownWallet={this.props.account.address} date={parseInt(Date.parse(data.timestamp) / 1000)}
-                                    to={data.to?data.to:'Paid to chain'} gas={data.gas} from={data.from} unit={'TSENTs'}
+                                    to={data.to} gas={data.gas} from={data.from} unit={'TSENTs'}
                                     amount={parseInt(data.amount) / (10 ** 8)} status={'Success'} tx={data.hash} />
                             </div>
                         )

@@ -24,7 +24,7 @@ export function getConfig(cb) {
     fs.readFile(CONFIG_FILE, 'utf8', function (err, data) {
         if (err) {
             err.toString().includes('ENOENT') ?
-                fs.writeFile(CONFIG_FILE, JSON.stringify({ isConnected: false }), function (Er) { })
+                fs.writeFileSync(CONFIG_FILE, JSON.stringify({ isConnected: false }))
                 : null
             cb(err, null);
         }

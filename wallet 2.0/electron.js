@@ -216,7 +216,12 @@ function stopVPN(cb) {
       else {
         try {
           getConfig(function (error, KEYSTOREDATA) {
-            let data = JSON.parse(KEYSTOREDATA);
+            let data;
+            try {
+              data = JSON.parse(KEYSTOREDATA);
+            } catch (e) {
+              data = {}
+            }
             data.isConnected = null;
             let keystore = JSON.stringify(data);
             fs.writeFile(CONFIG_FILE, keystore, function (keyErr) {
@@ -255,7 +260,12 @@ function stopVPN(cb) {
             }
           }
           getConfig(function (error, KEYSTOREDATA) {
-            let data = JSON.parse(KEYSTOREDATA);
+            let data;
+            try {
+              data = JSON.parse(KEYSTOREDATA);
+            } catch (e) {
+              data = {}
+            }
             data.isConnected = null;
             let keystore = JSON.stringify(data);
             fs.writeFile(CONFIG_FILE, keystore, function (keyErr) {

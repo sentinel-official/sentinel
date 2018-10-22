@@ -118,7 +118,7 @@ class App extends Component {
                 {
                     return <div style={defaultPageStyle.division}>
                         <img src='../src/Images/logo.jpeg' style={defaultPageStyle.image} />
-                        <p style={defaultPageStyle.p}>Sentinel Security Group</p>
+                        <p style={defaultPageStyle.p}>Sentinel</p>
                         <img src='../src/Images/loading_home.gif' style={{}} />
                     </div>
                 }

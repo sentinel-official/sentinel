@@ -28,11 +28,14 @@ export function setTMComponent(component) {
 
 export async function getTMBalance(address) {
     try {
-        let response = await axios.get(TM_URL + '/accounts/' + address, {
+        let response = await axios({
+            url: `${TM_URL}/accounts/${address}`,
+            method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json',
-            }
+            },
+            timeout: 10000
         })
         return {
             type: types.GET_TMBALANCE,
@@ -156,9 +159,11 @@ export async function getTxInfo(hash, time) {
         })
         return ({
             hash: response.data.hash,
-            amount: response.data.tx.value.msg[0].value.Coins[0].amount,
+            amount: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ?
+                100 * (10 ** 8) - parseInt(response.data.tx.value.msg[0].value.Coins[0].amount) :
+                response.data.tx.value.msg[0].value.Coins[0].amount,
             from: response.data.tx.value.msg[0].value.From,
-            to: response.data.tx.value.msg[0].value.To,
+            to: response.data.tx.value.msg[0].value.To ? response.data.tx.value.msg[0].value.To : 'Paid to Chain',
             gas: response.data.result.gas_used,
             timestamp: time
         })

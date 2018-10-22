@@ -29,6 +29,7 @@ class CreateTMAccount extends Component {
     }
 
     componentWillMount = () => {
+        localStorage.setItem('tmAccount', null);
     }
 
     createAccount = () => {

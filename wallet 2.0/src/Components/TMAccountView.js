@@ -29,6 +29,7 @@ class TMAccountView extends Component {
 
     componentWillMount = () => {
         this.props.getTMBalance(this.props.account.address);
+        localStorage.setItem('tmAccount',this.props.account.address);
     }
 
     getBalance = () => {

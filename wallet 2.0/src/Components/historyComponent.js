@@ -14,14 +14,14 @@ class History extends React.Component {
         return (
             <div>
                 <div>
-                    <label style={to === ownWallet ? historyStyles.inStyle : historyStyles.outStyle}>{to === ownWallet ?
+                    <label style={from !== ownWallet ? historyStyles.inStyle : historyStyles.outStyle}>{from !== ownWallet ?
                         lang[language].In : lang[language].Out}&nbsp;
                             <span style={historyValue}>{new Date(parseInt(date) * 1000).toGMTString()}</span>
                     </label>
                 </div>
                 <div>
-                    <label style={historyLabel} >{to === ownWallet ? `${lang[language].From}:` : `${lang[language].To}:`}&nbsp;
-                            <span style={historyStyles.recepientStyle}>{to === ownWallet ? from : to}</span></label>
+                    <label style={historyLabel} >{from !== ownWallet ? `${lang[language].From}:` : `${lang[language].To}:`}&nbsp;
+                            <span style={historyStyles.recepientStyle}>{from !== ownWallet ? from : to}</span></label>
                     <label style={historyLabel}>{`${lang[language].GasPrice}:`}&nbsp;<span style={historyValue}>{gas}</span></label>
                 </div>
                 <div>

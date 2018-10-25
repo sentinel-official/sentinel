@@ -96,11 +96,11 @@ Updating an existing Sentinel dVPN OpenVPN Node
 
     `sudo docker rmi -f $(sudo docker images -aq -f reference=sentinelofficial/sentinel-vpn-node)`
 
-4. Set the token value to _null_ in the config file
+4. Set the token value to an EMPTY STRING in the config file
 
     Config file location: $HOME/.sentinel/config.data
     
-    Example: {"token": null, "enc_method": "AES-256-CBC", "account_addr": "0x656b756e6c6335302e676c343572357232786970", "price_per_gb": 125.0}
+    Example: {"token": "", "enc_method": "AES-256-CBC", "account_addr": "0x656b756e6c6335302e676c343572357232786970", "price_per_gb": 125.0}
 
 After completing the above steps please follow the instructions on Method #1 to get the node up and running again.
 

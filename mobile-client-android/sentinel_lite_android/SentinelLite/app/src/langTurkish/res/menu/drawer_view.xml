@@ -11,9 +11,9 @@
             android:title="@string/language"
             android:visible="false" />
         <item
-            android:id="@+id/nav_referral"
-            android:icon="@drawable/menu_referrals"
-            android:title="@string/referrals" />
+            android:id="@+id/nav_share_app"
+            android:icon="@drawable/menu_share_app"
+            android:title="@string/share_app" />
         <item
             android:id="@+id/nav_faq"
             android:icon="@drawable/menu_faq"

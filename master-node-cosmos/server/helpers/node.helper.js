@@ -11,7 +11,7 @@ let generateToken = () => {
 
 let getNodeDetails = (txHash, cb) => {
   cosmos.call('verifyHash', {
-    txHash
+    hash: txHash
   }, (error, result) => {
     console.log(error, result);
     if (error) cb(error);

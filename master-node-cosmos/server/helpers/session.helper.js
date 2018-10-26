@@ -14,7 +14,7 @@ let generateToken = () => {
 
 let getPaymentDetails = (txHash, cb) => {
   cosmos.call('verifyHash', {
-    txHash
+    hash: txHash
   }, (error, result) => {
     if (error) cb(error);
     else {

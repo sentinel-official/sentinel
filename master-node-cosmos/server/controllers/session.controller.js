@@ -24,7 +24,9 @@ let sessionHelper = require('../helpers/session.helper');
  *   }
  */
 let addSession = (req, res) => {
-  let { txHash } = req.body;
+  let {
+    txHash
+  } = req.body;
   async.waterfall([
     (next) => {
       sessionHelper.getPaymentDetails(txHash,
@@ -108,7 +110,9 @@ let addSession = (req, res) => {
  *   }
  */
 let getSessions = (req, res) => {
-  let { accountAddress } = req.params;
+  let {
+    accountAddress
+  } = req.params;
   async.waterfall([
     (next) => {
       sessionDbo.getSessions({

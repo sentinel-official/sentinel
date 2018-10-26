@@ -10,4 +10,6 @@ module.exports = (server) => {
   server.put('/nodes/:accountAddress', nodeValidation.updateNode, nodeContoller.updateNode);
 
   server.put('/nodes/:accountAddress/sessions', nodeValidation.updateNodeSessions, nodeContoller.updateNodeSessions);
+
+  server.put('/nodes/:accountAddress/sessions/:sessionId', nodeValidation.updateNodeSession, nodeContoller.updateNodeSession);
 };

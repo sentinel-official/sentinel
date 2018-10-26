@@ -80,9 +80,27 @@ let updateNodeSessions = (req, res, next) => {
   else next();
 };
 
+let updateNodeSession = (req, res, next) => {
+  let updateNodeSessionSchema = joi.object().keys({
+    accountAddress: joi.string().required(),
+    token: joi.string().required(),
+    sessionId: joi.string().required(),
+    sessionToken: joi.string().required(),
+    sessionAmount: joi.number().required()
+  });
+  let body = Object.assign({}, req.body, req.params);
+  let { error } = joi.validate(body, updateNodeSessionSchema);
+  if (error) res.status(422).send({
+    success: false,
+    error
+  });
+  else next();
+};
+
 module.exports = {
   addNode,
   updateNode,
   getNodes,
+  updateNodeSession,
   updateNodeSessions
 };

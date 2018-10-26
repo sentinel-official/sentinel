@@ -281,8 +281,8 @@
     <string name="payment_done_success">Pago realizado con éxito</string>
     <string name="send_to_hint">Enviar a o scanear para enviar</string>
     <string name="referral_id">ID de referido</string>
-    <string name="referral_link">Referral Link</string>
-    <string name="referrals">Referidos</string>
+    <string name="invitation_link">Referral Link</string>
+    <string name="share_app">Referidos</string>
     <string name="send_to">Enviar a…</string>
     <string name="password_hint">Introduce una contraseña para crear el ID de usuario</string>
     <string name="key_not_copied_alert">No has copiado tu clave privada.\nPor favor, copia tu clave privada para proceder.</string>
@@ -295,7 +295,7 @@
     <string name="no_of_referrals">Núm. de referidos</string>
     <string name="reward_earned">Total de las recompensas de tokens obtenidas</string>
     <string name="address">Dirección</string>
-    <string name="share_id">Comparte tu Link</string>
+    <string name="invite_friend">Comparte tu Link</string>
     <string name="share_string">Hey, prueba esta nueva app dVPN para Android. Usa mi código de referido para conseguir tokens gratis cuando te registres.\n\nCódigo de referido: %1$s\n\nLink: %2$s</string>
     <string name="info_title_1">Comparte tu código de referido para conseguir tokens por cada registro logrado</string>
     <string name="info_title_2">Wallet de código abierto y plataforma VPN segura</string>

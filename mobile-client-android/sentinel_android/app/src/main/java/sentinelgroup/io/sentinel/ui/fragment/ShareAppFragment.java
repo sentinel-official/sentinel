@@ -27,30 +27,27 @@ import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.BranchUrlHelper;
-import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.Status;
-import sentinelgroup.io.sentinel.viewmodel.ReferralViewModel;
 import sentinelgroup.io.sentinel.viewmodel.BonusViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.ShareAppViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ReferralFragment#newInstance} factory method to
+ * Use the {@link ShareAppFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReferralFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class ShareAppFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private ReferralViewModel mViewModel;
+    private ShareAppViewModel mViewModel;
 
     private OnGenericFragmentInteractionListener mListener;
 
     private SwipeRefreshLayout mSrReload;
-    private TextView mTvReferralCode, mTvReferralLink, mtvReferralCount, mTvRewardsEarned, mTvCanClaimAfter, mTvReadMore;
-    private ImageButton mIbCopyReferral, mIbCopyReferralLink;
-    private Button mBtnShareAddress, mBtnClaimBonus;
+    private TextView mTvInvitationLink;
+    private ImageButton mIbCopyInvitationLink;
+    private Button mBtnInviteFriend;
 
-    private String mShareString;
-
-    public ReferralFragment() {
+    public ShareAppFragment() {
         // Required empty public constructor
     }
 
@@ -58,10 +55,10 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
      * Use this factory method to create a new instance of
      * this fragment.
      *
-     * @return A new instance of fragment ReferralFragment.
+     * @return A new instance of fragment ShareAppFragment.
      */
-    public static ReferralFragment newInstance() {
-        return new ReferralFragment();
+    public static ShareAppFragment newInstance() {
+        return new ShareAppFragment();
     }
 
     @Override
@@ -73,7 +70,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_referral, container, false);
+        return inflater.inflate(R.layout.fragment_share_app, container, false);
     }
 
     @Override
@@ -85,29 +82,19 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fragmentLoaded(getString(R.string.referrals));
+        fragmentLoaded(getString(R.string.share_app));
         initViewModel();
     }
 
     private void initView(View iView) {
         mSrReload = iView.findViewById(R.id.sr_reload);
-        mTvReferralCode = iView.findViewById(R.id.tv_referral_code);
-        mTvReferralLink = iView.findViewById(R.id.tv_referral_link);
-        mtvReferralCount = iView.findViewById(R.id.tv_referral_count);
-        mTvRewardsEarned = iView.findViewById(R.id.tv_rewards_earned);
-        mIbCopyReferral = iView.findViewById(R.id.ib_copy_referral);
-        mIbCopyReferralLink = iView.findViewById(R.id.ib_copy_referral_link);
-        mBtnShareAddress = iView.findViewById(R.id.btn_share_referral_id);
-        mTvCanClaimAfter = iView.findViewById(R.id.tv_can_claim_after);
-        mBtnClaimBonus = iView.findViewById(R.id.btn_claim_bonus);
-        mTvReadMore = iView.findViewById(R.id.tv_read_more);
+        mTvInvitationLink = iView.findViewById(R.id.tv_invitation_link);
+        mIbCopyInvitationLink = iView.findViewById(R.id.ib_copy_invitation_link);
+        mBtnInviteFriend = iView.findViewById(R.id.btn_invite_friend);
         // Set listeners
         mSrReload.setOnRefreshListener(this);
-        mIbCopyReferral.setOnClickListener(this);
-        mIbCopyReferralLink.setOnClickListener(this);
-        mBtnShareAddress.setOnClickListener(this);
-        mBtnClaimBonus.setOnClickListener(this);
-        mTvReadMore.setOnClickListener(this);
+        mIbCopyInvitationLink.setOnClickListener(this);
+        mBtnInviteFriend.setOnClickListener(this);
     }
 
     private void initViewModel() {
@@ -115,7 +102,7 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
 
         BonusViewModelFactory aFactory = InjectorModule.provideBonusViewModelFactory(getContext(), aDeviceId);
-        mViewModel = ViewModelProviders.of(this, aFactory).get(ReferralViewModel.class);
+        mViewModel = ViewModelProviders.of(this, aFactory).get(ShareAppViewModel.class);
 
         setReferralIdAndLink(true);
 
@@ -128,55 +115,16 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
             }
         });
 
-        mViewModel.getBonusInfoLiveData().observe(this, bonusInfoEntity -> {
-            if (bonusInfoEntity != null) {
-                mtvReferralCount.setText(String.valueOf(bonusInfoEntity.getRefCount()));
-                mTvRewardsEarned.setText(Converter.getFormattedTokenString(bonusInfoEntity.getBonuses().getTotalTokens()));
-                mBtnClaimBonus.setEnabled(bonusInfoEntity.isCanClaim());
-                if (bonusInfoEntity.getCanClaimAfter() != null) {
-                    String aFormattedTime = Converter.getFormattedTimeInUTC(bonusInfoEntity.getCanClaimAfter());
-                    if (aFormattedTime != null)
-                        mTvCanClaimAfter.setText(getString(R.string.can_claim_after, aFormattedTime));
-                }
-            }
-        });
-
-        mViewModel.getReferralClaimLiveEvent().observe(this, genericResponseResource -> {
-            if (genericResponseResource != null) {
-                if (genericResponseResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true, getString(R.string.claiming_referral_bonus));
-                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
-                    hideProgressDialog();
-                    showSingleActionDialog(R.string.yay, getString(R.string.referral_claimed), R.string.thanks);
-                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
-                    hideProgressDialog();
-                    if (genericResponseResource.message.equals(AppConstants.GENERIC_ERROR))
-                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
-                    else
-                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
-                }
-            }
-        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_share_referral_id:
-                shareLink(getString(R.string.share_string, mViewModel.getReferralId(), mTvReferralLink.getText().toString().trim()));
+            case R.id.btn_invite_friend:
+                shareLink(getString(R.string.share_string, mViewModel.getReferralId(), mTvInvitationLink.getText().toString().trim()));
                 break;
-            case R.id.btn_claim_bonus:
-                mViewModel.claimReferralBonus();
-                break;
-            case R.id.ib_copy_referral:
-                copyToClipboard(mTvReferralCode.getText().toString().trim(), R.string.referral_id_copied);
-                break;
-            case R.id.ib_copy_referral_link:
-                copyToClipboard(mTvReferralLink.getText().toString().trim(), R.string.link_copied);
-                break;
-
-            case R.id.tv_read_more:
-                showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.referral_desc), AppConstants.VALUE_DEFAULT);
+            case R.id.ib_copy_invitation_link:
+                copyToClipboard(mTvInvitationLink.getText().toString().trim(), R.string.link_copied);
                 break;
         }
     }
@@ -185,14 +133,13 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
         if (toCheckForEmpty && TextUtils.isEmpty(mViewModel.getReferralId())) {
             mViewModel.updateAccountInfo();
         } else {
-            mTvReferralCode.setText(mViewModel.getReferralId());
             generateLinkAndShare();
         }
     }
 
     private void generateLinkAndShare() {
         new BranchUrlHelper(getActivity()).createLink(mViewModel.getReferralId(), iUrl -> {
-            mTvReferralLink.setText(iUrl);
+            mTvInvitationLink.setText(iUrl);
         });
     }
 
@@ -220,12 +167,6 @@ public class ReferralFragment extends Fragment implements View.OnClickListener, 
     public void hideProgressDialog() {
         if (mListener != null) {
             mListener.onHideProgressDialog();
-        }
-    }
-
-    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
-        if (mListener != null) {
-            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

@@ -35,7 +35,6 @@ public class BonusRepository {
     private final MutableLiveData<BonusInfoEntity> mBonusInfoMutableLiveData;
     private final SingleLiveEvent<Resource<GenericResponse>> mAddAccountLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mUpdateAccountLiveEvent;
-    private final SingleLiveEvent<Resource<GenericResponse>> mBonusClaimLiveEvent;
     private final String mDeviceId;
 
     private BonusRepository(BonusInfoDao iDao, BonusWebService iBonusWebService, AppExecutors iAppExecutors, String iDeviceId) {
@@ -46,7 +45,6 @@ public class BonusRepository {
         mAddAccountLiveEvent = new SingleLiveEvent<>();
         mUpdateAccountLiveEvent = new SingleLiveEvent<>();
         mBonusInfoMutableLiveData = new MutableLiveData<>();
-        mBonusClaimLiveEvent = new SingleLiveEvent<>();
         mDeviceId = iDeviceId;
 
         LiveData<BonusInfoEntity> aBonusInfoEntityLiveData = getBonusInfoMutableLiveData();
@@ -76,10 +74,6 @@ public class BonusRepository {
     /*
      * Public getter methods for LiveData and SingleLiveEvents
      */
-    public SingleLiveEvent<Resource<GenericResponse>> getBonusClaimLiveEvent() {
-        return mBonusClaimLiveEvent;
-    }
-
     public SingleLiveEvent<Resource<GenericResponse>> getAddAccountLiveEvent() {
         return mAddAccountLiveEvent;
     }
@@ -90,10 +84,6 @@ public class BonusRepository {
 
     public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
         return mAccountInfoLiveEvent;
-    }
-
-    public LiveData<BonusInfoEntity> getBonusInfoEntityLiveData() {
-        return mDao.getBonusInfoEntity();
     }
 
     public void fetchAccountInfo() {
@@ -163,41 +153,6 @@ public class BonusRepository {
                         iResponse.body().setDeviceId(mDeviceId);
                         mBonusInfoMutableLiveData.postValue(iResponse.body());
                     }
-                }
-            }
-        });
-    }
-
-    public void claimBonus(GenericRequestBody iRequestBody) {
-        mBonusClaimLiveEvent.postValue(Resource.loading(null));
-        mBonusWebService.claimBonus(iRequestBody).enqueue(new Callback<GenericResponse>() {
-            @Override
-            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
-                reportSuccessResponse(response);
-            }
-
-            @Override
-            public void onFailure(Call<GenericResponse> call, Throwable t) {
-                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
-            }
-
-            private void reportSuccessResponse(Response<GenericResponse> iResponse) {
-                if (iResponse.isSuccessful()) {
-                    mBonusClaimLiveEvent.postValue(Resource.success(iResponse.body()));
-                } else {
-                    reportErrorResponse(iResponse, null);
-                }
-
-            }
-
-            private void reportErrorResponse(Response<GenericResponse> iResponse, String iThrowableLocalMessage) {
-                if (iResponse != null) {
-                    ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
-                    mBonusClaimLiveEvent.postValue(Resource.error(aError.getMessage(), iResponse.body()));
-                } else if (iThrowableLocalMessage != null) {
-                    mBonusClaimLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
-                } else {
-                    mBonusClaimLiveEvent.postValue(Resource.error(AppConstants.GENERIC_ERROR, null));
                 }
             }
         });

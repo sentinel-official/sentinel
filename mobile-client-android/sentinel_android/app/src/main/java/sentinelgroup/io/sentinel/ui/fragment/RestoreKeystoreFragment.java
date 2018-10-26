@@ -165,7 +165,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         mViewModel.getAddAccountLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true, getString(R.string.adding_referral));
+                    showProgressDialog(true, getString(R.string.restoring_accunt));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
@@ -189,7 +189,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         mViewModel.getUpdateAccountLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true, getString(R.string.adding_referral));
+                    showProgressDialog(true, getString(R.string.restoring_accunt));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));

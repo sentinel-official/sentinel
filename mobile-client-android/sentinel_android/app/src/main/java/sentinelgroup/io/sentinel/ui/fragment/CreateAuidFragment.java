@@ -46,7 +46,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     private OnGenericFragmentInteractionListener mListener;
 
-    private TextInputEditText mTetPassword, mTetConfirmPassword, mTetReferral;
+    private TextInputEditText mTetPassword, mTetConfirmPassword;
     private Button mBtnNext;
 
     private boolean mIsRequested;
@@ -89,7 +89,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     private void initView(View iView) {
         mTetPassword = iView.findViewById(R.id.tet_password);
         mTetConfirmPassword = iView.findViewById(R.id.tet_confirm_password);
-        mTetReferral = iView.findViewById(R.id.tet_referral);
         mBtnNext = iView.findViewById(R.id.btn_next);
         // Set listeners
         mTetPassword.addTextChangedListener(this);
@@ -98,7 +97,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     }
 
     private void initViewModel() {
-        mTetReferral.setText(AppPreferences.getInstance().getString(AppConstants.PREFS_BRANCH_REFERRER_ID));
 
         // init Device ID
         @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -136,10 +134,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                     mAccountAddress = accountResource.data.accountAddress;
                     mPrivateKey = accountResource.data.privateKey;
                     mKeystoreFilePath = accountResource.data.keystoreFilePath;
-                    String aReferralAddress = mTetReferral.getText().toString().trim();
-                    if (validateReferral(aReferralAddress)) {
-                        addAccountInfo(aReferralAddress);
-                    }
+                    addAccountInfo(null);
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
                     if (accountResource.message.equals(AppConstants.STORAGE_ERROR))
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.storage_error), AppConstants.VALUE_DEFAULT);
@@ -154,7 +149,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
         mViewModel.getAddAccountLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true, getString(R.string.adding_referral));
+                    showProgressDialog(true, getString(R.string.generic_loading_message));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     loadNextFragment();
@@ -168,7 +163,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                         if (genericResponseResource.message.equals("Device is already registered.")) {
                             mViewModel.updateAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
                         } else {
-                            mTetReferral.setText("");
                             showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
                         }
                     }
@@ -179,7 +173,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
         mViewModel.getUpdateAccountLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true, getString(R.string.adding_referral));
+                    showProgressDialog(true, getString(R.string.generic_loading_message));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     loadNextFragment();
@@ -190,7 +184,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                     else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
                         showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
                     else {
-                        mTetReferral.setText("");
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
                     }
                 }
@@ -205,16 +198,13 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     private void createNewAccount() {
         String aPassword = mTetPassword.getText().toString().trim();
         String aPassword2 = mTetConfirmPassword.getText().toString().trim();
-        String aReferral = mTetReferral.getText().toString().trim();
 
         if (TextUtils.isEmpty(mAccountAddress)) {
             if (validatePassword(aPassword, aPassword2)) {
                 mViewModel.createNewAccount(aPassword);
             }
         } else {
-            if (validateReferral(aReferral)) {
-                addAccountInfo(aReferral);
-            }
+            addAccountInfo(null);
         }
 
     }
@@ -224,15 +214,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             mTetConfirmPassword.setText("");
             mTetConfirmPassword.requestFocus();
             showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.password_mismatch), AppConstants.VALUE_DEFAULT);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean validateReferral(String iReferralAddress) {
-        if (TextUtils.isEmpty(iReferralAddress)) {
-            showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.referral_address_missing), R.string.yes, R.string.no);
             return false;
         } else {
             return true;
@@ -253,15 +234,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                 }
         }
         return true;
-    }
-
-    private void clearReferralField() {
-        mTetReferral.setText("");
-        // disable the password and confirm password field
-        mTetPassword.setFocusable(false);
-        mTetPassword.setFocusableInTouchMode(false);
-        mTetConfirmPassword.setFocusable(false);
-        mTetConfirmPassword.setFocusableInTouchMode(false);
     }
 
     // Interface interaction methods

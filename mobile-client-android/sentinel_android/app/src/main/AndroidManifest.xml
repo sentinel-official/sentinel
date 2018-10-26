@@ -111,7 +111,7 @@
             android:name=".ui.activity.HelperActivity"
             android:theme="@style/CustomDialogActivityTheme" />
         <activity
-            android:name=".ui.activity.ReferralActivity"
+            android:name=".ui.activity.ShareAppActivity"
             android:screenOrientation="portrait" />
 
         <!-- Zxing scanner activity -->

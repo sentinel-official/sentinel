@@ -235,8 +235,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case R.id.nav_language:
                 startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_LANGUAGE), AppConstants.REQ_LANGUAGE);
                 break;
-            case R.id.nav_referral:
-                startActivity(new Intent(this, ReferralActivity.class));
+            case R.id.nav_share_app:
+                startActivity(new Intent(this, ShareAppActivity.class));
                 break;
             case R.id.nav_faq:
                 openUrl(getString(R.string.link_coming_soon));
@@ -555,8 +555,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         aMenuResetPin.setTitle(R.string.reset_pin);
         MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
         aMenuLanguage.setTitle(R.string.language);
-        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_referral);
-        aMenuReferral.setTitle(R.string.referrals);
+        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_share_app);
+        aMenuReferral.setTitle(R.string.share_app);
         MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
         aMenuSocialLinks.setTitle(R.string.faq);
         MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);
@@ -647,14 +647,11 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     @Override
     public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (aFragment instanceof VpnSelectFragment)
-            ((VpnSelectFragment) aFragment).onActionButtonClicked(iTag, iDialog, isPositiveButton);
-        else {
-            if (isPositiveButton) {
-                if (iTag.equals(AppConstants.TAG_LOGOUT))
-                    logoutUser();
-            }
+        if (isPositiveButton && iTag.equals(AppConstants.TAG_LOGOUT)) {
+            logoutUser();
             iDialog.dismiss();
+        } else if (aFragment instanceof VpnSelectFragment) {
+            ((VpnSelectFragment) aFragment).onActionButtonClicked(iTag, iDialog, isPositiveButton);
         }
     }
 

@@ -7,14 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import sentinelgroup.io.sentinel.R;
-import sentinelgroup.io.sentinel.ui.fragment.ReferralFragment;
+import sentinelgroup.io.sentinel.ui.fragment.ShareAppFragment;
 
-public class ReferralActivity extends BaseActivity {
+public class ShareAppActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadFragment(ReferralFragment.newInstance());
+        loadFragment(ShareAppFragment.newInstance());
     }
 
     @Override

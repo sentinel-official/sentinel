@@ -171,12 +171,13 @@
     <string name="language">Language</string>
     <string name="select_language">Select Language</string>
     <string name="referral_id">Referral ID</string>
-    <string name="referral_link">Referral Link</string>
+    <string name="invitation_link">Invitation Link</string>
+    <string name="invitation_desc">Share this link with your friend to invite them to Sentinel dVPN app</string>
     <string name="view_tx_history_for">View Tx History for</string>
     <string name="payment_done_success">Payment Done Successfully</string>
     <string name="send_to_hint">Send To or Scan To Send</string>
     <string name="referral_code">Referral code</string>
-    <string name="referrals">Referrals</string>
+    <string name="share_app">Share App</string>
     <string name="send_to">Send to…</string>
     <string name="password_hint">Enter Password to Create User ID</string>
     <string name="key_not_copied_alert">You have not copied your Private Key.\nPlease copy your Private key to proceed.</string>
@@ -189,7 +190,7 @@
     <string name="referral_code_desc">Your referral tokens can be claimed when you make your first VPN payment.</string>
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
-    <string name="share_id">Share Link</string>
+    <string name="invite_friend">Invite Friend</string>
     <string name="address">Address</string>
     <string name="share_address">Share address</string>
     <string name="share_string">Hey, check out this new dVPN android app. Use my Referral ID to get free tokens when you sign up.\n\nReferral ID: %1$s\n\nLink: %2$s</string>

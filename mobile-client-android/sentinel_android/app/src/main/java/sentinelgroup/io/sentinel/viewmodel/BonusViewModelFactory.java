@@ -17,6 +17,6 @@ public class BonusViewModelFactory extends ViewModelProvider.NewInstanceFactory 
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new ReferralViewModel(mRepository);
+        return (T) new ShareAppViewModel(mRepository);
     }
 }

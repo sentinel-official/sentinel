@@ -86,6 +86,32 @@ def update_sessions(sessions):
         return str(error), None
 
 
+def update_session(_id, token, amount):
+    body = {
+        'token': node.config['register']['token'],
+        'sessionId': _id,
+        'sessionToken': token,
+        'sessionAmount': amount
+    }
+    url = MASTER_NODE_URL + '/nodes/' + node.config['account']['address'] + '/sessions/' + _id
+    try:
+        response = fetch().put(url, json=body)
+        if response and response.status_code == 200:
+            data = response.json()
+            if data['success']:
+                return None, data
+            return {
+                       'code': 2,
+                       'message': 'Response data success is False.'
+                   }, None
+        return {
+                   'code': 2,
+                   'message': 'Response status code is not 200.'
+               }, None
+    except Exception as error:
+        return str(error), None
+
+
 def add_tx(tx):
     body = {
         'fromAccountAddress': tx['from_account_address'],

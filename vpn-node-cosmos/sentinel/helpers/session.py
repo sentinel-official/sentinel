@@ -3,6 +3,7 @@ from ..cosmos import call as cosmos_call
 from ..db import db
 from ..node import add_tx
 from ..node import node
+from ..node import update_session
 from ..vpn import disconnect_client
 
 
@@ -44,4 +45,6 @@ def end_session(session_id):
                     'tx_hash': data['hash'].encode()
                 }
                 error, data = add_tx(tx)
+                if error is None:
+                    error, data = update_session(session_id, session['token'], signature['amount'])
             print(error, data)

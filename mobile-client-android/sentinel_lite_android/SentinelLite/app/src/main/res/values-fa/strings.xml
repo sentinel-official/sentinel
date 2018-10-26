@@ -154,10 +154,6 @@
     <string name="upload_speed">سرعت آپلود</string>
     <string name="vpn_status">وضعیت وی پی ان: %1s</string>
     <string name="vpn_already_connected">شما قبلا به یک سرور وی پی ان وصل شده اید.لطفا قبل از اتصال به یک وی پی ان دیگر قبلی را قطع کنید.</string>
-    <string name="telegram_url">https://t.me/sentinel_co</string>
-    <string name="medium_url">https://medium.com/@Sentinel</string>
-    <string name="twitter_url">https://twitter.com/sentinel_co</string>
-    <string name="website_url">https://sentinel.co</string>
     <string name="link_coming_soon">این اطلاعات به زودی اضافه خواهد شد.</string>
     <string name="faq">پرسش و پاسخ</string>
     <string name="got_it">فهمیدم</string>
@@ -165,11 +161,11 @@
     <string name="language">زبان</string>
     <string name="select_language">انتخاب زبان</string>
     <string name="referral_id">کد معرفی</string>
-    <string name="referrals">معرفی شده ها</string>
+    <string name="share_app">معرفی شده ها</string>
     <string name="send_to">فرستادن به…</string>
     <string name="no_of_referrals">شماره معرفی شده ها</string>
     <string name="reward_earned">تمامی توکن های پاداش گرفته شده</string>
-    <string name="share_id">به اشتراک گذاری کدشناسایی</string>
+    <string name="invite_friend">به اشتراک گذاری کدشناسایی</string>
     <string name="share_string">سلام، این برنامه جدید dVPN Android را بررسی کنید. هنگام ثبت نام به من مراجعه کنید شناسه مراجعه کنید.\n\nشناسه رد:%1$s\n\nلینک:%2$s</string>
     <string name="info_title_1">کد معرفی خود را به اشتراک بگذارید تا برای هر ثبت نام توکن رایگان دریافت کنید</string>
     <string name="info_title_2">وی پی ان غیرمتمرکز امن</string>

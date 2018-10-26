@@ -18,11 +18,11 @@ import java.util.Objects;
 
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
-import co.sentinel.sentinellite.viewmodel.ReferralViewModel;
+import co.sentinel.sentinellite.viewmodel.ShareAppViewModel;
 
 public class AddressToClaimDialogFragment extends DialogFragment {
 
-    private ReferralViewModel mViewModel;
+    private ShareAppViewModel mViewModel;
     private OnGenericFragmentInteractionListener mListener;
     private OnAddressSubmitListener mAddressSubmitListener;
     private TextInputEditText mTetAddress;

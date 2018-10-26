@@ -10,7 +10,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.view.View;
 
 import java.io.File;
@@ -34,11 +33,8 @@ import static co.sentinel.sentinellite.util.AppConstants.TAG_PROGRESS_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_SINGLE_ACTION_DIALOG;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_TRIPLE_ACTION_DIALOG;
 
-public class DeviceRegisterActivity extends AppCompatActivity implements View.OnClickListener,
-        DoubleActionDialogFragment.OnDialogActionListener {
+public class DeviceRegisterActivity extends AppCompatActivity implements DoubleActionDialogFragment.OnDialogActionListener {
     private DeviceRegisterViewModel mViewModel;
-
-    private TextInputEditText mTetReferral;
 
     private ProgressDialogFragment mPrgDialog;
 
@@ -51,6 +47,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         checkDeviceRegistrationState();
         initView();
         initViewModel();
+        mViewModel.registerDeviceId(null);
     }
 
     /*
@@ -87,13 +84,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      */
     private void initView() {
         mPrgDialog = ProgressDialogFragment.newInstance(true);
-        mTetReferral = findViewById(R.id.tet_referral);
-        mTetReferral.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-        findViewById(R.id.btn_next).setOnClickListener(this);
     }
 
     private void initViewModel() {
-        mTetReferral.setText(AppPreferences.getInstance().getString(AppConstants.PREFS_BRANCH_REFERRER_ID));
 
         // init Device ID
         @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -104,7 +97,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         mViewModel.getRegisterDeviceIdLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true, getString(R.string.registering_device));
+                    showProgressDialog(true, getString(R.string.generic_loading_message));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     mViewModel.fetchAccountInfo();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
@@ -114,7 +107,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                     else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
                         showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
                     else {
-                        mTetReferral.setText("");
                         showSingleActionError(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
                     }
                 }
@@ -240,24 +232,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private void loadDashboardActivity() {
         startActivity(new Intent(this, DashboardActivity.class));
         finish();
-    }
-
-    // Listener implementations
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_next:
-                if (!TextUtils.isEmpty(mTetReferral.getText().toString().trim())) {
-                    if (mTetReferral.getText().toString().trim().length() == AppConstants.REFERRAL_CODE_LENGHT) {
-                        mViewModel.registerDeviceId(mTetReferral.getText().toString().trim());
-                    } else {
-                        showSingleActionError(AppConstants.VALUE_DEFAULT, getString(R.string.referral_address_invalid), R.string.ok);
-                    }
-                } else {
-                    showDoubleActionError(AppConstants.TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.referral_address_missing), R.string.yes, R.string.no);
-                }
-                break;
-        }
     }
 
     @Override

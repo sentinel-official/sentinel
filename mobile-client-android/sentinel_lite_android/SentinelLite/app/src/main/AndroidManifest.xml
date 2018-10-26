@@ -82,7 +82,7 @@
             android:name=".ui.activity.GenericListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.ReferralActivity"
+            android:name=".ui.activity.ShareAppActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.VpnUsageActivity"

@@ -17,7 +17,7 @@ import android.view.MenuItem;
 
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.ui.dialog.AddressToClaimDialogFragment;
-import co.sentinel.sentinellite.ui.fragment.ReferralFragment;
+import co.sentinel.sentinellite.ui.fragment.ShareAppFragment;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
 
@@ -26,13 +26,13 @@ import static co.sentinel.sentinellite.util.AppConstants.POSITIVE_BUTTON;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_DOWNLOAD;
 import static co.sentinel.sentinellite.util.AppConstants.TAG_LINK_ACCOUNT_CONFIRMATION;
 
-public class ReferralActivity extends BaseActivity implements AddressToClaimDialogFragment.OnAddressSubmitListener {
+public class ShareAppActivity extends BaseActivity {
     private DownloadManager mDownloadManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadFragment(ReferralFragment.newInstance());
+        loadFragment(ShareAppFragment.newInstance());
         // init download manager
         mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
     }
@@ -155,36 +155,7 @@ public class ReferralActivity extends BaseActivity implements AddressToClaimDial
 
     @Override
     public void onActionButtonClicked(String iTag, Dialog iDialog, int iButtonType) {
-        if (iButtonType == NEUTRAL_BUTTON) {
-            if (iTag.equals(TAG_DOWNLOAD)) {
-                if (checkForPermissionGrant()) {
-                    downloadApp();
-                    iDialog.dismiss();
-                }
-            }
-        } else if (iButtonType == POSITIVE_BUTTON) {
-            if (iTag.equals(TAG_DOWNLOAD)) {
-                Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-                if (aFragment instanceof ReferralFragment) {
-                    ((ReferralFragment) aFragment).showEnterAddressDialog();
-                    iDialog.dismiss();
-                }
-            } else if (iTag.equals(TAG_LINK_ACCOUNT_CONFIRMATION)) {
-                Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-                if (aFragment instanceof ReferralFragment) {
-                    ((ReferralFragment) aFragment).linkSncSlcAccounts(iDialog);
-                }
-            }
-        } else {
-            iDialog.dismiss();
-        }
+        // unimplemented interface method
     }
 
-    @Override
-    public void onAddressSubmitted(String iAddress) {
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (aFragment instanceof ReferralFragment) {
-            ((ReferralFragment) aFragment).onAddressSubmitted(iAddress);
-        }
-    }
 }

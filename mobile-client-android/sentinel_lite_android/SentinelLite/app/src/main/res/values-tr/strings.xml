@@ -161,11 +161,11 @@
     <string name="language">Dil</string>
     <string name="select_language">Dil Seçiniz</string>
     <string name="referral_id">Referans ID</string>
-    <string name="referrals">Referanslar</string>
+    <string name="share_app">App\'i Paylaş</string>
     <string name="send_to">Gönderâ€¦</string>
     <string name="no_of_referrals">Referansların saıyısı</string>
     <string name="reward_earned">Kazanılan toplam ödül tokeni</string>
-    <string name="share_id">ID paylaş</string>
+    <string name="invite_friend">Arkadaşlarını davet et</string>
     <string name="share_string">Hey, bu yeni dVPN android uygulamasını kontrol edin. Kaydolurken ücretsiz token almak için Referans ID imi kullan.\n\nReferans ID: %1$s\n\nLink: %2$s</string>
     <string name="info_title_1">Her yeni kayıtta token kazanmak için Referans ID nizi paylaşın</string>
     <string name="info_title_2">Güvenli merkezi VPN</string>
@@ -202,7 +202,8 @@
     <string name="received_data">Alınan veri</string>
     <string name="total_received_data">Toplam alınan veriler</string>
     <string name="duration">Süre</string>
-    <string name="referral_link">Referans Bağlantısı</string>
+    <string name="invitation_link">Davet Linki</string>
+    <string name="invitation_desc">Bu linki paylaşarak arkadaşlarınızı Sentinel dVPN\' ye davet edebilirsiniz.</string>
     <string name="branch_share_title">Hey, bu yeni dVPN Android uygulamasına bir göz at.</string>
     <string name="branch_share_desc">Kaydolurken ücretsiz token almak için Referans Kimliğimi kullanın.\nReferans Kimliği: %1$s</string>
     <string name="label_enter_address_claim">Sentinel Network Uygulamasından alınan Cüzdan Adresini girin.</string>

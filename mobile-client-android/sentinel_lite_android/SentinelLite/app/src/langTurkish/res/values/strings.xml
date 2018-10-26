@@ -168,12 +168,12 @@
     <string name="language">Dil</string>
     <string name="select_language">Dil Seçiniz</string>
     <string name="referral_id">Referans ID</string>
-    <string name="referrals">Referanslar</string>
+    <string name="share_app">App\'i Paylaş</string>
     <string name="send_to">Gönderâ€¦</string>
     <string name="no_of_referrals">Referansların saıyısı</string>
     <string name="reward_earned">Kazanılan toplam ödül tokeni</string>
-    <string name="share_id">ID paylaş</string>
-    <string name="share_string">Hey, bu yeni dVPN android uygulamasını kontrol edin. Kaydolurken ücretsiz token almak için Referans ID imi kullan.\n\nReferans ID: %s\n\nLink: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
+    <string name="invite_friend">Arkadaşlarını davet et</string>
+    <string name="share_string">Hey, bu yeni dVPN android uygulamasını kontrol edin. Kaydolurken ücretsiz token almak için Referans ID imi kullan.\n\nReferans ID: %1$s\n\nLink: %2$s</string>
     <string name="info_title_1">Her yeni kayıtta token kazanmak için Referans ID nizi paylaşın</string>
     <string name="info_title_2">Güvenli merkezi VPN</string>
     <string name="info_desc_1">Sentinel uygulamasını arkadaşlarınızla paylaşın, dVPN Uygulamasını kullanın ve topluluk gelişimi ve ağın merkezileşmesi için topluluğu teşvik edin</string>
@@ -185,11 +185,9 @@
     <string name="update_available">Mevcut durumu güncelle</string>
     <string name="update_desc">Güncel versiyon mevcut ve indirmeye hazır.\n\nUygulamayı kullanmak için en güncel versiyonunu indirip kurmanız gerekmektedir.</string>
     <string name="downloading_app_tite">Yükleniyorâ€¦</string>
-    <string name="download">Yükleniyor</string>
     <string name="referral_address_missing">Referans ID girmediniz.\n\nReferans ID olmadan devam etmek ister misiniz?</string>
     <string name="empty_list_message">Görüntülenecek öğe yok.</string>
     <string name="vpn_empty_list_message">Şu anda mevcut boş bir VPN yok.</string>
-    <string name="cancel">İptal</string>
     <string name="registering_device">Cihaz kaydediliyor. Lütfen bekleyinâ€¦</string>
     <string name="add_referral_desc">Referans ID iniz var mı?\Yüklenen bonusları almak için uygulayın.</string>
     <string name="ok">Tamam</string>
@@ -198,5 +196,34 @@
     <string name="referral_desc">Sentinel Referral Utility Drop\'e Hoş Geldiniz.\n\nBu Lite İstemcisini test eden kullanıcılar, uygulamalarını ilk kez yükledikleri tarihten itibaren 21 gün veya daha uzun bir süre sonra ve Sentinel dVPN topluluğu tarafından sağlanan ağdan en az 100 MB veri tükettiklerinde ödüllerini alabilecekler.\n\nReferans air drop ödül programı aşağıdaki gibidir: \n\n500 SENT : For downloading the Sentinel Android Google Play Client indirmek ve 100 MB data kullanmak \n\n300 SENT : Mobil ERC20 cüzdanı içeren Sentinel Network Client indirmek. Bu istemci $SENT i kabul edebilmek için kullanıcılar tarafından yüklenmelidir\n\n200 SENT : Sizin referans linkinizle SRC veya SLC indirildiğinde</string>
     <string name="network_lost">VPN bağlantısı, VPN ağına yeniden bağlanamadığı için düştü.\nLütfen yeniden bağlanın.</string>
     <string name="read_more">Devamını okuyun</string>
+    <string name="action_download">Yükleniyor</string>
+    <string name="action_cancel">İptal</string>
+    <string name="link_copied">Referans Bağlantısı panoya kopyalandı</string>
+    <string name="vpn_node_rating">Derecelendirme %s</string>
+    <string name="node_rating">Derecelendirme:</string>
+    <string name="vpn_usage">dVPN Kullanımı</string>
+    <string name="total_sessions">Toplam Oturumlar</string>
+    <string name="total_duration">Toplam Süre</string>
+    <string name="vpn_usage_empty_list_message">Şu anda herhangi bir VPN kullanımınız yok</string>
+    <string name="session_id">Oturum kimliği</string>
+    <string name="received_data">Alınan veri</string>
+    <string name="total_received_data">Toplam alınan veriler</string>
+    <string name="duration">Süre</string>
+    <string name="invitation_link">Davet Linki</string>
+    <string name="invitation_desc">Bu linki paylaşarak arkadaşlarınızı Sentinel dVPN\' ye davet edebilirsiniz.</string>
+    <string name="branch_share_title">Hey, bu yeni dVPN Android uygulamasına bir göz at.</string>
+    <string name="branch_share_desc">Kaydolurken ücretsiz token almak için Referans Kimliğimi kullanın.\nReferans Kimliği: %1$s</string>
+    <string name="label_enter_address_claim">Sentinel Network Uygulamasından alınan Cüzdan Adresini girin.</string>
+    <string name="hint_enter_address_claim">Cüzdan Adresi</string>
+    <string name="label_already_linked">Tokenları zaten talep ettiniz. Tokenlarınız kısa sürede yatırılacaktır.\nAdres: %1$s\nSNC Referans Kimliği: %2$s\nSLC Referans Kimliği: %3$s</string>
+    <string name="label_confirm_link_account">1. Verilen adres için referans kimliği, %1$s.\n2Bu başvuru kimliği, GitHub\'dan Sentinel Ağ Uygulamasında gösterilenden farklıysa, telegram kanalımızdan bize ulaşın.\n3. Girilen adresi bu lite uygulamasına bağlamak ve kazanılan tokenları yatırmak istiyorsanız Onayla butonuna dokunun</string>
+    <string name="label_link_account_success">Tebrikler! Sentinel Lite Client ve Sentinel Network Client Uygulamanız artık girilen adresle bağlantılı. Tokenlar airdrop bittiğinde yatırılacaktır.</string>
+    <string name="referral_address_invalid">Geçersiz Referans Kimliği girdiniz. Lütfen doğru Referans Kimliğinizi giriniz.</string>
+    <string name="label_rate_session">Lütfen deneyiminizi önceki dVPN oturumuna göre derecelendirin</string>
+    <string name="error_select_rating">Lütfen bir derecelendirme seçin</string>
+    <string name="action_skip">Atla</string>
+    <string name="action_rate">Değerlendir</string>
+    <string name="action_confirm">Kabul et</string>
+    <string name="action_enter_address">Adres Giriniz</string>
 
 </resources>

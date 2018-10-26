@@ -153,7 +153,7 @@ PKCS12文件加密密钥</string>
     <string name="fetching_config">正在获取VPN配置…</string>
     <string name="saving_config">正在保存VPN设置…</string>
     <string name="download_speed">下载速度</string>
-    <string name="data_used">Data Used</string>
+    <string name="data_used">已用流量</string>
     <string name="upload_speed">上传速度</string>
     <string name="vpn_status">VPN连接状态: %1s</string>
     <string name="vpn_already_connected">你已经接连接上了VPN，如果你想建立一新的连接，请断开.</string>
@@ -164,11 +164,11 @@ PKCS12文件加密密钥</string>
     <string name="language">语言</string>
     <string name="select_language">请选择语言</string>
     <string name="referral_id">邀请码</string>
-    <string name="referrals">推荐人</string>
+    <string name="share_app">推荐人</string>
     <string name="send_to">转账…</string>
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">糖果数量</string>
-    <string name="share_id">共享 ID</string>
+    <string name="invite_friend">共享 ID</string>
     <string name="share_string">共享流量获取SENT币，使用的我的激活码将获得奖励.\n\邀请码: %1$s\n\nLink: %2$s</string>
     <string name="info_title_1">邀请好友赢取奖励</string>
     <string name="info_title_2">安全分散VPN</string>
@@ -204,7 +204,7 @@ PKCS12文件加密密钥</string>
     <string name="session_id">账号ID</string>
     <string name="received_data">接收数据</string>
     <string name="duration">在线时长</string>
-    <string name="referral_link">邀请链接</string>
+    <string name="invitation_link">邀请链接</string>
     <string name="branch_share_title">检查到新版本，请升级</string>
     <string name="branch_share_desc">填写邀请码获得奖励 邀请码: %1$s</string>
     <string name="referral_address_invalid">邀请码无效</string>

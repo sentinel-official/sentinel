@@ -74,8 +74,7 @@ public class InjectorModule {
 
     public static BonusViewModelFactory provideBonusViewModelFactory(Context iContext, String aDeviceId) {
         BonusRepository aBonusRepository = provideBonusRepository(iContext, aDeviceId);
-        AppVersionRepository aAppVersionRepository = provideAppVersionRepository();
-        return new BonusViewModelFactory(aBonusRepository, aAppVersionRepository);
+        return new BonusViewModelFactory(aBonusRepository);
     }
 
     public static RatingViewModelFactory provideRatingViewModelFactory(Context iContext, String iDeviceId) {

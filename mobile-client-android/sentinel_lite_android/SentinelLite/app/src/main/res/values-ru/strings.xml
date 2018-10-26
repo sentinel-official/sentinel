@@ -172,12 +172,13 @@
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
     <string name="referral_id">Реферальный код</string>
-    <string name="referral_link">Реферальная ссылка</string>
-    <string name="referrals">Рефералы</string>
+    <string name="invitation_link">Ссылка на приглашение</string>
+    <string name="invitation_desc">Поделитесь этой ссылкой, чтобы ваши друзья смогли пользоваться приложением Sentinel dVPN</string>
+    <string name="share_app">Поделитесь приложением</string>
     <string name="send_to">Отправить…</string>
     <string name="no_of_referrals">Количество рефералов</string>
     <string name="reward_earned">Заработано токенов</string>
-    <string name="share_id">Поделиться кодом</string>
+    <string name="invite_friend">Пригласить друзей</string>
     <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %1$s\n\nСсылка: %2$s</string>
     <string name="branch_share_title">Эй, зацени это новое dVPN Андроид-приложение.</string>
     <string name="branch_share_desc">Используй мой код, чтобы получить бесплатные токены.\nРеферальный код: %1$s</string>

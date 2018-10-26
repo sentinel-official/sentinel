@@ -10,17 +10,15 @@ import co.sentinel.sentinellite.repository.BonusRepository;
 
 public class BonusViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final BonusRepository mBonusRepository;
-    private final AppVersionRepository mAppVersionRepository;
 
-    public BonusViewModelFactory(BonusRepository iBonusRepository, AppVersionRepository iAppVersionRepository) {
+    public BonusViewModelFactory(BonusRepository iBonusRepository) {
         mBonusRepository = iBonusRepository;
-        mAppVersionRepository = iAppVersionRepository;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new ReferralViewModel(mBonusRepository, mAppVersionRepository);
+        return (T) new ShareAppViewModel(mBonusRepository);
     }
 }

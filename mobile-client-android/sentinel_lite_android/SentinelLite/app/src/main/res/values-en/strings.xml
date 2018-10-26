@@ -172,12 +172,13 @@
     <string name="language">Language</string>
     <string name="select_language">Select Language</string>
     <string name="referral_id">Referral ID</string>
-    <string name="referral_link">Referral Link</string>
-    <string name="referrals">Referrals</string>
+    <string name="invitation_link">Invitation Link</string>
+    <string name="invitation_desc">Share this link with your friend to invite them to Sentinel dVPN app</string>
+    <string name="share_app">Share App</string>
     <string name="send_to">Send to…</string>
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
-    <string name="share_id">Share Link</string>
+    <string name="invite_friend">Invite Friend</string>
     <string name="share_string">Hey, check out this new dVPN Android app. Use my Referral ID to get free tokens when you Sign Up.\n\nReferral ID: %1$s\n\nLink: %2$s</string>
     <string name="branch_share_title">Hey, check out this new dVPN Android app.</string>
     <string name="branch_share_desc">Use my Referral ID to get free tokens when you Sign Up.\nReferral ID: %1$s</string>

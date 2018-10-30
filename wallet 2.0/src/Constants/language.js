@@ -1,8 +1,8 @@
 let lang = {
     en: {
         'History': 'HISTORY',
-        'EthTransactions': 'Eth Transactions',
-        'SentTransactions': 'Sent Transactions',
+        'EthTransactions': 'ETH Transactions',
+        'SentTransactions': 'SENT Transactions',
         'NoTransactions': 'No Transactions Yet',
         'Send': 'SEND',
         'To': 'To',

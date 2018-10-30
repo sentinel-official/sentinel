@@ -58,6 +58,7 @@ class CreateTMAccount extends Component {
         const { classes } = this.props;
         return (
             <div style={createAccountStyle.formStyle}>
+            <div> <h2  style={createAccountStyle.createStyle}><center>Create a Wallet on Sentinel Tendermint TestNet (STT) #1</center></h2></div>
                 <div style={createAccountStyle.secondDivStyle}>
                     <p style={createAccountStyle.headingStyle}>Account Name</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false} value={this.state.keyName}

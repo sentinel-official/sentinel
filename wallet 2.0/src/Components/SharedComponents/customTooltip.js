@@ -11,7 +11,7 @@ const styles = {
         marginLeft: 20,
         fontSize: 13,
         borderRadius: '50%',
-        backgroundColor: '#2f3245',
+        backgroundColor: '#c3c3c5',
         paddingLeft: 6,
         paddingRight: 6,
         color: 'white'

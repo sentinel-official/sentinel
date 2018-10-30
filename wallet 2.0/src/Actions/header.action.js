@@ -29,7 +29,7 @@ export async function getETHBalance(address) {
     } else {
         return {
             type: types.GET_ETH_BAL_PROGRESS,
-            payload: 'Loading'
+            payload: 'Loading...'
         }
     }
 }
@@ -52,7 +52,7 @@ export async function getSentBalance(address) {
     } else {
         return {
             type: types.GET_SENT_BAL_PROGRESS,
-            payload: 'Loading'
+            payload: 'Loading...'
         }
     }
 }

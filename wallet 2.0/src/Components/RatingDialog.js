@@ -5,13 +5,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Rating } from 'material-ui-rating';
 import { rateVPNSession } from './../Actions/vpnlist.action';
+import TextField from '@material-ui/core/TextField';
 import { MuiThemeProvider } from 'material-ui/styles';
+import './ratingStyle.css'
 
 class RatingDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rateValue: 2
+            rateValue: 5  // initial rate value
         }
     }
 
@@ -49,6 +51,18 @@ class RatingDialog extends React.Component {
                             max={5}
                             onChange={(value) => { this.setState({ rateValue: value }) }}
                         />
+                        <TextField
+          id="filled-multiline-flexible"
+          label="Comment"
+          multiline
+          rowsMax="4"
+          value={this.state.multiline}
+        //   onChange={this.handleChange('multiline')}
+          className= "commentField"
+          margin="normal"
+        //   helperText="hello"
+          variant="filled"
+        />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleCancel} color="primary">

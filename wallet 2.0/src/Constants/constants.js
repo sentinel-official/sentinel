@@ -8,12 +8,46 @@ module.exports = {
     SE_URL: '&page=1&offset=100&sort=asc&apikey=YourApiKeyToken',
     TM_URL: 'http://localhost:1317',
     TM_FREE_TOKEN_URL: 'https://api-tm.sentinelgroup.io',
-    menuItems: [
+
+    menuItemsIcons: [
         {
-            'name': 'HISTORY',
-            'value': 'history',
-            'icon': 'historyIcon'
+            'name': 'TENDERMINT',
+            'value': 'tmint',
+            'icon': 'tmintIcon'
         },
+
+        {
+            'name': 'ETHEREUM',
+            'value': 'eth',
+            'icon': 'ethereumIcon'
+        },
+       
+    ],
+    menuItems: [
+
+        // {
+        //     'name': 'VPN LIST',
+        //     'value': 'vpnList',
+        //     'icon': 'listIcon'
+        // },
+        // {
+        //     'name': 'SEND',
+        //     'value': 'send',
+        //     'icon': 'sendIcon'
+        // },
+        // {
+        //     'name': 'RECEIVE',
+        //     'value': 'receive',
+        //     'icon': 'receiveIcon'
+        // },
+        // {
+        //     'name': 'HISTORY',
+        //     'value': 'history',
+        //     'icon': 'historyIcon'
+        // },
+
+        // initilal 
+
         {
             'name': 'SEND',
             'value': 'send',
@@ -25,10 +59,16 @@ module.exports = {
             'icon': 'receiveIcon'
         },
         {
+            'name': 'TX HISTORY',
+            'value': 'history',
+            'icon': 'historyIcon'
+        },
+        {
             'name': 'VPN LIST',
             'value': 'vpnList',
             'icon': 'listIcon'
         },
+
         {
             'name': 'VPN HISTORY',
             'value': 'vpnHistory',
@@ -44,11 +84,43 @@ module.exports = {
         //     'value': 'swaps',
         //     'icon': 'swapIcon'
         // },
+
+        // {
+        //     'name': 'TENDERMINT',
+        //     'value': 'tmint',
+        //     'icon': 'tmintIcon'
+        // }
+    ],
+
+
+    TMmenuItems: [
         {
-            'name': 'TENDERMINT',
-            'value': 'tmint',
-            'icon': 'tmintIcon'
-        }
+            'name': 'SEND', // should point to Transfer tab page
+            'value': 'send',
+            'icon': 'sendIcon'
+        },
+        {
+            'name': 'RECEIVE', // // should point to Account tab page
+            'value': 'receive',
+            'icon': 'receiveIcon'
+        },
+        {
+            'name': 'HISTORY', // should point to TransactionHistory tab page
+            'value': 'history',
+            'icon': 'historyIcon'
+        },
+        {
+            'name': 'VPN LIST', // should point to VPN LIST page
+            'value': 'vpnList',
+            'icon': 'listIcon'
+        },
+
+        {
+            'name': 'VPN HISTORY', // should point to Sessions tab page 
+            'value': 'vpnHistory',
+            'icon': 'vpnHisIcon'
+        },
+
     ],
     disabledItemsTest: [
         'swixer',

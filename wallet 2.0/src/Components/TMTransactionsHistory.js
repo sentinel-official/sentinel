@@ -55,7 +55,7 @@ class TMTransactionsHistory extends React.Component {
                 })
             }
             else {
-                output = <div style={sessionStyles.noSessionsStyle}>No Transactions yet</div>
+                output = <div style={sessionStyles.noTransactionsStyle}>No Transactions yet</div>
             }
         }
         return (

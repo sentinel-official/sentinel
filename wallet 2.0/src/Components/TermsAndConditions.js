@@ -3,6 +3,9 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { createPagestyles } from './../Assets/authenticate.styles';
 import { connect } from 'react-redux';
+import CopyIcon from '@material-ui/icons/FileCopyOutlined';
+import { Tooltip } from '@material-ui/core';
+
 import ReactTooltip from 'react-tooltip';
 import { bindActionCreators } from 'redux';
 import { sendError, setComponent } from '../Actions/authentication.action';
@@ -10,6 +13,8 @@ import {
     Checkbox, RaisedButton,
 
 } from 'material-ui';
+import { receiveStyles } from './../Assets/receive.styles';
+
 let lang = require('./../Constants/language');
 
 class TermsAndConditions extends Component {
@@ -50,16 +55,20 @@ class TermsAndConditions extends Component {
                     <p style={createPagestyles.detailVal}>{this.state.account_addr}</p>
                     <p style={createPagestyles.detailHeadBold}>{lang[language].PrivateKey}:</p><p
                         style={createPagestyles.detailVal}>{this.state.private_key}
+                        
+                        <Tooltip title={lang[language].Copy}>
                         <CopyToClipboard text={this.state.private_key}
                             onCopy={() => this.setState({
                                 snackMessage: lang[language].Copied,
                                 openSnack: true
                             })}>
-                            <img src={'../src/Images/download.jpeg'}
+                            {/* <img src={'../src/Images/download.jpeg'}
                                 alt="Copy"
                                 data-tip data-for="copyImage"
-                                style={createPagestyles.clipBoard} />
-                        </CopyToClipboard></p>
+                                style={createPagestyles.clipBoard} /> */}
+                                 <CopyIcon style={receiveStyles.clipBoard}/>
+                        </CopyToClipboard>
+                        </Tooltip></p>
                     <ReactTooltip id="copyImage" place="bottom">
                         <span>{lang[language].Copy}</span>
                     </ReactTooltip>

@@ -110,7 +110,7 @@ class TMTransfer extends Component {
                                             this.props.setActiveVpn(vpn_data);
                                             localStorage.setItem('lockedAmount', 100);
                                             this.props.setVpnStatus(true);
-                                            this.setState({ sending: false, toAddress: '', keyPassword: '', amount: '', openSnack: true, snackMessage: 'Connected VPN' });
+                                            this.setState({ sending: false, toAddress: '', keyPassword: '', amount: '', openSnack: true, snackMessage: 'VPN Connected' });
                                         }
                                     })
                                 }
@@ -178,7 +178,7 @@ class TMTransfer extends Component {
                         disabled={this.state.sending}
                         onClick={() => { this.sendTransaction() }}
                         className={classes.button} style={createAccountStyle.buttonStyle}>
-                        {this.state.sending ? 'Sending' : 'Send'}
+                        {this.state.sending ? 'Sending...' : 'Send'}
                     </Button>
                 </div>
                 <Snackbar

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { menuItems, disabledItemsMain, disabledItemsTest, disabledItemsTM } from '../Constants/constants';
+import { menuItems, TMmenuItems, menuItemsIcons, disabledItemsMain, disabledItemsTest, disabledItemsTM } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -16,21 +16,50 @@ import BackIcon from '@material-ui/icons/KeyboardBackspace';
 import { Drawer, IconButton, Tooltip } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import BackArrowIcon from '@material-ui/icons/ArrowBackOutlined';
 import { compose } from 'recompose';
+
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import StarBorder from '@material-ui/icons/StarBorder';
+
+import './sidebarStyle.css'
 
 const Customstyles = theme => ({
     paper: {
-        height: 522,
+        height: 511,
         top: 70,
-        width: 180
+        width: 250
     }
+});
+
+
+const styles = theme => ({
+    root: {
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+    },
+    nested: {
+        paddingLeft: theme.spacing.unit * 4,
+    },
 });
 
 class Sidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            openDrawer: false
+            openDrawer: false,
+            openEth: true,
+            openTmd: false,
         }
         this.components = {
             sendIcon: SendIcon,
@@ -68,9 +97,14 @@ class Sidebar extends Component {
     getIcon = (iconName) => {
         if (iconName === 'tmintIcon') {
             if (!this.props.isTenderMint)
-                return <img src={'../src/Images/tendermint-disable.png'} style={{ width: 24, height: 24 }} />
+                return <img src={'../src/Images/tendermint-disable.png'} style={{ width: 20 }} />
             else
-                return <img src={'../src/Images/tendermint.png'} style={{ width: 24, height: 24 }} />
+                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 20 }} />
+        }
+        if(iconName === 'ethereumIcon'){
+
+            return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo" 
+                                        style={{ width: 20}}  />
         }
         else {
             let Icon = this.components[iconName];
@@ -78,40 +112,61 @@ class Sidebar extends Component {
         }
     }
 
+
+    handleEthClick = () => {
+        this.setState(state => ({
+            openEth: !state.openEth,
+            openTmd: false,
+        }));
+    };
+    handleTmdClick = () => {
+        this.setState(state => ({
+            openTmd: !state.openTmd,
+            openEth: false
+        }));
+    };
+
+
     render() {
         let { classes, isTest, isTenderMint } = this.props;
         let currentTab = this.props.currentTab;
         return (
-            <div>
-                <div style={sidebarStyles.activeDivStyle}>
+            <div style={sidebarStyles.totalDiv}>
+                <div style={sidebarStyles.IconActiveDivStyle}>
                     <Tooltip title="Toggle Menu">
                         <MenuIcon onClick={this.toggleDrawer(true)} />
                     </Tooltip>
                 </div>
+                <hr style={sidebarStyles.m_0} />
+
                 {
-                    menuItems.map((item) => {
+                    menuItemsIcons.map((item) => {
                         let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
                             || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
                         return (
                             <div>
                                 <div style={
                                     isDisabled ?
-                                        sidebarStyles.disabledDivStyle :
+                                        sidebarStyles.IconDisabledDivStyle :
                                         (item.value === currentTab ?
-                                            sidebarStyles.currentDivStyle :
-                                            sidebarStyles.activeDivStyle)
-                                } onClick={() => { this.setMenu(item); }}>
-                                    <Tooltip title={item.name}>
+                                            sidebarStyles.IconCurrentDivStyle :
+                                            sidebarStyles.IconActiveDivStyle)
+                                } onClick={() => { this.setMenu(item); }}
+                                    onMouseEnter={this.toggleDrawer(true)}
+                                // onMouseOut = {this.toggleDrawer(false)}
+                                >
+                                    <Tooltip title={item.name} placement="right">
                                         <label
                                             style={
                                                 isDisabled
                                                     ?
-                                                    sidebarStyles.disabledLabelStyle :
+                                                    sidebarStyles.IconDisabledLabelStyle :
                                                     (item.value === currentTab ?
-                                                        sidebarStyles.activeLabelStyle :
-                                                        sidebarStyles.normalLabelStyle)
+                                                        sidebarStyles.IconActiveLabelStyle :
+                                                        sidebarStyles.IconNormalLabelStyle)
                                             }>
                                             {this.getIcon(item.icon)}
+                                              
                                         </label>
                                     </Tooltip>
                                 </div>
@@ -130,7 +185,115 @@ class Sidebar extends Component {
                         role="button"
                         style={sidebarStyles.outlineNone}
                     >
-                        {
+                        {/* <span onClick = {this.toggleDrawer(false)}><i class="material-icons">keyboard_backspace</i></span> */}
+                        <IconButton aria-label="Back" onClick={this.toggleDrawer(false)}>
+                            <BackArrowIcon />
+                        </IconButton>
+                        {/* <span style={sidebarStyles.drawerHeading}>SENTINEL</span> */}
+
+                        <div style={sidebarStyles.giveSpace}></div>
+                        <ListItem button onClick={this.handleTmdClick} disabled={!isTenderMint}>
+                            <ListItemIcon>
+
+                                {this.props.isTenderMint ? 
+                            <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"   
+                                     style={{ width: 18, marginTop: -5 }} />
+                                     :
+                                     <img src={'../src/Images/tendermint-disable.png'} style={{ width: 20}} />
+                                }
+                            </ListItemIcon>
+                            <ListItemText inset primary="TENDERMINT"  style={sidebarStyles.collapseType}/>
+                            {this.state.openTmd ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+
+                        <Collapse in={this.state.openTmd && isTenderMint} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                {
+
+                                    TMmenuItems.map((item) => {
+                                        let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
+                                            || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
+                                        return (
+                                            <div>
+                                                <div style={
+                                                    isDisabled ?
+                                                        sidebarStyles.disabledDivStyle :
+                                                        (item.value === currentTab ?
+                                                            sidebarStyles.currentDivStyle :
+                                                            sidebarStyles.activeDivStyle)
+                                                } onClick={() => { this.setMenu(item); }}>
+                                                    <label
+                                                        style={
+                                                            isDisabled
+                                                                ?
+                                                                sidebarStyles.disabledLabelStyle :
+                                                                (item.value === currentTab ?
+                                                                    sidebarStyles.activeLabelStyle :
+                                                                    sidebarStyles.normalLabelStyle)
+                                                        }>
+                                                        <span className="iconStyle"> {this.getIcon(item.icon)}</span> {item.name}
+
+                                                    </label>
+                                                </div>
+                                                <hr style={sidebarStyles.m_0} />
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </List>
+                        </Collapse>
+
+                        <ListItem button onClick={this.handleEthClick} disabled={isTenderMint}>
+                            <ListItemIcon>
+                             
+                            <img src={'../src/Images/ethereum.svg'} alt="etherem_logo" 
+                                        style={{ width: 20, marginTop: -5 }}  />
+                            
+
+                            </ListItemIcon>
+                            <ListItemText inset primary="ETHEREUM"  style={sidebarStyles.collapseType}/>       
+                            {this.state.openEth ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+
+                        <Collapse in={this.state.openEth && !isTenderMint} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                {
+                                    menuItems.map((item) => {
+                                        let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
+                                            || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
+                                        return (
+                                            <div>
+                                                <div style={
+                                                    isDisabled ?
+                                                        sidebarStyles.disabledDivStyle :
+                                                        (item.value === currentTab ?
+                                                            sidebarStyles.currentDivStyle :
+                                                            sidebarStyles.activeDivStyle)
+                                                } onClick={() => { this.setMenu(item); }}>
+                                                    <label
+                                                        style={
+                                                            isDisabled
+                                                                ?
+                                                                sidebarStyles.disabledLabelStyle :
+                                                                (item.value === currentTab ?
+                                                                    sidebarStyles.activeLabelStyle :
+                                                                    sidebarStyles.normalLabelStyle)
+                                                        }>
+                                                        <span className="iconStyle"> {this.getIcon(item.icon)}</span> {item.name}
+
+                                                    </label>
+                                                </div>
+                                                <hr style={sidebarStyles.m_0} />
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </List>
+                        </Collapse>
+
+                      
+
+                        {/* {
                             menuItems.map((item) => {
                                 let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
                                     || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
@@ -152,14 +315,18 @@ class Sidebar extends Component {
                                                             sidebarStyles.activeLabelStyle :
                                                             sidebarStyles.normalLabelStyle)
                                                 }>
-                                                {item.name}
+                                               <span className="iconStyle"> {this.getIcon(item.icon)}</span> {item.name}
+
                                             </label>
                                         </div>
                                         <hr style={sidebarStyles.m_0} />
                                     </div>
                                 )
                             })
-                        }
+                        } */}
+
+                           <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/sentinel.png'} alt="sentinel_logo"   
+                           style={{ width: 139, paddingRight:5 , marginTop: -2 }} /></span>
                     </div>
                 </Drawer>
             </div>

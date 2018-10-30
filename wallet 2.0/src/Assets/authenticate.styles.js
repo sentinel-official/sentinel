@@ -1,6 +1,6 @@
 const defaultPageStyle = {
     division: {
-        backgroundColor: '#1e1e1e',
+        backgroundColor: '#fff'  ,//'#1e1e1e',
         height: '100vh',
         display: 'flex',
         justifyContent: 'center',
@@ -23,10 +23,10 @@ const homePageStyles = {
         padding: '7%'
     },
     m_l_5: {
-        marginLeft: '5%'
+        marginLeft: '5%' 
     },
     m_l_20: {
-        marginLeft: -20
+        marginLeft: -20 
     },
     toolbar: {
         backgroundColor: '#2f3245',
@@ -186,8 +186,8 @@ const createPagestyles = {
         color: '#2f3245'
     },
     textFieldCreate: {
-        width: '85%',
-        paddingLeft: '5%',
+        width: '100%',
+        // paddingLeft: '5%', // changed to align with enter text
         height: 40,
         lineHeight: '18px'
     },
@@ -238,7 +238,8 @@ const createPagestyles = {
         height: 20,
         width: 20,
         cursor: 'pointer',
-        marginLeft: 2
+        marginLeft: 2,
+        color:'#5ca1e8',
     },
     checkboxLabel: {
         color: 'rgb(240, 94, 9)',
@@ -275,26 +276,37 @@ const createPagestyles = {
 }
 
 const authenticateStyles = {
-    w_600:{width: 600},
+    w_600:{width: 600 ,    
+        //  padding: '0 24px 10px 24px'
+        },
     f_s_16: { fontSize: 16 },
     f_s_14: { fontSize: 14 },
     textFieldCreate: {
-        width: '85%',
-        paddingLeft: '5%',
+        width: '100%',
+        // paddingLeft: '5%',
         height: 40,
         lineHeight: '18px'
     },
+    backgroundStyle:{
+        background: 'radial-gradient(circle at 49.41% 1.55%,#3d004c,transparent 100%),radial-gradient(circle at 47.95% 97.06%,#09318c,transparent 100%),radial-gradient(circle at 50% 50%,#04091a,#04091a 100%) no-repeat 50%',
+    },
     closeButton: {
-        border: '1px solid #00bcd4',
-        borderRadius: 5
+        // border: '1px solid #00bcd4',
+        borderRadius: 4
     },
     submitButton: {
-        border: '1px solid #00bcd4',
-        borderRadius: 5,
-        margin: '0px 20px 0px 10px'
+        // border: '1px solid #00bcd4',
+        borderRadius: 4,
+        margin: '0px 20px 0px 10px',
+        background: '#0e5298',
+        color: '#fff',
     },
     snackBarStyle: {
         marginBottom: '1%'
+    },
+    buttonsGroup:{
+        marginTop: 0,
+        marginBottom: 30,
     }
 }
 

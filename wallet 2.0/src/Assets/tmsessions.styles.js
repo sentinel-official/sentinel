@@ -17,8 +17,16 @@ const sessionStyles = {
     noSessionsStyle: {
         display: 'flex',
         justifyContent: 'center',
+        paddingTop: '17%',
+        fontSize: '25px',
+        color: '#c3c3c3'
+    },
+    noTransactionsStyle: {
+        display: 'flex',
+        justifyContent: 'center',
         paddingTop: '20%',
-        fontSize: '25px'
+        fontSize: '25px',
+        color: '#c3c3c3'
     },
     cardtext: {
         paddingLeft: '0px !important',
@@ -29,6 +37,9 @@ const sessionStyles = {
         fontWeight: 600,
         fontSize: '14px',
         color: 'rgb(61,66,92)'
+    },
+    textStyle:{
+        color:'grey'
     },
     header: {
         fontSize: '18px',
@@ -46,7 +57,9 @@ const sessionStyles = {
     clipBoard: {
         height: 20,
         width: 20,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        paddingLeft:3,
+        color:'#5ca1e8',
     },
     history: {
         maxHeight: '410px',

@@ -14,9 +14,19 @@ import { KEYSTORE_FILE } from './Utils/Keystore';
 import Dashboard from './Components/Dashboard';
 import { runGaiacli } from './Utils/Gaiacli';
 import { B_URL } from './Constants/constants';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 const { ipcRenderer } = window.require('electron');
 
+const styles = theme => ({
+    progress: {
+      margin: theme.spacing.unit * 2,
+    },
+  });
+
+
 class App extends Component {
+
     constructor(props) {
         super(props);
 
@@ -119,7 +129,8 @@ class App extends Component {
                     return <div style={defaultPageStyle.division}>
                         <img src='../src/Images/logo.jpeg' style={defaultPageStyle.image} />
                         <p style={defaultPageStyle.p}>Sentinel</p>
-                        <img src='../src/Images/loading_home.gif' style={{}} />
+                        {/* <img src='../src/Images/loading_home.gif' style={{}} /> */}
+                        <CircularProgress className={styles.progress} />
                     </div>
                 }
         }

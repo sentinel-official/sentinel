@@ -75,7 +75,8 @@ class Authenticate extends Component {
         let language = this.props.language;
         return (
             <MuiThemeProvider>
-                <div>
+                <div style={authenticateStyles.backgroundStyle}>
+                    <img  src={'../src/Images/Sent-logo.png'} alt="sentinel_logo"  style= {{opacity:0.2}}/>
                     <Dialog
                         open={this.state.showPopUp}
                         aria-labelledby="alert-dialog-title"
@@ -98,10 +99,11 @@ class Authenticate extends Component {
                                 />
                             </DialogContentText>
                         </DialogContent>
-                        <DialogActions>
+                        <DialogActions style= {authenticateStyles.buttonsGroup}>
                             <Button
                                 onClick={this.closeWindow}
                                 style={authenticateStyles.closeButton}
+                                variant="contained"
                                 >
                                 {lang[language].Close}
                             </Button>
@@ -109,8 +111,10 @@ class Authenticate extends Component {
                                 onClick={this.submitPassword}
                                 disabled={this.state.isDisabled}
                                 style={authenticateStyles.submitButton}
+                                variant="contained"
                                 >
                                 {lang[language].Submit}
+                                
                             </Button>
                         </DialogActions>
                         </div>

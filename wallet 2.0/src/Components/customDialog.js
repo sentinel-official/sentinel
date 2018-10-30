@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DialogContent, DialogContentText, DialogActions, Snackbar } from '@material-ui/core';
 import OpenvpnAlert from './OpenvpnAlert';
+import {  Row, Col } from 'react-flexbox-grid';
 import {
     withStyles, Button, List, ListItem, ListItemText,
     DialogTitle, Dialog,
@@ -32,14 +33,23 @@ const styles = theme => ({
         color: blue[600],
     },
     container: {
-        width: 280,
-        overflow: 'none'
+        width: 400,
+        padding: '25px 35px',
+        overflowX: 'hidden',
+        
+    },
+    container2: {
+        width: 400,
+        padding: '0px 35px 25px 35px',
+        overflowX: 'hidden',
+        
     },
     dialogLabel: {
         fontSize: 14,
         fontFamily: 'Montserrat',
         fontWeight: 'bold',
-        textAlign: 'right'
+        textAlign: 'right',
+     
     },
     dialogValue: {
         fontSize: 13,
@@ -73,6 +83,7 @@ const styles = theme => ({
     button: {
         margin: theme.spacing.unit,
         outline: 'none',
+        marginBottom:0
     },
     extendedIcon: {
         marginRight: theme.spacing.unit,
@@ -104,42 +115,56 @@ class SimpleDialog extends React.Component {
                 {...other} className={{ classes: { paper: classes.container } }}
             >
                 <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
-                <div>
-                    <List>
-                        <ListItem>
-                            <ListItemText>
-                                <label style={styles.dialogLabel}>{`${lang[language].City}:`}&nbsp;</label>
-                                <span style={styles.dialogValue}>{this.props.data.city}</span>
-                            </ListItemText>
-                        </ListItem>
+                <div className={classes.container2} >
 
-                        <ListItem>
-                            <ListItemText>
-                                <label style={styles.dialogLabel}>{`${lang[language].Country}:`}&nbsp;</label>
-                                <span style={styles.dialogValue}>{this.props.data.country}</span>
-                            </ListItemText>
-                        </ListItem>
 
-                        <ListItem>
-                            {/*<ListItemText primary={`Bandwidth: ${this.props.data.speed}`} />*/}
-                            <label style={styles.dialogLabel}>{`${lang[language].Bandwidth}:`}&nbsp;</label>
-                            <span style={styles.dialogValue}>{(this.props.data.speed / (1024 * 1024)).toFixed(2)}</span>
-                        </ListItem>
+                      <Row>
+                         
+                         {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
+                         <span style={styles.dialogValue}>{this.props.data.city}</span> */}
 
-                        <ListItem>
-                            <ListItemText>
-                                <label style={styles.dialogLabel}>{`${lang[language].Cost}:`}&nbsp;</label><span
-                                    style={styles.dialogValue}>{this.props.data.price_per_GB}</span>
-                            </ListItemText>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText> <label style={styles.dialogLabel}>{`${lang[language].Latency}:`}&nbsp;</label>
-                                <span style={styles.dialogValue}> {this.props.data.latency ? this.props.data.latency : 'None'}</span>
-                            </ListItemText>
-                        </ListItem>
+                    <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].City}</label> </Col>
+                    <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                    <Col xs={6}>  <label 
+                    // style={styles.dialogValue}
+                    style={{fontWeight:'bold'}}
+                    >{this.props.data.city}</label> </Col>
+                     
+                 </Row>
+                 <Row> 
+                  
+                  {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
+                  <xs style={styles.dialogValue}>{this.props.data.city}</xs> */}
+
+             <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Country}</label> </Col>
+             <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+             <Col xs={6}>  <label style={{fontWeight:'bold'}}>{this.props.data.country}</label> </Col>
+              
+                 </Row>
+
+                <Row> 
+                    <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Bandwidth}</label> </Col>
+                    <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                    <Col xs={6}>  <label style={{fontWeight:'bold'}}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + ' Mbps'}</label> </Col>
+                 </Row>
+                         
+                 <Row> 
+                    <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Cost}</label> </Col>
+                    <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                    <Col xs={6}>  <label style={{fontWeight:'bold'}}>{this.props.data.price_per_GB + ' SENT/GB'}</label> </Col>
+                 </Row>
+                 <Row> 
+                    <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Latency}</label> </Col>
+                    <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                    <Col xs={6}>  <label style={{fontWeight:'bold'}}>{this.props.data.latency ? this.props.data.latency + ' ms': 'None'}</label> </Col>
+                 </Row>
+
+                 
+                    <List style={{paddingBottom:5}}>
+                        
 
                         <div className={classes.listRoot}>
-                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="extendedFab" aria-label="Connect"
+                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label= {this.props.isLoading || this.props.vpnStatus ? "Connecting..." : "Connect"}
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon

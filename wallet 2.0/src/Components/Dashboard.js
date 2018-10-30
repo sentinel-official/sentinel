@@ -12,6 +12,7 @@ import { calculateUsage, getStartValues, socksVpnUsage } from '../Actions/calcul
 import { dashboardStyles } from '../Assets/dashboard.styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 let UsageInterval = null;

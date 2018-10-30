@@ -1,8 +1,12 @@
 const footerStyles = {
     mainDivStyle: {
-        backgroundColor: '#54609a',
-        height: 55,
-        paddingTop: 5,
+        backgroundColor: '#0c2940', //changing footer backgound #54609a
+        // background: 'linear-gradient(to right, rgb(47, 50, 69))',
+        // backgorund:'#04091a',
+
+        background:'radial-gradient(circle at 49.41% 1.55%, rgb(61, 0, 76), transparent 100%), radial-gradient(circle at 47.95% 97.06%, rgb(9, 49, 140), transparent 100%), radial-gradient(circle at 50% 50%, rgb(126, 145, 213), rgb(4, 9, 26) 100%) 50% center no-repeat',
+        height: 65,
+        paddingTop: 10,
         paddingRight: 25,
         paddingLeft: 10,
         position: 'absolute',
@@ -11,43 +15,97 @@ const footerStyles = {
     testLabelStyle: {
         color: '#FAFAFA',
         textTransform: 'none',
-        fontSize: 16
+        fontSize: 14
     },
     firstColumn: {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center',
-        height: 55
+        alignItems: 'flex-start',
+        height: 55,
+        marginTop: 3,
+        padding: 0,
     },
     headingStyle: {
         color: '#FAFAFA',
         textTransform: 'none',
-        fontSize: 14,
+        fontSize: 12,
         marginBottom: 0,
         fontWeight: 'bold',
-        textAlign: 'center'
+        textAlign: 'left'
     },
     valueStyle: {
-        color: '#FAFAFA',
+        color: '#efb77c',
         textTransform: 'none',
         fontSize: 14,
         marginBottom: 0,
-        textAlign: 'center',
+        textAlign: 'left',
         overflow: 'hidden',
         textOverflow: 'ellipsis'
     },
     textCenter: {
-        textAlign: 'center'
+        textAlign: 'left'
+    },
+    vpnConnected:{
+        padding:0
     },
     disconnectStyle: {
-        color: 'rgb(206, 122, 122)',
-        border: '1px solid rgb(214, 147, 147)',
-        padding: 2,
-        marginLeft: -15,
-        marginTop: 8,
-        minHeight: 30
+        color: '#fff',
+        background:'#e74d4d',
+        // marginLeft: 30,
+        marginTop: 3,
+        marginLeft:31,
+        fontSize:14,
+      
+        // minHeight: 30
+    },
+    // disconnectText:{
+    //     marginRight:5
+    // },
+    crossMark:{
+        width:20,
+        marginLeft: 5,
+    },
+    greenDot: {
+        width: 10,
+        borderRadius: 50,
+        background: 'green',
+        display: 'inline-block',
+        height: 10,
+        marginRight: 5,
+        animationName: 'blink',
+        animationDuration: '2s',
+        animationIterationCount: 'infinite',
+        animationFillMode: 'both',
+        position:'relative',
+        top:21,
+        marginLeft:20,
+
+    },
+    name:{
+        marginLeft:-15,
+    },
+    activated:{
+        display:'block',
+        marginLeft:35,
+        color: '#efb77c'
+    },
+
+    redDot: {
+        width: 10,
+        borderRadius: 50,
+        background: '#ea4e4e',
+        display: 'inline-block',
+        height: 10,
+        marginRight: 5,
+        animationName: 'blink',
+        animationDuration: '2s',
+        animationIterationCount: 'infinite',
+        animationFillMode: 'both',
+
+
     }
+
 }
 
 module.exports = {

@@ -182,7 +182,7 @@ class SendComponent extends React.Component {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
     let { payVpn, payVPNUsage, initPaymentDetails } = this.props;
 
-    this.setState({ label: 'SENDING', isDisabled: true });
+    this.setState({ label: 'SENDING...', isDisabled: true });
     let self = this;
 
     setTimeout(() => {
@@ -340,7 +340,7 @@ class SendComponent extends React.Component {
                           this.state.amount}
                     />
                   </div>
-                  <div style={{ width: '191px' }}>
+                  <div style={{ width: '200px' }}>
                     <SimpleMenu token={this.setToken} isSend={true} isVPN={this.state.isVPNPayment} />
                   </div>
                 </div>

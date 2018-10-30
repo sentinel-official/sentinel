@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
+import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import lang from '../Constants/language';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Card, CardActions, CardContent, Snackbar, TextField, Button } from '@material-ui/core';
+import { Card, CardActions, CardContent, Snackbar,Tooltip, TextField, Button } from '@material-ui/core';
 import Done from '@material-ui/icons/Done';
 import Send from '@material-ui/icons/Send';
 import Refresh from '@material-ui/icons/Refresh';
@@ -15,6 +16,8 @@ import { getVpnHistory, setsnackMessage, compareTransaction,setVPNDuePayment } f
 import { withStyles } from '@material-ui/core/styles';
 import {setCurrentTab} from '../Actions/sidebar.action';
 import { compose } from 'redux';
+import { receiveStyles } from './../Assets/receive.styles';
+
 import _ from 'lodash';
 import {MaskedInput} from 'react-text-mask'
 const theme = createMuiTheme({
@@ -109,15 +112,19 @@ class VPNHistory extends Component {
                                 <span style={vpnhistoryStyles.headingWithMarginStyle}>
                                     {lang[language].VpnAddress} : 
                                 </span> { sessionData.account_addr} 
+                                <Tooltip title={lang[language].Copy}>
                                 <CopyToClipboard text={sessionData.account_addr}
                                     onCopy={() =>
                                         this.props.setsnackMessage('Copied to Clipboard Successfully')
                                     } >
-                                    <img src={'../src/Images/download.jpeg'}
+                                    {/* <img src={'../src/Images/download.jpeg'}
                                         alt="copy"
                                         data-tip data-for="copyImage"
-                                        style={vpnhistoryStyles.clipBoard} />
+                                        style={vpnhistoryStyles.clipBoard} /> */}
+                                     <CopyIcon style={receiveStyles.clipBoard}/>
+
                                 </CopyToClipboard>
+                                </Tooltip>
                                 <ReactTooltip id="copyImage" place="bottom">
                                     <span>Copy</span>
                                 </ReactTooltip>

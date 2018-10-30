@@ -17,9 +17,15 @@ const historyStyles = {
         paddingLeft: '45px',
         display: 'flex'
     },
+    
     noTxYet: {
-        marginTop: '50px'
-    },
+        display: 'flex',
+        justifyContent: 'center',
+        paddingTop: '20%',
+        fontSize:'25px',
+        color: '#c3c3c3'
+    }, 
+    
     wholeDiv: {
         margin: 10
     },
@@ -32,8 +38,8 @@ const historyStyles = {
     },
     outlineNone: { outline: 'none' },
     data: {
-        marginTop: 20,
-        marginBottom: 20
+        marginTop: 20, // changed 20 -> 10
+        marginBottom: 10,
     },
     outStyle: {
         color: 'red',

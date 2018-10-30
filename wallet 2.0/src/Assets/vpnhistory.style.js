@@ -38,7 +38,8 @@ const vpnhistoryStyles={
     clipBoard: {
         height: 20,
         width: 20,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        color:'#5ca1e8',
     },
     headingStyle: {
         fontWeight: 600,
@@ -54,8 +55,9 @@ const vpnhistoryStyles={
     noSessionsStyle: {
         display: 'flex',
         justifyContent: 'center',
-        paddingTop: '20%',
-        fontSize:'25px'
+        paddingTop: '17%',
+        fontSize:'25px',
+        color: '#c3c3c3'
     },
     button:{
           label:{

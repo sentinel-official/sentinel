@@ -14,6 +14,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
 import { disconnectSocks } from '../Utils/DisconnectSocks';
+import { isOnline } from "../Actions/convertErc.action";
+
+import '../Assets/footerStyle.css';
 
 const styles = theme => ({
     paper: {
@@ -25,6 +28,10 @@ const styles = theme => ({
 let downloadData = 0;
 
 class Footer extends Component {
+
+    componentWillMount = () => {
+        console.log("in online ", isOnline);
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -148,6 +155,7 @@ class Footer extends Component {
         }
         if (!vpnStatus) {
             downloadData = 0;
+
         }
         return (
             <div style={footerStyles.mainDivStyle}>
@@ -156,58 +164,83 @@ class Footer extends Component {
                         <Col xs={3} style={footerStyles.firstColumn}>
                             <p style={footerStyles.testLabelStyle}>
                                 {
-                                    this.props.isTm ? 'Tendermint Activated' : this.props.isTest ? 'Test Net Activated' : 'Test Net NOT Activated'
+                                    isOnline ?
+                                    this.props.isTm ?
+                                   <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>Tendermint Test Net</span><span style={footerStyles.activated}>Activated</span> </span>:
+                                     this.props.isTest ? 
+                                     
+                                    //  <span ><span style={footerStyles.greenDot}></span>Ethereum Test Net Activated</span>
+                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>Ethereum Test Net</span><span style={footerStyles.activated}>Activated</span> </span>
+                                     
+                                     :
+                                    // <span><span style={footerStyles.greenDot}></span>Ethereum Main Net Activated</span> 
+                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>Ethereum Main Net</span><span style={footerStyles.activated}>Activated</span> </span>
+                                    :
+                                    <span><span style={footerStyles.redDot}></span>Offline</span> 
                                 }
                             </p>
                         </Col>
                         {
                             vpnStatus ?
-                                <Col xs={1}>
-                                    <Tooltip title={lang[language].Disconnect}>
-                                        <Button style={footerStyles.disconnectStyle} onClick={() => { this.disconnect() }}>
-                                            <DisconnectIcon /> Disconnect
-                                        </Button>
-                                    </Tooltip>
-                                </Col>
-                                : null
-                        }
-                        {
-                            vpnStatus ?
-                                <Col xs={8}>
+                                <Col xs={9} style={footerStyles.vpnConnected}>
                                     <Row style={footerStyles.textCenter}>
-                                        <Col xs={3}>
+                                        <Col xs={2}style={footerStyles.vpnConnected} >
                                             <label style={footerStyles.headingStyle}>IP Address</label>
                                             <p style={footerStyles.valueStyle}>
                                                 {localStorage.getItem('IPGENERATED')}
                                             </p>
                                         </Col>
-                                        <Col xs={2}>
+                                        <Col xs={2} style={footerStyles.vpnConnected}>
                                             <label style={footerStyles.headingStyle}>{lang[language].Speed}</label>
                                             <p style={footerStyles.valueStyle}>
                                                 {localStorage.getItem('SPEED')}
                                             </p>
                                         </Col>
-                                        <Col xs={3}>
+                                        <Col xs={2} style={footerStyles.vpnConnected}>
                                             <label style={footerStyles.headingStyle}>{lang[language].Location}</label>
                                             <p style={footerStyles.valueStyle}>
                                                 {localStorage.getItem('LOCATION')}
                                             </p>
                                         </Col>
-                                        <Col xs={2}>
-                                            <label style={footerStyles.headingStyle}>Download</label>
-                                            <p style={footerStyles.valueStyle}>
-                                                {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB
-                                            </p>
-                                        </Col>
-                                        <Col xs={2}>
+
+                                          <Col xs={3} style={footerStyles.vpnConnected}>
+                                          <Row>
+                                              <Col xs={2}></Col>
+                                              <Col xs={5}>
                                             <label style={footerStyles.headingStyle}>Upload</label>
                                             <p style={footerStyles.valueStyle}>
                                                 {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB
                                             </p>
+                                            </Col>
+                                            <Col xs={5}>
+                                             <label style={footerStyles.headingStyle}>Download</label>
+                                            <p style={footerStyles.valueStyle}>
+                                                {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB
+                                            </p>
+                                            </Col>
+                                            </Row>
                                         </Col>
+                                        
+                                        {/* <Col xs={2} style={footerStyles.vpnConnected}>
+                                           
+                                        </Col> */}
+                                      
+
+                                        {
+                            vpnStatus ?
+                                <Col xs={3} style={footerStyles.vpnConnected}>
+                                    <Tooltip title={lang[language].Disconnect}>
+                                        <Button style={footerStyles.disconnectStyle} onClick={() => { this.disconnect() }}>
+                                          <span style={footerStyles.disconnectText}>  Disconnect </span>
+                                           <DisconnectIcon style={footerStyles.crossMark} />
+                                        </Button>
+                                    </Tooltip>
+                                </Col>
+                                : null
+                        }
                                     </Row>
                                 </Col>
-                                : null}
+                               : null}          
                     </Row>
                 </Grid>
                 <Snackbar

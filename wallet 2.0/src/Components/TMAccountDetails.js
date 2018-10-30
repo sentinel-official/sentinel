@@ -30,18 +30,19 @@ class TMAccountDetails extends Component {
         const { classes, account } = this.props;
         return (
             <div style={{padding:'5%'}}>
-                <p style={createAccountStyle.detailsHeading}>Address:</p>
+            {/* <h2><center>WELCOME TO TENDERMINT</center></h2> */}
+                <p style={createAccountStyle.detailsHeading}>Address&nbsp;:</p>
                 <p style={createAccountStyle.detailsText}>{account.address}</p>
-                <p style={createAccountStyle.detailsHeading}>Public Key:</p>
+                <p style={createAccountStyle.detailsHeading}>Public Key&nbsp;:</p>
                 <p style={createAccountStyle.detailsText}>{account.pub_key}</p>
-                <p style={createAccountStyle.detailsHeading}>Seed:</p>
+                <p style={createAccountStyle.detailsHeading}>Seed&nbsp;:</p>
                 <p style={createAccountStyle.detailsText}>{account.seed}</p>
                 <Button
                     variant="outlined"
                     color="primary"
                     onClick={() => { this.gotoDashboard() }}
                     className={classes.button} style={{ outline: 'none' }}>
-                    Go To Dashboard
+                    Go To Sentinel Tendermint Wallet
                 </Button>
             </div>
         )

@@ -104,15 +104,8 @@ class SimpleListMenu extends React.Component {
               }
             }}
           >
-            <MenuItem value={'ETH'} >
-            <img src={'../src/Images/ethereum.svg'} alt="etherem_logo" 
-             style={{ width: 15, paddingRight:5 , marginTop: -5 }} />
-
-            ETH</MenuItem>
-            <MenuItem value={'SENT'}>
-            <img src={'../src/Images/logo.svg'} alt="sentinel_logo"   
-                           style={{ width: 16, paddingRight:5 , marginTop: -2 }} />
-            SENT</MenuItem>
+            <MenuItem value={'ETHEREUM TESTNET'} >ETHEREUM</MenuItem>
+            <MenuItem value={'TENDERMINT TESTNET'}>TENDERMINT</MenuItem>
           </Select>
         </div>
       );

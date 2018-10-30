@@ -10,32 +10,68 @@ const receiveStyles = {
         color: '#FAFAFA' 
     },
     flatButtonStyleOnTest: {
-        backgroundColor:  '#2f3245',
-        position: 'absolute', right: 0, marginTop: 10, marginRight: 20,
+        // backgroundColor:  '#2f3245',
+        background: 'linear-gradient(#f6c288,#e8aa6e)',
+        position: 'absolute',  marginTop: 45, left:450,
         color:'white'
     },
     flatButtonStyleOffTest: {
         backgroundColor:  'rgba(47, 50, 69, 0.34)',
-        cursor:'not-allowed',
-        position: 'absolute', right: 0, marginTop: 10, marginRight: 20
+        position: 'absolute',  marginTop: 45, left:450,
+        color:'white'
     },
+
+    tmFlatButtonStyleOffTest: {
+        backgroundColor:  'rgba(47, 50, 69, 0.34)',
+        position: 'absolute',  marginTop: 45, left:450,
+        color:'white'
+    },
+
+    tmFlatButtonStyleOnTest: {
+        background: 'linear-gradient(#f6c288,#e8aa6e)',
+        position: 'absolute',  marginTop: 45, left:450,
+        color:'white'
+    },
+    
+    vpnFlatButtonStyleOnTest: {
+        background: 'linear-gradient(#f6c288,#e8aa6e)',
+        position: 'absolute',  marginTop: 30, left:450,
+        color:'white'
+    },
+    vpnFlatButtonStyleOffTest: {
+        backgroundColor:  'rgba(47, 50, 69, 0.34)',
+        position: 'absolute',  marginTop: 30, left:450,
+        color:'white'
+    },
+
     QRCodeDiv:{
         marginLeft: 340,
         marginTop: 70,
         marginBottom: 30,
     },
-    w_256: { width: 256 },
+    w_256: { width: 250 , marginTop:40},
     m_l_265: {
         marginLeft: 265
     },
     c_f_w: {
-        color: '#31b0d5',
+        color: '#272727', //31b0d5
         fontWeight: 'bold'
     },
     copyIcon: {
         height: 18,
         width: 18,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        marginBottom:3,
+    },
+
+    clipBoard: {
+        height: 18,
+        width: 15,
+        color: '#5ca1e8',
+        cursor: 'pointer',
+        marginLeft: 5,
+        marginBottom:-3,
+
     },
     m_b_2: { marginBottom: '2%' }
 }

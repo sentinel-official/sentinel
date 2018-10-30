@@ -3,9 +3,11 @@ import { QRCode } from 'react-qr-svg';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import CopyIcon from '@material-ui/icons/FileCopyOutlined';
+
 import { sendError, setLanguage } from '../Actions/authentication.action';
 import { getAccount, getFreeAmount } from '../Actions/receive.action';
-import { Snackbar } from '@material-ui/core';
+import { Snackbar,Tooltip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
@@ -82,20 +84,28 @@ class Receive extends Component {
                     </Row>
                     <Row>
                         <Col>
+
+                        
+
                             <div style={receiveStyles.m_l_265}>
                                 <label style={receiveStyles.c_f_w}>
-                                {this.state.local_address} <CopyToClipboard text={this.state.local_address}
+                                {this.state.local_address}
+                                <Tooltip title={lang[language].Copy}>
+                                 <CopyToClipboard text={this.state.local_address}
                                     onCopy={() => this.setState({
                                         snackMessage: 'Copied to Clipboard Successfully',
                                         openSnack: true
                                     })} >
-                                        <img
+                                        {/* <img
                                             src={'../src/Images/download.jpeg'}
                                             data-tip data-for="copyImage"
                                             style={receiveStyles.copyIcon}
                                             alt=''
-                                        />
-                                    </CopyToClipboard></label>
+                                        /> */}
+                                     <CopyIcon style={receiveStyles.clipBoard}/>
+                                    </CopyToClipboard>
+                                    </Tooltip>
+                                    </label>
                                 <ReactTooltip id="copyImage" place="bottom">
                                     <span>{lang[language].Copy}</span>
                                 </ReactTooltip>

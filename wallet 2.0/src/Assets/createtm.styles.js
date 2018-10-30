@@ -7,24 +7,33 @@ const createAccountStyle = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100%'
+        height: '100%',
+        flexDirection: 'column'
     },
     secondDivStyle: {
         width: '50%'
     },
     detailsHeading: {
         fontWeight: 'bold',
-        color: '#ec801d',
+        color: '#5ca1e8',
         fontSize: 16,
-        marginTop: '2%'
+        marginTop: '2%',
+        marginBottom:10,
     },
     detailsText: {
-        fontSize: 14,
-        wordBreak: 'break-all'
+        fontSize: 16,
+        wordBreak: 'break-all',
+        wordSpacing: 10,
+        marginBottom:30,
+
     },
     buttonStyle: {
         margin: 20,
         outline: 'none'
+    },
+    createStyle:{
+        fontSize:22,
+        fontWeight:'bold',
     }
 }
 

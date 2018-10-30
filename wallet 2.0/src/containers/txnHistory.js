@@ -72,7 +72,7 @@ class TxnHistory extends Component {
                     )
                 })
             } else {
-                output = <div style={historyStyles.noTxYet}>No Transactions yet</div>
+                output = <div style={historyStyles.noTxYet}>No ETH Transactions yet</div>
             }
         }
         if (!this.state.isActive) {
@@ -88,7 +88,7 @@ class TxnHistory extends Component {
                     )
                 })
             } else {
-                output = <div historyStyles={historyStyles.noTxYet}>No Transactions yet</div>
+                output = <div style={historyStyles.noTxYet}>No SENT Transactions yet</div>
             }
         }
         return (

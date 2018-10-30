@@ -1,7 +1,11 @@
+
 const headerStyles = {
     mainDivStyle: {
         height: 70,
-        background: 'linear-gradient(to right,#2f3245 73%,#3d425c 27%)'
+        // background: 'linear-gradient(to right,#2f3245 60%,#3d425c 40%)'
+        // background: '#202325',
+        background: 'radial-gradient(circle at 49.41% 1.55%,#3d004c,transparent 100%),radial-gradient(circle at 47.95% 97.06%,#09318c,transparent 100%),radial-gradient(circle at 50% 50%,#04091a,#04091a 100%) no-repeat 50%',
+
     },
     firstRowStyle: {
         paddingTop: 10
@@ -15,12 +19,14 @@ const headerStyles = {
         border: 0,
         transition: '2000',
         color: '#ddd',
-        outline: 'none'
+        outline: 'none',
+        marginLeft:30
     },
     logoStyle: {
-        width: 50,
-        height: 50,
-        marginLeft: 10
+        width: 40,
+        height: 40,
+        marginLeft: -5,
+        marginTop: 5,
     },
     clipBoard: {
         height: 18,
@@ -39,17 +45,20 @@ const headerStyles = {
     walletAddress: {
         fontSize: 12,
         fontWeight: '600',
-        color: '#c3deef',
+        color: '#efb77c', // '#c3deef',
         whiteSpace: 'nowrap',
         display: 'block',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        marginTop: '3%'
+        marginTop: '3%',
+        marginLeft: -25,
     },
     basicWallet: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#FAFAFA'
+        color: '#FAFAFA',
+        marginLeft: -25,
+
     },
     ethBalance: {
         fontSize: 14,
@@ -61,7 +70,7 @@ const headerStyles = {
         fontSize: 14,
         fontWeight: '600',
         color: '#FAFAFA',
-        marginTop: '2%'
+        marginTop: '1%'
     },
     sentBalance: {
         fontSize: 14,
@@ -79,7 +88,17 @@ const headerStyles = {
         lineHeight: '18px'
     },
     balanceText: {
-        color: '#c3deef'
+        color:'#efb77c'
+        // '#c3deef'
+    },
+    balanceHead:{
+        textAlign:'right'
+    },
+    bal:{
+        padding:'0 10px',
+    },
+    balType:{
+        textAlign:'center'
     },
     columnStyle: {
         fontSize: 12,
@@ -94,10 +113,28 @@ const headerStyles = {
     },
     alignRight: {
         textAlign: 'right',
-        marginLeft: 15
+        // marginLeft: 15
+    },
+    alignRightSelect:{
+        textAlign: 'right',
+        // marginLeft: 15
     },
     accountIconColor: {
         color: '#ddd'
+    },
+    dropDownStyle: {
+        color: 'white',
+        fontSize: 14,
+        fontWeight: 600,
+        ':before': {
+            borderBottom: '1px solid #fff',
+        }
+    },
+    'dropDownStyle:before': {
+        color: 'red'
+    },
+    noDrop: {
+        cursor: 'noDrop',
     }
 }
 

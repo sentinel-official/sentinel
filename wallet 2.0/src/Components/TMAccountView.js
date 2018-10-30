@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Card, CardContent, CardHeader, Tooltip, Snackbar, IconButton, Button } from '@material-ui/core';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 import { accountStyles } from '../Assets/tmaccount.styles';
 import { withStyles } from '@material-ui/core/styles';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { compose } from 'recompose';
 import PropTypes from 'prop-types';
 import { QRCode } from 'react-qr-svg';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { getTMBalance, getFreeTokens } from '../Actions/tendermint.action';
 import { receiveStyles } from './../Assets/receive.styles';
+
 let lang = require('./../Constants/language');
 
 const customStyles = theme => ({
@@ -63,12 +66,13 @@ class TMAccountView extends Component {
         return (
             <div>
                 <Button
-                    disabled={this.state.isFreeLoading}
+                    disabled={this.state.isFreeLoading || this.props.vpnStatus}
                     onClick={this.getFree.bind(this)}
-                    style={this.state.isFreeLoading ? receiveStyles.flatButtonStyleOffTest : receiveStyles.flatButtonStyleOnTest}
+                    style={this.state.isFreeLoading ? receiveStyles.tmFlatButtonStyleOffTest : receiveStyles.tmFlatButtonStyleOnTest}
+                    style={this.props.vpnStatus ? receiveStyles.vpnFlatButtonStyleOffTest : receiveStyles.vpnFlatButtonStyleOnTest}
                 >{this.state.isFreeLoading ? 'Loading...' : lang[language].GetTokens}</Button>
                 <div style={accountStyles.formStyle}>
-                    <Card style={accountStyles.cardStyle}>
+                    <div style={accountStyles.cardStyle} bordered={false}>
                         {/* <CardHeader
                             action={
                                 <IconButton onClick={() => { this.getBalance() }} style={accountStyles.outlineNone}>
@@ -86,16 +90,17 @@ class TMAccountView extends Component {
                             />
                             <label style={accountStyles.addressStyle}>
                                 {account_key ? account_key.address : 'Loading...'}</label>
-                            <Tooltip title="Copy">
+                            <Tooltip title={lang[language].Copy}>
                                 <CopyToClipboard text={account_key ? account_key.address : 'Loading...'}
                                     onCopy={() => this.setState({
                                         snackMessage: lang[language].Copied,
                                         openSnack: true
                                     })}>
-                                    <img src={'../src/Images/download.jpeg'}
+                                    {/* <img src={'../src/Images/download.jpeg'}
                                         alt="Copy"
-                                        style={accountStyles.clipBoard} />
-                                </CopyToClipboard>
+                                        style={accountStyles.clipBoard} /> */}
+                            <CopyIcon style={receiveStyles.clipBoard}/>
+                           </CopyToClipboard>
                             </Tooltip>
 
                             {balance === "" ?
@@ -112,16 +117,28 @@ class TMAccountView extends Component {
                             {/* {balance === "" ? <p>*Use faucet to get tokens and join the network</p> : null} */}
                             {
                                 vpnStatus ?
+                                
                                     <div style={accountStyles.lastDiv}>
-                                        <p><span style={accountStyles.notInNetStyle}>Total TSENTs Locked: </span>
-                                            {localStorage.getItem('lockedAmount')}</p>
-                                        <p><span style={accountStyles.notInNetStyle}>Current Session Usage (TSENTs): </span>
-                                            {usedTokens}</p>
-                                    </div> :
+                                    <Row style={accountStyles.tsentRow}>
+                                        <Col xs={6}style={accountStyles.notInNetStyle1}>TSENT Locked :</Col>
+                                        
+                                        <Col xs={6} style={accountStyles.notInNetStyle}>TSENT Cosumed :</Col>
+                                    </Row>
+                                    <Row style={accountStyles.tsentRow}>
+                                        <Col xs={6} style={accountStyles.tsentValue1}>  {localStorage.getItem('lockedAmount')}</Col>
+                                       
+                                        <Col xs={6} style={accountStyles.tsentValue}>{usedTokens}</Col>
+                                    </Row>
+                                        {/* <p><span style={accountStyles.notInNetStyle}>Total TSENT Locked: </span>
+                                            {localStorage.getItem('lockedAmount')}  <span style={accountStyles.notInNetStyle}>Current Session Usage (TSENT): </span>
+                                            {usedTokens}</p> */}
+                                   
+                                    </div>
+                                     :
                                     null
                             }
                         </CardContent>
-                    </Card>
+                    </div>
                     <Snackbar
                         open={this.state.openSnack}
                         autoHideDuration={4000}

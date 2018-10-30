@@ -236,9 +236,9 @@ class VpnList extends Component {
                                 </RadioGroup>
                             </FormControl>
                     }
-                    <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15, outline: 'none' }}>
+                    {/* <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15, outline: 'none' }}>
                         <RefreshIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <FormControl component="fieldset" className={classes.dVPNFormControl}>
                         <RadioGroup
                             aria-label="dVPN Type"
@@ -251,6 +251,10 @@ class VpnList extends Component {
                             <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label="SOCKS5" />
                         </RadioGroup>
                     </FormControl>
+
+                     <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15,marginRight:10, outline: 'none' }}>
+                        <RefreshIcon />
+                    </IconButton>
 
                 </div>
                 {

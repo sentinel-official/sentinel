@@ -18,11 +18,28 @@ export const disabledButton = {
 };
 
 export const historyLabel = {
-    color: '#626262',
+    color: '#989898',  // initial '#626262
     fontWeight: '700',
     fontFamily: 'Montserrat, Medium',
     fontSize: 15,
     paddingRight: 10
+};
+
+export const statusLabel = {
+    color: '#989898',  // initial '#626262
+    fontWeight: '700',
+    fontFamily: 'Montserrat, Medium',
+    fontSize: 15,
+    // paddingRight: 10
+    float:'right',
+};
+export const statusValue = {
+    color: '#626262',  // initial '#626262
+    fontWeight: '700',
+    fontFamily: 'Montserrat, Medium',
+    fontSize: 15,
+    paddingRight: 10
+    // float:'right',
 };
 
 export const margin = {
@@ -32,7 +49,7 @@ export const margin = {
 };
 
 export const historyValue = {
-    color: '#989898',
+    color: '#626262',
     fontFamily: 'Montserrat',
     fontWeight: '500',
     fontSize: 13
@@ -40,4 +57,8 @@ export const historyValue = {
 
 export const radioStyle = {
     color: '#2f3245'
+}
+export const cardStyle = {
+    padding : 10,
+    marginRight:10,
 }

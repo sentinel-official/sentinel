@@ -13,6 +13,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import SimpleMenuTestnet from './SharedComponents/SimpleMenuTestnet';
+import Select from '@material-ui/core/Select';
+import SendIcon from '@material-ui/icons/Send';
+import '../Assets/headerStyle.css';
 
 let notTMInterval = null;
 let TMInterval = null;
@@ -24,7 +30,9 @@ class Header extends Component {
             openSnack: false,
             snackMessage: '',
             isGetBalanceCalled: false,
-            openAccountMenu: false
+            openAccountMenu: false,
+            age: '',
+            walletType: 'ERC20'
         }
     }
 
@@ -45,26 +53,76 @@ class Header extends Component {
     };
 
     testNetChange = () => event => {
+
         let value = event.target.checked;
         let currentTab = this.props.currentTab;
         this.props.setTestNet(value);
-        this.props.getETHBalance(this.props.walletAddress);
-        this.props.getSentBalance(this.props.walletAddress);
-        if ((value && disabledItemsTest.includes(currentTab)) ||
-            (!value && disabledItemsMain.includes(currentTab))) {
-            this.props.setCurrentTab('send');
+
+        if (value) {
+            this.props.setTendermint(true);
+            this.props.setCurrentTab('tmint');
+            this.setState({
+                walletType: 'TENDERMINT'
+            })
+          
         }
+        if(!value){
+            this.props.setTendermint(false);
+              this.setState({
+                age: '',
+                walletType: 'ERC20'
+            })
+        }
+        if ((value && disabledItemsTest.includes(currentTab)) ) {
+            this.props.setCurrentTab('tmint');
+        }
+
+    //     if ((!value && disabledItemsMain.includes(currentTab))) {
+    //     this.props.setCurrentTab('send');
+    // }
+        
+      
+        // this.props.getETHBalance(this.props.walletAddress);
+        // this.props.getSentBalance(this.props.walletAddress);
+        // if ((value && disabledItemsTest.includes(currentTab)) ||
+        //     (!value && disabledItemsMain.includes(currentTab))) {
+        //     this.props.setCurrentTab('send');
+        // }
     };
 
     tendermintChange = () => event => {
-        let value = event.target.checked;
-        this.props.setTendermint(value);
-        if (value) {
+
+        // console.log("dropdown value ", event.target.value);
+        let value = event.target.value;
+        let currentTab = this.props.currentTab;
+        this.setState({
+            age: value,
+
+        })
+        if (value !== 'ethereum') {
+            this.props.setTendermint(true);
             this.props.setCurrentTab('tmint');
+            this.setState({
+                walletType: 'TENDERMINT'
+            })
         }
+
+        // if (value) {
+        //     this.props.setCurrentTab('tmint');
+        // }
         else {
-            this.props.setCurrentTab('send');
-        }
+            this.props.setTendermint(false);
+            this.props.getETHBalance(this.props.walletAddress);
+            this.props.getSentBalance(this.props.walletAddress);
+            if ((value && disabledItemsTest.includes(currentTab)) ||
+                (!value && disabledItemsMain.includes(currentTab))) {
+                this.props.setCurrentTab('send');
+            }
+            
+                this.setState({
+                    walletType: 'ERC20'
+                })
+            }
     };
 
     getERCBalances = () => {
@@ -106,14 +164,15 @@ class Header extends Component {
                 <Grid>
                     <Row style={headerStyles.firstRowStyle}>
                         <Col xs={1}>
-                            <img src={'../src/Images/logo.svg'} alt="logo" style={headerStyles.logoStyle} />
+                            <img src={'../src/Images/logo.svg'} alt="sentinel network" style={headerStyles.logoStyle} />
                         </Col>
-                        <Col xs={4} style={headerStyles.sentinelColumn}>
+                        <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
-                                <span style={headerStyles.basicWallet}>SENTINEL</span>
+                                <span style={headerStyles.basicWallet}> {this.state.walletType} WALLET ADDRESS </span>
                             </div>
                             <Row>
                                 <Col xs={8}><span
+                                    // xs={8} initially , changed to get 10 digits
                                     style={headerStyles.walletAddress}>
                                     {
                                         isTendermint ?
@@ -124,7 +183,7 @@ class Header extends Component {
                                 </Col>
                                 <Col xs={4}>
                                     {isTendermint && !tmAccountDetails ? null :
-                                        <Tooltip title="Copy">
+                                        <Tooltip title={this.state.walletType === 'ERC20' ? "Copy ERC20 Sent Wallet Address" : "Copy Tendermint Wallet Address"}>
                                             <CopyToClipboard text={
                                                 isTendermint ?
                                                     (tmAccountDetails ? tmAccountDetails.address : 'Loading...') :
@@ -142,49 +201,51 @@ class Header extends Component {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={2}>
                             {isTendermint ?
                                 (tmAccountDetails ?
                                     < div style={headerStyles.tmBalance} >
-                                        <span>{'TSENT: '}</span>
-                                        <span style={headerStyles.balanceText}>
-                                            {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
-                                            {token && 'denom' in token ? '' : ''}
-                                            {' '}
-                                            <Tooltip title="Refresh Balance">
-                                                <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
-                                                    <RefreshIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </span>
-                                    </div>
+
+                                        <Row>
+                                            <Col xs={6} style={headerStyles.balanceHead}> {'TSENT'} </Col>
+                                            <Col xs={1}> : </Col>
+                                            <Col xs={4} style={headerStyles.balanceText}>
+                                                {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
+                                                {token && 'denom' in token ? '' : ''}
+                                                {' '}
+
+                                            </Col>
+                                        </Row>
+                                        </div>
                                     : null)
                                 :
                                 <Row>
-                                    <Col xs={this.props.isTest ? 8 : 6}>
+                                    <Col xs={this.props.isTest ? 12 : 12}>
                                         <div style={headerStyles.sentBalance}>
-                                            <span>{this.props.isTest ? 'TEST SENT: ' : 'SENT: '}</span>
-                                            <span style={headerStyles.balanceText}>{this.props.sentBalance}</span>
+                                            <Row>
+                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? 'TEST SENT' : 'SENT'} </Col>
+                                                <Col xs={1}> : </Col>
+                                                <Col xs={4} style={headerStyles.balanceText}>{this.props.sentBalance}</Col>
+                                            </Row>
                                         </div>
                                         <div style={headerStyles.ethBalance}>
-                                            <span>{this.props.isTest ? 'TEST ETH: ' : 'ETH: '}</span>
-                                            <span style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading'
-                                                ? this.props.ethBalance :
-                                                parseFloat(this.props.ethBalance).toFixed(8)
-                                            }</span>
+                                            <Row>
+                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? 'TEST ETH' : 'ETH'} </Col>
+                                                <Col xs={1}> : </Col>
+                                                <Col xs={4} style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading'
+                                                    ? this.props.ethBalance :
+                                                    parseFloat(this.props.ethBalance).toFixed(8)
+                                                }</Col>
+                                            </Row>
                                         </div>
                                     </Col>
-                                    <Col xs={4}>
-                                        <Tooltip title="Refresh Balance">
-                                            <IconButton onClick={() => { this.getERCBalances() }} style={headerStyles.buttonRefresh}>
-                                                <RefreshIcon />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Col>
+
                                 </Row>
                             }
                         </Col>
-                        <Col xs={1} style={headerStyles.alignRight}>
+
+
+                        <Col xs={2} style={headerStyles.alignRight}>
                             <div style={headerStyles.columnStyle}>
                                 <p style={headerStyles.toggleLabelisTest}>TESTNET</p>
                             </div>
@@ -193,10 +254,12 @@ class Header extends Component {
                                     checked={this.props.isTest}
                                     onChange={this.testNetChange()}
                                     color="primary"
-                                    disabled={this.props.isTendermint}
+                                // disabled={this.props.isTendermint}
                                 />
                             </div>
                         </Col>
+
+
                         {/* <Col xs={1} style={headerStyles.alignRight}>
                             <IconButton
                                 style={{ outline: 'none' }}
@@ -209,7 +272,7 @@ class Header extends Component {
                             </IconButton>
                             <Popper open={this.state.openAccountMenu} transition disablePortal>
                                 {({ TransitionProps, placement }) => (
-                                    <Grow
+                                    <Growcol-xs-1
                                         {...TransitionProps}
                                         id="menu-list-grow"
                                         style={{ transformOrigin: 'center bottom' }}
@@ -225,19 +288,68 @@ class Header extends Component {
                                 )}
                             </Popper>
                         </Col> */}
-                        <Col xs={1} style={headerStyles.alignRight}>
-                            <div style={headerStyles.columnStyle}>
+
+
+                        <Col xs={3} style={headerStyles.alignRight}>
+                            {/* <div style={headerStyles.columnStyle}>
                                 <p style={headerStyles.toggleLabelisTest}>TENDERMINT</p>
-                            </div>
-                            <div style={headerStyles.toggleStyle}>
-                                <Switch
+                            </div> */}
+                            <div
+                            // style={headerStyles.toggleStyle}
+                            >
+                                {/* <Switch
                                     checked={this.props.isTendermint}
                                     onChange={this.tendermintChange()}
                                     color="primary"
                                     disabled={this.props.vpnStatus}
-                                />
+                                /> */}
+
+
+                                <Select
+                                    displayEmpty
+                                    disabled={this.props.isTest ? false : true}
+                                    value={this.state.age}
+                                    onChange={this.tendermintChange()}
+
+                                    className={this.props.isTest ? 'dropDownStyle' : 'disabledDropDownStyle'}
+                                >
+
+                                    <MenuItem value=''>
+                                        <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
+                                            style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
+                                        TENDERMINT TESTNET</MenuItem>
+                                        <MenuItem value='ethereum'>
+                                        {/* <SendIcon /> */}
+                                        <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                                            style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
+                                        ETHEREUM TESTNET</MenuItem>
+
+                                </Select>
+
+                              
                             </div>
+
                         </Col>
+                        <Col xs={1}>
+
+                            {isTendermint ?
+
+                                <Tooltip title="Refresh TENDERMINT Balance ">
+                                    <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
+                                        <RefreshIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                :
+                                <Tooltip title="Refresh ERC20 Balance">
+                                    <IconButton onClick={() => { this.getERCBalances() }} style={headerStyles.buttonRefresh}>
+                                        <RefreshIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            }
+                        </Col>
+
+                        {/* <div><SimpleMenuTestnet token={this.setToken} isSend={true} isVPN={this.state.isVPNPayment} />
+                        </div> */}
                     </Row>
                 </Grid>
                 <Snackbar

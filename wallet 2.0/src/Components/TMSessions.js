@@ -4,11 +4,14 @@ import { bindActionCreators } from 'redux';
 import { Card, CardContent, IconButton, Snackbar, Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { compose } from 'recompose';
 import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { getSessionHistory } from '../Actions/tmvpn.action';
 import { sessionStyles } from '../Assets/tmsessions.styles';
+import { receiveStyles } from './../Assets/receive.styles';
+
 import moment from 'moment';
 import _ from 'lodash';
 let lang = require('./../Constants/language');
@@ -63,25 +66,25 @@ class TMSessions extends Component {
             sessionOutput = sortedSessions.map((sessionData) => {
                 return (
                     <Card>
-                        <CardContent style={sessionStyles.cardtext}>
+                        {/* <CardContent style={sessionStyles.cardtext}>
                             <span style={sessionStyles.headingStyle}>
                                 {lang[language].SessionId} :
                                 </span> {sessionData.sessionId}
                             <span style={sessionStyles.headingWithMarginStyle}>
                                 {lang[language].VpnAddress} :
                                 </span> {sessionData.nodeAccountAddress}
-                            <Tooltip title="Copy">
+                                <Tooltip title={lang[language].Copy}>
                                 <CopyToClipboard text={sessionData.nodeAccountAddress}
                                     onCopy={() => this.setState({
                                         snackMessage: lang[language].Copied,
                                         openSnack: true
                                     })}>
-                                    <img src={'../src/Images/download.jpeg'}
-                                        alt="Copy"
-                                        style={sessionStyles.clipBoard} />
-                                </CopyToClipboard>
+                                    
+                                   
+                                <CopyIcon style={receiveStyles.clipBoard}/>
+                               </CopyToClipboard>
                             </Tooltip>
-                            <br />
+                            
                             <span style={sessionStyles.headingStyle}>
                                 {lang[language].Duration} :
                                 </span> {(Date.parse(new Date(sessionData.endedOn)) -
@@ -92,6 +95,39 @@ class TMSessions extends Component {
                             <span style={sessionStyles.headingWithMarginStyle}>
                                 {lang[language].Time} :
                                 </span> {moment(new Date(sessionData.startedOn)).format("DD/MM/YYYY hh:mm A")}
+                        </CardContent> */}
+
+                        <CardContent style={sessionStyles.cardtext}>
+                            <div style={sessionStyles.headingStyle}>
+                                {lang[language].SessionId} : <span style={sessionStyles.textStyle}>{sessionData.sessionId}</span>
+                            </div>
+                            <div style={sessionStyles.headingStyle}>
+                                {lang[language].VpnAddress} : <span style={sessionStyles.textStyle}>{sessionData.nodeAccountAddress}</span>
+
+                                <Tooltip title={lang[language].Copy}>
+                                    <CopyToClipboard text={sessionData.nodeAccountAddress}
+                                        onCopy={() => this.setState({
+                                            snackMessage: lang[language].Copied,
+                                            openSnack: true
+                                        })}>
+                                        {/* <img src={'../src/Images/download.jpeg'}
+                                        alt="Copy"
+                                        style={sessionStyles.clipBoard} /> */}
+                                        <CopyIcon style={receiveStyles.clipBoard} />
+                                    </CopyToClipboard>
+                                </Tooltip>
+                            </div>
+                            <div style={sessionStyles.headingStyle}>
+                                {lang[language].ReceivedData} :  <span style={sessionStyles.textStyle}>
+                                    {this.getPaymentBytes(sessionData.usage.download)}</span>
+                            </div>
+                            <div style={sessionStyles.headingStyle}>
+                                {lang[language].Duration} :  <span style={sessionStyles.textStyle}>{(Date.parse(new Date(sessionData.endedOn)) -
+                                    Date.parse(new Date(sessionData.startedOn))) / 1000} secs</span>
+                            </div>
+                            <div style={sessionStyles.headingStyle}>
+                                {lang[language].Time} : <span style={sessionStyles.textStyle}> {moment(new Date(sessionData.startedOn)).format("DD/MM/YYYY hh:mm A")}</span>
+                            </div>
                         </CardContent>
                     </Card>
                 )

@@ -143,7 +143,7 @@ export async function testConnect(account_addr, vpn_addr, cb) {
         account_addr: account_addr,
         vpn_addr: vpn_addr
     };
-    axios.post(`${B_URL}/client/vpn`, data)
+    axios({ url: `${B_URL}/client/vpn`, method: 'POST', data: data, timeout: 20000 })
         .then(resp => {
             console.log("Getting VPN Details...");
             if (resp.data.success) {
@@ -160,7 +160,7 @@ export async function testConnect(account_addr, vpn_addr, cb) {
                     cb({ message: resp.data.message || 'Connecting VPN Failed. Please Try Again' }, null);
             }
         })
-        .catch(err => { cb({ message: err.response || 'Something wrong. Please Try Again.' }, null) })
+        .catch(err => { cb({ message: 'Unable to reach sentinel server at this moment' }, null) })
 
 }
 
@@ -199,6 +199,7 @@ export async function connectwithOVPN(resp, cb) {
     if (OVPNDelTimer) clearInterval(OVPNDelTimer);
 
     outputCount = 0;
+    CONNECTED = false;
     let openProcess = exec(command);
     openProcess.stdout.on('data', (data) => {
         outputCount++;
@@ -207,11 +208,14 @@ export async function connectwithOVPN(resp, cb) {
     })
 
     openProcess.on('exit', (code) => {
+        console.log("In exit...")
+        if (!CONNECTED) {
+            cb({ message: 'Currently server has some network issues.Please try other server.' }, null);
+        }
         OVPNDelTimer = setTimeout(function () {
             fs.unlinkSync(OVPN_FILE);
         }, 1000);
     })
-    CONNECTED = false;
     count = 0;
     if (remote.process.platform === 'win32') {
         setTimeout(() => {

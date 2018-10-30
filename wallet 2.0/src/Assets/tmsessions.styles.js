@@ -62,7 +62,7 @@ const sessionStyles = {
         color:'#5ca1e8',
     },
     history: {
-        maxHeight: '410px',
+        maxHeight: '425px',
         width: '100%',
         overflow: 'auto'
     },

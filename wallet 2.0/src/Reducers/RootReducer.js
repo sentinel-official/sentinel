@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { setLanguage, createAccount, setComponent } from './beforeAuth.reducer';
-import { setTestNet, getETHBalance, getSentBalance, setTendermint } from './header.reducer';
+import { setTestNet, getETHBalance, getSentBalance, setTendermint, getWalletType } from './header.reducer';
 import { setCurrentTab } from './sidebar.reducer';
 import { getAccount } from './dashboard.reducer';
 import { getFreeAmount } from './receive.reducer';
@@ -23,6 +23,7 @@ const rootReducer = combineReducers({
     createAccount,
     setComponent,
     setTestNet,
+    getWalletType,
     getAccount,
     getETHBalance,
     getSentBalance,

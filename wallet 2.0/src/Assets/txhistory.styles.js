@@ -12,7 +12,7 @@ const historyStyles = {
     },
     tmHistoryCont: {
         overflowY: 'auto',
-        height: 400,
+        height: 425,
         flexDirection: 'column',
         paddingLeft: '45px',
         display: 'flex'

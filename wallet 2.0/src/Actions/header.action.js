@@ -10,6 +10,13 @@ export function setTestNet(value) {
     }
 }
 
+export function setWalletType(value) {
+    return {
+        type: types.WALLET_VALUE,
+        payload: value
+    }
+}
+
 export async function getETHBalance(address) {
     console.log("Test value..", isTest);
     let isTest = localStorage.getItem('config') === 'MAIN' ? false : true;

@@ -94,7 +94,7 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
     if (fs.existsSync(OVPN_FILE)) {
         cb(null);
     } else {
-        axiosInstance.post(uri, data).then(response => {
+        axiosInstance({ url: uri, method: 'POST', data: data, timeout: 20000 }).then(response => {
             if (response.data.success) {
                 if (response.data['node'] === null) {
                     cb({ message: 'Something wrong. Please Try Later' })
@@ -114,6 +114,9 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
                 cb({ message: response.data.message || 'Error occurred while getting OVPN file, may be empty VPN resources.' })
             }
         })
+            .catch(err => {
+                cb({ message: 'Unable to reach sentinel server at this moment' })
+            })
     }
 }
 

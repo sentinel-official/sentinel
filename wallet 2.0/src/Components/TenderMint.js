@@ -20,10 +20,10 @@ class TenderMint extends Component {
         }
     }
 
-    handleChange = (event, value) => {
-        this.setState({ value });
-        this.props.payVPNTM({ 'isPayment': false })
-    };
+    // handleChange = (event, value) => {
+    //     this.setState({ value });
+    //     this.props.payVPNTM({ 'isPayment': false })
+    // };
 
     componentWillMount = () => {
         this.props.getKeys().then(res => {
@@ -53,11 +53,11 @@ class TenderMint extends Component {
         });
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        if (nextProps.vpnPayment.isPayment) {
-            this.setState({ value: 1 })
-        }
-    }
+    // componentWillReceiveProps = (nextProps) => {
+    //     if (nextProps.vpnPayment.isPayment) {
+    //         this.setState({ value: 1 })
+    //     }
+    // }
 
     render() {
         let { component, account, keys } = this.props;
@@ -67,7 +67,8 @@ class TenderMint extends Component {
                 {
                     return (
                         <div style={sidebarStyles.heightFull}>
-                            <Paper>
+                            <TMAccountView />
+                            {/* <Paper>
                                 <Tabs
                                     value={value}
                                     indicatorColor="primary"
@@ -83,7 +84,7 @@ class TenderMint extends Component {
                             {value === 0 && <TMAccountView />}
                             {value === 1 && <TMTransfer />}
                             {value === 2 && <TMSessions />}
-                            {value === 3 && <TMTransactionsHistory />}
+                            {value === 3 && <TMTransactionsHistory />} */}
                         </div>
                     )
                 }

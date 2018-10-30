@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { headerStyles } from '../Assets/header.styles';
-import { setTestNet, getETHBalance, getSentBalance, setTendermint } from '../Actions/header.action';
+import { setTestNet, getETHBalance, getSentBalance, setTendermint, setWalletType } from '../Actions/header.action';
 import { getTMBalance } from '../Actions/tendermint.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
 import { connect } from 'react-redux';
@@ -31,7 +31,6 @@ class Header extends Component {
             snackMessage: '',
             isGetBalanceCalled: false,
             openAccountMenu: false,
-            age: '',
             walletType: 'ERC20'
         }
     }
@@ -57,6 +56,7 @@ class Header extends Component {
         let value = event.target.checked;
         let currentTab = this.props.currentTab;
         this.props.setTestNet(value);
+        this.props.setWalletType('TM')
 
         if (value) {
             this.props.setTendermint(true);
@@ -64,24 +64,26 @@ class Header extends Component {
             this.setState({
                 walletType: 'TENDERMINT'
             })
-          
+
         }
-        if(!value){
+        if (!value) {
             this.props.setTendermint(false);
-              this.setState({
-                age: '',
+            this.props.setCurrentTab('send');
+            this.setState({
                 walletType: 'ERC20'
             })
+            this.props.getETHBalance(this.props.walletAddress);
+            this.props.getSentBalance(this.props.walletAddress);
         }
-        if ((value && disabledItemsTest.includes(currentTab)) ) {
+        if ((value && disabledItemsTest.includes(currentTab))) {
             this.props.setCurrentTab('tmint');
         }
 
-    //     if ((!value && disabledItemsMain.includes(currentTab))) {
-    //     this.props.setCurrentTab('send');
-    // }
-        
-      
+        //     if ((!value && disabledItemsMain.includes(currentTab))) {
+        //     this.props.setCurrentTab('send');
+        // }
+
+
         // this.props.getETHBalance(this.props.walletAddress);
         // this.props.getSentBalance(this.props.walletAddress);
         // if ((value && disabledItemsTest.includes(currentTab)) ||
@@ -92,14 +94,11 @@ class Header extends Component {
 
     tendermintChange = () => event => {
 
-        // console.log("dropdown value ", event.target.value);
+        console.log("dropdown value ", event.target.value);
         let value = event.target.value;
         let currentTab = this.props.currentTab;
-        this.setState({
-            age: value,
-
-        })
-        if (value !== 'ethereum') {
+        this.props.setWalletType(value)
+        if (value !== 'ERC') {
             this.props.setTendermint(true);
             this.props.setCurrentTab('tmint');
             this.setState({
@@ -114,15 +113,11 @@ class Header extends Component {
             this.props.setTendermint(false);
             this.props.getETHBalance(this.props.walletAddress);
             this.props.getSentBalance(this.props.walletAddress);
-            if ((value && disabledItemsTest.includes(currentTab)) ||
-                (!value && disabledItemsMain.includes(currentTab))) {
-                this.props.setCurrentTab('send');
-            }
-            
-                this.setState({
-                    walletType: 'ERC20'
-                })
-            }
+            this.props.setCurrentTab('send');
+            this.setState({
+                walletType: 'ERC20'
+            })
+        }
     };
 
     getERCBalances = () => {
@@ -216,7 +211,7 @@ class Header extends Component {
 
                                             </Col>
                                         </Row>
-                                        </div>
+                                    </div>
                                     : null)
                                 :
                                 <Row>
@@ -251,6 +246,7 @@ class Header extends Component {
                             </div>
                             <div style={headerStyles.toggleStyle}>
                                 <Switch
+                                    disabled={this.props.vpnStatus}
                                     checked={this.props.isTest}
                                     onChange={this.testNetChange()}
                                     color="primary"
@@ -307,18 +303,18 @@ class Header extends Component {
 
                                 <Select
                                     displayEmpty
-                                    disabled={this.props.isTest ? false : true}
-                                    value={this.state.age}
+                                    disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
+                                    value={this.props.walletValue}
                                     onChange={this.tendermintChange()}
 
                                     className={this.props.isTest ? 'dropDownStyle' : 'disabledDropDownStyle'}
                                 >
 
-                                    <MenuItem value=''>
+                                    <MenuItem value='TM'>
                                         <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
                                             style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
                                         TENDERMINT TESTNET</MenuItem>
-                                        <MenuItem value='ethereum'>
+                                    <MenuItem value='ERC'>
                                         {/* <SendIcon /> */}
                                         <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
                                             style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
@@ -326,7 +322,7 @@ class Header extends Component {
 
                                 </Select>
 
-                              
+
                             </div>
 
                         </Col>
@@ -367,6 +363,7 @@ function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
         isTest: state.setTestNet,
+        walletValue: state.getWalletType,
         walletAddress: state.getAccount,
         ethBalance: state.getETHBalance,
         sentBalance: state.getSentBalance,
@@ -385,6 +382,7 @@ function mapDispatchToActions(dispatch) {
         getSentBalance,
         setCurrentTab,
         setTendermint,
+        setWalletType,
         getTMBalance
     }, dispatch)
 }

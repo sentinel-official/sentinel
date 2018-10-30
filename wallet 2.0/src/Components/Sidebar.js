@@ -82,7 +82,7 @@ class Sidebar extends Component {
             }
         }
         else {
-            if (disabledItemsTM.includes(item.value)) { }
+            if (this.props.component !== 'dashboard' && disabledItemsTM.includes(item.value)) { }
             else {
                 this.props.setCurrentTab(item.value);
             }
@@ -101,10 +101,10 @@ class Sidebar extends Component {
             else
                 return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 20 }} />
         }
-        if(iconName === 'ethereumIcon'){
+        if (iconName === 'ethereumIcon') {
 
-            return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo" 
-                                        style={{ width: 20}}  />
+            return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                style={{ width: 20 }} />
         }
         else {
             let Icon = this.components[iconName];
@@ -128,7 +128,7 @@ class Sidebar extends Component {
 
 
     render() {
-        let { classes, isTest, isTenderMint } = this.props;
+        let { classes, isTest, isTenderMint, component } = this.props;
         let currentTab = this.props.currentTab;
         return (
             <div style={sidebarStyles.totalDiv}>
@@ -166,7 +166,7 @@ class Sidebar extends Component {
                                                         sidebarStyles.IconNormalLabelStyle)
                                             }>
                                             {this.getIcon(item.icon)}
-                                              
+
                                         </label>
                                     </Tooltip>
                                 </div>
@@ -195,14 +195,14 @@ class Sidebar extends Component {
                         <ListItem button onClick={this.handleTmdClick} disabled={!isTenderMint}>
                             <ListItemIcon>
 
-                                {this.props.isTenderMint ? 
-                            <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"   
-                                     style={{ width: 18, marginTop: -5 }} />
-                                     :
-                                     <img src={'../src/Images/tendermint-disable.png'} style={{ width: 20}} />
+                                {this.props.isTenderMint ?
+                                    <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
+                                        style={{ width: 18, marginTop: -5 }} />
+                                    :
+                                    <img src={'../src/Images/tendermint-disable.png'} style={{ width: 20 }} />
                                 }
                             </ListItemIcon>
-                            <ListItemText inset primary="TENDERMINT"  style={sidebarStyles.collapseType}/>
+                            <ListItemText inset primary="TENDERMINT" style={sidebarStyles.collapseType} />
                             {this.state.openTmd ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
 
@@ -211,8 +211,7 @@ class Sidebar extends Component {
                                 {
 
                                     TMmenuItems.map((item) => {
-                                        let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
-                                            || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
+                                        let isDisabled = component === 'dashboard' ? false : disabledItemsTM.includes(item.value)
                                         return (
                                             <div>
                                                 <div style={
@@ -245,13 +244,13 @@ class Sidebar extends Component {
 
                         <ListItem button onClick={this.handleEthClick} disabled={isTenderMint}>
                             <ListItemIcon>
-                             
-                            <img src={'../src/Images/ethereum.svg'} alt="etherem_logo" 
-                                        style={{ width: 20, marginTop: -5 }}  />
-                            
+
+                                <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                                    style={{ width: 20, marginTop: -5 }} />
+
 
                             </ListItemIcon>
-                            <ListItemText inset primary="ETHEREUM"  style={sidebarStyles.collapseType}/>       
+                            <ListItemText inset primary="ETHEREUM" style={sidebarStyles.collapseType} />
                             {this.state.openEth ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
 
@@ -291,7 +290,7 @@ class Sidebar extends Component {
                             </List>
                         </Collapse>
 
-                      
+
 
                         {/* {
                             menuItems.map((item) => {
@@ -325,8 +324,8 @@ class Sidebar extends Component {
                             })
                         } */}
 
-                           <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/sentinel.png'} alt="sentinel_logo"   
-                           style={{ width: 139, paddingRight:5 , marginTop: -2 }} /></span>
+                        <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/sentinel.png'} alt="sentinel_logo"
+                            style={{ width: 139, paddingRight: 5, marginTop: -2 }} /></span>
                     </div>
                 </Drawer>
             </div>
@@ -343,7 +342,8 @@ function mapStateToProps(state) {
         lang: state.setLanguage,
         isTest: state.setTestNet,
         currentTab: state.setCurrentTab,
-        isTenderMint: state.setTendermint
+        isTenderMint: state.setTendermint,
+        component: state.setTMComponent,
     }
 }
 

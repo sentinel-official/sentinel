@@ -9,6 +9,15 @@ export function setTestNet(state = false, action) {
     }
 }
 
+export function getWalletType(state = 'TM', action) {
+    switch (action.type) {
+        case types.WALLET_VALUE:
+            return action.payload;
+        default:
+            return state
+    }
+}
+
 
 export function getETHBalance(state = 'Loading', action) {
     switch (action.type) {

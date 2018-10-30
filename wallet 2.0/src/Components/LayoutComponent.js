@@ -7,9 +7,13 @@ import TenderMint from './TenderMint';
 import TxnHistory from '../containers/txnHistory'
 import VPNHistory from './VPNHistory';
 import { vpnhistoryStyles } from '../Assets/vpnhistory.style';
+import { payVPNTM } from '../Actions/vpnlist.action';
 import SendComponent from './SendComponent';
 import Swixer from './Swixer';
 import VpnList from './VpnList';
+import TMSessions from './TMSessions';
+import TMTransactionsHistory from './TMTransactionsHistory';
+import TMTransfer from './TMTransfer';
 
 class LayoutComponent extends Component {
     constructor(props) {
@@ -21,6 +25,9 @@ class LayoutComponent extends Component {
 
     render() {
         let component = this.props.currentTab;
+        if (component !== 'transfer' && this.props.isTM) {
+            this.props.payVPNTM({ 'isPayment': false })
+        }
         switch (component) {
             case 'history':
                 {
@@ -54,6 +61,18 @@ class LayoutComponent extends Component {
                 {
                     return <TenderMint />
                 }
+            case 'transfer':
+                {
+                    return <TMTransfer />
+                }
+            case 'tmTxHistory':
+                {
+                    return <TMTransactionsHistory />
+                }
+            case 'tmVpnHistory':
+                {
+                    return <TMSessions />
+                }
             default:
                 {
                     return <div><SendComponent /></div>
@@ -64,12 +83,14 @@ class LayoutComponent extends Component {
 
 function mapStateToProps(state) {
     return {
-        currentTab: state.setCurrentTab
+        currentTab: state.setCurrentTab,
+        isTM: state.setTendermint,
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
+        payVPNTM
     }, dispatch)
 }
 

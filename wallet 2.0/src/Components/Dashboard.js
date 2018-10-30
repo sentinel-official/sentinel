@@ -6,7 +6,7 @@ import LayoutComponent from './LayoutComponent';
 import { getAccount } from '../Actions/dashboard.action';
 import { getVPNUsageData } from "../Utils/utils";
 import { getVPNConnectedData } from '../Utils/VpnConfig';
-import { setTestNet } from '../Actions/header.action';
+import { setTestNet, setWalletType } from '../Actions/header.action';
 import { setActiveVpn, setVpnType, setVpnStatus } from './../Actions/vpnlist.action';
 import { calculateUsage, getStartValues, socksVpnUsage } from '../Actions/calculateUsage';
 import { dashboardStyles } from '../Assets/dashboard.styles';
@@ -36,6 +36,7 @@ class Dashboard extends Component {
     componentWillMount = () => {
         this.props.getAccount();
         this.props.setTestNet(false);
+        this.props.setWalletType('TM');
         getVPNConnectedData((err, data, sock) => {
             if (err) { }
             else {
@@ -43,6 +44,7 @@ class Dashboard extends Component {
                 this.props.setActiveVpn(data);
                 this.props.setVpnType(sock ? 'socks5' : 'openvpn');
                 this.props.setVpnStatus(true);
+                this.props.setWalletType('ERC');
                 getStartValues();
             }
         })
@@ -102,6 +104,7 @@ function mapDispatchToActions(dispatch) {
         getVPNUsageData,
         setActiveVpn,
         setTestNet,
+        setWalletType,
         setVpnStatus,
         setVpnType,
         socksVpnUsage

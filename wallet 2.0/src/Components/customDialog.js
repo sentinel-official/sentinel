@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DialogContent, DialogContentText, DialogActions, Snackbar } from '@material-ui/core';
 import OpenvpnAlert from './OpenvpnAlert';
-import {  Row, Col } from 'react-flexbox-grid';
+import { Row, Col } from 'react-flexbox-grid';
 import {
     withStyles, Button, List, ListItem, ListItemText,
     DialogTitle, Dialog,
@@ -36,20 +36,20 @@ const styles = theme => ({
         width: 400,
         padding: '25px 35px',
         overflowX: 'hidden',
-        
+
     },
     container2: {
         width: 400,
         padding: '0px 35px 25px 35px',
         overflowX: 'hidden',
-        
+
     },
     dialogLabel: {
         fontSize: 14,
         fontFamily: 'Montserrat',
         fontWeight: 'bold',
         textAlign: 'right',
-     
+
     },
     dialogValue: {
         fontSize: 13,
@@ -83,7 +83,7 @@ const styles = theme => ({
     button: {
         margin: theme.spacing.unit,
         outline: 'none',
-        marginBottom:0
+        marginBottom: 0
     },
     extendedIcon: {
         marginRight: theme.spacing.unit,
@@ -118,58 +118,58 @@ class SimpleDialog extends React.Component {
                 <div className={classes.container2} >
 
 
-                      <Row>
-                         
-                         {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
+                    <Row>
+
+                        {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
                          <span style={styles.dialogValue}>{this.props.data.city}</span> */}
 
-                    <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].City}</label> </Col>
-                    <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                    <Col xs={6}>  <label 
-                    // style={styles.dialogValue}
-                    style={{fontWeight:'bold'}}
-                    >{this.props.data.city}</label> </Col>
-                     
-                 </Row>
-                 <Row> 
-                  
-                  {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
+                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].City}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label
+                            // style={styles.dialogValue}
+                            style={{ fontWeight: 'bold' }}
+                        >{this.props.data.city}</label> </Col>
+
+                    </Row>
+                    <Row>
+
+                        {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
                   <xs style={styles.dialogValue}>{this.props.data.city}</xs> */}
 
-             <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Country}</label> </Col>
-             <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-             <Col xs={6}>  <label style={{fontWeight:'bold'}}>{this.props.data.country}</label> </Col>
-              
-                 </Row>
+                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Country}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.country}</label> </Col>
 
-                <Row> 
-                    <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Bandwidth}</label> </Col>
-                    <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                    <Col xs={6}>  <label style={{fontWeight:'bold'}}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + ' Mbps'}</label> </Col>
-                 </Row>
-                         
-                 <Row> 
-                    <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Cost}</label> </Col>
-                    <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                    <Col xs={6}>  <label style={{fontWeight:'bold'}}>{this.props.data.price_per_GB + ' SENT/GB'}</label> </Col>
-                 </Row>
-                 <Row> 
-                    <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Latency}</label> </Col>
-                    <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                    <Col xs={6}>  <label style={{fontWeight:'bold'}}>{this.props.data.latency ? this.props.data.latency + ' ms': 'None'}</label> </Col>
-                 </Row>
+                    </Row>
 
-                 
-                    <List style={{paddingBottom:5}}>
-                        
+                    <Row>
+                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Bandwidth}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + ' Mbps'}</label> </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Cost}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.price_per_GB + ' SENT/GB'}</label> </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Latency}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.latency ? this.props.data.latency + ' ms' : 'None'}</label> </Col>
+                    </Row>
+
+
+                    <List style={{ paddingBottom: 5 }}>
+
 
                         <div className={classes.listRoot}>
-                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label= {this.props.isLoading || this.props.vpnStatus ? "Connecting..." : "Connect"}
+                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label={this.props.isLoading || this.props.vpnStatus ? "Connecting..." : "Connect"}
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
-                                {!this.props.isLoading && this.props.success ? 'Connected' : lang[language].Connect}
+                                {this.props.isLoading ? 'Connecting' : (this.props.success ? 'Connected' : lang[language].Connect)}
                             </Button>
                         </div>
                     </List>
@@ -290,7 +290,7 @@ class SimpleDialogDemo extends React.Component {
     handleListItemClick = (vpn_addr) => {
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
-            this.props.setCurrentTab('tmint');
+            this.props.setCurrentTab('transfer');
         }
         else {
             this.setState({ isLoading: true });

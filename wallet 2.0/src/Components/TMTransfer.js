@@ -39,10 +39,17 @@ class TMTransfer extends Component {
         }
     }
 
-    componentWillMount = () => {
+    componentDidMount = () => {
+        if (this.props.vpnPayment.isPayment) {
+            this.setState({ toAddress: this.props.vpnPayment.data.vpn_addr, amount: 100, isTextDisabled: true })
+        }
+        else {
+            this.setState({ isTextDisabled: false })
+        }
     }
 
     componentWillReceiveProps = (nextProps) => {
+        console.log("Or..", nextProps.vpnPayment)
         if (nextProps.vpnPayment.isPayment) {
             this.setState({ toAddress: nextProps.vpnPayment.data.vpn_addr, amount: 100, isTextDisabled: true })
         }

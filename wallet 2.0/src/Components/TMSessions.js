@@ -121,6 +121,13 @@ class TMSessions extends Component {
                                 {lang[language].ReceivedData} :  <span style={sessionStyles.textStyle}>
                                     {this.getPaymentBytes(sessionData.usage.download)}</span>
                             </div>
+                            {
+                                sessionData.amount ?
+                                    <div style={sessionStyles.headingStyle}>
+                                        {lang[language].Amount} :  <span style={sessionStyles.textStyle}>
+                                            {`${parseInt(sessionData.amount.split('s')[0])/(10**8).toFixed(4)} TSENTs`}</span>
+                                    </div> : ''
+                            }
                             <div style={sessionStyles.headingStyle}>
                                 {lang[language].Duration} :  <span style={sessionStyles.textStyle}>{(Date.parse(new Date(sessionData.endedOn)) -
                                     Date.parse(new Date(sessionData.startedOn))) / 1000} secs</span>

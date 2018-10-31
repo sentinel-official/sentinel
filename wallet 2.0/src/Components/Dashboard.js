@@ -8,6 +8,7 @@ import { getVPNUsageData } from "../Utils/utils";
 import { getVPNConnectedData } from '../Utils/VpnConfig';
 import { setTestNet, setWalletType } from '../Actions/header.action';
 import { setActiveVpn, setVpnType, setVpnStatus } from './../Actions/vpnlist.action';
+import { getKeys, setTMComponent, getTendermintAccount, setTMAccount } from './../Actions/tendermint.action';
 import { calculateUsage, getStartValues, socksVpnUsage } from '../Actions/calculateUsage';
 import { dashboardStyles } from '../Assets/dashboard.styles';
 import { connect } from 'react-redux';
@@ -48,6 +49,31 @@ class Dashboard extends Component {
                 getStartValues();
             }
         })
+        this.props.getKeys().then(res => {
+            if (res.payload.length !== 0) {
+                getTendermintAccount((name) => {
+                    if (name) {
+                        let mainAccount = res.payload.find(obj => obj.name === name)
+                        if (mainAccount) {
+                            this.props.setTMAccount(mainAccount);
+                            this.props.setTMComponent('dashboard');
+                        }
+                        else {
+                            console.log("Account...", mainAccount, name)
+                            this.props.setTMComponent('home');
+                        }
+                    }
+                    else {
+                        console.log("No Account in TMConfig..", name)
+                        this.props.setTMComponent('home');
+                    }
+                });
+            }
+            else {
+                console.log("No Keys")
+                this.props.setTMComponent('home');
+            }
+        });
     }
     render() {
         if (this.props.vpnStatus && !UsageInterval) {
@@ -107,7 +133,10 @@ function mapDispatchToActions(dispatch) {
         setWalletType,
         setVpnStatus,
         setVpnType,
-        socksVpnUsage
+        socksVpnUsage,
+        getKeys,
+        setTMComponent,
+        setTMAccount
     }, dispatch)
 }
 

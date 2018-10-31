@@ -13,6 +13,9 @@ import { accountStyles } from '../Assets/tmaccount.styles';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
 import OpenvpnAlert from './OpenvpnAlert';
+import { setCurrentTab } from '../Actions/sidebar.action';
+import lang from '../Constants/language';
+
 
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -117,7 +120,11 @@ class TMTransfer extends Component {
                                             this.props.setActiveVpn(vpn_data);
                                             localStorage.setItem('lockedAmount', 100);
                                             this.props.setVpnStatus(true);
-                                            this.setState({ sending: false, toAddress: '', keyPassword: '', amount: '', openSnack: true, snackMessage: 'VPN Connected' });
+                                            this.setState({
+                                                sending: false, toAddress: '', keyPassword: '', amount: '',
+                                                openSnack: true, snackMessage: 'VPN Connected'
+                                            });
+                                            this.props.setCurrentTab('receive');
                                         }
                                     })
                                 }
@@ -163,19 +170,20 @@ class TMTransfer extends Component {
 
     render() {
         const { classes } = this.props;
+        let language = this.props.lang;
         return (
-            <div style={accountStyles.formStyle}>
+            <div style={accountStyles.sendFormStyle}>
                 <div style={createAccountStyle.secondDivStyle}
                     onKeyPress={(ev) => { if (ev.key === 'Enter') this.sendTransaction() }}>
-                    <p style={createAccountStyle.headingStyle}>To Address</p>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].SendTo}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={this.state.isTextDisabled}
                         value={this.state.toAddress} onChange={(e) => { this.setState({ toAddress: e.target.value }) }}
                     />
-                    <p style={createAccountStyle.headingStyle}>Amount</p>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].Amount}</p>
                     <CustomTextField type={'number'} placeholder={''} disabled={this.state.isTextDisabled}
                         value={this.state.amount} onChange={(e) => { this.setState({ amount: e.target.value }) }}
                     />
-                    <p style={createAccountStyle.headingStyle}>Account Password</p>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].Password}</p>
                     <CustomTextField type={'password'} placeholder={''} disabled={false}
                         value={this.state.keyPassword} onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
                     />
@@ -185,9 +193,10 @@ class TMTransfer extends Component {
                         disabled={this.state.sending}
                         onClick={() => { this.sendTransaction() }}
                         className={classes.button} style={createAccountStyle.buttonStyle}>
-                        {this.state.sending ? 'Sending...' : 'Send'}
+                        {this.state.sending ? 'Sending...' : lang[language].Send}
                     </Button>
                 </div>
+
                 <Snackbar
                     open={this.state.openSnack}
                     autoHideDuration={4000}
@@ -225,7 +234,8 @@ function mapDispatchToActions(dispatch) {
         payVPNSession,
         getSessionInfo,
         setVpnStatus,
-        setActiveVpn
+        setActiveVpn,
+        setCurrentTab
     }, dispatch)
 }
 

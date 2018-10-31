@@ -6,11 +6,24 @@ const accountStyles = {
         textAlign: 'center',
 
     },
+    formVpnStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 430 // changed from 474
+    },
     formStyle: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 520 // changed from 474
+        height: 380 // changed from 474
+    },
+
+    sendFormStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+       marginTop:70, // changed from 474
     },
     titleStyle: {
         color: '#3f3f94',

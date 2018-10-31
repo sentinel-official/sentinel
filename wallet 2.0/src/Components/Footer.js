@@ -30,7 +30,7 @@ let downloadData = 0;
 class Footer extends Component {
 
     componentWillMount = () => {
-        console.log("in online ", isOnline);
+        console.log("in online ", isOnline());
     }
     constructor(props) {
         super(props);
@@ -164,7 +164,7 @@ class Footer extends Component {
                         <Col xs={3} style={footerStyles.firstColumn}>
                             <p style={footerStyles.testLabelStyle}>
                                 {
-                                    isOnline ?
+                                    isOnline() ?
                                     this.props.isTm ?
                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>Tendermint Test Net</span><span style={footerStyles.activated}>Activated</span> </span>:
                                      this.props.isTest ? 

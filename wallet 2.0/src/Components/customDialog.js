@@ -290,7 +290,7 @@ class SimpleDialogDemo extends React.Component {
     handleListItemClick = (vpn_addr) => {
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
-            this.props.setCurrentTab('transfer');
+            this.props.setCurrentTab('send');
         }
         else {
             this.setState({ isLoading: true });

@@ -6,3 +6,9 @@
 .iconStyle svg {
     vertical-align: top !important;
 }
+.headingStyle{
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    font-family: inherit
+   
+}

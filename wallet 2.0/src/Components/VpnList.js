@@ -80,7 +80,11 @@ class VpnList extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({ vpnType: nextProps.vpnType })
+        if (nextProps.walletType != this.props.walletType) {
+            this.props.getVpnList(nextProps.vpnType, nextProps.isTM);
+        }
     }
+
     getVPNs = () => {
         this.props.getVpnList(this.props.vpnType, this.props.isTM);
     };
@@ -252,7 +256,7 @@ class VpnList extends Component {
                         </RadioGroup>
                     </FormControl>
 
-                     <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15,marginRight:10, outline: 'none' }}>
+                    <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15, marginRight: 10, outline: 'none' }}>
                         <RefreshIcon />
                     </IconButton>
 

@@ -186,7 +186,7 @@ class Sidebar extends Component {
                         style={sidebarStyles.outlineNone}
                     >
                         {/* <span onClick = {this.toggleDrawer(false)}><i class="material-icons">keyboard_backspace</i></span> */}
-                        <IconButton aria-label="Back" onClick={this.toggleDrawer(false)}>
+                        <IconButton aria-label="Back"  style={sidebarStyles.backArrowStyle} onClick={this.toggleDrawer(false)}>
                             <BackArrowIcon />
                         </IconButton>
                         {/* <span style={sidebarStyles.drawerHeading}>SENTINEL</span> */}
@@ -278,7 +278,10 @@ class Sidebar extends Component {
                                                                     sidebarStyles.activeLabelStyle :
                                                                     sidebarStyles.normalLabelStyle)
                                                         }>
-                                                        <span className="iconStyle"> {this.getIcon(item.icon)}</span> {item.name}
+                                                       <span> <span className="iconStyle"> {this.getIcon(item.icon)}</span>
+                                                                <span 
+                                                                // className="headingStyle"
+                                                                > {item.name} </span></span>
 
                                                     </label>
                                                 </div>
@@ -324,7 +327,7 @@ class Sidebar extends Component {
                             })
                         } */}
 
-                        <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/sentinel.png'} alt="sentinel_logo"
+                        <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/Sentinel.png'} alt="sentinel_logo"
                             style={{ width: 139, paddingRight: 5, marginTop: -2 }} /></span>
                     </div>
                 </Drawer>

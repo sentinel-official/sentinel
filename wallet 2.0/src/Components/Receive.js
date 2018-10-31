@@ -59,6 +59,7 @@ class Receive extends Component {
         let language = this.props.language;
         return (<MuiThemeProvider>
             <div>
+            <div style={receiveStyles.getTokenButtonStyle}>
                 <Button
                     onClick={this.getFree.bind(this)}
                     disabled={!this.props.isTest}
@@ -68,6 +69,7 @@ class Receive extends Component {
                         receiveStyles.flatButtonStyleOffTest
                     }
                 >{lang[language].GetTokens}</Button>
+                </div>
                 <Grid style={receiveStyles.w_100}>
                     <Row>
                         <Col>

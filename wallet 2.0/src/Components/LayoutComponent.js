@@ -25,13 +25,14 @@ class LayoutComponent extends Component {
 
     render() {
         let component = this.props.currentTab;
-        if (component !== 'transfer' && this.props.isTM) {
+        let { isTm, isTest } = this.props;
+        if (component !== 'send' && isTm) {
             this.props.payVPNTM({ 'isPayment': false })
         }
         switch (component) {
             case 'history':
                 {
-                    return <TxnHistory />;
+                    return isTm ? <TMTransactionsHistory /> : <TxnHistory />;
                 }
             case 'vpnList':
                 {
@@ -39,13 +40,13 @@ class LayoutComponent extends Component {
                 }
             case 'receive':
                 {
-                    return <Receive />
+                    return isTm ? <TenderMint /> : <Receive />
                 }
             case 'vpnHistory':
                 {
                     return (
                         <div style={vpnhistoryStyles.contianer}>
-                            <VPNHistory />
+                            {isTm ? <TMSessions /> : <VPNHistory />}
                         </div>
                     )
                 }
@@ -61,21 +62,9 @@ class LayoutComponent extends Component {
                 {
                     return <TenderMint />
                 }
-            case 'transfer':
-                {
-                    return <TMTransfer />
-                }
-            case 'tmTxHistory':
-                {
-                    return <TMTransactionsHistory />
-                }
-            case 'tmVpnHistory':
-                {
-                    return <TMSessions />
-                }
             default:
                 {
-                    return <div><SendComponent /></div>
+                    return isTm ? <TMTransfer /> : <SendComponent />
                 }
         }
     }
@@ -84,7 +73,8 @@ class LayoutComponent extends Component {
 function mapStateToProps(state) {
     return {
         currentTab: state.setCurrentTab,
-        isTM: state.setTendermint,
+        isTm: state.setTendermint,
+        isTest: state.setTestNet
     }
 }
 

@@ -96,17 +96,17 @@ module.exports = {
     TMmenuItems: [
         {
             'name': 'ACCOUNT', // // should point to Account tab page
-            'value': 'tmint',
+            'value': 'receive',
             'icon': 'receiveIcon'
         },
         {
             'name': 'TRANSFER', // should point to Transfer tab page
-            'value': 'transfer',
+            'value': 'send',
             'icon': 'sendIcon'
         },
         {
             'name': 'TX HISTORY',
-            'value': 'tmTxHistory',
+            'value': 'history',
             'icon': 'historyIcon'
         },
         {
@@ -117,7 +117,7 @@ module.exports = {
 
         {
             'name': 'VPN HISTORY',
-            'value': 'tmVpnHistory',
+            'value': 'vpnHistory',
             'icon': 'vpnHisIcon'
         },
 
@@ -133,9 +133,9 @@ module.exports = {
         'tmint'
     ],
     disabledItemsTM: [
-        'tmTxHistory',
-        'transfer',
+        'history',
+        'send',
         'vpnList',
-        'tmVpnHistory'
+        'vpnHistory'
     ]
 };

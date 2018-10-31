@@ -79,7 +79,8 @@ const sidebarStyles = {
     },
     collapseType:{
         fontWeight: 'bold',
-        fontFamily: 'Montserrat'
+        fontFamily: 'Montserrat',
+        fontSize:16,
 
     },
     drawerHeading: {
@@ -101,8 +102,12 @@ const sidebarStyles = {
         height: '100%'
     },
     giveSpace:{
-        marginBottom:10
-    }
+        marginBottom:12
+    },
+    backArrowStyle:{
+        // marginTop:25,
+    },
+   
 }
 
 module.exports = {

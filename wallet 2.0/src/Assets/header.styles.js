@@ -4,7 +4,9 @@ const headerStyles = {
         height: 70,
         // background: 'linear-gradient(to right,#2f3245 60%,#3d425c 40%)'
         // background: '#202325',
-        background: 'radial-gradient(circle at 49.41% 1.55%,#3d004c,transparent 100%),radial-gradient(circle at 47.95% 97.06%,#09318c,transparent 100%),radial-gradient(circle at 50% 50%,#04091a,#04091a 100%) no-repeat 50%',
+        // background: 'radial-gradient(circle at 49.41% 1.55%,#3d004c,transparent 100%),radial-gradient(circle at 47.95% 97.06%,#09318c,transparent 100%),radial-gradient(circle at 50% 50%,#04091a,#04091a 100%) no-repeat 50%',
+
+        backgroundImage: 'linear-gradient(-90deg, #023B66, #241E4A)',
 
     },
     firstRowStyle: {
@@ -123,7 +125,7 @@ const headerStyles = {
         color: '#ddd'
     },
     dropDownStyle: {
-        color: 'white',
+        color: 'white ',
         fontSize: 14,
         fontWeight: 600,
         ':before': {

@@ -25,33 +25,33 @@ class TenderMint extends Component {
     //     this.props.payVPNTM({ 'isPayment': false })
     // };
 
-    componentWillMount = () => {
-        this.props.getKeys().then(res => {
-            if (res.payload.length !== 0) {
-                getTendermintAccount((name) => {
-                    if (name) {
-                        let mainAccount = res.payload.find(obj => obj.name === name)
-                        if (mainAccount) {
-                            this.props.setTMAccount(mainAccount);
-                            this.props.setTMComponent('dashboard');
-                        }
-                        else {
-                            console.log("Account...", mainAccount, name)
-                            this.props.setTMComponent('home');
-                        }
-                    }
-                    else {
-                        console.log("No Account in TMConfig..", name)
-                        this.props.setTMComponent('home');
-                    }
-                });
-            }
-            else {
-                console.log("No Keys")
-                this.props.setTMComponent('home');
-            }
-        });
-    }
+    // componentWillMount = () => {
+    //     this.props.getKeys().then(res => {
+    //         if (res.payload.length !== 0) {
+    //             getTendermintAccount((name) => {
+    //                 if (name) {
+    //                     let mainAccount = res.payload.find(obj => obj.name === name)
+    //                     if (mainAccount) {
+    //                         this.props.setTMAccount(mainAccount);
+    //                         this.props.setTMComponent('dashboard');
+    //                     }
+    //                     else {
+    //                         console.log("Account...", mainAccount, name)
+    //                         this.props.setTMComponent('home');
+    //                     }
+    //                 }
+    //                 else {
+    //                     console.log("No Account in TMConfig..", name)
+    //                     this.props.setTMComponent('home');
+    //                 }
+    //             });
+    //         }
+    //         else {
+    //             console.log("No Keys")
+    //             this.props.setTMComponent('home');
+    //         }
+    //     });
+    // }
 
     // componentWillReceiveProps = (nextProps) => {
     //     if (nextProps.vpnPayment.isPayment) {

@@ -1,5 +1,5 @@
 div.dropDownStyle{
-    color:#FFF;
+    color:#FFF !important;
     font-size: 14px;
     font-weight: 500;
     margin-top: 10px;
@@ -28,7 +28,7 @@ div.disabledDropDownStyle{
     
 }
 div.disabledDropDownStyle{
-    color: #FFF;
+    color: #FFF !important;
     cursor: no-drop;
 }
 div.disabledDropDownStyle div > div {

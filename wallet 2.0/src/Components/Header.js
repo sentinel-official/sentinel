@@ -60,15 +60,20 @@ class Header extends Component {
 
         if (value) {
             this.props.setTendermint(true);
-            this.props.setCurrentTab('tmint');
+            this.props.setCurrentTab(currentTab);
             this.setState({
                 walletType: 'TENDERMINT'
             })
-
+            if (this.props.tmAccountDetails) {
+                this.props.getTMBalance(this.props.tmAccountDetails.address);
+            }
         }
         if (!value) {
             this.props.setTendermint(false);
-            this.props.setCurrentTab('send');
+            if (disabledItemsMain.includes(currentTab))
+                this.props.setCurrentTab('send');
+            else
+                this.props.setCurrentTab(currentTab);
             this.setState({
                 walletType: 'ERC20'
             })
@@ -76,7 +81,7 @@ class Header extends Component {
             this.props.getSentBalance(this.props.walletAddress);
         }
         if ((value && disabledItemsTest.includes(currentTab))) {
-            this.props.setCurrentTab('tmint');
+            this.props.setCurrentTab('receive');
         }
 
         //     if ((!value && disabledItemsMain.includes(currentTab))) {
@@ -100,10 +105,13 @@ class Header extends Component {
         this.props.setWalletType(value)
         if (value !== 'ERC') {
             this.props.setTendermint(true);
-            this.props.setCurrentTab('tmint');
+            this.props.setCurrentTab(currentTab);
             this.setState({
                 walletType: 'TENDERMINT'
             })
+            if (this.props.tmAccountDetails) {
+                this.props.getTMBalance(this.props.tmAccountDetails.address);
+            }
         }
 
         // if (value) {
@@ -113,7 +121,7 @@ class Header extends Component {
             this.props.setTendermint(false);
             this.props.getETHBalance(this.props.walletAddress);
             this.props.getSentBalance(this.props.walletAddress);
-            this.props.setCurrentTab('send');
+            this.props.setCurrentTab(currentTab);
             this.setState({
                 walletType: 'ERC20'
             })

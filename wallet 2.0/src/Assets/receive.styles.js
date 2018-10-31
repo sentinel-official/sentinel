@@ -1,6 +1,7 @@
 const receiveStyles = {
     w_100: {
-        width: '100%'
+        width: '100%',
+        marginTop:-70
     },
     flatButtonStyle: { 
         paddingLeft: 10, 
@@ -12,35 +13,41 @@ const receiveStyles = {
     flatButtonStyleOnTest: {
         // backgroundColor:  '#2f3245',
         background: 'linear-gradient(#f6c288,#e8aa6e)',
-        position: 'absolute',  marginTop: 45, left:450,
+        position: 'static',  marginTop: 45, 
+        // left:450,
         color:'white'
     },
     flatButtonStyleOffTest: {
         backgroundColor:  'rgba(47, 50, 69, 0.34)',
-        position: 'absolute',  marginTop: 45, left:450,
+        position: 'static',  marginTop: 45, 
+        // left:450,
         color:'white'
     },
 
     tmFlatButtonStyleOffTest: {
         backgroundColor:  'rgba(47, 50, 69, 0.34)',
-        position: 'absolute',  marginTop: 45, left:450,
+        position: 'static',  marginTop: 45,
+        //  left:450,
         color:'white'
     },
 
     tmFlatButtonStyleOnTest: {
         background: 'linear-gradient(#f6c288,#e8aa6e)',
-        position: 'absolute',  marginTop: 45, left:450,
+        position: 'static',  marginTop: 45,
+        //  left:450,
         color:'white'
     },
     
     vpnFlatButtonStyleOnTest: {
         background: 'linear-gradient(#f6c288,#e8aa6e)',
-        position: 'absolute',  marginTop: 30, left:450,
+        position: 'static',  marginTop: 30, 
+        // left:450,
         color:'white'
     },
     vpnFlatButtonStyleOffTest: {
         backgroundColor:  'rgba(47, 50, 69, 0.34)',
-        position: 'absolute',  marginTop: 30, left:450,
+        position: 'static',  marginTop: 30,
+        //  left:450,
         color:'white'
     },
 
@@ -72,6 +79,9 @@ const receiveStyles = {
         marginLeft: 5,
         marginBottom:-3,
 
+    },
+    getTokenButtonStyle:{
+       textAlign:'center'
     },
     m_b_2: { marginBottom: '2%' }
 }

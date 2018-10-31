@@ -85,10 +85,7 @@ class Receive extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-
-                        
-
+                        <Col>                       
                             <div style={receiveStyles.m_l_265}>
                                 <label style={receiveStyles.c_f_w}>
                                 {this.state.local_address}

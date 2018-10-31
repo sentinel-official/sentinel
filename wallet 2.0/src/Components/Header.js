@@ -60,12 +60,15 @@ class Header extends Component {
 
         if (value) {
             this.props.setTendermint(true);
-            this.props.setCurrentTab(currentTab);
             this.setState({
                 walletType: 'TENDERMINT'
             })
             if (this.props.tmAccountDetails) {
                 this.props.getTMBalance(this.props.tmAccountDetails.address);
+                this.props.setCurrentTab(currentTab);
+            }
+            else {
+                this.props.setCurrentTab('receive');
             }
         }
         if (!value) {
@@ -111,7 +114,7 @@ class Header extends Component {
                 this.props.getTMBalance(this.props.tmAccountDetails.address);
                 this.props.setCurrentTab(currentTab);
             }
-            else{
+            else {
                 this.props.setCurrentTab('receive');
             }
         }

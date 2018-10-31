@@ -389,8 +389,8 @@ class SendComponent extends React.Component {
                       defaultValue={this.state.gwei}
                       component='div'
                       className={classes.slider}
-                      min={1.1}
-                      max={100}
+                      min={1}
+                      max={150}
                       value={this.state.gwei}
                       classes={
                         {

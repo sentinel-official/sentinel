@@ -67,7 +67,7 @@ class TxnHistory extends Component {
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={data.timeStamp} to={data.to}
                                 gas={`${parseInt(data.gasPrice) / (10 ** 9)} GWEI`} from={data.from} unit={'ETHS'}
-                                amount={parseInt(data.value) / (10 ** 18)} status={'Success'} tx={data.hash} />
+                                amount={parseInt(data.value) / (10 ** 18)} status={data.isError==='1'?'Failed':'Success'} tx={data.hash} />
                         </div>
                     )
                 })

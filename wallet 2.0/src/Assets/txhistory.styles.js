@@ -17,15 +17,15 @@ const historyStyles = {
         paddingLeft: '45px',
         display: 'flex'
     },
-    
+
     noTxYet: {
         display: 'flex',
         justifyContent: 'center',
         paddingTop: '20%',
-        fontSize:'25px',
+        fontSize: '25px',
         color: '#c3c3c3'
-    }, 
-    
+    },
+
     wholeDiv: {
         margin: 10
     },
@@ -60,7 +60,16 @@ const historyStyles = {
         fontFamily: 'Montserrat, Regular',
         fontWeight: 'normal',
         fontSize: 13
-    }
+    },
+    clipBoard: {
+        height: 18,
+        width: 15,
+        color: '#5ca1e8',
+        cursor: 'pointer',
+        marginTop: 3,
+        marginLeft: 5,
+        position: 'absolute'
+    },
 }
 
 module.exports = {

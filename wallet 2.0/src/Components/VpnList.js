@@ -289,6 +289,7 @@ function mapStateToProps(state) {
         vpnList: state.getVpnList,
         isTM: state.setTendermint,
         networkType: state.networkChange,
+        walletType:state.getWalletType
     }
 }
 

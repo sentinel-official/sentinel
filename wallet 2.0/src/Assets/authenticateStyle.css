@@ -1,0 +1,33 @@
+
+.dialogueStyle > div:nth-child(2){
+    background:rgba(255, 255, 255, 0.18);
+}
+.keystore > div:nth-child(1) h2 {
+    color: #fff !important;
+}
+.dialogContentStyle > p > div:nth-child(1){
+    color: white !important;
+    font-size: 14px !important;
+}
+.dialogContentStyle > p > div input{
+    color: #efb77c !important;
+    font-size: 18px !important;
+}
+::placeholder{
+    color: white !important;
+   
+}
+
+.dialogContentStyle > p > div:nth-child(1) > hr{
+    border-top: none rgb(224, 224, 224);
+    border-left: none rgb(224, 224, 224);
+    border-right: none rgb(224, 224, 224);
+    border-bottom: 2.5px solid #efb77c !important;
+}
+.dialogContentStyle > p > div:nth-child(2) > hr{
+  
+    border-top: none 2.5px solid #efb77c !important;
+    border-left: none 2.5px solid #efb77c !important;
+    border-right: none 2.5px solid #efb77c !important;
+    border-bottom: 2.5px solid #efb77c !important ;
+}

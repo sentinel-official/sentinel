@@ -20,9 +20,9 @@ const { ipcRenderer } = window.require('electron');
 
 const styles = theme => ({
     progress: {
-      margin: theme.spacing.unit * 2,
+        margin: theme.spacing.unit * 2,
     },
-  });
+});
 
 
 class App extends Component {
@@ -49,15 +49,17 @@ class App extends Component {
                 this.props.setComponent('error')
             }
         });
-        // Read keystore file
-        if (!isErr) {
-            readFile(KEYSTORE_FILE, function (err) {
-                setTimeout(function () {
-                    if (err) that.props.setComponent('home');
-                    else that.props.setComponent('authenticate');
-                }, 3000);
-            })
-        }
+        setTimeout(() => {
+            // Read keystore file
+            if (!isErr) {
+                readFile(KEYSTORE_FILE, function (err) {
+                    setTimeout(function () {
+                        if (err) that.props.setComponent('home');
+                        else that.props.setComponent('authenticate');
+                    }, 3000);
+                })
+            }
+        }, 1500);
     };
 
     componentDidMount = () => {

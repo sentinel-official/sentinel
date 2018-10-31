@@ -4,23 +4,12 @@ import { historyStyles } from '../Assets/txhistory.styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import lang from '../Constants/language';
-import { Card, Snackbar, Tooltip } from '@material-ui/core';
-import CopyIcon from '@material-ui/icons/FileCopyOutlined';
-import CopyToClipboard from 'react-copy-to-clipboard';
+import { Card } from '@material-ui/core';
 
 class History extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            openSnack: false,
-            snackMessage: ''
-        }
     }
-
-    handleClose = (event, reason) => {
-        this.setState({ openSnack: false });
-    };
-
     render() {
         let { date, to, from, gas, amount, status, tx, ownWallet, data, unit, language } = this.props;
         return (
@@ -38,17 +27,6 @@ class History extends React.Component {
                     <label style={historyLabel} >{from !== ownWallet ? `${lang[language].From}:` : `${lang[language].To}:`}&nbsp;
                             <span style={historyStyles.recepientStyle}>
                             {from !== ownWallet ? from : to}
-                            <Tooltip title={"Copy address"}>
-                                <CopyToClipboard text={
-                                    from !== ownWallet ? from : to
-                                }
-                                    onCopy={() => this.setState({
-                                        snackMessage: 'Copied Successfully',
-                                        openSnack: true
-                                    })} >
-                                    <CopyIcon style={historyStyles.clipBoard} />
-                                </CopyToClipboard>
-                            </Tooltip>
                         </span></label>
                     {/* <label style={historyLabel}>{`${lang[language].GasPrice}:`}&nbsp;<span style={historyValue}>{gas}</span></label> */}
                 </div>
@@ -61,26 +39,8 @@ class History extends React.Component {
                 <div>
                     {/* <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{amount} {unit}</span></label> */}
                     {/* <label style={historyLabel}>{`${lang[language].Status}:`}&nbsp;<span style={historyLabel}>{status}</span></label> */}
-                    <label style={historyLabel}>Tx:&nbsp;<span style={historyStyles.recepientStyle}>
-                    {tx}
-                    <Tooltip title={"Copy tx address"}>
-                                <CopyToClipboard text={tx}
-                                    onCopy={() => this.setState({
-                                        snackMessage: 'Copied Successfully',
-                                        openSnack: true
-                                    })} >
-                                    <CopyIcon style={historyStyles.clipBoard} />
-                                </CopyToClipboard>
-                            </Tooltip>
-                    </span></label>
-
+                    <label style={historyLabel}>Tx:&nbsp;<span style={historyValue}>{tx}</span></label>
                 </div>
-                <Snackbar
-                    open={this.state.openSnack}
-                    autoHideDuration={4000}
-                    onClose={this.handleClose}
-                    message={this.state.snackMessage}
-                />
             </Card>
         )
     }

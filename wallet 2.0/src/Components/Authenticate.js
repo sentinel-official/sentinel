@@ -12,6 +12,7 @@ import { Snackbar } from '@material-ui/core';
 import {TextField} from 'material-ui';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import './../Assets/authenticateStyle.css'
 let lang = require('./../Constants/language');
 
 class Authenticate extends Component {
@@ -82,10 +83,11 @@ class Authenticate extends Component {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                         modal={true}
+                        className='dialogueStyle'
                     >
-                    <div style={authenticateStyles.w_600}> 
+                    <div style={authenticateStyles.w_600} className="keystore"> 
                         <DialogTitle style={authenticateStyles.f_s_16} id="alert-dialog-title">{lang[language].KeystoreLogin}</DialogTitle>
-                        <DialogContent style={authenticateStyles.w_600}>
+                        <DialogContent style={authenticateStyles.w_600} className="dialogContentStyle">
                             <DialogContentText id="alert-dialog-description">
                                 <TextField
                                     autoFocus={true}

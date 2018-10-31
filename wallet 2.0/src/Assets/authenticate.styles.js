@@ -277,19 +277,25 @@ const createPagestyles = {
 
 const authenticateStyles = {
     w_600:{width: 600 ,    
+        // background:'rgba(255, 255, 255, 0.18)'
         //  padding: '0 24px 10px 24px'
         },
-    f_s_16: { fontSize: 16 },
-    f_s_14: { fontSize: 14 },
+    f_s_16: { fontSize: 16 , color:'#fff'},
+    f_s_14: { fontSize: 14, color:'#efb77c' },
     textFieldCreate: {
         width: '100%',
         // paddingLeft: '5%',
+        color: '#f0ad4e',
         height: 40,
         lineHeight: '18px'
     },
     backgroundStyle:{
         background: 'radial-gradient(circle at 49.41% 1.55%,#3d004c,transparent 100%),radial-gradient(circle at 47.95% 97.06%,#09318c,transparent 100%),radial-gradient(circle at 50% 50%,#04091a,#04091a 100%) no-repeat 50%',
     },
+    dialogueStyle:{
+            backgroundColor:'#ffffff30'
+    },
+   
     closeButton: {
         // border: '1px solid #00bcd4',
         borderRadius: 4
@@ -298,7 +304,7 @@ const authenticateStyles = {
         // border: '1px solid #00bcd4',
         borderRadius: 4,
         margin: '0px 20px 0px 10px',
-        background: '#0e5298',
+        background: '#31708f', //'#0e5298',
         color: '#fff',
     },
     snackBarStyle: {

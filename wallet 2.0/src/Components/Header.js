@@ -98,19 +98,21 @@ class Header extends Component {
     };
 
     tendermintChange = () => event => {
-
         console.log("dropdown value ", event.target.value);
         let value = event.target.value;
         let currentTab = this.props.currentTab;
         this.props.setWalletType(value)
         if (value !== 'ERC') {
             this.props.setTendermint(true);
-            this.props.setCurrentTab(currentTab);
             this.setState({
                 walletType: 'TENDERMINT'
             })
             if (this.props.tmAccountDetails) {
                 this.props.getTMBalance(this.props.tmAccountDetails.address);
+                this.props.setCurrentTab(currentTab);
+            }
+            else{
+                this.props.setCurrentTab('receive');
             }
         }
 

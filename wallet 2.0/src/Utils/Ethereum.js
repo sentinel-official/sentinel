@@ -77,8 +77,6 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
         var tx = new EthereumTx(txParams);
         tx.sign(privateKey);
         var serializedTx = '0x' + tx.serialize().toString('hex');
-        console.log('privatekey', privateKey.toString('hex'));
-        console.log('serial', serializedTx);
         if (serializedTx) {
             cb(null, serializedTx)
         } else {

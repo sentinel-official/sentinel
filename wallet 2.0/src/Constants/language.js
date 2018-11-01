@@ -670,7 +670,7 @@ let lang = {
         'ErrOccured': 'Error Occured'
     },
 
-    chi: {
+    ch: {
         'History': '历史记录',
         'EthTransactions': 'ETH交易',
         'SentTransactions': 'SENT 交易',

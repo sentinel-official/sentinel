@@ -21,7 +21,7 @@ class History extends React.Component {
                     </label>
 
                     <label style={statusLabel}>{`${lang[language].Status}:`}&nbsp;
-                    <span style={status === 'Success' ? historyStyles.inStyle : historyStyles.outStyle}>{status}</span></label>
+                    <span style={status === 'Success' ? historyStyles.inStyle : historyStyles.outStyle}>{lang[language][status]}</span></label>
                 </div>
                 <div>
                     <label style={historyLabel} >{from !== ownWallet ? `${lang[language].From}:` : `${lang[language].To}:`}&nbsp;

@@ -18,6 +18,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import BackArrowIcon from '@material-ui/icons/ArrowBackOutlined';
 import { compose } from 'recompose';
+import lang from '../Constants/language';
+
 
 
 import List from '@material-ui/core/List';
@@ -128,7 +130,8 @@ class Sidebar extends Component {
 
 
     render() {
-        let { classes, isTest, isTenderMint, component } = this.props;
+        let { classes, isTest, isTenderMint, component,language } = this.props;
+    
         let currentTab = this.props.currentTab;
         return (
             <div style={sidebarStyles.totalDiv}>
@@ -155,7 +158,7 @@ class Sidebar extends Component {
                                     onMouseEnter={this.toggleDrawer(true)}
                                 // onMouseOut = {this.toggleDrawer(false)}
                                 >
-                                    <Tooltip title={item.name} placement="right">
+                                    <Tooltip title={lang[language][item.name]} placement="right">
                                         <label
                                             style={
                                                 isDisabled
@@ -202,7 +205,7 @@ class Sidebar extends Component {
                                     <img src={'../src/Images/tendermint-disable.png'} style={{ width: 20 }} />
                                 }
                             </ListItemIcon>
-                            <ListItemText inset primary="TENDERMINT" style={sidebarStyles.collapseType} />
+                            <ListItemText inset primary={lang[language].TM} style={sidebarStyles.collapseType} />
                             {this.state.openTmd ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
 
@@ -230,7 +233,7 @@ class Sidebar extends Component {
                                                                     sidebarStyles.activeLabelStyle :
                                                                     sidebarStyles.normalLabelStyle)
                                                         }>
-                                                        <span className="iconStyle"> {this.getIcon(item.icon)}</span> {item.name}
+                                                        <span className="iconStyle"> {this.getIcon(item.icon)}</span> {lang[language][item.name]}
 
                                                     </label>
                                                 </div>
@@ -250,7 +253,7 @@ class Sidebar extends Component {
 
 
                             </ListItemIcon>
-                            <ListItemText inset primary="ETHEREUM" style={sidebarStyles.collapseType} />
+                            <ListItemText inset primary={lang[language].ETH} style={sidebarStyles.collapseType} />
                             {this.state.openEth ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
 
@@ -281,7 +284,7 @@ class Sidebar extends Component {
                                                        <span> <span className="iconStyle"> {this.getIcon(item.icon)}</span>
                                                                 <span 
                                                                 // className="headingStyle"
-                                                                > {item.name} </span></span>
+                                                                > {lang[language][item.name]} </span></span>
 
                                                     </label>
                                                 </div>
@@ -342,7 +345,7 @@ Sidebar.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage,
+        language: state.setLanguage,
         isTest: state.setTestNet,
         currentTab: state.setCurrentTab,
         isTenderMint: state.setTendermint,

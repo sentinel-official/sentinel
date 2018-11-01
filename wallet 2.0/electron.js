@@ -365,7 +365,7 @@ app.on('ready', function () {
           m.items[1].submenu.items[2].checked = false;
           m.items[1].submenu.items[3].checked = false;
           m.items[1].submenu.items[4].checked = true;
-          mainWindow.window.webContents.send('lang', 'ch');
+          mainWindow.window.webContents.send('lang', 'zh');
         }
       },
     ]

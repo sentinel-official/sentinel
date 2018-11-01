@@ -246,7 +246,7 @@ class Header extends Component {
                                             <Row>
                                                 <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestEth : lang[language].Eth} </Col>
                                                 <Col xs={1}> : </Col>
-                                                <Col xs={4} style={headerStyles.balanceText}>{this.props.ethBalance === lang[language].Loading
+                                                <Col xs={4} style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading...'
                                                     ? this.props.ethBalance :
                                                     parseFloat(this.props.ethBalance).toFixed(8)
                                                 }</Col>

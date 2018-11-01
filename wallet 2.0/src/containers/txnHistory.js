@@ -66,8 +66,8 @@ class TxnHistory extends Component {
                     return (
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={data.timeStamp} to={data.to}
-                                gas={`${parseInt(data.gasPrice) / (10 ** 9)} GWEI`} from={data.from} unit={'ETHS'}
-                                amount={parseInt(data.value) / (10 ** 18)} status={data.isError==='1'?'Failed':'Success'} tx={data.hash} />
+                                gas={`${parseInt(data.gasPrice) / (10 ** 9) + lang[language].GWEI}`} from={data.from} unit={lang[language].Eths}
+                                amount={parseInt(data.value) / (10 ** 18)} status={data.isError === '1' ? lang[language].Failed : lang[language].Success} tx={data.hash} />
                         </div>
                     )
                 })
@@ -80,9 +80,9 @@ class TxnHistory extends Component {
                 output = this.props.testSENTHistory.result.map(sentData => {
                     return (
                         <div style={historyStyles.data}>
-                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={'SENTS'}
+                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={lang[language].Sents}
                                 to={`0x${sentData.topics[2].substring(26)}`} from={`0x${sentData.topics[1].substring(26)}`}
-                                gas={`${parseInt(sentData.gasPrice) / (10 ** 9)} GWEI`} amount={(parseInt(sentData.data) / (10 ** 9)).toFixed(3)}
+                                gas={`${parseInt(sentData.gasPrice) / (10 ** 9) + lang[language].GWEI}`} amount={(parseInt(sentData.data) / (10 ** 9)).toFixed(3)}
                                 status={'Success'} tx={sentData.transactionHash} />
                         </div>
                     )
@@ -102,17 +102,17 @@ class TxnHistory extends Component {
                         <div style={historyStyles.margin}>
                             <IconButton
                                 style={historyStyles.outlineNone}
-                                aria-label="Refresh"
+                                aria-label={lang[language].Refresh}
                                 onClick={this.onClickRefresh}>
                                 <RefreshIcon style={historyStyles.outlineNone} />
                             </IconButton>
                         </div>
                         <div style={historyStyles.margin}>
-                            <CustomButton color={'#FFFFFF'} label={'SENT'} active={this.state.isActive}
+                            <CustomButton color={'#FFFFFF'} label={lang[language].Sent} active={this.state.isActive}
                                 onClick={this.testSentHistory} />
                         </div>
                         <div style={historyStyles.margin}>
-                            <CustomButton color={'#F2F2F2'} label={'ETH'} active={!this.state.isActive}
+                            <CustomButton color={'#F2F2F2'} label={lang[language].Eth} active={!this.state.isActive}
                                 onClick={this.testEthHistory} />
                         </div>
                     </div>

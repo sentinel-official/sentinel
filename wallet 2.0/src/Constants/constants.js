@@ -11,13 +11,13 @@ module.exports = {
 
     menuItemsIcons: [
         {
-            'name': 'TENDERMINT',
+            'name': 'TM',
             'value': 'tmint',
             'icon': 'tmintIcon'
         },
 
         {
-            'name': 'ETHEREUM',
+            'name': 'ETH',
             'value': 'eth',
             'icon': 'ethereumIcon'
         },
@@ -49,28 +49,28 @@ module.exports = {
         // initilal 
 
         {
-            'name': 'SEND',
+            'name': 'Send',
             'value': 'send',
             'icon': 'sendIcon'
         },
         {
-            'name': 'RECEIVE',
+            'name': 'Receive',
             'value': 'receive',
             'icon': 'receiveIcon'
         },
         {
-            'name': 'TX HISTORY',
+            'name': 'TxHistory',
             'value': 'history',
             'icon': 'historyIcon'
         },
         {
-            'name': 'VPN LIST',
+            'name': 'VpnList',
             'value': 'vpnList',
             'icon': 'listIcon'
         },
 
         {
-            'name': 'VPN HISTORY',
+            'name': 'VpnHistory',
             'value': 'vpnHistory',
             'icon': 'vpnHisIcon'
         },
@@ -95,28 +95,28 @@ module.exports = {
 
     TMmenuItems: [
         {
-            'name': 'ACCOUNT', // // should point to Account tab page
+            'name': 'Account', // // should point to Account tab page
             'value': 'receive',
             'icon': 'receiveIcon'
         },
         {
-            'name': 'TRANSFER', // should point to Transfer tab page
+            'name': 'Transfer', // should point to Transfer tab page
             'value': 'send',
             'icon': 'sendIcon'
         },
         {
-            'name': 'TX HISTORY',
+            'name': 'TxHistory',
             'value': 'history',
             'icon': 'historyIcon'
         },
         {
-            'name': 'VPN LIST',
+            'name': 'VpnList',
             'value': 'vpnList',
             'icon': 'listIcon'
         },
 
         {
-            'name': 'VPN HISTORY',
+            'name': 'VpnHistory',
             'value': 'vpnHistory',
             'icon': 'vpnHisIcon'
         },

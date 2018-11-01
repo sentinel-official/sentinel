@@ -96,11 +96,11 @@ let lang = {
         'DidNotMatch': 'Password and Confirm Password did not match',
         'KeyPassMatch': 'Keystore and Password does not match',
         'BeCareful': 'Be Careful',
-        'CopyKeys': "Copy your keys to some secured place. Remember we don't store any of your keys in ours databases.We don't maintain a database.",
+        'CopyKeys': "Copy your keys to some secured place. Remember we don't store any of your keys in ours databases. We don't maintain a database.",
         'YourAddress': 'Your Address',
         'PrivateKey': 'Private Key',
         'KeyLocation': 'Your keystore file is stored at',
-        'YesUnderstand': 'Yes, I understood, I copied my keys in secured place',
+        'YesUnderstand': 'Yes, I understood, I copied my keys in a secured place',
         'GoToDash': 'Go to Dashboard',
         'AmountEmpty': 'Amount field is Empty',
         'PasswordEmpty': 'Password field is Empty',
@@ -148,7 +148,6 @@ let lang = {
         'Offline':'You Are Offline',
         "OpenVPN":"OpenVPN",
         'Socks5':"SOCKS5",
-        'Success':'Success',
         'Failed' :'Failed', 
         'Sents':'SENTS',
         'Secs':'secs',
@@ -164,7 +163,18 @@ let lang = {
         'VpnConnedted':'VPN Connected',
         'WentWrong':'Something went wrong',
         'EnterTxHash':"Enter txhash of transaction",
-        'ErrOccured': 'Error Occured'
+        'ErrOccured': 'Error Occured',
+
+        'Algorithm' : 'Algorithm',
+        'Version':'Version',
+        'Rating':'Rating',
+        'Public' : 'Public',
+        'Private' : 'Private',
+        'Selected' :'Selected',
+        'OpenVPNList':'OpenVPN List',
+        'GWEI': 'GWEI',
+        'Eths' : 'ETHS',
+        "Refresh": "Refresh",
        
     },
     ja: {
@@ -317,7 +327,6 @@ let lang = {
         'Offline':'You Are Offline',
         "OpenVPN":"OpenVPN",
         'Socks5':"SOCKS5",
-        'Success':'Success',
         'Failed' :'Failed', 
         'Sents':'SENTS',
         'Secs':'secs',
@@ -334,6 +343,18 @@ let lang = {
         'WentWrong':'Something went wrong',
         'EnterTxHash':"Enter txhash of transaction",
         'ErrOccured': 'Error Occured',
+
+
+        'Algorithm' : 'Algorithm',
+        'Version':'Version',
+        'Rating':'Rating',
+        'Public' : 'Public',
+        'Private' : 'Private',
+        'Selected' :'Selected',
+        'OpenVPNList':'OpenVPN List',
+        'GWEI': 'GWEI',
+        'Eths' : 'ETHS',
+        "Refresh": "Refresh",
     },
     es: {
         'History': 'HISTORIAL',
@@ -484,7 +505,6 @@ let lang = {
         'Offline':'You Are Offline',
         "OpenVPN":"OpenVPN",
         'Socks5':"SOCKS5",
-        'Success':'Success',
         'Failed' :'Failed', 
         'Sents':'SENTS',
         'Secs':'secs',
@@ -501,6 +521,18 @@ let lang = {
         'WentWrong':'Something went wrong',
         'EnterTxHash':"Enter txhash of transaction",
         'ErrOccured': 'Error Occured',
+
+
+        'Algorithm' : 'Algorithm',
+        'Version':'Version',
+        'Rating':'Rating',
+        'Public' : 'Public',
+        'Private' : 'Private',
+        'Selected' :'Selected',
+        'OpenVPNList':'OpenVPN List',
+        'GWEI': 'GWEI',
+        'Eths' : 'ETHS',
+        "Refresh": "Refresh",
     },
     ru: {
         "History": "История",
@@ -651,7 +683,6 @@ let lang = {
         'Offline':'You Are Offline',
         "OpenVPN":"OpenVPN",
         'Socks5':"SOCKS5",
-        'Success':'Success',
         'Failed' :'Failed', 
         'Sents':'SENTS',
         'Secs':'secs',
@@ -667,10 +698,22 @@ let lang = {
         'VpnConnedted':'VPN Connected',
         'WentWrong':'Something went wrong',
         'EnterTxHash':"Enter txhash of transaction",
-        'ErrOccured': 'Error Occured'
+        'ErrOccured': 'Error Occured',
+
+
+        'Algorithm' : 'Algorithm',
+        'Version':'Version',
+        'Rating':'Rating',
+        'Public' : 'Public',
+        'Private' : 'Private',
+        'Selected' :'Selected',
+        'OpenVPNList':'OpenVPN List',
+        'GWEI': 'GWEI',
+        'Eths' : 'ETHS',
+        "Refresh": "Refresh",
     },
 
-    ch: {
+    zh: {
         'History': '历史记录',
         'EthTransactions': 'ETH交易',
         'SentTransactions': 'SENT 交易',
@@ -819,7 +862,6 @@ let lang = {
         'Offline':'You Are Offline',
         "OpenVPN":"OpenVPN",
         'Socks5':"SOCKS5",
-        'Success':'Success',
         'Failed' :'Failed', 
         'Sents':'SENTS',
         'Secs':'secs',
@@ -835,7 +877,19 @@ let lang = {
         'VpnConnedted':'VPN Connected',
         'WentWrong':'Something went wrong',
         'EnterTxHash':"Enter txhash of transaction",
-        'ErrOccured': 'Error Occured'
+        'ErrOccured': 'Error Occured',
+
+
+        'Algorithm' : 'Algorithm',
+        'Version':'Version',
+        'Rating':'Rating',
+        'Public' : 'Public',
+        'Private' : 'Private',
+        'Selected' :'Selected',
+        'OpenVPNList':'OpenVPN List',
+        'GWEI': 'GWEI',
+        'Eths' : 'ETHS',
+        "Refresh": "Refresh",
     },
 }
 

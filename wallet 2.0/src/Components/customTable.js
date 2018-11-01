@@ -62,11 +62,11 @@ class EnhancedTableHead extends React.Component {
             // { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
             { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
             { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
-            { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth} (mbps)` },
-            { id: 'latency', numeric: true, disablePadding: false, label: `${lang[language].Latency} (ms)` },
-            { id: 'enc_method', numeric: false, disablePadding: false, label: 'Algorithm' },
-            { id: 'version', numeric: false, disablePadding: false, label: 'Version' },
-            { id: 'rating', numeric: true, disablePadding: false, label: 'Rating' },
+            { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth + lang[language].Mbps}` },
+            { id: 'latency', numeric: true, disablePadding: false, label: `${lang[language].Latency + lang[language].MS}` },
+            { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
+            { id: 'version', numeric: false, disablePadding: false, label: lang[language].Version },
+            { id: 'rating', numeric: true, disablePadding: false, label: lang[language].Rating },
             { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
         ];
 
@@ -148,7 +148,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-    const { numSelected, classes } = props;
+    const { numSelected, language,classes } = props;
 
     return (
         <Toolbar
@@ -159,11 +159,11 @@ let EnhancedTableToolbar = props => {
             <div className={classes.title}>
                 {numSelected > 0 ? (
                     <Typography color="inherit" variant="subheading">
-                        {numSelected} selected
+                        {numSelected}{lang[language].Selected}
                     </Typography>
                 ) : (
                         <Typography variant="title" id="tableTitle">
-                            OpenVPN List
+                           {lang[language].OpenVPNList} 
                     </Typography>
                     )}
             </div>

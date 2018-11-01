@@ -19,7 +19,7 @@ export function getWalletType(state = 'TM', action) {
 }
 
 
-export function getETHBalance(state = 'Loading', action) {
+export function getETHBalance(state = 'Loading...', action) {
     switch (action.type) {
         case types.GET_ETH_BAL_SUCCESS:
             return action.payload

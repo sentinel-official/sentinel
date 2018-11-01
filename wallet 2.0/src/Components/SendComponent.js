@@ -418,7 +418,7 @@ class SendComponent extends React.Component {
                 <div style={sendComponentStyles.gasTextFieldDiv}>
                   <Input
                     type='password'
-                    placeholder='Enter Keystore Password'
+                    placeholder={lang[language].KeyPass}
                     autoFocus={false}
                     disableUnderline={true}
                     fullWidth={true}

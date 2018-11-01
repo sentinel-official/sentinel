@@ -318,58 +318,58 @@ app.on('ready', function () {
       },
     ]
   },
-  {
-    label: "Language",
-    submenu: [
-      {
-        label: 'English', type: 'checkbox', checked: true, click() {
-          m.items[1].submenu.items[0].checked = true;
-          m.items[1].submenu.items[1].checked = false;
-          m.items[1].submenu.items[2].checked = false;
-          m.items[1].submenu.items[3].checked = false;
-          m.items[1].submenu.items[4].checked = false;
-          mainWindow.window.webContents.send('lang', 'en');
-        }
-      },
-      {
-        label: 'Japanese', type: 'checkbox', checked: false, click() {
-          m.items[1].submenu.items[0].checked = false;
-          m.items[1].submenu.items[1].checked = true;
-          m.items[1].submenu.items[2].checked = false;
-          m.items[1].submenu.items[3].checked = false;
-          m.items[1].submenu.items[4].checked = false;
-          mainWindow.window.webContents.send('lang', 'ja');
-        }
-      }, {
-        label: 'Spanish', type: 'checkbox', checked: false, click() {
-          m.items[1].submenu.items[0].checked = false;
-          m.items[1].submenu.items[1].checked = false;
-          m.items[1].submenu.items[2].checked = true;
-          m.items[1].submenu.items[3].checked = false;
-          m.items[1].submenu.items[4].checked = false;
-          mainWindow.window.webContents.send('lang', 'es');
-        }
-      }, {
-        label: 'Russian', type: 'checkbox', checked: false, click() {
-          m.items[1].submenu.items[0].checked = false;
-          m.items[1].submenu.items[1].checked = false;
-          m.items[1].submenu.items[2].checked = false;
-          m.items[1].submenu.items[3].checked = true;
-          m.items[1].submenu.items[4].checked = false;
-          mainWindow.window.webContents.send('lang', 'ru');
-        }
-      },{
-        label: 'Chinese', type: 'checkbox', checked: false, click() {
-          m.items[1].submenu.items[0].checked = false;
-          m.items[1].submenu.items[1].checked = false;
-          m.items[1].submenu.items[2].checked = false;
-          m.items[1].submenu.items[3].checked = false;
-          m.items[1].submenu.items[4].checked = true;
-          mainWindow.window.webContents.send('lang', 'zh');
-        }
-      },
-    ]
-  }
+  // {
+  //   label: "Language",
+  //   submenu: [
+  //     {
+  //       label: 'English', type: 'checkbox', checked: true, click() {
+  //         m.items[1].submenu.items[0].checked = true;
+  //         m.items[1].submenu.items[1].checked = false;
+  //         m.items[1].submenu.items[2].checked = false;
+  //         m.items[1].submenu.items[3].checked = false;
+  //         m.items[1].submenu.items[4].checked = false;
+  //         mainWindow.window.webContents.send('lang', 'en');
+  //       }
+  //     },
+  //     {
+  //       label: 'Japanese', type: 'checkbox', checked: false, click() {
+  //         m.items[1].submenu.items[0].checked = false;
+  //         m.items[1].submenu.items[1].checked = true;
+  //         m.items[1].submenu.items[2].checked = false;
+  //         m.items[1].submenu.items[3].checked = false;
+  //         m.items[1].submenu.items[4].checked = false;
+  //         mainWindow.window.webContents.send('lang', 'ja');
+  //       }
+  //     }, {
+  //       label: 'Spanish', type: 'checkbox', checked: false, click() {
+  //         m.items[1].submenu.items[0].checked = false;
+  //         m.items[1].submenu.items[1].checked = false;
+  //         m.items[1].submenu.items[2].checked = true;
+  //         m.items[1].submenu.items[3].checked = false;
+  //         m.items[1].submenu.items[4].checked = false;
+  //         mainWindow.window.webContents.send('lang', 'es');
+  //       }
+  //     }, {
+  //       label: 'Russian', type: 'checkbox', checked: false, click() {
+  //         m.items[1].submenu.items[0].checked = false;
+  //         m.items[1].submenu.items[1].checked = false;
+  //         m.items[1].submenu.items[2].checked = false;
+  //         m.items[1].submenu.items[3].checked = true;
+  //         m.items[1].submenu.items[4].checked = false;
+  //         mainWindow.window.webContents.send('lang', 'ru');
+  //       }
+  //     },{
+  //       label: 'Chinese', type: 'checkbox', checked: false, click() {
+  //         m.items[1].submenu.items[0].checked = false;
+  //         m.items[1].submenu.items[1].checked = false;
+  //         m.items[1].submenu.items[2].checked = false;
+  //         m.items[1].submenu.items[3].checked = false;
+  //         m.items[1].submenu.items[4].checked = true;
+  //         mainWindow.window.webContents.send('lang', 'zh');
+  //       }
+  //     },
+  //   ]
+  // }
   ])
   Menu.setApplicationMenu(m)
 })

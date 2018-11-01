@@ -89,9 +89,9 @@ class TMTransfer extends Component {
                         if (response.error) {
                             console.log("Pay VPN Error...", response);
                             if (response.error.data === 'Ciphertext decryption failed')
-                                this.setState({ sending: false, openSnack: true, snackMessage: 'Incorrect Password' });
+                                this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].Incorrect });
                             else
-                                this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
+                                this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].TxFailed });
                         }
                         else {
                             localStorage.setItem('SIGNAME', data.sig_name)
@@ -104,7 +104,7 @@ class TMTransfer extends Component {
                             this.props.getSessionInfo(response.payload.hash).then(sesRes => {
                                 if (sesRes.error) {
                                     console.log("Ses..Error", sesRes.error);
-                                    this.setState({ sending: false, openSnack: true, snackMessage: 'Something went wrong' });
+                                    this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].WentWrong });
                                 }
                                 else {
                                     let data = sesRes.payload;
@@ -122,7 +122,7 @@ class TMTransfer extends Component {
                                             this.props.setVpnStatus(true);
                                             this.setState({
                                                 sending: false, toAddress: '', keyPassword: '', amount: '',
-                                                openSnack: true, snackMessage: 'VPN Connected'
+                                                openSnack: true, snackMessage:lang[this.props.language].VpnConnected 
                                             });
                                             this.props.setCurrentTab('receive');
                                         }
@@ -145,9 +145,9 @@ class TMTransfer extends Component {
             this.props.sendAmount(data, this.state.toAddress).then(response => {
                 if (response.error) {
                     if (response.error.data === 'Ciphertext decryption failed')
-                        this.setState({ sending: false, openSnack: true, snackMessage: 'Incorrect Password' });
+                        this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].IncorrectPwd });
                     else
-                        this.setState({ sending: false, openSnack: true, snackMessage: 'Transaction Failed' });
+                        this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].TxFailed });
                 }
                 else {
                     addTransaction({
@@ -156,7 +156,7 @@ class TMTransfer extends Component {
                         txHash: response.payload.hash
                     })
                     this.setState({
-                        sending: false, openSnack: true, snackMessage: 'Transaction done successfully',
+                        sending: false, openSnack: true, snackMessage:lang[this.props.language].TxSuccess ,
                         toAddress: '', keyPassword: '', amount: '',
                     });
                 }
@@ -193,7 +193,7 @@ class TMTransfer extends Component {
                         disabled={this.state.sending}
                         onClick={() => { this.sendTransaction() }}
                         className={classes.button} style={createAccountStyle.buttonStyle}>
-                        {this.state.sending ? 'Sending...' : lang[language].Send}
+                        {this.state.sending ? lang[language].Sending : lang[language].Send}
                     </Button>
                 </div>
 

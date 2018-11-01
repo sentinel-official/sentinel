@@ -166,15 +166,15 @@ class Footer extends Component {
                                 {
                                     isOnline() ?
                                     this.props.isTm ?
-                                   <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>Tendermint Test Net</span><span style={footerStyles.activated}>Activated</span> </span>:
+                                   <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].TMTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>:
                                      this.props.isTest ? 
                                      
-                                    //  <span ><span style={footerStyles.greenDot}></span>Ethereum Test Net Activated</span>
-                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>Ethereum Test Net</span><span style={footerStyles.activated}>Activated</span> </span>
+                                  
+                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
                                      
                                      :
-                                    // <span><span style={footerStyles.greenDot}></span>Ethereum Main Net Activated</span> 
-                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>Ethereum Main Net</span><span style={footerStyles.activated}>Activated</span> </span>
+                                    
+                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHMainNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
                                     :
                                     <span><span style={footerStyles.redDot}></span>Offline</span> 
                                 }
@@ -231,7 +231,7 @@ class Footer extends Component {
                                 <Col xs={3} style={footerStyles.vpnConnected}>
                                     <Tooltip title={lang[language].Disconnect}>
                                         <Button style={footerStyles.disconnectStyle} onClick={() => { this.disconnect() }}>
-                                          <span style={footerStyles.disconnectText}>  Disconnect </span>
+                                          <span style={footerStyles.disconnectText}>  {lang[language].Disconnect} </span>
                                            <DisconnectIcon style={footerStyles.crossMark} />
                                         </Button>
                                     </Tooltip>

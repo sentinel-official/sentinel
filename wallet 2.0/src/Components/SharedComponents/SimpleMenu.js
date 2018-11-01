@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import lang from '../../../src/Constants/language'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+
 
 
 const styles = theme => ({
@@ -80,7 +85,9 @@ class SimpleListMenu extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { language,classes } = this.props;
+   
+
     if (this.props.isSend) {
       return (
         <div className={classes.root}>
@@ -108,11 +115,11 @@ class SimpleListMenu extends React.Component {
             <img src={'../src/Images/ethereum.svg'} alt="etherem_logo" 
              style={{ width: 15, paddingRight:5 , marginTop: -5 }} />
 
-            ETH</MenuItem>
+            {lang[language].Eth}</MenuItem>
             <MenuItem value={'SENT'}>
             <img src={'../src/Images/logo.svg'} alt="sentinel_logo"   
                            style={{ width: 16, paddingRight:5 , marginTop: -2 }} />
-            SENT</MenuItem>
+            {lang[language].Sent}</MenuItem>
           </Select>
         </div>
       );
@@ -155,4 +162,16 @@ SimpleListMenu.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SimpleListMenu);
+function mapStateToProps(state) {
+  return {
+    language: state.setLanguage,
+   
+  }
+}
+function mapDispatchToActions(dispatch) {
+  return bindActionCreators({
+    
+  }, dispatch)
+}
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToActions)(SimpleListMenu));

@@ -18,6 +18,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import SimpleMenuTestnet from './SharedComponents/SimpleMenuTestnet';
 import Select from '@material-ui/core/Select';
 import SendIcon from '@material-ui/icons/Send';
+import lang from '../Constants/language';
 import '../Assets/headerStyle.css';
 
 let notTMInterval = null;
@@ -101,7 +102,8 @@ class Header extends Component {
     };
 
     tendermintChange = () => event => {
-        console.log("dropdown value ", event.target.value);
+
+        // console.log("dropdown value ", event.target.value);
         let value = event.target.value;
         let currentTab = this.props.currentTab;
         this.props.setWalletType(value)
@@ -139,7 +141,8 @@ class Header extends Component {
     }
 
     render() {
-        let { balance, isTendermint, tmAccountDetails, isTest, walletAddress } = this.props;
+        let { balance, isTendermint, tmAccountDetails,language, isTest, walletAddress } = this.props;
+      
         if (!this.props.isTendermint && !notTMInterval) {
             notTMInterval = setInterval(() => {
                 this.props.getETHBalance(walletAddress);
@@ -176,7 +179,8 @@ class Header extends Component {
                         </Col>
                         <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
-                                <span style={headerStyles.basicWallet}> {this.state.walletType} WALLET ADDRESS </span>
+                                <span style={headerStyles.basicWallet}> 
+                                {this.state.walletType === 'ERC20' ? lang[language].WalletERC : lang[language].WalletTM} {lang[language].WalletAddress} </span>
                             </div>
                             <Row>
                                 <Col xs={8}><span
@@ -184,22 +188,24 @@ class Header extends Component {
                                     style={headerStyles.walletAddress}>
                                     {
                                         isTendermint ?
-                                            (tmAccountDetails ? tmAccountDetails.address : 'Loading...') :
+                                            (tmAccountDetails ? tmAccountDetails.address : lang[language].Loading) :
                                             this.props.walletAddress
 
                                     }</span>
                                 </Col>
                                 <Col xs={4}>
                                     {isTendermint && !tmAccountDetails ? null :
-                                        <Tooltip title={this.state.walletType === 'ERC20' ? "Copy ERC20 Sent Wallet Address" : "Copy Tendermint Wallet Address"}>
-                                            <CopyToClipboard text={
+                                        // <Tooltip title={this.state.walletType === 'ERC20' ? "Copy ERC20 Sent Wallet Address" : "Copy Tendermint Wallet Address"}>
+                                        <Tooltip title={this.state.walletType === 'ERC20' ? lang[language].ERC20WalletCopy :lang[language].TMWalletCopy}>
+
+                                        <CopyToClipboard text={
                                                 isTendermint ?
-                                                    (tmAccountDetails ? tmAccountDetails.address : 'Loading...') :
+                                                    (tmAccountDetails ? tmAccountDetails.address : lang[language].Loading) :
                                                     this.props.walletAddress
 
                                             }
                                                 onCopy={() => this.setState({
-                                                    snackMessage: 'Copied Successfully',
+                                                    snackMessage: lang[language].Copied,
                                                     openSnack: true
                                                 })} >
                                                 <CopyIcon style={headerStyles.clipBoard} />
@@ -215,10 +221,10 @@ class Header extends Component {
                                     < div style={headerStyles.tmBalance} >
 
                                         <Row>
-                                            <Col xs={6} style={headerStyles.balanceHead}> {'TSENT'} </Col>
+                                            <Col xs={6} style={headerStyles.balanceHead}> {lang[language].TSent} </Col>
                                             <Col xs={1}> : </Col>
                                             <Col xs={4} style={headerStyles.balanceText}>
-                                                {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
+                                                {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : lang[language].Loading}
                                                 {token && 'denom' in token ? '' : ''}
                                                 {' '}
 
@@ -231,16 +237,16 @@ class Header extends Component {
                                     <Col xs={this.props.isTest ? 12 : 12}>
                                         <div style={headerStyles.sentBalance}>
                                             <Row>
-                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? 'TEST SENT' : 'SENT'} </Col>
+                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestSent  : lang[language].Sent} </Col>
                                                 <Col xs={1}> : </Col>
                                                 <Col xs={4} style={headerStyles.balanceText}>{this.props.sentBalance}</Col>
                                             </Row>
                                         </div>
                                         <div style={headerStyles.ethBalance}>
                                             <Row>
-                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? 'TEST ETH' : 'ETH'} </Col>
+                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestEth : lang[language].Eth} </Col>
                                                 <Col xs={1}> : </Col>
-                                                <Col xs={4} style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading'
+                                                <Col xs={4} style={headerStyles.balanceText}>{this.props.ethBalance === lang[language].Loading
                                                     ? this.props.ethBalance :
                                                     parseFloat(this.props.ethBalance).toFixed(8)
                                                 }</Col>
@@ -255,7 +261,7 @@ class Header extends Component {
 
                         <Col xs={2} style={headerStyles.alignRight}>
                             <div style={headerStyles.columnStyle}>
-                                <p style={headerStyles.toggleLabelisTest}>TESTNET</p>
+                                <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
                             </div>
                             <div style={headerStyles.toggleStyle}>
                                 <Switch
@@ -269,51 +275,15 @@ class Header extends Component {
                         </Col>
 
 
-                        {/* <Col xs={1} style={headerStyles.alignRight}>
-                            <IconButton
-                                style={{ outline: 'none' }}
-                                aria-label="Account"
-                                aria-owns={this.state.openAccountMenu ? 'menu-list-grow' : null}
-                                aria-haspopup="true"
-                                onClick={this.handleMenuToggle}
-                            >
-                                <AccountIcon style={headerStyles.accountIconColor} />
-                            </IconButton>
-                            <Popper open={this.state.openAccountMenu} transition disablePortal>
-                                {({ TransitionProps, placement }) => (
-                                    <Growcol-xs-1
-                                        {...TransitionProps}
-                                        id="menu-list-grow"
-                                        style={{ transformOrigin: 'center bottom' }}
-                                    >
-                                        <Paper>
-                                            <ClickAwayListener onClickAway={this.handleMenuClose}>
-                                                <MenuList>
-                                                    <MenuItem onClick={this.handleMenuClose}>Create Account</MenuItem>
-                                                </MenuList>
-                                            </ClickAwayListener>
-                                        </Paper>
-                                    </Grow>
-                                )}
-                            </Popper>
-                        </Col> */}
+                     
 
 
                         <Col xs={3} style={headerStyles.alignRight}>
-                            {/* <div style={headerStyles.columnStyle}>
-                                <p style={headerStyles.toggleLabelisTest}>TENDERMINT</p>
-                            </div> */}
+                           
                             <div
-                            // style={headerStyles.toggleStyle}
+                          
                             >
-                                {/* <Switch
-                                    checked={this.props.isTendermint}
-                                    onChange={this.tendermintChange()}
-                                    color="primary"
-                                    disabled={this.props.vpnStatus}
-                                /> */}
-
-
+                             
                                 <Select
                                     displayEmpty
                                     disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
@@ -326,12 +296,16 @@ class Header extends Component {
                                     <MenuItem value='TM'>
                                         <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
                                             style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
-                                        TENDERMINT TESTNET</MenuItem>
+                                        
+                                        {lang[language].TestNetTM}
+                                        </MenuItem>
                                     <MenuItem value='ERC'>
                                         {/* <SendIcon /> */}
                                         <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
                                             style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
-                                        ETHEREUM TESTNET</MenuItem>
+                                        
+                                        {lang[language].TestNetETH}
+                                        </MenuItem>
 
                                 </Select>
 
@@ -343,13 +317,13 @@ class Header extends Component {
 
                             {isTendermint ?
 
-                                <Tooltip title="Refresh TENDERMINT Balance ">
+                                <Tooltip title= {lang[language].RefreshBalTM}>
                                     <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
                                         <RefreshIcon />
                                     </IconButton>
                                 </Tooltip>
                                 :
-                                <Tooltip title="Refresh ERC20 Balance">
+                                <Tooltip title={lang[language].RefreshBalETH}>
                                     <IconButton onClick={() => { this.getERCBalances() }} style={headerStyles.buttonRefresh}>
                                         <RefreshIcon />
                                     </IconButton>
@@ -374,7 +348,7 @@ class Header extends Component {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage,
+        language: state.setLanguage,
         isTest: state.setTestNet,
         walletValue: state.getWalletType,
         walletAddress: state.getAccount,

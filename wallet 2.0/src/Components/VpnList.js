@@ -139,7 +139,7 @@ class VpnList extends Component {
             }
         }
         else {
-            this.setState({ openSnack: true, snackMessage: 'You Are Offline' })
+            this.setState({ openSnack: true, snackMessage:lang[this.props.language].Offline  })
         }
     }
 
@@ -251,8 +251,8 @@ class VpnList extends Component {
                             value={this.state.vpnType}
                             onChange={this.handleRadioChange}
                         >
-                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label="OpenVPN" />
-                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label="SOCKS5" />
+                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN}  />
+                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={lang[this.props.language].Socks5} />
                         </RadioGroup>
                     </FormControl>
 

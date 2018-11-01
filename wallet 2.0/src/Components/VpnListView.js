@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import EnhancedTable from "./customTable";
 import { sessionStyles } from '../Assets/tmsessions.styles';
+import lang from '../Constants/language';
+
 let Country = window.require('countrynames');
 
 class VpnListView extends Component {
@@ -59,7 +61,7 @@ class VpnListView extends Component {
                     vpnsList.length !== 0 ?
                         <EnhancedTable data={vpnsList} />
                         :
-                        <div style={sessionStyles.noTransactionsStyle}> No dVPN nodes found</div>
+                        <div style={sessionStyles.noTransactionsStyle}> {lang[language].NodVPNNodes}</div>
                 }
             </div>
         )

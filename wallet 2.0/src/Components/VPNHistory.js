@@ -115,7 +115,7 @@ class VPNHistory extends Component {
                                 <Tooltip title={lang[language].Copy}>
                                 <CopyToClipboard text={sessionData.account_addr}
                                     onCopy={() =>
-                                        this.props.setsnackMessage('Copied to Clipboard Successfully')
+                                        this.props.setsnackMessage(lang[language].Copied)
                                     } >
                                     {/* <img src={'../src/Images/download.jpeg'}
                                         alt="copy"
@@ -126,15 +126,15 @@ class VPNHistory extends Component {
                                 </CopyToClipboard>
                                 </Tooltip>
                                 <ReactTooltip id="copyImage" place="bottom">
-                                    <span>Copy</span>
+                                    <span>{lang[language].Copy}</span>
                                 </ReactTooltip>
                                 <br />
                                 <span style={vpnhistoryStyles.headingStyle}>
                                     {lang[language].Amount} : 
-                                </span> { parseInt(sessionData.amount) / (10 ** 8)} SENTS
+                                </span> { parseInt(sessionData.amount) / (10 ** 8)} {lang[language].Sents}
                                 <span style={vpnhistoryStyles.headingWithMarginStyle}>
                                     {lang[language].Duration} : 
-                                </span> { sessionData.session_duration} secs
+                                </span> { sessionData.session_duration} {lang[language].Secs} 
                                 <span style={vpnhistoryStyles.headingWithMarginStyle}>
                                     {lang[language].ReceivedData} : 
                                  </span> { this.getPaymentBytes(sessionData.received_bytes)}<br />
@@ -177,7 +177,7 @@ class VPNHistory extends Component {
                                         </CardActions>
                                         <div style={{ width: '90%',display:'none' }} id={sessionData.id}>
                                             <TextField
-                                                placeholder="Enter txhash of transaction"
+                                                placeholder= {lang[language].EnterTxHash}
                                                 className={classes.textField}
                                                 InputProps={{
                                                     disableUnderline:'true',
@@ -206,11 +206,11 @@ class VPNHistory extends Component {
                 })
             }
             else {
-                sessionOutput = <div style={vpnhistoryStyles.noSessionsStyle}>No Previous Sessions</div>
+                sessionOutput = <div style={vpnhistoryStyles.noSessionsStyle}>{lang[language].NoPrevSessions}</div>
             }
         }
         else {
-            sessionOutput = <div style={vpnhistoryStyles.noSessionsStyle}>No Previous Sessions</div>
+            sessionOutput = <div style={vpnhistoryStyles.noSessionsStyle}>{lang[language].NoPrevSessions}</div>
         }
         return sessionOutput;
     };
@@ -254,7 +254,7 @@ class VPNHistory extends Component {
                             </div>
                             :
                             <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%',fontSize:'25px' }}>
-                                Loading . . .
+                              {lang[language].Loading}
                             </div>
                     }
                     <Snackbar

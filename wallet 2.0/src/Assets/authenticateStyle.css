@@ -13,6 +13,11 @@
     color: #efb77c !important;
     font-size: 18px !important;
 }
+
+.dialogContentStyle > p > div:nth-child(1) > hr:focus{
+    border-bottom: 2.5px solid #efb77c !important ;
+
+}
 ::placeholder{
     color: white !important;
    

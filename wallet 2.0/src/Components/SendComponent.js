@@ -74,7 +74,7 @@ class SendComponent extends React.Component {
       password: '',
       gas: 21000,
       isDisabled: true,
-      label: 'SEND',
+      label:lang[this.props.language].Send,
       isVPNPayment: false,
       sessionId: '',
       open: false,
@@ -182,7 +182,7 @@ class SendComponent extends React.Component {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
     let { payVpn, payVPNUsage, initPaymentDetails } = this.props;
 
-    this.setState({ label: 'SENDING...', isDisabled: true });
+    this.setState({ label: lang[this.props.language].Sending, isDisabled: true });
     let self = this;
 
     setTimeout(() => {
@@ -190,20 +190,20 @@ class SendComponent extends React.Component {
       getPrivateKeyWithoutCallback(password, function (err, privateKey) {
         if (err) {
           console.log('password mismatch ', err.message.toString());
-          self.setState({ label: 'SEND', isDisabled: true, open: true, snackMessage: err.message.toString() })
+          self.setState({ label:lang[this.props.language].Send, isDisabled: true, open: true, snackMessage: err.message.toString() })
         } else {
           if (self.state.token === 'ETH') {
             ethTransaction(self.props.local_address, sendToAddress, amount * 10 ** 18, gwei * 10 ** 9, gas, privateKey, function (err, result) {
               if (err) {
                 console.log('Error', err);
-                self.setState({ label: 'SEND', isDisabled: true, open: true, snackMessage: err.message });
+                self.setState({ label:lang[this.props.language].Send, isDisabled: true, open: true, snackMessage: err.message });
               } else {
                 transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
                   console.log('eth tx complete', response);
                   if (response.type === TX_SUCCESS) {
-                    self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+                    self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
                   } else {
-                    self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+                    self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
                   }
                 })
               }
@@ -212,7 +212,7 @@ class SendComponent extends React.Component {
             tokenTransaction(self.props.local_address, sendToAddress, amount * 10 ** 8, gwei * 10 ** 9, gas, privateKey, function (err, result) {
               if (err) {
                 console.log('Error', err);
-                self.setState({ label: 'SEND', isDisabled: true, open: true, snackMessage: err.message.toString() })
+                self.setState({ label:lang[this.props.language].Send, isDisabled: true, open: true, snackMessage: err.message.toString() })
               } else {
                 let type;
                 if (initPaymentDetails !== null && initPaymentDetails.id === -1) {
@@ -231,15 +231,15 @@ class SendComponent extends React.Component {
                   };
                   payVPNUsage(data).then((response) => {
                     console.log('vpn payment', response);
-                    self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+                    self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
                   })
                 } else {
                   transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
                     console.log(response)
                     if (response.type === TX_SUCCESS) {
-                      self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+                      self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
                     } else {
-                      self.setState({ label: 'SEND', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+                      self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
                     }
                   });
                   self.props.setVPNDuePayment(null);

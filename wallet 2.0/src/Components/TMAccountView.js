@@ -107,7 +107,7 @@ class TMAccountView extends Component {
 
                             {balance === "" ?
                                 <p style={accountStyles.notInNetStyle}>
-                                    Note: Your account balance is 0 TSENT. You can get 300 TSENTs for free, click on GET TOKENs above.
+                                   {lang[language].Note} 
                             </p>
                                 :
                                 // <p style={accountStyles.balanceStyle}>
@@ -122,9 +122,9 @@ class TMAccountView extends Component {
                                 
                                     <div style={accountStyles.lastDiv}>
                                     <Row style={accountStyles.tsentRow}>
-                                        <Col xs={6}style={accountStyles.notInNetStyle1}>TSENT Locked</Col>
+                                        <Col xs={6}style={accountStyles.notInNetStyle1}>{lang[language].TSentLocked}</Col>
                                         
-                                        <Col xs={6} style={accountStyles.notInNetStyle}>TSENT Consumed</Col>
+                                        <Col xs={6} style={accountStyles.notInNetStyle}>{lang[language].TSentConsumed}</Col>
                                     </Row>
                                     <Row style={accountStyles.tsentRow}>
                                         <Col xs={6} style={accountStyles.tsentValue1}>  {localStorage.getItem('lockedAmount')}</Col>

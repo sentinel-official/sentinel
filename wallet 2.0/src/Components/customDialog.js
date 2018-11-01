@@ -114,7 +114,7 @@ class SimpleDialog extends React.Component {
                 aria-labelledby="simple-dialog-title"
                 {...other} className={{ classes: { paper: classes.container } }}
             >
-                <DialogTitle className={classes.container} id="simple-dialog-title">Connect to dVPN</DialogTitle>
+                <DialogTitle className={classes.container} id="simple-dialog-title">{lang[language].ConnectTodVPN}</DialogTitle>
                 <div className={classes.container2} >
 
 
@@ -145,18 +145,18 @@ class SimpleDialog extends React.Component {
                     <Row>
                         <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Bandwidth}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + ' Mbps'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + lang[language].Mbps}</label> </Col>
                     </Row>
 
                     <Row>
                         <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Cost}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.price_per_GB + ' SENT/GB'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.price_per_GB + lang[language].SentPerGb}</label> </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Latency}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.latency ? this.props.data.latency + ' ms' : 'None'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.latency ? this.props.data.latency + lang[language].MS : 'None'}</label> </Col>
                     </Row>
 
 
@@ -164,12 +164,12 @@ class SimpleDialog extends React.Component {
 
 
                         <div className={classes.listRoot}>
-                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label={this.props.isLoading || this.props.vpnStatus ? "Connecting..." : "Connect"}
+                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label={this.props.isLoading || this.props.vpnStatus ? lang[language].ConnectingdVPN  : lang[language].Connect}
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
-                                {this.props.isLoading ? 'Connecting' : (this.props.success ? 'Connected' : lang[language].Connect)}
+                                {this.props.isLoading ? lang[language].ConnectingdVPN  : (this.props.success ? lang[language].Connected : lang[language].Connect)}
                             </Button>
                         </div>
                     </List>

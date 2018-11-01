@@ -281,13 +281,16 @@ const authenticateStyles = {
         //  padding: '0 24px 10px 24px'
         },
     f_s_16: { fontSize: 16 , color:'#fff'},
-    f_s_14: { fontSize: 14, color:'#efb77c' },
+    f_s_14: { fontSize: 14, color:'#efb77c',  borderBottom: '2.5px solid green !important' },
     textFieldCreate: {
         width: '100%',
         // paddingLeft: '5%',
         color: '#f0ad4e',
         height: 40,
-        lineHeight: '18px'
+        lineHeight: '18px',
+        
+        borderBottom: '2.5px solid red !important'
+
     },
     backgroundStyle:{
         background: 'radial-gradient(circle at 49.41% 1.55%,#3d004c,transparent 100%),radial-gradient(circle at 47.95% 97.06%,#09318c,transparent 100%),radial-gradient(circle at 50% 50%,#04091a,#04091a 100%) no-repeat 50%',

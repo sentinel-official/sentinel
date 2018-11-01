@@ -327,6 +327,7 @@ app.on('ready', function () {
           m.items[1].submenu.items[1].checked = false;
           m.items[1].submenu.items[2].checked = false;
           m.items[1].submenu.items[3].checked = false;
+          m.items[1].submenu.items[4].checked = false;
           mainWindow.window.webContents.send('lang', 'en');
         }
       },
@@ -336,6 +337,7 @@ app.on('ready', function () {
           m.items[1].submenu.items[1].checked = true;
           m.items[1].submenu.items[2].checked = false;
           m.items[1].submenu.items[3].checked = false;
+          m.items[1].submenu.items[4].checked = false;
           mainWindow.window.webContents.send('lang', 'ja');
         }
       }, {
@@ -344,6 +346,7 @@ app.on('ready', function () {
           m.items[1].submenu.items[1].checked = false;
           m.items[1].submenu.items[2].checked = true;
           m.items[1].submenu.items[3].checked = false;
+          m.items[1].submenu.items[4].checked = false;
           mainWindow.window.webContents.send('lang', 'es');
         }
       }, {
@@ -352,7 +355,17 @@ app.on('ready', function () {
           m.items[1].submenu.items[1].checked = false;
           m.items[1].submenu.items[2].checked = false;
           m.items[1].submenu.items[3].checked = true;
+          m.items[1].submenu.items[4].checked = false;
           mainWindow.window.webContents.send('lang', 'ru');
+        }
+      },{
+        label: 'Chinese', type: 'checkbox', checked: false, click() {
+          m.items[1].submenu.items[0].checked = false;
+          m.items[1].submenu.items[1].checked = false;
+          m.items[1].submenu.items[2].checked = false;
+          m.items[1].submenu.items[3].checked = false;
+          m.items[1].submenu.items[4].checked = true;
+          mainWindow.window.webContents.send('lang', 'ch');
         }
       },
     ]

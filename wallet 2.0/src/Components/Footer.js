@@ -158,7 +158,7 @@ class Footer extends Component {
 
         }
         return (
-            <div style={footerStyles.mainDivStyle}>
+            <div style={footerStyles.mainDivStyle} className="footerStyle">
                 <Grid>
                     <Row>
                         <Col xs={3} style={footerStyles.firstColumn}>

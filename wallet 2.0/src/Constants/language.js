@@ -175,6 +175,7 @@ let lang = {
         'GWEI': 'GWEI',
         'Eths' : 'ETHS',
         "Refresh": "Refresh",
+        "Sentinel":"SENTINEL",
        
     },
     ja: {
@@ -355,6 +356,7 @@ let lang = {
         'GWEI': 'GWEI',
         'Eths' : 'ETHS',
         "Refresh": "Refresh",
+        "Sentinel":"SENTINEL",
     },
     es: {
         'History': 'HISTORIAL',
@@ -533,6 +535,7 @@ let lang = {
         'GWEI': 'GWEI',
         'Eths' : 'ETHS',
         "Refresh": "Refresh",
+        "Sentinel":"SENTINEL",
     },
     ru: {
         "History": "История",
@@ -711,6 +714,7 @@ let lang = {
         'GWEI': 'GWEI',
         'Eths' : 'ETHS',
         "Refresh": "Refresh",
+        "Sentinel":"SENTINEL",
     },
 
     zh: {
@@ -890,6 +894,7 @@ let lang = {
         'GWEI': 'GWEI',
         'Eths' : 'ETHS',
         "Refresh": "Refresh",
+        "Sentinel":"SENTINEL",
     },
 }
 

@@ -9,3 +9,6 @@
       opacity: .5;
     }
 }
+.footerStyle{
+  z-index: 9999;
+}

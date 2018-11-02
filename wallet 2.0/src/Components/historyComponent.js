@@ -39,7 +39,7 @@ class History extends React.Component {
                 <div>
                     {/* <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{amount} {unit}</span></label> */}
                     {/* <label style={historyLabel}>{`${lang[language].Status}:`}&nbsp;<span style={historyLabel}>{status}</span></label> */}
-                    <label style={historyLabel}>Tx:&nbsp;<span style={historyValue}>{tx}</span></label>
+                    <label style={historyLabel}>TxID:&nbsp;<span style={historyValue}>{tx}</span></label>
                 </div>
             </Card>
         )

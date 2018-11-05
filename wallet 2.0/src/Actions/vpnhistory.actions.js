@@ -46,7 +46,10 @@ export async function getVpnHistory(account_addr) {
     }
   }
   catch (Err) {
-    sendError(Err);
+    return {
+      type: types.GET_VPN_HISTORY,
+      payload: null
+    }
   }
 
 }
@@ -153,8 +156,7 @@ export const setVPNDuePayment = (sessionData) => {
       }
     }
   }
-  else
-  {
+  else {
     return {
       type: types.VPN_DUE_PAYMENT,
       payload: {

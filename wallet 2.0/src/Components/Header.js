@@ -19,6 +19,8 @@ import SimpleMenuTestnet from './SharedComponents/SimpleMenuTestnet';
 import Select from '@material-ui/core/Select';
 import SendIcon from '@material-ui/icons/Send';
 import lang from '../Constants/language';
+import { networkChange } from '../Actions/NetworkChange';
+import { setVpnType } from '../Actions/vpnlist.action';
 import '../Assets/headerStyle.css';
 
 let notTMInterval = null;
@@ -61,6 +63,8 @@ class Header extends Component {
 
         if (value) {
             this.props.setTendermint(true);
+            this.props.setVpnType('openvpn');
+            this.props.networkChange('public');
             this.setState({
                 walletType: 'TENDERMINT'
             })
@@ -109,6 +113,8 @@ class Header extends Component {
         this.props.setWalletType(value)
         if (value !== 'ERC') {
             this.props.setTendermint(true);
+            this.props.setVpnType('openvpn');
+            this.props.networkChange('public');
             this.setState({
                 walletType: 'TENDERMINT'
             })
@@ -141,8 +147,8 @@ class Header extends Component {
     }
 
     render() {
-        let { balance, isTendermint, tmAccountDetails,language, isTest, walletAddress } = this.props;
-      
+        let { balance, isTendermint, tmAccountDetails, language, isTest, walletAddress } = this.props;
+
         if (!this.props.isTendermint && !notTMInterval) {
             notTMInterval = setInterval(() => {
                 this.props.getETHBalance(walletAddress);
@@ -179,8 +185,8 @@ class Header extends Component {
                         </Col>
                         <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
-                                <span style={headerStyles.basicWallet}> 
-                                {this.state.walletType === 'ERC20' ? lang[language].WalletERC : lang[language].WalletTM} {lang[language].WalletAddress} </span>
+                                <span style={headerStyles.basicWallet}>
+                                    {this.state.walletType === 'ERC20' ? lang[language].WalletERC : lang[language].WalletTM} {lang[language].WalletAddress} </span>
                             </div>
                             <Row>
                                 <Col xs={8}><span
@@ -196,9 +202,9 @@ class Header extends Component {
                                 <Col xs={4}>
                                     {isTendermint && !tmAccountDetails ? null :
                                         // <Tooltip title={this.state.walletType === 'ERC20' ? "Copy ERC20 Sent Wallet Address" : "Copy Tendermint Wallet Address"}>
-                                        <Tooltip title={this.state.walletType === 'ERC20' ? lang[language].ERC20WalletCopy :lang[language].TMWalletCopy}>
+                                        <Tooltip title={this.state.walletType === 'ERC20' ? lang[language].ERC20WalletCopy : lang[language].TMWalletCopy}>
 
-                                        <CopyToClipboard text={
+                                            <CopyToClipboard text={
                                                 isTendermint ?
                                                     (tmAccountDetails ? tmAccountDetails.address : lang[language].Loading) :
                                                     this.props.walletAddress
@@ -224,32 +230,37 @@ class Header extends Component {
                                             <Col xs={6} style={headerStyles.balanceHead}> {lang[language].TSent} </Col>
                                             <Col xs={1}> : </Col>
                                             <Col xs={4} style={headerStyles.balanceText}>
-                                                {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : lang[language].Loading}
-                                                {token && 'denom' in token ? '' : ''}
-                                                {' '}
-
+                                                <p style={headerStyles.tmBalanceText}>
+                                                    {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : lang[language].Loading}
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
                                     : null)
                                 :
                                 <Row>
-                                    <Col xs={this.props.isTest ? 12 : 12}>
+                                    <Col xs={12}>
                                         <div style={headerStyles.sentBalance}>
                                             <Row>
-                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestSent  : lang[language].Sent} </Col>
+                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestSent : lang[language].Sent} </Col>
                                                 <Col xs={1}> : </Col>
-                                                <Col xs={4} style={headerStyles.balanceText}>{this.props.sentBalance}</Col>
+                                                <Col xs={4} style={headerStyles.balanceText}>
+                                                    <p style={headerStyles.tmBalanceText}>{this.props.sentBalance}</p>
+                                                </Col>
                                             </Row>
                                         </div>
                                         <div style={headerStyles.ethBalance}>
                                             <Row>
                                                 <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestEth : lang[language].Eth} </Col>
                                                 <Col xs={1}> : </Col>
-                                                <Col xs={4} style={headerStyles.balanceText}>{this.props.ethBalance === 'Loading...'
-                                                    ? this.props.ethBalance :
-                                                    parseFloat(this.props.ethBalance).toFixed(8)
-                                                }</Col>
+                                                <Col xs={4} style={headerStyles.balanceText}>
+                                                    <p style={headerStyles.tmBalanceText}>
+                                                        {this.props.ethBalance === 'Loading...'
+                                                            ? this.props.ethBalance :
+                                                            parseFloat(this.props.ethBalance).toFixed(8)
+                                                        }
+                                                    </p>
+                                                </Col>
                                             </Row>
                                         </div>
                                     </Col>
@@ -275,15 +286,15 @@ class Header extends Component {
                         </Col>
 
 
-                     
+
 
 
                         <Col xs={3} style={headerStyles.alignRight}>
-                           
+
                             <div
-                          
+
                             >
-                             
+
                                 <Select
                                     displayEmpty
                                     disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
@@ -296,16 +307,16 @@ class Header extends Component {
                                     <MenuItem value='TM'>
                                         <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
                                             style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
-                                        
+
                                         {lang[language].TestNetTM}
-                                        </MenuItem>
+                                    </MenuItem>
                                     <MenuItem value='ERC'>
                                         {/* <SendIcon /> */}
                                         <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
                                             style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
-                                        
+
                                         {lang[language].TestNetETH}
-                                        </MenuItem>
+                                    </MenuItem>
 
                                 </Select>
 
@@ -317,7 +328,7 @@ class Header extends Component {
 
                             {isTendermint ?
 
-                                <Tooltip title= {lang[language].RefreshBalTM} placement="bottom-end">
+                                <Tooltip title={lang[language].RefreshBalTM} placement="bottom-end">
                                     <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
                                         <RefreshIcon />
                                     </IconButton>
@@ -370,7 +381,9 @@ function mapDispatchToActions(dispatch) {
         setCurrentTab,
         setTendermint,
         setWalletType,
-        getTMBalance
+        getTMBalance,
+        networkChange,
+        setVpnType
     }, dispatch)
 }
 

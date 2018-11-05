@@ -52,7 +52,6 @@ class TMTransfer extends Component {
     }
 
     componentWillReceiveProps = (nextProps) => {
-        console.log("Or..", nextProps.vpnPayment)
         if (nextProps.vpnPayment.isPayment) {
             this.setState({ toAddress: nextProps.vpnPayment.data.vpn_addr, amount: 100, isTextDisabled: true })
         }
@@ -122,7 +121,7 @@ class TMTransfer extends Component {
                                             this.props.setVpnStatus(true);
                                             this.setState({
                                                 sending: false, toAddress: '', keyPassword: '', amount: '',
-                                                openSnack: true, snackMessage:lang[this.props.language].VpnConnected 
+                                                openSnack: true, snackMessage: lang[this.props.language].VpnConnected
                                             });
                                             this.props.setCurrentTab('receive');
                                         }
@@ -156,7 +155,7 @@ class TMTransfer extends Component {
                         txHash: response.payload.hash
                     })
                     this.setState({
-                        sending: false, openSnack: true, snackMessage:lang[this.props.language].TxSuccess ,
+                        sending: false, openSnack: true, snackMessage: lang[this.props.language].TxSuccess,
                         toAddress: '', keyPassword: '', amount: '',
                     });
                 }
@@ -171,6 +170,8 @@ class TMTransfer extends Component {
     render() {
         const { classes } = this.props;
         let language = this.props.lang;
+        let isDisabled = (this.state.sending || this.state.keyPassword === '' ||
+            this.state.toAddress === '' || this.state.amount === '') ? true : false
         return (
             <div style={accountStyles.sendFormStyle}>
                 <div style={createAccountStyle.secondDivStyle}
@@ -190,7 +191,7 @@ class TMTransfer extends Component {
                     <Button
                         variant="outlined"
                         color="primary"
-                        disabled={this.state.sending}
+                        disabled={isDisabled}
                         onClick={() => { this.sendTransaction() }}
                         className={classes.button} style={createAccountStyle.buttonStyle}>
                         {this.state.sending ? lang[language].Sending : lang[language].Send}

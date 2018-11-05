@@ -22,7 +22,7 @@ const headerStyles = {
         transition: '2000',
         color: '#ddd',
         outline: 'none',
-        marginLeft:30
+        marginLeft: 30
     },
     logoStyle: {
         width: 40,
@@ -66,7 +66,7 @@ const headerStyles = {
         fontSize: 14,
         fontWeight: '600',
         color: '#FAFAFA',
-        marginTop: '5%'
+        marginTop: '-5%'
     },
     tmBalance: {
         fontSize: 14,
@@ -90,17 +90,22 @@ const headerStyles = {
         lineHeight: '18px'
     },
     balanceText: {
-        color:'#efb77c'
+        color: '#efb77c'
         // '#c3deef'
     },
-    balanceHead:{
-        textAlign:'right'
+    balanceHead: {
+        textAlign: 'right'
     },
-    bal:{
-        padding:'0 10px',
+    tmBalanceText: {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        width: 120
     },
-    balType:{
-        textAlign:'center'
+    bal: {
+        padding: '0 10px',
+    },
+    balType: {
+        textAlign: 'center'
     },
     columnStyle: {
         fontSize: 12,
@@ -117,7 +122,7 @@ const headerStyles = {
         textAlign: 'right',
         // marginLeft: 15
     },
-    alignRightSelect:{
+    alignRightSelect: {
         textAlign: 'right',
         // marginLeft: 15
     },

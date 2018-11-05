@@ -33,9 +33,10 @@ class TMTransactionsHistory extends React.Component {
     }
 
     render() {
+        let { language } = this.props;
         let output;
         if (this.state.loading) {
-            output = <div style={sessionStyles.noSessionsStyle}>Loading...</div>
+            output = <div style={sessionStyles.noSessionsStyle}>{lang[language].Loading}</div>
         }
         else {
             let transactions = _.sortBy(this.state.txData, obj => obj ? obj.timestamp : null).reverse();
@@ -55,7 +56,7 @@ class TMTransactionsHistory extends React.Component {
                 })
             }
             else {
-                output = <div style={sessionStyles.noTransactionsStyle}>No Transactions yet</div>
+                output = <div style={sessionStyles.noTransactionsStyle}>{lang[language].NoTransactions}</div>
             }
         }
         return (

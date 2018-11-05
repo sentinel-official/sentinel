@@ -12,6 +12,8 @@ import { networkChange } from "../../Actions/NetworkChange";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import green from "@material-ui/core/es/colors/green";
 import blue from "@material-ui/core/es/colors/blue";
+import lang from './../../Constants/language';
+
 
 export default class NetworkChangeDialog extends React.Component {
     state = {
@@ -40,6 +42,7 @@ export default class NetworkChangeDialog extends React.Component {
     };
 
     render() {
+        let { language } = this.props;
         return (
             <div>
                 <Dialog
@@ -47,16 +50,16 @@ export default class NetworkChangeDialog extends React.Component {
                     onClose={this.handleClose}
                     aria-labelledby="form-dialog-title"
                 >
-                    <DialogTitle id="form-dialog-title">Switch To Private Network</DialogTitle>
+                    <DialogTitle id="form-dialog-title">{lang[language].SwitchPrivate}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Please enter your Auth Code to connect to the Private Network
+                            {lang[language].EnterAuthCode}
                         </DialogContentText>
                         <TextField
                             autoFocus
                             margin="dense"
                             id="authCode"
-                            label="Auth Code"
+                            label={lang[language].AuthCode}
                             type="text"
                             fullWidth
                             onKeyPress={(e) => { if (e.key === 'Enter') this.props.getGatewayAddr(this.state.authCode) }}

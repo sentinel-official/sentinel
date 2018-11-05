@@ -139,7 +139,7 @@ class VpnList extends Component {
             }
         }
         else {
-            this.setState({ openSnack: true, snackMessage:lang[this.props.language].Offline  })
+            this.setState({ openSnack: true, snackMessage: lang[this.props.language].Offline })
         }
     }
 
@@ -199,7 +199,7 @@ class VpnList extends Component {
                         }
                         <NetworkChangeDialog open={this.state.openPopup}
                             close={this.closePrivDialog} getGatewayAddr={this.getGatewayAddr}
-                            isLoading={this.state.isLoading}
+                            isLoading={this.state.isLoading} language={language}
                             uri={this.state.uri} snackbar={this.state.snackMessage}
                         />
                     </div>
@@ -251,7 +251,7 @@ class VpnList extends Component {
                             value={this.state.vpnType}
                             onChange={this.handleRadioChange}
                         >
-                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN}  />
+                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN} />
                             <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={lang[this.props.language].Socks5} />
                         </RadioGroup>
                     </FormControl>
@@ -289,7 +289,7 @@ function mapStateToProps(state) {
         vpnList: state.getVpnList,
         isTM: state.setTendermint,
         networkType: state.networkChange,
-        walletType:state.getWalletType
+        walletType: state.getWalletType
     }
 }
 

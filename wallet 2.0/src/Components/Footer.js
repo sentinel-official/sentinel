@@ -185,7 +185,7 @@ class Footer extends Component {
                                 <Col xs={9} style={footerStyles.vpnConnected}>
                                     <Row style={footerStyles.textCenter}>
                                         <Col xs={2}style={footerStyles.vpnConnected} >
-                                            <label style={footerStyles.headingStyle}>IP Address</label>
+                                            <label style={footerStyles.headingStyle}>{lang[language].IPAddress}</label>
                                             <p style={footerStyles.valueStyle}>
                                                 {localStorage.getItem('IPGENERATED')}
                                             </p>
@@ -207,13 +207,13 @@ class Footer extends Component {
                                           <Row>
                                               <Col xs={2}></Col>
                                               <Col xs={5}>
-                                            <label style={footerStyles.headingStyle}>Upload</label>
+                                            <label style={footerStyles.headingStyle}>{lang[language].Upload}</label>
                                             <p style={footerStyles.valueStyle}>
                                                 {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB
                                             </p>
                                             </Col>
                                             <Col xs={5}>
-                                             <label style={footerStyles.headingStyle}>Download</label>
+                                             <label style={footerStyles.headingStyle}>{lang[language].Download}</label>
                                             <p style={footerStyles.valueStyle}>
                                                 {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB
                                             </p>

@@ -11,7 +11,6 @@ const footerStyles = {
         paddingTop: 10,
         paddingRight: 25,
         paddingLeft: 10,
-        position: 'absolute',
         bottom: 0
     },
     testLabelStyle: {

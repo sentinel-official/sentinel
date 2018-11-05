@@ -11,28 +11,35 @@ export function setListViewType(component) {
 }
 
 export async function getVpnList(vpnType, isTM) {
-    let listUrl;
-    // let uri = localStorage.getItem('B_URL')
-    // if (uri && uri === B_URL) {
+    try {
+        let listUrl;
+        // let uri = localStorage.getItem('B_URL')
+        // if (uri && uri === B_URL) {
 
-    // }
-    let uri = await localStorage.getItem('B_URL');
-    if (vpnType === 'socks5')
-        listUrl = isTM ? TMain_URL + '/nodes?type=Socks5&status=up' : uri + '/client/vpn/socks-list';
-    else
-        listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : uri + '/client/vpn/list';
-    let response = await axiosInstance.get(listUrl, {
-        headers: {
-            'Accept': 'application/json',
-            'Content-type': 'application/json',
+        // }
+        let uri = await localStorage.getItem('B_URL');
+        if (vpnType === 'socks5')
+            listUrl = isTM ? TMain_URL + '/nodes?type=Socks5&status=up' : uri + '/client/vpn/socks-list';
+        else
+            listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : uri + '/client/vpn/list';
+        let response = await axiosInstance.get(listUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        });
+        if (response.data.success) {
+            return {
+                type: types.GET_VPN_LIST_SUCCESS,
+                payload: isTM ? response.data.nodes : response.data.list
+            }
+        } else {
+            return {
+                type: types.GET_VPN_LIST_PROGRESS,
+                payload: []
+            }
         }
-    });
-    if (response.data.success) {
-        return {
-            type: types.GET_VPN_LIST_SUCCESS,
-            payload: isTM ? response.data.nodes : response.data.list
-        }
-    } else {
+    } catch (error) {
         return {
             type: types.GET_VPN_LIST_PROGRESS,
             payload: []
@@ -63,23 +70,28 @@ export function payVPNTM(data) {
 }
 
 export async function rateVPNSession(value, cb) {
-    let data = {
-        vpn_addr: localStorage.getItem('CONNECTED_VPN'),
-        rating: value,
-        session_name: localStorage.getItem('SESSION_NAME')
-    }
-    let response = await axios.post(B_URL + '/client/vpn/rate', data, {
-        headers: {
-            'Accept': 'application/json',
-            'Content-type': 'application/json',
-            'Authorization': localStorage.getItem('access_token')
+    try {
+        let data = {
+            vpn_addr: localStorage.getItem('CONNECTED_VPN'),
+            rating: value,
+            session_name: localStorage.getItem('SESSION_NAME')
         }
-    })
-    if (response.data.success) {
-        cb(null);
-        removeSessionLocal();
-    }
-    else {
+        let response = await axios.post(B_URL + '/client/vpn/rate', data, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+                'Authorization': localStorage.getItem('access_token')
+            }
+        })
+        if (response.data.success) {
+            cb(null);
+            removeSessionLocal();
+        }
+        else {
+            cb({ message: 'Error occured while submitting rating' });
+            removeSessionLocal();
+        }
+    } catch (error) {
         cb({ message: 'Error occured while submitting rating' });
         removeSessionLocal();
     }

@@ -3,7 +3,7 @@ const sidebarStyles = {
 
     totalDiv: {
         background: '#f3f3f3',
-        width: 65,
+        width: 60,
     },
     activeDivStyle: {
         padding: '16px 10px 7px 48px', //'16px 10px 7px 20px',
@@ -30,24 +30,24 @@ const sidebarStyles = {
 
 
     IconActiveDivStyle: {
-        padding: '16px 10px 7px 20px', //'16px 10px 7px 20px',
-        textAlign: 'left', //changed center to left
+        padding: '16px 0px 7px 0px', //'16px 10px 7px 20px',
+        textAlign: 'center', //changed center to left
         cursor: 'pointer',
         fontWeight: 'bold',
         fontFamily: 'Montserrat'
     },
 
     IconCurrentDivStyle: {
-        padding: '16px 10px 7px 20px',//'12px 20px 4px 20px',
-        textAlign: 'left',
+        padding: '16px 0px 7px 0px',//'12px 20px 4px 20px',
+        textAlign: 'center',
         fontWeight: 'bold',
         cursor: 'pointer',
         fontFamily: 'Montserrat',
         backgroundColor: 'rgba(48, 50, 70, 0.16)'
     },
     IconDisabledDivStyle: {
-        padding: '16px 10px 7px 20px',
-        textAlign: 'left',
+        padding: '16px 0px 7px 0px',
+        textAlign: 'center',
         fontFamily: 'Montserrat',
         cursor: 'pointer' // changed from not-allowed
     },

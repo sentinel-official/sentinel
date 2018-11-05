@@ -74,7 +74,7 @@ class SendComponent extends React.Component {
       password: '',
       gas: 21000,
       isDisabled: true,
-      label:lang[this.props.language].Send,
+      label: 'Send',
       isVPNPayment: false,
       sessionId: '',
       open: false,
@@ -182,37 +182,37 @@ class SendComponent extends React.Component {
     const { gas, gwei, sendToAddress, amount, password } = this.state;
     let { payVpn, payVPNUsage, initPaymentDetails } = this.props;
 
-    this.setState({ label: lang[this.props.language].Sending, isDisabled: true });
+    this.setState({ label: 'Sending', isDisabled: true });
     let self = this;
 
     setTimeout(() => {
 
-      getPrivateKeyWithoutCallback(password, function (err, privateKey) {
+      getPrivateKeyWithoutCallback(password, (err, privateKey) => {
         if (err) {
           console.log('password mismatch ', err.message.toString());
-          self.setState({ label:lang[this.props.language].Send, isDisabled: true, open: true, snackMessage: err.message.toString() })
+          self.setState({ label: 'Send', isDisabled: true, open: true, snackMessage: err.message.toString() })
         } else {
           if (self.state.token === 'ETH') {
-            ethTransaction(self.props.local_address, sendToAddress, amount * 10 ** 18, gwei * 10 ** 9, gas, privateKey, function (err, result) {
+            ethTransaction(self.props.local_address, sendToAddress, amount * 10 ** 18, gwei * 10 ** 9, gas, privateKey, (err, result) => {
               if (err) {
                 console.log('Error', err);
-                self.setState({ label:lang[this.props.language].Send, isDisabled: true, open: true, snackMessage: err.message });
+                self.setState({ label: 'Send', isDisabled: true, open: true, snackMessage: err.message });
               } else {
                 transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
                   console.log('eth tx complete', response);
                   if (response.type === TX_SUCCESS) {
-                    self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+                    self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
                   } else {
-                    self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+                    self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: response.payload ? response.payload : 'Transaction Failure.' });
                   }
                 })
               }
             });
           } else {
-            tokenTransaction(self.props.local_address, sendToAddress, amount * 10 ** 8, gwei * 10 ** 9, gas, privateKey, function (err, result) {
+            tokenTransaction(self.props.local_address, sendToAddress, amount * 10 ** 8, gwei * 10 ** 9, gas, privateKey, (err, result) => {
               if (err) {
                 console.log('Error', err);
-                self.setState({ label:lang[this.props.language].Send, isDisabled: true, open: true, snackMessage: err.message.toString() })
+                self.setState({ label: 'Send', isDisabled: true, open: true, snackMessage: err.message.toString() })
               } else {
                 let type;
                 if (initPaymentDetails !== null && initPaymentDetails.id === -1) {
@@ -231,15 +231,15 @@ class SendComponent extends React.Component {
                   };
                   payVPNUsage(data).then((response) => {
                     console.log('vpn payment', response);
-                    self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+                    self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
                   })
                 } else {
                   transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
                     console.log(response)
                     if (response.type === TX_SUCCESS) {
-                      self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
+                      self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
                     } else {
-                      self.setState({ label:lang[this.props.language].Send, isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+                      self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: response.payload ? response.payload : 'Transaction Failure.' });
                     }
                   });
                   self.props.setVPNDuePayment(null);
@@ -429,7 +429,7 @@ class SendComponent extends React.Component {
                   />
                 </div>
                 <div>
-                  <div style={sendComponentStyles.sendDiv}>
+                  <div style={this.state.isDisabled ? sendComponentStyles.sendDivDisabled : sendComponentStyles.sendDiv}>
                     <Button
                       autoFocus={false}
                       variant='flat'
@@ -439,7 +439,7 @@ class SendComponent extends React.Component {
                       disabled={this.state.isDisabled}
                       style={{ color: '#fff', fontWeight: '600', fontSize: '20px', fontFamily: 'Montserrat,Medium' }}
                       onClick={this.handleOnclick}
-                    >{this.state.label}</Button>
+                    >{lang[language][this.state.label]}</Button>
                   </div>
                 </div>
               </div>

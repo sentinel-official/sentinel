@@ -4,7 +4,7 @@ const dashboardStyles = {
   layoutStyle: {
     display: 'flex',
     flexDirection: 'row',
-    height: 522
+    height: 512
   },
   sideBarStyle: {
     flex: '0 1 0%',

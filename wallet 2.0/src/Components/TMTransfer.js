@@ -168,8 +168,7 @@ class TMTransfer extends Component {
     };
 
     render() {
-        const { classes } = this.props;
-        let language = this.props.lang;
+        let { classes, language } = this.props;
         let isDisabled = (this.state.sending || this.state.keyPassword === '' ||
             this.state.toAddress === '' || this.state.amount === '') ? true : false
         return (
@@ -220,7 +219,7 @@ TMTransfer.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage,
+        language: state.setLanguage,
         isTest: state.setTestNet,
         account: state.setTMAccount,
         vpnPayment: state.payVPNTM

@@ -104,9 +104,15 @@ class Sidebar extends Component {
                 return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 20 }} />
         }
         if (iconName === 'ethereumIcon') {
-
-            return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+            if (this.props.isTenderMint)
+            return <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
                 style={{ width: 20 }} />
+
+            else    
+                return  <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                style={{ width: 20 }} />
+               
+
         }
         else {
             let Icon = this.components[iconName];
@@ -247,11 +253,10 @@ class Sidebar extends Component {
 
                         <ListItem button onClick={this.handleEthClick} disabled={isTenderMint}>
                             <ListItemIcon>
-
-                                <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                                    style={{ width: 20, marginTop: -5 }} />
-
-
+                            
+                             <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
+                                 style={{ width: 20, marginTop: -5 }} />
+                                                                   
                             </ListItemIcon>
                             <ListItemText inset primary={lang[language].ETH} style={sidebarStyles.collapseType} />
                             {this.state.openEth ? <ExpandLess /> : <ExpandMore />}

@@ -1,6 +1,6 @@
 const defaultPageStyle = {
     division: {
-        backgroundColor: '#fff'  ,//'#1e1e1e',
+        backgroundColor: '#1e1e1e'  ,//'#1e1e1e',
         height: '100vh',
         display: 'flex',
         justifyContent: 'center',
@@ -118,7 +118,8 @@ const createPagestyles = {
         marginBottom: '1%'
     },
     hr_color: {
-        backgroundColor: 'rgb(83, 45, 145)'
+        backgroundColor: 'rgb(83, 45, 145)',
+        marginTop:0 // changed to decrease the distance between the userId and hr  
     },
     c_t_t: {
         color: 'white',
@@ -132,7 +133,8 @@ const createPagestyles = {
     },
     f_m_l_3: {
         fontSize: 12,
-        marginLeft: '3%'
+        // marginLeft: '3%'
+        textAlign:'center',
     },
     m_t_5: {
         marginTop: '2%'
@@ -158,7 +160,9 @@ const createPagestyles = {
     disabledButton: {
         backgroundColor: '#bdbdbd',
         height: '30px',
-        lineHeight: '30px'
+        lineHeight: '30px',
+        borderRadius: 4,   
+
     },
     createDiv: {
         marginLeft: '7%',
@@ -168,32 +172,41 @@ const createPagestyles = {
         color: '#2f3245',
         fontSize: 14,
         marginBottom: 0,
-        marginTop: '2%'
+        marginTop: '2%',
+        fontWeight: 'bold',
     },
     textBoxPaper: {
-        height: 35,
+        // height: 35,
         width: '100%',
-        backgroundColor: 'rgba(229, 229, 229, 0.66)',
-        marginTop: '3%'
+        // backgroundColor: 'rgba(229, 229, 229, 0.66)',
+        marginTop: '3%',
+        background: '#F5F5F5',
+        boxShadow:'none',
+        
     },
     keyTextBoxPaper: {
-        height: 35,
+        // height: 35,
         width: '80%',
-        marginTop: '3%'
+        marginTop: '3%',
+        background: '#F5F5F5',
+        // backgroundColor: 'rgba(0, 0, 0, 0)',
     },
     textFieldCreateHint: {
         fontSize: 12,
-        color: '#2f3245'
+        color:  '#606162' //'#2f3245'
     },
     textFieldCreate: {
         width: '100%',
-        // paddingLeft: '5%', // changed to align with enter text
-        height: 40,
+        paddingLeft: '2%', // changed to align with enter text
+        height: 45,
         lineHeight: '18px'
     },
     buttonLabel: {
         color: 'white',
-        textTransform: 'none'
+        textTransform: 'none',
+        // background: '#31708f', 
+        // color: '#fff',
+        // borderRadius: 4,
     },
     buttonRaisedKeystore: {
         backgroundColor: 'rgba(128, 128, 128, 0.66)',
@@ -202,10 +215,15 @@ const createPagestyles = {
         cursor: 'not-allowed'
     },
     buttonCreate: {
-        backgroundColor: 'rgba(83, 45, 145, 0.71)',
+        // backgroundColor: 'rgba(83, 45, 145, 0.71)',
+
         height: '30px',
-        lineHeight: '30px'
+        lineHeight: '30px',
+        backgroundColor: '#31b0d5', 
+        color: '#fff',
+        borderRadius: 4,
     },
+   
     createStyle: {
         marginTop: '5%',
         marginBottom: '3%'
@@ -256,7 +274,7 @@ const createPagestyles = {
         marginLeft: 3,
         fontSize: 12,
         borderRadius: '50%',
-        backgroundColor: '#4d9bb9',
+        backgroundColor: '#ddd', // '#4d9bb9',
         paddingLeft: 5,
         paddingRight: 5,
         color: 'white'

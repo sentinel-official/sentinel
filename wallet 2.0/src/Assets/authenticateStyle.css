@@ -18,10 +18,7 @@
     border-bottom: 2.5px solid #efb77c !important ;
 
 }
-::placeholder{
-    color: white !important;
-   
-}
+
 
 .dialogContentStyle > p > div:nth-child(1) > hr{
     border-top: none rgb(224, 224, 224);

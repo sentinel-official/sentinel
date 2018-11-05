@@ -13,13 +13,13 @@ const receiveStyles = {
     flatButtonStyleOnTest: {
         // backgroundColor:  '#2f3245',
         background: 'linear-gradient(#f6c288,#e8aa6e)',
-        position: 'static',  marginTop: 45, 
+        position: 'static',  marginTop: 30, 
         // left:450,
         color:'white'
     },
     flatButtonStyleOffTest: {
         backgroundColor:  'rgba(47, 50, 69, 0.34)',
-        position: 'static',  marginTop: 45, 
+        position: 'static',  marginTop: 30, 
         // left:450,
         color:'white'
     },

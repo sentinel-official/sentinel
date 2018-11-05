@@ -317,13 +317,13 @@ class Header extends Component {
 
                             {isTendermint ?
 
-                                <Tooltip title= {lang[language].RefreshBalTM}>
+                                <Tooltip title= {lang[language].RefreshBalTM} placement="bottom-end">
                                     <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
                                         <RefreshIcon />
                                     </IconButton>
                                 </Tooltip>
                                 :
-                                <Tooltip title={lang[language].RefreshBalETH}>
+                                <Tooltip title={lang[language].RefreshBalETH} placement="bottom-end">
                                     <IconButton onClick={() => { this.getERCBalances() }} style={headerStyles.buttonRefresh}>
                                         <RefreshIcon />
                                     </IconButton>

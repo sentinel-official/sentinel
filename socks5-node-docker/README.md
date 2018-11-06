@@ -32,7 +32,7 @@ Using existing docker image
 
 `mkdir -p $HOME/.sentinel`
 
-`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4200:4200 -p 4201:4201 -p 4202:4202 -p 4203:4203 sentinelofficial/sentinel-socks-node`
+`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4200:4200 -p 4201:4201 -p 4202:4202 -p 4203:4203 sentinelofficial/sentinel-socks5-node`
 
 #### Method #2
 
@@ -52,10 +52,10 @@ Building your own docker image
 
 ### Updating existing Sentinel Socks node
 
-`sudo docker pull sentinelofficial/sentinel-socks-node`
+`sudo docker pull sentinelofficial/sentinel-socks5-node`
 
-`sudo docker stop $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-socks-node")`
+`sudo docker stop $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-socks5-node")`
 
-`sudo docker rm $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-socks-node")`
+`sudo docker rm $(sudo docker ps -a -q --filter="ancestor=sentinelofficial/sentinel-socks5-node")`
 
 After running the above commands please follow the method #1 for running the node again

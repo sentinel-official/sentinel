@@ -32,7 +32,7 @@ Using existing docker image
 
 `mkdir -p $HOME/.sentinel`
 
-`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4200:4200 -p 4201:4201 -p 4202:4202 -p 4203:4203 sentinelofficial/sentinel-vpn-node`
+`sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=/root/.sentinel -p 3000:3000 -p 4200:4200 -p 4201:4201 -p 4202:4202 -p 4203:4203 sentinelofficial/sentinel-socks-node`
 
 #### Method #2
 

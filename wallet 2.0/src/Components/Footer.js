@@ -18,6 +18,10 @@ import { isOnline } from "../Actions/convertErc.action";
 
 import '../Assets/footerStyle.css';
 
+const electron = window.require('electron');
+const { exec} = window.require('child_process');
+const remote = electron.remote;
+
 const styles = theme => ({
     paper: {
         width: '80%',
@@ -40,7 +44,8 @@ class Footer extends Component {
             rateDialog: false,
             status: false,
             counter: 1,
-            showAlert: false
+            showAlert: false,
+            isDisabled:false
         }
     }
 
@@ -101,16 +106,17 @@ class Footer extends Component {
     }
 
     disconnect = () => {
+        this.setState({isDisabled:true})
         if (this.props.isTm) {
             this.sendSignature(downloadData, true, this.state.counter);
             disconnectVPN((res) => {
                 if (res) {
-                    this.setState({ openSnack: true, snackMessage: res });
+                    this.setState({ openSnack: true, snackMessage: res, isDisabled:false });
                 }
                 else {
                     this.setState({
                         openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
-                        counter: 1, showAlert: false
+                        counter: 1, showAlert: false, isDisabled:false
                     });
                     this.props.clearUsage();
                     this.props.setVpnStatus(false);
@@ -122,10 +128,11 @@ class Footer extends Component {
             if (this.props.vpnType === 'openvpn') {
                 disconnectVPN((res) => {
                     if (res) {
-                        this.setState({ openSnack: true, snackMessage: res });
+                        this.setState({ openSnack: true, snackMessage: res, isDisabled:false });
                     }
                     else {
-                        this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, rateDialog: true });
+                        this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, 
+                            rateDialog: true, isDisabled:false });
                         this.props.clearUsage();
                         this.props.setVpnStatus(false);
                     }
@@ -133,10 +140,16 @@ class Footer extends Component {
             } else {
                 disconnectSocks(this.props.walletAddr, (res) => {
                     if (res) {
-                        this.setState({ openSnack: true, snackMessage: res });
+                        this.setState({ openSnack: true, snackMessage: res,isDisabled:false });
                     }
                     else {
-                        this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, rateDialog: true });
+                        if (remote.process.platform === 'win32') {
+                            exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
+                                console.log('browser opened');
+                            });
+                        }
+                        this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, 
+                            rateDialog: true,isDisabled:false });
                         this.props.clearUsage();
                         this.props.setVpnStatus(false);
                     }
@@ -230,7 +243,9 @@ class Footer extends Component {
                             vpnStatus ?
                                 <Col xs={3} style={footerStyles.vpnConnected}>
                                     <Tooltip title={lang[language].Disconnect}>
-                                        <Button style={footerStyles.disconnectStyle} onClick={() => { this.disconnect() }}>
+                                        <Button style={footerStyles.disconnectStyle} 
+                                        disabled={this.state.isDisabled}
+                                        onClick={() => { this.disconnect() }}>
                                           <span style={footerStyles.disconnectText}>  {lang[language].Disconnect} </span>
                                            <DisconnectIcon style={footerStyles.crossMark} />
                                         </Button>

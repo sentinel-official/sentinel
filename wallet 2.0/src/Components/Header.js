@@ -132,6 +132,7 @@ class Header extends Component {
         // }
         else {
             this.props.setTendermint(false);
+            this.props.setVpnType('socks5');
             this.props.getETHBalance(this.props.walletAddress);
             this.props.getSentBalance(this.props.walletAddress);
             this.props.setCurrentTab(currentTab);

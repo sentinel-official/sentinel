@@ -109,7 +109,6 @@ class VpnList extends Component {
                 })
             }
         })
-        this.props.setVpnType(this.state.vpnType);
     };
 
     handleRadioChange = (event) => {
@@ -252,7 +251,7 @@ class VpnList extends Component {
                             value={this.state.vpnType}
                             onChange={this.handleRadioChange}
                         >
-                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} disabled={true} />} label={lang[this.props.language].OpenVPN} />
+                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} disabled={!isTM} />} label={lang[this.props.language].OpenVPN} />
                             <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={lang[this.props.language].Socks5} />
                         </RadioGroup>
                     </FormControl>

@@ -88,7 +88,7 @@ class TMTransfer extends Component {
                         if (response.error) {
                             console.log("Pay VPN Error...", response);
                             if (response.error.data === 'Ciphertext decryption failed')
-                                this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].Incorrect });
+                                this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].IncorrectPwd });
                             else
                                 this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].TxFailed });
                         }

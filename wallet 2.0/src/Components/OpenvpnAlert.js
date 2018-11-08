@@ -33,7 +33,7 @@ class OpenvpnAlert extends React.Component {
                     <DialogTitle id="alert-dialog-title">{"Openvpn not installed"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            OpenVPN Not Installed. Please go to C:\Users"your-user-name"\AppData\Local\Sentinel\app-0.1.0\resources\extras and
+                            OpenVPN Not Installed. Please go to C:\Users"your-user-name"\AppData\Local\Sentinel\app-0.1.01\resources\extras and
                             run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.
                         </DialogContentText>
                     </DialogContent>

@@ -37,7 +37,7 @@ import './sidebarStyle.css'
 
 const Customstyles = theme => ({
     paper: {
-        height: '100%',
+        height: 512,
         top: 70,
         width: 250
     }
@@ -342,7 +342,7 @@ class Sidebar extends Component {
                         } */}
 
                         <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/Sentinel.png'} alt="sentinel_logo"
-                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 145 }} /></span>
+                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 16 }} /></span>
                     </div>
                 </Drawer>
             </div>

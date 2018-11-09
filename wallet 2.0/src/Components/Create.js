@@ -200,7 +200,7 @@ class Create extends Component {
                             buttonStyle={this.state.password === '' ?createPagestyles.disabledButton : createPagestyles.buttonCreate}
                             style={createPagestyles.createStyle} />
                         {this.state.isLoading === true ? this.renderProgress() : ''}
-                        <p style={createPagestyles.f_m_l_3}>({lang[language].OR})</p>
+                        <p style={createPagestyles.f_m_l_3}>{lang[language].OR}</p>
                         <Paper 
                         // zDepth={2}
                          style={createPagestyles.bluePaper}>

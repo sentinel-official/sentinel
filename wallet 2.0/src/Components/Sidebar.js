@@ -37,7 +37,7 @@ import './sidebarStyle.css'
 
 const Customstyles = theme => ({
     paper: {
-        height: '100%',
+        height: 512,
         top: 70,
         width: 250
     }
@@ -90,12 +90,6 @@ class Sidebar extends Component {
             }
         }
 
-    }
-
-    componentWillReceiveProps = (next) => {
-        if (next.isTenderMint !== this.props.isTenderMint || next.isTest !== this.props.isTest) {
-            this.setState({ openEth: !next.isTenderMint, openTmd: next.isTenderMint })
-        }
     }
 
     toggleDrawer = (value) => () => {
@@ -218,7 +212,7 @@ class Sidebar extends Component {
                                 }
                             </ListItemIcon>
                             <ListItemText inset primary={lang[language].TM} style={sidebarStyles.collapseType} />
-                            {this.state.openTmd ? <ExpandLess /> : <ExpandMore />}
+                            {this.props.isTenderMint ? <ExpandMore /> : <ExpandLess />}
                         </ListItem>
 
                         <Collapse in={this.state.openTmd && isTenderMint} timeout="auto" unmountOnExit>
@@ -265,7 +259,8 @@ class Sidebar extends Component {
 
                             </ListItemIcon>
                             <ListItemText inset primary={lang[language].ETH} style={sidebarStyles.collapseType} />
-                            {this.state.openEth ? <ExpandLess /> : <ExpandMore />}
+                            {/* {this.state.openEth ? <ExpandLess /> : <ExpandMore />} */}
+                            {this.props.isTenderMint ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
 
                         <Collapse in={this.state.openEth && !isTenderMint} timeout="auto" unmountOnExit>
@@ -342,7 +337,7 @@ class Sidebar extends Component {
                         } */}
 
                         <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/Sentinel.png'} alt="sentinel_logo"
-                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 145 }} /></span>
+                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 16 }} /></span>
                     </div>
                 </Drawer>
             </div>

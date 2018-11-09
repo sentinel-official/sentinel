@@ -1164,7 +1164,7 @@ let lang = {
         'TM': 'TENDERMINT',
         'ETH': '以太坊',
         'TxHistory': 'TX历史记录',
-        'Account': 'ACCOUNT',
+        'Account': '账户',
         'Transfer': '转账',
         'NoSentTx': '未有SENT交易记录',
         'NoEthTx': '未有ETH交易记录',

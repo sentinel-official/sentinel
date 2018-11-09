@@ -13,7 +13,7 @@ import { transferAmount } from '../Actions/send.action';
 import { tokenTransaction, ethTransaction, getGasCost } from './../Utils/Ethereum';
 import PositionedSnackbar from './SharedComponents/simpleSnackbar';
 import { TX_SUCCESS } from '../Constants/sendcomponent.types';
-const shell   = window.require('electron').shell;
+const shell = window.require('electron').shell;
 
 
 let lang = require('./../Constants/language');
@@ -60,7 +60,7 @@ class ConvertToErc extends Component {
 		this.props.swixRate(token.symbol, 'SENT', myValue.noExponents())
 	}
 	componentDidMount() {
-		console.log('erc20 did mount',this.props.token)
+		console.log('erc20 did mount', this.props.token)
 	}
 
 	componentWillUnmount() {
@@ -200,7 +200,7 @@ class ConvertToErc extends Component {
 						</Col>
 					</Row>
 					<p style={convertToErcStyles.smallBal1}>
-					{lang[language].SentTokens}: {this.state.tokenBalances[this.props.token.symbol]} {this.props.token.symbol}</p>
+						{lang[language].SentTokens}: {this.state.tokenBalances[this.props.token.symbol]} {this.props.token.symbol}</p>
 					<p style={convertToErcStyles.to}>{lang[language].To}</p>
 					<Row style={convertToErcStyles.w_m_t}>
 						<Col xsOffset={2} xs={8}>
@@ -244,7 +244,9 @@ class ConvertToErc extends Component {
 						</Col>
 					</Row>
 				</div>
-				<PositionedSnackbar open={this.state.open} message={this.state.snackMessage} close={this.handleSnackClose} url={this.state.url} checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
+				<PositionedSnackbar open={this.state.open} message={this.state.snackMessage}
+					language={this.props.lang} close={this.handleSnackClose} url={this.state.url} 
+					checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
 			</div>
 
 		)

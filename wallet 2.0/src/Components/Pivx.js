@@ -410,7 +410,9 @@ class Pivx extends Component {
 
 				</div>
 			}
-			<PositionedSnackbar open={this.state.open} message={this.state.snackMessage} close={this.handleSnackClose} url={this.state.url} checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
+			<PositionedSnackbar open={this.state.open} message={this.state.snackMessage} 
+			language={this.props.lang} close={this.handleSnackClose} 
+			url={this.state.url} checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
 		</div>
 	}
 }

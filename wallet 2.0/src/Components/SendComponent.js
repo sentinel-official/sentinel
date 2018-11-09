@@ -445,7 +445,10 @@ class SendComponent extends React.Component {
               </div>
             </Row>
           </Grid>
-          <PositionedSnackbar open={this.state.open} message={this.state.snackMessage} close={this.handleSnackClose} url={this.state.url} checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
+          <PositionedSnackbar open={this.state.open} message={this.state.snackMessage}
+            language={this.props.language}
+            close={this.handleSnackClose} url={this.state.url}
+            checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
         </div>
       </MuiThemeProvider>
     );

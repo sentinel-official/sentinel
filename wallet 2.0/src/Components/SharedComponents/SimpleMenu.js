@@ -70,8 +70,11 @@ class SimpleListMenu extends React.Component {
   componentWillMount() {
     if (this.props.isSend) {
       this.props.token('ETH');
+      this.setState({ token: 'ETH' });
       if (this.props.isVPN) {
+        console.log("Props...", this.props)
         this.props.token('SENT');
+        this.setState({ token: 'SENT' })
       }
     }
   }
@@ -85,8 +88,8 @@ class SimpleListMenu extends React.Component {
   }
 
   render() {
-    const { language,classes } = this.props;
-   
+    const { language, classes } = this.props;
+
 
     if (this.props.isSend) {
       return (
@@ -112,14 +115,14 @@ class SimpleListMenu extends React.Component {
             }}
           >
             <MenuItem value={'ETH'} >
-            <img src={'../src/Images/ethereum.svg'} alt="etherem_logo" 
-             style={{ width: 15, paddingRight:5 , marginTop: -5 }} />
+              <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                style={{ width: 15, paddingRight: 5, marginTop: -5 }} />
 
-            {lang[language].Eth}</MenuItem>
+              {lang[language].Eth}</MenuItem>
             <MenuItem value={'SENT'}>
-            <img src={'../src/Images/logo.svg'} alt="sentinel_logo"   
-                           style={{ width: 16, paddingRight:5 , marginTop: -2 }} />
-            {lang[language].Sent}</MenuItem>
+              <img src={'../src/Images/logo.svg'} alt="sentinel_logo"
+                style={{ width: 16, paddingRight: 5, marginTop: -2 }} />
+              {lang[language].Sent}</MenuItem>
           </Select>
         </div>
       );
@@ -165,12 +168,12 @@ SimpleListMenu.propTypes = {
 function mapStateToProps(state) {
   return {
     language: state.setLanguage,
-   
+
   }
 }
 function mapDispatchToActions(dispatch) {
   return bindActionCreators({
-    
+
   }, dispatch)
 }
 

@@ -92,6 +92,12 @@ class Sidebar extends Component {
 
     }
 
+    componentWillReceiveProps = (next) => {
+        if (next.isTenderMint !== this.props.isTenderMint || next.isTest !== this.props.isTest) {
+            this.setState({ openEth: !next.isTenderMint, openTmd: next.isTenderMint })
+        }
+    }
+
     toggleDrawer = (value) => () => {
         this.setState({ openDrawer: value })
     }
@@ -212,7 +218,7 @@ class Sidebar extends Component {
                                 }
                             </ListItemIcon>
                             <ListItemText inset primary={lang[language].TM} style={sidebarStyles.collapseType} />
-                            {this.props.isTenderMint ? <ExpandMore /> : <ExpandLess />}
+                            {this.state.openTmd ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
 
                         <Collapse in={this.state.openTmd && isTenderMint} timeout="auto" unmountOnExit>
@@ -259,8 +265,7 @@ class Sidebar extends Component {
 
                             </ListItemIcon>
                             <ListItemText inset primary={lang[language].ETH} style={sidebarStyles.collapseType} />
-                            {/* {this.state.openEth ? <ExpandLess /> : <ExpandMore />} */}
-                            {this.props.isTenderMint ? <ExpandLess /> : <ExpandMore />}
+                            {this.state.openEth ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
 
                         <Collapse in={this.state.openEth && !isTenderMint} timeout="auto" unmountOnExit>

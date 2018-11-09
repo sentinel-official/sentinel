@@ -8,6 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import lang from '../Constants/language';
 
 class OpenvpnAlert extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class OpenvpnAlert extends React.Component {
     };
 
     render() {
-        const { ...other } = this.props;
+        const { language, ...other } = this.props;
         return (
             <div>
                 <Dialog
@@ -30,16 +31,15 @@ class OpenvpnAlert extends React.Component {
                     aria-describedby="alert-dialog-description"
                     {...other}
                 >
-                    <DialogTitle id="alert-dialog-title">{"Openvpn not installed"}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">{lang[language].OpenVpnNotInstalled}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            OpenVPN Not Installed. Please go to C:\Users"your-user-name"\AppData\Local\Sentinel\app-0.1.0\resources\extras and
-                            run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.
+                            {lang[language].OpenVpnInstallAlert}
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary" autoFocus>
-                            Close
+                            {lang[language].Close}
             `           </Button>
                     </DialogActions>
                 </Dialog>
@@ -54,7 +54,7 @@ OpenvpnAlert.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage
+        language: state.setLanguage
     }
 }
 

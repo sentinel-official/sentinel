@@ -1,6 +1,7 @@
 import React from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles } from '@material-ui/core/styles';
+import lang from './../../Constants/language';
 
 
 const styles1 = theme => ({
@@ -20,7 +21,7 @@ class PositionedSnackbar extends React.Component {
     
     render() {
         const { vertical, horizontal } = this.state;
-        const { classes } = this.props
+        const { classes, language } = this.props
         return (
             <div>
                 <Snackbar
@@ -33,7 +34,7 @@ class PositionedSnackbar extends React.Component {
                     ContentProps={{
                         'aria-describedby': 'message-id',
                     }}
-                    message={<span id="message-id">{this.props.message} {this.props.url?<span onClick={this.props.checkStatus} style={{cursor:'pointer'}}>Check Status</span>:''}</span>}
+                    message={<span id="message-id">{this.props.message} {this.props.url?<span onClick={this.props.checkStatus} style={{cursor:'pointer'}}>{lang[language].CheckStatus}</span>:''}</span>}
                 />
             </div>
         );

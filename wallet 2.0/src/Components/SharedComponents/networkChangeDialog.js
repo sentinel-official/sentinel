@@ -73,7 +73,7 @@ export default class NetworkChangeDialog extends React.Component {
                             color="primary"
                             disabled={this.state.isLoading}
                         >
-                            Cancel
+                            {lang[language].Cancel}
                         </Button>
                         {/*<div className={styles.wrapper}>*/}
                         <Button
@@ -83,7 +83,7 @@ export default class NetworkChangeDialog extends React.Component {
                             color={'primary'}
                             style={{ minWidth: 100 }}
                         >
-                            Connect
+                            {lang[language].Connect}
                                 </Button>
                         {/*</div>*/}
                     </DialogActions>

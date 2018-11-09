@@ -71,7 +71,7 @@ class TMAccountView extends Component {
                     onClick={this.getFree.bind(this)}
                     style={this.state.isFreeLoading ? receiveStyles.tmFlatButtonStyleOffTest : receiveStyles.tmFlatButtonStyleOnTest}
                     style={this.props.vpnStatus ? receiveStyles.vpnFlatButtonStyleOffTest : receiveStyles.vpnFlatButtonStyleOnTest}
-                >{this.state.isFreeLoading ? 'Loading...' : lang[language].GetTokens}</Button>
+                >{this.state.isFreeLoading ? lang[language].Loading : lang[language].GetTokens}</Button>
                 </div>
                 <div style={ this.props.vpnStatus ? accountStyles.formVpnStyle : accountStyles.formStyle}>
                     <div style={accountStyles.cardStyle} bordered={false}>
@@ -87,13 +87,13 @@ class TMAccountView extends Component {
                                 bgColor="#FFFFFF"
                                 level="Q"
                                 style={accountStyles.qrCodeStyle}
-                                value={account_key ? account_key.address : 'Loading...'}
+                                value={account_key ? account_key.address : lang[language].Loading}
                                 fgColor="#000000"
                             />
                             <label style={accountStyles.addressStyle}>
-                                {account_key ? account_key.address : 'Loading...'}</label>
+                                {account_key ? account_key.address : lang[language].Loading}</label>
                             <Tooltip title={lang[language].Copy}>
-                                <CopyToClipboard text={account_key ? account_key.address : 'Loading...'}
+                                <CopyToClipboard text={account_key ? account_key.address : lang[language].Loading}
                                     onCopy={() => this.setState({
                                         snackMessage: lang[language].Copied,
                                         openSnack: true

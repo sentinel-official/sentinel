@@ -250,7 +250,7 @@ class VPNHistory extends Component {
                         </div>
                         : VpnUsage === null ?
                             <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%',fontSize:'25px'}}>
-                                No VPN Used
+                                {lang[language].NoVPNUsed}
                             </div>
                             :
                             <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%',fontSize:'25px' }}>

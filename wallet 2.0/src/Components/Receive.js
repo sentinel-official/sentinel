@@ -92,7 +92,7 @@ class Receive extends Component {
                                 <Tooltip title={lang[language].Copy}>
                                  <CopyToClipboard text={this.state.local_address}
                                     onCopy={() => this.setState({
-                                        snackMessage: 'Copied to Clipboard Successfully',
+                                        snackMessage: lang[language].Copied,
                                         openSnack: true
                                     })} >
                                         {/* <img

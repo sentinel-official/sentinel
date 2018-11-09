@@ -64,12 +64,12 @@ class VpnList extends Component {
         this.setState({ isLoading: true });
         getGatewayUrl(authCode, (err, data, url) => {
             if (err) {
-                this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: err.message || 'Problem in enabling private net' });
+                this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: err.message || lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
                 setTimeout(() => { this.getVPNs(); }, 500);
             }
             else {
-                this.setState({ isPrivate: true, openPopup: false, openSnack: true, snackMessage: 'Private Net is Enabled with ' + url });
+                this.setState({ isPrivate: true, openPopup: false, openSnack: true, snackMessage: `${lang[this.props.language].PrivateNetEnabledWith}${url}` });
                 this.props.networkChange('private');
                 setTimeout(() => { this.setState({ isLoading: false, uri: true }) }, 1500);
                 setTimeout(() => { this.getVPNs(); }, 500);
@@ -192,7 +192,7 @@ class VpnList extends Component {
                                     </RadioGroup>
                                 </FormControl>
                                 :
-                                <CustomTextfield type={'text'} placeholder={"search for a dVPN node"} disabled={false}
+                                <CustomTextfield type={'text'} placeholder={lang[language].SearchdVPNnode} disabled={false}
                                     value={this.state.dVpnQuery} onChange={(e) => {
                                         this.setState({ dVpnQuery: e.target.value })
                                     }} />

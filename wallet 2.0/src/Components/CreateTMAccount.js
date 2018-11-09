@@ -11,6 +11,9 @@ import { createAccountStyle } from '../Assets/createtm.styles';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
 
+let lang = require('./../Constants/language');
+
+
 const Customstyles = theme => ({
     button: {
         margin: theme.spacing.unit,
@@ -56,15 +59,16 @@ class CreateTMAccount extends Component {
 
     render() {
         const { classes } = this.props;
+        let language = this.props.lang;
         return (
             <div style={createAccountStyle.formStyle}>
-            <div> <h2  style={createAccountStyle.createStyle}><center>Create a Wallet on Sentinel Tendermint TestNet (STT) #1</center></h2></div>
+            <div> <h2  style={createAccountStyle.createStyle}><center>  {lang[language].CreateWalletSST}</center></h2></div>
                 <div style={createAccountStyle.secondDivStyle}>
-                    <p style={createAccountStyle.headingStyle}>Account Name</p>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].AccountName}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false} value={this.state.keyName}
                         onChange={(e) => { this.setState({ keyName: e.target.value }) }}
                     />
-                    <p style={createAccountStyle.headingStyle}>Account Password</p>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].AccountPwd}</p>
                     <CustomTextField type={'password'} placeholder={''} disabled={false} value={this.state.keyPassword}
                         onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
                     />
@@ -73,7 +77,7 @@ class CreateTMAccount extends Component {
                         color="primary"
                         onClick={() => { this.createAccount() }}
                         className={classes.button} style={{ margin: 20, outline: 'none' }}>
-                        Create Account
+                        {lang[language].CreateAccount}
                     </Button>
                 </div>
                 <Snackbar

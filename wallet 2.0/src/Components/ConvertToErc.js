@@ -200,8 +200,8 @@ class ConvertToErc extends Component {
 						</Col>
 					</Row>
 					<p style={convertToErcStyles.smallBal1}>
-						Balance: {this.state.tokenBalances[this.props.token.symbol]} {this.props.token.symbol}</p>
-					<p style={convertToErcStyles.to}>TO</p>
+					{lang[language].SentTokens}: {this.state.tokenBalances[this.props.token.symbol]} {this.props.token.symbol}</p>
+					<p style={convertToErcStyles.to}>{lang[language].To}</p>
 					<Row style={convertToErcStyles.w_m_t}>
 						<Col xsOffset={2} xs={8}>
 							<div style={convertToErcStyles.b_p}>
@@ -209,7 +209,7 @@ class ConvertToErc extends Component {
 									<span style={convertToErcStyles.f_w}>
 										{Number(this.props.expectedValue.value / Math.pow(10, 8)).toFixed(8)}
 									</span>
-									<span style={convertToErcStyles.sentTokens}> SENT TOKENS</span>
+									<span style={convertToErcStyles.sentTokens}> {lang[language].SentTokens}</span>
 								</p>
 							</div>
 						</Col>
@@ -220,7 +220,7 @@ class ConvertToErc extends Component {
 						<Col xsOffset={1} xs={5}>
 							<TextField
 								type="password"
-								hintText="PASSWORD"
+								hintText={lang[language].Password}
 								hintStyle={convertToErcStyles.pwdHint}
 								onChange={(event, password) => this.setState({ convertPass: password })}
 								value={this.state.convertPass}
@@ -239,7 +239,7 @@ class ConvertToErc extends Component {
 									convertToErcStyles.b2}
 							>
 								<span style={convertToErcStyles.labelStyle}
-								>{this.state.converting ? 'CONVERTING' : lang[language].Convert}</span>
+								>{this.state.converting ? lang[language].Converting : lang[language].Convert}</span>
 							</Button>
 						</Col>
 					</Row>

@@ -37,7 +37,7 @@ import './sidebarStyle.css'
 
 const Customstyles = theme => ({
     paper: {
-        height:'100%',
+        height: '100%',
         top: 70,
         width: 250
     }
@@ -92,6 +92,12 @@ class Sidebar extends Component {
 
     }
 
+    componentWillReceiveProps = (next) => {
+        if (next.isTenderMint !== this.props.isTenderMint || next.isTest !== this.props.isTest) {
+            this.setState({ openEth: !next.isTenderMint, openTmd: next.isTenderMint })
+        }
+    }
+
     toggleDrawer = (value) => () => {
         this.setState({ openDrawer: value })
     }
@@ -105,13 +111,13 @@ class Sidebar extends Component {
         }
         if (iconName === 'ethereumIcon') {
             if (this.props.isTenderMint)
-            return <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
-                style={{ width: 20 }} />
+                return <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
+                    style={{ width: 20 }} />
 
-            else    
-                return  <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                style={{ width: 20 }} />
-               
+            else
+                return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                    style={{ width: 20 }} />
+
 
         }
         else {
@@ -136,13 +142,13 @@ class Sidebar extends Component {
 
 
     render() {
-        let { classes, isTest, isTenderMint, component,language } = this.props;
-    
+        let { classes, isTest, isTenderMint, component, language } = this.props;
+
         let currentTab = this.props.currentTab;
         return (
             <div style={sidebarStyles.totalDiv}>
                 <div style={sidebarStyles.IconActiveDivStyle}>
-                    <Tooltip title="Toggle Menu">
+                    <Tooltip title={lang[language].ToggleMenu}>
                         <MenuIcon onClick={this.toggleDrawer(true)} />
                     </Tooltip>
                 </div>
@@ -195,7 +201,7 @@ class Sidebar extends Component {
                         style={sidebarStyles.outlineNone}
                     >
                         {/* <span onClick = {this.toggleDrawer(false)}><i class="material-icons">keyboard_backspace</i></span> */}
-                        <IconButton aria-label="Back"  style={sidebarStyles.backArrowStyle} onClick={this.toggleDrawer(false)}>
+                        <IconButton aria-label="Back" style={sidebarStyles.backArrowStyle} onClick={this.toggleDrawer(false)}>
                             <BackArrowIcon />
                         </IconButton>
                         {/* <span style={sidebarStyles.drawerHeading}>SENTINEL</span> */}
@@ -253,10 +259,10 @@ class Sidebar extends Component {
 
                         <ListItem button onClick={this.handleEthClick} disabled={isTenderMint}>
                             <ListItemIcon>
-                            
-                             <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
-                                 style={{ width: 20, marginTop: -5 }} />
-                                                                   
+
+                                <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
+                                    style={{ width: 20, marginTop: -5 }} />
+
                             </ListItemIcon>
                             <ListItemText inset primary={lang[language].ETH} style={sidebarStyles.collapseType} />
                             {this.state.openEth ? <ExpandLess /> : <ExpandMore />}
@@ -286,10 +292,10 @@ class Sidebar extends Component {
                                                                     sidebarStyles.activeLabelStyle :
                                                                     sidebarStyles.normalLabelStyle)
                                                         }>
-                                                       <span> <span className="iconStyle"> {this.getIcon(item.icon)}</span>
-                                                                <span 
-                                                                // className="headingStyle"
-                                                                > {lang[language][item.name]} </span></span>
+                                                        <span> <span className="iconStyle"> {this.getIcon(item.icon)}</span>
+                                                            <span
+                                                            // className="headingStyle"
+                                                            > {lang[language][item.name]} </span></span>
 
                                                     </label>
                                                 </div>
@@ -336,7 +342,7 @@ class Sidebar extends Component {
                         } */}
 
                         <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/Sentinel.png'} alt="sentinel_logo"
-                            style={{ width: 139, paddingRight: 5,position:'absolute',bottom:145 }} /></span>
+                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 145 }} /></span>
                     </div>
                 </Drawer>
             </div>

@@ -8,10 +8,11 @@ import { Button } from '@material-ui/core';
 import { createAccountStyle } from '../Assets/createtm.styles';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
+import lang from '../Constants/language';
 
 const Customstyles = theme => ({
     button: {
-        
+
     }
 });
 
@@ -27,22 +28,22 @@ class TMAccountDetails extends Component {
     }
 
     render() {
-        const { classes, account } = this.props;
+        const { classes, account, language } = this.props;
         return (
-            <div style={{padding:'5%'}}>
-            {/* <h2><center>WELCOME TO TENDERMINT</center></h2> */}
-                <p style={createAccountStyle.detailsHeading}>Address&nbsp;:</p>
+            <div style={{ padding: '5%' }}>
+                {/* <h2><center>WELCOME TO TENDERMINT</center></h2> */}
+                <p style={createAccountStyle.detailsHeading}>{lang[language].Address}&nbsp;:</p>
                 <p style={createAccountStyle.detailsText}>{account.address}</p>
-                <p style={createAccountStyle.detailsHeading}>Public Key&nbsp;:</p>
+                <p style={createAccountStyle.detailsHeading}>{lang[language].PubKey}&nbsp;:</p>
                 <p style={createAccountStyle.detailsText}>{account.pub_key}</p>
-                <p style={createAccountStyle.detailsHeading}>Seed&nbsp;:</p>
+                <p style={createAccountStyle.detailsHeading}>{lang[language].Seed}&nbsp;:</p>
                 <p style={createAccountStyle.detailsText}>{account.seed}</p>
                 <Button
                     variant="outlined"
                     color="primary"
                     onClick={() => { this.gotoDashboard() }}
                     className={classes.button} style={{ outline: 'none' }}>
-                    Go To Sentinel Tendermint Wallet
+                    {lang[language].GoToSTWallet}
                 </Button>
             </div>
         )
@@ -56,7 +57,7 @@ TMAccountDetails.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage,
+        language: state.setLanguage,
         isTest: state.setTestNet,
         account: state.createTMAccount
     }

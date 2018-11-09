@@ -23,7 +23,7 @@ import lang from '../Constants/language';
 import { calculateUsage, socksVpnUsage } from '../Actions/calculateUsage';
 
 const electron = window.require('electron');
-const { exec} = window.require('child_process');
+const { exec } = window.require('child_process');
 const remote = electron.remote;
 let UsageInterval = null;
 let type = '';
@@ -165,12 +165,12 @@ class SimpleDialog extends React.Component {
 
 
                         <div className={classes.listRoot}>
-                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label={this.props.isLoading || this.props.vpnStatus ? lang[language].ConnectingdVPN  : lang[language].Connect}
+                            <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label={this.props.isLoading || this.props.vpnStatus ? lang[language].ConnectingdVPN : lang[language].Connect}
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
-                                {this.props.isLoading ? lang[language].ConnectingdVPN  : (this.props.success ? lang[language].Connected : lang[language].Connect)}
+                                {this.props.isLoading ? lang[language].ConnectingdVPN : (this.props.success ? lang[language].Connected : lang[language].Connect)}
                             </Button>
                         </div>
                     </List>
@@ -341,7 +341,7 @@ class SimpleDialogDemo extends React.Component {
                         }
                         this.setState({
                             isLoading: false, isPending: false, open: false,
-                            snackMessage: 'Connected Socks', snackOpen: 'true'
+                            snackMessage: lang[this.props.language].ConnectedSocks, snackOpen: true
                         });
                         this.props.setActiveVpn(this.props.data);
                         this.props.setVpnStatus(true);

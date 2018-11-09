@@ -226,7 +226,7 @@ class Pivx extends Component {
 												if (response.type === TX_SUCCESS) {
 													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
 												} else {
-													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Failure.' }); // we have txSuccess and txFailed in lang
 												}
 											})
 										}
@@ -245,7 +245,7 @@ class Pivx extends Component {
 												if (response.type === TX_SUCCESS) {
 													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Success.', url: true, txHash: response.payload });
 												} else {
-													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Failure.' });
+													self.setState({ label: 'SWAP', isSwap: false, address: '', swapAmount: '', password: '', open: true, snackMessage: 'Transaction Failure.' }); // txSuccess and txFailed is there in lang.js
 												}
 											})
 										}
@@ -325,7 +325,7 @@ class Pivx extends Component {
 					<span style={styles.formHeading}>{this.state.to + ' Address'}</span>
 					<Input
 						type='text'
-						placeholder="Example: 0x93186402811baa5b188a14122C11B41dA0099844"
+						placeholder="Example: 0x93186402811baa5b188a14122C11B41dA0099844" // given name for "Example" ONLY in languages.js
 						// hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
 						className={classes.textStyleSwap}
 						disableUnderline={true} fullWidth={true}
@@ -359,7 +359,7 @@ class Pivx extends Component {
 							<Col xs={6}>
 								<Input
 									type="password"
-									placeholder="KEYSTORE PASSWORD"
+									placeholder="KEYSTORE PASSWORD" // we have keypass in lang
 									disableUnderline={true} fullWidth={true}
 									inputProps={{ style: styles.textInputStyle }}
 									className={classes.textInStyleLast}

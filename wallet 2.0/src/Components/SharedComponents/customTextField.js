@@ -20,7 +20,7 @@ class TextFields extends React.Component {
 		return (
 			<Input
 			  type={this.props.type}
-				placeholder="Example: 0x6b6df9e25f7bf23343mfkr45"
+				placeholder="Example: 0x6b6df9e25f7bf23343mfkr45" // added "Example" in lang.js
 				autoFocus={false}
 				disableUnderline={true}
 				className={classes.textField}

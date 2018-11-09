@@ -130,7 +130,7 @@ class TMSessions extends Component {
                             }
                             <div style={sessionStyles.headingStyle}>
                                 {lang[language].Duration} :  <span style={sessionStyles.textStyle}>{(Date.parse(new Date(sessionData.endedOn)) -
-                                    Date.parse(new Date(sessionData.startedOn))) / 1000} secs</span>
+                                    Date.parse(new Date(sessionData.startedOn))) / 1000}{lang[language].Secs}</span>
                             </div>
                             <div style={sessionStyles.headingStyle}>
                                 {lang[language].Time} : <span style={sessionStyles.textStyle}> {moment(new Date(sessionData.startedOn)).format("DD/MM/YYYY hh:mm A")}</span>
@@ -140,7 +140,7 @@ class TMSessions extends Component {
                 )
             })
         } else {
-            sessionOutput = <div style={sessionStyles.noSessionsStyle}>No Previous Sessions</div>
+            sessionOutput = <div style={sessionStyles.noSessionsStyle}>{lang[language].NoPrevSessions}</div>
         }
         return (
             <div style={sessionStyles.firstDiv}>

@@ -19,7 +19,7 @@ import { isOnline } from "../Actions/convertErc.action";
 import '../Assets/footerStyle.css';
 
 const electron = window.require('electron');
-const { exec} = window.require('child_process');
+const { exec } = window.require('child_process');
 const remote = electron.remote;
 
 const styles = theme => ({
@@ -45,7 +45,7 @@ class Footer extends Component {
             status: false,
             counter: 1,
             showAlert: false,
-            isDisabled:false
+            isDisabled: false
         }
     }
 
@@ -106,17 +106,17 @@ class Footer extends Component {
     }
 
     disconnect = () => {
-        this.setState({isDisabled:true})
+        this.setState({ isDisabled: true })
         if (this.props.isTm) {
             this.sendSignature(downloadData, true, this.state.counter);
             disconnectVPN((res) => {
                 if (res) {
-                    this.setState({ openSnack: true, snackMessage: res, isDisabled:false });
+                    this.setState({ openSnack: true, snackMessage: res, isDisabled: false });
                 }
                 else {
                     this.setState({
                         openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
-                        counter: 1, showAlert: false, isDisabled:false
+                        counter: 1, showAlert: false, isDisabled: false
                     });
                     this.props.clearUsage();
                     this.props.setVpnStatus(false);
@@ -128,11 +128,13 @@ class Footer extends Component {
             if (this.props.vpnType === 'openvpn') {
                 disconnectVPN((res) => {
                     if (res) {
-                        this.setState({ openSnack: true, snackMessage: res, isDisabled:false });
+                        this.setState({ openSnack: true, snackMessage: res, isDisabled: false });
                     }
                     else {
-                        this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, 
-                            rateDialog: true, isDisabled:false });
+                        this.setState({
+                            openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
+                            rateDialog: true, isDisabled: false
+                        });
                         this.props.clearUsage();
                         this.props.setVpnStatus(false);
                     }
@@ -140,7 +142,7 @@ class Footer extends Component {
             } else {
                 disconnectSocks(this.props.walletAddr, (res) => {
                     if (res) {
-                        this.setState({ openSnack: true, snackMessage: res,isDisabled:false });
+                        this.setState({ openSnack: true, snackMessage: res, isDisabled: false });
                     }
                     else {
                         if (remote.process.platform === 'win32') {
@@ -148,8 +150,10 @@ class Footer extends Component {
                                 console.log('browser opened');
                             });
                         }
-                        this.setState({ openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN, 
-                            rateDialog: true,isDisabled:false });
+                        this.setState({
+                            openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
+                            rateDialog: true, isDisabled: false
+                        });
                         this.props.clearUsage();
                         this.props.setVpnStatus(false);
                     }
@@ -178,18 +182,18 @@ class Footer extends Component {
                             <p style={footerStyles.testLabelStyle}>
                                 {
                                     isOnline() ?
-                                    this.props.isTm ?
-                                   <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].TMTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>:
-                                     this.props.isTest ? 
-                                     
-                                  
-                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
-                                     
-                                     :
-                                    
-                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHMainNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
-                                    :
-                                    <span><span style={footerStyles.redDot}></span>Offline</span> 
+                                        this.props.isTm ?
+                                            <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].TMTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span> :
+                                            this.props.isTest ?
+
+
+                                                <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
+
+                                                :
+
+                                                <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHMainNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
+                                        :
+                                        <span><span style={footerStyles.redDot}></span>{lang[language].OfflineInFooter}</span>
                                 }
                             </p>
                         </Col>
@@ -197,7 +201,7 @@ class Footer extends Component {
                             vpnStatus ?
                                 <Col xs={9} style={footerStyles.vpnConnected}>
                                     <Row style={footerStyles.textCenter}>
-                                        <Col xs={2}style={footerStyles.vpnConnected} >
+                                        <Col xs={2} style={footerStyles.vpnConnected} >
                                             <label style={footerStyles.headingStyle}>{lang[language].IPAddress}</label>
                                             <p style={footerStyles.valueStyle}>
                                                 {localStorage.getItem('IPGENERATED')}
@@ -216,46 +220,46 @@ class Footer extends Component {
                                             </p>
                                         </Col>
 
-                                          <Col xs={3} style={footerStyles.vpnConnected}>
-                                          <Row>
-                                              <Col xs={2}></Col>
-                                              <Col xs={5}>
-                                            <label style={footerStyles.headingStyle}>{lang[language].Upload}</label>
-                                            <p style={footerStyles.valueStyle}>
-                                                {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB
-                                            </p>
-                                            </Col>
-                                            <Col xs={5}>
-                                             <label style={footerStyles.headingStyle}>{lang[language].Download}</label>
-                                            <p style={footerStyles.valueStyle}>
-                                                {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} MB
-                                            </p>
-                                            </Col>
+                                        <Col xs={3} style={footerStyles.vpnConnected}>
+                                            <Row>
+                                                <Col xs={2}></Col>
+                                                <Col xs={5}>
+                                                    <label style={footerStyles.headingStyle}>{lang[language].Upload}</label>
+                                                    <p style={footerStyles.valueStyle}>
+                                                        {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
+                                                    </p>
+                                                </Col>
+                                                <Col xs={5}>
+                                                    <label style={footerStyles.headingStyle}>{lang[language].Download}</label>
+                                                    <p style={footerStyles.valueStyle}>
+                                                        {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
+                                                    </p>
+                                                </Col>
                                             </Row>
                                         </Col>
-                                        
+
                                         {/* <Col xs={2} style={footerStyles.vpnConnected}>
                                            
                                         </Col> */}
-                                      
+
 
                                         {
-                            vpnStatus ?
-                                <Col xs={3} style={footerStyles.vpnConnected}>
-                                    <Tooltip title={lang[language].Disconnect}>
-                                        <Button style={footerStyles.disconnectStyle} 
-                                        disabled={this.state.isDisabled}
-                                        onClick={() => { this.disconnect() }}>
-                                          <span style={footerStyles.disconnectText}>  {lang[language].Disconnect} </span>
-                                           <DisconnectIcon style={footerStyles.crossMark} />
-                                        </Button>
-                                    </Tooltip>
-                                </Col>
-                                : null
-                        }
+                                            vpnStatus ?
+                                                <Col xs={3} style={footerStyles.vpnConnected}>
+                                                    <Tooltip title={lang[language].Disconnect}>
+                                                        <Button style={footerStyles.disconnectStyle}
+                                                            disabled={this.state.isDisabled}
+                                                            onClick={() => { this.disconnect() }}>
+                                                            <span style={footerStyles.disconnectText}>  {lang[language].Disconnect} </span>
+                                                            <DisconnectIcon style={footerStyles.crossMark} />
+                                                        </Button>
+                                                    </Tooltip>
+                                                </Col>
+                                                : null
+                                        }
                                     </Row>
                                 </Col>
-                               : null}          
+                                : null}
                     </Row>
                 </Grid>
                 <Snackbar

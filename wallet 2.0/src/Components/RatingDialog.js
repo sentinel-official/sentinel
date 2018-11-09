@@ -7,6 +7,7 @@ import { Rating } from 'material-ui-rating';
 import { rateVPNSession } from './../Actions/vpnlist.action';
 import TextField from '@material-ui/core/TextField';
 import { MuiThemeProvider } from 'material-ui/styles';
+import lang from '../Constants/language';
 import './ratingStyle.css'
 
 class RatingDialog extends React.Component {
@@ -28,13 +29,13 @@ class RatingDialog extends React.Component {
                 this.props.snackOpenDialog(err.message);
             } else {
                 this.props.onClose();
-                this.props.snackOpenDialog('Rated Successfully');
+                this.props.snackOpenDialog(lang[this.props.language].RatedSuccess);
             }
         })
     };
 
     render() {
-        const { ...other } = this.props;
+        let { language, ...other } = this.props;
         return (
             <MuiThemeProvider>
                 <Dialog
@@ -44,7 +45,7 @@ class RatingDialog extends React.Component {
                     aria-labelledby="confirmation-dialog-title"
                     {...other}
                 >
-                    <DialogTitle id="confirmation-dialog-title">Rate this session</DialogTitle>
+                    <DialogTitle id="confirmation-dialog-title">{lang[language].RateSession}</DialogTitle>
                     <DialogContent>
                         <Rating
                             value={this.state.rateValue}
@@ -52,25 +53,25 @@ class RatingDialog extends React.Component {
                             onChange={(value) => { this.setState({ rateValue: value }) }}
                         />
                         <TextField
-          id="filled-multiline-flexible"
-          label="Comment"
-          multiline
-          rowsMax="4"
-          value={this.state.multiline}
-        //   onChange={this.handleChange('multiline')}
-          className= "commentField"
-          margin="normal"
-        //   helperText="hello"
-          variant="filled"
-        />
+                            id="filled-multiline-flexible"
+                            label={lang[language].Comment}
+                            multiline
+                            rowsMax="4"
+                            value={this.state.multiline}
+                            //   onChange={this.handleChange('multiline')}
+                            className="commentField"
+                            margin="normal"
+                            //   helperText="hello"
+                            variant="filled"
+                        />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleCancel} color="primary">
-                            Cancel
-                </Button>
+                            {lang[language].Cancel}
+                        </Button>
                         <Button onClick={this.handleOk} color="primary">
-                            Submit
-                </Button>
+                            {lang[language].Submit}
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </MuiThemeProvider>
@@ -85,7 +86,7 @@ RatingDialog.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage
+        language: state.setLanguage
     }
 }
 

@@ -49,7 +49,7 @@ class Home extends Component {
                     <Col xs={4} style={homePageStyles.m_l_5}>
                         <h4 style={homePageStyles.bottomDivBuilt}>{lang[language].BetaVersion}</h4>
                         <hr align="left" style={homePageStyles.underLine} />
-                        <p style={homePageStyles.copyRight}>SentinelGroup.io</p>
+                        <p style={homePageStyles.copyRight}>{lang[language].SentGroup}</p>
                     </Col>
                 </Row>
             </Grid>

@@ -70,7 +70,7 @@ class RatingDialog extends React.Component {
                             {lang[language].Cancel}
                         </Button>
                         <Button onClick={this.handleOk} color="primary">
-                            {lang[language].Submits}
+                            {lang[language].Submit}
                         </Button>
                     </DialogActions>
                 </Dialog>

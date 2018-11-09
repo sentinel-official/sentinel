@@ -61,7 +61,7 @@ class TMTransactionsHistory extends React.Component {
         }
         return (
             <div style={sessionStyles.firstDiv}>
-                <h2 style={sessionStyles.header}>{'Transactions'}</h2>
+                <h2 style={sessionStyles.header}>{lang[language].TransactionsHistory}</h2>
                 <IconButton
                     aria-label="Refresh"
                     onClick={this.getTxData}

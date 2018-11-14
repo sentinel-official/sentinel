@@ -230,7 +230,7 @@ class AlertDialog extends React.Component {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{lang[this.props.language].InitialPayment}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{lang[this.props.language].InitialPaymentAlert}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         {`${this.props.message} ${lang[this.props.language].PleaseClickPay}`}

@@ -190,6 +190,16 @@ class Sidebar extends Component {
                         )
                     })
                 }
+                <ul id="social" class="list-unstyled">
+                    <li><a href="https://medium.com/sentinel" id="md" rel="me" target="_blank">Medium</a>
+                    </li>
+                    <li><a href="https://twitter.com/Sentinel_co" id="tw" rel="me" target="_blank">Twitter</a>
+                    </li>
+                    <li><a href="https://t.me/sentinel_co" id="tl" rel="me" target="_blank">Telegram</a>
+                    </li>
+                    <li><a href="https://sentinel.co/" id="snt" rel="me author" target="_blank">Sentinel</a>
+                    </li>
+                </ul>
                 <Drawer
                     open={this.state.openDrawer}
                     onClose={this.toggleDrawer(false)}

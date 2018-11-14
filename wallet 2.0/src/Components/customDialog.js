@@ -230,19 +230,19 @@ class AlertDialog extends React.Component {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{"Initial Payment Alert"}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{lang[this.props.language].InitialPayment}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        {`${this.props.message} Please click on pay button to make the initial payment`}
+                        {`${this.props.message} ${lang[this.props.language].PleaseClickPay}`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.handleClose} color="primary">
-                        Cancel
-                        </Button>
+                        {lang[this.props.language].Cancel}
+                    </Button>
                     <Button onClick={this.makeInitPayment} color="primary" autoFocus>
-                        Pay
-                        </Button>
+                        {lang[this.props.language].Pay}
+                    </Button>
                 </DialogActions>
             </Dialog>
         );
@@ -307,12 +307,22 @@ class SimpleDialogDemo extends React.Component {
                                 pendingInitPayment: err.message, open: false, isPending: true,
                                 paymentAddr: err.account_addr, isLoading: false
                             })
-                        else
-                            this.setState({ open: false, isLoading: false, snackMessage: err.message, snackOpen: true })
+                        else {
+                            let regError = (err.message).replace(/\s/g, "")
+                            this.setState({
+                                open: false, isLoading: false,
+                                snackMessage: lang[this.props.language][regError] ?
+                                    lang[this.props.language][regError] : err.message,
+                                snackOpen: true
+                            })
+                        }
                     } else if (res) {
+                        let regError = res.replace(/\s/g, "")
                         this.setState({
                             isLoading: false, isPending: false, open: false,
-                            snackMessage: res, snackOpen: true
+                            snackMessage: lang[this.props.language][regError] ?
+                                lang[this.props.language][regError] : res,
+                            snackOpen: true
                         });
                         this.props.setActiveVpn(this.props.data);
                         this.props.setVpnStatus(true)
@@ -330,8 +340,15 @@ class SimpleDialogDemo extends React.Component {
                                 pendingInitPayment: err.message, open: false, isPending: true,
                                 paymentAddr: err.account_addr, isLoading: false
                             })
-                        else
-                            this.setState({ open: false, isLoading: false, snackMessage: err.message, snackOpen: true })
+                        else {
+                            let regError = (err.message).replace(/\s/g, "")
+                            this.setState({
+                                open: false, isLoading: false,
+                                snackMessage: lang[this.props.language][regError] ?
+                                    lang[this.props.language][regError] : err.message,
+                                snackOpen: true
+                            })
+                        }
                     } else if (res) {
                         console.log("Socks...", res);
                         if (remote.process.platform === 'win32') {
@@ -413,6 +430,7 @@ class SimpleDialogDemo extends React.Component {
                         open={this.state.isPending}
                         // open={this.state.isPending}
                         onClose={this.handleAlertClose}
+                        language={this.props.language}
                         message={this.state.pendingInitPayment}
                         paymentAddr={this.state.paymentAddr}
                         initPaymentAction={this.props.initPaymentAction}

@@ -77,7 +77,7 @@ function checkMacDependencies(cb) {
                     installPackage('shadowsocks-libev', function (Err, success) {
                         if (Err || success === false) {
                             callback({
-                                message: `Error occurred while installing package: openvpn`
+                                message: `Error occurred while installing shadowsocks-libev`
                             });
                         }
                         else {
@@ -101,7 +101,7 @@ function checkMacDependencies(cb) {
                     installPackage('pidof', function (Err, success) {
                         if (Err || success === false) {
                             callback({
-                                message: `Error occurred while installing package: pidof`
+                                message: `Error occured while installing pidof`
                             });
                         }
                         else {
@@ -143,7 +143,7 @@ export async function socksConnect(account_addr, vpn_addr, cb) {
         account_addr: account_addr,
         vpn_addr: vpn_addr
     };
-    axios.post(`${B_URL}/client/vpn`, data)
+    axios({ url: `${B_URL}/client/vpn`, method: 'POST', data: data, timeout: 20000 })
         .then(resp => {
             if (resp.data.success) {
                 getSocksCreds(account_addr, resp.data['ip'], resp.data['port'], resp.data['vpn_addr'], resp.data['token'], function (err, data) {
@@ -157,7 +157,7 @@ export async function socksConnect(account_addr, vpn_addr, cb) {
                     cb({ message: resp.data.message || 'Connecting VPN Failed. Please Try Again' }, null);
             }
         })
-        .catch(err => { cb({ message: err.response || 'Something wrong. Please Try Again.' }, null) })
+        .catch(err => { cb({ message: 'Unable to reach sentinel server at this moment' }, null) })
 
 }
 
@@ -245,7 +245,7 @@ export function getSocksCreds(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, c
         'token': nonce
     };
 
-    axios.post(uri, data)
+    axiosInstance({ url: uri, method: 'POST', data: data, timeout: 20000 })
         .then(response => {
             if (response.data.success) {
                 localStorage.setItem('SESSION_NAME', response.data['session_name']);
@@ -259,5 +259,8 @@ export function getSocksCreds(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, c
             else {
                 cb({ message: response.data.message || 'Error occurred while getting SOCKS5 credentials' }, null);
             }
+        })
+        .catch(err => {
+            cb({ message: 'Unable to reach sentinel server at this moment' }, null)
         })
 }

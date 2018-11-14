@@ -110,7 +110,7 @@ export async function checkVPNDependencies(os, cb) {
         case 'linux': {
             checkDependencies(['openvpn'], (e, o, se) => {
                 if (o) cb(null, null);
-                else cb({ message: 'Openvpn is not installed.' }, null);
+                else cb({ message: "OpenVPN Not Installed." }, null);
             })
             break;
         }
@@ -126,7 +126,7 @@ export async function checkOpenvpn(cb) {
         if (stdout.toString() === '') {
             exec('cd c:\\Program Files (x86) && IF EXIST OpenVPN (cd OpenVPN && dir openvpn.exe /s /p | findstr "openvpn")', function (error, stdout1, stderr1) {
                 if (stdout.toString() === '') {
-                    cb({ message: 'Openvpn not installed' });
+                    cb({ message: "OpenVPN Not Installed." });
                 }
                 else {
                     cb(null)
@@ -170,7 +170,7 @@ export async function tmConnect(account_addr, vpn_data, session_data, cb) {
         else {
             let resp = {
                 success: true,
-                message: 'Connected to VPN'
+                message: 'Connected To VPN'
             }
             connectwithOVPN(resp, (error, response) => {
                 cb(error, response);
@@ -362,7 +362,7 @@ export function checkMacDependencies(cb) {
                     installPackage('openvpn', function (Err, success) {
                         if (Err || success === false) {
                             callback({
-                                message: `Error occurred while installing package: openvpn`
+                                message: `Error occured while installing openvpn`
                             });
                         }
                         else {
@@ -386,7 +386,7 @@ export function checkMacDependencies(cb) {
                     installPackage('pidof', function (Err, success) {
                         if (Err || success === false) {
                             callback({
-                                message: `Error occurred while installing package: pidof`
+                                message: `Error occurred while installing pidof`
                             });
                         }
                         else {

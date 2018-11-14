@@ -72,7 +72,7 @@ class Footer extends Component {
         if (amount >= parseInt(localStorage.getItem('lockedAmount')) && !this.state.showAlert)
             this.setState({
                 openSnack: true, showAlert: true,
-                snackMessage: 'You have used all of your locked TSENTs. Please reconnect and pay.'
+                snackMessage: lang[this.props.language].UsedAllLocked
             })
         this.props.getSignHash(Math.round(amount * (10 ** 8)), counter, isFinal).then(res => {
             if (res.error) {
@@ -111,7 +111,13 @@ class Footer extends Component {
             this.sendSignature(downloadData, true, this.state.counter);
             disconnectVPN((res) => {
                 if (res) {
-                    this.setState({ openSnack: true, snackMessage: res, isDisabled: false });
+                    let regError = res.replace(/\s/g, "");
+                    this.setState({
+                        openSnack: true, 
+                        snackMessage: lang[this.props.language][regError] ?
+                        lang[this.props.language][regError] : res,
+                        isDisabled: false
+                    });
                 }
                 else {
                     this.setState({
@@ -128,7 +134,13 @@ class Footer extends Component {
             if (this.props.vpnType === 'openvpn') {
                 disconnectVPN((res) => {
                     if (res) {
-                        this.setState({ openSnack: true, snackMessage: res, isDisabled: false });
+                        let regError = res.replace(/\s/g, "");
+                        this.setState({ 
+                            openSnack: true, 
+                            snackMessage: lang[this.props.language][regError] ?
+                            lang[this.props.language][regError] : res,
+                            isDisabled: false 
+                        });
                     }
                     else {
                         this.setState({
@@ -142,7 +154,13 @@ class Footer extends Component {
             } else {
                 disconnectSocks(this.props.walletAddr, (res) => {
                     if (res) {
-                        this.setState({ openSnack: true, snackMessage: res, isDisabled: false });
+                        let regError = res.replace(/\s/g, "");
+                        this.setState({ 
+                            openSnack: true, 
+                            snackMessage: lang[this.props.language][regError] ?
+                            lang[this.props.language][regError] : res,
+                            isDisabled: false 
+                        });
                     }
                     else {
                         if (remote.process.platform === 'win32') {

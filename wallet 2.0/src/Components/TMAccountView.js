@@ -32,7 +32,7 @@ class TMAccountView extends Component {
 
     componentWillMount = () => {
         this.props.getTMBalance(this.props.account.address);
-        localStorage.setItem('tmAccount',this.props.account.address);
+        localStorage.setItem('tmAccount', this.props.account.address);
     }
 
     getBalance = () => {
@@ -47,8 +47,24 @@ class TMAccountView extends Component {
         this.setState({ isFreeLoading: true })
         this.props.getFreeTokens(this.props.account.address)
             .then((res) => {
-                if (res.error) this.setState({ openSnack: true, snackMessage: res.error, isFreeLoading: false })
-                else this.setState({ openSnack: true, snackMessage: res.payload, isFreeLoading: false })
+                if (res.error) {
+                    let regError = (res.error).replace(/\s/g, "");
+                    this.setState({
+                        openSnack: true,
+                        snackMessage: lang[this.props.language][regError] ?
+                            lang[this.props.language][regError] : res.error,
+                        isFreeLoading: false
+                    })
+                }
+                else {
+                    let regError = (res.payload).replace(/\s/g, "");
+                    this.setState({
+                        openSnack: true,
+                        snackMessage: lang[this.props.language][regError] ?
+                            lang[this.props.language][regError] : res.payload,
+                        isFreeLoading: false
+                    })
+                }
             })
     }
 
@@ -66,14 +82,14 @@ class TMAccountView extends Component {
         return (
             <div>
                 <div style={receiveStyles.getTokenButtonStyle}>
-                <Button
-                    disabled={this.state.isFreeLoading || this.props.vpnStatus}
-                    onClick={this.getFree.bind(this)}
-                    style={this.state.isFreeLoading ? receiveStyles.tmFlatButtonStyleOffTest : receiveStyles.tmFlatButtonStyleOnTest}
-                    style={this.props.vpnStatus ? receiveStyles.vpnFlatButtonStyleOffTest : receiveStyles.vpnFlatButtonStyleOnTest}
-                >{this.state.isFreeLoading ? lang[language].Loading : lang[language].GetTokens}</Button>
+                    <Button
+                        disabled={this.state.isFreeLoading || this.props.vpnStatus}
+                        onClick={this.getFree.bind(this)}
+                        style={this.state.isFreeLoading ? receiveStyles.tmFlatButtonStyleOffTest : receiveStyles.tmFlatButtonStyleOnTest}
+                        style={this.props.vpnStatus ? receiveStyles.vpnFlatButtonStyleOffTest : receiveStyles.vpnFlatButtonStyleOnTest}
+                    >{this.state.isFreeLoading ? lang[language].Loading : lang[language].GetTokens}</Button>
                 </div>
-                <div style={ this.props.vpnStatus ? accountStyles.formVpnStyle : accountStyles.formStyle}>
+                <div style={this.props.vpnStatus ? accountStyles.formVpnStyle : accountStyles.formStyle}>
                     <div style={accountStyles.cardStyle} bordered={false}>
                         {/* <CardHeader
                             action={
@@ -101,14 +117,14 @@ class TMAccountView extends Component {
                                     {/* <img src={'../src/Images/download.jpeg'}
                                         alt="Copy"
                                         style={accountStyles.clipBoard} /> */}
-                            <CopyIcon style={receiveStyles.clipBoard}/>
-                           </CopyToClipboard>
+                                    <CopyIcon style={receiveStyles.clipBoard} />
+                                </CopyToClipboard>
                             </Tooltip>
 
                             {balance === "" ?
                                 <p style={accountStyles.notInNetStyle}>
-                                   {lang[language].Note} 
-                            </p>
+                                    {lang[language].Note}
+                                </p>
                                 :
                                 // <p style={accountStyles.balanceStyle}>
                                 //     {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
@@ -119,24 +135,24 @@ class TMAccountView extends Component {
                             {/* {balance === "" ? <p>*Use faucet to get tokens and join the network</p> : null} */}
                             {
                                 vpnStatus ?
-                                
+
                                     <div style={accountStyles.lastDiv}>
-                                    <Row style={accountStyles.tsentRow}>
-                                        <Col xs={6}style={accountStyles.notInNetStyle1}>{lang[language].TSentLocked}</Col>
-                                        
-                                        <Col xs={6} style={accountStyles.notInNetStyle}>{lang[language].TSentConsumed}</Col>
-                                    </Row>
-                                    <Row style={accountStyles.tsentRow}>
-                                        <Col xs={6} style={accountStyles.tsentValue1}>  {localStorage.getItem('lockedAmount')}</Col>
-                                       
-                                        <Col xs={6} style={accountStyles.tsentValue}>{usedTokens}</Col>
-                                    </Row>
+                                        <Row style={accountStyles.tsentRow}>
+                                            <Col xs={6} style={accountStyles.notInNetStyle1}>{lang[language].TSentLocked}</Col>
+
+                                            <Col xs={6} style={accountStyles.notInNetStyle}>{lang[language].TSentConsumed}</Col>
+                                        </Row>
+                                        <Row style={accountStyles.tsentRow}>
+                                            <Col xs={6} style={accountStyles.tsentValue1}>  {localStorage.getItem('lockedAmount')}</Col>
+
+                                            <Col xs={6} style={accountStyles.tsentValue}>{usedTokens}</Col>
+                                        </Row>
                                         {/* <p><span style={accountStyles.notInNetStyle}>Total TSENT Locked: </span>
                                             {localStorage.getItem('lockedAmount')}  <span style={accountStyles.notInNetStyle}>Current Session Usage (TSENT): </span>
                                             {usedTokens}</p> */}
-                                   
+
                                     </div>
-                                     :
+                                    :
                                     null
                             }
                         </CardContent>

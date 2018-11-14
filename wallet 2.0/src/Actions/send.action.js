@@ -21,7 +21,7 @@ export async function payVPNUsage(data) {
         if (response.data.errors[0].error) {
           return {
             type: sendComponentTypes.TX_FAILURE,
-            payload: JSON.parse(response.data.errors[0].error.split("'").join('"')).message || 'Something went wrong in transaction',
+            payload: JSON.parse(response.data.errors[0].error.split("'").join('"')).message || 'Something went wrong',
           }
         } else {
           return {
@@ -33,7 +33,7 @@ export async function payVPNUsage(data) {
       } else {
         return {
           type: sendComponentTypes.TX_ERROR,
-          payload: 'Something went wrong in transaction'
+          payload: 'Something went wrong'
         }
       }
     }

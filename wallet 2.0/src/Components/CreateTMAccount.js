@@ -38,7 +38,12 @@ class CreateTMAccount extends Component {
     createAccount = () => {
         this.props.createTMAccount(this.state.keyName, this.state.keyPassword).then(res => {
             if (res.error) {
-                this.setState({ openSnack: true, snackMessage: res.error.data })
+                let regError = (res.error.data).replace(/\s/g, "");
+                this.setState({
+                    openSnack: true,
+                    snackMessage: lang[this.props.lang][regError] ?
+                        lang[this.props.lang][regError] : res.error.data
+                })
             }
             else {
                 setTMConfig(this.state.keyName);
@@ -62,7 +67,7 @@ class CreateTMAccount extends Component {
         let language = this.props.lang;
         return (
             <div style={createAccountStyle.formStyle}>
-            <div> <h2  style={createAccountStyle.createStyle}><center>  {lang[language].CreateWalletSST}</center></h2></div>
+                <div> <h2 style={createAccountStyle.createStyle}><center>  {lang[language].CreateWalletSST}</center></h2></div>
                 <div style={createAccountStyle.secondDivStyle}>
                     <p style={createAccountStyle.headingStyle}>{lang[language].AccountName}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false} value={this.state.keyName}

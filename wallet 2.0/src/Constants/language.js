@@ -288,7 +288,7 @@ let lang = {
 
 
         "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
-        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "Currently VPN server is not available. Please try after sometime.",
         "StartedVPNsession.": "Started VPN session.",
         "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
         "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
@@ -592,7 +592,7 @@ let lang = {
 
 
         "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
-        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "Currently VPN server is not available. Please try after sometime.",
         "StartedVPNsession.": "Started VPN session.",
         "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
         "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
@@ -893,7 +893,7 @@ let lang = {
 
 
         "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
-        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "Currently VPN server is not available. Please try after sometime.",
         "StartedVPNsession.": "Started VPN session.",
         "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
         "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
@@ -1195,7 +1195,7 @@ let lang = {
 
 
         "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
-        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "Currently VPN server is not available. Please try after sometime.",
         "StartedVPNsession.": "Started VPN session.",
         "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
         "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
@@ -1497,7 +1497,7 @@ let lang = {
         "Disconnectingfailed": "Disconnecting failed",
 
         "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
-        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "Currently VPN server is not available. Please try after sometime.",
         "StartedVPNsession.": "Started VPN session.",
         "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
         "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",

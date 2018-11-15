@@ -77,5 +77,9 @@ export async function transferAmount(net, data) {
     }
   } catch (Err) {
     sendError(Err);
+    return {
+      type: sendComponentTypes.TX_ERROR,
+      payload: 'Internal Server Error'
+    }
   }
 }

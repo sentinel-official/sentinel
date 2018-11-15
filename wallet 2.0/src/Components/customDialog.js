@@ -221,6 +221,9 @@ class AlertDialog extends React.Component {
     };
 
     render() {
+        let regError = (this.props.message).replace(/\s/g, "")
+        let message = lang[this.props.language][regError] ?
+            lang[this.props.language][regError] : this.props.message;
         return (
             <Dialog
                 // open={this.state.open}
@@ -233,7 +236,7 @@ class AlertDialog extends React.Component {
                 <DialogTitle id="alert-dialog-title">{lang[this.props.language].InitialPaymentAlert}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        {`${this.props.message} ${lang[this.props.language].PleaseClickPay}`}
+                        {`${message} ${lang[this.props.language].PleaseClickPay}`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -308,13 +311,21 @@ class SimpleDialogDemo extends React.Component {
                                 paymentAddr: err.account_addr, isLoading: false
                             })
                         else {
-                            let regError = (err.message).replace(/\s/g, "")
-                            this.setState({
-                                open: false, isLoading: false,
-                                snackMessage: lang[this.props.language][regError] ?
-                                    lang[this.props.language][regError] : err.message,
-                                snackOpen: true
-                            })
+                            if (err.message.includes('You have due amount')) {
+                                this.setState({
+                                    open: false, isLoading: false,
+                                    snackMessage: lang[this.props.language].YouHaveDue,
+                                    snackOpen: true
+                                })
+                            } else {
+                                let regError = (err.message).replace(/\s/g, "")
+                                this.setState({
+                                    open: false, isLoading: false,
+                                    snackMessage: lang[this.props.language][regError] ?
+                                        lang[this.props.language][regError] : err.message,
+                                    snackOpen: true
+                                })
+                            }
                         }
                     } else if (res) {
                         let regError = res.replace(/\s/g, "")
@@ -341,13 +352,21 @@ class SimpleDialogDemo extends React.Component {
                                 paymentAddr: err.account_addr, isLoading: false
                             })
                         else {
-                            let regError = (err.message).replace(/\s/g, "")
-                            this.setState({
-                                open: false, isLoading: false,
-                                snackMessage: lang[this.props.language][regError] ?
-                                    lang[this.props.language][regError] : err.message,
-                                snackOpen: true
-                            })
+                            if (err.message.includes('You have due amount')) {
+                                this.setState({
+                                    open: false, isLoading: false,
+                                    snackMessage: lang[this.props.language].YouHaveDue,
+                                    snackOpen: true
+                                })
+                            } else {
+                                let regError = (err.message).replace(/\s/g, "")
+                                this.setState({
+                                    open: false, isLoading: false,
+                                    snackMessage: lang[this.props.language][regError] ?
+                                        lang[this.props.language][regError] : err.message,
+                                    snackOpen: true
+                                })
+                            }
                         }
                     } else if (res) {
                         console.log("Socks...", res);

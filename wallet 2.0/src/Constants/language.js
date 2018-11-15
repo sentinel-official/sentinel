@@ -286,6 +286,18 @@ let lang = {
         "UsedAllLocked": "You have used all of your locked TSENTs. Please reconnect and pay.",
         "Disconnectingfailed": "Disconnecting failed",
 
+
+        "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "StartedVPNsession.": "Started VPN session.",
+        "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
+        "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
+        "Erroroccurredwhilechekinginitialpaymentstatus.": "Error occurred while cheking initial payment status.",
+        "Erroroccurredwhilecheckingdueamount.": "Error occurred while checking due amount.",
+        "Yourbalanceislessthan100SENTs.": "Your balance is less than 100 SENTs.",
+        "Wrongclientwalletaddressortoken.": "Wrong client wallet address or token.",
+        "YouHaveDue": "You have due amount. Please try after clearing the due."
+
     },
     ja: {
         'BeCareful': 'ご注意',
@@ -577,6 +589,18 @@ let lang = {
         "PleaseClickPay": "Please click on pay button to make the initial payment",
         "UsedAllLocked": "You have used all of your locked TSENTs. Please reconnect and pay.",
         "Disconnectingfailed": "Disconnecting failed",
+
+
+        "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "StartedVPNsession.": "Started VPN session.",
+        "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
+        "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
+        "Erroroccurredwhilechekinginitialpaymentstatus.": "Error occurred while cheking initial payment status.",
+        "Erroroccurredwhilecheckingdueamount.": "Error occurred while checking due amount.",
+        "Yourbalanceislessthan100SENTs.": "Your balance is less than 100 SENTs.",
+        "Wrongclientwalletaddressortoken.": "Wrong client wallet address or token.",
+        "YouHaveDue": "You have due amount. Please try after clearing the due."
     },
     es: {
         'History': 'HISTORIAL',
@@ -866,6 +890,18 @@ let lang = {
         "PleaseClickPay": "Please click on pay button to make the initial payment",
         "UsedAllLocked": "You have used all of your locked TSENTs. Please reconnect and pay.",
         "Disconnectingfailed": "Disconnecting failed",
+
+
+        "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "StartedVPNsession.": "Started VPN session.",
+        "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
+        "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
+        "Erroroccurredwhilechekinginitialpaymentstatus.": "Error occurred while cheking initial payment status.",
+        "Erroroccurredwhilecheckingdueamount.": "Error occurred while checking due amount.",
+        "Yourbalanceislessthan100SENTs.": "Your balance is less than 100 SENTs.",
+        "Wrongclientwalletaddressortoken.": "Wrong client wallet address or token.",
+        "YouHaveDue": "You have due amount. Please try after clearing the due."
     },
     ru: {
         "History": "История",
@@ -1156,6 +1192,18 @@ let lang = {
         "PleaseClickPay": "Please click on pay button to make the initial payment",
         "UsedAllLocked": "You have used all of your locked TSENTs. Please reconnect and pay.",
         "Disconnectingfailed": "Disconnecting failed",
+
+
+        "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "StartedVPNsession.": "Started VPN session.",
+        "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
+        "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
+        "Erroroccurredwhilechekinginitialpaymentstatus.": "Error occurred while cheking initial payment status.",
+        "Erroroccurredwhilecheckingdueamount.": "Error occurred while checking due amount.",
+        "Yourbalanceislessthan100SENTs.": "Your balance is less than 100 SENTs.",
+        "Wrongclientwalletaddressortoken.": "Wrong client wallet address or token.",
+        "YouHaveDue": "You have due amount. Please try after clearing the due."
     },
 
     zh: {
@@ -1447,6 +1495,17 @@ let lang = {
         "PleaseClickPay": "Please click on pay button to make the initial payment",
         "UsedAllLocked": "You have used all of your locked TSENTs. Please reconnect and pay.",
         "Disconnectingfailed": "Disconnecting failed",
+
+        "Erroroccurredwhileinitiatingthetransaction.": "Error occurred while initiating the transaction.",
+        "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.": "CurrentlyVPNserverisnotavailable.Pleasetryaftersometime.",
+        "StartedVPNsession.": "Started VPN session.",
+        "ConnectiontimedoutwhileconnectingtoVPNserver.": "Connection timed out while connecting to VPN server.",
+        "InitialVPNpaymentisnotdone.": "Initial VPN payment is not done.",
+        "Erroroccurredwhilechekinginitialpaymentstatus.": "Error occurred while cheking initial payment status.",
+        "Erroroccurredwhilecheckingdueamount.": "Error occurred while checking due amount.",
+        "Yourbalanceislessthan100SENTs.": "Your balance is less than 100 SENTs.",
+        "Wrongclientwalletaddressortoken.": "Wrong client wallet address or token.",
+        "YouHaveDue": "You have due amount. Please try after clearing the due."
     },
 }
 

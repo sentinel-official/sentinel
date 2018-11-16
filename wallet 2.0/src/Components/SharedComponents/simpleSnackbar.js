@@ -34,7 +34,7 @@ class PositionedSnackbar extends React.Component {
                     ContentProps={{
                         'aria-describedby': 'message-id',
                     }}
-                    message={<span id="message-id">{this.props.message} {this.props.url?<span onClick={this.props.checkStatus} style={{cursor:'pointer'}}>{lang[language].CheckStatus}</span>:''}</span>}
+                    message={<span id="message-id">{this.props.message} {this.props.url?<a href={this.props.txUrl} target="_blank" style={{cursor:'pointer'}}>{lang[language].CheckStatus}</a>:''}</span>}
                 />
             </div>
         );

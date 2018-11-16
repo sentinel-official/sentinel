@@ -122,42 +122,42 @@ class SimpleDialog extends React.Component {
                     <Row>
 
                         {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
-                         <span style={styles.dialogValue}>{this.props.data.city}</span> */}
+                 <span style={styles.dialogValue}>{this.props.data.city}</span> */}
 
-                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].City}</label> </Col>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].City}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
                         <Col xs={6}>  <label
                             // style={styles.dialogValue}
-                            style={{ fontWeight: 'bold' }}
+                            style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}
                         >{this.props.data.city}</label> </Col>
 
                     </Row>
                     <Row>
 
                         {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
-                  <xs style={styles.dialogValue}>{this.props.data.city}</xs> */}
+                <xs style={styles.dialogValue}>{this.props.data.city}</xs> */}
 
-                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Country}</label> </Col>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Country}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.country}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.country}</label> </Col>
 
                     </Row>
 
                     <Row>
-                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Bandwidth}</label> </Col>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Bandwidth}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + lang[language].Mbps}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + lang[language].Mbps}</label> </Col>
                     </Row>
 
                     <Row>
-                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Cost}</label> </Col>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Cost}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.price_per_GB + lang[language].SentPerGb}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.price_per_GB + lang[language].SentPerGb}</label> </Col>
                     </Row>
                     <Row>
-                        <Col xs={5}>  <label style={styles.dialogLabel}>{lang[language].Latency}</label> </Col>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Latency}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold' }}>{this.props.data.latency ? this.props.data.latency + lang[language].MS : 'None'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.latency ? this.props.data.latency + lang[language].MS : 'None'}</label> </Col>
                     </Row>
 
 
@@ -221,6 +221,9 @@ class AlertDialog extends React.Component {
     };
 
     render() {
+        let regError = (this.props.message).replace(/\s/g, "")
+        let message = lang[this.props.language][regError] ?
+            lang[this.props.language][regError] : this.props.message;
         return (
             <Dialog
                 // open={this.state.open}
@@ -230,10 +233,10 @@ class AlertDialog extends React.Component {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{lang[this.props.language].InitialPayment}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{lang[this.props.language].InitialPaymentAlert}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        {`${this.props.message} ${lang[this.props.language].PleaseClickPay}`}
+                        {`${message} ${lang[this.props.language].PleaseClickPay}`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -308,13 +311,21 @@ class SimpleDialogDemo extends React.Component {
                                 paymentAddr: err.account_addr, isLoading: false
                             })
                         else {
-                            let regError = (err.message).replace(/\s/g, "")
-                            this.setState({
-                                open: false, isLoading: false,
-                                snackMessage: lang[this.props.language][regError] ?
-                                    lang[this.props.language][regError] : err.message,
-                                snackOpen: true
-                            })
+                            if (err.message.includes('You have due amount')) {
+                                this.setState({
+                                    open: false, isLoading: false,
+                                    snackMessage: lang[this.props.language].YouHaveDue,
+                                    snackOpen: true
+                                })
+                            } else {
+                                let regError = (err.message).replace(/\s/g, "")
+                                this.setState({
+                                    open: false, isLoading: false,
+                                    snackMessage: lang[this.props.language][regError] ?
+                                        lang[this.props.language][regError] : err.message,
+                                    snackOpen: true
+                                })
+                            }
                         }
                     } else if (res) {
                         let regError = res.replace(/\s/g, "")
@@ -341,13 +352,21 @@ class SimpleDialogDemo extends React.Component {
                                 paymentAddr: err.account_addr, isLoading: false
                             })
                         else {
-                            let regError = (err.message).replace(/\s/g, "")
-                            this.setState({
-                                open: false, isLoading: false,
-                                snackMessage: lang[this.props.language][regError] ?
-                                    lang[this.props.language][regError] : err.message,
-                                snackOpen: true
-                            })
+                            if (err.message.includes('You have due amount')) {
+                                this.setState({
+                                    open: false, isLoading: false,
+                                    snackMessage: lang[this.props.language].YouHaveDue,
+                                    snackOpen: true
+                                })
+                            } else {
+                                let regError = (err.message).replace(/\s/g, "")
+                                this.setState({
+                                    open: false, isLoading: false,
+                                    snackMessage: lang[this.props.language][regError] ?
+                                        lang[this.props.language][regError] : err.message,
+                                    snackOpen: true
+                                })
+                            }
                         }
                     } else if (res) {
                         console.log("Socks...", res);

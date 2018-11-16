@@ -79,7 +79,8 @@ class SendComponent extends React.Component {
       sessionId: '',
       open: false,
       snackMessage: '',
-      checkTxStatus: 'https://rinkeby.etherscan.io/tx/',
+      checkTxTestStatus: 'https://rinkeby.etherscan.io/tx/',
+      checkTxMainStatus: 'https://etherscan.io/tx/',
       url: false,
       txHash: ''
     }
@@ -203,7 +204,18 @@ class SendComponent extends React.Component {
                   if (response.type === TX_SUCCESS) {
                     self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: lang[this.props.language]['TransactionSuccess'], url: true, txHash: response.payload });
                   } else {
-                    self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: response.payload ? response.payload : lang[this.props.language]['TransactionFailed'] });
+                    if (response.payload) {
+                      let regError = (response.payload).replace(/\s/g, "");
+                      self.setState({
+                        label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true,
+                        snackMessage: lang[this.props.language][regError] ? lang[this.props.language][regError] : response.payload
+                      });
+                    } else {
+                      self.setState({
+                        label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true,
+                        snackMessage: lang[this.props.language]['TransactionFailed']
+                      });
+                    }
                   }
                 })
               }
@@ -231,7 +243,14 @@ class SendComponent extends React.Component {
                   };
                   payVPNUsage(data).then((response) => {
                     console.log('vpn payment', response);
-                    self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: lang[this.props.language]['TransactionSuccess'], url: true, txHash: response.payload });
+                    if (response.type === TX_SUCCESS) {
+                      self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: lang[this.props.language]['TransactionSuccess'], url: true, txHash: response.payload });
+                    } else {
+                      self.setState({
+                        label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, isVPNPayment: false,
+                        snackMessage: response.payload ? response.payload : lang[this.props.language]['TransactionFailed']
+                      });
+                    }
                   })
                 } else {
                   transferAmount(self.props.net ? 'rinkeby' : 'main', result).then((response) => {
@@ -239,7 +258,18 @@ class SendComponent extends React.Component {
                     if (response.type === TX_SUCCESS) {
                       self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: lang[this.props.language]['TransactionSuccess'], url: true, txHash: response.payload });
                     } else {
-                      self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: response.payload ? response.payload : lang[this.props.language]['TransactionFailed'] });
+                      if (response.payload) {
+                        let regError = (response.payload).replace(/\s/g, "");
+                        self.setState({
+                          label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true,
+                          snackMessage: lang[this.props.language][regError] ? lang[this.props.language][regError] : response.payload
+                        });
+                      } else {
+                        self.setState({
+                          label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true,
+                          snackMessage: lang[this.props.language]['TransactionFailed']
+                        });
+                      }
                     }
                   });
                   self.props.setVPNDuePayment(null);
@@ -448,6 +478,7 @@ class SendComponent extends React.Component {
           <PositionedSnackbar open={this.state.open} message={this.state.snackMessage}
             language={this.props.language}
             close={this.handleSnackClose} url={this.state.url}
+            txUrl={this.props.isTest ? `${this.state.checkTxMainStatus}${this.state.txHash}` : `${this.state.checkTxMainStatus}${this.state.txHash}`}
             checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
         </div>
       </MuiThemeProvider>
@@ -458,6 +489,7 @@ class SendComponent extends React.Component {
 function mapStateToProps(state) {
   return {
     language: state.setLanguage,
+    isTest: state.setTestNet,
     local_address: state.getAccount,
     net: state.setTestNet,
     payVpn: state.getVPNDuePaymentDetails,

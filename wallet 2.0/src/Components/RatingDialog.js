@@ -26,7 +26,9 @@ class RatingDialog extends React.Component {
         rateVPNSession(this.state.rateValue, (err) => {
             if (err) {
                 this.props.onClose();
-                this.props.snackOpenDialog(err.message);
+                let regError = (err.message).replace(/\s/g, "");
+                this.props.snackOpenDialog(lang[this.props.language][regError] ?
+                    lang[this.props.language][regError] : err.message);
             } else {
                 this.props.onClose();
                 this.props.snackOpenDialog(lang[this.props.language].RatedSuccess);

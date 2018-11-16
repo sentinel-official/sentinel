@@ -245,7 +245,8 @@ class ConvertToErc extends Component {
 					</Row>
 				</div>
 				<PositionedSnackbar open={this.state.open} message={this.state.snackMessage}
-					language={this.props.lang} close={this.handleSnackClose} url={this.state.url} 
+					language={this.props.lang} close={this.handleSnackClose} url={this.state.url}
+					txUrl={`${this.state.checkTxStatus}${this.state.txHash}`}
 					checkStatus={() => { this.openInExternalBrowser(`${this.state.checkTxStatus}${this.state.txHash}`) }} />
 			</div>
 

@@ -298,7 +298,13 @@ let lang = {
         "Erroroccurredwhilecheckingdueamount.": "检查金额数量时发生错误",
         "Yourbalanceislessthan100SENTs.": "您的余额少于100 SENT",
         "Wrongclientwalletaddressortoken.": "错误的客户端钱包地址或代币。",
-        "YouHaveDue": "您有应付金额，请付清费用后再尝试。"
+        "YouHaveDue": "您有应付金额，请付清费用后再尝试。",
+       
+
+        "TestTokensalreadyclaimed":"测试令牌已经声称",
+        "Erroroccurredwhiletransferringfreeamount.":"转移免费金额时出错。",
+        "SuccessfullytransferredTestTokens":"成功转移了测试令牌",
+
     },
 }
 

@@ -7,7 +7,7 @@ import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 
 import { sendError, setLanguage } from '../Actions/authentication.action';
 import { getAccount, getFreeAmount } from '../Actions/receive.action';
-import { Snackbar,Tooltip } from '@material-ui/core';
+import { Snackbar, Tooltip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
@@ -21,28 +21,33 @@ class Receive extends Component {
         super(props);
         this.state = {
             openSnack: false,
-            snackMessage: '', 
+            snackMessage: '',
             local_address: ''
         }
     }
     componentWillMount() {
         let that = this;
-    
+
         getAccount((err, account_addr) => {
-          if (err) { }
-          else {
-            that.setState({
-              local_address: account_addr
-            })
-          }
+            if (err) { }
+            else {
+                that.setState({
+                    local_address: account_addr
+                })
+            }
         });
     }
     getFree() {
         let self = this;
         self.props.getFreeAmount(self.state.local_address)
-        .then(()=> {
-            self.setState({ openSnack: true, snackMessage: self.props.getFreeAmountRes.message })
-        })
+            .then(() => {
+                let regError = (self.props.getFreeAmountRes.message).replace(/\s/g, "");
+                self.setState({
+                    openSnack: true,
+                    snackMessage: lang[this.props.language][regError] ?
+                        lang[this.props.language][regError] : self.props.getFreeAmountRes.message
+                })
+            })
     }
 
     componentDidCatch(error, info) {
@@ -59,16 +64,16 @@ class Receive extends Component {
         let language = this.props.language;
         return (<MuiThemeProvider>
             <div>
-            <div style={receiveStyles.getTokenButtonStyle}>
-                <Button
-                    onClick={this.getFree.bind(this)}
-                    disabled={!this.props.isTest}
-                    style={
-                        this.props.isTest ? 
-                        receiveStyles.flatButtonStyleOnTest: 
-                        receiveStyles.flatButtonStyleOffTest
-                    }
-                >{lang[language].GetTokens}</Button>
+                <div style={receiveStyles.getTokenButtonStyle}>
+                    <Button
+                        onClick={this.getFree.bind(this)}
+                        disabled={!this.props.isTest}
+                        style={
+                            this.props.isTest ?
+                                receiveStyles.flatButtonStyleOnTest :
+                                receiveStyles.flatButtonStyleOffTest
+                        }
+                    >{lang[language].GetTokens}</Button>
                 </div>
                 <Grid style={receiveStyles.w_100}>
                     <Row>
@@ -85,26 +90,26 @@ class Receive extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col>                       
+                        <Col>
                             <div style={receiveStyles.m_l_265}>
                                 <label style={receiveStyles.c_f_w}>
-                                {this.state.local_address}
-                                <Tooltip title={lang[language].Copy}>
-                                 <CopyToClipboard text={this.state.local_address}
-                                    onCopy={() => this.setState({
-                                        snackMessage: lang[language].Copied,
-                                        openSnack: true
-                                    })} >
-                                        {/* <img
+                                    {this.state.local_address}
+                                    <Tooltip title={lang[language].Copy}>
+                                        <CopyToClipboard text={this.state.local_address}
+                                            onCopy={() => this.setState({
+                                                snackMessage: lang[language].Copied,
+                                                openSnack: true
+                                            })} >
+                                            {/* <img
                                             src={'../src/Images/download.jpeg'}
                                             data-tip data-for="copyImage"
                                             style={receiveStyles.copyIcon}
                                             alt=''
                                         /> */}
-                                     <CopyIcon style={receiveStyles.clipBoard}/>
-                                    </CopyToClipboard>
+                                            <CopyIcon style={receiveStyles.clipBoard} />
+                                        </CopyToClipboard>
                                     </Tooltip>
-                                    </label>
+                                </label>
                                 <ReactTooltip id="copyImage" place="bottom">
                                     <span>{lang[language].Copy}</span>
                                 </ReactTooltip>
@@ -128,7 +133,7 @@ class Receive extends Component {
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         setLanguage: setLanguage,
-        getFreeAmount:getFreeAmount
+        getFreeAmount: getFreeAmount
     }, dispatch)
 }
 function mapStateToProps(state) {

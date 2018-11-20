@@ -50,6 +50,7 @@ export function getTMConfig(cb) {
 
 export function setTMConfig(username) {
     getTMConfig(function (error, configData) {
+        console.log("Out..", error, configData)
         let data = JSON.parse(configData);
         data.tmUserName = username;
         data.isCreated = true;

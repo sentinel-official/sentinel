@@ -58,10 +58,13 @@ class VpnListView extends Component {
         return (
             <div>
                 {
-                    vpnsList.length !== 0 ?
-                        <EnhancedTable data={vpnsList} />
+                    this.props.loading ?
+                        <div style={sessionStyles.noTransactionsStyle}>{lang[language].Loading} </div>
                         :
-                        <div style={sessionStyles.noTransactionsStyle}> {lang[language].NodVPNNodes}</div>
+                        (vpnsList.length !== 0 ?
+                            <EnhancedTable data={vpnsList} />
+                            :
+                            <div style={sessionStyles.noTransactionsStyle}> {lang[language].NodVPNNodes}</div>)
                 }
             </div>
         )

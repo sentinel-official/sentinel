@@ -56,7 +56,7 @@ class VpnList extends Component {
             vpnType: 'openvpn',
             networkType: 'public',
             dVpnQuery: '',
-
+            listLoading: true
         }
     }
 
@@ -81,12 +81,20 @@ class VpnList extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({ vpnType: nextProps.vpnType })
         if (nextProps.walletType != this.props.walletType) {
-            this.props.getVpnList(nextProps.vpnType, nextProps.isTM);
+            this.setState({ listLoading: true })
+            this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
+                .then((res) => {
+                    this.setState({ listLoading: false })
+                })
         }
     }
 
     getVPNs = () => {
-        this.props.getVpnList(this.props.vpnType, this.props.isTM);
+        this.setState({ listLoading: true });
+        this.props.getVpnList(this.props.vpnType, this.props.isTM)
+            .then((res) => {
+                this.setState({ listLoading: false })
+            })
     };
 
     componentWillMount = () => {
@@ -113,7 +121,11 @@ class VpnList extends Component {
 
     handleRadioChange = (event) => {
         this.props.setVpnType(event.target.value);
-        this.props.getVpnList(event.target.value, this.props.isTM);
+        this.setState({ listLoading: true });
+        this.props.getVpnList(event.target.value, this.props.isTM)
+            .then((res) => {
+                this.setState({ listLoading: false })
+            })
 
     };
     handleNetworkChange = (event) => {
@@ -171,7 +183,6 @@ class VpnList extends Component {
 
     render() {
         const { classes, isTM, language } = this.props;
-
         return (
             <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }} >
@@ -266,7 +277,7 @@ class VpnList extends Component {
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> :
                         this.props.listView === 'list' ?
                             <div style={{ maxWidth: 895, marginLeft: 20 }} >
-                                <VpnListView query={this.state.dVpnQuery} />
+                                <VpnListView query={this.state.dVpnQuery} loading={this.state.listLoading} />
                             </div>
                             :
                             <VpnMapView zoom={this.state.zoom} />

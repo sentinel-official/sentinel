@@ -52,7 +52,6 @@ background: no-repeat;
     background-position: 0px 0px;
 } */
 #social {
-    width: 100%;
     margin: 0!important;
     display: flex;
     flex-direction: column;

@@ -35,6 +35,9 @@ import StarBorder from '@material-ui/icons/StarBorder';
 
 import './sidebarStyle.css'
 
+let {shell} = window
+    .require('electron');
+
 const Customstyles = theme => ({
     paper: {
         height: 512,
@@ -97,6 +100,13 @@ class Sidebar extends Component {
             this.setState({ openEth: !next.isTenderMint, openTmd: next.isTenderMint })
         }
     }
+
+    openInExternalBrowser(url) {
+        console.log('in open external browser', url);
+        shell.shell.openExternal(url,(err)=>{
+            console.log("Err...",err);
+        });
+    };
 
     toggleDrawer = (value) => () => {
         this.setState({ openDrawer: value })
@@ -191,7 +201,13 @@ class Sidebar extends Component {
                     })
                 }
                 <ul id="social" class="list-unstyled">
-                    <li><a href="https://medium.com/sentinel" id="md" rel="me" target="_blank">Medium</a>
+                    <li><a id="md" rel="me" target="_blank"
+                        onClick={
+                            () => {
+                                this.openInExternalBrowser("https://medium.com/sentinel")
+                            }
+                        }
+                    >Medium</a>
                     </li>
                     <li><a href="https://twitter.com/Sentinel_co" id="tw" rel="me" target="_blank">Twitter</a>
                     </li>

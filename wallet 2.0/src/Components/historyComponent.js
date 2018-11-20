@@ -17,7 +17,9 @@ class History extends React.Component {
                 <div>
                     <label style={from !== ownWallet ? historyStyles.inStyle : historyStyles.outStyle}>{from !== ownWallet ?
                         lang[language].In : lang[language].Out}&nbsp;
-                            <span style={historyValue}>{new Date(parseInt(date) * 1000).toGMTString()}</span>
+                            {/* <span style={historyValue}>{new Date(parseInt(date) * 1000).toGMTString()}</span> */}
+                            <span style={historyValue}>{new Date(parseInt(date) * 1000).toLocaleDateString()}</span>
+
                     </label>
 
                     <label style={statusLabel}>{`${lang[language].Status}:`}&nbsp;

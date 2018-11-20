@@ -177,7 +177,7 @@ let lang = {
         "Refresh": "Refresh",
         "Sentinel": "SENTINEL",
 
-        "SearchdVPNnode": "search for a dVPN node",
+        "SearchdVPNnode": "Search for a dVPN node",
         "SwitchPrivate": "Switch To Private Network",
         "EnterAuthCode": "Please enter your Auth Code to connect to the Private Network",
         "AuthCode": "Auth Code",
@@ -247,12 +247,12 @@ let lang = {
         "Converting": "CONVERTING",
         "OpenVpnNotInstalled": "OpenVPN Not Installed.",
         "PleaseGo": "Please go to",
-        "OpenVpnPath": "C:\Users(your-user-name)\AppData\Local\Sentinel\app-0.1.0\resources\extras",
+        "OpenVpnPath": "C:\\Users\\(your-user-name)\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras",
         "OpenVpnInstallCmd": "and run openvpn-install-2.3.18-I602-x86_64.exe.",
         "OpenVpnMessage": "Just Install Openvpn without changing installation directory.",
         "YourUserName": "your-user-name",
         "AndRun": "and run",
-        "OpenVpnInstallAlert": " OpenVPN Not Installed. Please go to C:\Users(your-user-name)\AppData\Local\Sentinel\app-0.1.0\resources\extras and run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.",
+        "OpenVpnInstallAlert": "OpenVPN Not Installed. Please go to C:\\Users\\(your-user-name)\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras and run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.",
         "ConnectedSocks": "Connected to Socks",
 
         "Can'tdetectcurrentosplatform.": "Can't detect current os platform.",
@@ -298,9 +298,9 @@ let lang = {
         "Wrongclientwalletaddressortoken.": "Wrong client wallet address or token.",
         "YouHaveDue": "You have due amount. Please try after clearing the due.",
 
-        "TestTokensalreadyclaimed":"Test Tokens already claimed",
-        "Erroroccurredwhiletransferringfreeamount.":"Error occurred while transferring free amount.",
-        "SuccessfullytransferredTestTokens":"Successfully transferred Test Tokens",
+        "TestTokensalreadyclaimed": "Test Tokens already claimed",
+        "Erroroccurredwhiletransferringfreeamount.": "Error occurred while transferring free amount.",
+        "SuccessfullytransferredTestTokens": "Successfully transferred Test Tokens",
 
     },
     ja: {
@@ -483,7 +483,7 @@ let lang = {
         "Refresh": "Refresh",
         "Sentinel": "SENTINEL",
 
-        "SearchdVPNnode": "search for a dVPN node",
+        "SearchdVPNnode": "Search for a dVPN node",
         "SwitchPrivate": "Switch To Private Network",
         "EnterAuthCode": "Please enter your Auth Code to connect to the Private Network",
         "AuthCode": "Auth Code",
@@ -554,12 +554,12 @@ let lang = {
         "Converting": "CONVERTING",
         "OpenVpnNotInstalled": "OpenVPN Not Installed.",
         "PleaseGo": "Please go to",
-        "OpenVpnPath": "C:\Users(your-user-name)\AppData\Local\Sentinel\app-0.1.0\resources\extras",
+        "OpenVpnPath": "C:\\Users\\(your-user-name)\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras",
         "OpenVpnInstallCmd": "and run openvpn-install-2.3.18-I602-x86_64.exe.",
         "OpenVpnMessage": "Just Install Openvpn without changing installation directory.",
         "YourUserName": "your-user-name",
         "AndRun": "and run",
-        "OpenVpnInstallAlert": "OpenVPN Not Installed. Please go to C:\Users(your-user-name)\AppData\Local\Sentinel\app-0.1.0\resources\extras and run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.",
+        "OpenVpnInstallAlert": "OpenVPN Not Installed. Please go to C:\\Users\\(your-user-name)\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras and run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.",
         "ConnectedSocks": "Connected to Socks",
 
 
@@ -605,11 +605,11 @@ let lang = {
         "Yourbalanceislessthan100SENTs.": "Your balance is less than 100 SENTs.",
         "Wrongclientwalletaddressortoken.": "Wrong client wallet address or token.",
         "YouHaveDue": "You have due amount. Please try after clearing the due.",
-        
-        
-        "TestTokensalreadyclaimed":"Test Tokens already claimed",
-        "Erroroccurredwhiletransferringfreeamount.":"Error occurred while transferring free amount.",
-        "SuccessfullytransferredTestTokens":"Successfully transferred Test Tokens",
+
+
+        "TestTokensalreadyclaimed": "Test Tokens already claimed",
+        "Erroroccurredwhiletransferringfreeamount.": "Error occurred while transferring free amount.",
+        "SuccessfullytransferredTestTokens": "Successfully transferred Test Tokens",
     },
     es: {
         'History': 'HISTORIAL',
@@ -790,7 +790,7 @@ let lang = {
         "Refresh": "Refresh",
         "Sentinel": "SENTINEL",
 
-        "SearchdVPNnode": "search for a dVPN node",
+        "SearchdVPNnode": "Search for a dVPN node",
         "SwitchPrivate": "Switch To Private Network",
         "EnterAuthCode": "Please enter your Auth Code to connect to the Private Network",
         "AuthCode": "Auth Code",
@@ -861,12 +861,12 @@ let lang = {
         "Converting": "CONVERTING",
         "OpenVpnNotInstalled": "OpenVPN Not Installed.",
         "PleaseGo": "Please go to",
-        "OpenVpnPath": "C:\Users(your-user-name)\AppData\Local\Sentinel\app-0.1.0\resources\extras",
+        "OpenVpnPath": "C:\\Users\\(your-user-name)\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras",
         "OpenVpnInstallCmd": "and run openvpn-install-2.3.18-I602-x86_64.exe.",
         "OpenVpnMessage": "Just Install Openvpn without changing installation directory.",
         "YourUserName": "your-user-name",
         "AndRun": "and run",
-        "OpenVpnInstallAlert": "OpenVPN Not Installed. Please go to C:\Users(your-user-name)\AppData\Local\Sentinel\app-0.1.0\resources\extras and run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.",
+        "OpenVpnInstallAlert": "OpenVPN Not Installed. Please go to C:\\Users\\(your-user-name)\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras and run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.",
         "ConnectedSocks": "Connected to Socks",
 
         "Can'tdetectcurrentosplatform.": "Can't detect current os platform.",
@@ -913,9 +913,9 @@ let lang = {
         "YouHaveDue": "You have due amount. Please try after clearing the due.",
 
 
-        "TestTokensalreadyclaimed":"Test Tokens already claimed",
-        "Erroroccurredwhiletransferringfreeamount.":"Error occurred while transferring free amount.",
-        "SuccessfullytransferredTestTokens":"Successfully transferred Test Tokens",
+        "TestTokensalreadyclaimed": "Test Tokens already claimed",
+        "Erroroccurredwhiletransferringfreeamount.": "Error occurred while transferring free amount.",
+        "SuccessfullytransferredTestTokens": "Successfully transferred Test Tokens",
     },
     ru: {
         "History": "История",
@@ -1096,7 +1096,7 @@ let lang = {
         "Refresh": "Refresh",
         "Sentinel": "SENTINEL",
 
-        "SearchdVPNnode": "search for a dVPN node",
+        "SearchdVPNnode": "Search for a dVPN node",
         "SwitchPrivate": "Switch To Private Network",
         "EnterAuthCode": "Please enter your Auth Code to connect to the Private Network",
         "AuthCode": "Auth Code",
@@ -1167,12 +1167,12 @@ let lang = {
         "Converting": "CONVERTING",
         "OpenVpnNotInstalled": "OpenVPN Not Installed.",
         "PleaseGo": "Please go to",
-        "OpenVpnPath": "C:\Users(your-user-name)\AppData\Local\Sentinel\app-0.1.0\resources\extras",
+        "OpenVpnPath": "C:\\Users\\(your-user-name)\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras",
         "OpenVpnInstallCmd": "and run openvpn-install-2.3.18-I602-x86_64.exe.",
         "OpenVpnMessage": "Just Install Openvpn without changing installation directory.",
         "YourUserName": "your-user-name",
         "AndRun": "and run",
-        "OpenVpnInstallAlert": "OpenVPN Not Installed. Please go to C:\Users(your-user-name)\AppData\Local\Sentinel\app-0.1.0\resources\extras and run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.",
+        "OpenVpnInstallAlert": "OpenVPN Not Installed. Please go to C:\\Users\\(your-user-name)\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras and run openvpn-install-2.3.18-I602-x86_64.exe. Just Install Openvpn without changing installation directory.",
         "ConnectedSocks": "Connected to Socks",
 
 
@@ -1219,9 +1219,9 @@ let lang = {
         "Wrongclientwalletaddressortoken.": "Wrong client wallet address or token.",
         "YouHaveDue": "You have due amount. Please try after clearing the due.",
 
-        "TestTokensalreadyclaimed":"Test Tokens already claimed",
-        "Erroroccurredwhiletransferringfreeamount.":"Error occurred while transferring free amount.",
-        "SuccessfullytransferredTestTokens":"Successfully transferred Test Tokens",
+        "TestTokensalreadyclaimed": "Test Tokens already claimed",
+        "Erroroccurredwhiletransferringfreeamount.": "Error occurred while transferring free amount.",
+        "SuccessfullytransferredTestTokens": "Successfully transferred Test Tokens",
     },
 
     zh: {
@@ -1474,12 +1474,12 @@ let lang = {
         "Converting": "C正在兑换",
         "OpenVpnNotInstalled": "没有安装OpenVPN。请去往",
         "PleaseGo": "请去往",
-        "OpenVpnPath": "C: Users（您的用户名）AppDataLocalSentinelapp-0.1.0 resourcesextras",
+        "OpenVpnPath": "C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras",
         "OpenVpnInstallCmd": "然后运行openvpn-install-2.3.18-I602-x86_64.exe",
         "OpenVpnMessage": "只需安装Openvpn而无需更改安装目录。",
         "YourUserName": "您的用户名称",
         "AndRun": "然后运行",
-        "OpenVpnInstallAlert": "没有安装OpenVPN。请去往 C:\Users\(您的用户名\AppData\Local\Sentinelapp-0.1.0\resources\extras 然后运行 openvpn-install-2.3.18-I602-x86_64.exe。 只需安装Openvpn而无需更改安装目录。",
+        "OpenVpnInstallAlert": "没有安装OpenVPN。请去往 C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras 然后运行 openvpn-install-2.3.18-I602-x86_64.exe。 只需安装Openvpn而无需更改安装目录。",
         "ConnectedSocks": "已链接到Socks",
 
 
@@ -1524,11 +1524,11 @@ let lang = {
         "Yourbalanceislessthan100SENTs.": "您的余额少于100 SENT",
         "Wrongclientwalletaddressortoken.": "错误的客户端钱包地址或代币。",
         "YouHaveDue": "您有应付金额，请付清费用后再尝试。",
-       
 
-        "TestTokensalreadyclaimed":"测试令牌已经声称",
-        "Erroroccurredwhiletransferringfreeamount.":"转移免费金额时出错。",
-        "SuccessfullytransferredTestTokens":"成功转移了测试令牌",
+
+        "TestTokensalreadyclaimed": "测试令牌已经声称",
+        "Erroroccurredwhiletransferringfreeamount.": "转移免费金额时出错。",
+        "SuccessfullytransferredTestTokens": "成功转移了测试令牌",
 
     },
 }

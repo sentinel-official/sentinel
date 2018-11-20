@@ -143,7 +143,10 @@ class VPNHistory extends Component {
                                  </span> {this.getPaymentBytes(sessionData.received_bytes)}<br />
                                 <span style={vpnhistoryStyles.headingStyle}>
                                     {lang[language].Time} :
-                                </span> {new Date(sessionData.timestamp * 1000).toGMTString()}
+                                {/* </span> {new Date(sessionData.timestamp * 1000).toGMTString()} */}
+
+                             </span> {new Date(sessionData.timestamp * 1000).toLocaleDateString()}
+
                             </CardContent>
                             {
                                 sessionData.is_paid ?

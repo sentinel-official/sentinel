@@ -96,7 +96,7 @@ class VpnMapView extends Component {
                     projectionConfig={{ scale: 200 }}
                     style={{
                         width: "100%",
-                        height: 420,
+                        height: 375,
                     }}
                 >
                     <ZoomableGroup zoom={this.state.zoom}>

@@ -103,7 +103,7 @@ class Sidebar extends Component {
 
     openInExternalBrowser(url) {
         console.log('in open external browser', url);
-        shell.shell.openExternal(url,(err)=>{
+        shell.openExternal(url,(err)=>{
             console.log("Err...",err);
         });
     };

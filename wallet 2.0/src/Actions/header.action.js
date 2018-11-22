@@ -18,7 +18,6 @@ export function setWalletType(value) {
 }
 
 export async function getETHBalance(address) {
-    console.log("Test value..", isTest);
     let isTest = localStorage.getItem('config') === 'MAIN' ? false : true;
     let ETH_BALANCE_URL = isTest ? config.test.ethBalanceUrl : config.main.ethBalanceUrl;
     let response = await axios.get(ETH_BALANCE_URL + address, {

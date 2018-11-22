@@ -2,13 +2,28 @@ import * as types from "../Constants/action.names";
 import { createFile } from './../Utils/Keystore';
 const electron = window.require('electron');
 const remote = electron.remote;
-const SENT_DIR = getUserHome() + '/.sentinel';
-const KEYSTORE_FILE = SENT_DIR + '/keystore';
+const SENT_DIR = getSentDir();
+const KEYSTORE_FILE = getKeystoreFile();
 
 function getUserHome() {
     return remote.process.env[(remote.process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
+function getSentDir() {
+    if (remote.process.platform === 'win32') {
+        return `${getUserHome()}\\.sentinel`
+    } else {
+        return `${getUserHome()}/.sentinel`
+    }
+}
+
+function getKeystoreFile() {
+    if (remote.process.platform === 'win32') {
+        return `${SENT_DIR}\\keystore`
+    } else {
+        return `${SENT_DIR}/keystore`
+    }
+}
 
 export function setLanguage(state = 'en', action) {
     switch (action.type) {

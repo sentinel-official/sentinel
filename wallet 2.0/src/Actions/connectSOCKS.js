@@ -166,7 +166,7 @@ export function connectwithSocks(data, cb) {
         fs.readFile('resources\\extras\\socks5\\gui-config.json', 'utf8', function (err, conf) {
             if (err) { }
             else {
-                var configData = JSON.parse(conf);
+                var configData = conf ? JSON.parse(conf) : {};
                 configData.configs[0].server = data['ip'];
                 configData.configs[0].server_port = data['port'];
                 configData.configs[0].password = data['password'];

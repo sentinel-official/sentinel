@@ -50,7 +50,7 @@ export function setMaster(cb) {
             cb(true);
         }
         else {
-            let configData = JSON.parse(data);
+            let configData = data ? JSON.parse(data) : {};
             configData.isPrivate = false;
             fs.writeFile(CONFIG_FILE, JSON.stringify(configData), (err) => {
                 getMasterUrl()
@@ -222,7 +222,7 @@ export function checkGateway(cb) {
             cb(true, null, null);
         }
         else {
-            let configData = JSON.parse(data);
+            let configData = data ? JSON.parse(data) : {};
             if (configData.hasOwnProperty('gatewayUrl')) {
                 if (configData.gatewayUrl) {
                     console.log("Confi..", configData.gatewayUrl)
@@ -253,7 +253,7 @@ export function isPrivate(cb) {
     getConfig(function (err, data) {
         if (err) { cb(false) }
         else {
-            let configData = JSON.parse(data);
+            let configData = data ? JSON.parse(data) : {};
             if (configData.hasOwnProperty('isPrivate')) {
                 if (configData.isPrivate) {
                     localStorage.setItem('B_URL', configData.gatewayUrl);
@@ -282,7 +282,7 @@ export async function getGatewayUrl(authCode, cb) {
             getConfig((err, data) => {
                 if (err) { }
                 else {
-                    let configData = JSON.parse(data);
+                    let configData = data ? JSON.parse(data) : {};
                     configData.gatewayUrl = response.data.url;
                     configData.isPrivate = true;
                     configData.authcode = authCode;

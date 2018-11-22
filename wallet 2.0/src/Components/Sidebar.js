@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { menuItems, TMmenuItems, menuItemsIcons, disabledItemsMain, disabledItemsTest, disabledItemsTM } from '../Constants/constants';
+import {
+    menuItems, TMdisabledmenuItems, notTestItemIcons,
+    testMenuItemsIcons, disabledItemsMain, disabledItemsTest, disabledItemsTM
+} from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -34,9 +37,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
 
 import './sidebarStyle.css'
-
-let {shell} = window
-    .require('electron');
 
 const Customstyles = theme => ({
     paper: {
@@ -101,13 +101,6 @@ class Sidebar extends Component {
         }
     }
 
-    openInExternalBrowser(url) {
-        console.log('in open external browser', url);
-        shell.openExternal(url,(err)=>{
-            console.log("Err...",err);
-        });
-    };
-
     toggleDrawer = (value) => () => {
         this.setState({ openDrawer: value })
     }
@@ -115,21 +108,20 @@ class Sidebar extends Component {
     getIcon = (iconName) => {
         if (iconName === 'tmintIcon') {
             if (!this.props.isTenderMint)
-                return <img src={'../src/Images/tendermint-disable.png'} style={{ width: 20 }} />
-            else
-                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 20 }} />
-        }
-        if (iconName === 'ethereumIcon') {
-            if (this.props.isTenderMint)
-                return <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
-                    style={{ width: 20 }} />
-
-            else
                 return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                    style={{ width: 20 }} />
-
-
+                    style={{ width: 18, marginTop: -5, paddingBottom: 3 }} />
+            else
+                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 20, paddingBottom: 9 }} />
         }
+        // if (iconName === 'ethereumIcon') {
+        //     if (this.props.isTenderMint)
+        //         return <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
+        //             style={{ width: 20, paddingBottom:10 }} />
+
+        //     else
+        //         return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+        //             style={{ width: 18,marginTop:5, paddingBottom:5 }} />
+        // }
         else {
             let Icon = this.components[iconName];
             return <Icon />
@@ -155,40 +147,47 @@ class Sidebar extends Component {
         let { classes, isTest, isTenderMint, component, language } = this.props;
 
         let currentTab = this.props.currentTab;
+        let menuItemsIcons = isTest ?
+            (isTenderMint && component !== 'dashboard' ?
+                TMdisabledmenuItems : testMenuItemsIcons)
+            : notTestItemIcons
         return (
             <div style={sidebarStyles.totalDiv}>
                 <div style={sidebarStyles.IconActiveDivStyle}>
-                    <Tooltip title={lang[language].ToggleMenu}>
+                    <Tooltip title={lang[language].ToggleMenu} placement="right">
                         <MenuIcon onClick={this.toggleDrawer(true)} />
+                    </Tooltip>
+                </div>
+                <hr style={sidebarStyles.m_0} />
+                <div style={sidebarStyles.IconActiveDivStyle}
+                >
+                    <Tooltip title={lang[language][isTenderMint ? 'TM' : 'ETH']} placement="right">
+                        <label
+                            style={sidebarStyles.IconNormalLabelStyle}>
+                            {this.getIcon('tmintIcon')}
+
+                        </label>
                     </Tooltip>
                 </div>
                 <hr style={sidebarStyles.m_0} />
 
                 {
                     menuItemsIcons.map((item) => {
-                        let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
-                            || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
+                        
                         return (
                             <div>
                                 <div style={
-                                    isDisabled ?
-                                        sidebarStyles.IconDisabledDivStyle :
-                                        (item.value === currentTab ?
-                                            sidebarStyles.IconCurrentDivStyle :
-                                            sidebarStyles.IconActiveDivStyle)
+                                    (item.value === currentTab ?
+                                        sidebarStyles.IconCurrentDivStyle :
+                                        sidebarStyles.IconActiveDivStyle)
                                 } onClick={() => { this.setMenu(item); }}
-                                    onMouseEnter={this.toggleDrawer(true)}
-                                // onMouseOut = {this.toggleDrawer(false)}
                                 >
                                     <Tooltip title={lang[language][item.name]} placement="right">
                                         <label
                                             style={
-                                                isDisabled
-                                                    ?
-                                                    sidebarStyles.IconDisabledLabelStyle :
-                                                    (item.value === currentTab ?
-                                                        sidebarStyles.IconActiveLabelStyle :
-                                                        sidebarStyles.IconNormalLabelStyle)
+                                                (item.value === currentTab ?
+                                                    sidebarStyles.IconActiveLabelStyle :
+                                                    sidebarStyles.IconNormalLabelStyle)
                                             }>
                                             {this.getIcon(item.icon)}
 
@@ -200,22 +199,6 @@ class Sidebar extends Component {
                         )
                     })
                 }
-                <ul id="social" class="list-unstyled">
-                    <li><a id="md" rel="me" target="_blank"
-                        onClick={
-                            () => {
-                                this.openInExternalBrowser("https://medium.com/sentinel")
-                            }
-                        }
-                    >Medium</a>
-                    </li>
-                    <li><a href="https://twitter.com/Sentinel_co" id="tw" rel="me" target="_blank">Twitter</a>
-                    </li>
-                    <li><a href="https://t.me/sentinel_co" id="tl" rel="me" target="_blank">Telegram</a>
-                    </li>
-                    <li><a href="https://sentinel.co/" id="snt" rel="me author" target="_blank">Sentinel</a>
-                    </li>
-                </ul>
                 <Drawer
                     open={this.state.openDrawer}
                     onClose={this.toggleDrawer(false)}
@@ -226,50 +209,45 @@ class Sidebar extends Component {
                         role="button"
                         style={sidebarStyles.outlineNone}
                     >
-                        {/* <span onClick = {this.toggleDrawer(false)}><i class="material-icons">keyboard_backspace</i></span> */}
                         <IconButton aria-label="Back" style={sidebarStyles.backArrowStyle} onClick={this.toggleDrawer(false)}>
                             <BackArrowIcon />
                         </IconButton>
-                        {/* <span style={sidebarStyles.drawerHeading}>SENTINEL</span> */}
-
-                        <div style={sidebarStyles.giveSpace}></div>
-                        <ListItem button onClick={this.handleTmdClick} disabled={!isTenderMint}>
-                            <ListItemIcon>
-
-                                {this.props.isTenderMint ?
+                        <div>
+                            {this.props.isTenderMint ?
+                                <div className="collapse_header">
                                     <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
-                                        style={{ width: 18, marginTop: -5 }} />
-                                    :
-                                    <img src={'../src/Images/tendermint-disable.png'} style={{ width: 20 }} />
-                                }
-                            </ListItemIcon>
-                            <ListItemText inset primary={lang[language].TM} style={sidebarStyles.collapseType} />
-                            {this.state.openTmd ? <ExpandLess /> : <ExpandMore />}
-                        </ListItem>
+                                        style={{ width: 20, }} />
+                                    <span className="collapse_heading">TENDERMINT</span>
+                                </div>
+                                :
+                                <div className="collapse_header"> <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                                    style={{ width: 20 }} />
+                                    <span className="collapse_heading">ETHEREUM</span>
 
-                        <Collapse in={this.state.openTmd && isTenderMint} timeout="auto" unmountOnExit>
+                                </div>
+                            }
+                            <hr style={sidebarStyles.m_0} />
+
                             <List component="div" disablePadding>
                                 {
 
-                                    TMmenuItems.map((item) => {
-                                        let isDisabled = component === 'dashboard' ? false : disabledItemsTM.includes(item.value)
+                                    menuItemsIcons.map((item) => {
+                                        // let isDisabled = component === 'dashboard' ? false : disabledItemsTM.includes(item.value)
                                         return (
                                             <div>
                                                 <div style={
-                                                    isDisabled ?
-                                                        sidebarStyles.disabledDivStyle :
-                                                        (item.value === currentTab ?
-                                                            sidebarStyles.currentDivStyle :
-                                                            sidebarStyles.activeDivStyle)
+                                                    (item.value === currentTab ?
+                                                        sidebarStyles.currentDivStyle :
+                                                        sidebarStyles.activeDivStyle)
                                                 } onClick={() => { this.setMenu(item); }}>
                                                     <label
                                                         style={
-                                                            isDisabled
-                                                                ?
-                                                                sidebarStyles.disabledLabelStyle :
-                                                                (item.value === currentTab ?
-                                                                    sidebarStyles.activeLabelStyle :
-                                                                    sidebarStyles.normalLabelStyle)
+                                                            // isDisabled
+                                                            //     ?
+                                                            //     sidebarStyles.disabledLabelStyle :
+                                                            (item.value === currentTab ?
+                                                                sidebarStyles.activeLabelStyle :
+                                                                sidebarStyles.normalLabelStyle)
                                                         }>
                                                         <span className="iconStyle"> {this.getIcon(item.icon)}</span> {lang[language][item.name]}
 
@@ -281,94 +259,21 @@ class Sidebar extends Component {
                                     })
                                 }
                             </List>
-                        </Collapse>
+                        </div>
 
-                        <ListItem button onClick={this.handleEthClick} disabled={isTenderMint}>
-                            <ListItemIcon>
+                        <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/client_sent.png'} alt="sentinel_logo"
+                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 55 }} /></span>
 
-                                <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
-                                    style={{ width: 20, marginTop: -5 }} />
-
-                            </ListItemIcon>
-                            <ListItemText inset primary={lang[language].ETH} style={sidebarStyles.collapseType} />
-                            {this.state.openEth ? <ExpandLess /> : <ExpandMore />}
-                        </ListItem>
-
-                        <Collapse in={this.state.openEth && !isTenderMint} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding>
-                                {
-                                    menuItems.map((item) => {
-                                        let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
-                                            || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
-                                        return (
-                                            <div>
-                                                <div style={
-                                                    isDisabled ?
-                                                        sidebarStyles.disabledDivStyle :
-                                                        (item.value === currentTab ?
-                                                            sidebarStyles.currentDivStyle :
-                                                            sidebarStyles.activeDivStyle)
-                                                } onClick={() => { this.setMenu(item); }}>
-                                                    <label
-                                                        style={
-                                                            isDisabled
-                                                                ?
-                                                                sidebarStyles.disabledLabelStyle :
-                                                                (item.value === currentTab ?
-                                                                    sidebarStyles.activeLabelStyle :
-                                                                    sidebarStyles.normalLabelStyle)
-                                                        }>
-                                                        <span> <span className="iconStyle"> {this.getIcon(item.icon)}</span>
-                                                            <span
-                                                            // className="headingStyle"
-                                                            > {lang[language][item.name]} </span></span>
-
-                                                    </label>
-                                                </div>
-                                                <hr style={sidebarStyles.m_0} />
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </List>
-                        </Collapse>
-
-
-
-                        {/* {
-                            menuItems.map((item) => {
-                                let isDisabled = !isTenderMint ? (!isTest && disabledItemsMain.includes(item.value))
-                                    || (isTest && disabledItemsTest.includes(item.value)) : disabledItemsTM.includes(item.value);
-                                return (
-                                    <div>
-                                        <div style={
-                                            isDisabled ?
-                                                sidebarStyles.disabledDivStyle :
-                                                (item.value === currentTab ?
-                                                    sidebarStyles.currentDivStyle :
-                                                    sidebarStyles.activeDivStyle)
-                                        } onClick={() => { this.setMenu(item); }}>
-                                            <label
-                                                style={
-                                                    isDisabled
-                                                        ?
-                                                        sidebarStyles.disabledLabelStyle :
-                                                        (item.value === currentTab ?
-                                                            sidebarStyles.activeLabelStyle :
-                                                            sidebarStyles.normalLabelStyle)
-                                                }>
-                                               <span className="iconStyle"> {this.getIcon(item.icon)}</span> {item.name}
-
-                                            </label>
-                                        </div>
-                                        <hr style={sidebarStyles.m_0} />
-                                    </div>
-                                )
-                            })
-                        } */}
-
-                        <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/Sentinel.png'} alt="sentinel_logo"
-                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 16 }} /></span>
+                        <ul id="social" class="list-unstyled">
+                            <li><a href="https://medium.com/sentinel" id="md" rel="me" target="_blank">Medium</a>
+                            </li>
+                            <li><a href="https://twitter.com/Sentinel_co" id="tw" rel="me" target="_blank">Twitter</a>
+                            </li>
+                            <li><a href="https://t.me/sentinel_co" id="tl" rel="me" target="_blank">Telegram</a>
+                            </li>
+                            <li><a href="https://sentinel.co/" id="snt" rel="me author" target="_blank">Sentinel</a>
+                            </li>
+                        </ul>
                     </div>
                 </Drawer>
             </div>

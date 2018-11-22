@@ -26,7 +26,7 @@ export function getPrivateKey(password, language, cb) {
     readFile(KEYSTORE_FILE, function (err, data) {
         if (err) cb(err, null);
         else {
-            var keystore = JSON.parse(data)
+            var keystore = data ? JSON.parse(data) : {}
             try {
                 var privateKey = keythereum.recover(password, keystore);
                 cb(null, privateKey);
@@ -42,7 +42,7 @@ export function getPrivateKeyWithoutCallback(password, cb) {
     readFile(KEYSTORE_FILE, async function (err, data) {
         if (err) cb(err, null);
         else {
-            let keystore = JSON.parse(data)
+            let keystore = data ? JSON.parse(data) : {}
             try {
                 let privateKey = await keythereum.recover(password, keystore);
                 setTimeout(function () { cb(null, privateKey) }, 1000);

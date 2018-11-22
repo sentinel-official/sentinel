@@ -80,7 +80,7 @@ export function getPrivateKey(password, language, cb) {
     readFile(KEYSTORE_FILE, function (err, data) {
         if (err) cb(err, null);
         else {
-            var keystore = JSON.parse(data)
+            var keystore = data ? JSON.parse(data) : {}
             try {
                 var privateKey = keythereum.recover(password, keystore);
                 cb(null, privateKey);

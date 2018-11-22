@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel, IconButton } from '@material-ui/core'
+import { CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel, IconButton, Snackbar } from '@material-ui/core'
 import { connect } from 'react-redux';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
@@ -63,10 +63,11 @@ class VpnList extends Component {
     getGatewayAddr = async (authCode) => {
         this.setState({ isLoading: true });
         getGatewayUrl(authCode, (err, data, url) => {
+            console.log("Pri...", err, data, url);
             if (err) {
-                this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: err.message || lang[this.props.language].ProblemEnablingPrivateNet });
+                this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
-                setTimeout(() => { this.getVPNs(); }, 500);
+                // setTimeout(() => { this.getVPNs(); }, 500);
             }
             else {
                 this.setState({ isPrivate: true, openPopup: false, openSnack: true, snackMessage: `${lang[this.props.language].PrivateNetEnabledWith}${url}` });
@@ -181,6 +182,10 @@ class VpnList extends Component {
         })
     };
 
+    handleClose = (event, reason) => {
+        this.setState({ openSnack: false });
+    };
+
     render() {
         const { classes, isTM, language } = this.props;
         return (
@@ -282,6 +287,12 @@ class VpnList extends Component {
                             :
                             <VpnMapView zoom={this.state.zoom} />
                 }
+                <Snackbar
+                    open={this.state.openSnack}
+                    autoHideDuration={4000}
+                    onClose={this.handleClose}
+                    message={this.state.snackMessage}
+                />
             </div>
         )
     }

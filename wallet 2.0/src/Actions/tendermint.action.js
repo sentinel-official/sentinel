@@ -73,7 +73,7 @@ export async function sendAmount(data, toAddr) {
 
 export function getTendermintAccount(cb) {
     getTMConfig((err, data) => {
-        let configData = JSON.parse(data);
+        let configData = data ? JSON.parse(data) : {};
         if (configData && 'tmUserName' in configData)
             cb(configData.tmUserName)
         else

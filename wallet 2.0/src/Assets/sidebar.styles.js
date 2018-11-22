@@ -30,7 +30,7 @@ const sidebarStyles = {
 
 
     IconActiveDivStyle: {
-        padding: '16px 0px 7px 0px', //'16px 10px 7px 20px',
+        padding: '16px 0px 0px 0px', //'16px 10px 7px 20px',
         textAlign: 'center', //changed center to left
         cursor: 'pointer',
         fontWeight: 'bold',
@@ -38,15 +38,15 @@ const sidebarStyles = {
     },
 
     IconCurrentDivStyle: {
-        padding: '16px 0px 7px 0px',//'12px 20px 4px 20px',
+        padding: '16px 0px 0px 0px',//'12px 20px 4px 20px',
         textAlign: 'center',
         fontWeight: 'bold',
         cursor: 'pointer',
         fontFamily: 'Montserrat',
         backgroundColor: 'rgba(48, 50, 70, 0.16)'
     },
-    IconDisabledDivStyle: {
-        padding: '16px 0px 7px 0px',
+    iconDisabledDivStyle: {
+        padding: '16px 0px 0px 0px',
         textAlign: 'center',
         fontFamily: 'Montserrat',
         cursor: 'pointer' // changed from not-allowed
@@ -76,6 +76,21 @@ const sidebarStyles = {
         cursor: 'pointer', // changed from not-allowed
      
 
+    },
+    IconDisabledLabelStyle:{
+        padding:'16px 20px 0px' ,
+        textAlign: 'center',
+        fontWeight: 'bold',
+        cursor: 'not-allowed',
+        fontFamily: 'Montserrat',
+        color: '#ccc',
+     
+    },
+    IconNormalLabelStyle:{
+        // color:'blue',
+    },
+    IconActiveLabelStyle:{
+        // color:'green',
     },
     collapseType:{
         fontWeight: 'bold',

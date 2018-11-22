@@ -275,7 +275,7 @@ function checkWindows(resp, cb) {
 export function writeConf(type, cb) {
     console.log("Writing Config...");
     getConfig(function (err, confdata) {
-        let data = JSON.parse(confdata);
+        let data = confdata ? JSON.parse(confdata) : {};
         data.isConnected = true;
         console.log("Updating Config...");
         data.ipConnected = localStorage.getItem('IPGENERATED');

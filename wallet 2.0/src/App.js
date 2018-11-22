@@ -56,7 +56,7 @@ class App extends Component {
                     setTimeout(function () {
                         if (err) that.props.setComponent('home');
                         else that.props.setComponent('authenticate');
-                    }, 3000);
+                    }, 1000);
                 })
             }
         }, 1500);

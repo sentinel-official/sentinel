@@ -29,7 +29,7 @@ export function setStartValues(downVal, upVal) {
     getConfig(function (err, data) {
         if (err) { }
         else {
-            let configData = JSON.parse(data);
+            let configData = data ? JSON.parse(data) : {};
             configData.isConnected = true;
             configData.startDown = downVal;
             configData.startUp = upVal;
@@ -153,7 +153,7 @@ export function socksVpnUsage(usage) {
 
 export function getStartValues() {
     getConfig(function (err, data) {
-        var configData = JSON.parse(data);
+        var configData = data ? JSON.parse(data) : {};
         var downVal = configData.startDown ? configData.startDown : 0;
         var upVal = configData.startUp ? configData.startUp : 0;
         localStorage.setItem('startDown', downVal);

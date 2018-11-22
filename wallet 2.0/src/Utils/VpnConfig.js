@@ -103,7 +103,7 @@ export function getVPNConnectedData(cb) {
     getConfig(function (error, data) {
         if (error) cb(true, null, false)
         else {
-            let config = JSON.parse(data);
+            let config = data ? JSON.parse(data) : {};
             if (config.isConnected) {
                 let isSock = false;
                 if (config.vpn_type === 'socks5') {

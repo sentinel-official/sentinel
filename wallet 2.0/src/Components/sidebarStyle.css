@@ -15,6 +15,7 @@
 .social_icons{
     display: flex;
     flex-direction: column;
+
     bottom: 70px;
     padding-left: 15px;
     position: absolute;
@@ -52,19 +53,21 @@ background: no-repeat;
     background-position: 0px 0px;
 } */
 #social {
-    width: 100%;
     margin: 0!important;
     display: flex;
-    flex-direction: column;
-    padding-left: 15px;
+    /* flex-direction: column; */
+    flex-direction: row;
+    padding-left: 55px;
     position: absolute;
-    bottom: 70px;
+    bottom: 27px;
 }
 #social li {
     float: left;
     border-bottom: none!important;
     list-style-type: none!important;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
+    padding-right: 10px;
+    margin-top: 37px;
 }
 #social #fb {
     background-position: -170px -98px;
@@ -101,4 +104,15 @@ background: no-repeat;
 }
 #social #snt:hover {
     background-position:1px 26px;
+}
+.collapse_header{
+    margin-left: 20px; 
+    padding-bottom: 10px;
+}
+.collapse_heading{
+    margin-left: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Montserrat',
+
 }

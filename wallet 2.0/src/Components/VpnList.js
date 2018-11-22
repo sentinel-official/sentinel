@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel, IconButton } from '@material-ui/core'
+import { CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel, IconButton, Snackbar } from '@material-ui/core'
 import { connect } from 'react-redux';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
@@ -56,17 +56,18 @@ class VpnList extends Component {
             vpnType: 'socks5',
             networkType: 'public',
             dVpnQuery: '',
-
+            listLoading: true
         }
     }
 
     getGatewayAddr = async (authCode) => {
         this.setState({ isLoading: true });
         getGatewayUrl(authCode, (err, data, url) => {
+            console.log("Pri...", err, data, url);
             if (err) {
-                this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: err.message || lang[this.props.language].ProblemEnablingPrivateNet });
+                this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
-                setTimeout(() => { this.getVPNs(); }, 500);
+                // setTimeout(() => { this.getVPNs(); }, 500);
             }
             else {
                 this.setState({ isPrivate: true, openPopup: false, openSnack: true, snackMessage: `${lang[this.props.language].PrivateNetEnabledWith}${url}` });
@@ -81,12 +82,20 @@ class VpnList extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({ vpnType: nextProps.vpnType })
         if (nextProps.walletType != this.props.walletType) {
-            this.props.getVpnList(nextProps.vpnType, nextProps.isTM);
+            this.setState({ listLoading: true })
+            this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
+                .then((res) => {
+                    this.setState({ listLoading: false })
+                })
         }
     }
 
     getVPNs = () => {
-        this.props.getVpnList(this.props.vpnType, this.props.isTM);
+        this.setState({ listLoading: true });
+        this.props.getVpnList(this.props.vpnType, this.props.isTM)
+            .then((res) => {
+                this.setState({ listLoading: false })
+            })
     };
 
     componentWillMount = () => {
@@ -113,7 +122,11 @@ class VpnList extends Component {
 
     handleRadioChange = (event) => {
         this.props.setVpnType(event.target.value);
-        this.props.getVpnList(event.target.value, this.props.isTM);
+        this.setState({ listLoading: true });
+        this.props.getVpnList(event.target.value, this.props.isTM)
+            .then((res) => {
+                this.setState({ listLoading: false })
+            })
 
     };
     handleNetworkChange = (event) => {
@@ -169,9 +182,12 @@ class VpnList extends Component {
         })
     };
 
+    handleClose = (event, reason) => {
+        this.setState({ openSnack: false });
+    };
+
     render() {
         const { classes, isTM, language } = this.props;
-
         return (
             <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }} >
@@ -266,11 +282,17 @@ class VpnList extends Component {
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> :
                         this.props.listView === 'list' ?
                             <div style={{ maxWidth: 895, marginLeft: 20 }} >
-                                <VpnListView query={this.state.dVpnQuery} />
+                                <VpnListView query={this.state.dVpnQuery} loading={this.state.listLoading} />
                             </div>
                             :
                             <VpnMapView zoom={this.state.zoom} />
                 }
+                <Snackbar
+                    open={this.state.openSnack}
+                    autoHideDuration={4000}
+                    onClose={this.handleClose}
+                    message={this.state.snackMessage}
+                />
             </div>
         )
     }

@@ -246,7 +246,11 @@ class Header extends Component {
                                                 <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestSent : lang[language].Sent} </Col>
                                                 <Col xs={1}> : </Col>
                                                 <Col xs={4} style={headerStyles.balanceText}>
-                                                    <p style={headerStyles.tmBalanceText}>{this.props.sentBalance}</p>
+                                                    <p style={headerStyles.tmBalanceText}>
+                                                        {this.props.sentBalance === 'Loading...'
+                                                            ? lang[language].Loading :
+                                                            parseFloat(this.props.sentBalance).toFixed(8)
+                                                        }</p>
                                                 </Col>
                                             </Row>
                                         </div>
@@ -257,7 +261,7 @@ class Header extends Component {
                                                 <Col xs={4} style={headerStyles.balanceText}>
                                                     <p style={headerStyles.tmBalanceText}>
                                                         {this.props.ethBalance === 'Loading...'
-                                                            ? this.props.ethBalance :
+                                                            ? lang[language].Loading :
                                                             parseFloat(this.props.ethBalance).toFixed(8)
                                                         }
                                                     </p>

@@ -156,7 +156,7 @@ let lang = {
         'SentPerGb': ' SENT/GB',
         'TSentLocked': '已锁定的TSENT',
         'TSentConsumed': '已消费的TSENT',
-        'Note': '注意：您的帐户余额为0 TSENT。您可以免费获得300 TSENT，请点击上面的“获得代币”。',
+        'Note': '注意：您的帐户余额为0 TSENT。您可以免费获得一些 TSENT，请点击上面的“获得代币”。',
         'TxFailed': '交易失败',
         'IncorrectPwd': '密码错误',
         'TxSuccess': '已成功交易',
@@ -192,7 +192,6 @@ let lang = {
         "Undo": "撤销",
         "Redo": "恢复",
         "Cut": "切断",
-        "Copy": "复制",
         "Paste": "粘贴",
         "SelectAll": "选择所有",
         "Quit": "退出",
@@ -249,12 +248,12 @@ let lang = {
         "Converting": "C正在兑换",
         "OpenVpnNotInstalled": "没有安装OpenVPN。请去往",
         "PleaseGo": "请去往",
-        "OpenVpnPath": "C: Users（您的用户名）AppDataLocalSentinelapp-0.1.0 resourcesextras",
+        "OpenVpnPath": "C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras",
         "OpenVpnInstallCmd": "然后运行openvpn-install-2.3.18-I602-x86_64.exe",
         "OpenVpnMessage": "只需安装Openvpn而无需更改安装目录。",
         "YourUserName": "您的用户名称",
         "AndRun": "然后运行",
-        "OpenVpnInstallAlert": "没有安装OpenVPN。请去往 C:\Users\(您的用户名\AppData\Local\Sentinelapp-0.1.0\resources\extras 然后运行 openvpn-install-2.3.18-I602-x86_64.exe。 只需安装Openvpn而无需更改安装目录。",
+        "OpenVpnInstallAlert": "没有安装OpenVPN。请去往 C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras 然后运行 openvpn-install-2.3.18-I602-x86_64.exe。 只需安装Openvpn而无需更改安装目录。",
         "ConnectedSocks": "已链接到Socks",
 
 
@@ -299,11 +298,11 @@ let lang = {
         "Yourbalanceislessthan100SENTs.": "您的余额少于100 SENT",
         "Wrongclientwalletaddressortoken.": "错误的客户端钱包地址或代币。",
         "YouHaveDue": "您有应付金额，请付清费用后再尝试。",
-       
 
-        "TestTokensalreadyclaimed":"测试令牌已经声称",
-        "Erroroccurredwhiletransferringfreeamount.":"转移免费金额时出错。",
-        "SuccessfullytransferredTestTokens":"成功转移了测试令牌",
+
+        "TestTokensalreadyclaimed": "测试令牌已经声称",
+        "Erroroccurredwhiletransferringfreeamount.": "转移免费金额时出错。",
+        "SuccessfullytransferredTestTokens": "成功转移了测试令牌",
 
     },
 }

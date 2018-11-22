@@ -145,7 +145,7 @@ class VPNHistory extends Component {
                                     {lang[language].Time} :
                                 {/* </span> {new Date(sessionData.timestamp * 1000).toGMTString()} */}
 
-                             </span> {new Date(sessionData.timestamp * 1000).toLocaleDateString()}
+                             </span> {new Date(sessionData.timestamp * 1000).toLocaleString()}
 
                             </CardContent>
                             {

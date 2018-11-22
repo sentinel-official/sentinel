@@ -30,7 +30,7 @@ export function getETHBalance(state = 'Loading...', action) {
     }
 }
 
-export function getSentBalance(state = 'Loading', action) {
+export function getSentBalance(state = 'Loading...', action) {
     switch (action.type) {
         case types.GET_SENT_BAL_SUCCESS:
             return action.payload

@@ -38,9 +38,12 @@ import StarBorder from '@material-ui/icons/StarBorder';
 
 import './sidebarStyle.css'
 
+const electron = window.require('electron');
+const remote = electron.remote;
+
 const Customstyles = theme => ({
     paper: {
-        height: 512,
+        height: remote.process.platform === 'win32' ? 516 : 512,
         top: 70,
         width: 250
     }
@@ -173,7 +176,7 @@ class Sidebar extends Component {
 
                 {
                     menuItemsIcons.map((item) => {
-                        
+
                         return (
                             <div>
                                 <div style={

@@ -99,7 +99,7 @@ const headerStyles = {
     tmBalanceText: {
         textOverflow: 'ellipsis',
         overflow: 'hidden',
-        width: 120
+        width: 80
     },
     bal: {
         padding: '0 10px',

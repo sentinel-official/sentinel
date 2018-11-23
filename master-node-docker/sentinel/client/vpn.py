@@ -29,13 +29,14 @@ def get_vpns_list(vpn_type):
         'rating': 1,
         'net_speed.download': 1,
         'enc_method': 1,
+        'description': 1,
         'version': 1,
         'load': 1,
         'active_connections': 1
     }).sort([
         ('version', -1),
-        ('load.cpu', 1),
         ('rating', -1),
+        ('load.cpu', 1),
     ])
 
     return list(_list)
@@ -102,8 +103,8 @@ class GetVpnCredentials(object):
                                     token = uuid4().hex
                                     ip, port = str(node['ip']), 3000
                                     body = {
+                                        # Fixes for SLC
                                         'account_addr': device_id if account_addr == REFERRAL_DUMMY else account_addr,
-                                    # Fixes for SLC
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)

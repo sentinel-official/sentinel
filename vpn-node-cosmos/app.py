@@ -6,6 +6,8 @@ from thread import start_new_thread
 from sentinel.config import DEFAULT_GAS
 from sentinel.config import VERSION
 from sentinel.cosmos import call as cosmos_call
+from sentinel.helpers import end_session
+from sentinel.helpers import update_session_status
 from sentinel.node import list_node
 from sentinel.node import node
 from sentinel.node import update_node
@@ -71,6 +73,7 @@ if __name__ == '__main__':
             'download_speed': int(node.net_speed['download']),
             'price_per_gb': int(node.config['price_per_gb']),
             'enc_method': str(node.config['enc_method']),
+            'description': str(node.config['description']),
             'location_latitude': int(node.location['latitude'] * 10000),
             'location_longitude': int(node.location['longitude'] * 10000),
             'location_city': str(node.location['city']),
@@ -106,6 +109,8 @@ if __name__ == '__main__':
     start_new_thread(sessions_job, ())
 
     while True:
+        if openvpn.vpn_proc.poll() is not None:
+            openvpn.start()
         line = openvpn.vpn_proc.stdout.readline().strip()
         line_len = len(line)
         if line_len > 0:
@@ -113,9 +118,12 @@ if __name__ == '__main__':
             if 'Peer Connection Initiated with' in line:
                 client_name = line.split()[6][1:-1]
                 if 'client' in client_name:
+                    session_id = client_name[6:]
+                    update_session_status(session_id, 'CONNECTED')
                     print('*' * 128)
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
                 if 'client' in client_name:
+                    session_id = client_name[6:]
+                    end_session(session_id)
                     print('*' * 128)
-                    openvpn.revoke(client_name)

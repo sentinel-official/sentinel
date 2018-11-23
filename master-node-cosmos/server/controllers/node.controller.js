@@ -1,10 +1,14 @@
 let async = require('async');
+let lodash = require('lodash');
 let nodeDbo = require('../dbos/node.dbo');
+let sessionDbo = require('../dbos/session.dbo');
 let nodeHelper = require('../helpers/node.helper');
-
+let sessionHelper = require('../helpers/session.helper');
 
 let addNode = (req, res) => {
-  let { txHash } = req.body;
+  let {
+    txHash
+  } = req.body;
   async.waterfall([
     (next) => {
       nodeDbo.getNode({ txHash },
@@ -56,7 +60,9 @@ let addNode = (req, res) => {
 };
 
 let updateNode = (req, res) => {
-  let { accountAddress } = req.params;
+  let {
+    accountAddress
+  } = req.params;
   let {
     token,
     type,
@@ -155,7 +161,9 @@ let getNodes = (req, res) => {
 };
 
 let updateNodeSessions = (req, res) => {
-  let { accountAddress } = req.params;
+  let {
+    accountAddress
+  } = req.params;
   let {
     token,
     sessions
@@ -170,7 +178,11 @@ let updateNodeSessions = (req, res) => {
           status: 500,
           message: 'Error occurred while fetching node details.'
         });
-        else next(null);
+        else if (node) next(null);
+        else next({
+          status: 400,
+          message: 'Node doesn\'t exists.'
+        });
       });
     }, (next) => {
       sessionHelper.updateSessionsUsage(accountAddress, sessions,
@@ -216,9 +228,63 @@ let updateNodeSessions = (req, res) => {
   });
 };
 
+let updateNodeSession = (req, res) => {
+  let {
+    accountAddress,
+    sessionId
+  } = req.params;
+  let {
+    token,
+    sessionToken,
+    sessionAmount
+  } = req.body;
+  async.waterfall([
+    (next) => {
+      nodeDbo.getNode({
+        accountAddress,
+        token
+      }, (error, node) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while fetching node details.'
+        });
+        else if (node) next(null);
+        else next({
+          status: 400,
+          message: 'Node doesn\'t exists.'
+        });
+      });
+    }, (next) => {
+      sessionDbo.updateSession({
+        sessionId,
+        token: sessionToken,
+        nodeAccountAddress: accountAddress
+      }, {
+          amount: sessionAmount
+        }, (error, result) => {
+          if (error) next({
+            status: 500,
+            message: 'Error occurred while updating session amount.'
+          });
+          else next(null, {
+            status: 200
+          });
+        });
+    }
+  ], (error, success) => {
+    let response = Object.assign({
+      success: !error
+    }, error || success);
+    let status = response.status;
+    delete (response.status);
+    res.status(status).send(response);
+  });
+};
+
 module.exports = {
   addNode,
   getNodes,
   updateNode,
+  updateNodeSession,
   updateNodeSessions
 };

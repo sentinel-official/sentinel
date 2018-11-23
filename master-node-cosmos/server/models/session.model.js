@@ -30,6 +30,11 @@ let sessionSchema = new mongoose.Schema({
       default: 0
     }
   },
+  amount: {
+    type: String,
+    required: true,
+    default: 0
+  },
   startedOn: {
     type: Date,
     default: Date.now

@@ -8,7 +8,7 @@ from ..utils import fetch
 
 def list_node():
     body = {
-        'hash': node.config['register']['hash']
+        'txHash': node.config['register']['hash']
     }
     url = MASTER_NODE_URL + '/nodes'
     try:
@@ -39,12 +39,12 @@ def update_node(update_type):
             'IP': node.ip,
             'pricePerGB': node.config['price_per_gb'],
             'encMethod': node.config['enc_method'],
+            'description': node.config['description'],
             'location': node.location,
             'netSpeed': node.net_speed,
             'version': VERSION
         }
-
-    url = MASTER_NODE_URL, '/nodes/' + node.config['account']['address']
+    url = MASTER_NODE_URL + '/nodes/' + node.config['account']['address']
     try:
         response = fetch().put(url, json=body)
         if response and response.status_code == 200:
@@ -71,6 +71,57 @@ def update_sessions(sessions):
     url = MASTER_NODE_URL + '/nodes/' + node.config['account']['address'] + '/sessions'
     try:
         response = fetch().put(url, json=body)
+        if response and response.status_code == 200:
+            data = response.json()
+            if data['success']:
+                return None, data
+            return {
+                       'code': 2,
+                       'message': 'Response data success is False.'
+                   }, None
+        return {
+                   'code': 2,
+                   'message': 'Response status code is not 200.'
+               }, None
+    except Exception as error:
+        return str(error), None
+
+
+def update_session(_id, token, amount):
+    body = {
+        'token': node.config['register']['token'],
+        'sessionId': _id,
+        'sessionToken': token,
+        'sessionAmount': amount
+    }
+    url = MASTER_NODE_URL + '/nodes/' + node.config['account']['address'] + '/sessions/' + _id
+    try:
+        response = fetch().put(url, json=body)
+        if response and response.status_code == 200:
+            data = response.json()
+            if data['success']:
+                return None, data
+            return {
+                       'code': 2,
+                       'message': 'Response data success is False.'
+                   }, None
+        return {
+                   'code': 2,
+                   'message': 'Response status code is not 200.'
+               }, None
+    except Exception as error:
+        return str(error), None
+
+
+def add_tx(tx):
+    body = {
+        'fromAccountAddress': tx['from_account_address'],
+        'toAccountAddress': tx['to_account_address'],
+        'txHash': tx['tx_hash']
+    }
+    url = MASTER_NODE_URL + '/txes'
+    try:
+        response = fetch().post(url, json=body)
         if response and response.status_code == 200:
             data = response.json()
             if data['success']:

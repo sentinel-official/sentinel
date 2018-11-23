@@ -22,6 +22,7 @@ let updateNode = (req, res, next) => {
       IP: joi.string(),
       pricePerGB: joi.number(),
       encMethod: joi.string(),
+      description: joi.string(),
       location: joi.object().keys({
         latitude: joi.number().required(),
         longitude: joi.number().required(),
@@ -35,7 +36,8 @@ let updateNode = (req, res, next) => {
       version: joi.string(),
     })
   });
-  let { error } = joi.validate(req.body.concat(req.params), updateNodeSchema);
+  let body = Object.assign({}, req.body, req.params);
+  let { error } = joi.validate(body, updateNodeSchema);
   if (error) res.status(422).send({
     success: false,
     error
@@ -70,7 +72,25 @@ let updateNodeSessions = (req, res, next) => {
     token: joi.string().required(),
     sessions: joi.array().items(session).required()
   });
-  let { error } = joi.validate(req.body.concat(req.params), updateNodeSessionsSchema);
+  let body = Object.assign({}, req.body, req.params);
+  let { error } = joi.validate(body, updateNodeSessionsSchema);
+  if (error) res.status(422).send({
+    success: false,
+    error
+  });
+  else next();
+};
+
+let updateNodeSession = (req, res, next) => {
+  let updateNodeSessionSchema = joi.object().keys({
+    accountAddress: joi.string().required(),
+    token: joi.string().required(),
+    sessionId: joi.string().required(),
+    sessionToken: joi.string().required(),
+    sessionAmount: joi.number().required()
+  });
+  let body = Object.assign({}, req.body, req.params);
+  let { error } = joi.validate(body, updateNodeSessionSchema);
   if (error) res.status(422).send({
     success: false,
     error
@@ -82,5 +102,6 @@ module.exports = {
   addNode,
   updateNode,
   getNodes,
+  updateNodeSession,
   updateNodeSessions
 };

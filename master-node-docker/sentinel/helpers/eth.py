@@ -1,7 +1,7 @@
 # coding=utf-8
 from hashlib import md5
 
-from .referral import add_session
+from .referral import add_bonus
 from .referral import get_vpn_sessions
 from ..config import COINBASE_ADDRESS
 from ..config import COINBASE_PRIVATE_KEY
@@ -210,8 +210,6 @@ class ETHHelper(object):
                 error, _usage = vpn_service_manager.get_vpn_usage(from_addr, session_id)
                 error, tx_hash = vpn_service_manager.pay_vpn_session(from_addr, int(_usage[3]), session_id)
             if error is None:
-                if device_id:
-                    _, res = add_session(device_id, session_id, tx_hash)
                 tx_hashes.append(tx_hash)
             else:
                 errors.append(error)
@@ -277,7 +275,7 @@ class ETHHelper(object):
                 'timestamp': timestamp
             })
             if _sent_bytes >= LIMIT_100MB:
-                _, res = add_session(device_id, session_id)
+                _, res = add_bonus(device_id)
 
         if make_tx is True and to_addr != REFERRAL_DUMMY:
             error, tx_hash = vpn_service_manager.add_vpn_usage(from_addr, to_addr, sent_bytes, session_duration, amount,

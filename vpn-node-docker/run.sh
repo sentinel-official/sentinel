@@ -38,7 +38,7 @@ else
             echo "3) AES-256-GCM"
             echo "4) AES-128-GCM"
             read ENCMETHOD
-            case $ENCMETHOD in
+            case ${ENCMETHOD} in
             1)
                 echo "You selected AES-256-CBC as your encryption method"
                 ENCMETHOD=AES-256-CBC
@@ -66,11 +66,13 @@ else
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
             export LITE_NETWORK=true
         fi
+        echo -n "Please add node description: "
+        read DESC
         echo -n "Is everything correct ? [Y/N]: "
         read option
         if [ "$option" == "y" ] || [ "$option" == "Y" ]; then
             touch ${CONFIG_DATA_PATH}
-            echo '{"account_addr": "'${ADDRESS}'", "price_per_gb": '${PRICE}', "token": "", "enc_method": "'${ENCMETHOD}'"}' > ${CONFIG_DATA_PATH}
+            echo '{"account_addr": "'${ADDRESS}'", "price_per_gb": '${PRICE}', "token": "", "enc_method": "'${ENCMETHOD}'", "description": "'${DESC}'"}' > ${CONFIG_DATA_PATH}
             break
         fi
     done

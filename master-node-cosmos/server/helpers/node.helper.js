@@ -11,7 +11,7 @@ let generateToken = () => {
 
 let getNodeDetails = (txHash, cb) => {
   cosmos.call('verifyHash', {
-    txHash
+    hash: txHash
   }, (error, result) => {
     console.log(error, result);
     if (error) cb(error);
@@ -23,6 +23,7 @@ let getNodeDetails = (txHash, cb) => {
         IP: data.Ip,
         pricePerGB: parseFloat(data.PricePerGb),
         encMethod: data.EncMethod,
+        description: data.description,
         location: {
           latitude: parseFloat(data.Location.Latitude) / Math.pow(10, 6),
           longitude: parseFloat(data.Location.Longitude) / Math.pow(10, 6),

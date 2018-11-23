@@ -73,6 +73,7 @@ if __name__ == '__main__':
             'download_speed': int(node.net_speed['download']),
             'price_per_gb': int(node.config['price_per_gb']),
             'enc_method': str(node.config['enc_method']),
+            'description': str(node.config['description']),
             'location_latitude': int(node.location['latitude'] * 10000),
             'location_longitude': int(node.location['longitude'] * 10000),
             'location_city': str(node.location['city']),

@@ -39,6 +39,7 @@ def update_node(update_type):
             'IP': node.ip,
             'pricePerGB': node.config['price_per_gb'],
             'encMethod': node.config['enc_method'],
+            'description': node.config['description'],
             'location': node.location,
             'netSpeed': node.net_speed,
             'version': VERSION

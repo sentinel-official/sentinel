@@ -22,6 +22,7 @@ let updateNode = (req, res, next) => {
       IP: joi.string(),
       pricePerGB: joi.number(),
       encMethod: joi.string(),
+      description: joi.string(),
       location: joi.object().keys({
         latitude: joi.number().required(),
         longitude: joi.number().required(),

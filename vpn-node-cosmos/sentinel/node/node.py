@@ -58,6 +58,8 @@ class Node(object):
                 self.config['register']['token'] = str(info['register_token'])
             if ('enc_method' in info) and (info['enc_method' is not None]):
                 self.config['enc_method'] = str(info['enc_method'])
+            if ('description' in info) and (info['description' is not None]):
+                self.config['description'] = str(info['description'])
             if ('price_per_gb' in info) and (info['price_per_gb' is not None]):
                 self.config['price_per_gb'] = float(info['price_per_gb'])
             self.save_config()

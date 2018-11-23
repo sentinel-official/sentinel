@@ -23,6 +23,7 @@ let getNodeDetails = (txHash, cb) => {
         IP: data.Ip,
         pricePerGB: parseFloat(data.PricePerGb),
         encMethod: data.EncMethod,
+        description: data.description,
         location: {
           latitude: parseFloat(data.Location.Latitude) / Math.pow(10, 6),
           longitude: parseFloat(data.Location.Longitude) / Math.pow(10, 6),

@@ -11,5 +11,6 @@
     "register": {
         "hash": null, 
         "token": null
-    }
+    },
+    "description": ""
 }

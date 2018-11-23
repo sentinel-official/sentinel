@@ -32,8 +32,7 @@ let sessionSchema = new mongoose.Schema({
   },
   amount: {
     type: String,
-    required: true,
-    default: 0
+    default: null
   },
   startedOn: {
     type: Date,

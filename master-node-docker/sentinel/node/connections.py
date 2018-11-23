@@ -40,6 +40,8 @@ class UpdateConnections(object):
             tx_hashes, session_names = [], []
             cond = '$nin'
             for connection in connections:
+                if connection is None:
+                    continue
                 connection['vpn_addr'] = account_addr
                 if 'account_addr' in connection:
                     connection['client_addr'] = connection['account_addr'].lower()

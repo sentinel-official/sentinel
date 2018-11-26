@@ -9,6 +9,7 @@ import History from "../Components/historyComponent";
 import CustomButton from '../Components/customButton';
 import { historyStyles } from '../Assets/txhistory.styles';
 import lang from '../Constants/language';
+import _ from 'lodash';
 let zfill = require('zfill');
 
 class TxnHistory extends Component {
@@ -77,12 +78,13 @@ class TxnHistory extends Component {
         }
         if (!this.state.isActive) {
             if (this.props.testSENTHistory && this.props.testSENTHistory.result.length > 0) {
-                output = this.props.testSENTHistory.result.map(sentData => {
+                let sentHistory = _.sortBy(this.props.testSENTHistory.result, o => o.timeStamp).reverse()
+                output = sentHistory.map(sentData => {
                     return (
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={lang[language].Sents}
                                 to={`0x${sentData.topics[2].substring(26)}`} from={`0x${sentData.topics[1].substring(26)}`}
-                                gas={`${parseInt(sentData.gasPrice) / (10 ** 9) + lang[language].GWEI}`} amount={(parseInt(sentData.data) / (10 ** 9)).toFixed(3)}
+                                gas={`${parseInt(sentData.gasPrice) / (10 ** 9) + lang[language].GWEI}`} amount={(parseInt(sentData.data) / (10 ** 8)).toFixed(3)}
                                 status={'Success'} tx={sentData.transactionHash} />
                         </div>
                     )

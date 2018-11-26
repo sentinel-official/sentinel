@@ -157,7 +157,7 @@ class SimpleDialog extends React.Component {
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Latency}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.latency ? this.props.data.latency + lang[language].MS : 'None'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.latency ? `${this.props.data.latency} ${lang[language].MS}` : 'None'}</label> </Col>
                     </Row>
 
 

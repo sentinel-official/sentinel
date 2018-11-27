@@ -12,6 +12,24 @@ import lang from '../Constants/language';
 import _ from 'lodash';
 let zfill = require('zfill');
 
+Number.prototype.noExponents = function () {
+    var data = String(this).split(/[eE]/);
+    if (data.length == 1) return data[0];
+
+    var z = '', sign = this < 0 ? '-' : '',
+        str = data[0].replace('.', ''),
+        mag = Number(data[1]) + 1;
+
+    if (mag < 0) {
+        z = sign + '0.';
+        while (mag++) z += '0';
+        return z + str.replace(/^\-/, '');
+    }
+    mag -= str.length;
+    while (mag--) z += '0';
+    return str + z;
+}
+
 class TxnHistory extends Component {
 
     constructor(props) {
@@ -19,56 +37,68 @@ class TxnHistory extends Component {
 
         this.state = {
             isActive: false,
+            loading: true
         }
     }
 
     componentWillMount = () => {
-        this.testSentHistory();
+        this.onClickRefresh(this.props.setTestNet);
     }
 
-    testSentHistory = () => {
-        this.setState({ isActive: false });
+    testSentHistory = (isTest) => {
+        this.setState({ isActive: false, loading: true });
         let data = {
             account_addr: '0x' + zfill(this.props.getAccount.substring(2), 64),
-            isTest: this.props.setTestNet
+            isTest: isTest
         };
         this.props.testSENTTxns(data)
-        // .then(res => { console.log('res', res) })
+            .then(res => { this.setState({ loading: false }) })
         // .catch(err => { console.log('err', err) });
 
     };
 
-    testEthHistory = () => {
-        this.setState({ isActive: true });
+    testEthHistory = (isTest) => {
+        this.setState({ isActive: true, loading: true });
 
         let data = {
             account_addr: this.props.getAccount,
-            isTest: this.props.setTestNet
+            isTest: isTest
         };
         this.props.testETHTxns(data)
+            .then(res => { this.setState({ loading: false }) })
         // .then(res => { console.log('res', res) })
         // .catch(err => { console.log('err', err) });
     };
 
-    onClickRefresh = () => {
+    onClickRefresh = (isTest) => {
         if (this.state.isActive)
-            this.testEthHistory();
+            this.testEthHistory(isTest);
         else
-            this.testSentHistory();
+            this.testSentHistory(isTest);
+    }
+
+    componentWillReceiveProps = (next) => {
+        if (this.props.setTestNet != next.setTestNet) {
+            this.onClickRefresh(next.setTestNet)
+        }
     }
 
     render() {
         let output;
         let { language } = this.props;
-        if (this.state.isActive) {
+        let isTest = this.props.setTestNet;
+        if (this.state.loading) {
+            output = <div style={historyStyles.noTxYet}>{lang[language].Loading}</div>
+        }
+        else if (this.state.isActive) {
             if (this.props.testETHHistory && this.props.testETHHistory.result.length > 0) {
                 output = this.props.testETHHistory.result.map(data => {
                     // console.log(data, 'see this');
                     return (
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={data.timeStamp} to={data.to}
-                                gas={`${parseInt(data.gasPrice) / (10 ** 9) + lang[language].GWEI}`} from={data.from} unit={lang[language].Eths}
-                                amount={parseInt(data.value) / (10 ** 18)} status={data.isError === '1' ? 'Failed' : 'Success'} tx={data.hash} />
+                                gas={`${parseInt(data.gasPrice) / (10 ** 9) + lang[language].GWEI}`} from={data.from} unit={isTest ? lang[language].TestETHunit : lang[language].Eths}
+                                amount={parseFloat(parseInt(data.value) / (10 ** 18).toFixed(8)).noExponents()} status={data.isError === '1' ? 'Failed' : 'Success'} tx={data.hash} />
                         </div>
                     )
                 })
@@ -76,15 +106,16 @@ class TxnHistory extends Component {
                 output = <div style={historyStyles.noTxYet}>{lang[language].NoEthTx}</div>
             }
         }
-        if (!this.state.isActive) {
+        else {
             if (this.props.testSENTHistory && this.props.testSENTHistory.result.length > 0) {
                 let sentHistory = _.sortBy(this.props.testSENTHistory.result, o => o.timeStamp).reverse()
                 output = sentHistory.map(sentData => {
                     return (
                         <div style={historyStyles.data}>
-                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={lang[language].Sents}
+                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={isTest ? lang[language].TestSENTunit : lang[language].Sents}
                                 to={`0x${sentData.topics[2].substring(26)}`} from={`0x${sentData.topics[1].substring(26)}`}
-                                gas={`${parseInt(sentData.gasPrice) / (10 ** 9) + lang[language].GWEI}`} amount={(parseInt(sentData.data) / (10 ** 8)).toFixed(3)}
+                                gas={`${parseInt(sentData.gasPrice) / (10 ** 9) + lang[language].GWEI}`}
+                                amount={parseFloat((parseInt(sentData.data) / (10 ** 8)).toFixed(8)).noExponents()}
                                 status={'Success'} tx={sentData.transactionHash} />
                         </div>
                     )

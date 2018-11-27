@@ -163,7 +163,9 @@ export async function getTxInfo(hash, time) {
                 100 * (10 ** 8) - parseInt(response.data.tx.value.msg[0].value.Coins[0].amount) :
                 response.data.tx.value.msg[0].value.Coins[0].amount,
             from: response.data.tx.value.msg[0].value.From,
-            to: response.data.tx.value.msg[0].value.To ? response.data.tx.value.msg[0].value.To : 'Paid to Chain',
+            to: response.data.tx.value.msg[0].value.To ? response.data.tx.value.msg[0].value.To : 'ClaimedBy',
+
+            // "Paid to Chain" initially
             gas: response.data.result.gas_used,
             timestamp: time
         })

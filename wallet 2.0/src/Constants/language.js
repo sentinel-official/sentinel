@@ -149,9 +149,9 @@ let lang = {
         "OpenVPN": "OpenVPN",
         'Socks5': "SOCKS5",
         'Failed': '失败',
-        'Sents': 'SENTS',
-        'Secs': '秒',
-        'MS': "ms",
+        'Sents': ' SENTS',
+        'Secs': ' 秒',
+        'MS': " ms",
         'Mbps': ' Mbps',
         'SentPerGb': ' SENT/GB',
         'TSentLocked': '已锁定的TSENT',
@@ -173,8 +173,8 @@ let lang = {
         'Private': '私人',
         'Selected': '已选择',
         'OpenVPNList': 'OpenVPN列表',
-        'GWEI': 'GWEI',
-        'Eths': 'ETHS',
+        'GWEI': ' GWEI',
+        'Eths': ' ETHS',
         "Refresh": "刷新",
         "Sentinel": "SENTINEL",
 
@@ -303,6 +303,10 @@ let lang = {
         "TestTokensalreadyclaimed": "测试令牌已经声称",
         "Erroroccurredwhiletransferringfreeamount.": "转移免费金额时出错。",
         "SuccessfullytransferredTestTokens": "成功转移了测试令牌",
+
+        "TestSENTunit" : "TestSENT",
+        "TestETHunit" : "TestETH",
+        "ClaimedBy" : "Tokens Claimed by Service Provider",
 
     },
 }

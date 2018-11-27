@@ -242,7 +242,7 @@ class Header extends Component {
                                     <Col xs={12}>
                                         <div style={headerStyles.sentBalance}>
                                             <Row>
-                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestSent : lang[language].Sent} </Col>
+                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestSENTunit : lang[language].Sent} </Col>
                                                 <Col xs={1}> : </Col>
                                                 <Col xs={4} style={headerStyles.balanceText}>
                                                     <p style={headerStyles.tmBalanceText}>
@@ -255,7 +255,7 @@ class Header extends Component {
                                         </div>
                                         <div style={headerStyles.ethBalance}>
                                             <Row>
-                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestEth : lang[language].Eth} </Col>
+                                                <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestETHunit : lang[language].Eth} </Col>
                                                 <Col xs={1}> : </Col>
                                                 <Col xs={4} style={headerStyles.balanceText}>
                                                     <p style={headerStyles.tmBalanceText}>

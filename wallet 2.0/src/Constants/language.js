@@ -1542,7 +1542,7 @@ let lang = {
 
         "TestSENTunit" : "TestSENT",
         "TestETHunit" : "TestETH",
-        "ClaimedBy" : "Tokens Claimed by Service Provider",
+        "ClaimedBy" : "服务提供商声称的令牌",
 
     },
 }

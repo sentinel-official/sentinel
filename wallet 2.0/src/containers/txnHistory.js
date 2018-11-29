@@ -136,17 +136,17 @@ class TxnHistory extends Component {
                             <IconButton
                                 style={historyStyles.outlineNone}
                                 aria-label={lang[language].Refresh}
-                                onClick={this.onClickRefresh}>
+                                onClick={() => { this.onClickRefresh(isTest) }}>
                                 <RefreshIcon style={historyStyles.outlineNone} />
                             </IconButton>
                         </div>
                         <div style={historyStyles.margin}>
                             <CustomButton color={'#FFFFFF'} label={lang[language].Sent} active={this.state.isActive}
-                                onClick={this.testSentHistory} />
+                                onClick={() => { this.testSentHistory(isTest) }} />
                         </div>
                         <div style={historyStyles.margin}>
                             <CustomButton color={'#F2F2F2'} label={lang[language].Eth} active={!this.state.isActive}
-                                onClick={this.testEthHistory} />
+                                onClick={() => { this.testEthHistory(isTest) }} />
                         </div>
                     </div>
                 </div>

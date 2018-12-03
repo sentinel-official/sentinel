@@ -141,7 +141,7 @@ class VPNHistory extends Component {
                                 <br /> */}
 
                                         <div>
-                                            <label style={historyLabel}>{`${lang[language].VpnAddress}:`}&nbsp;<span style={historyValue}>{sessionData.account_addr}</span></label>
+                                            <label style={historyLabel}>{`${lang[language].NodeID}:`}&nbsp;<span style={historyValue}>{sessionData.account_addr}</span></label>
                                             <Tooltip title={lang[language].Copy}>
                                                 <CopyToClipboard text={sessionData.account_addr}
                                                     onCopy={() => this.setState({

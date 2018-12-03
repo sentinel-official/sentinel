@@ -114,7 +114,7 @@ class TMSessions extends Component {
                        
                     </div>
                     <div>
-                    <label style={historyLabel}>{`${lang[language].VpnAddress}:`}&nbsp;<span style={historyValue}>{sessionData.nodeAccountAddress}</span></label>
+                    <label style={historyLabel}>{`${lang[language].NodeID}:`}&nbsp;<span style={historyValue}>{sessionData.nodeAccountAddress}</span></label>
                             <Tooltip title={lang[language].Copy}>
                                     <CopyToClipboard text={sessionData.nodeAccountAddress}
                                         onCopy={() => this.setState({

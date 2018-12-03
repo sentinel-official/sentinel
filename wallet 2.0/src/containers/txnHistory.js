@@ -97,7 +97,7 @@ class TxnHistory extends Component {
                     return (
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={data.timeStamp} to={data.to}
-                                gas={`${parseInt(data.gasPrice) / (10 ** 9) + lang[language].GWEI}`} from={data.from} unit={isTest ? lang[language].TestETHunit : lang[language].Eths}
+                                gas={`${parseInt(data.gasPrice) / (10 ** 9) + lang[language].GWEI}`} from={data.from} unit={isTest ? lang[language].TestETHunit : lang[language].Eth}
                                 amount={parseFloat(parseInt(data.value) / (10 ** 18).toFixed(8)).noExponents()} status={data.isError === '1' ? 'Failed' : 'Success'} tx={data.hash} />
                         </div>
                     )
@@ -112,7 +112,7 @@ class TxnHistory extends Component {
                 output = sentHistory.map(sentData => {
                     return (
                         <div style={historyStyles.data}>
-                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={isTest ? lang[language].TestSENTunit : lang[language].Sents}
+                            <History ownWallet={this.props.getAccount} date={sentData.timeStamp} unit={isTest ? lang[language].TestSENTunit : lang[language].Sent}
                                 to={`0x${sentData.topics[2].substring(26)}`} from={`0x${sentData.topics[1].substring(26)}`}
                                 gas={`${parseInt(sentData.gasPrice) / (10 ** 9) + lang[language].GWEI}`}
                                 amount={parseFloat((parseInt(sentData.data) / (10 ** 8)).toFixed(8)).noExponents()}
@@ -141,11 +141,11 @@ class TxnHistory extends Component {
                             </IconButton>
                         </div>
                         <div style={historyStyles.margin}>
-                            <CustomButton color={'#FFFFFF'} label={lang[language].Sent} active={this.state.isActive}
+                            <CustomButton color={'#FFFFFF'} label={isTest ? lang[language].TestSENTunit : lang[language].Sent} active={this.state.isActive}
                                 onClick={() => { this.testSentHistory(isTest) }} />
                         </div>
                         <div style={historyStyles.margin}>
-                            <CustomButton color={'#F2F2F2'} label={lang[language].Eth} active={!this.state.isActive}
+                            <CustomButton color={'#F2F2F2'} label={isTest ? lang[language].TestETHunit : lang[language].Eth} active={!this.state.isActive}
                                 onClick={() => { this.testEthHistory(isTest) }} />
                         </div>
                     </div>

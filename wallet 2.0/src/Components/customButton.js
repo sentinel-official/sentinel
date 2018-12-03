@@ -17,6 +17,7 @@ const styles = theme => ({
     btnLabel: {
         fontWeight: 'bold',
         fontFamily: 'Montserrat',
+        textTransform: 'none', // added 
     }
 });
 

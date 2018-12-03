@@ -13,8 +13,14 @@ module.exports = {
         // {
         //     'name': 'TM',
         //     'value': 'tmint',
-        //     'icon': 'tmintIcon'
+        //     'icon': 'tmintIcon' 
         // },
+
+        {
+            'name': 'ETH',
+            'value': 'eth',
+            'icon': 'ethereumIcon'
+        },
 
         {
             'name': 'Send',
@@ -35,18 +41,30 @@ module.exports = {
     ],
 
     testMenuItemsIcons: [
-        // {
-        //     'name': 'TM',
-        //     'value': 'tmint',
-        //     'icon': 'tmintIcon'
-        // },
+        {
+            'name': 'TM',
+            'value': 'tmint',
+            'icon': 'tmintIcon'
+        },
 
         // we only need one division in which we change tm/eth logo
-        // {
-        //     'name': 'ETH',
-        //     'value': 'eth',
-        //     'icon': 'ethereumIcon'
-        // },
+        {
+            'name': 'ETH',
+            'value': 'eth',
+            'icon': 'ethereumIcon'
+        },
+
+        {
+            'name': 'VpnList',
+            'value': 'vpnList',
+            'icon': 'listIcon'
+        },
+
+        {
+            'name': 'VpnHistory',
+            'value': 'vpnHistory',
+            'icon': 'vpnHisIcon'
+        },
 
         {
             'name': 'Send',
@@ -63,20 +81,10 @@ module.exports = {
             'value': 'history',
             'icon': 'historyIcon'
         },
-        {
-            'name': 'VpnList',
-            'value': 'vpnList',
-            'icon': 'listIcon'
-        },
-
-        {
-            'name': 'VpnHistory',
-            'value': 'vpnHistory',
-            'icon': 'vpnHisIcon'
-        },
+      
 
     ],
-    menuItems: [
+    testMenuItems: [
 
         // {
         //     'name': 'VPN LIST',
@@ -102,6 +110,18 @@ module.exports = {
         // initilal 
 
         {
+            'name': 'VpnList',
+            'value': 'vpnList',
+            'icon': 'listIcon'
+        },
+
+        {
+            'name': 'VpnHistory',
+            'value': 'vpnHistory',
+            'icon': 'vpnHisIcon'
+        },
+
+        {
             'name': 'Send',
             'value': 'send',
             'icon': 'sendIcon'
@@ -116,17 +136,7 @@ module.exports = {
             'value': 'history',
             'icon': 'historyIcon'
         },
-        {
-            'name': 'VpnList',
-            'value': 'vpnList',
-            'icon': 'listIcon'
-        },
-
-        {
-            'name': 'VpnHistory',
-            'value': 'vpnHistory',
-            'icon': 'vpnHisIcon'
-        },
+      
         // {
         //     'name': 'SWIXER',
         //     'value': 'swixer',
@@ -143,6 +153,26 @@ module.exports = {
         //     'value': 'tmint',
         //     'icon': 'tmintIcon'
         // }
+    ],
+    notInTestMenuItems : [
+
+        {
+            'name': 'Send',
+            'value': 'send',
+            'icon': 'sendIcon'
+        },
+        {
+            'name': 'Receive',
+            'value': 'receive',
+            'icon': 'receiveIcon'
+        },
+        {
+            'name': 'TxHistory',
+            'value': 'history',
+            'icon': 'historyIcon'
+        },
+      
+       
     ],
 
 

@@ -186,7 +186,7 @@ class Header extends Component {
                         <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
                                 <span style={headerStyles.basicWallet}>
-                                    {this.state.walletType === 'ERC20' ? lang[language].WalletERC : lang[language].WalletTM} {lang[language].WalletAddress} </span>
+                                {isTendermint ?  lang[language].WalletTM : lang[language].WalletERC } {lang[language].WalletAddress} </span>
                             </div>
                             <Row>
                                 <Col xs={8}><span
@@ -202,7 +202,7 @@ class Header extends Component {
                                 <Col xs={4}>
                                     {isTendermint && !tmAccountDetails ? null :
                                         // <Tooltip title={this.state.walletType === 'ERC20' ? "Copy ERC20 Sent Wallet Address" : "Copy Tendermint Wallet Address"}>
-                                        <Tooltip title={this.state.walletType === 'ERC20' ? lang[language].ERC20WalletCopy : lang[language].TMWalletCopy}>
+                                        <Tooltip title={isTendermint ?lang[language].TMWalletCopy : lang[language].ERC20WalletCopy  }>
 
                                             <CopyToClipboard text={
                                                 isTendermint ?
@@ -299,25 +299,25 @@ class Header extends Component {
 
                             >
 
+                         
                                 <Select
                                     displayEmpty
                                     disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
-                                    value={this.props.walletValue}
-                                    onChange={this.tendermintChange()}
+                                    value={this.props.walletValue}                                    onChange={this.tendermintChange()}
 
                                     className={this.props.isTest ? 'dropDownStyle' : 'disabledDropDownStyle'}
                                 >
-
+                                    
                                     <MenuItem value='TM'>
                                         <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
-                                            style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
+                                         style={ isTest ? { width: 15, paddingRight: 5, marginTop: -5 } : { width: 15, paddingRight: 5, marginTop: -5,opacity:0.2 }} />
 
                                         {lang[language].TestNetTM}
                                     </MenuItem>
                                     <MenuItem value='ERC'>
                                         {/* <SendIcon /> */}
                                         <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                                            style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
+                                            style={{ width: 12, paddingRight: 5, marginTop: -5 }} />
 
                                         {lang[language].TestNetETH}
                                     </MenuItem>

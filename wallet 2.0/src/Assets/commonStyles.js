@@ -61,9 +61,12 @@ export const radioStyle = {
 export const cardStyle = {
     padding : 10,
     marginRight:10,
+   
 }
 
 
 export const ETHcardStyle = {
     marginRight:10,
+    marginLeft:35
+    
 }

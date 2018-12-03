@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import lang from '../../../src/Constants/language'
+import lang from '../../Constants/language'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -24,7 +24,9 @@ const styles = theme => ({
   },
   icon: {
     fill: 'black',  //changed from white -> black
-    right: '60px'
+    right: '30px',  // changed from 60
+    marginTop:-6
+    
   },
   list: {
     backgroundColor: '#B6B9CB',
@@ -51,7 +53,7 @@ const styles = theme => ({
 class SimpleListMenu extends React.Component {
 
   state = {
-    token: 'SENT' , //Changed from 'ETH' to give priority for SENT
+    token: '/SENT' , //Changed from 'ETH' to give priority for SENT
     pivxMenu: {
       pivx: 'PIVX',
       eth: 'ETH',
@@ -110,20 +112,23 @@ class SimpleListMenu extends React.Component {
             }}
             SelectDisplayProps={{
               style: {
-                padding: '12px', paddingLeft: '50px'
+                // padding: '12px', paddingLeft: '50px'
+                padding:'12px 12px 8px 30px'
               }
             }}
           >
           
             <MenuItem value={'SENT'}>
-              <img src={'../src/Images/logo.svg'} alt="sentinel_logo"
-                style={{ width: 16, paddingRight: 5, marginTop: -2 }} />
-              {lang[language].Sent}</MenuItem>
+              {/* {lang[language].Sent} */}
+              /SENT
+              </MenuItem>
               <MenuItem value={'ETH'} >
-              <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                style={{ width: 15, paddingRight: 5, marginTop: -5 }} />
+              {/* <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                style={{ width: 15, paddingRight: 5, marginTop: -5 }} /> */}
 
-              {lang[language].Eth}</MenuItem>
+              {/* {lang[language].Eth} */}
+              /GB
+              </MenuItem>
           </Select>
         </div>
       );

@@ -175,11 +175,11 @@ class TMTransfer extends Component {
             <div style={accountStyles.sendFormStyle}>
                 <div style={createAccountStyle.secondDivStyle}
                     onKeyPress={(ev) => { if (ev.key === 'Enter') this.sendTransaction() }}>
-                    <p style={createAccountStyle.headingStyle}>{lang[language].SendTo}</p>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].AddressToSend}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={this.state.isTextDisabled}
                         value={this.state.toAddress} onChange={(e) => { this.setState({ toAddress: e.target.value }) }}
                     />
-                    <p style={createAccountStyle.headingStyle}>{lang[language].Amount}</p>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].AmountTo}</p>
                     <CustomTextField type={'number'} placeholder={''} disabled={this.state.isTextDisabled}
                         value={this.state.amount} onChange={(e) => { this.setState({ amount: e.target.value }) }}
                     />

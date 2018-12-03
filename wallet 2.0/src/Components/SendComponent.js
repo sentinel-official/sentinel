@@ -326,7 +326,7 @@ class SendComponent extends React.Component {
           <Grid style={{ width: '750px' }}>
             <Row>
               <Col>
-                <span style={sendComponentStyles.sendToAddress} >{lang[language].SendTo}</span>
+                <span style={sendComponentStyles.sendToAddress} >{lang[language].AddressToSend}</span>
               </Col>
               <Col style={sendComponentStyles.questionMarkDiv}>
                 <CustomTooltips title={lang[language].ToTooltip} />

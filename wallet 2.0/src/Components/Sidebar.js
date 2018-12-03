@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-    menuItems, TMdisabledmenuItems, notTestItemIcons,
+    menuItems, TMdisabledmenuItems, notTestItemIcons,notInTestMenuItems,testMenuItems,
     testMenuItemsIcons, disabledItemsMain, disabledItemsTest, disabledItemsTM
 } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
+import { setTendermint, setWalletType  } from '../Actions/header.action';
+
 import MenuIcon from '@material-ui/icons/Menu';
 import HistoryIcon from '@material-ui/icons/History';
 import SendIcon from '@material-ui/icons/Send';
@@ -81,18 +83,55 @@ class Sidebar extends Component {
     }
 
     setMenu = (item) => {
-        if (!this.props.isTenderMint) {
+
+        if(item.value === 'eth' && this.props.isTest){
+
+            console.log("triggered ETH ", item)
+            console.log("testnet ", this.props.isTest)
+            console.log("current eth ",item.value)
+
+            this.props.setTendermint(false);
+            this.props.setWalletType('ERC')
+
+          
+        }
+
+        if(item.value === 'tmint' && this.props.isTest){
+            console.log("triggered TM ", item)
+            console.log("testnet ", this.props.isTest)
+            console.log("current tm ",item.value)
+            this.props.setTendermint(true);
+            this.props.setWalletType('TM')
+           
+        }
+
+        if (!this.props.isTenderMint ) {
             if (!this.props.isTest &&
                 disabledItemsMain.includes(item.value)) { }
             else if (this.props.isTest && disabledItemsTest.includes(item.value)) { }
             else {
-                this.props.setCurrentTab(item.value);
+                console.log("setting current ", item.value)
+                if(item.value ==='eth'|| item.value==='tmint'){ console.log("not setting current1 ", item.value)}
+                else{
+                    console.log("setting current1 ", item.value)
+                    this.props.setCurrentTab(item.value);
+
+                }
             }
         }
         else {
             if (this.props.component !== 'dashboard' && disabledItemsTM.includes(item.value)) { }
+            else if(!this.props.isTest){}
             else {
-                this.props.setCurrentTab(item.value);
+
+                console.log("in last if condition jh", this.props.isTest)
+                if(item.value ==='eth'|| item.value==='tmint'){  console.log("not setting current2 ", item.value) }
+                else{
+                    console.log("setting current2 ", item.value)
+                    this.props.setCurrentTab(item.value);
+
+                }
+               
             }
         }
 
@@ -109,22 +148,22 @@ class Sidebar extends Component {
     }
 
     getIcon = (iconName) => {
-        if (iconName === 'tmintIcon') {
+        if (iconName === 'tmintIcon') { 
             if (!this.props.isTenderMint)
-                return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                    style={{ width: 18, marginTop: -5, paddingBottom: 3 }} />
+                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
+                    style={{ width: 25, paddingBottom: 7, marginTop:-3 ,opacity:0.3 }} />
             else
-                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 20, paddingBottom: 9 }} />
+                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 25, paddingBottom: 7, marginTop:-3 }} />
         }
-        // if (iconName === 'ethereumIcon') {
-        //     if (this.props.isTenderMint)
-        //         return <img src={'../src/Images/ethereum_disabled.svg'} alt="etherem_logo"
-        //             style={{ width: 20, paddingBottom:10 }} />
+        if (iconName === 'ethereumIcon') {
+            if (this.props.isTenderMint)
+                return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                    style={{ width: 20, paddingBottom:5, marginTop:-5,opacity:0.3  }} />
 
-        //     else
-        //         return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-        //             style={{ width: 18,marginTop:5, paddingBottom:5 }} />
-        // }
+            else
+                return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
+                    style={{ width: 20, paddingBottom:4, marginTop:-5, }} />
+        }
         else {
             let Icon = this.components[iconName];
             return <Icon />
@@ -150,6 +189,7 @@ class Sidebar extends Component {
         let { classes, isTest, isTenderMint, component, language } = this.props;
 
         let currentTab = this.props.currentTab;
+        let sidebarMenuItems = isTest ? testMenuItems : notInTestMenuItems
         let menuItemsIcons = isTest ?
             (isTenderMint && component !== 'dashboard' ?
                 TMdisabledmenuItems : testMenuItemsIcons)
@@ -158,11 +198,12 @@ class Sidebar extends Component {
             <div style={sidebarStyles.totalDiv}>
                 <div style={sidebarStyles.IconActiveDivStyle}>
                     <Tooltip title={lang[language].ToggleMenu} placement="right">
-                        <MenuIcon onClick={this.toggleDrawer(true)} />
+                        <MenuIcon onClick={this.toggleDrawer(true)}
+                        onMouseEnter={this.toggleDrawer(true)} />
                     </Tooltip>
                 </div>
                 <hr style={sidebarStyles.m_0} />
-                <div style={sidebarStyles.IconActiveDivStyle}
+                {/* <div style={sidebarStyles.IconActiveDivStyle}
                 >
                     <Tooltip title={lang[language][isTenderMint ? 'TM' : 'ETH']} placement="right">
                         <label
@@ -171,7 +212,7 @@ class Sidebar extends Component {
 
                         </label>
                     </Tooltip>
-                </div>
+                </div> */}
                 <hr style={sidebarStyles.m_0} />
 
                 {
@@ -220,12 +261,12 @@ class Sidebar extends Component {
                                 <div className="collapse_header">
                                     <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
                                         style={{ width: 20, }} />
-                                    <span className="collapse_heading">TENDERMINT</span>
+                                    <span className="collapse_heading">{lang[language].TM}</span>
                                 </div>
                                 :
                                 <div className="collapse_header"> <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
                                     style={{ width: 20 }} />
-                                    <span className="collapse_heading">ETHEREUM</span>
+                                    <span className="collapse_heading">{lang[language].ETH}</span>
 
                                 </div>
                             }
@@ -234,7 +275,7 @@ class Sidebar extends Component {
                             <List component="div" disablePadding>
                                 {
 
-                                    menuItemsIcons.map((item) => {
+                                    sidebarMenuItems.map((item) => {
                                         // let isDisabled = component === 'dashboard' ? false : disabledItemsTM.includes(item.value)
                                         return (
                                             <div>
@@ -264,10 +305,12 @@ class Sidebar extends Component {
                             </List>
                         </div>
 
-                        <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/client_sent.png'} alt="sentinel_logo"
-                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 55 }} /></span>
+                          <span style={sidebarStyles.drawerHeading}><span className='version_style'>{lang[language].VersionInSidebar}</span></span>
+                      
+                        {/* <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/client_sent.png'} alt="sentinel_logo"
+                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 55 }} /></span> */}
 
-                        <ul id="social" class="list-unstyled">
+                        {/* <ul id="social" class="list-unstyled">
                             <li><a href="https://medium.com/sentinel" id="md" rel="me" target="_blank">Medium</a>
                             </li>
                             <li><a href="https://twitter.com/Sentinel_co" id="tw" rel="me" target="_blank">Twitter</a>
@@ -276,7 +319,7 @@ class Sidebar extends Component {
                             </li>
                             <li><a href="https://sentinel.co/" id="snt" rel="me author" target="_blank">Sentinel</a>
                             </li>
-                        </ul>
+                        </ul> */}
                     </div>
                 </Drawer>
             </div>
@@ -300,7 +343,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setCurrentTab
+        setCurrentTab,
+        setTendermint,
+        setWalletType,
     }, dispatch)
 }
 

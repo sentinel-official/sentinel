@@ -46,7 +46,7 @@ public class RatingDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_rating, container, false);
+        return inflater.inflate(R.layout.fragment_rating_dialog, container, false);
     }
 
     @Override

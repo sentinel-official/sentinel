@@ -110,6 +110,14 @@
     <string name="error_rsa_sign">Error al firmar con la clave keystore de Android %1$s: %2$s</string>
 
     <!-- App strings -->
+    <string-array name="spinner_list">
+        <item>SENT</item>
+        <item>ETH</item>
+    </string-array>
+    <string-array name="spinner_test_list">
+        <item>SENT de prueba</item>
+        <item>ETH de prueba</item>
+    </string-array>
 
     <!-- Translatable strings -->
     <string name="app_sub_name">Wallet de código abierto y plataforma VPN segura</string>
@@ -119,7 +127,9 @@
     <string name="or">O</string>
     <string name="restore_account_desc">¿Ya tienes una cuenta?\nRestaura tu archivo keystore</string>
     <string name="confirm_password_hint">Confirma la contraseña</string>
-    <string name="next">Siguiente</string>
+    <string name="action_next">Siguiente</string>
+    <string name="action_done">Hecho</string>
+    <string name="action_apply">Aplicar</string>
     <string name="secure_key_desc">Copia tu clave privada y el archivo keystore en un sitio seguro.\n<b>No almacenamos ninguna de tus claves en nuestras bases de datos.</b>\nSi las pierdes, ya no podrás acceder a tu cuenta.</string>
     <string name="address_desc">Tu dirección</string>
     <string name="private_key_desc">Clave privada</string>
@@ -199,7 +209,6 @@
     <string name="sents">%1s SENTs</string>
     <string name="eths">%1s ETH</string>
     <string name="pay_sents">Pague %1s SENTs</string>
-    <string name="vpn_location">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Ancho de banda \t %s</string>
     <string name="vpn_bandwidth_connected">Ancho de banda</string>
@@ -229,7 +238,6 @@
     <string name="vpn_connections">Conexiones VPN</string>
     <string name="city">Ciudad:</string>
     <string name="country">País:</string>
-    <string name="ip">IP:</string>
     <string name="bandwidth">Ancho de banda:</string>
     <string name="latency">Latencia:</string>
     <string name="node_version">Version:</string>
@@ -281,8 +289,8 @@
     <string name="payment_done_success">Pago realizado con éxito</string>
     <string name="send_to_hint">Enviar a o scanear para enviar</string>
     <string name="referral_id">ID de referido</string>
-    <string name="invitation_link">Referral Link</string>
-    <string name="share_app">Referidos</string>
+    <string name="invitation_link">Guarda el enlace de invitación</string>
+    <string name="share_app">Comparte la App</string>
     <string name="send_to">Enviar a…</string>
     <string name="password_hint">Introduce una contraseña para crear el ID de usuario</string>
     <string name="key_not_copied_alert">No has copiado tu clave privada.\nPor favor, copia tu clave privada para proceder.</string>
@@ -295,7 +303,7 @@
     <string name="no_of_referrals">Núm. de referidos</string>
     <string name="reward_earned">Total de las recompensas de tokens obtenidas</string>
     <string name="address">Dirección</string>
-    <string name="invite_friend">Comparte tu Link</string>
+    <string name="invite_friend">Finalmente, ¡invita a tus amigos!</string>
     <string name="share_string">Hey, prueba esta nueva app dVPN para Android. Usa mi código de referido para conseguir tokens gratis cuando te registres.\n\nCódigo de referido: %1$s\n\nLink: %2$s</string>
     <string name="info_title_1">Comparte tu código de referido para conseguir tokens por cada registro logrado</string>
     <string name="info_title_2">Wallet de código abierto y plataforma VPN segura</string>
@@ -319,7 +327,7 @@
     <string name="vpn_history_empty_list_message">Actualmente no tienes ningún historial VPN.</string>
     <string name="tx_history_empty_list_message">Actualmente no tienes ningún historial de transacciones.</string>
     <string name="vpn_empty_list_message">No hay VPNs disponibles en este momento.</string>
-    <string name="cancel">Cancelar</string>
+    <string name="action_cancel">Cancelar</string>
     <string name="encryption">Cifrado:</string>
     <string name="registering_device">Configurando dispositivo. Por favor, espera…</string>
     <string name="can_claim_after">Puede reclamar después de: %s</string>
@@ -329,27 +337,19 @@
     <string name="error_select_rating">Please select rating</string>
     <string name="action_skip">Skip</string>
     <string name="action_rate">Rate</string>
+    <string name="vpn_location_city_country">%1s, %2s</string>
+    <string name="invitation_desc">Comparte el enlace con tus amigos para invitarlos a la app Sentinel dVPN</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_country_a">Country ↑</string>
+    <string name="sort_by_country_d">Country ↓</string>
+    <string name="sort_by_latency_i">Latency ↑</string>
+    <string name="sort_by_latency_d">Latency ↓</string>
+    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
+    <string name="sort_by_bandwidth_d">Bandwidth ↓</string>
+    <string name="sort_by_price_i">Price ↑</string>
+    <string name="sort_by_price_d">Price ↓</string>
+    <string name="sort_by_rating_i">Rating ↑</string>
+    <string name="sort_by_rating_d">Rating ↓</string>
 
-    <string-array name="spinner_list">
-        <item>SENT</item>
-        <item>ETH</item>
-    </string-array>
-    <string-array name="spinner_test_list">
-        <item>SENT de prueba</item>
-        <item>ETH de prueba</item>
-    </string-array>
-    <string-array name="language">
-        <!--<item>Chinese</item>-->
-        <item>English</item>
-        <!--<item>Japanese</item>-->
-        <item>Russian</item>
-        <item>Spanish</item>
-    </string-array>
-    <string-array name="language_code">
-        <!--<item>zh</item>-->
-        <item>en</item>
-        <!--<item>ja</item>-->
-        <item>ru</item>
-        <item>es</item>
-    </string-array>
 </resources>

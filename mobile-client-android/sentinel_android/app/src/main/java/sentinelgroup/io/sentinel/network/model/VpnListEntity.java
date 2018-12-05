@@ -29,6 +29,7 @@ public class VpnListEntity implements Serializable {
     private double pricePerGb;
     private String version;
     private double rating;
+    private int serverSequence;
 
     public VpnListEntity(@NonNull String accountAddress, String ip, double latency, Location location, NetSpeed netSpeed, double pricePerGb) {
         this.accountAddress = accountAddress;
@@ -110,5 +111,13 @@ public class VpnListEntity implements Serializable {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public int getServerSequence() {
+        return serverSequence;
+    }
+
+    public void setServerSequence(int serverSequence) {
+        this.serverSequence = serverSequence;
     }
 }

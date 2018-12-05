@@ -12,7 +12,7 @@ public class VpnConnectedViewModel extends ViewModel {
     private final LiveData<VpnListEntity> mVpnLiveData;
 
     VpnConnectedViewModel(VpnRepository iRepository) {
-        mVpnLiveData = iRepository.getVpnLiveData(AppPreferences.getInstance().getString(AppConstants.PREFS_VPN_ADDRESS));
+        mVpnLiveData = iRepository.getVpnLiveDataByVpnAddress(AppPreferences.getInstance().getString(AppConstants.PREFS_VPN_ADDRESS));
     }
 
     public LiveData<VpnListEntity> getVpnLiveData() {

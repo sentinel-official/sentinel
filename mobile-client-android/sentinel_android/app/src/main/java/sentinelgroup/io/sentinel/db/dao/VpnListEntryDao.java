@@ -21,6 +21,36 @@ public interface VpnListEntryDao {
     @Query("SELECT * FROM vpn_list_entity")
     LiveData<List<VpnListEntity>> getVpnLisEntity();
 
+    @Query("SELECT * FROM vpn_list_entity ORDER BY location_country COLLATE NOCASE ASC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortCountryA();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY location_country COLLATE NOCASE DESC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortCountryD();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY latency COLLATE NOCASE ASC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortLatencyI();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY latency COLLATE NOCASE DESC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortLatencyD();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY net_download COLLATE NOCASE ASC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortBandwidthI();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY net_download COLLATE NOCASE DESC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortBandwidthD();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY pricePerGb COLLATE NOCASE ASC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortPriceI();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY pricePerGb COLLATE NOCASE DESC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortPriceD();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY rating COLLATE NOCASE ASC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortRatingI();
+
+    @Query("SELECT * FROM vpn_list_entity ORDER BY rating COLLATE NOCASE DESC")
+    LiveData<List<VpnListEntity>> getVpnLisEntitySortRatingD();
+
     @Query("SELECT * FROM vpn_list_entity WHERE accountAddress = :iVpnAddress")
     LiveData<VpnListEntity> getVpnEntity(String iVpnAddress);
 

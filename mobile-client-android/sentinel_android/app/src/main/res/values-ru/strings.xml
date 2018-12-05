@@ -6,7 +6,9 @@
     <string name="or">ИЛИ</string>
     <string name="restore_account_desc">Уже есть аккаунт?\nВосстановите его с помощью файла хранилища.</string>
     <string name="confirm_password_hint">Подтвердить пароль</string>
-    <string name="next">Дальше</string>
+    <string name="action_next">Дальше</string>
+    <string name="action_done">Готово</string>
+    <string name="action_apply">применять</string>
     <string name="secure_key_desc">Сохраните ваш приватный ключ и файл хранилища в безопасное место.\n<b>Мы не храним ваши пароли в датабазе.</b>Если вы потеряете ваши данные, доступ к аккаунту будет утерян.</string>
     <string name="address_desc">Ваш адрес</string>
     <string name="private_key_desc">Приватный ключ</string>
@@ -161,7 +163,7 @@
     <string name="no_scan_results">Результаты сканирования не найдены.</string>
     <string name="not_a_address">Отсканированный результат не является адресом учетной записи. Отбрасывание отсканированных результатов.</string>
     <string name="retry">Повторить</string>
-    <string name="cancel">Отмена</string>
+    <string name="action_cancel">Отмена</string>
     <string name="vpn_history_main_net_unavailable">В Основной Сети нет истории VPN.</string>
     <string name="vpn_main_net_unavailable">Нет доступных  узлов VPN в Основной Сети, переключитесь на Тестовую Сеть.</string>
     <string name="tx_history_main_net_unavailable">В Основной Сети нет транзакций.</string>
@@ -346,4 +348,19 @@
     <string name="read_more">Узнать больше</string>
     <string name="vpn_enc_method">Шифрование %s</string>
     <string name="registering_device">Подготавливаем ваше устройство. Подождите…</string>
+    <string name="downloading_app_tite">Скачивается…</string>
+    <string name="ok">OK</string>
+    <string name="help">Помогите</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_country_a">Country ↑</string>
+    <string name="sort_by_country_d">Country ↓</string>
+    <string name="sort_by_latency_i">Latency ↑</string>
+    <string name="sort_by_latency_d">Latency ↓</string>
+    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
+    <string name="sort_by_bandwidth_d">Bandwidth ↓</string>
+    <string name="sort_by_price_i">Price ↑</string>
+    <string name="sort_by_price_d">Price ↓</string>
+    <string name="sort_by_rating_i">Rating ↑</string>
+    <string name="sort_by_rating_d">Rating ↓</string>
 </resources>

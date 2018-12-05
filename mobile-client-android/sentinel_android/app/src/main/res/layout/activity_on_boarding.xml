@@ -115,7 +115,7 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/margin_16"
-        android:text="@string/next"
+        android:text="@string/action_next"
         android:textAllCaps="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

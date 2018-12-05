@@ -11,19 +11,13 @@
         <item>Test SENT</item>
         <item>Test ETH</item>
     </string-array>
-    <string-array name="language">
-        <!--<item>Chinese</item>-->
+    <string-array name="language" translatable="false">
         <item>English</item>
-        <!--<item>Japanese</item>-->
         <item>Russian</item>
-        <!--<item>Spanish</item>-->
     </string-array>
-    <string-array name="language_code">
-        <!--<item>zh</item>-->
+    <string-array name="language_code" translatable="false">
         <item>en</item>
-        <!--<item>ja</item>-->
         <item>ru</item>
-        <!--<item>es</item>-->
     </string-array>
 
     <!-- ics_openVPN strings -->
@@ -143,7 +137,9 @@
     <string name="or">OR</string>
     <string name="restore_account_desc">Already have an account?\nRestore your Keystore File</string>
     <string name="confirm_password_hint">Confirm Password</string>
-    <string name="next">Next</string>
+    <string name="action_next">Next</string>
+    <string name="action_done">Done</string>
+    <string name="action_apply">Apply</string>
     <string name="secure_key_desc">Copy your private key and keystore file to some secured place.\n<b>We do not store any of your keys in our databases.</b>\nIf you lose them, you would not be able to access your account.</string>
     <string name="address_desc">Your Address</string>
     <string name="private_key_desc">Private Key</string>
@@ -304,7 +300,7 @@
     <string name="no_scan_results">Scan results not found.</string>
     <string name="not_a_address">The scanned result is not an Account Address. Discarding scanned results.</string>
     <string name="retry">Retry</string>
-    <string name="cancel">Cancel</string>
+    <string name="action_cancel">Cancel</string>
     <string name="vpn_history_main_net_unavailable">No VPN history found in MAINNET.</string>
     <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET.</string>
     <string name="tx_history_main_net_unavailable">No Transaction History found in MAINNET.</string>
@@ -372,4 +368,17 @@
     <string name="help">Help</string>
     <string name="ok">OK</string>
     <string name="registering_device">Setting-up Device. Please wait…</string>
+    <string name="downloading_app_tite">Downloading…</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_country_a">Country ↑</string>
+    <string name="sort_by_country_d">Country ↓</string>
+    <string name="sort_by_latency_i">Latency ↑</string>
+    <string name="sort_by_latency_d">Latency ↓</string>
+    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
+    <string name="sort_by_bandwidth_d">Bandwidth ↓</string>
+    <string name="sort_by_price_i">Price ↑</string>
+    <string name="sort_by_price_d">Price ↓</string>
+    <string name="sort_by_rating_i">Rating ↑</string>
+    <string name="sort_by_rating_d">Rating ↓</string>
 </resources>

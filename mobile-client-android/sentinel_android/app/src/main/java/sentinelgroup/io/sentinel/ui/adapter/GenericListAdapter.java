@@ -44,7 +44,7 @@ public class GenericListAdapter extends RecyclerView.Adapter<GenericListAdapter.
                     mData.get(i).setSelected(holder.getAdapterPosition() == i);
                 }
                 notifyDataSetChanged();
-                onRootViewClick(aItemData.getItemCode());
+                onRootViewClick(aItemData);
             }
         });
     }
@@ -71,13 +71,13 @@ public class GenericListAdapter extends RecyclerView.Adapter<GenericListAdapter.
     }
 
     // Interface interaction method
-    private void onRootViewClick(String iUrl) {
+    private void onRootViewClick(GenericListItem iItem) {
         if (mItemClickListener != null) {
-            mItemClickListener.onRootViewClicked(iUrl);
+            mItemClickListener.onRootViewClicked(iItem);
         }
     }
 
     public interface OnItemClickListener {
-        void onRootViewClicked(String iLanguageCode);
+        void onRootViewClicked(GenericListItem iItem);
     }
 }

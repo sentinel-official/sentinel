@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
-import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnSelectPagerAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -226,5 +225,14 @@ public class VpnSelectFragment extends Fragment {
         hideProgressDialog();
         super.onDetach();
         mListener = null;
+    }
+
+    public void onSortTypeSelected(String iTag, Dialog iDialog, boolean isPositiveButton, String iSelectedSortType) {
+        if (isPositiveButton && iTag.equals(AppConstants.TAG_SORT_BY)) {
+            if (mAdapter.getItem(mVpVpnSelect.getCurrentItem()) instanceof VpnListFragment) {
+                ((VpnListFragment) mAdapter.getItem(mVpVpnSelect.getCurrentItem())).getVpnListLiveDataSortedBy(iSelectedSortType);
+            }
+        }
+        iDialog.dismiss();
     }
 }

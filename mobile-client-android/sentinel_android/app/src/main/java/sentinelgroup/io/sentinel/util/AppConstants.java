@@ -56,7 +56,7 @@ public class AppConstants {
     public static final String TAG_UPDATE_ACCOUNT = "UPDATE_ACCOUNT";
     public static final String TAG_INIT_PAY = "INIT_PAY";
     public static final String TAG_LOGOUT = "LOGOUT";
-    public static final String TAG_RATING_DIALOG = "co.sentinel.sentinellite.rating_dialog";
+    public static final String TAG_SORT_BY = "SORT_BY";
 
     // Error Constants
     public static final String ERROR_GENERIC = "error_generic";
@@ -76,6 +76,8 @@ public class AppConstants {
     public static final String PROGRESS_DIALOG_TAG = "sentinelgroup.io.sentinel.progress_dialog";
     public static final String SINGLE_ACTION_DIALOG_TAG = "sentinelgroup.io.sentinel.single_action_dialog";
     public static final String DOUBLE_ACTION_DIALOG_TAG = "sentinelgroup.io.sentinel.double_action_dialog";
+    public static final String RATING_DIALOG_TAG = "co.sentinel.sentinellite.rating_dialog";
+    public static final String SORT_BY_DIALOG_TAG = "co.sentinel.sentinellite.sort_by_dialog";
     public static final String SENT = "SENT";
     public static final String ETH = "ETH";
     public static final String GENERIC_ERROR = "generic_error";
@@ -92,4 +94,17 @@ public class AppConstants {
 
     // Branch URL constants
     public static final String BRANCH_REFERRAL_ID = "referralId";
+
+    // Sort constants
+    public static final String SORT_BY_DEFAULT = "0";
+    public static final String SORT_BY_COUNTRY_A = "11";
+    public static final String SORT_BY_COUNTRY_D = "12";
+    public static final String SORT_BY_LATENCY_I = "21";
+    public static final String SORT_BY_LATENCY_D = "22";
+    public static final String SORT_BY_BANDWIDTH_I = "31";
+    public static final String SORT_BY_BANDWIDTH_D = "32";
+    public static final String SORT_BY_PRICE_I = "41";
+    public static final String SORT_BY_PRICE_D = "42";
+    public static final String SORT_BY_RATING_I = "51";
+    public static final String SORT_BY_RATING_D = "52";
 }

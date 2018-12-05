@@ -25,7 +25,7 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 public class VpnListViewModel extends ViewModel {
     private final VpnRepository mRepository;
     private final AppExecutors mAppExecutors;
-    private final LiveData<List<VpnListEntity>> mVpnListLiveData;
+//    private final LiveData<List<VpnListEntity>> mVpnListLiveData;
     private final SingleLiveEvent<String> mVpnListErrorLiveEvent;
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
@@ -34,15 +34,22 @@ public class VpnListViewModel extends ViewModel {
     VpnListViewModel(VpnRepository iRepository, AppExecutors iAppExecutors) {
         mRepository = iRepository;
         mAppExecutors = iAppExecutors;
-        mVpnListLiveData = iRepository.getVpnListLiveData();
+//        mVpnListLiveData = iRepository.getVpnListLiveDataSortedBy(AppConstants.SORT_BY_DEFAULT);
         mVpnServerCredentialsLiveEvent = iRepository.getVpnServerCredentialsLiveEvent();
         mVpnConfigLiveEvent = iRepository.getVpnConfigLiveEvent();
         mVpnConfigSaveLiveEvent = new SingleLiveEvent<>();
         mVpnListErrorLiveEvent = iRepository.getVpnListErrorLiveEvent();
     }
 
-    public LiveData<List<VpnListEntity>> getVpnListLiveData() {
-        return mVpnListLiveData;
+    /**
+     * Get VPN list LiveData sorted by different parameters
+     * like
+     *
+     * @param iSelectedSortType
+     * @return
+     */
+    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy(String iSelectedSortType) {
+        return mRepository.getVpnListLiveDataSortedBy(iSelectedSortType);
     }
 
     public SingleLiveEvent<String> getVpnListErrorLiveEvent() {

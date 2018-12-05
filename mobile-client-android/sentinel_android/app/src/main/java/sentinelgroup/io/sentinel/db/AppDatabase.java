@@ -30,7 +30,7 @@ import sentinelgroup.io.sentinel.util.AppPreferences;
  * Room Database for storing all the essential application data in it's table defined by the various DAO's.
  */
 @Database(entities = {Chains.class, GasEstimateEntity.class, PinEntity.class, VpnListEntity.class, VpnUsageEntity.class, BonusInfoEntity.class},
-        version = 9,
+        version = 10,
         exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();
@@ -85,6 +85,13 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN rating REAL NOT NULL DEFAULT 0.0");
+        }
+    };
+
+    private static final Migration MIGRATION_9_10 = new Migration(9, 10) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN serverSequence INTEGER");
         }
     };
 }

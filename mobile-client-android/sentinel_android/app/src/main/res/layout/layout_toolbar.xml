@@ -20,19 +20,19 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingEnd="0dp"
+            android:paddingStart="-56dp"
             android:paddingLeft="-56dp"
-            android:paddingRight="0dp"
-            android:paddingStart="-56dp">
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp">
 
             <ImageView
                 android:id="@+id/toolbar_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/margin_8"
-                android:layout_marginLeft="?android:attr/actionBarSize"
-                android:layout_marginRight="@dimen/margin_8"
                 android:layout_marginStart="?android:attr/actionBarSize"
+                android:layout_marginLeft="?android:attr/actionBarSize"
+                android:layout_marginEnd="@dimen/margin_8"
+                android:layout_marginRight="@dimen/margin_8"
                 android:src="@drawable/ic_app_icon_small"
                 android:visibility="gone" />
 
@@ -44,33 +44,97 @@
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/margin_40"
         android:background="@color/colorTextBlack"
         android:elevation="@dimen/margin_8"
-        android:orientation="horizontal"
-        android:translationZ="@dimen/margin_8"
-        tools:ignore="UnusedAttribute">
+        android:translationZ="@dimen/margin_8">
 
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/switch_net"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:background="@color/colorCardShadow"
+            android:background="@color/colorTextBlack"
             android:gravity="center_vertical"
-            android:padding="@dimen/margin_8"
-            app:trackTint="@color/colorTextWhiteWithAlpha50" />
+            android:orientation="horizontal"
+            tools:ignore="UnusedAttribute">
 
-        <TextView
-            android:id="@+id/tv_switch_state"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
-            android:layout_width="0dp"
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch_net"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:padding="@dimen/margin_8"
+                app:trackTint="@color/colorTextWhiteWithAlpha50" />
+
+            <TextView
+                android:id="@+id/tv_switch_state"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/ib_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:layout_marginRight="@dimen/margin_4"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/margin_4"
+                android:src="@android:drawable/ic_menu_search"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/ib_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginLeft="@dimen/margin_4"
+                android:layout_marginEnd="0dp"
+                android:layout_marginRight="0dp"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/margin_4"
+                android:src="@android:drawable/ic_menu_sort_by_size"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_search"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorCardShadow"
+            android:background="@color/colorTextBlack"
             android:gravity="center_vertical"
-            android:textAllCaps="true" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_search"
+                style="@style/CustomTextAppearance"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/margin_8"
+                android:maxLines="1"
+                android:background="@android:color/transparent" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/ib_close_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/margin_4"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />
+        </LinearLayout>
+
+    </FrameLayout>
 </android.support.design.widget.AppBarLayout>

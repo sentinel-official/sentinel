@@ -73,6 +73,9 @@ public class VpnRepository {
         aVpnListServerData.observeForever(vpnList -> {
             mAppExecutors.diskIO().execute(() -> {
                 if (vpnList != null && vpnList.size() > 0) {
+                    for (int i = 0; i < vpnList.size(); i++) {
+                        vpnList.get(i).setServerSequence(i);
+                    }
                     mListDao.deleteVpnListEntity();
                     mListDao.insertVpnListEntity(vpnList);
                 }
@@ -108,12 +111,40 @@ public class VpnRepository {
     }
 
     // public getter methods for LiveData & SingleLiveEvent
-    public LiveData<List<VpnListEntity>> getVpnListLiveData() {
-        return mListDao.getVpnLisEntity();
+//    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy() {
+//        return getVpnListLiveDataSortedBy(AppConstants.SORT_BY_DEFAULT);
+//    }
+
+    public LiveData<VpnListEntity> getVpnLiveDataByVpnAddress(String iVpnAddress) {
+        return mListDao.getVpnEntity(iVpnAddress);
     }
 
-    public LiveData<VpnListEntity> getVpnLiveData(String iVpnAddress) {
-        return mListDao.getVpnEntity(iVpnAddress);
+    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy(String iSelectedSortType) {
+        switch (iSelectedSortType) {
+            case AppConstants.SORT_BY_COUNTRY_A:
+                return mListDao.getVpnLisEntitySortCountryA();
+            case AppConstants.SORT_BY_COUNTRY_D:
+                return mListDao.getVpnLisEntitySortCountryD();
+            case AppConstants.SORT_BY_LATENCY_I:
+                return mListDao.getVpnLisEntitySortLatencyI();
+            case AppConstants.SORT_BY_LATENCY_D:
+                return mListDao.getVpnLisEntitySortLatencyD();
+            case AppConstants.SORT_BY_BANDWIDTH_I:
+                return mListDao.getVpnLisEntitySortBandwidthI();
+            case AppConstants.SORT_BY_BANDWIDTH_D:
+                return mListDao.getVpnLisEntitySortBandwidthD();
+            case AppConstants.SORT_BY_PRICE_I:
+                return mListDao.getVpnLisEntitySortPriceI();
+            case AppConstants.SORT_BY_PRICE_D:
+                return mListDao.getVpnLisEntitySortPriceD();
+            case AppConstants.SORT_BY_RATING_I:
+                return mListDao.getVpnLisEntitySortRatingI();
+            case AppConstants.SORT_BY_RATING_D:
+                return mListDao.getVpnLisEntitySortRatingD();
+            case AppConstants.SORT_BY_DEFAULT:
+            default:
+                return mListDao.getVpnLisEntity();
+        }
     }
 
     public LiveData<VpnUsageEntity> getVpnUsageEntity() {

@@ -119,10 +119,8 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
 
-        mViewModel.getVpnListLiveData().observe(this, vpnList -> {
-            if (vpnList != null && vpnList.size() > 0)
-                mAdapter.loadData(vpnList);
-        });
+        getVpnListLiveDataSortedBy(((DashboardActivity) getActivity()).getCurrentSortType());
+
         mViewModel.getVpnListErrorLiveEvent().observe(this, iMessage -> {
             if (iMessage != null && !iMessage.isEmpty() && mAdapter.getItemCount() != 0)
                 if (iMessage.equals(AppConstants.GENERIC_ERROR))
@@ -287,4 +285,14 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         } else
             showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_main_net_unavailable), AppConstants.VALUE_DEFAULT);
     }
+
+    public void getVpnListLiveDataSortedBy(String iSelectedSortType) {
+        mViewModel.getVpnListLiveDataSortedBy(iSelectedSortType).observe(this, vpnList -> {
+            if (vpnList != null && vpnList.size() > 0) {
+                mAdapter.loadData(vpnList);
+                mRvVpnList.scrollToPosition(0);
+            }
+        });
+    }
+
 }

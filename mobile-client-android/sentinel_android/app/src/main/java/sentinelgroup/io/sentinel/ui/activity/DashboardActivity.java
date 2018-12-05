@@ -19,12 +19,15 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +41,7 @@ import de.blinkt.openvpn.core.ProfileManager;
 import de.blinkt.openvpn.core.VpnStatus;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
+import sentinelgroup.io.sentinel.network.model.GenericListItem;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.ui.custom.ProfileAsync;
@@ -45,6 +49,7 @@ import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.RatingDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
+import sentinelgroup.io.sentinel.ui.dialog.SortByDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnConnectedFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
 import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
@@ -55,11 +60,11 @@ import sentinelgroup.io.sentinel.util.Logger;
 import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 import static sentinelgroup.io.sentinel.util.AppConstants.DOUBLE_ACTION_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
+import static sentinelgroup.io.sentinel.util.AppConstants.RATING_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.SINGLE_ACTION_DIALOG_TAG;
-import static sentinelgroup.io.sentinel.util.AppConstants.TAG_RATING_DIALOG;
 
 public class DashboardActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
-        OnGenericFragmentInteractionListener, OnVpnConnectionListener, VpnStatus.StateListener, VpnStatus.ByteCountListener, DoubleActionDialogFragment.OnDialogActionListener {
+        OnGenericFragmentInteractionListener, OnVpnConnectionListener, VpnStatus.StateListener, VpnStatus.ByteCountListener, DoubleActionDialogFragment.OnDialogActionListener, SortByDialogFragment.OnSortDialogActionListener, View.OnClickListener {
 
     private String mIntentExtra;
     private boolean mHasActivityResult;
@@ -69,6 +74,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private Toolbar mToolbar;
     private SwitchCompat mSwitchNet;
     private TextView mSwitchState;
+    private AppCompatImageButton mIbSearch, mIbSort, mIbCloseSearch;
+    private LinearLayout mLlSearch;
+    private AppCompatEditText mEtSearch;
     private ProgressDialogFragment mPrgDialog;
     private MenuItem mMenuVpn, mMenuWallet;
     private ProfileAsync profileAsync;
@@ -84,6 +92,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             mService = null;
         }
     };
+
+    private String mCurrentSortType = AppConstants.SORT_BY_DEFAULT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +123,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         // initialize/update the TESTNET switch
         setupTestNetSwitch();
         // check and toggle TESTNET switch state (if needed) when returning from other activity
-        toggleTestNetSwitch(!(getSupportFragmentManager().findFragmentById(R.id.fl_container) instanceof VpnConnectedFragment));
+        toggleTestNetSwitch(!(getCurrentFragment() instanceof VpnConnectedFragment));
 
         initListeners();
     }
@@ -132,6 +142,14 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             mDrawerLayout.closeDrawers();
         else
             super.onBackPressed();
+    }
+
+    private Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.fl_container);
+    }
+
+    public String getCurrentSortType() {
+        return mCurrentSortType;
     }
 
     /*
@@ -160,6 +178,11 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mToolbar = findViewById(R.id.toolbar);
         mSwitchNet = findViewById(R.id.switch_net);
         mSwitchState = findViewById(R.id.tv_switch_state);
+        mIbSearch = findViewById(R.id.ib_search);
+        mIbSort = findViewById(R.id.ib_sort);
+        mLlSearch = findViewById(R.id.ll_search);
+        mEtSearch = findViewById(R.id.et_search);
+        mIbCloseSearch = findViewById(R.id.ib_close_search);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         mNavMenuView = findViewById(R.id.nav_menu_view);
@@ -176,6 +199,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private void initListeners() {
         // add listeners
         mSwitchNet.setOnCheckedChangeListener(this);
+        mIbSearch.setOnClickListener(this);
+        mIbSort.setOnClickListener(this);
+        mIbCloseSearch.setOnClickListener(this);
         mNavMenuView.setItemIconTintList(null);
         mNavMenuView.getHeaderView(0).findViewById(R.id.ib_back).setOnClickListener(v -> mDrawerLayout.closeDrawers());
         mNavMenuView.setNavigationItemSelectedListener(
@@ -264,7 +290,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
      * Shows dialog to give rating for previous dVPN session.
      */
     private void showRatingDialog() {
-        RatingDialogFragment.newInstance().show(getSupportFragmentManager(), TAG_RATING_DIALOG);
+        RatingDialogFragment.newInstance().show(getSupportFragmentManager(), RATING_DIALOG_TAG);
     }
 
     /**
@@ -350,6 +376,14 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private void loadFragment(Fragment iFragment) {
         toggleTestNetSwitch(!(iFragment instanceof VpnConnectedFragment));
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+        if (iFragment instanceof VpnSelectFragment) {
+            mIbSearch.setVisibility(View.VISIBLE);
+            mIbSort.setVisibility(View.VISIBLE);
+        } else {
+            mIbSearch.setVisibility(View.GONE);
+            mIbSort.setVisibility(View.GONE);
+            mLlSearch.setVisibility(View.GONE);
+        }
     }
 
     /*
@@ -388,21 +422,20 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
 
             case R.id.action_vpn:
-                if ((aFragment instanceof WalletFragment)) {
+                if ((getCurrentFragment() instanceof WalletFragment)) {
                     toggleItemState(item.getItemId());
                     loadVpnSelectFragment(null, "onOptionsItemSelected action_vpn");
                 }
                 return true;
 
             case R.id.action_wallet:
-                if (!(aFragment instanceof WalletFragment)) {
+                if (!(getCurrentFragment() instanceof WalletFragment)) {
                     toggleItemState(item.getItemId());
                     loadWalletFragment();
                 }
@@ -497,11 +530,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         switch (requestCode) {
             case AppConstants.REQ_VPN_HISTORY:
                 if (resultCode == RESULT_OK) {
-                    if (!(aFragment instanceof WalletFragment))
+                    if (!(getCurrentFragment() instanceof WalletFragment))
                         loadVpnSelectFragment(null, "onActivityResult REQ_VPN_HISTORY");
                 }
                 break;
@@ -533,7 +565,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case AppConstants.REQ_LANGUAGE:
                 if (resultCode == RESULT_OK) {
                     refreshMenuTitles();
-                    if (!(aFragment instanceof WalletFragment))
+                    if (!(getCurrentFragment() instanceof WalletFragment))
                         loadVpnSelectFragment(null, "onActivityResult REQ_LANGUAGE");
                     else
                         loadWalletFragment();
@@ -580,7 +612,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
         mSwitchState.setText(getString(R.string.test_net, getString(isChecked ? R.string.on : R.string.off)));
 
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        Fragment aFragment = getCurrentFragment();
         if (aFragment instanceof WalletFragment) {
             ((WalletFragment) aFragment).updateBalance();
         } else if (!(aFragment instanceof VpnConnectedFragment))
@@ -646,7 +678,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        Fragment aFragment = getCurrentFragment();
         if (isPositiveButton && iTag.equals(AppConstants.TAG_LOGOUT)) {
             logoutUser();
             iDialog.dismiss();
@@ -659,7 +691,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     public void updateState(String state, String logMessage, int localizedResId, ConnectionStatus level) {
         Logger.logError("VPN_STATE", state + " - " + logMessage + " : " + getString(localizedResId), null);
         runOnUiThread(() -> {
-            Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+            Fragment aFragment = getCurrentFragment();
             // Called when the VPN connection terminates
             if (state.equals("USER_VPN_PERMISSION_CANCELLED")
                     || state.equals("CONNECTRETRY")
@@ -704,7 +736,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void updateByteCount(long in, long out, long diffIn, long diffOut) {
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        Fragment aFragment = getCurrentFragment();
         if (aFragment != null && aFragment instanceof VpnConnectedFragment) {
             String aDownloadSpeed = humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources());
             String aUploadSpeed = humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources());
@@ -712,6 +744,47 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             runOnUiThread(() -> {
                 ((VpnConnectedFragment) aFragment).updateByteCount(aDownloadSpeed, aUploadSpeed, aTotalData);
             });
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ib_search:
+                openSearch();
+                break;
+            case R.id.ib_sort:
+                openSortDialog();
+                break;
+            case R.id.ib_close_search:
+                closeSearch();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void openSearch() {
+        mLlSearch.setVisibility(View.VISIBLE);
+        mEtSearch.requestFocus();
+    }
+
+    private void openSortDialog() {
+        SortByDialogFragment.newInstance(AppConstants.TAG_SORT_BY, mCurrentSortType).show(getSupportFragmentManager(), AppConstants.SORT_BY_DIALOG_TAG);
+    }
+
+    private void closeSearch() {
+        mLlSearch.setVisibility(View.GONE);
+        mEtSearch.getText().clear();
+        mEtSearch.clearFocus();
+    }
+
+    @Override
+    public void onSortTypeSelected(String iTag, Dialog iDialog, boolean isPositiveButton, GenericListItem iSelectedSortType) {
+        Fragment aFragment = getCurrentFragment();
+        if (aFragment instanceof VpnSelectFragment) {
+            mCurrentSortType = iSelectedSortType.getItemCode();
+            ((VpnSelectFragment) aFragment).onSortTypeSelected(iTag, iDialog, isPositiveButton, mCurrentSortType);
         }
     }
 }

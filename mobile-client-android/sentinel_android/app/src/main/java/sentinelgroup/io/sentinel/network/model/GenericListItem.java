@@ -1,5 +1,7 @@
 package sentinelgroup.io.sentinel.network.model;
 
+import android.support.annotation.Nullable;
+
 import java.io.Serializable;
 
 public class GenericListItem implements Serializable {
@@ -35,5 +37,15 @@ public class GenericListItem implements Serializable {
 
     public void setSelected(boolean iSelected) {
         this.mSelected = iSelected;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj instanceof GenericListItem && this.getItemCode().equals(((GenericListItem) obj).getItemCode());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getItemCode().hashCode();
     }
 }

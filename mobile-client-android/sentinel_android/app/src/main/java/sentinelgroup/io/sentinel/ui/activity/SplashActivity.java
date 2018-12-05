@@ -71,9 +71,9 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
                     mViewModel.fetchSncVersionInfo();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
-                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.cancel);
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
                     else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
-                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.cancel);
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
                     else {
                         clearAppData();
                         mViewModel.fetchSncVersionInfo();

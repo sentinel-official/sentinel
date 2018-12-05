@@ -19,7 +19,7 @@ const styles = theme => ({
         },
     },
     bootstrapInput: {
-        borderRadius:1,    //changed from 4
+        borderRadius: 1,    //changed from 4
         backgroundColor: theme.palette.common.white,
         border: '1px solid #ced4da',
         fontSize: 16,
@@ -64,6 +64,9 @@ const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value
                 placeholder={placeholder}
                 id="bootstrap-input"
                 value={value}
+                inputProps={type === 'number' ? {
+                    min: 0
+                } : {}}
                 InputProps={{
                     disableUnderline: true,
                     classes: {

@@ -22,7 +22,6 @@ import { historyStyles } from '../Assets/txhistory.styles';
 
 
 import _ from 'lodash';
-import { MaskedInput } from 'react-text-mask'
 const theme = createMuiTheme({
     palette: {
         primary: {
@@ -72,6 +71,36 @@ class VPNHistory extends Component {
         }
     };
 
+    getDurationFormat = (seconds) => {
+        if (seconds >= 3600) {
+            let hours = Math.floor(parseInt(seconds) / 3600);
+            let remainingseconds = parseInt(seconds) % 3600;
+            if (remainingseconds >= 60) {
+                return this.getMinutesFormat(hours, remainingseconds);
+            } else {
+                return `${hours} hrs 0 mins ${remainingseconds} secs`
+            }
+        } else {
+            return this.getMinutesFormat(0, seconds);
+        }
+    }
+
+    getMinutesFormat = (hours, totalSeconds) => {
+        if (totalSeconds >= 60) {
+            let minutes = Math.floor(parseInt(totalSeconds) / 60);
+            let seconds = parseInt(totalSeconds) % 60;
+            if (hours > 0)
+                return `${hours} hrs ${minutes} mins ${seconds} secs`
+            else
+                return `${minutes} mins ${seconds} secs`
+        } else {
+            if (hours > 0)
+                return `${hours} hrs 0 mins ${totalSeconds} secs`
+            else
+                return `${totalSeconds} secs`
+        }
+    }
+
     setHash = (event, hash) => {
         let value = event.target.value;
         var pattern = /^([0]{0,1}|[0][x][0-9A-Fa-f]{0,64})$/;
@@ -115,31 +144,9 @@ class VPNHistory extends Component {
                             <div style={historyStyles.data}>
                                 <Card style={ETHcardStyle}>
                                     <CardContent >
-
-                                        {/* <span style={vpnhistoryStyles.headingStyle}>
-                                    {lang[language].SessionId} :
-                                </span> {sessionData.id} */}
-
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].SessionId}:`}&nbsp;<span style={historyValue}>{sessionData.id}</span></label>
                                         </div>
-                                        {/* <span style={vpnhistoryStyles.headingWithMarginStyle}>
-                                    {lang[language].VpnAddress} :
-                                </span> {sessionData.account_addr}
-                                <Tooltip title={lang[language].Copy}>
-                                    <CopyToClipboard text={sessionData.account_addr}
-                                        onCopy={() =>
-                                            this.props.setsnackMessage(lang[language].Copied)
-                                        } >
-                                       <CopyIcon style={receiveStyles.clipBoard} />
-
-                                    </CopyToClipboard>
-                                </Tooltip>
-                                <ReactTooltip id="copyImage" place="bottom">
-                                    <span>{lang[language].Copy}</span>
-                                </ReactTooltip>
-                                <br /> */}
-
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].NodeID}:`}&nbsp;<span style={historyValue}>{sessionData.account_addr}</span></label>
                                             <Tooltip title={lang[language].Copy}>
@@ -153,40 +160,14 @@ class VPNHistory extends Component {
                                                 </CopyToClipboard>
                                             </Tooltip>
                                         </div>
-
-                                        {/*                        
-                                <span style={vpnhistoryStyles.headingStyle}>
-                                    {lang[language].Amount} :
-                                </span> {parseInt(sessionData.amount) / (10 ** 8)} {lang[language].Sents} */}
-
-
-                                        <div>
-
-                                            <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{parseInt(sessionData.amount) / (10 ** 8)} {lang[language].TestSent}</span></label>
-                                        </div>
-
-
-                                        {/* <span style={vpnhistoryStyles.headingWithMarginStyle}>
-                                    {lang[language].Duration} :
-                                </span> {sessionData.session_duration} {lang[language].Secs} */}
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].Duration}:`}&nbsp;<span style={historyValue}>{sessionData.session_duration} {lang[language].Secs}</span></label>
 
                                         </div>
 
-                                        {/* <span style={vpnhistoryStyles.headingWithMarginStyle}>
-                                    {lang[language].ReceivedData} :
-                                 </span> {this.getPaymentBytes(sessionData.received_bytes)}<br /> */}
-
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].ReceivedData}:`}&nbsp;<span style={historyValue}>{this.getPaymentBytes(sessionData.received_bytes)}</span></label>
                                         </div>
-                                        {/* <span style={vpnhistoryStyles.headingStyle}>
-                                    {lang[language].Time} : */}
-                                        {/* </span> {new Date(sessionData.timestamp * 1000).toGMTString()} */}
-
-                                        {/* </span> {new Date(sessionData.timestamp * 1000).toLocaleString()} */}
-
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].Time}:`}&nbsp;<span style={historyValue}>{new Date(sessionData.timestamp * 1000).toLocaleString()}</span></label>
                                         </div>
@@ -288,10 +269,10 @@ class VPNHistory extends Component {
                             <div style={{ paddingTop: '2%', color: '#919191', fontFamily: 'Montserrat, Medium' }}>
                                 <span style={vpnhistoryStyles.text1}>
                                     {lang[language].TotalDue} :
-                                </span> {parseInt(VpnUsage.due) / (10 ** 8)} {lang[language].TestSent}<br />
+                                </span> {parseInt(VpnUsage.due) / (10 ** 8)} {lang[language].TestSENTunit}<br />
                                 <span style={vpnhistoryStyles.text1}>
                                     {lang[language].TotalDuration} :
-                                </span> {VpnUsage.stats['duration']} {lang[language].Secs} <br />
+                                </span> {this.getDurationFormat(VpnUsage.stats['duration'])}<br />
                                 <span style={vpnhistoryStyles.text1}>
                                     {lang[language].TotalData} :
                                 </span> {this.getPaymentBytes(VpnUsage.stats['received_bytes'])}<br />

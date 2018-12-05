@@ -303,13 +303,14 @@ let lang = {
 
         "TestSENTunit" : "TestSENT",
         "TestETHunit" : "TestETH",
-        "ClaimedBy" : "Tokens Claimed by Service Provider",
+        "ClaimedBy" : "Tokens Claimed by Service Provider (node)",
         "AddressToSend":"ADDRESS TO SEND",
         "NodeID" : "Node ID",
         "Socks5ComingSoon" : "Socks5 (Coming Soon)",
         "PrivateComingSoon" : "Private (Coming Soon)",
         "VersionInSidebar":"dVPN - alpha-0.1.01",
 
+        "TotalPayment":"Total Payment",
     },
     ja: {
         'BeCareful': 'ご注意',
@@ -620,12 +621,14 @@ let lang = {
 
         "TestSENTunit" : "TestSENT",
         "TestETHunit" : "TestETH",
-        "ClaimedBy" : "Tokens Claimed by Service Provider",
+        "ClaimedBy" : "Tokens Claimed by Service Provider (node)",
         "AddressToSend":"ADDRESS TO SEND",
         "NodeID" : "Node ID",
         "Socks5ComingSoon" : "Socks5 (Coming Soon)",
         "PrivateComingSoon" : "Private (Coming Soon)",
         "VersionInSidebar":"dVPN - alpha-0.1.01",
+
+        "TotalPayment":"Total Payment",
     },
     es: {
         'History': 'HISTORIAL',
@@ -934,12 +937,14 @@ let lang = {
 
         "TestSENTunit" : "TestSENT",
         "TestETHunit" : "TestETH",
-        "ClaimedBy" : "Tokens Claimed by Service Provider",
+        "ClaimedBy" : "Tokens Claimed by Service Provider (node)",
         "AddressToSend":"ADDRESS TO SEND",
         "NodeID" : "Node ID",
         "Socks5ComingSoon" : "Socks5 (Coming Soon)",
         "PrivateComingSoon" : "Private (Coming Soon)",
         "VersionInSidebar":"dVPN - alpha-0.1.01",
+
+        "TotalPayment":"Total Payment",
     },
     ru: {
         "History": "История",
@@ -1248,12 +1253,14 @@ let lang = {
 
         "TestSENTunit" : "TestSENT",
         "TestETHunit" : "TestETH",
-        "ClaimedBy" : "Tokens Claimed by Service Provider",
+        "ClaimedBy" : "Tokens Claimed by Service Provider (node)",
         "AddressToSend":"ADDRESS TO SEND",
         "NodeID" : "Node ID",
         "Socks5ComingSoon" : "Socks5 (Coming Soon)",
         "PrivateComingSoon" : "Private (Coming Soon)",
         "VersionInSidebar":"dVPN - alpha-0.1.01",
+
+        "TotalPayment":"Total Payment",
     },
 
     zh: {
@@ -1563,13 +1570,14 @@ let lang = {
 
         "TestSENTunit" : "TestSENT",
         "TestETHunit" : "TestETH",
-        "ClaimedBy" : "服务提供商声称的令牌",
+        "ClaimedBy" : "服务提供商声称的令牌 (node)",
         "AddressToSend":"ADDRESS TO SEND",
         "NodeID" : "Node ID",
         "Socks5ComingSoon" : "Socks5 (Coming Soon)",
         "PrivateComingSoon" : "Private (Coming Soon)",
         "VersionInSidebar":"dVPN - alpha-0.1.01",
 
+        "TotalPayment":"Total Payment",
     },
 }
 

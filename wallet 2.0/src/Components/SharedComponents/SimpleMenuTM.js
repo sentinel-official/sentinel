@@ -24,8 +24,8 @@ const styles = theme => ({
   },
   icon: {
     fill: 'black',  //changed from white -> black
-    right: '30px',  // changed from 60
-    marginTop:-6
+    right: '20px',  // changed from 60
+    marginTop:2
     
   },
   list: {

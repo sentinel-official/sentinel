@@ -70,7 +70,7 @@ class SendComponent extends React.Component {
       gwei: 20,
       sendToAddress: '',
       amount: '',
-      token: 'ETH',
+      token: 'SENT',
       password: '',
       gas: 21000,
       isDisabled: true,
@@ -139,8 +139,12 @@ class SendComponent extends React.Component {
   };
 
   setGasLimit = (event) => {
-    this.setState({ gas: event.target.value });
-    this.callEnable();
+    if (event.target.value.match("^[0-9]([0-9]+)?([0-9]*\.[0-9]+)?$") || event.target.value === '') {
+      this.setState({ gas: event.target.value });
+      this.callEnable();
+    } else {
+      this.setState({ gas: 21000 });
+    }
   };
 
   openInExternalBrowser(url) {
@@ -151,19 +155,23 @@ class SendComponent extends React.Component {
 
   amountChange = (event) => {
     let amount = event.target.value;
-    let value;
-    if (this.state.token === 'SENT') {
-      value = amount * 10 ** 8;
-    } else {
-      value = amount * 10 ** 18
-    }
-    this.setState({ amount: amount });
-    let trueAddress = this.state.sendToAddress.match(/^0x[a-fA-F0-9]{40}$/);
-    if (trueAddress !== null) {
-      this.getGasLimit(value, this.state.sendToAddress, this.state.token)
-    }
+    if (amount.match("^[0-9]([0-9]+)?([0-9]*\.[0-9]+)?$")) {
+      let value;
+      if (this.state.token === 'SENT') {
+        value = amount * 10 ** 8;
+      } else {
+        value = amount * 10 ** 18
+      }
+      this.setState({ amount: amount });
+      let trueAddress = this.state.sendToAddress.match(/^0x[a-fA-F0-9]{40}$/);
+      if (trueAddress !== null) {
+        this.getGasLimit(value, this.state.sendToAddress, this.state.token)
+      }
 
-    this.callEnable();
+      this.callEnable();
+    } else {
+      this.setState({ amount: '', isDisabled: true });
+    }
 
   };
 

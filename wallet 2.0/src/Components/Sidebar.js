@@ -189,7 +189,8 @@ class Sidebar extends Component {
         let { classes, isTest, isTenderMint, component, language } = this.props;
 
         let currentTab = this.props.currentTab;
-        let sidebarMenuItems = isTest ? testMenuItems : notInTestMenuItems
+        let sidebarMenuItems = isTest ?  (isTenderMint && component !== 'dashboard' ?
+        TMdisabledmenuItems : testMenuItems) : notInTestMenuItems
         let menuItemsIcons = isTest ?
             (isTenderMint && component !== 'dashboard' ?
                 TMdisabledmenuItems : testMenuItemsIcons)
@@ -283,7 +284,7 @@ class Sidebar extends Component {
                                                     (item.value === currentTab ?
                                                         sidebarStyles.currentDivStyle :
                                                         sidebarStyles.activeDivStyle)
-                                                } onClick={() => { this.setMenu(item); }}>
+                                                } onClick={() => { this.setMenu(item),this.setState({openDrawer: false}) }}>
                                                     <label
                                                         style={
                                                             // isDisabled

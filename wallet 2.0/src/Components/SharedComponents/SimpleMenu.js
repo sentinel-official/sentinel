@@ -24,7 +24,7 @@ const styles = theme => ({
   },
   icon: {
     fill: 'black',  //changed from white -> black
-    right: '60px'
+    right: '30px'
   },
   list: {
     backgroundColor: '#B6B9CB',
@@ -51,7 +51,7 @@ const styles = theme => ({
 class SimpleListMenu extends React.Component {
 
   state = {
-    token: 'SENT' , //Changed from 'ETH' to give priority for SENT
+    token: 'SENT', //Changed from 'ETH' to give priority for SENT
     pivxMenu: {
       pivx: 'PIVX',
       eth: 'ETH',
@@ -88,8 +88,7 @@ class SimpleListMenu extends React.Component {
   }
 
   render() {
-    const { language, classes } = this.props;
-
+    const { language, isTest, classes } = this.props;
 
     if (this.props.isSend) {
       return (
@@ -110,20 +109,20 @@ class SimpleListMenu extends React.Component {
             }}
             SelectDisplayProps={{
               style: {
-                padding: '12px', paddingLeft: '50px'
+                padding: '12px', paddingLeft: '30px'
               }
             }}
           >
-          
+
             <MenuItem value={'SENT'}>
               <img src={'../src/Images/logo.svg'} alt="sentinel_logo"
                 style={{ width: 16, paddingRight: 5, marginTop: -2 }} />
-              {lang[language].Sent}</MenuItem>
-              <MenuItem value={'ETH'} >
+              {isTest ? lang[language].TestSENTunit : lang[language].Sent}</MenuItem>
+            <MenuItem value={'ETH'} >
               <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
                 style={{ width: 15, paddingRight: 5, marginTop: -5 }} />
 
-              {lang[language].Eth}</MenuItem>
+              {isTest ? lang[language].TestETHunit : lang[language].Eth}</MenuItem>
           </Select>
         </div>
       );
@@ -169,7 +168,7 @@ SimpleListMenu.propTypes = {
 function mapStateToProps(state) {
   return {
     language: state.setLanguage,
-
+    isTest: state.setTestNet,
   }
 }
 function mapDispatchToActions(dispatch) {

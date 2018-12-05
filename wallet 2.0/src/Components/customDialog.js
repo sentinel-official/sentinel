@@ -111,7 +111,9 @@ class SimpleDialog extends React.Component {
         const { classes, language, ...other } = this.props;
 
         return (
-            <Dialog onClose={this.handleClose}
+            <Dialog
+                open={this.props.open}
+                onClose={this.handleClose}
                 aria-labelledby="simple-dialog-title"
                 {...other} className={{ classes: { paper: classes.container } }}
             >
@@ -169,7 +171,10 @@ class SimpleDialog extends React.Component {
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
-                                    className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
+                                    className={classes.extendedIcon} /> :
+                                    // <ConnectIcon className={classes.extendedIcon} />
+                                    null
+                                }
                                 {this.props.isLoading ? lang[language].ConnectingdVPN : (this.props.success ? lang[language].Connected : lang[language].Connect)}
                             </Button>
                         </div>
@@ -330,7 +335,7 @@ class SimpleDialogDemo extends React.Component {
                     } else if (res) {
                         let regError = res.replace(/\s/g, "")
                         this.setState({
-                            isLoading: false, isPending: false, open: false,
+                            open: false, isLoading: false, isPending: false,
                             snackMessage: lang[this.props.language][regError] ?
                                 lang[this.props.language][regError] : res,
                             snackOpen: true

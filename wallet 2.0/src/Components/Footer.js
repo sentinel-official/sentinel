@@ -113,9 +113,9 @@ class Footer extends Component {
                 if (res) {
                     let regError = res.replace(/\s/g, "");
                     this.setState({
-                        openSnack: true, 
+                        openSnack: true,
                         snackMessage: lang[this.props.language][regError] ?
-                        lang[this.props.language][regError] : res,
+                            lang[this.props.language][regError] : res,
                         isDisabled: false
                     });
                 }
@@ -135,11 +135,11 @@ class Footer extends Component {
                 disconnectVPN((res) => {
                     if (res) {
                         let regError = res.replace(/\s/g, "");
-                        this.setState({ 
-                            openSnack: true, 
+                        this.setState({
+                            openSnack: true,
                             snackMessage: lang[this.props.language][regError] ?
-                            lang[this.props.language][regError] : res,
-                            isDisabled: false 
+                                lang[this.props.language][regError] : res,
+                            isDisabled: false
                         });
                     }
                     else {
@@ -155,11 +155,11 @@ class Footer extends Component {
                 disconnectSocks(this.props.walletAddr, (res) => {
                     if (res) {
                         let regError = res.replace(/\s/g, "");
-                        this.setState({ 
-                            openSnack: true, 
+                        this.setState({
+                            openSnack: true,
                             snackMessage: lang[this.props.language][regError] ?
-                            lang[this.props.language][regError] : res,
-                            isDisabled: false 
+                                lang[this.props.language][regError] : res,
+                            isDisabled: false
                         });
                     }
                     else {
@@ -265,7 +265,8 @@ class Footer extends Component {
                                             vpnStatus ?
                                                 <Col xs={3} style={footerStyles.vpnConnected}>
                                                     <Tooltip title={lang[language].Disconnect}>
-                                                        <Button style={footerStyles.disconnectStyle}
+                                                        <Button
+                                                            className='disconnectStyle'
                                                             disabled={this.state.isDisabled}
                                                             onClick={() => { this.disconnect() }}>
                                                             <span style={footerStyles.disconnectText}>  {lang[language].Disconnect} </span>

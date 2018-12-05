@@ -12,3 +12,17 @@
 .footerStyle{
   z-index: 9999;
 }
+.disconnectStyle {
+  color: #fff !important;
+  background:#e74d4d !important;
+  
+  margin-top: 3px !important;
+  margin-left:31px !important;
+  font-size:14px;
+
+}
+.disconnectStyle:hover {
+  background:#da0000 !important;
+
+
+}

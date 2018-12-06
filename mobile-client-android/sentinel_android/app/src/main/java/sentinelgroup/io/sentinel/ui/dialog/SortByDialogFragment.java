@@ -1,7 +1,6 @@
 package sentinelgroup.io.sentinel.ui.dialog;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -48,11 +47,12 @@ public class SortByDialogFragment extends DialogFragment {
 
     }
 
-    public static SortByDialogFragment newInstance(String iTag, String iCurrentSortType) {
+    public static SortByDialogFragment newInstance(String iTag, String iCurrentSortType, OnSortDialogActionListener iListener) {
         SortByDialogFragment aSortByDialogFragment = new SortByDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TAG, iTag);
         args.putString(ARG_CURRENT_SORT_TYPE, iCurrentSortType);
+        aSortByDialogFragment.mListener = iListener;
         aSortByDialogFragment.setArguments(args);
         return aSortByDialogFragment;
     }
@@ -96,31 +96,17 @@ public class SortByDialogFragment extends DialogFragment {
 
     private void initSortTypeList() {
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_default), AppConstants.SORT_BY_DEFAULT, mCurrentSortType.equals(AppConstants.SORT_BY_DEFAULT)));
-        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_country_a), AppConstants.SORT_BY_COUNTRY_A, mCurrentSortType.equals(AppConstants.SORT_BY_COUNTRY_A)));
-        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_country_d), AppConstants.SORT_BY_COUNTRY_D, mCurrentSortType.equals(AppConstants.SORT_BY_COUNTRY_D)));
-        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_latency_i), AppConstants.SORT_BY_LATENCY_I, mCurrentSortType.equals(AppConstants.SORT_BY_LATENCY_I)));
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_latency_d), AppConstants.SORT_BY_LATENCY_D, mCurrentSortType.equals(AppConstants.SORT_BY_LATENCY_D)));
-        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_bandwidth_i), AppConstants.SORT_BY_BANDWIDTH_I, mCurrentSortType.equals(AppConstants.SORT_BY_BANDWIDTH_I)));
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_bandwidth_d), AppConstants.SORT_BY_BANDWIDTH_D, mCurrentSortType.equals(AppConstants.SORT_BY_BANDWIDTH_D)));
+        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_rating_d), AppConstants.SORT_BY_RATING_D, mCurrentSortType.equals(AppConstants.SORT_BY_RATING_D)));
+        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_country_a), AppConstants.SORT_BY_COUNTRY_A, mCurrentSortType.equals(AppConstants.SORT_BY_COUNTRY_A)));
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_price_i), AppConstants.SORT_BY_PRICE_I, mCurrentSortType.equals(AppConstants.SORT_BY_PRICE_I)));
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_price_d), AppConstants.SORT_BY_PRICE_D, mCurrentSortType.equals(AppConstants.SORT_BY_PRICE_D)));
-        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_rating_i), AppConstants.SORT_BY_RATING_I, mCurrentSortType.equals(AppConstants.SORT_BY_RATING_I)));
-        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_rating_d), AppConstants.SORT_BY_RATING_D, mCurrentSortType.equals(AppConstants.SORT_BY_RATING_D)));
     }
 
     private void onActionButtonClicked(boolean isPositiveButton) {
         if (mListener != null) {
             mListener.onSortTypeSelected(mTag, getDialog(), isPositiveButton, isPositiveButton ? mSortTypeList.get(mPreviousSortIndex) : null);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnSortDialogActionListener) {
-            mListener = (OnSortDialogActionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnSortDialogActionListener");
         }
     }
 

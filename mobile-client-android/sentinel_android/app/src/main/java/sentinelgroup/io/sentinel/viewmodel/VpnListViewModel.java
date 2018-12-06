@@ -48,8 +48,8 @@ public class VpnListViewModel extends ViewModel {
      * @param iSelectedSortType
      * @return
      */
-    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy(String iSelectedSortType) {
-        return mRepository.getVpnListLiveDataSortedBy(iSelectedSortType);
+    public LiveData<List<VpnListEntity>> getVpnListLiveDataSearchAndSortBy(String iSearchQuery, String iSelectedSortType) {
+        return mRepository.getVpnListLiveDataSortedBy(iSearchQuery, iSelectedSortType);
     }
 
     public SingleLiveEvent<String> getVpnListErrorLiveEvent() {

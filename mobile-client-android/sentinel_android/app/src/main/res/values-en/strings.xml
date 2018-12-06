@@ -227,16 +227,17 @@
     <string name="action_rate">Rate</string>
     <string name="sort_by_title">Sort By</string>
     <string name="sort_by_default">Default</string>
-    <string name="sort_by_country_a">Country ↑</string>
+    <string name="sort_by_country_a">Country</string>
     <string name="sort_by_country_d">Country ↓</string>
     <string name="sort_by_latency_i">Latency ↑</string>
-    <string name="sort_by_latency_d">Latency ↓</string>
+    <string name="sort_by_latency_d">Latency</string>
     <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
-    <string name="sort_by_bandwidth_d">Bandwidth ↓</string>
+    <string name="sort_by_bandwidth_d">Bandwidth</string>
     <string name="sort_by_price_i">Price ↑</string>
     <string name="sort_by_price_d">Price ↓</string>
     <string name="sort_by_rating_i">Rating ↑</string>
-    <string name="sort_by_rating_d">Rating ↓</string>
+    <string name="sort_by_rating_d">Rating</string>
+    <string name="hint_search_vpn_list">Search by country</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>

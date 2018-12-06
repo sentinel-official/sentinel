@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorCardDark"
+    android:minWidth="200dp"
     android:orientation="vertical"
     tools:mContext=".ui.dialog.SortByDialogFragment">
 

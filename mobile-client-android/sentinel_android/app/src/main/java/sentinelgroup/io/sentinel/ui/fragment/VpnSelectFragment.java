@@ -45,6 +45,7 @@ public class VpnSelectFragment extends Fragment {
 
     private ViewPager mVpVpnSelect;
     private TabLayout mTabLayout;
+    private boolean isTabSetupDone;
 
     private VpnSelectPagerAdapter mAdapter;
 
@@ -149,7 +150,7 @@ public class VpnSelectFragment extends Fragment {
         }
     }
 
-    private void setupViewPagerAndTabs() {
+    private synchronized void setupViewPagerAndTabs() {
         // Setup ViewPager
         mAdapter = new VpnSelectPagerAdapter(getChildFragmentManager(), getContext());
         mVpVpnSelect.setAdapter(mAdapter);
@@ -227,12 +228,4 @@ public class VpnSelectFragment extends Fragment {
         mListener = null;
     }
 
-    public void onSortTypeSelected(String iTag, Dialog iDialog, boolean isPositiveButton, String iSelectedSortType) {
-        if (isPositiveButton && iTag.equals(AppConstants.TAG_SORT_BY)) {
-            if (mAdapter.getItem(mVpVpnSelect.getCurrentItem()) instanceof VpnListFragment) {
-                ((VpnListFragment) mAdapter.getItem(mVpVpnSelect.getCurrentItem())).getVpnListLiveDataSortedBy(iSelectedSortType);
-            }
-        }
-        iDialog.dismiss();
-    }
 }

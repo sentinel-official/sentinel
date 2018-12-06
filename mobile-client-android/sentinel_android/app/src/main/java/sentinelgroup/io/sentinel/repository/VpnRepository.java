@@ -119,31 +119,31 @@ public class VpnRepository {
         return mListDao.getVpnEntity(iVpnAddress);
     }
 
-    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy(String iSelectedSortType) {
+    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy(String iSearchQuery, String iSelectedSortType) {
         switch (iSelectedSortType) {
             case AppConstants.SORT_BY_COUNTRY_A:
-                return mListDao.getVpnLisEntitySortCountryA();
+                return mListDao.getVpnLisEntitySortCountryA(iSearchQuery);
             case AppConstants.SORT_BY_COUNTRY_D:
-                return mListDao.getVpnLisEntitySortCountryD();
+                return mListDao.getVpnLisEntitySortCountryD(iSearchQuery);
             case AppConstants.SORT_BY_LATENCY_I:
-                return mListDao.getVpnLisEntitySortLatencyI();
+                return mListDao.getVpnLisEntitySortLatencyI(iSearchQuery);
             case AppConstants.SORT_BY_LATENCY_D:
-                return mListDao.getVpnLisEntitySortLatencyD();
+                return mListDao.getVpnLisEntitySortLatencyD(iSearchQuery);
             case AppConstants.SORT_BY_BANDWIDTH_I:
-                return mListDao.getVpnLisEntitySortBandwidthI();
+                return mListDao.getVpnLisEntitySortBandwidthI(iSearchQuery);
             case AppConstants.SORT_BY_BANDWIDTH_D:
-                return mListDao.getVpnLisEntitySortBandwidthD();
+                return mListDao.getVpnLisEntitySortBandwidthD(iSearchQuery);
             case AppConstants.SORT_BY_PRICE_I:
-                return mListDao.getVpnLisEntitySortPriceI();
+                return mListDao.getVpnLisEntitySortPriceI(iSearchQuery);
             case AppConstants.SORT_BY_PRICE_D:
-                return mListDao.getVpnLisEntitySortPriceD();
+                return mListDao.getVpnLisEntitySortPriceD(iSearchQuery);
             case AppConstants.SORT_BY_RATING_I:
-                return mListDao.getVpnLisEntitySortRatingI();
+                return mListDao.getVpnLisEntitySortRatingI(iSearchQuery);
             case AppConstants.SORT_BY_RATING_D:
-                return mListDao.getVpnLisEntitySortRatingD();
+                return mListDao.getVpnLisEntitySortRatingD(iSearchQuery);
             case AppConstants.SORT_BY_DEFAULT:
             default:
-                return mListDao.getVpnLisEntity();
+                return mListDao.getVpnLisEntity(iSearchQuery);
         }
     }
 
@@ -155,8 +155,7 @@ public class VpnRepository {
         return mVpnListErrorLiveEvent;
     }
 
-    public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent(GenericRequestBody iRequestBody) {
-        getVpnUsageForUser(iRequestBody);
+    public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent() {
         return mVpnUsageLiveEvent;
     }
 

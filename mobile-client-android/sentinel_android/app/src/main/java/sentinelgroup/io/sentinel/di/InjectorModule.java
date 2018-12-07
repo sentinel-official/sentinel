@@ -4,23 +4,23 @@ import android.content.Context;
 
 import sentinelgroup.io.sentinel.db.AppDatabase;
 import sentinelgroup.io.sentinel.network.api.AppVersionWebService;
-import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.api.BonusWebService;
+import sentinelgroup.io.sentinel.network.api.GenericWebService;
 import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.repository.AppVersionRepository;
+import sentinelgroup.io.sentinel.repository.BonusRepository;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.repository.PinRepository;
-import sentinelgroup.io.sentinel.repository.BonusRepository;
 import sentinelgroup.io.sentinel.repository.SendRepository;
 import sentinelgroup.io.sentinel.repository.TxHistoryRepository;
 import sentinelgroup.io.sentinel.repository.VpnRepository;
 import sentinelgroup.io.sentinel.repository.WalletRepository;
 import sentinelgroup.io.sentinel.util.AppExecutors;
+import sentinelgroup.io.sentinel.viewmodel.BonusViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.CreateAuidViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.RatingViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
-import sentinelgroup.io.sentinel.viewmodel.BonusViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
@@ -59,7 +59,7 @@ public class InjectorModule {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getVpnUsageEntryDao(), aGenericWebService, aAppExecutors, iDeviceId);
+        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getVpnUsageEntryDao(), aAppDatabase.getBookmarkDao(), aGenericWebService, aAppExecutors, iDeviceId);
     }
 
     private static WalletRepository provideWalletRepository(Context iContext) {

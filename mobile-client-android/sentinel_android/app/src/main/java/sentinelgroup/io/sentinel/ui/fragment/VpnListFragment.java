@@ -304,6 +304,11 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
             showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_main_net_unavailable), AppConstants.VALUE_DEFAULT);
     }
 
+    @Override
+    public void onBookmarkClicked(VpnListEntity iItemData) {
+        mViewModel.toggleVpnBookmark(iItemData.getAccountAddress(), iItemData.getIp());
+    }
+
     public void getVpnListLiveDataSearchAndSortBy(String iSearchQuery, String iSelectedSortType) {
         if (mViewModel != null) {
             mViewModel.getVpnListLiveDataSearchAndSortBy(iSearchQuery, iSelectedSortType).observe(this, vpnList -> {

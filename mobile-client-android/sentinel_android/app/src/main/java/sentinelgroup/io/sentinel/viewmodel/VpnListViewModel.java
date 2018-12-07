@@ -25,7 +25,7 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 public class VpnListViewModel extends ViewModel {
     private final VpnRepository mRepository;
     private final AppExecutors mAppExecutors;
-//    private final LiveData<List<VpnListEntity>> mVpnListLiveData;
+    //    private final LiveData<List<VpnListEntity>> mVpnListLiveData;
     private final SingleLiveEvent<String> mVpnListErrorLiveEvent;
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
@@ -124,5 +124,13 @@ public class VpnListViewModel extends ViewModel {
                 mVpnConfigSaveLiveEvent.postValue(Resource.error(e.getLocalizedMessage(), null));
             }
         });
+    }
+
+    public void toggleVpnBookmark(String iAccountAddress, String iIP) {
+        mRepository.toggleVpnBookmark(iAccountAddress, iIP);
+    }
+
+    public boolean isVpnBookmarked(String iAccountAddress, String iIP) {
+        return mRepository.isVpnBookmarked(iAccountAddress, iIP);
     }
 }

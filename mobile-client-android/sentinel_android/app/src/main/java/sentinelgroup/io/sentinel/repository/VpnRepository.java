@@ -9,9 +9,11 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import sentinelgroup.io.sentinel.db.dao.BookmarkDao;
 import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
 import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
+import sentinelgroup.io.sentinel.network.model.BookmarkEntity;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.GenericResponse;
 import sentinelgroup.io.sentinel.network.model.ReportPay;
@@ -38,6 +40,7 @@ public class VpnRepository {
     private static VpnRepository sInstance;
     private final VpnListEntryDao mListDao;
     private final VpnUsageEntryDao mUsageDao;
+    private final BookmarkDao mBookmarkDao;
     private final GenericWebService mGenericWebService;
     private final AppExecutors mAppExecutors;
     private final MutableLiveData<List<VpnListEntity>> mVpnListMutableLiveData;
@@ -52,9 +55,10 @@ public class VpnRepository {
     private final SingleLiveEvent<Resource<GenericResponse>> mRatingLiveEvent;
     private final String mDeviceId;
 
-    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
+    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, BookmarkDao iBookmarkDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
         mListDao = iListDao;
         mUsageDao = iUsageDao;
+        mBookmarkDao = iBookmarkDao;
         mGenericWebService = iGenericWebService;
         mAppExecutors = iAppExecutors;
         mVpnListMutableLiveData = new MutableLiveData<>();
@@ -73,8 +77,10 @@ public class VpnRepository {
         aVpnListServerData.observeForever(vpnList -> {
             mAppExecutors.diskIO().execute(() -> {
                 if (vpnList != null && vpnList.size() > 0) {
+                    List<BookmarkEntity> aBookmarks = mBookmarkDao.getAllBookmarkEntities();
                     for (int i = 0; i < vpnList.size(); i++) {
                         vpnList.get(i).setServerSequence(i);
+                        vpnList.get(i).setBookmarked(aBookmarks.contains(new BookmarkEntity(vpnList.get(i).getAccountAddress(), vpnList.get(i).getIp())));
                     }
                     mListDao.deleteVpnListEntity();
                     mListDao.insertVpnListEntity(vpnList);
@@ -92,10 +98,10 @@ public class VpnRepository {
         });
     }
 
-    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
+    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, BookmarkDao iBookmarkDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new VpnRepository(iListDao, iUsageDao, iGenericWebService, iAppExecutors, iDeviceId);
+                sInstance = new VpnRepository(iListDao, iUsageDao, iBookmarkDao, iGenericWebService, iAppExecutors, iDeviceId);
             }
         }
         return sInstance;
@@ -405,5 +411,19 @@ public class VpnRepository {
                     mRatingLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
             }
         });
+    }
+
+    public void toggleVpnBookmark(String iAccountAddress, String iIP) {
+        mAppExecutors.diskIO().execute(() -> {
+            if (isVpnBookmarked(iAccountAddress, iIP)) {
+                mBookmarkDao.deleteBookmarkEntity(iAccountAddress, iIP);
+            } else {
+                mBookmarkDao.insertBookmarkEntity(new BookmarkEntity(iAccountAddress, iIP));
+            }
+        });
+    }
+
+    public boolean isVpnBookmarked(String iAccountAddress, String iIP) {
+        return mBookmarkDao.getBookmarkEntity(iAccountAddress, iIP) > 0;
     }
 }

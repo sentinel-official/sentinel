@@ -2,6 +2,7 @@ package sentinelgroup.io.sentinel.network.model;
 
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
@@ -30,14 +31,20 @@ public class VpnListEntity implements Serializable {
     private String version;
     private double rating;
     private int serverSequence;
+    private boolean isBookmarked;
 
-    public VpnListEntity(@NonNull String accountAddress, String ip, double latency, Location location, NetSpeed netSpeed, double pricePerGb) {
+    public VpnListEntity(@NonNull String accountAddress, String ip, double latency, Location location, NetSpeed netSpeed, String encryptionMethod, double pricePerGb, String version, double rating, int serverSequence, boolean isBookmarked) {
         this.accountAddress = accountAddress;
         this.ip = ip;
         this.latency = latency;
         this.location = location;
         this.netSpeed = netSpeed;
+        this.encryptionMethod = encryptionMethod;
         this.pricePerGb = pricePerGb;
+        this.version = version;
+        this.rating = rating;
+        this.serverSequence = serverSequence;
+        this.isBookmarked = isBookmarked;
     }
 
     @NonNull
@@ -119,5 +126,13 @@ public class VpnListEntity implements Serializable {
 
     public void setServerSequence(int serverSequence) {
         this.serverSequence = serverSequence;
+    }
+
+    public boolean isBookmarked() {
+        return isBookmarked;
+    }
+
+    public void setBookmarked(boolean bookmarked) {
+        isBookmarked = bookmarked;
     }
 }

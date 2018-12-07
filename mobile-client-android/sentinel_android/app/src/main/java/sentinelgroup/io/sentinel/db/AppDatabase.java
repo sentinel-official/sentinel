@@ -11,26 +11,25 @@ import android.util.Log;
 
 import sentinelgroup.io.sentinel.db.dao.BalanceEntryDao;
 import sentinelgroup.io.sentinel.db.dao.BonusInfoDao;
+import sentinelgroup.io.sentinel.db.dao.BookmarkDao;
 import sentinelgroup.io.sentinel.db.dao.DeleteTableDao;
 import sentinelgroup.io.sentinel.db.dao.GasEstimateEntryDao;
 import sentinelgroup.io.sentinel.db.dao.PinEntryDao;
 import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
 import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
 import sentinelgroup.io.sentinel.network.model.BonusInfoEntity;
+import sentinelgroup.io.sentinel.network.model.BookmarkEntity;
 import sentinelgroup.io.sentinel.network.model.Chains;
 import sentinelgroup.io.sentinel.network.model.GasEstimateEntity;
 import sentinelgroup.io.sentinel.network.model.PinEntity;
-import sentinelgroup.io.sentinel.network.model.ReferralInfoEntity;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.network.model.VpnUsageEntity;
-import sentinelgroup.io.sentinel.util.AppConstants;
-import sentinelgroup.io.sentinel.util.AppPreferences;
 
 /**
  * Room Database for storing all the essential application data in it's table defined by the various DAO's.
  */
-@Database(entities = {Chains.class, GasEstimateEntity.class, PinEntity.class, VpnListEntity.class, VpnUsageEntity.class, BonusInfoEntity.class},
-        version = 10,
+@Database(entities = {Chains.class, GasEstimateEntity.class, PinEntity.class, VpnListEntity.class, VpnUsageEntity.class, BonusInfoEntity.class, BookmarkEntity.class},
+        version = 12,
         exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();
@@ -47,6 +46,9 @@ public abstract class AppDatabase extends RoomDatabase {
                         .databaseBuilder(context.getApplicationContext(),
                                 AppDatabase.class, AppDatabase.DATABASE_NAME)
                         .addMigrations(MIGRATION_8_9)
+                        .addMigrations(MIGRATION_9_10)
+                        .addMigrations(MIGRATION_10_11)
+                        .addMigrations(MIGRATION_11_12)
                         .fallbackToDestructiveMigration()
                         .build();
                 Log.d(LOG_TAG, "Made new database");
@@ -59,6 +61,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract PinEntryDao getPinEntryDao();
 
     public abstract VpnListEntryDao getVpnListEntryDao();
+
+    public abstract BookmarkDao getBookmarkDao();
 
     public abstract GasEstimateEntryDao getGasEstimateEntryDao();
 
@@ -92,6 +96,21 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN serverSequence INTEGER");
+        }
+    };
+
+    private static final Migration MIGRATION_10_11 = new Migration(10, 11) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE bookmark_entity (accountAddress TEXT NOT NULL, ip TEXT, PRIMARY KEY(accountAddress))");
+            database.execSQL("CREATE UNIQUE INDEX index_bookmark_entity_accountAddress ON bookmark_entity (accountAddress)");
+        }
+    };
+
+    private static final Migration MIGRATION_11_12 = new Migration(11, 12) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN isBookmarked INTEGER NOT NULL DEFAULT 0");
         }
     };
 }

@@ -83,27 +83,23 @@
 
             <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/ib_search"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/margin_40"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_8"
-                android:layout_marginLeft="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_8"
-                android:layout_marginRight="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
                 android:background="@android:color/transparent"
-                android:padding="@dimen/margin_4"
+                android:padding="@dimen/margin_16"
                 android:src="@drawable/ic_search"
                 android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/ib_sort"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/margin_40"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_8"
-                android:layout_marginLeft="@dimen/margin_8"
-                android:layout_marginEnd="@dimen/margin_8"
-                android:layout_marginRight="@dimen/margin_8"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
                 android:background="@android:color/transparent"
-                android:padding="@dimen/margin_4"
+                android:padding="@dimen/margin_16"
                 android:src="@drawable/ic_sort"
                 android:visibility="gone" />
         </LinearLayout>
@@ -143,8 +139,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:padding="@dimen/margin_4"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:padding="@dimen/margin_16"
+                android:src="@drawable/ic_close"
                 android:visibility="gone" />
         </LinearLayout>
 

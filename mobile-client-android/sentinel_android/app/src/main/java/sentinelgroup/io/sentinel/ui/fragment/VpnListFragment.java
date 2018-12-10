@@ -28,7 +28,7 @@ import sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.ui.custom.VpnListSearchListener;
-import sentinelgroup.io.sentinel.ui.dialog.SortByDialogFragment;
+import sentinelgroup.io.sentinel.ui.dialog.SortFilterByDialogFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Status;
@@ -58,15 +58,17 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
 
     private String mToAddress;
 
-    private SortByDialogFragment.OnSortDialogActionListener mSortDialogActionListener = (iTag, iDialog, isPositiveButton, iSelectedSortType) -> {
+    private SortFilterByDialogFragment.OnSortFilterDialogActionListener mSortDialogActionListener = (iTag, iDialog, isPositiveButton, iSelectedSortType, toFilterByBookmark) -> {
         if (isPositiveButton && iSelectedSortType != null) {
+            ((DashboardActivity) getActivity()).setFilterByBookmark(toFilterByBookmark);
             ((DashboardActivity) getActivity()).setCurrentSortType(iSelectedSortType.getItemCode());
-            getVpnListLiveDataSearchAndSortBy(((DashboardActivity) getActivity()).getCurrentSearchString(), ((DashboardActivity) getActivity()).getCurrentSortType());
+            ((DashboardActivity) getActivity()).handleSortFilterIcon();
+            getVpnListLiveDataSearchSortFilterBy(((DashboardActivity) getActivity()).getCurrentSearchString(), iSelectedSortType.getItemCode(), toFilterByBookmark);
         }
         iDialog.dismiss();
     };
 
-    private VpnListSearchListener mVpnListSearchListener = iSearchQuery -> getVpnListLiveDataSearchAndSortBy(iSearchQuery, ((DashboardActivity) getActivity()).getCurrentSortType());
+    private VpnListSearchListener mVpnListSearchListener = iSearchQuery -> getVpnListLiveDataSearchSortFilterBy(iSearchQuery, ((DashboardActivity) getActivity()).getCurrentSortType(), ((DashboardActivity) getActivity()).toFilterByBookmark());
 
     public VpnListFragment() {
         // Required empty public constructor
@@ -133,7 +135,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
 
-        getVpnListLiveDataSearchAndSortBy(((DashboardActivity) getActivity()).getCurrentSearchString(), ((DashboardActivity) getActivity()).getCurrentSortType());
+        getVpnListLiveDataSearchSortFilterBy(((DashboardActivity) getActivity()).getCurrentSearchString(), ((DashboardActivity) getActivity()).getCurrentSortType(), ((DashboardActivity) getActivity()).toFilterByBookmark());
 
         mViewModel.getVpnListErrorLiveEvent().observe(this, iMessage -> {
             if (iMessage != null && !iMessage.isEmpty() && mAdapter.getItemCount() != 0)
@@ -309,9 +311,9 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         mViewModel.toggleVpnBookmark(iItemData.getAccountAddress(), iItemData.getIp());
     }
 
-    public void getVpnListLiveDataSearchAndSortBy(String iSearchQuery, String iSelectedSortType) {
+    public void getVpnListLiveDataSearchSortFilterBy(String iSearchQuery, String iSelectedSortType, boolean toFilterByBookmark) {
         if (mViewModel != null) {
-            mViewModel.getVpnListLiveDataSearchAndSortBy(iSearchQuery, iSelectedSortType).observe(this, vpnList -> {
+            mViewModel.getVpnListLiveDataSearchSortFilterBy(iSearchQuery, iSelectedSortType, toFilterByBookmark).observe(this, vpnList -> {
                 if (vpnList != null) {
                     mAdapter.loadData(vpnList);
                     mRvVpnList.scrollToPosition(0);

@@ -125,31 +125,31 @@ public class VpnRepository {
         return mListDao.getVpnEntity(iVpnAddress);
     }
 
-    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy(String iSearchQuery, String iSelectedSortType) {
+    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy(String iSearchQuery, String iSelectedSortType, boolean toFilterByBookmark) {
         switch (iSelectedSortType) {
             case AppConstants.SORT_BY_COUNTRY_A:
-                return mListDao.getVpnLisEntitySortCountryA(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortCountryA(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortCountryA(iSearchQuery);
             case AppConstants.SORT_BY_COUNTRY_D:
-                return mListDao.getVpnLisEntitySortCountryD(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortCountryD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortCountryD(iSearchQuery);
             case AppConstants.SORT_BY_LATENCY_I:
-                return mListDao.getVpnLisEntitySortLatencyI(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortLatencyI(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortLatencyI(iSearchQuery);
             case AppConstants.SORT_BY_LATENCY_D:
-                return mListDao.getVpnLisEntitySortLatencyD(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortLatencyD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortLatencyD(iSearchQuery);
             case AppConstants.SORT_BY_BANDWIDTH_I:
-                return mListDao.getVpnLisEntitySortBandwidthI(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortBandwidthI(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortBandwidthI(iSearchQuery);
             case AppConstants.SORT_BY_BANDWIDTH_D:
-                return mListDao.getVpnLisEntitySortBandwidthD(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortBandwidthD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortBandwidthD(iSearchQuery);
             case AppConstants.SORT_BY_PRICE_I:
-                return mListDao.getVpnLisEntitySortPriceI(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortPriceI(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortPriceI(iSearchQuery);
             case AppConstants.SORT_BY_PRICE_D:
-                return mListDao.getVpnLisEntitySortPriceD(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortPriceD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortPriceD(iSearchQuery);
             case AppConstants.SORT_BY_RATING_I:
-                return mListDao.getVpnLisEntitySortRatingI(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortRatingI(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortRatingI(iSearchQuery);
             case AppConstants.SORT_BY_RATING_D:
-                return mListDao.getVpnLisEntitySortRatingD(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortRatingD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortRatingD(iSearchQuery);
             case AppConstants.SORT_BY_DEFAULT:
             default:
-                return mListDao.getVpnLisEntity(iSearchQuery);
+                return toFilterByBookmark ? mListDao.getVpnLisEntity(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntity(iSearchQuery);
         }
     }
 

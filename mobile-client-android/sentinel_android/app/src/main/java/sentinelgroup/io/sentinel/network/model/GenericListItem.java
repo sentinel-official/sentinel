@@ -9,6 +9,10 @@ public class GenericListItem implements Serializable {
     private String mItemCode;
     private boolean mSelected;
 
+    public GenericListItem(String mItemCode) {
+        this.mItemCode = mItemCode;
+    }
+
     public GenericListItem(String iItemDisplayText, String iItemCode, boolean iSelected) {
         mItemDisplayText = iItemDisplayText;
         mItemCode = iItemCode;

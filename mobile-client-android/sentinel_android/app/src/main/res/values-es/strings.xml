@@ -339,6 +339,8 @@
     <string name="action_rate">Rate</string>
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="invitation_desc">Comparte el enlace con tus amigos para invitarlos a la app Sentinel dVPN</string>
+    <string name="filter_by_title">Filters</string>
+    <string name="filter_by_bookmark">Show bookmarks only</string>
     <string name="sort_by_title">Sort By</string>
     <string name="sort_by_default">Default</string>
     <string name="sort_by_country_a">Country</string>

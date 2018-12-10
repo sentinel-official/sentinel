@@ -56,7 +56,7 @@ import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.RatingDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
-import sentinelgroup.io.sentinel.ui.dialog.SortByDialogFragment;
+import sentinelgroup.io.sentinel.ui.dialog.SortFilterByDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnConnectedFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
 import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
@@ -103,9 +103,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     };
 
-    private SortByDialogFragment.OnSortDialogActionListener mSortDialogActionListener;
+    private SortFilterByDialogFragment.OnSortFilterDialogActionListener mSortDialogActionListener;
     private VpnListSearchListener mVpnListSearchListener;
 
+    private boolean toFilterByBookmark;
     private String mCurrentSortType = AppConstants.SORT_BY_DEFAULT;
     private StringBuilder mCurrentSearchString = new StringBuilder();
     private TextWatcher mSearchWatcher = new TextWatcher() {
@@ -197,13 +198,20 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mCurrentSearchString.delete(0, mCurrentSearchString.length());
     }
 
+    public boolean toFilterByBookmark() {
+        return toFilterByBookmark;
+    }
+
+    public void setFilterByBookmark(boolean toFilterByBookmark) {
+        this.toFilterByBookmark = toFilterByBookmark;
+    }
+
     public String getCurrentSearchString() {
         return "%" + mCurrentSearchString.toString() + "%";
     }
 
     public void setCurrentSortType(String iSortType) {
         mCurrentSortType = iSortType;
-        mIbSort.setImageResource(getCurrentSortType().equals(AppConstants.SORT_BY_DEFAULT) ? R.drawable.ic_sort : R.drawable.ic_sorted);
     }
 
     public String getCurrentSortType() {
@@ -218,7 +226,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mVpnListSearchListener = null;
     }
 
-    public void setSortDialogActionListener(SortByDialogFragment.OnSortDialogActionListener iSortDialogActionListener) {
+    public void setSortDialogActionListener(SortFilterByDialogFragment.OnSortFilterDialogActionListener iSortDialogActionListener) {
         mSortDialogActionListener = iSortDialogActionListener;
     }
 
@@ -230,6 +238,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         if (mVpnListSearchListener != null) {
             mVpnListSearchListener.onSearchTriggered(getCurrentSearchString());
         }
+    }
+
+    public void handleSortFilterIcon() {
+        mIbSort.setImageResource((!getCurrentSortType().equals(AppConstants.SORT_BY_DEFAULT) || toFilterByBookmark()) ? R.drawable.ic_sorted : R.drawable.ic_sort);
     }
 
     /*
@@ -867,7 +879,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     private void openSortDialog() {
         if (mSortDialogActionListener != null) {
-            SortByDialogFragment.newInstance(AppConstants.TAG_SORT_BY, getCurrentSortType(), mSortDialogActionListener).show(getSupportFragmentManager(), AppConstants.SORT_BY_DIALOG_TAG);
+            SortFilterByDialogFragment.newInstance(AppConstants.TAG_SORT_BY, getCurrentSortType(), toFilterByBookmark(), mSortDialogActionListener).show(getSupportFragmentManager(), AppConstants.SORT_BY_DIALOG_TAG);
         }
     }
 

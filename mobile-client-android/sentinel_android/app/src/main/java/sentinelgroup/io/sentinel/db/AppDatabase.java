@@ -93,7 +93,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_9_10 = new Migration(9, 10) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN serverSequence INTEGER");
+            database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN serverSequence INTEGER NOT NULL DEFAULT 0");
             database.execSQL("ALTER TABLE vpn_list_entity ADD COLUMN isBookmarked INTEGER NOT NULL DEFAULT 0");
             database.execSQL("CREATE TABLE bookmark_entity (accountAddress TEXT NOT NULL, ip TEXT, PRIMARY KEY(accountAddress))");
             database.execSQL("CREATE UNIQUE INDEX index_bookmark_entity_accountAddress ON bookmark_entity (accountAddress)");

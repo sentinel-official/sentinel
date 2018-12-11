@@ -75,7 +75,7 @@ public class SortFilterByDialogFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sort_by_dialog, container, false);
+        return inflater.inflate(R.layout.fragment_sort_filter_by_dialog, container, false);
     }
 
     @Override

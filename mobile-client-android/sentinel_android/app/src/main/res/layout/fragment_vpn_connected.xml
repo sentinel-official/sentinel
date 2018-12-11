@@ -42,6 +42,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
 
     <LinearLayout
+        android:id="@+id/ll_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_16"
@@ -80,6 +81,20 @@
             android:paddingTop="@dimen/margin_4" />
 
     </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/ib_bookmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:paddingStart="@dimen/margin_16"
+        android:paddingLeft="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_8"
+        android:paddingRight="@dimen/margin_8"
+        android:paddingBottom="@dimen/margin_16"
+        android:src="@drawable/ic_bookmark_inactive"
+        app:layout_constraintEnd_toEndOf="@+id/ll_location"
+        app:layout_constraintTop_toTopOf="@+id/ll_location" />
 
     <FrameLayout
         android:id="@+id/fl_download_speed"

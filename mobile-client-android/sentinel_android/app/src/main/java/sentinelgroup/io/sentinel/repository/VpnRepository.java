@@ -117,10 +117,6 @@ public class VpnRepository {
     }
 
     // public getter methods for LiveData & SingleLiveEvent
-//    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy() {
-//        return getVpnListLiveDataSortedBy(AppConstants.SORT_BY_DEFAULT);
-//    }
-
     public LiveData<VpnListEntity> getVpnLiveDataByVpnAddress(String iVpnAddress) {
         return mListDao.getVpnEntity(iVpnAddress);
     }

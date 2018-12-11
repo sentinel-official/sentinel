@@ -180,7 +180,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     public void onBackPressed() {
         if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START))
             mDrawerLayout.closeDrawers();
-        else if (!TextUtils.isEmpty(mEtSearch.getText()))
+        else if (mLlSearch.getVisibility() == View.VISIBLE)
             closeSearch();
         else
             super.onBackPressed();
@@ -335,8 +335,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
      * @param iTitle [String] The title to be shown in the toolbar
      */
     protected void setToolbarTitle(String iTitle) {
-        mToolbar.findViewById(R.id.toolbar_icon).setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
-        ((TextView) mToolbar.findViewById(R.id.toolbar_title)).setText(iTitle);
+        findViewById(R.id.toolbar_icon).setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
+        ((TextView) findViewById(R.id.toolbar_title)).setText(iTitle);
     }
 
     /*
@@ -525,6 +525,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                closeSearch();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
 
@@ -537,9 +538,9 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
             case R.id.action_wallet:
                 if (!(getCurrentFragment() instanceof WalletFragment)) {
+                    closeSearch();
                     toggleItemState(item.getItemId());
                     loadWalletFragment();
-                    closeSearch();
                 }
                 return true;
 

@@ -53,7 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
      */
     private void initView() {
         mToolbar = findViewById(R.id.toolbar);
-        mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
+        mToolbarTitle = findViewById(R.id.toolbar_title);
         mSwitchNet = findViewById(R.id.switch_net);
         mSwitchState = findViewById(R.id.tv_switch_state);
         mPrgDialog = ProgressDialogFragment.newInstance(true);

@@ -129,8 +129,4 @@ public class VpnListViewModel extends ViewModel {
     public void toggleVpnBookmark(String iAccountAddress, String iIP) {
         mRepository.toggleVpnBookmark(iAccountAddress, iIP);
     }
-
-    public boolean isVpnBookmarked(String iAccountAddress, String iIP) {
-        return mRepository.isVpnBookmarked(iAccountAddress, iIP);
-    }
 }

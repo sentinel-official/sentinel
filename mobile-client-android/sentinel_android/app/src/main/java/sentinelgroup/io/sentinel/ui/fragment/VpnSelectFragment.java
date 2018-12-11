@@ -45,7 +45,6 @@ public class VpnSelectFragment extends Fragment {
 
     private ViewPager mVpVpnSelect;
     private TabLayout mTabLayout;
-    private boolean isTabSetupDone;
 
     private VpnSelectPagerAdapter mAdapter;
 
@@ -150,7 +149,7 @@ public class VpnSelectFragment extends Fragment {
         }
     }
 
-    private synchronized void setupViewPagerAndTabs() {
+    private void setupViewPagerAndTabs() {
         // Setup ViewPager
         mAdapter = new VpnSelectPagerAdapter(getChildFragmentManager(), getContext());
         mVpVpnSelect.setAdapter(mAdapter);

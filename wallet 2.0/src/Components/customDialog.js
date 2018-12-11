@@ -92,9 +92,7 @@ const styles = theme => ({
 
 });
 
-// function Transition (props) {
-//     return <Slide direction="up" {...props} />;
-// }
+
 
 class SimpleDialog extends React.Component {
 
@@ -111,7 +109,9 @@ class SimpleDialog extends React.Component {
         const { classes, language, ...other } = this.props;
 
         return (
-            <Dialog onClose={this.handleClose}
+            <Dialog
+                open={this.props.open}
+                onClose={this.handleClose}
                 aria-labelledby="simple-dialog-title"
                 {...other} className={{ classes: { paper: classes.container } }}
             >
@@ -120,23 +120,14 @@ class SimpleDialog extends React.Component {
 
 
                     <Row>
-
-                        {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
-                 <span style={styles.dialogValue}>{this.props.data.city}</span> */}
-
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].City}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
                         <Col xs={6}>  <label
-                            // style={styles.dialogValue}
                             style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}
                         >{this.props.data.city}</label> </Col>
 
                     </Row>
                     <Row>
-
-                        {/* <label style={styles.dialogLabel}>{`${lang[language].City} :`}&nbsp;</label>
-                <xs style={styles.dialogValue}>{this.props.data.city}</xs> */}
-
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Country}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
                         <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.country}</label> </Col>
@@ -169,13 +160,14 @@ class SimpleDialog extends React.Component {
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.button}>
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
-                                    className={classes.extendedIcon} /> : <ConnectIcon className={classes.extendedIcon} />}
+                                    className={classes.extendedIcon} /> :
+                                    null
+                                }
                                 {this.props.isLoading ? lang[language].ConnectingdVPN : (this.props.success ? lang[language].Connected : lang[language].Connect)}
                             </Button>
                         </div>
                     </List>
-                    {/*: ''*/}
-                    {/*}*/}
+                  
                 </div>
             </Dialog>
         );
@@ -226,8 +218,6 @@ class AlertDialog extends React.Component {
             lang[this.props.language][regError] : this.props.message;
         return (
             <Dialog
-                // open={this.state.open}
-                // keepMounted
                 open={this.props.open}
                 onClose={this.props.onClose}
                 aria-labelledby="alert-dialog-title"
@@ -251,8 +241,6 @@ class AlertDialog extends React.Component {
         );
     }
 }
-
-// export default AlertDialog;
 
 
 class SimpleDialogDemo extends React.Component {
@@ -330,7 +318,7 @@ class SimpleDialogDemo extends React.Component {
                     } else if (res) {
                         let regError = res.replace(/\s/g, "")
                         this.setState({
-                            isLoading: false, isPending: false, open: false,
+                            open: false, isLoading: false, isPending: false,
                             snackMessage: lang[this.props.language][regError] ?
                                 lang[this.props.language][regError] : res,
                             snackOpen: true
@@ -401,39 +389,10 @@ class SimpleDialogDemo extends React.Component {
     };
 
     render() {
-        // console.log("Status...", this.props.vpnStatus);
-        // if (this.props.vpnStatus && !UsageInterval) {
-        //     UsageInterval = setInterval(() => {
-        //         if (this.state.session && type === 'SOCKS5') {
-        //             calculateUsage(this.props.getAccount, this.props.data.vpn_addr, false)
-        //         } else {
-        //             this.props.getVPNUsageData(this.props.isTm ? this.props.account.address : this.props.getAccount);
-        //         }
-        //     }, 3000);
-        // }
-
-        // if (!this.props.vpnStatus) {
-        //     if (UsageInterval) {
-        //         clearInterval(UsageInterval);
-        //         UsageInterval = null;
-        //     }
-        // }
-
-        // if (!UsageInterval && this.props.status) {
-        //     UsageInterval = setInterval(function () {
-        //         session = localStorage.getItem('SESSION_NAME');
-        //         type = localStorage.getItem('VPN_TYPE');
-        //         if (this.state.isSock)
-        //             that.calculateUsage(false);
-        //         else
-        //
-        //     }, 5000);
-        // }
         return (
             <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }} >
                 {!this.state.isPending ?
                     <SimpleDialogWrapped
-                        // selectedValue={this.state.selectedValue}
                         open={this.state.open}
                         data={this.props.data}
                         onClose={this.handleClose}
@@ -447,7 +406,6 @@ class SimpleDialogDemo extends React.Component {
                     :
                     <AlertDialog
                         open={this.state.isPending}
-                        // open={this.state.isPending}
                         onClose={this.handleAlertClose}
                         language={this.props.language}
                         message={this.state.pendingInitPayment}

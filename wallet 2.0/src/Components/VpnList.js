@@ -32,7 +32,6 @@ const styles = theme => ({
         margin: '10px 20px 0px 20px',
     },
     group: {
-        // margin: `${theme.spacing.unit}px 0`,
         flexDirection: 'row',
     },
 });
@@ -67,7 +66,7 @@ class VpnList extends Component {
             if (err) {
                 this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
-                // setTimeout(() => { this.getVPNs(); }, 500);
+            
             }
             else {
                 this.setState({ isPrivate: true, openPopup: false, openSnack: true, snackMessage: `${lang[this.props.language].PrivateNetEnabledWith}${url}` });
@@ -203,8 +202,8 @@ class VpnList extends Component {
                                         value={this.props.networkType}
                                         onChange={this.handleNetworkChange}
                                     >
-                                        <FormControlLabel value="public" control={<Radio style={radioStyle} />} label="Public" />
-                                        <FormControlLabel value="private" control={<Radio disabled={isTM} style={radioStyle} />} label="Private" />
+                                        <FormControlLabel value="public" control={<Radio style={radioStyle} />} label={lang[this.props.language].Public} />
+                                        <FormControlLabel value="private" control={<Radio disabled={isTM} style={radioStyle} />} label={isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private} />
                                     </RadioGroup>
                                 </FormControl>
                                 :
@@ -242,7 +241,6 @@ class VpnList extends Component {
                                 </IconButton>
                             </div> :
                             <FormControl component="fieldset" className={classes.networkFormControl}>
-                                {/*<FormLabel className={classes.row} component="legend">dVPN Type</FormLabel>*/}
                                 <RadioGroup
                                     aria-label="dVPN Type"
                                     name="nodes"
@@ -250,15 +248,12 @@ class VpnList extends Component {
                                     value={this.props.networkType}
                                     onChange={this.handleNetworkChange}
                                 >
-                                    <FormControlLabel value="public" control={<Radio style={radioStyle} />} label="Public" />
+                                    <FormControlLabel value="public" control={<Radio style={radioStyle} />} label={lang[this.props.language].Public} />
                                     <FormControlLabel value="private" control={<Radio style={radioStyle} disabled={isTM} />}
-                                        label="Private" />
+                                label={isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private}  />
                                 </RadioGroup>
                             </FormControl>
                     }
-                    {/* <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15, outline: 'none' }}>
-                        <RefreshIcon />
-                    </IconButton> */}
                     <FormControl component="fieldset" className={classes.dVPNFormControl}>
                         <RadioGroup
                             aria-label="dVPN Type"
@@ -267,8 +262,8 @@ class VpnList extends Component {
                             value={this.state.vpnType}
                             onChange={this.handleRadioChange}
                         >
-                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} disabled={!isTM} />} label={lang[this.props.language].OpenVPN} />
-                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={lang[this.props.language].Socks5} />
+                            <FormControlLabel value="openvpn"  disabled={!isTM} control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN} />
+                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5} />
                         </RadioGroup>
                     </FormControl>
 

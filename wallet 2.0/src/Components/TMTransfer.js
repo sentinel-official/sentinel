@@ -76,7 +76,7 @@ class TMTransfer extends Component {
                 }
                 else {
                     let data = {
-                        "amount": (parseInt(this.state.amount) * (10 ** 8)).toString() + 'sut',
+                        "amount": (parseFloat(this.state.amount) * (10 ** 8)).toString() + 'sut',
                         "name": this.props.account.name,
                         "password": this.state.keyPassword,
                         "gas": 200000,
@@ -135,7 +135,7 @@ class TMTransfer extends Component {
         }
         else {
             let data = {
-                "amount": (parseInt(this.state.amount) * (10 ** 8)).toString() + 'sut',
+                "amount": (parseFloat(this.state.amount) * (10 ** 8)).toString() + 'sut',
                 "name": this.props.account.name,
                 "password": this.state.keyPassword,
                 "gas": 200000,
@@ -174,14 +174,19 @@ class TMTransfer extends Component {
         return (
             <div style={accountStyles.sendFormStyle}>
                 <div style={createAccountStyle.secondDivStyle}
-                    onKeyPress={(ev) => { if (ev.key === 'Enter') this.sendTransaction() }}>
-                    <p style={createAccountStyle.headingStyle}>{lang[language].SendTo}</p>
+                    onKeyPress={(ev) => { if (ev.key === 'Enter' && !isDisabled) this.sendTransaction() }}>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].AddressToSend}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={this.state.isTextDisabled}
                         value={this.state.toAddress} onChange={(e) => { this.setState({ toAddress: e.target.value }) }}
                     />
-                    <p style={createAccountStyle.headingStyle}>{lang[language].Amount}</p>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].AmountTo}</p>
                     <CustomTextField type={'number'} placeholder={''} disabled={this.state.isTextDisabled}
-                        value={this.state.amount} onChange={(e) => { this.setState({ amount: e.target.value }) }}
+                        value={this.state.amount} onChange={(e) => {
+                            if (e.target.value.match("^[0-9]([0-9]+)?([0-9]*\.[0-9]+)?$"))
+                                this.setState({ amount: e.target.value })
+                            else
+                                this.setState({ amount: '' })
+                        }}
                     />
                     <p style={createAccountStyle.headingStyle}>{lang[language].Password}</p>
                     <CustomTextField type={'password'} placeholder={''} disabled={false}

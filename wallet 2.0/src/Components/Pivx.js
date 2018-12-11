@@ -359,7 +359,7 @@ class Pivx extends Component {
 							<Col xs={6}>
 								<Input
 									type="password"
-									placeholder="KEYSTORE PASSWORD" // we have keypass in lang
+									placeholder="KEYSTORE PASSWORD" 
 									disableUnderline={true} fullWidth={true}
 									inputProps={{ style: styles.textInputStyle }}
 									className={classes.textInStyleLast}

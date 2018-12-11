@@ -87,10 +87,10 @@ const sidebarStyles = {
      
     },
     IconNormalLabelStyle:{
-        // color:'blue',
+       cursor:'pointer',
     },
     IconActiveLabelStyle:{
-        // color:'green',
+        cursor:'pointer',
     },
     collapseType:{
         fontWeight: 'bold',
@@ -102,7 +102,7 @@ const sidebarStyles = {
         fontSize: 18,
         letterSpacing:'2.2px',
     fontWeight: 600,
-    paddingLeft: 55,
+    paddingLeft: 40,
     position:'absolute',
     bottom:0,
     textAlign:'center',
@@ -122,6 +122,7 @@ const sidebarStyles = {
     backArrowStyle:{
         // marginTop:25,
     },
+   
    
 }
 

@@ -23,8 +23,8 @@ const styles = theme => ({
     marginTop: '-3px',
   },
   icon: {
-    fill: 'black',  //changed from white -> black
-    right: '60px'
+    fill: 'black',
+    right: '30px'
   },
   list: {
     backgroundColor: '#B6B9CB',
@@ -51,7 +51,7 @@ const styles = theme => ({
 class SimpleListMenu extends React.Component {
 
   state = {
-    token: 'ETH',
+    token: 'SENT',
     pivxMenu: {
       pivx: 'PIVX',
       eth: 'ETH',
@@ -69,8 +69,8 @@ class SimpleListMenu extends React.Component {
 
   componentWillMount() {
     if (this.props.isSend) {
-      this.props.token('ETH');
-      this.setState({ token: 'ETH' });
+      this.props.token('SENT');
+      this.setState({ token: 'SENT' });
       if (this.props.isVPN) {
         console.log("Props...", this.props)
         this.props.token('SENT');
@@ -88,8 +88,7 @@ class SimpleListMenu extends React.Component {
   }
 
   render() {
-    const { language, classes } = this.props;
-
+    const { language, isTest, classes } = this.props;
 
     if (this.props.isSend) {
       return (
@@ -110,19 +109,20 @@ class SimpleListMenu extends React.Component {
             }}
             SelectDisplayProps={{
               style: {
-                padding: '12px', paddingLeft: '50px'
+                padding: '12px', paddingLeft: '30px'
               }
             }}
           >
+
+            <MenuItem value={'SENT'}>
+              <img src={'../src/Images/logo.svg'} alt="sentinel_logo"
+                style={{ width: 16, paddingRight: 5, marginTop: -2 }} />
+              {isTest ? lang[language].TestSENTunit : lang[language].Sent}</MenuItem>
             <MenuItem value={'ETH'} >
               <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
                 style={{ width: 15, paddingRight: 5, marginTop: -5 }} />
 
-              {lang[language].Eth}</MenuItem>
-            <MenuItem value={'SENT'}>
-              <img src={'../src/Images/logo.svg'} alt="sentinel_logo"
-                style={{ width: 16, paddingRight: 5, marginTop: -2 }} />
-              {lang[language].Sent}</MenuItem>
+              {isTest ? lang[language].TestETHunit : lang[language].Eth}</MenuItem>
           </Select>
         </div>
       );
@@ -134,7 +134,6 @@ class SimpleListMenu extends React.Component {
           onChange={this.handlePIVXMenuItemClick}
           displayEmpty
           name='swap'
-          // native={true}
           disableUnderline={true}
           className={classes.pivxList}
           inputProps={{
@@ -168,7 +167,7 @@ SimpleListMenu.propTypes = {
 function mapStateToProps(state) {
   return {
     language: state.setLanguage,
-
+    isTest: state.setTestNet,
   }
 }
 function mapDispatchToActions(dispatch) {

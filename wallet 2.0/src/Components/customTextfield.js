@@ -19,11 +19,11 @@ const styles = theme => ({
         },
     },
     bootstrapInput: {
-        borderRadius: 4,
+        borderRadius: 1,    
         backgroundColor: theme.palette.common.white,
         border: '1px solid #ced4da',
         fontSize: 16,
-        padding: '10px 12px',
+        padding: '10px 12px', 
         width: '600px',
         transition: theme.transitions.create(['border-color', 'box-shadow']),
         fontFamily: [
@@ -39,8 +39,8 @@ const styles = theme => ({
             '"Segoe UI Symbol"',
         ].join(','),
         '&:focus': {
-            borderColor: '#80bdff',
-            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+            // borderColor: '#80bdff',
+            // boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
         },
     },
     bootstrapFormLabel: {
@@ -64,6 +64,9 @@ const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value
                 placeholder={placeholder}
                 id="bootstrap-input"
                 value={value}
+                inputProps={type === 'number' ? {
+                    min: 0
+                } : {}}
                 InputProps={{
                     disableUnderline: true,
                     classes: {

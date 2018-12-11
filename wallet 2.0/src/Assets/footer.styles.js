@@ -57,6 +57,7 @@ const footerStyles = {
         marginTop: 3,
         marginLeft:31,
         fontSize:14,
+       
       
         // minHeight: 30
     },

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {
-     ToolbarGroup, TextField, RaisedButton,
+    ToolbarGroup, TextField, RaisedButton,
     Chip, Paper, Snackbar, RefreshIndicator
 } from 'material-ui';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -135,7 +135,7 @@ class Create extends Component {
                     })
                 }
                 else {
-                    uploadKeystore(keystore, function (err,keystotefile) {
+                    uploadKeystore(keystore, function (err, keystotefile) {
                         if (err) sendError(err);
                         else {
                             that.props.setComponent('dashboard');
@@ -166,12 +166,9 @@ class Create extends Component {
                                 </span>
                             </ReactTooltip>
                         </div>
-                        
-                        {/* <hr width="50%" align="left" size="3" noshade style={createPagestyles.hr_color} /> */}
-                        
-                        <Paper 
-                        // zDepth={2}
-                         style={createPagestyles.textBoxPaper}>
+
+                        <Paper
+                            style={createPagestyles.textBoxPaper}>
                             <TextField
                                 hintText={lang[language].PasswordAUID}
                                 hintStyle={createPagestyles.textFieldCreateHint}
@@ -181,9 +178,8 @@ class Create extends Component {
                                 style={createPagestyles.textFieldCreate}
                             />
                         </Paper>
-                        <Paper 
-                        // zDepth={2} 
-                        style={createPagestyles.textBoxPaper}>
+                        <Paper
+                            style={createPagestyles.textBoxPaper}>
                             <TextField
                                 hintText={lang[language].ConfirmPwd}
                                 hintStyle={createPagestyles.textFieldCreateHint}
@@ -197,13 +193,13 @@ class Create extends Component {
                             labelStyle={createPagestyles.buttonLabel}
                             disabled={this.state.password === '' ? true : false}
                             onClick={this._createAccount}
-                            buttonStyle={this.state.password === '' ?createPagestyles.disabledButton : createPagestyles.buttonCreate}
+                            buttonStyle={this.state.password === '' ? createPagestyles.disabledButton : createPagestyles.buttonCreate}
                             style={createPagestyles.createStyle} />
                         {this.state.isLoading === true ? this.renderProgress() : ''}
                         <p style={createPagestyles.f_m_l_3}>{lang[language].OR}</p>
-                        <Paper 
-                        // zDepth={2}
-                         style={createPagestyles.bluePaper}>
+                        <Paper
+
+                            style={createPagestyles.bluePaper}>
                             <div style={createPagestyles.p_3}>
                                 <RaisedButton
                                     label={lang[language].SelectKeystore}
@@ -220,9 +216,8 @@ class Create extends Component {
                                         {this.state.file}
                                     </Chip>
                                 }
-                                <Paper 
-                                // zDepth={2}
-                                style={createPagestyles.keyTextBoxPaper}>
+                                <Paper
+                                    style={createPagestyles.keyTextBoxPaper}>
                                     <TextField
                                         hintText={lang[language].KeyPass}
                                         hintStyle={createPagestyles.f_12}

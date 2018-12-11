@@ -50,7 +50,6 @@ class App extends Component {
             }
         });
         setTimeout(() => {
-            // Read keystore file
             if (!isErr) {
                 readFile(KEYSTORE_FILE, function (err) {
                     setTimeout(function () {
@@ -86,7 +85,6 @@ class App extends Component {
             case 'authenticate':
                 {
                     return <Authenticate />
-                    // return <Dashboard />
                 }
             case 'dashboard':
                 {
@@ -131,7 +129,6 @@ class App extends Component {
                     return <div style={defaultPageStyle.division}>
                         <img src='../src/Images/logo.jpeg' style={defaultPageStyle.image} />
                         <p style={defaultPageStyle.p}>Sentinel</p>
-                        {/* <img src='../src/Images/loading_home.gif' style={{}} /> */}
                         <CircularProgress className={styles.progress} />
                     </div>
                 }

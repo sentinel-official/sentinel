@@ -25,7 +25,6 @@ export function getUserHome() {
 
 export function checkDependencies(packageNames, cb) {
 
-    // execSync("export PATH=$PATH:/usr/local/opt/openvpn/sbin");
     packageNames.map((packageName) => {
         exec("dpkg-query -W -f='${Status}' " + packageName,
             function (err, stdout, stderr) {
@@ -33,7 +32,6 @@ export function checkDependencies(packageNames, cb) {
                     cb(null, packageName);
                     execSync('sudo apt-get install ' + packageName + ' -yy');
                     throw err || stderr;
-                    // sendError(err || stderr);
                 }
                 else {
                     let brewPath = stdout.trim();
@@ -62,11 +60,9 @@ export function setMaster(cb) {
 
 export function getMasterUrl() {
     axios.post(`${BOOT_URL}/master`, { 'authCode': null }).then(function (res) {
-        // let B_URL;
         if (res.data.success) {
             localStorage.setItem('networkType', 'public');
             localStorage.setItem('authcode', null);
-            // localStorage.setItem('access_token', null);
             localStorage.setItem('B_URL', res.data.url)
         }
         else {
@@ -79,7 +75,6 @@ export function getMasterUrl() {
         })
 }
 
-//getOVPNAndSave needs following args => AccountAddr, VPN_IP, VPN_PORT, VPN_ADDR, NONCE, CB
 
 export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, cb) {
 
@@ -242,7 +237,6 @@ export function checkGateway(cb) {
                 }
             }
             else {
-                // console.log('d')
                 cb(true, null, null);
             }
         }

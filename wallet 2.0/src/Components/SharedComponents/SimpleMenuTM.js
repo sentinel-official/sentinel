@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import lang from '../../Constants/language'
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+
 
 
 const styles = theme => ({
@@ -19,7 +24,9 @@ const styles = theme => ({
   },
   icon: {
     fill: 'black',
-    right: '60px'
+    right: '20px',
+    marginTop: 2
+
   },
   list: {
     backgroundColor: '#B6B9CB',
@@ -46,7 +53,7 @@ const styles = theme => ({
 class SimpleListMenu extends React.Component {
 
   state = {
-    token: 'ETH',
+    token: '/SENT',
     pivxMenu: {
       pivx: 'PIVX',
       eth: 'ETH',
@@ -65,8 +72,11 @@ class SimpleListMenu extends React.Component {
   componentWillMount() {
     if (this.props.isSend) {
       this.props.token('ETH');
+      this.setState({ token: 'ETH' });
       if (this.props.isVPN) {
+        console.log("Props...", this.props)
         this.props.token('SENT');
+        this.setState({ token: 'SENT' })
       }
     }
   }
@@ -80,7 +90,9 @@ class SimpleListMenu extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { language, classes } = this.props;
+
+
     if (this.props.isSend) {
       return (
         <div className={classes.root}>
@@ -99,12 +111,17 @@ class SimpleListMenu extends React.Component {
             }}
             SelectDisplayProps={{
               style: {
-                padding: '12px', paddingLeft: '50px'
+                padding: '12px 12px 8px 30px'
               }
             }}
           >
-            <MenuItem value={'ETHEREUM TESTNET'} >ETHEREUM</MenuItem>
-            <MenuItem value={'TENDERMINT TESTNET'}>TENDERMINT</MenuItem>
+
+            <MenuItem value={'SENT'}>
+              /SENT
+              </MenuItem>
+            <MenuItem value={'ETH'} >
+              /GB
+              </MenuItem>
           </Select>
         </div>
       );
@@ -146,4 +163,16 @@ SimpleListMenu.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SimpleListMenu);
+function mapStateToProps(state) {
+  return {
+    language: state.setLanguage,
+
+  }
+}
+function mapDispatchToActions(dispatch) {
+  return bindActionCreators({
+
+  }, dispatch)
+}
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToActions)(SimpleListMenu));

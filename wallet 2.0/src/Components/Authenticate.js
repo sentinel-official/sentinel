@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Button from '@material-ui/core/Button';
 import { Snackbar } from '@material-ui/core';
-import {TextField} from 'material-ui';
+import { TextField } from 'material-ui';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import './../Assets/authenticateStyle.css'
@@ -40,7 +40,7 @@ class Authenticate extends Component {
 
     submitPassword = () => {
         this.setState({
-            isDisabled: 'true',
+            isDisabled: true,
             statusSnack: true,
             statusMessage:
                 lang[this.props.language].CheckCre
@@ -77,7 +77,7 @@ class Authenticate extends Component {
         return (
             <MuiThemeProvider>
                 <div style={authenticateStyles.backgroundStyle}>
-                    <img  src={'../src/Images/Sent-logo.png'} alt="sentinel_logo"  style= {{opacity:0.2}}/>
+                    <img src={'../src/Images/Sent-logo.png'} alt="sentinel_logo" style={{ opacity: 0.2 }} />
                     <Dialog
                         open={this.state.showPopUp}
                         aria-labelledby="alert-dialog-title"
@@ -85,40 +85,40 @@ class Authenticate extends Component {
                         modal={true}
                         className='dialogueStyle'
                     >
-                    <div style={authenticateStyles.w_600} className="keystore"> 
-                        <DialogTitle style={authenticateStyles.f_s_16} id="alert-dialog-title">{lang[language].KeystoreLogin}</DialogTitle>
-                        <DialogContent style={authenticateStyles.w_600} className="dialogContentStyle">
-                            <DialogContentText id="alert-dialog-description">
-                                <TextField
-                                    autoFocus={true}
-                                    hintText={lang[language].KeyPass}
-                                    hintStyle={authenticateStyles.f_s_14}
-                                    type="password"
-                                    onChange={(event, password) => { this.setState({ password: password }) }}
-                                    onKeyPress={(ev) => { if (ev.key === 'Enter') this.submitPassword() }}
-                                    value={this.state.password}
-                                    style={authenticateStyles.textFieldCreate}
-                                />
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions style= {authenticateStyles.buttonsGroup}>
-                            <Button
-                                onClick={this.closeWindow}
-                                style={authenticateStyles.closeButton}
-                                variant="contained"
+                        <div style={authenticateStyles.w_600} className="keystore">
+                            <DialogTitle style={authenticateStyles.f_s_16} id="alert-dialog-title">{lang[language].KeystoreLogin}</DialogTitle>
+                            <DialogContent style={authenticateStyles.w_600} className="dialogContentStyle">
+                                <DialogContentText id="alert-dialog-description">
+                                    <TextField
+                                        autoFocus={true}
+                                        hintText={lang[language].KeyPass}
+                                        hintStyle={authenticateStyles.f_s_14}
+                                        type="password"
+                                        onChange={(event, password) => { this.setState({ password: password }) }}
+                                        onKeyPress={(ev) => { if (ev.key === 'Enter' && this.state.password !== '') this.submitPassword() }}
+                                        value={this.state.password}
+                                        style={authenticateStyles.textFieldCreate}
+                                    />
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions style={authenticateStyles.buttonsGroup}>
+                                <Button
+                                    onClick={this.closeWindow}
+                                    style={authenticateStyles.closeButton}
+                                    variant="contained"
                                 >
-                                {lang[language].Close}
-                            </Button>
-                            <Button
-                                onClick={this.submitPassword}
-                                disabled={this.state.isDisabled}
-                                style={authenticateStyles.submitButton}
-                                variant="contained"
+                                    {lang[language].Close}
+                                </Button>
+                                <Button
+                                    onClick={this.submitPassword}
+                                    disabled={this.state.isDisabled || this.state.password === ''}
+                                    style={authenticateStyles.submitButton}
+                                    variant="contained"
                                 >
-                                {lang[language].Submit}
-                                
-                            </Button>
-                        </DialogActions>
+                                    {lang[language].Submit}
+
+                                </Button>
+                            </DialogActions>
                         </div>
                     </Dialog>
                     <Snackbar

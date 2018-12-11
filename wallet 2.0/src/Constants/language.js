@@ -1,8 +1,10 @@
 let lang = {
     zh: {
         'History': '历史记录',
-        'EthTransactions': 'ETH交易',
+        'EthTransactions': 'ETH 交易',
         'SentTransactions': 'SENT 交易',
+        'TestEthTransactions': 'TestETH 交易',
+        'TestSentTransactions': 'TestSENT 交易',
         'NoTransactions': '未有交易记录',
         'Send': '发送',
         'To': '到',
@@ -183,7 +185,7 @@ let lang = {
         "EnterAuthCode": "请输入您的授权码以连接到私人网络",
         "AuthCode": "授权码",
         "ToggleMenu": "切换菜单",
-        "WindowTitle": "Sentinel Network - dVPN - alpha-0.1.0",
+        "WindowTitle": "Sentinel Network - dVPN - alpha-0.1.01",
         "RunInBackground": "在后台运行",
         "Confirm": "确认",
         "CurrentlyConnectedToVPN": "您目前已连接VPN",
@@ -218,8 +220,8 @@ let lang = {
         "MB": "MB",
         "OfflineInFooter": "离线",
         "TxID": "TxID",
-        "SentGroup": "SentinelGroup.io",
-        "SwapOnPIVX": "互换PIVX代币",
+        "SentGroup": "sentinel.co",
+         "SwapOnPIVX": "互换PIVX代币",
         "EnterRefundAddr": "输入退款地址",
         "EnterPIVXAddr": "输入pivx地址",
         "Example": "示例",
@@ -248,12 +250,12 @@ let lang = {
         "Converting": "C正在兑换",
         "OpenVpnNotInstalled": "没有安装OpenVPN。请去往",
         "PleaseGo": "请去往",
-        "OpenVpnPath": "C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras",
+        "OpenVpnPath": "C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.01\\resources\\extras",
         "OpenVpnInstallCmd": "然后运行openvpn-install-2.3.18-I602-x86_64.exe",
         "OpenVpnMessage": "只需安装Openvpn而无需更改安装目录。",
         "YourUserName": "您的用户名称",
         "AndRun": "然后运行",
-        "OpenVpnInstallAlert": "没有安装OpenVPN。请去往 C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras 然后运行 openvpn-install-2.3.18-I602-x86_64.exe。 只需安装Openvpn而无需更改安装目录。",
+        "OpenVpnInstallAlert": "没有安装OpenVPN。请去往 C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.01\\resources\\extras 然后运行 openvpn-install-2.3.18-I602-x86_64.exe。 只需安装Openvpn而无需更改安装目录。",
         "ConnectedSocks": "已链接到Socks",
 
 
@@ -304,9 +306,21 @@ let lang = {
         "Erroroccurredwhiletransferringfreeamount.": "转移免费金额时出错。",
         "SuccessfullytransferredTestTokens": "成功转移了测试令牌",
 
+
         "TestSENTunit" : "TestSENT",
         "TestETHunit" : "TestETH",
-        "ClaimedBy" : "服务提供商声称的令牌",
+        "ClaimedBy" : "由服务提供者（节点）获得代币",
+        "AddressToSend":"要发送到的地址",
+        "NodeID" : "节点ID",
+        "Socks5ComingSoon" : "SOCKS5 （即将推出）",
+        "PrivateComingSoon" : "私有网络（即将推出）",
+        "VersionInSidebar":"dVPN - alpha-0.1.01",
+        "LockedForSession" : "被锁定用于会话",
+
+        'TotalPayment':'总付费',
+        "ReleasedFromSession":"已从会话中释放",
+        'PeerToPeerMarket': 'Peer-to-peer marketplace for exchange of distributed resources  and application multi chain governance for secure services and privacy focused token transactions',  
+
 
     },
 }

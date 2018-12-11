@@ -21,7 +21,7 @@ div.dropDownStyle:hover {
 }
 
 div.disabledDropDownStyle{
-    color: #8a8686 ; 
+    color: #264866 ; 
     /* initally color: #FFF */
     font-size: 14px;
     font-weight: 500;
@@ -29,12 +29,12 @@ div.disabledDropDownStyle{
     
 }
 div.disabledDropDownStyle{
-    color: #8a8686 !important;
+    color: #264866 !important;
     cursor: no-drop;
 }
 div.disabledDropDownStyle div > div {
     cursor: not-allowed !important;
-    color: #8a8686 !important;
+    color: #264866 !important;
 }
 div.disabledDropDownStyle:before  {
     /* border-bottom: 1px solid #FFF !important; */
@@ -45,7 +45,7 @@ div.disabledDropDownStyle:after  {
     border-bottom: 0px !important;
 }
 div.disabledDropDownStyle svg {
-color: #8a8686;
+color: #264866;
 }
 div.disabledDropDownStyle:hover {
     /* border-bottom: 2px solid #FFF; */

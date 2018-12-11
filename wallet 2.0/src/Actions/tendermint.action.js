@@ -162,10 +162,12 @@ export async function getTxInfo(hash, time) {
             amount: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ?
                 100 * (10 ** 8) - parseInt(response.data.tx.value.msg[0].value.Coins[0].amount) :
                 response.data.tx.value.msg[0].value.Coins[0].amount,
-            from: response.data.tx.value.msg[0].value.From,
+            from: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ?
+                `Released`
+                : response.data.tx.value.msg[0].value.From,
             to: response.data.tx.value.msg[0].value.To ? response.data.tx.value.msg[0].value.To : 'ClaimedBy',
-
-            // "Paid to Chain" initially
+            sessionId: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ?
+                new Buffer(response.data.tx.value.msg[0].value.Sessionid, 'base64').toString() : null,
             gas: response.data.result.gas_used,
             timestamp: time
         })

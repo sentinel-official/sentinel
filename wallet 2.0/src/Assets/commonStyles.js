@@ -58,12 +58,21 @@ export const historyValue = {
 export const radioStyle = {
     color: '#2f3245'
 }
-export const cardStyle = {
-    padding : 10,
-    marginRight:10,
-}
+// export const cardStyle = {
+//     padding : 10,
+//     marginRight:10,
+//     marginLeft:36,
+//     '&:hover':{
+           
+//         boxShadow: '-1px 5px 20px 0px rgba(0,0,0,0.8)',  
+// },
+
+
+
+// }
 
 
 export const ETHcardStyle = {
     marginRight:10,
+    marginLeft:35
 }

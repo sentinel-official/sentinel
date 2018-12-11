@@ -34,7 +34,6 @@ const styles = theme => ({
   },
   slider: {
     width: '330px',
-    // backgroundColor: '#595D8F',
     marginTop: '16px'
   },
   sliderbackground: {
@@ -70,7 +69,7 @@ class SendComponent extends React.Component {
       gwei: 20,
       sendToAddress: '',
       amount: '',
-      token: 'ETH',
+      token: 'SENT',
       password: '',
       gas: 21000,
       isDisabled: true,
@@ -139,8 +138,12 @@ class SendComponent extends React.Component {
   };
 
   setGasLimit = (event) => {
-    this.setState({ gas: event.target.value });
-    this.callEnable();
+    if (event.target.value.match("^[0-9]([0-9]+)?([0-9]*\.[0-9]+)?$") || event.target.value === '') {
+      this.setState({ gas: event.target.value });
+      this.callEnable();
+    } else {
+      this.setState({ gas: 21000 });
+    }
   };
 
   openInExternalBrowser(url) {
@@ -151,19 +154,23 @@ class SendComponent extends React.Component {
 
   amountChange = (event) => {
     let amount = event.target.value;
-    let value;
-    if (this.state.token === 'SENT') {
-      value = amount * 10 ** 8;
-    } else {
-      value = amount * 10 ** 18
-    }
-    this.setState({ amount: amount });
-    let trueAddress = this.state.sendToAddress.match(/^0x[a-fA-F0-9]{40}$/);
-    if (trueAddress !== null) {
-      this.getGasLimit(value, this.state.sendToAddress, this.state.token)
-    }
+    if (amount.match("^[0-9]([0-9]+)?([0-9]*\.[0-9]+)?$")) {
+      let value;
+      if (this.state.token === 'SENT') {
+        value = amount * 10 ** 8;
+      } else {
+        value = amount * 10 ** 18
+      }
+      this.setState({ amount: amount });
+      let trueAddress = this.state.sendToAddress.match(/^0x[a-fA-F0-9]{40}$/);
+      if (trueAddress !== null) {
+        this.getGasLimit(value, this.state.sendToAddress, this.state.token)
+      }
 
-    this.callEnable();
+      this.callEnable();
+    } else {
+      this.setState({ amount: '', isDisabled: true });
+    }
 
   };
 
@@ -292,7 +299,6 @@ class SendComponent extends React.Component {
 
   componentWillMount() {
     let { payVpn, initPaymentDetails } = this.props;
-    // console.log('component will mount', initPaymentDetails, payVpn)
     if (payVpn.isVPNPayment) {
       this.setState({
         sendToAddress: payVpn.data.account_addr,
@@ -326,7 +332,7 @@ class SendComponent extends React.Component {
           <Grid style={{ width: '750px' }}>
             <Row>
               <Col>
-                <span style={sendComponentStyles.sendToAddress} >{lang[language].SendTo}</span>
+                <span style={sendComponentStyles.sendToAddress} >{lang[language].AddressToSend}</span>
               </Col>
               <Col style={sendComponentStyles.questionMarkDiv}>
                 <CustomTooltips title={lang[language].ToTooltip} />

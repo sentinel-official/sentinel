@@ -100,12 +100,7 @@ class Receive extends Component {
                                                 snackMessage: lang[language].Copied,
                                                 openSnack: true
                                             })} >
-                                            {/* <img
-                                            src={'../src/Images/download.jpeg'}
-                                            data-tip data-for="copyImage"
-                                            style={receiveStyles.copyIcon}
-                                            alt=''
-                                        /> */}
+                                           
                                             <CopyIcon style={receiveStyles.clipBoard} />
                                         </CopyToClipboard>
                                     </Tooltip>

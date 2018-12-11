@@ -91,23 +91,10 @@ class Header extends Component {
         if ((value && disabledItemsTest.includes(currentTab))) {
             this.props.setCurrentTab('receive');
         }
-
-        //     if ((!value && disabledItemsMain.includes(currentTab))) {
-        //     this.props.setCurrentTab('send');
-        // }
-
-
-        // this.props.getETHBalance(this.props.walletAddress);
-        // this.props.getSentBalance(this.props.walletAddress);
-        // if ((value && disabledItemsTest.includes(currentTab)) ||
-        //     (!value && disabledItemsMain.includes(currentTab))) {
-        //     this.props.setCurrentTab('send');
-        // }
     };
 
     tendermintChange = () => event => {
 
-        // console.log("dropdown value ", event.target.value);
         let value = event.target.value;
         let currentTab = this.props.currentTab;
         this.props.setWalletType(value)
@@ -127,9 +114,7 @@ class Header extends Component {
             }
         }
 
-        // if (value) {
-        //     this.props.setCurrentTab('tmint');
-        // }
+     
         else {
             this.props.setTendermint(false);
             this.props.setVpnType('socks5');
@@ -187,11 +172,10 @@ class Header extends Component {
                         <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
                                 <span style={headerStyles.basicWallet}>
-                                    {this.state.walletType === 'ERC20' ? lang[language].WalletERC : lang[language].WalletTM} {lang[language].WalletAddress} </span>
+                                {isTendermint ?  lang[language].WalletTM : lang[language].WalletERC } {lang[language].WalletAddress} </span>
                             </div>
                             <Row>
                                 <Col xs={8}><span
-                                    // xs={8} initially , changed to get 10 digits
                                     style={headerStyles.walletAddress}>
                                     {
                                         isTendermint ?
@@ -202,8 +186,7 @@ class Header extends Component {
                                 </Col>
                                 <Col xs={4}>
                                     {isTendermint && !tmAccountDetails ? null :
-                                        // <Tooltip title={this.state.walletType === 'ERC20' ? "Copy ERC20 Sent Wallet Address" : "Copy Tendermint Wallet Address"}>
-                                        <Tooltip title={this.state.walletType === 'ERC20' ? lang[language].ERC20WalletCopy : lang[language].TMWalletCopy}>
+                                        <Tooltip title={isTendermint ?lang[language].TMWalletCopy : lang[language].ERC20WalletCopy  }>
 
                                             <CopyToClipboard text={
                                                 isTendermint ?
@@ -232,7 +215,7 @@ class Header extends Component {
                                             <Col xs={1}> : </Col>
                                             <Col xs={4} style={headerStyles.balanceText}>
                                                 <p style={headerStyles.tmBalanceText}>
-                                                    {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : lang[language].Loading}
+                                                    {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 0.00}
                                                 </p>
                                             </Col>
                                         </Row>
@@ -285,7 +268,6 @@ class Header extends Component {
                                     checked={this.props.isTest}
                                     onChange={this.testNetChange()}
                                     color="primary"
-                                // disabled={this.props.isTendermint}
                                 />
                             </div>
                         </Col>
@@ -300,25 +282,25 @@ class Header extends Component {
 
                             >
 
+                         
                                 <Select
                                     displayEmpty
                                     disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
-                                    value={this.props.walletValue}
-                                    onChange={this.tendermintChange()}
+                                    value={this.props.walletValue}                                    onChange={this.tendermintChange()}
 
                                     className={this.props.isTest ? 'dropDownStyle' : 'disabledDropDownStyle'}
                                 >
-
+                                    
                                     <MenuItem value='TM'>
                                         <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
-                                            style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
+                                         style={ isTest ? { width: 15, paddingRight: 5, marginTop: -5 } : { width: 15, paddingRight: 5, marginTop: -5,opacity:0.2 }} />
 
                                         {lang[language].TestNetTM}
                                     </MenuItem>
                                     <MenuItem value='ERC'>
                                         {/* <SendIcon /> */}
                                         <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                                            style={{ width: 17, paddingRight: 5, marginTop: -5 }} />
+                                            style={{ width: 12, paddingRight: 5, marginTop: -5 }} />
 
                                         {lang[language].TestNetETH}
                                     </MenuItem>
@@ -345,10 +327,8 @@ class Header extends Component {
                                     </IconButton>
                                 </Tooltip>
                             }
-                        </Col>
-
-                        {/* <div><SimpleMenuTestnet token={this.setToken} isSend={true} isVPN={this.state.isVPNPayment} />
-                        </div> */}
+                       </Col>
+                    
                     </Row>
                 </Grid>
                 <Snackbar

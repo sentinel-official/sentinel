@@ -4,6 +4,8 @@ const accountStyles = {
         minHeight: 245,
         fontFamily: 'Montserrat',
         textAlign: 'center',
+       
+       
 
     },
     formVpnStyle: {
@@ -20,6 +22,7 @@ const accountStyles = {
     },
 
     sendFormStyle: {
+
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

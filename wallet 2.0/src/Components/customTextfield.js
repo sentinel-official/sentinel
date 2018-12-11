@@ -19,11 +19,11 @@ const styles = theme => ({
         },
     },
     bootstrapInput: {
-        borderRadius: 1,    //changed from 4
+        borderRadius: 1,    
         backgroundColor: theme.palette.common.white,
         border: '1px solid #ced4da',
         fontSize: 16,
-        padding: '10px 12px', //changed from 10px 12px
+        padding: '10px 12px', 
         width: '600px',
         transition: theme.transitions.create(['border-color', 'box-shadow']),
         fontFamily: [

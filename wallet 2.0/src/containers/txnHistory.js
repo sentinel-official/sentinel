@@ -53,7 +53,6 @@ class TxnHistory extends Component {
         };
         this.props.testSENTTxns(data)
             .then(res => { this.setState({ loading: false }) })
-        // .catch(err => { console.log('err', err) });
 
     };
 
@@ -66,8 +65,7 @@ class TxnHistory extends Component {
         };
         this.props.testETHTxns(data)
             .then(res => { this.setState({ loading: false }) })
-        // .then(res => { console.log('res', res) })
-        // .catch(err => { console.log('err', err) });
+
     };
 
     onClickRefresh = (isTest) => {
@@ -93,7 +91,6 @@ class TxnHistory extends Component {
         else if (this.state.isActive) {
             if (this.props.testETHHistory && this.props.testETHHistory.result.length > 0) {
                 output = this.props.testETHHistory.result.map(data => {
-                    // console.log(data, 'see this');
                     return (
                         <div style={historyStyles.data}>
                             <History ownWallet={this.props.getAccount} date={data.timeStamp} to={data.to}
@@ -128,8 +125,13 @@ class TxnHistory extends Component {
             <div style={historyStyles.wholeDiv} >
                 <div style={historyStyles.secondDiv} >
                     <div>
-                        <label style={label} >{!this.state.isActive ?
-                            lang[language].SentTransactions : lang[language].EthTransactions}</label>
+                        {isTest ?
+                            <label style={label} >{!this.state.isActive ?
+                                lang[language].TestSentTransactions : lang[language].TestEthTransactions}</label>
+                            :
+                            <label style={label} >{!this.state.isActive ?
+                                lang[language].SentTransactions : lang[language].EthTransactions}</label>
+                        }
                     </div>
                     <div style={historyStyles.flex}>
                         <div style={historyStyles.margin}>

@@ -148,7 +148,6 @@ class VpnMapView extends Component {
                                 >
                                     <g transform="translate(-12, -24)">
                                         <path
-                                            // fill={this.state.selectedVPN === marker.vpn.account_addr ? "green" : "currentColor"}
                                             fill={"currentColor"}
                                             strokeWidth="2"
                                             strokeLinecap="square"

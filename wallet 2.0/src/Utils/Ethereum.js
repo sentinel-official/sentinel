@@ -58,7 +58,6 @@ export function getGasCost(from_addr, to_addr, amount, unit, cb) {
 
 export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, cb) {
     try {
-        // amount = amount * Math.pow(10, 8);
         setWeb3();
         setContract();
 
@@ -204,4 +203,3 @@ export function swapTransaction(from_addr, ether_addr, contract_addr, amount, pr
     }
 }
 
-//3e044f87c24f84ecd833ef59fd53f665076c547c59b00e67b65b9d21182d60d8

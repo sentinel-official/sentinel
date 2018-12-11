@@ -15,7 +15,7 @@ import { receiveStyles } from './../Assets/receive.styles';
 import { historyLabel, historyValue, cardStyle, statusLabel, statusValue } from '../Assets/commonStyles';
 import { historyStyles } from '../Assets/txhistory.styles';
 import { vpnhistoryStyles, styles } from '../Assets/vpnhistory.style';
-
+import '../Assets/commonStyles.css';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -124,7 +124,7 @@ class TMSessions extends Component {
                 durationCount += sessionDuration;
                 return (
                     <div style={historyStyles.data}>
-                        <Card style={cardStyle} >
+                        <Card className = "cardStyle" >
                             <div>
                                 <label style={historyLabel}>{`${lang[language].SessionId}:`}&nbsp;<span style={historyValue}>{sessionData.sessionId}</span></label>
                             </div>
@@ -190,7 +190,7 @@ class TMSessions extends Component {
                                     {lang[language].TotalDuration} :
                                 </span> {this.getDurationFormat(durationCount)}<br />
                                 <span style={vpnhistoryStyles.text1}>
-                                    {lang[language].TotalData}:
+                                    {lang[language].TotalData} :
                                 </span> {this.getPaymentBytes(dataCount)} <br />
                                 <hr />
                             </div>

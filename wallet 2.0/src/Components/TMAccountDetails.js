@@ -31,7 +31,6 @@ class TMAccountDetails extends Component {
         const { classes, account, language } = this.props;
         return (
             <div style={{ padding: '5%' }}>
-                {/* <h2><center>WELCOME TO TENDERMINT</center></h2> */}
                 <p style={createAccountStyle.detailsHeading}>{lang[language].Address}&nbsp;:</p>
                 <p style={createAccountStyle.detailsText}>{account.address}</p>
                 <p style={createAccountStyle.detailsHeading}>{lang[language].PubKey}&nbsp;:</p>

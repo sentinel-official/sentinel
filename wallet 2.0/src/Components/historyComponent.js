@@ -5,19 +5,19 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import lang from '../Constants/language';
 import { Card } from '@material-ui/core';
+import '../Assets/commonStyles.css';
 
 class History extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
-        let { date, to, from, gas, amount, status, tx, ownWallet, data, unit, language } = this.props;
+        let { date, to, from, gas, amount, status, tx, ownWallet, data, unit,gasUnit, language } = this.props;
         return (
-            <Card style={cardStyle}>
+            <Card className = "cardStyle">
                 <div>
                     <label style={from !== ownWallet ? historyStyles.inStyle : historyStyles.outStyle}>{from !== ownWallet ?
                         lang[language].In : lang[language].Out}&nbsp;
-                            {/* <span style={historyValue}>{new Date(parseInt(date) * 1000).toGMTString()}</span> */}
                             <span style={historyValue}>{new Date(parseInt(date) * 1000).toLocaleString()}</span>
 
                     </label>
@@ -30,7 +30,6 @@ class History extends React.Component {
                             <span style={historyStyles.recepientStyle}>
                             {from !== ownWallet ? from : to}
                         </span></label>
-                    {/* <label style={historyLabel}>{`${lang[language].GasPrice}:`}&nbsp;<span style={historyValue}>{gas}</span></label> */}
                 </div>
 
                 <div>
@@ -39,8 +38,6 @@ class History extends React.Component {
 
                 </div>
                 <div>
-                    {/* <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{amount} {unit}</span></label> */}
-                    {/* <label style={historyLabel}>{`${lang[language].Status}:`}&nbsp;<span style={historyLabel}>{status}</span></label> */}
                     <label style={historyLabel}>{`${lang[language].TxID}:`}&nbsp;<span style={historyValue}>{tx}</span></label>
                 </div>
             </Card>

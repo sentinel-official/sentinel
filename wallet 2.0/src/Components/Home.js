@@ -43,7 +43,7 @@ class Home extends Component {
                     <Col xs={7} style={homePageStyles.bottomDivCol}>
                         <div style={homePageStyles.m_l_p_5}>
                             <h4 style={homePageStyles.moreAboutText}>{lang[language].SentinelAnonymity}</h4>
-                            <p style={{ fontSize: 14 }}>{lang[language].PeerToPeer}</p>
+                            <p style={{ fontSize: 14 }}>{lang[language].PeerToPeerMarket}</p>
                         </div>
                     </Col>
                     <Col xs={4} style={homePageStyles.m_l_5}>

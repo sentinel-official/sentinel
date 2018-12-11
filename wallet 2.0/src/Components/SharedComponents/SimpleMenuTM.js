@@ -23,10 +23,10 @@ const styles = theme => ({
     marginTop: '-3px',
   },
   icon: {
-    fill: 'black',  //changed from white -> black
-    right: '20px',  // changed from 60
-    marginTop:2
-    
+    fill: 'black',
+    right: '20px',
+    marginTop: 2
+
   },
   list: {
     backgroundColor: '#B6B9CB',
@@ -53,7 +53,7 @@ const styles = theme => ({
 class SimpleListMenu extends React.Component {
 
   state = {
-    token: '/SENT' , //Changed from 'ETH' to give priority for SENT
+    token: '/SENT',
     pivxMenu: {
       pivx: 'PIVX',
       eth: 'ETH',
@@ -101,7 +101,6 @@ class SimpleListMenu extends React.Component {
             onChange={this.handleMenuItemClick}
             displayEmpty
             name='token'
-            // native={true}
             disableUnderline={true}
             className={classes.list}
             fullWidth={true}
@@ -112,21 +111,15 @@ class SimpleListMenu extends React.Component {
             }}
             SelectDisplayProps={{
               style: {
-                // padding: '12px', paddingLeft: '50px'
-                padding:'12px 12px 8px 30px'
+                padding: '12px 12px 8px 30px'
               }
             }}
           >
-          
+
             <MenuItem value={'SENT'}>
-              {/* {lang[language].Sent} */}
               /SENT
               </MenuItem>
-              <MenuItem value={'ETH'} >
-              {/* <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                style={{ width: 15, paddingRight: 5, marginTop: -5 }} /> */}
-
-              {/* {lang[language].Eth} */}
+            <MenuItem value={'ETH'} >
               /GB
               </MenuItem>
           </Select>
@@ -140,7 +133,6 @@ class SimpleListMenu extends React.Component {
           onChange={this.handlePIVXMenuItemClick}
           displayEmpty
           name='swap'
-          // native={true}
           disableUnderline={true}
           className={classes.pivxList}
           inputProps={{

@@ -21,14 +21,16 @@ const receiveStyles = {
         backgroundColor:  'rgba(47, 50, 69, 0.34)',
         position: 'static',  marginTop: 30, 
         // left:450,
-        color:'white'
+        color:'white', 
+        opacity: 0,
     },
 
     tmFlatButtonStyleOffTest: {
         backgroundColor:  'rgba(47, 50, 69, 0.34)',
         position: 'static',  marginTop: 45,
         //  left:450,
-        color:'white'
+        color:'white',
+        opacity: 0,
     },
 
     tmFlatButtonStyleOnTest: {

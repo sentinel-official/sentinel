@@ -75,7 +75,6 @@ export default class NetworkChangeDialog extends React.Component {
                         >
                             {lang[language].Cancel}
                         </Button>
-                        {/*<div className={styles.wrapper}>*/}
                         <Button
                             variant={!this.state.success ? 'text' : 'contained'}
                             disabled={this.state.isLoading}
@@ -84,8 +83,8 @@ export default class NetworkChangeDialog extends React.Component {
                             style={{ minWidth: 100 }}
                         >
                             {lang[language].Connect}
-                                </Button>
-                        {/*</div>*/}
+                        </Button>
+
                     </DialogActions>
                 </Dialog>
             </div>

@@ -34,7 +34,6 @@ const styles = theme => ({
   },
   slider: {
     width: '330px',
-    // backgroundColor: '#595D8F',
     marginTop: '16px'
   },
   sliderbackground: {
@@ -300,7 +299,6 @@ class SendComponent extends React.Component {
 
   componentWillMount() {
     let { payVpn, initPaymentDetails } = this.props;
-    // console.log('component will mount', initPaymentDetails, payVpn)
     if (payVpn.isVPNPayment) {
       this.setState({
         sendToAddress: payVpn.data.account_addr,

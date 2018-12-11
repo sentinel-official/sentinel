@@ -24,38 +24,10 @@
     padding-bottom: 10px;
     width: 30px;
 }
-/* .social_image_tele:hover {
-background-image: url("../Images/tele_color.svg");
-padding-bottom: 10px;
-width: 30px;
-background: no-repeat;
-}
-.social_image_twitter:hover {
-    background-image: url("../Images/twitter_color.svg");
-    padding-bottom: 10px;
-    width: 30px;
-    background: no-repeat;
-    }
-.social_image_medium:hover {
-        background-image: url("../Images/medium_color.svg");
-        padding-bottom: 10px;
-        width: 30px;
-        background: no-repeat;
- } */
- /* .social_tele{
-     height: 30px;
-     width: 30px;
-     background: url("../Images/social_sprite_new.png");
-    background-position: 0px 0px;
- }
- .social_tele:hover{
-    background: url("../Images/social_sprite.png");
-    background-position: 0px 0px;
-} */
+
 #social {
     margin: 0!important;
     display: flex;
-    /* flex-direction: column; */
     flex-direction: row;
     padding-left: 55px;
     position: absolute;
@@ -65,7 +37,6 @@ background: no-repeat;
     float: left;
     border-bottom: none!important;
     list-style-type: none!important;
-    /* margin-bottom: 10px; */
     padding-right: 10px;
     margin-top: 37px;
 }

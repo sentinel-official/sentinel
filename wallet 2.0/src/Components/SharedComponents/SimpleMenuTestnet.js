@@ -18,7 +18,7 @@ const styles = theme => ({
     marginTop: '-3px',
   },
   icon: {
-    fill: 'black',  //changed from white -> black
+    fill: 'black',
     right: '60px'
   },
   list: {
@@ -89,7 +89,6 @@ class SimpleListMenu extends React.Component {
             onChange={this.handleMenuItemClick}
             displayEmpty
             name='token'
-            // native={true}
             disableUnderline={true}
             className={classes.list}
             fullWidth={true}
@@ -117,7 +116,6 @@ class SimpleListMenu extends React.Component {
           onChange={this.handlePIVXMenuItemClick}
           displayEmpty
           name='swap'
-          // native={true}
           disableUnderline={true}
           className={classes.pivxList}
           inputProps={{

@@ -256,12 +256,7 @@ class Footer extends Component {
                                             </Row>
                                         </Col>
 
-                                        {/* <Col xs={2} style={footerStyles.vpnConnected}>
-                                           
-                                        </Col> */}
-
-
-                                        {
+                                          {
                                             vpnStatus ?
                                                 <Col xs={3} style={footerStyles.vpnConnected}>
                                                     <Tooltip title={lang[language].Disconnect}>

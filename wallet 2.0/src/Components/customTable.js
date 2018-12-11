@@ -59,7 +59,6 @@ class EnhancedTableHead extends React.Component {
         const { order, orderBy, classes, language } = this.props;
 
         let columnData = [
-            // { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
             { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
             { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
             { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth + lang[language].Mbps}` },
@@ -99,13 +98,10 @@ class EnhancedTableHead extends React.Component {
 }
 
 EnhancedTableHead.propTypes = {
-    // numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    // onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
     classes: PropTypes.object.isRequired,
-    // rowCount: PropTypes.number.isRequired,
 };
 
 const alignStyle = theme => ({
@@ -196,7 +192,6 @@ const styles = theme => ({
         overflowY: 'auto',
     },
     table: {
-        // minWidth: 1020,
     },
     tableWrapper: {
         overflowY: 'auto',
@@ -241,7 +236,6 @@ class EnhancedTable extends React.Component {
 
     showConnectDialog = (event, city, country, speed, latency, price_per_GB, vpn_addr) => {
 
-        // let data = [].push()
         let data = {
             'city': city, 'country': country, 'speed': speed,
             'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr
@@ -269,14 +263,11 @@ class EnhancedTable extends React.Component {
 
         return (
             <Paper className={classes.root}>
-                {/*<EnhancedTableToolbar numSelected={selected.length} />*/}
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <EnhancedTableHead
-                            // numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            // onSelectAllClick={this.handleSelectAllClick}
                             onRequestSort={this.handleRequestSort}
                             language={this.props.language}
                             rowCount={data.length}
@@ -286,7 +277,6 @@ class EnhancedTable extends React.Component {
                                 data
                                     .sort(getSorting(order, orderBy))
                                     .map(n => {
-                                        // const isSelected = this.isSelected(n.id);
                                         return (
                                             <TableRow
                                                 hover
@@ -294,10 +284,8 @@ class EnhancedTable extends React.Component {
                                                     n.net_speed.download, n.latency, n.price_per_GB, n.account_addr
                                                 )}
                                                 role="button"
-                                                // aria-checked={isSelected}
-                                                // tabIndex={-1}
                                                 key={n.id}
-                                            // selected={isSelected}
+                                            
                                             >
                                                 <TableCell padding="dense" className={classes.head}>
                                                     <Flag code={Country.getCode(n.location.country)} height="16" />

@@ -91,13 +91,7 @@ class TMAccountView extends Component {
                 </div>
                 <div style={this.props.vpnStatus ? accountStyles.formVpnStyle : accountStyles.formStyle}>
                     <div style={accountStyles.cardStyle} bordered={false}>
-                        {/* <CardHeader
-                            action={
-                                <IconButton onClick={() => { this.getBalance() }} style={accountStyles.outlineNone}>
-                                    <RefreshIcon />
-                                </IconButton>
-                            }
-                        /> */}
+                       
                         <CardContent>
                             <QRCode
                                 bgColor="#FFFFFF"
@@ -114,9 +108,7 @@ class TMAccountView extends Component {
                                         snackMessage: lang[language].Copied,
                                         openSnack: true
                                     })}>
-                                    {/* <img src={'../src/Images/download.jpeg'}
-                                        alt="Copy"
-                                        style={accountStyles.clipBoard} /> */}
+                                  
                                     <CopyIcon style={receiveStyles.clipBoard} />
                                 </CopyToClipboard>
                             </Tooltip>
@@ -126,13 +118,9 @@ class TMAccountView extends Component {
                                     {lang[language].Note}
                                 </p>
                                 :
-                                // <p style={accountStyles.balanceStyle}>
-                                //     {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 'Loading...'}
-                                //     {token && 'denom' in token ? ' SUTs' : ''}
-                                // </p>
+                               
                                 null
                             }
-                            {/* {balance === "" ? <p>*Use faucet to get tokens and join the network</p> : null} */}
                             {
                                 vpnStatus ?
 
@@ -147,9 +135,7 @@ class TMAccountView extends Component {
 
                                             <Col xs={6} style={accountStyles.tsentValue}>{usedTokens}</Col>
                                         </Row>
-                                        {/* <p><span style={accountStyles.notInNetStyle}>Total TSENT Locked: </span>
-                                            {localStorage.getItem('lockedAmount')}  <span style={accountStyles.notInNetStyle}>Current Session Usage (TSENT): </span>
-                                            {usedTokens}</p> */}
+                                      
 
                                     </div>
                                     :

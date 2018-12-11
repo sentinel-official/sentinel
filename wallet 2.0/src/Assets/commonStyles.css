@@ -1,0 +1,10 @@
+.cardStyle {
+    padding : 10px;
+    margin-right:10px;
+    margin-left:36px;
+}
+
+.cardStyle:hover{
+    box-shadow: -1px 5px 20px 0px rgba(0,0,0,0.8);
+    cursor: pointer;
+}

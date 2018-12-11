@@ -10,11 +10,6 @@ module.exports = {
     TM_FREE_TOKEN_URL: 'http://tm-api.sentinelgroup.io:3000',
 
     notTestItemIcons: [
-        // {
-        //     'name': 'TM',
-        //     'value': 'tmint',
-        //     'icon': 'tmintIcon' 
-        // },
 
         {
             'name': 'ETH',
@@ -47,7 +42,6 @@ module.exports = {
             'icon': 'tmintIcon'
         },
 
-        // we only need one division in which we change tm/eth logo
         {
             'name': 'ETH',
             'value': 'eth',
@@ -86,29 +80,6 @@ module.exports = {
     ],
     testMenuItems: [
 
-        // {
-        //     'name': 'VPN LIST',
-        //     'value': 'vpnList',
-        //     'icon': 'listIcon'
-        // },
-        // {
-        //     'name': 'SEND',
-        //     'value': 'send',
-        //     'icon': 'sendIcon'
-        // },
-        // {
-        //     'name': 'RECEIVE',
-        //     'value': 'receive',
-        //     'icon': 'receiveIcon'
-        // },
-        // {
-        //     'name': 'HISTORY',
-        //     'value': 'history',
-        //     'icon': 'historyIcon'
-        // },
-
-        // initilal 
-
         {
             'name': 'VpnList',
             'value': 'vpnList',
@@ -137,22 +108,7 @@ module.exports = {
             'icon': 'historyIcon'
         },
       
-        // {
-        //     'name': 'SWIXER',
-        //     'value': 'swixer',
-        //     'icon': 'swixerIcon'
-        // },
-        // {
-        //     'name': 'SWAPS',
-        //     'value': 'swaps',
-        //     'icon': 'swapIcon'
-        // },
-
-        // {
-        //     'name': 'TENDERMINT',
-        //     'value': 'tmint',
-        //     'icon': 'tmintIcon'
-        // }
+      
     ],
     notInTestMenuItems : [
 
@@ -178,43 +134,22 @@ module.exports = {
 
     TMdisabledmenuItems: [
 
-        // {
-        //     'name': 'Transfer', // should point to Transfer tab page
-        //     'value': 'send',
-        //     'icon': 'sendIcon'
-        // },
+      
         {
-            'name': 'Account', // // should point to Account tab page
+            'name': 'Account', 
             'value': 'receive',
             'icon': 'receiveIcon'
         },
-        // {
-        //     'name': 'TxHistory',
-        //     'value': 'history',
-        //     'icon': 'historyIcon'
-        // },
-        // {
-        //     'name': 'VpnList',
-        //     'value': 'vpnList',
-        //     'icon': 'listIcon'
-        // },
-
-        // {
-        //     'name': 'VpnHistory',
-        //     'value': 'vpnHistory',
-        //     'icon': 'vpnHisIcon'
-        // },
+     
 
     ],
     disabledItemsTest: [
         'swixer',
         'swaps',
-        // 'tmint'  //we are relpaceing this value with eth logo in Testnet
     ],
     disabledItemsMain: [
         'vpnHistory',
         'vpnList',
-        // 'tmint'  //we are relpaceing this value with eth logo in Testnet
     ],
     disabledItemsTM: [
         'history',

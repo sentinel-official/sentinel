@@ -93,7 +93,6 @@ class Swaps extends Component {
         let self = this;
         this.props.getAvailableTokens()
             .then(() => {
-                // console.log(this.props.getAvailableTokensRes)
                 let tokensList = this.props.getAvailableTokensRes.filter(
                     (token) => token.symbol !== 'PIVX');
                 let pivxToken = this.props.getAvailableTokensRes.filter((token) => token.symbol === 'PIVX');

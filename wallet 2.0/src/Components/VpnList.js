@@ -32,7 +32,6 @@ const styles = theme => ({
         margin: '10px 20px 0px 20px',
     },
     group: {
-        // margin: `${theme.spacing.unit}px 0`,
         flexDirection: 'row',
     },
 });
@@ -67,7 +66,7 @@ class VpnList extends Component {
             if (err) {
                 this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
-                // setTimeout(() => { this.getVPNs(); }, 500);
+            
             }
             else {
                 this.setState({ isPrivate: true, openPopup: false, openSnack: true, snackMessage: `${lang[this.props.language].PrivateNetEnabledWith}${url}` });
@@ -242,7 +241,6 @@ class VpnList extends Component {
                                 </IconButton>
                             </div> :
                             <FormControl component="fieldset" className={classes.networkFormControl}>
-                                {/*<FormLabel className={classes.row} component="legend">dVPN Type</FormLabel>*/}
                                 <RadioGroup
                                     aria-label="dVPN Type"
                                     name="nodes"
@@ -256,9 +254,6 @@ class VpnList extends Component {
                                 </RadioGroup>
                             </FormControl>
                     }
-                    {/* <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15, outline: 'none' }}>
-                        <RefreshIcon />
-                    </IconButton> */}
                     <FormControl component="fieldset" className={classes.dVPNFormControl}>
                         <RadioGroup
                             aria-label="dVPN Type"

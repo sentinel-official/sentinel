@@ -23,7 +23,7 @@ const styles = theme => ({
     marginTop: '-3px',
   },
   icon: {
-    fill: 'black',  //changed from white -> black
+    fill: 'black',
     right: '30px'
   },
   list: {
@@ -51,7 +51,7 @@ const styles = theme => ({
 class SimpleListMenu extends React.Component {
 
   state = {
-    token: 'SENT', //Changed from 'ETH' to give priority for SENT
+    token: 'SENT',
     pivxMenu: {
       pivx: 'PIVX',
       eth: 'ETH',
@@ -69,8 +69,8 @@ class SimpleListMenu extends React.Component {
 
   componentWillMount() {
     if (this.props.isSend) {
-      this.props.token('ETH');
-      this.setState({ token: 'ETH' });
+      this.props.token('SENT');
+      this.setState({ token: 'SENT' });
       if (this.props.isVPN) {
         console.log("Props...", this.props)
         this.props.token('SENT');
@@ -134,7 +134,6 @@ class SimpleListMenu extends React.Component {
           onChange={this.handlePIVXMenuItemClick}
           displayEmpty
           name='swap'
-          // native={true}
           disableUnderline={true}
           className={classes.pivxList}
           inputProps={{

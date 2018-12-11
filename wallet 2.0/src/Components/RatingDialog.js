@@ -14,7 +14,7 @@ class RatingDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rateValue: 5  // initial rate value
+            rateValue: 5  
         }
     }
 
@@ -60,10 +60,8 @@ class RatingDialog extends React.Component {
                             multiline
                             rowsMax="4"
                             value={this.state.multiline}
-                            //   onChange={this.handleChange('multiline')}
                             className="commentField"
                             margin="normal"
-                            //   helperText="hello"
                             variant="filled"
                         />
                     </DialogContent>

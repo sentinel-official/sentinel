@@ -91,23 +91,10 @@ class Header extends Component {
         if ((value && disabledItemsTest.includes(currentTab))) {
             this.props.setCurrentTab('receive');
         }
-
-        //     if ((!value && disabledItemsMain.includes(currentTab))) {
-        //     this.props.setCurrentTab('send');
-        // }
-
-
-        // this.props.getETHBalance(this.props.walletAddress);
-        // this.props.getSentBalance(this.props.walletAddress);
-        // if ((value && disabledItemsTest.includes(currentTab)) ||
-        //     (!value && disabledItemsMain.includes(currentTab))) {
-        //     this.props.setCurrentTab('send');
-        // }
     };
 
     tendermintChange = () => event => {
 
-        // console.log("dropdown value ", event.target.value);
         let value = event.target.value;
         let currentTab = this.props.currentTab;
         this.props.setWalletType(value)
@@ -127,9 +114,7 @@ class Header extends Component {
             }
         }
 
-        // if (value) {
-        //     this.props.setCurrentTab('tmint');
-        // }
+     
         else {
             this.props.setTendermint(false);
             this.props.getETHBalance(this.props.walletAddress);
@@ -190,7 +175,6 @@ class Header extends Component {
                             </div>
                             <Row>
                                 <Col xs={8}><span
-                                    // xs={8} initially , changed to get 10 digits
                                     style={headerStyles.walletAddress}>
                                     {
                                         isTendermint ?
@@ -201,7 +185,6 @@ class Header extends Component {
                                 </Col>
                                 <Col xs={4}>
                                     {isTendermint && !tmAccountDetails ? null :
-                                        // <Tooltip title={this.state.walletType === 'ERC20' ? "Copy ERC20 Sent Wallet Address" : "Copy Tendermint Wallet Address"}>
                                         <Tooltip title={isTendermint ?lang[language].TMWalletCopy : lang[language].ERC20WalletCopy  }>
 
                                             <CopyToClipboard text={
@@ -231,7 +214,7 @@ class Header extends Component {
                                             <Col xs={1}> : </Col>
                                             <Col xs={4} style={headerStyles.balanceText}>
                                                 <p style={headerStyles.tmBalanceText}>
-                                                    {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : lang[language].Loading}
+                                                    {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 0.00}
                                                 </p>
                                             </Col>
                                         </Row>
@@ -284,7 +267,6 @@ class Header extends Component {
                                     checked={this.props.isTest}
                                     onChange={this.testNetChange()}
                                     color="primary"
-                                // disabled={this.props.isTendermint}
                                 />
                             </div>
                         </Col>
@@ -344,10 +326,8 @@ class Header extends Component {
                                     </IconButton>
                                 </Tooltip>
                             }
-                        </Col>
-
-                        {/* <div><SimpleMenuTestnet token={this.setToken} isSend={true} isVPN={this.state.isVPNPayment} />
-                        </div> */}
+                       </Col>
+                    
                     </Row>
                 </Grid>
                 <Snackbar

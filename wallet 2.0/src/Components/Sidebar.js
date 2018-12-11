@@ -204,16 +204,6 @@ class Sidebar extends Component {
                     </Tooltip>
                 </div>
                 <hr style={sidebarStyles.m_0} />
-                {/* <div style={sidebarStyles.IconActiveDivStyle}
-                >
-                    <Tooltip title={lang[language][isTenderMint ? 'TM' : 'ETH']} placement="right">
-                        <label
-                            style={sidebarStyles.IconNormalLabelStyle}>
-                            {this.getIcon('tmintIcon')}
-
-                        </label>
-                    </Tooltip>
-                </div> */}
                 <hr style={sidebarStyles.m_0} />
 
                 {
@@ -277,7 +267,6 @@ class Sidebar extends Component {
                                 {
 
                                     sidebarMenuItems.map((item) => {
-                                        // let isDisabled = component === 'dashboard' ? false : disabledItemsTM.includes(item.value)
                                         return (
                                             <div>
                                                 <div style={
@@ -287,9 +276,7 @@ class Sidebar extends Component {
                                                 } onClick={() => { this.setMenu(item),this.setState({openDrawer: false}) }}>
                                                     <label
                                                         style={
-                                                            // isDisabled
-                                                            //     ?
-                                                            //     sidebarStyles.disabledLabelStyle :
+                                                            
                                                             (item.value === currentTab ?
                                                                 sidebarStyles.activeLabelStyle :
                                                                 sidebarStyles.normalLabelStyle)
@@ -307,20 +294,6 @@ class Sidebar extends Component {
                         </div>
 
                           <span style={sidebarStyles.drawerHeading}><span className='version_style'>{lang[language].VersionInSidebar}</span></span>
-                      
-                        {/* <span style={sidebarStyles.drawerHeading}><img src={'../src/Images/client_sent.png'} alt="sentinel_logo"
-                            style={{ width: 139, paddingRight: 5, position: 'absolute', bottom: 55 }} /></span> */}
-
-                        {/* <ul id="social" class="list-unstyled">
-                            <li><a href="https://medium.com/sentinel" id="md" rel="me" target="_blank">Medium</a>
-                            </li>
-                            <li><a href="https://twitter.com/Sentinel_co" id="tw" rel="me" target="_blank">Twitter</a>
-                            </li>
-                            <li><a href="https://t.me/sentinel_co" id="tl" rel="me" target="_blank">Telegram</a>
-                            </li>
-                            <li><a href="https://sentinel.co/" id="snt" rel="me author" target="_blank">Sentinel</a>
-                            </li>
-                        </ul> */}
                     </div>
                 </Drawer>
             </div>

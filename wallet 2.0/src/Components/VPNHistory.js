@@ -19,7 +19,7 @@ import { compose } from 'redux';
 import { receiveStyles } from './../Assets/receive.styles';
 import { historyLabel, historyValue, ETHcardStyle, statusLabel, statusValue } from '../Assets/commonStyles';
 import { historyStyles } from '../Assets/txhistory.styles';
-
+import '../Assets/commonStyles.css';
 
 import _ from 'lodash';
 const theme = createMuiTheme({
@@ -140,9 +140,9 @@ class VPNHistory extends Component {
                 sessionOutput = sessions.map((sessionData) => {
                     return (
 
-                        <div style={vpnhistoryStyles.historyCont}>
+                        
                             <div style={historyStyles.data}>
-                                <Card style={ETHcardStyle}>
+                                <Card className = "cardStyle">
                                     <CardContent >
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].SessionId}:`}&nbsp;<span style={historyValue}>{sessionData.id}</span></label>
@@ -214,7 +214,6 @@ class VPNHistory extends Component {
                                                         InputProps={{
                                                             disableUnderline: 'true',
                                                         }}
-                                                        // inputProps={{pattern:'0x[a-fA-F0-9]{64}$'}}
                                                         onChange={this.setHash}
                                                         value={this.state.txHash}
 
@@ -236,7 +235,7 @@ class VPNHistory extends Component {
                                     }
                                 </Card >
                             </div>
-                        </div>
+                       
                     )
                 })
             }
@@ -251,7 +250,6 @@ class VPNHistory extends Component {
     };
 
     render() {
-        // console.log("vpnHistory", this.props.VPNUsage)
         let language = this.props.lang;
         let VpnUsage = this.props.VPNUsage;
         const { classes } = this.props;

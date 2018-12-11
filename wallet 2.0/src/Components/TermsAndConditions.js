@@ -62,11 +62,7 @@ class TermsAndConditions extends Component {
                                 snackMessage: lang[language].Copied,
                                 openSnack: true
                             })}>
-                            {/* <img src={'../src/Images/download.jpeg'}
-                                alt="Copy"
-                                data-tip data-for="copyImage"
-                                style={createPagestyles.clipBoard} /> */}
-                                 <CopyIcon style={receiveStyles.clipBoard}/>
+                            <CopyIcon style={receiveStyles.clipBoard}/>
                         </CopyToClipboard>
                         </Tooltip></p>
                     <ReactTooltip id="copyImage" place="bottom">

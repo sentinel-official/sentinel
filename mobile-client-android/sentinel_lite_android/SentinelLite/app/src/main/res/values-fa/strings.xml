@@ -115,7 +115,9 @@
 
     <!-- Translatable strings -->
     <string name="app_sub_name">وی پی ان غیر متمرکز امن</string>
-    <string name="next">بعدی</string>
+    <string name="action_next">بعدی</string>
+    <string name="action_done">Done</string>
+    <string name="action_apply">Apply</string>
     <string name="disconnect">قطع اتصال</string>
     <string name="view_vpns">مشاهده ی وی پی ان ها</string>
     <string name="view_vpn_list">گره های وی پی ان</string>
@@ -191,4 +193,20 @@
     <string name="referral_desc">به بسته کمکی معرفی سنتینل خوش آمدید.\n\nکاربرانی که این دستیار اولیه(لایت) را آزمایش می کنند میتوانند بعد از گذشت 21 روز یا بیشتر از زمانی که نخستین بار برنامه را نصب کرده اند و به شرطی که حداقل 100 مگابایت داده از شبکه هاست انجمن dVPN سنتینل مصرف کرده باشند، پاداش(های) خود را دریافت کنند.\n\nبرنامه ریزی پاداش دهی air drop  معرفی به شرح زیر است: \n\n500 SENT : برای دانلود دستیار سنتینل در گوگل پلی اندروید و استفاده از 100 مگابایت داده\n\n300 SENT: برای دانلود دستیار شبکه سنتینل که شامل یک کیف پول ERC20 موبایل می باشد.\n\n200 SENT: برای هر شخص معرفی شده که SLC یا SNC را دانلود کند</string>
     <string name="network_lost">اتصال وی پی ان قطع شد چراکه اتصال دوباره به گره های وی ی ان ناموفق بود.\nلطفا دوباره وصل شوید.</string>
     <string name="read_more">بیشتر بخوانید</string>
+    <string name="filter_by_title">Filters</string>
+    <string name="filter_by_bookmark">Show bookmarks only</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_country_a">Country</string>
+    <string name="sort_by_country_d">Country ↓</string>
+    <string name="sort_by_latency_i">Latency ↑</string>
+    <string name="sort_by_latency_d">Latency</string>
+    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
+    <string name="sort_by_bandwidth_d">Bandwidth</string>
+    <string name="sort_by_price_i">Price ↑</string>
+    <string name="sort_by_price_d">Price ↓</string>
+    <string name="sort_by_rating_i">Rating ↑</string>
+    <string name="sort_by_rating_d">Rating</string>
+    <string name="hint_search_vpn_list">Search by country</string>
+
 </resources>

@@ -18,12 +18,22 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import co.sentinel.sentinellite.BuildConfig;
 import co.sentinel.sentinellite.R;
@@ -31,10 +41,12 @@ import co.sentinel.sentinellite.SentinelLiteApp;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.ui.custom.OnVpnConnectionListener;
 import co.sentinel.sentinellite.ui.custom.ProfileAsync;
+import co.sentinel.sentinellite.ui.custom.VpnListSearchListener;
 import co.sentinel.sentinellite.ui.dialog.DoubleActionDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.ProgressDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.RatingDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.SingleActionDialogFragment;
+import co.sentinel.sentinellite.ui.dialog.SortFilterByDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.TripleActionDialogFragment;
 import co.sentinel.sentinellite.ui.fragment.VpnConnectedFragment;
 import co.sentinel.sentinellite.ui.fragment.VpnSelectFragment;
@@ -58,7 +70,7 @@ import static co.sentinel.sentinellite.util.AppConstants.TAG_TRIPLE_ACTION_DIALO
 import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 
 public class DashboardActivity extends AppCompatActivity implements OnGenericFragmentInteractionListener,
-        OnVpnConnectionListener, VpnStatus.StateListener, VpnStatus.ByteCountListener, DoubleActionDialogFragment.OnDialogActionListener {
+        OnVpnConnectionListener, VpnStatus.StateListener, VpnStatus.ByteCountListener, DoubleActionDialogFragment.OnDialogActionListener, View.OnClickListener {
 
     private boolean mHasActivityResult;
 
@@ -66,7 +78,11 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     private NavigationView mNavMenuView, mNavFooter;
     private Toolbar mToolbar;
     private TextView mToolbarTitle;
+    private AppCompatImageButton mIbCloseSearch, mIbClearSearch;
+    private LinearLayout mLlSearch;
+    private AppCompatEditText mEtSearch;
     private ProgressDialogFragment mPrgDialog;
+    private MenuItem mMenuSearch, mMenuSort;
     private ProfileAsync profileAsync;
     private IOpenVPNServiceInternal mService;
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -81,12 +97,45 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
         }
     };
 
+    private SortFilterByDialogFragment.OnSortFilterDialogActionListener mSortDialogActionListener;
+    private VpnListSearchListener mVpnListSearchListener;
+
+    private boolean toFilterByBookmark;
+    private String mCurrentSortType = AppConstants.SORT_BY_DEFAULT;
+    private StringBuilder mCurrentSearchString = new StringBuilder();
+    private TextWatcher mSearchWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            mIbClearSearch.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+            if (s.length() >= 3) {
+                setCurrentSearchString(s.toString());
+                triggerSearch();
+            } else if (TextUtils.isEmpty(s)) {
+                clearCurrentSearchString();
+                triggerSearch();
+            }
+        }
+    };
+
+    private Map<Integer, Fragment> mFragmentMap = new HashMap<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         shouldShowHelper();
         initView();
+        initListeners();
         loadVpnFragment(null);
     }
 
@@ -123,8 +172,60 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     public void onBackPressed() {
         if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START))
             mDrawerLayout.closeDrawers();
+        else if (mLlSearch.getVisibility() == View.VISIBLE)
+            closeSearch();
         else
             super.onBackPressed();
+    }
+
+    public void setCurrentSearchString(String iSearchQuery) {
+        mCurrentSearchString.replace(0, mCurrentSearchString.length(), iSearchQuery);
+    }
+
+    public void clearCurrentSearchString() {
+        mCurrentSearchString.delete(0, mCurrentSearchString.length());
+    }
+
+    public boolean toFilterByBookmark() {
+        return toFilterByBookmark;
+    }
+
+    public void setFilterByBookmark(boolean toFilterByBookmark) {
+        this.toFilterByBookmark = toFilterByBookmark;
+    }
+
+    public String getCurrentSearchString() {
+        return "%" + mCurrentSearchString.toString() + "%";
+    }
+
+    public void setCurrentSortType(String iSortType) {
+        mCurrentSortType = iSortType;
+    }
+
+    public String getCurrentSortType() {
+        return mCurrentSortType;
+    }
+
+    public void setVpnListSearchListener(VpnListSearchListener iVpnListSearchListener) {
+        mVpnListSearchListener = iVpnListSearchListener;
+    }
+
+    public void removeVpnListSearchListener() {
+        mVpnListSearchListener = null;
+    }
+
+    public void setSortDialogActionListener(SortFilterByDialogFragment.OnSortFilterDialogActionListener iSortDialogActionListener) {
+        mSortDialogActionListener = iSortDialogActionListener;
+    }
+
+    public void removeSortDialogActionListener() {
+        mSortDialogActionListener = null;
+    }
+
+    private void triggerSearch() {
+        if (mVpnListSearchListener != null) {
+            mVpnListSearchListener.onSearchTriggered(getCurrentSearchString());
+        }
     }
 
     /*
@@ -143,11 +244,15 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
      */
     private void initView() {
         mToolbar = findViewById(R.id.toolbar);
-        mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
+        mToolbarTitle = findViewById(R.id.toolbar_title);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         mNavMenuView = findViewById(R.id.nav_menu_view);
         mNavFooter = findViewById(R.id.nav_footer_view);
+        mLlSearch = findViewById(R.id.ll_search);
+        mEtSearch = findViewById(R.id.et_search);
+        mIbCloseSearch = findViewById(R.id.ib_close_search);
+        mIbClearSearch = findViewById(R.id.ib_clear_search);
         // set drawer scrim color
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         // instantiate toolbar
@@ -171,6 +276,15 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
         mNavFooter.getHeaderView(0).findViewById(R.id.ib_medium).setOnClickListener(v -> openUrl(getString(R.string.medium_url)));
         mNavFooter.getHeaderView(0).findViewById(R.id.ib_twitter).setOnClickListener(v -> openUrl(getString(R.string.twitter_url)));
         mNavFooter.getHeaderView(0).findViewById(R.id.ib_website).setOnClickListener(v -> openUrl(getString(R.string.website_url)));
+    }
+
+    /**
+     * Setup Listeners for all views
+     */
+    private void initListeners() {
+        mEtSearch.addTextChangedListener(mSearchWatcher);
+        mIbCloseSearch.setOnClickListener(this);
+        mIbClearSearch.setOnClickListener(this);
     }
 
     /*
@@ -214,7 +328,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
      * @param iTitle [String] The title to be shown in the toolbar
      */
     protected void setToolbarTitle(String iTitle) {
-        mToolbar.findViewById(R.id.toolbar_icon).setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
+        findViewById(R.id.toolbar_icon).setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
         mToolbarTitle.setText(iTitle);
     }
 
@@ -339,6 +453,15 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
      */
     private void loadFragment(Fragment iFragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+        if (mMenuSearch != null && mMenuSort != null) {
+            if (iFragment instanceof VpnSelectFragment) {
+                mMenuSearch.setVisible(true);
+                mMenuSort.setVisible(true);
+            } else {
+                mMenuSearch.setVisible(false);
+                mMenuSort.setVisible(false);
+            }
+        }
     }
 
     /*
@@ -349,14 +472,39 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        mMenuSearch = menu.findItem(R.id.action_search);
+        mMenuSort = menu.findItem(R.id.action_sort);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                closeSearch();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
+
+            case R.id.action_search:
+                openSearch();
+                return true;
+
+            case R.id.action_sort:
+                openSortDialog();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /*
+     * Update the Options Menu icon
+     */
+    public void toggleItemState() {
+        mMenuSort.setIcon((!getCurrentSortType().equals(AppConstants.SORT_BY_DEFAULT) || toFilterByBookmark()) ? R.drawable.ic_sorted : R.drawable.ic_sort);
     }
 
     /*
@@ -589,5 +737,60 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
 
     @Override
     public void setConnectedVPN(String uuid) {
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ib_close_search:
+                closeSearch();
+                break;
+            case R.id.ib_clear_search:
+                mEtSearch.getText().clear();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void openSearch() {
+        mLlSearch.setVisibility(View.VISIBLE);
+        mEtSearch.setFocusable(true);
+        mEtSearch.setFocusableInTouchMode(true);
+        mEtSearch.requestFocus();
+        showKeyboard(mEtSearch);
+    }
+
+    private void openSortDialog() {
+        if (mSortDialogActionListener != null) {
+            SortFilterByDialogFragment.newInstance(AppConstants.TAG_SORT_BY, getCurrentSortType(), toFilterByBookmark(), mSortDialogActionListener).show(getSupportFragmentManager(), AppConstants.SORT_BY_DIALOG_TAG);
+        }
+    }
+
+    private void closeSearch() {
+        mLlSearch.setVisibility(View.GONE);
+        mEtSearch.getText().clear();
+        mEtSearch.clearFocus();
+        mCurrentSearchString.delete(0, mCurrentSearchString.length());
+        hideKeyboard();
+    }
+
+    private void showKeyboard(View iView) {
+        InputMethodManager aInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert aInputMethodManager != null;
+        aInputMethodManager.showSoftInput(iView, InputMethodManager.SHOW_FORCED);
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager aInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        if (aInputMethodManager != null) {
+            aInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

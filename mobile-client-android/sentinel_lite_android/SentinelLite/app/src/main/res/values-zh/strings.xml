@@ -118,7 +118,9 @@ PKCS12文件加密密钥</string>
 
     <!-- Translatable strings -->
     <string name="app_sub_name">安全的分散式VPN</string>
-    <string name="next">下一步</string>
+    <string name="action_next">下一步</string>
+    <string name="action_done">Done</string>
+    <string name="action_apply">Apply</string>
     <string name="disconnect">断开连接</string>
     <string name="view_vpns">查看VPN</string>
     <string name="view_vpn_list">VPN节点</string>
@@ -212,7 +214,7 @@ PKCS12文件加密密钥</string>
     <string name="label_rate_session">为了我们能够改善，请对这次连接给予评价</string>
     <string name="error_select_rating">请选择星级</string>
     <string name="action_skip">下次</string>
-    <string name="action_rate">估价</string>
+    <string name="action_rate">评价</string>
     <string name="label_enter_address_claim">输入从哨兵网络应用程序中获得的钱包地址。</string>
     <string name="hint_enter_address_claim">钱包地址</string>
     <string name="label_confirm_link_account">1. 邀请码查询：, %1$s.\n\n2. 如果这个推荐ID与GITHUB前哨网络应用程序不同，请联系我们的官方电报组（在侧菜单中的链接）。.\n\n3. 点击确认，绑定地址与邀请码，可以赚取更多的SENT</string>
@@ -220,4 +222,20 @@ PKCS12文件加密密钥</string>
     <string name="label_link_account_success">祝贺你！你的哨兵免费VPN DAPP和哨兵网络DVPN DAPP现在链接到输入的地址。糖果将在完成1周的后发</string>
     <string name="action_confirm">确认</string>
     <string name="action_enter_address">确认地址</string>
+    <string name="filter_by_title">Filters</string>
+    <string name="filter_by_bookmark">Show bookmarks only</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_country_a">Country</string>
+    <string name="sort_by_country_d">Country ↓</string>
+    <string name="sort_by_latency_i">Latency ↑</string>
+    <string name="sort_by_latency_d">Latency</string>
+    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
+    <string name="sort_by_bandwidth_d">Bandwidth</string>
+    <string name="sort_by_price_i">Price ↑</string>
+    <string name="sort_by_price_d">Price ↓</string>
+    <string name="sort_by_rating_i">Rating ↑</string>
+    <string name="sort_by_rating_d">Rating</string>
+    <string name="hint_search_vpn_list">Search by country</string>
+
 </resources>

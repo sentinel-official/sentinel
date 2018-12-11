@@ -13,7 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
+import android.support.v7.widget.AppCompatImageButton;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
@@ -62,6 +62,8 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     private TextView mTvVpnState, mTvLocation, mTvIp, mTvDownloadSpeed, mTvUploadSpeed, mTvDataUsed,
             mTvBandwidth, mTvLatency, mTvEncMethod, mTvDuration;
     private Button mBtnDisconnect, mBtnViewVpn;
+    private AppCompatImageButton mIbBookmark;
+    private VpnListEntity mVpnEntity;
 
     private Long mConnectionTime = 0L;
 
@@ -103,6 +105,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         fragmentLoaded(getString(R.string.app_name));
+        initListeners();
         initViewModel();
     }
 
@@ -124,6 +127,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mTvVpnState = iView.findViewById(R.id.tv_vpn_state);
         mTvLocation = iView.findViewById(R.id.tv_location);
         mTvIp = iView.findViewById(R.id.tv_ip);
+        mIbBookmark = iView.findViewById(R.id.ib_bookmark);
         mTvDownloadSpeed = iView.findViewById(R.id.tv_download_speed);
         mTvUploadSpeed = iView.findViewById(R.id.tv_upload_speed);
         mTvDataUsed = iView.findViewById(R.id.tv_data_used);
@@ -150,6 +154,14 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mDataUsageSpan = new ImageSpan(mDataUsageDrawable, ImageSpan.ALIGN_BASELINE);
     }
 
+    private void initListeners() {
+        mIbBookmark.setOnClickListener(v -> {
+            if (mVpnEntity != null) {
+                mViewModel.toggleVpnBookmark(mVpnEntity.getAccountAddress(), mVpnEntity.getIp());
+            }
+        });
+    }
+
     private void initViewModel() {
         // init Device ID
         @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -159,6 +171,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
 
         mViewModel.getVpnLiveData().observe(this, vpnEntity -> {
             if (vpnEntity != null && vpnEntity.getAccountAddress().equals(AppPreferences.getInstance().getString(AppConstants.PREFS_VPN_ADDRESS))) {
+                mVpnEntity = vpnEntity;
                 setupVpnData(vpnEntity);
             }
         });
@@ -177,9 +190,16 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         // Set country flag
         mFvFlag.setCountryCode(Converter.getCountryCode(iVpnEntity.getLocation().country));
         // Construct and set - Bandwidth SpannableString
+
+        setBookmarkIcon(iVpnEntity);
+
         mTvBandwidth.setText(getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(iVpnEntity.getNetSpeed().download, Convert.DataUnit.MBPS)));
         mTvEncMethod.setText(iVpnEntity.getEncryptionMethod());
         mTvLatency.setText(getString(R.string.vpn_latency_value, iVpnEntity.getLatency()));
+    }
+
+    private void setBookmarkIcon(VpnListEntity iVpnEntity) {
+        mIbBookmark.setImageResource(iVpnEntity.isBookmarked() ? R.drawable.ic_bookmark_active : R.drawable.ic_bookmark_inactive);
     }
 
     public void updateStatus(String iStateMessage) {

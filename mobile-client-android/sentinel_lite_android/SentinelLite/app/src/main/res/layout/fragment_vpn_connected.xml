@@ -9,20 +9,20 @@
         style="@style/CustomTextAppearance.Text14.WhiteNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_16"
         android:layout_marginStart="@dimen/margin_16"
         android:layout_marginTop="@dimen/margin_8"
+        android:layout_marginEnd="@dimen/margin_16"
         android:background="@drawable/selector_vpn_state"
         android:ellipsize="end"
         android:enabled="false"
         android:gravity="center"
         android:maxLines="1"
-        android:paddingBottom="@dimen/margin_4"
-        android:paddingEnd="@dimen/margin_8"
-        android:paddingLeft="@dimen/margin_8"
-        android:paddingRight="@dimen/margin_8"
         android:paddingStart="@dimen/margin_8"
+        android:paddingLeft="@dimen/margin_8"
         android:paddingTop="@dimen/margin_4"
+        android:paddingEnd="@dimen/margin_8"
+        android:paddingRight="@dimen/margin_8"
+        android:paddingBottom="@dimen/margin_4"
         android:textColor="@color/colorTextDarkBlue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,8 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/vpn_connected_flag_height"
         android:layout_marginTop="@dimen/margin_8"
-        android:paddingBottom="@dimen/margin_8"
         android:paddingTop="@dimen/margin_8"
+        android:paddingBottom="@dimen/margin_8"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="@+id/fl_download_speed"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,10 +43,11 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
 
     <LinearLayout
+        android:id="@+id/ll_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_16"
         android:layout_marginStart="@dimen/margin_16"
+        android:layout_marginEnd="@dimen/margin_16"
         android:background="@color/colorLocationBackgroundAlpha60"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/fv_flag"
@@ -64,30 +65,44 @@
             android:layout_marginTop="@dimen/margin_8"
             android:gravity="center"
             android:paddingLeft="@dimen/margin_8"
-            android:paddingRight="@dimen/margin_8"
-            android:paddingTop="@dimen/margin_8" />
+            android:paddingTop="@dimen/margin_8"
+            android:paddingRight="@dimen/margin_8" />
 
         <TextView
             android:id="@+id/tv_ip"
             style="@style/CustomTextAppearance.Text18"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_8"
             android:layout_marginTop="@dimen/margin_8"
+            android:layout_marginBottom="@dimen/margin_8"
             android:gravity="center"
-            android:paddingBottom="@dimen/margin_8"
             android:paddingLeft="@dimen/margin_8"
+            android:paddingTop="@dimen/margin_4"
             android:paddingRight="@dimen/margin_8"
-            android:paddingTop="@dimen/margin_4" />
+            android:paddingBottom="@dimen/margin_8" />
 
     </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/ib_bookmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:paddingStart="@dimen/margin_16"
+        android:paddingLeft="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_8"
+        android:paddingRight="@dimen/margin_8"
+        android:paddingBottom="@dimen/margin_16"
+        android:src="@drawable/ic_bookmark_inactive"
+        app:layout_constraintEnd_toEndOf="@+id/ll_location"
+        app:layout_constraintTop_toTopOf="@+id/ll_location" />
 
     <FrameLayout
         android:id="@+id/fl_download_speed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_16"
         app:layout_constraintEnd_toStartOf="@+id/fl_upload_speed"
         app:layout_constraintHorizontal_bias="0.5"
@@ -101,9 +116,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:drawableStart="@drawable/ic_download_speed"
             android:drawableLeft="@drawable/ic_download_speed"
             android:drawablePadding="@dimen/margin_8"
-            android:drawableStart="@drawable/ic_download_speed"
             android:gravity="center_horizontal|bottom" />
     </FrameLayout>
 
@@ -134,8 +149,8 @@
         android:id="@+id/fl_upload_speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="@dimen/margin_8"
         android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginEnd="@dimen/margin_8"
         app:layout_constraintBottom_toBottomOf="@+id/fl_download_speed"
         app:layout_constraintEnd_toStartOf="@+id/fl_data_used"
         app:layout_constraintHorizontal_bias="0.5"
@@ -149,9 +164,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:drawableStart="@drawable/ic_upload_speed"
             android:drawableLeft="@drawable/ic_upload_speed"
-            android:drawablePadding="@dimen/margin_8"
-            android:drawableStart="@drawable/ic_upload_speed" />
+            android:drawablePadding="@dimen/margin_8" />
     </FrameLayout>
 
     <TextView
@@ -198,9 +213,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:drawableStart="@drawable/ic_data_usage"
             android:drawableLeft="@drawable/ic_data_usage"
-            android:drawablePadding="@dimen/margin_8"
-            android:drawableStart="@drawable/ic_data_usage" />
+            android:drawablePadding="@dimen/margin_8" />
     </FrameLayout>
 
     <TextView
@@ -224,8 +239,8 @@
         android:layout_marginTop="@dimen/margin_8"
         android:background="@color/colorCardShadow"
         android:gravity="center"
-        android:paddingBottom="@dimen/margin_8"
         android:paddingTop="@dimen/margin_24"
+        android:paddingBottom="@dimen/margin_8"
         android:text="@string/vpn_bandwidth_connected"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -249,11 +264,11 @@
         style="@style/CustomTextAppearance.Text12.Gray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_16"
-        android:drawablePadding="@dimen/margin_8"
         android:drawableTop="@drawable/ic_latency"
+        android:drawablePadding="@dimen/margin_8"
         android:gravity="center_horizontal|bottom"
         android:text="@string/vpn_latency_connected"
         app:layout_constraintEnd_toStartOf="@+id/enc_method"
@@ -290,10 +305,10 @@
         style="@style/CustomTextAppearance.Text12.Gray"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="@dimen/margin_8"
         android:layout_marginStart="@dimen/margin_8"
-        android:drawablePadding="@dimen/margin_8"
+        android:layout_marginEnd="@dimen/margin_8"
         android:drawableTop="@drawable/ic_enc_method"
+        android:drawablePadding="@dimen/margin_8"
         android:gravity="center_horizontal|bottom"
         android:text="@string/vpn_enc_method_connected"
         app:layout_constraintBottom_toBottomOf="@+id/latency"
@@ -335,8 +350,8 @@
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/margin_8"
         android:layout_marginRight="@dimen/margin_8"
-        android:drawablePadding="@dimen/margin_8"
         android:drawableTop="@drawable/ic_duration"
+        android:drawablePadding="@dimen/margin_8"
         android:gravity="center_horizontal|bottom"
         android:text="@string/vpn_duration_connected"
         app:layout_constraintBottom_toBottomOf="@+id/enc_method"

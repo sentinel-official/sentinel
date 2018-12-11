@@ -28,6 +28,8 @@ import co.sentinel.sentinellite.ui.adapter.VpnListAdapter;
 import co.sentinel.sentinellite.ui.custom.EmptyRecyclerView;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.ui.custom.OnVpnConnectionListener;
+import co.sentinel.sentinellite.ui.custom.VpnListSearchListener;
+import co.sentinel.sentinellite.ui.dialog.SortFilterByDialogFragment;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.VpnListViewModel;
@@ -53,6 +55,18 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     private SwipeRefreshLayout mSrReload;
     private EmptyRecyclerView mRvVpnList;
     private VpnListAdapter mAdapter;
+
+    private SortFilterByDialogFragment.OnSortFilterDialogActionListener mSortDialogActionListener = (iTag, iDialog, isPositiveButton, iSelectedSortType, toFilterByBookmark) -> {
+        if (isPositiveButton && iSelectedSortType != null) {
+            ((DashboardActivity) getActivity()).setFilterByBookmark(toFilterByBookmark);
+            ((DashboardActivity) getActivity()).setCurrentSortType(iSelectedSortType.getItemCode());
+            ((DashboardActivity) getActivity()).toggleItemState();
+            getVpnListLiveDataSearchSortFilterBy(((DashboardActivity) getActivity()).getCurrentSearchString(), iSelectedSortType.getItemCode(), toFilterByBookmark);
+        }
+        iDialog.dismiss();
+    };
+
+    private VpnListSearchListener mVpnListSearchListener = iSearchQuery -> getVpnListLiveDataSearchSortFilterBy(iSearchQuery, ((DashboardActivity) getActivity()).getCurrentSortType(), ((DashboardActivity) getActivity()).toFilterByBookmark());
 
     public VpnListFragment() {
         // Required empty public constructor
@@ -91,6 +105,8 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         super.onActivityCreated(savedInstanceState);
         fragmentLoaded(getString(R.string.vpn_connections));
         initViewModel();
+        ((DashboardActivity) getActivity()).setVpnListSearchListener(mVpnListSearchListener);
+        ((DashboardActivity) getActivity()).setSortDialogActionListener(mSortDialogActionListener);
     }
 
     private void initView(View iView) {
@@ -117,10 +133,8 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
 
-        mViewModel.getVpnListLiveData().observe(this, vpnList -> {
-            if (vpnList != null && vpnList.size() > 0)
-                mAdapter.loadData(vpnList);
-        });
+        getVpnListLiveDataSearchSortFilterBy(((DashboardActivity) getActivity()).getCurrentSearchString(), ((DashboardActivity) getActivity()).getCurrentSortType(), ((DashboardActivity) getActivity()).toFilterByBookmark());
+
         mViewModel.getVpnListErrorLiveEvent().observe(this, iMessage -> {
             if (iMessage != null && !iMessage.isEmpty() && mAdapter.getItemCount() != 0)
                 if (iMessage.equals(AppConstants.ERROR_GENERIC))
@@ -240,6 +254,10 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         super.onDetach();
         mListener = null;
         mVpnListener = null;
+        mVpnListSearchListener = null;
+        mSortDialogActionListener = null;
+        ((DashboardActivity) getActivity()).removeVpnListSearchListener();
+        ((DashboardActivity) getActivity()).removeSortDialogActionListener();
     }
 
     @Override
@@ -261,4 +279,21 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         else
             showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_already_connected), AppConstants.VALUE_DEFAULT);
     }
+
+    @Override
+    public void onBookmarkClicked(VpnListEntity iItemData) {
+        mViewModel.toggleVpnBookmark(iItemData.getAccountAddress(), iItemData.getIp());
+    }
+
+    public void getVpnListLiveDataSearchSortFilterBy(String iSearchQuery, String iSelectedSortType, boolean toFilterByBookmark) {
+        if (mViewModel != null) {
+            mViewModel.getVpnListLiveDataSearchSortFilterBy(iSearchQuery, iSelectedSortType, toFilterByBookmark).observe(this, vpnList -> {
+                if (vpnList != null) {
+                    mAdapter.loadData(vpnList);
+                    mRvVpnList.scrollToPosition(0);
+                }
+            });
+        }
+    }
+
 }

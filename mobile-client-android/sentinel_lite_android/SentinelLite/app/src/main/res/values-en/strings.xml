@@ -115,7 +115,9 @@
     <!-- Translatable strings -->
     <string name="fetching_server_details">Establishing dVPN connection…</string>
     <string name="app_sub_name">Secure decentralized VPN</string>
-    <string name="next">Next</string>
+    <string name="action_next">Next</string>
+    <string name="action_done">Done</string>
+    <string name="action_apply">Apply</string>
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">VIEW VPNs</string>
     <string name="view_vpn_list">VPN Nodes</string>
@@ -130,7 +132,7 @@
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Bandwidth %s</string>
     <string name="vpn_bandwidth_connected">Connection Speed</string>
-    <string name="vpn_enc_method">Encryption\n\n%s</string>
+    <string name="vpn_enc_method">Encryption %s</string>
     <string name="vpn_enc_method_connected">Encryption</string>
     <string name="vpn_latency">Latency %s</string>
     <string name="vpn_node_version">Version %s</string>
@@ -218,4 +220,20 @@
     <string name="action_rate">Rate</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_enter_address">Enter Address</string>
+    <string name="filter_by_title">Filters</string>
+    <string name="filter_by_bookmark">Show bookmarks only</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_country_a">Country</string>
+    <string name="sort_by_country_d">Country ↓</string>
+    <string name="sort_by_latency_i">Latency ↑</string>
+    <string name="sort_by_latency_d">Latency</string>
+    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
+    <string name="sort_by_bandwidth_d">Bandwidth</string>
+    <string name="sort_by_price_i">Price ↑</string>
+    <string name="sort_by_price_d">Price ↓</string>
+    <string name="sort_by_rating_i">Rating ↑</string>
+    <string name="sort_by_rating_d">Rating</string>
+    <string name="hint_search_vpn_list">Search by country</string>
+
 </resources>

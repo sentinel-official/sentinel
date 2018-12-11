@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
@@ -95,9 +96,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvNodeRating.setText(aStyleRating);
-        // Set listeners
-        holder.mRootView.setOnClickListener(v -> onRootViewClick(aItemData));
-        holder.mBtnConnect.setOnClickListener(v -> onConnectClick(aItemData.getAccountAddress()));
+        holder.mIbBookmark.setImageResource(aItemData.isBookmarked() ? R.drawable.ic_bookmark_active : R.drawable.ic_bookmark_inactive);
     }
 
     @Override
@@ -111,6 +110,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         FlagImageView mFvFlag;
         TextView mTvLocation, mTvBandwidth, mTvEncMethod, mTvLatency, mTvNodeVersion, mTvNodeRating;
         Button mBtnConnect;
+        AppCompatImageButton mIbBookmark;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -123,6 +123,12 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
             mTvNodeVersion = itemView.findViewById(R.id.tv_node_version);
             mTvNodeRating = itemView.findViewById(R.id.tv_node_rating);
             mBtnConnect = itemView.findViewById(R.id.btn_connect);
+            mIbBookmark = itemView.findViewById(R.id.ib_bookmark);
+
+            // Set listeners
+            mRootView.setOnClickListener(v -> onRootViewClick(mData.get(getAdapterPosition())));
+            mBtnConnect.setOnClickListener(v -> onConnectClick(mData.get(getAdapterPosition()).getAccountAddress()));
+            mIbBookmark.setOnClickListener(v -> onBookmarkClicked(mData.get(getAdapterPosition())));
         }
     }
 
@@ -178,9 +184,19 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         }
     }
 
+    private void onBookmarkClicked(VpnListEntity iItemData) {
+        if (mItemClickListener != null) {
+            mItemClickListener.onBookmarkClicked(iItemData);
+            iItemData.setBookmarked(!iItemData.isBookmarked());
+            notifyDataSetChanged();
+        }
+    }
+
     public interface OnItemClickListener {
         void onRootViewClicked(VpnListEntity iItemData);
 
         void onConnectClicked(String iVpnAddress);
+
+        void onBookmarkClicked(VpnListEntity iItemData);
     }
 }

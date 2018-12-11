@@ -23,7 +23,7 @@ import co.sentinel.sentinellite.util.SingleLiveEvent;
 public class VpnListViewModel extends ViewModel {
     private final VpnRepository mRepository;
     private final AppExecutors mAppExecutors;
-    private final LiveData<List<VpnListEntity>> mVpnListLiveData;
+//    private final LiveData<List<VpnListEntity>> mVpnListLiveData;
     private final SingleLiveEvent<String> mVpnListErrorLiveEvent;
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
@@ -32,15 +32,22 @@ public class VpnListViewModel extends ViewModel {
     VpnListViewModel(VpnRepository iRepository, AppExecutors iAppExecutors) {
         mRepository = iRepository;
         mAppExecutors = iAppExecutors;
-        mVpnListLiveData = iRepository.getVpnListLiveData();
+//        mVpnListLiveData = iRepository.getVpnListLiveDataSortedBy(AppConstants.SORT_BY_DEFAULT);
         mVpnServerCredentialsLiveEvent = iRepository.getVpnServerCredentialsLiveEvent();
         mVpnConfigLiveEvent = iRepository.getVpnConfigLiveEvent();
         mVpnConfigSaveLiveEvent = new SingleLiveEvent<>();
         mVpnListErrorLiveEvent = iRepository.getVpnListErrorLiveEvent();
     }
 
-    public LiveData<List<VpnListEntity>> getVpnListLiveData() {
-        return mVpnListLiveData;
+    /**
+     * Get VPN list LiveData sorted by different parameters
+     * like
+     *
+     * @param iSelectedSortType
+     * @return
+     */
+    public LiveData<List<VpnListEntity>> getVpnListLiveDataSearchSortFilterBy(String iSearchQuery, String iSelectedSortType, boolean toFilterByBookmark) {
+        return mRepository.getVpnListLiveDataSortedBy(iSearchQuery, iSelectedSortType, toFilterByBookmark);
     }
 
     public SingleLiveEvent<String> getVpnListErrorLiveEvent() {
@@ -104,5 +111,9 @@ public class VpnListViewModel extends ViewModel {
                 mVpnConfigSaveLiveEvent.postValue(Resource.error(e.getLocalizedMessage(), null));
             }
         });
+    }
+
+    public void toggleVpnBookmark(String iAccountAddress, String iIP) {
+        mRepository.toggleVpnBookmark(iAccountAddress, iIP);
     }
 }

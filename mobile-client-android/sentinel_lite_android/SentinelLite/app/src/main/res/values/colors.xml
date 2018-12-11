@@ -14,6 +14,7 @@
     <color name="colorTextWhite">#DDDDDD</color>
     <color name="colorTextWhiteWithAlpha70">#BADDDDDD</color>
     <color name="colorTextWhiteWithAlpha50">#80DDDDDD</color>
+    <color name="colorTextBlack">#1D1D27</color>
     <color name="colorTextDarkBlue">#32445c</color>
     <color name="colorTextGray">#AEB1B5</color>
     <color name="colorTextBlue">#4F749B</color>

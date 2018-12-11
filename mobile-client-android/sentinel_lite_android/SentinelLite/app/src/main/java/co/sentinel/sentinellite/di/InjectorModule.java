@@ -11,9 +11,8 @@ import co.sentinel.sentinellite.repository.AppVersionRepository;
 import co.sentinel.sentinellite.repository.BonusRepository;
 import co.sentinel.sentinellite.repository.VpnRepository;
 import co.sentinel.sentinellite.util.AppExecutors;
-import co.sentinel.sentinellite.viewmodel.DeviceRegisterViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
-import co.sentinel.sentinellite.viewmodel.RatingViewModel;
+import co.sentinel.sentinellite.viewmodel.DeviceRegisterViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.RatingViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.SplashViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnConnectedViewModelFactory;
@@ -41,7 +40,7 @@ public class InjectorModule {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aGenericWebService, aAppExecutors, iDeviceId);
+        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getBookmarkDao(), aGenericWebService, aAppExecutors, iDeviceId);
     }
 
     public static VpnUsageViewModelFactory provideVpnHistoryViewModelFactory(Context iContext, String iDeviceId) {

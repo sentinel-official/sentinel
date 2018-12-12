@@ -11,7 +11,7 @@
 }
 .dialogContentStyle > p > div input{
     color: #efb77c !important;
-    font-size: 18px !important;
+    font-size: 22px !important;
 }
 
 .dialogContentStyle > p > div:nth-child(1) > hr:focus{

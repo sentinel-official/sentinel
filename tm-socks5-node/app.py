@@ -1,26 +1,22 @@
 # coding=utf-8
-import json
-import sys
 import time
 from os import path
 from thread import start_new_thread
 
-from sentinel.config import CONFIG_DATA_PATH
-from sentinel.config import KEYSTORE_FILE_PATH
-from sentinel.node import Node
-from sentinel.node import create_account
-from sentinel.node import register_node
-# from sentinel.node import send_connections_info
-from sentinel.node import send_nodeinfo
+from sentinel.config import DEFAULT_GAS
+from sentinel.config import VERSION
+from sentinel.cosmos import call as cosmos_call
+from sentinel.node import list_node
+from sentinel.node import node
+from sentinel.node import update_node
 from sentinel.vpn import ShadowSocks
+# from sentinel.vpn import get_connections
 
 
 def alive_job():
     while True:
         try:
-            send_nodeinfo(node, {
-                'type': 'alive'
-            })
+            update_node('alive')
         except Exception as err:
             print(str(err))
         time.sleep(30)
@@ -31,69 +27,89 @@ def alive_job():
     #     try:
     #         vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
     #         if vpn_status_file is True:
-    #             connections = openvpn.get_connections()
-    #             connections_len = len(connections)
-    #             if connections_len > 0:
-    #                 send_connections_info(node.config['account_addr'], node.config['token'], connections)
+    #             _ = get_connections()
     #     except Exception as err:
     #         print(str(err))
     #     time.sleep(5)
 
 
-if __name__ == "__main__":
-    config = None
-    if path.exists(CONFIG_DATA_PATH) is True:
-        config = json.load(open(CONFIG_DATA_PATH, 'r'))
-        print('config iss: ', config)
-    else:
-        print('ERROR: {} not found.'.format(CONFIG_DATA_PATH))
-        exit(1)
-
-    if (len(config['account_addr']) == 0) and (len(sys.argv) > 1):
-        PASSWORD = sys.argv[1]
-        NAME = sys.argv[2]
-        keystore, account_addr = create_account(PASSWORD, NAME)
-        if (keystore is not None) and (account_addr is not None):
-            keystore_file = open(KEYSTORE_FILE_PATH, 'w')
-            keystore_file.writelines(keystore)
-            keystore_file.close()
-
-            config['account_addr'] = account_addr
+if __name__ == '__main__':
+    if node.config['account']['address'] is None:
+        error, resp = cosmos_call('generate_seed', None)
+        if error:
+            print(error)
+            exit(1)
         else:
-            print('Error occurred while creating a new account.')
+            error, resp = cosmos_call('get_keys', {
+                'seed': str(resp['seed']),
+                'name': node.config['account']['name'],
+                'password': node.config['account']['password']
+            })
+            if error:
+                print(error)
+                exit(2)
+            else:
+                node.update_info('config', {
+                    'account_seed': str(resp['seed']),
+                    'account_addr': str(resp['address']),
+                    'account_pubkey': str(resp['pub_key'])
+                })
+
+    node.update_info('location')
+    node.update_info('netspeed')
+
+    if node.config['register']['hash'] is None:
+        error, resp = cosmos_call('register_vpn_node', {
+            'ip': str(node.ip),
+            'upload_speed': int(node.net_speed['upload']),
+            'download_speed': int(node.net_speed['download']),
+            'price_per_gb': int(node.config['price_per_gb']),
+            'enc_method': str(node.config['enc_method']),
+            'location_latitude': int(node.location['latitude'] * 10000),
+            'location_longitude': int(node.location['longitude'] * 10000),
+            'location_city': str(node.location['city']),
+            'location_country': str(node.location['country']),
+            'node_type': 'Socks5',
+            'version': VERSION,
+            'name': str(node.config['account']['name']),
+            'password': str(node.config['account']['password']),
+            'gas': DEFAULT_GAS
+        })
+        if error:
+            print(error)
             exit(3)
-    elif (len(config['account_addr']) == 42) and (len(sys.argv) == 1):
-        pass
-    else:
-        print('Password is not provided OR `account_addr` in config is incorrect. \
-               Please try again after deleting config file.')
-        exit(2)
+        else:
+            node.update_info('config', {
+                'register_hash': str(resp['hash'])
+            })
 
+    if node.config['register']['token'] is None:
+        error, resp = list_node()
+        if error:
+            print(error)
+            exit(4)
+        else:
+            node.update_info('config', {
+                'register_token': str(resp['token'])
+            })
 
-    node = Node(config)
-    
-    print('value of node := ', node.config)
-    # openvpn = OpenVPN()
-    shadowsocks=ShadowSocks()
-    if len(node.config['token']) == 0:
-        register_node(node)
+    update_node('details')
+    shadowsocks = ShadowSocks()
     shadowsocks.start()
-    send_nodeinfo(node, {
-        'type': 'vpn'
-    })
     start_new_thread(alive_job, ())
     # start_new_thread(connections_job, ())
+
     while True:
         line = shadowsocks.vpn_proc.stdout.readline().strip()
         line_len = len(line)
         if line_len > 0:
-            print("Line..",line)
-    #         if 'Peer Connection Initiated with' in line:
-    #             client_name = line.split()[6][1:-1]
-    #             if 'client' in client_name:
-    #                 print('*' * 128)
-    #         elif 'client-instance exiting' in line:
-    #             client_name = line.split()[5].split('/')[0]
-    #             if 'client' in client_name:
-    #                 print('*' * 128)
-    #                 openvpn.revoke(client_name)
+            print(line)
+            # if 'Peer Connection Initiated with' in line:
+            #     client_name = line.split()[6][1:-1]
+            #     if 'client' in client_name:
+            #         print('*' * 128)
+            # elif 'client-instance exiting' in line:
+            #     client_name = line.split()[5].split('/')[0]
+            #     if 'client' in client_name:
+            #         print('*' * 128)
+            #         openvpn.revoke(client_name)

@@ -3,8 +3,11 @@ import json
 
 import falcon
 
-from sentinel.server import GetSockCreds
-from sentinel.server import Token
+from sentinel.server import AddSessionDetails
+from sentinel.server import AddSessionPaymentSign
+# from sentinel.server import DisconnectClient
+# from sentinel.server import GetCurrentUsage
+from sentinel.server import GetSock5Creds
 from sentinel.utils import JSONTranslator
 
 
@@ -21,5 +24,8 @@ class Up(object):
 server = falcon.API(middleware=[JSONTranslator()])
 
 server.add_route('/', Up())
-server.add_route('/token', Token())
-server.add_route('/creds', GetSockCreds())
+# server.add_route('/client/usage', GetCurrentUsage())
+# server.add_route('/client/disconnect', DisconnectClient())
+server.add_route('/session', AddSessionDetails())
+server.add_route('/session/credentials', GetSock5Creds())
+server.add_route('/session/sign', AddSessionPaymentSign())

@@ -1,10 +1,9 @@
 # coding=utf-8
 import subprocess
 
-from pymongo import ReturnDocument
+# from .helpers import revoke
+from ..node import node
 
-from ..config import LIMIT_1GB
-from ..db import db
 
 class ShadowSocks(object):
     def __init__(self, show_output=True):
@@ -33,52 +32,14 @@ class ShadowSocks(object):
             self.vpn_proc, self.pid = None, None
         return kill_proc.returncode
 
-    # def disconnect_client(self, client_name):
-    #     cmd = 'echo \'kill {}\' | nc 127.0.0.1 4200'.format(client_name)
-    #     disconnect_proc = subprocess.Popen(cmd, shell=True)
-    #     disconnect_proc.wait()
-
     # def revoke(self, client_name):
-    #     cmd = 'cd /usr/share/easy-rsa && echo yes | ./easyrsa revoke ' + \
-    #           client_name + ' && ./easyrsa gen-crl && ' + \
-    #           'chmod 755 pki/crl.pem && cp pki/crl.pem /etc/openvpn/keys'
-    #     revoke_proc = subprocess.Popen(cmd, shell=True)
-    #     revoke_proc.wait()
-    #     return revoke_proc.returncode
-
-    # def get_connections(self, client_name=None):
-    #     connections = []
-    #     status_log = open('/etc/openvpn/openvpn-status.log', 'r').readlines()
-    #     for line in status_log:
-    #         line = line.strip()
-    #         line_arr = line.split(',')
-    #         if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
-    #             client = db.clients.find_one_and_update({
-    #                 'session_name': str(line_arr[0])
-    #             }, {
-    #                 '$set': {
-    #                     'usage': {
-    #                         'up': int(line_arr[2]),
-    #                         'down': int(line_arr[3])
-    #                     }
-    #                 }
-    #             }, projection={
-    #                 '_id': 0,
-    #                 'token': 0
-    #             },
-    #                 return_document=ReturnDocument.AFTER)
-    #             if client['usage']['down'] >= LIMIT_1GB:
-    #                 self.disconnect_client(client['session_name'])
-    #             connections.append(client)
-    #         elif 'ROUTING TABLE' in line:
-    #             break
-    #     return connections
+    #     return revoke(client_name)
 
 
 # class Keys(object):
-#     def __init__(self, name, show_output=True):
-#         self.gen_cmd = 'sh /root/sentinel/shell_scripts/gen_keys.sh ' + name
-#         self.ovpn_path = '/etc/openvpn/client' + name + '.ovpn'
+#     def __init__(self, session_id, show_output=True):
+#         self.gen_cmd = 'sh /root/sentinel/shell_scripts/gen_keys.sh ' + session_id
+#         self.ovpn_path = '/etc/openvpn/client' + session_id + '.ovpn'
 #         if show_output is False:
 #             self.gen_cmd += ' >> /dev/null 2>&1'
 

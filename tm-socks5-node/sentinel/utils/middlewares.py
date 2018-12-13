@@ -3,7 +3,7 @@ import json
 
 
 class JSONTranslator(object):
-    def process_request(self, req, resp):
+    def process_request(self, req, _):
         body = req.stream.read()
         try:
             req.body = json.loads(body.decode('utf-8'))

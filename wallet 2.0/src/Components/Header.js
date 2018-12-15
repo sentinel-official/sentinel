@@ -70,7 +70,7 @@ class Header extends Component {
             })
             if (this.props.tmAccountDetails) {
                 this.props.getTMBalance(this.props.tmAccountDetails.address);
-                this.props.setCurrentTab(currentTab);
+                this.props.setCurrentTab('vpnList');
             }
             else {
                 this.props.setCurrentTab('receive');
@@ -207,7 +207,7 @@ class Header extends Component {
                         <Col xs={2}>
                             {isTendermint ?
                                 (tmAccountDetails ?
-                                    < div style={headerStyles.tmBalance} >
+                                    < div style={headerStyles.tmBalance}  >
 
                                         <Row>
                                             <Col xs={6} style={headerStyles.balanceHead}> {lang[language].TSent} </Col>
@@ -222,7 +222,7 @@ class Header extends Component {
                                     : null)
                                 :
                                 <Row>
-                                    <Col xs={12}>
+                                    <Col xs={12} style={{ marginLeft:-55}}>
                                         <div style={headerStyles.sentBalance}>
                                             <Row>
                                                 <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestSENTunit : lang[language].Sent} </Col>

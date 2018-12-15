@@ -196,25 +196,38 @@ class Footer extends Component {
             <div style={footerStyles.mainDivStyle} className="footerStyle">
                 <Grid>
                     <Row>
-                        <Col xs={3} style={footerStyles.firstColumn}>
+
+                        {
+                            this.props.isTest ?
+                            <Col xs={3} style={footerStyles.firstColumn}>
                             <p style={footerStyles.testLabelStyle}>
                                 {
                                     isOnline() ?
                                         this.props.isTm ?
-                                            <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].TMTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span> :
-                                            this.props.isTest ?
+                                            <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].TMTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span> 
+                                            :
+                                            <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
+                                            :                                              
+                                                                                   
+                                            <span><span style={footerStyles.redDot}></span>{lang[language].OfflineInFooter}</span>
+                                }
+                            </p>
+                        </Col>
 
+                        :
 
-                                                <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
-
-                                                :
-
-                                                <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHMainNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
+                        <Col xs={12} style={footerStyles.firstColumn}>
+                            <p style={footerStyles.testLabelStyle}>
+                                {
+                                    isOnline() ?
+                                        <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHMainNet}</span><span style={footerStyles.activated}>{lang[language].Activated}<span style={footerStyles.activateTestNet}>{lang[language].ActivateTestNet}</span></span></span>
                                         :
                                         <span><span style={footerStyles.redDot}></span>{lang[language].OfflineInFooter}</span>
                                 }
                             </p>
                         </Col>
+                        }
+                        
                         {
                             vpnStatus ?
                                 <Col xs={9} style={footerStyles.vpnConnected}>

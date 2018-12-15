@@ -317,6 +317,7 @@ let lang = {
         'TotalPayment':'Total Payment',
         "ReleasedFromSession":"Released From dVPNSession",
         'PeerToPeerMarket': 'Peer-to-peer marketplace for exchange of distributed resources  and application multi chain governance for secure services and privacy focused token transactions',
+        "ActivateTestNet" : "(for dVPN, activate TestNet)",
     },
 
 
@@ -639,6 +640,7 @@ let lang = {
         'TotalPayment':'Toplam Ödeme',
         "ReleasedFromSession":"dVPNSession' dan bırakıldı",
         'PeerToPeerMarket': 'Gizlilik odaklı tokenların aracılar olmadan transferi için çoklu zincir yönetimi ve dağıtılmış kaynak marketi',
+        "ActivateTestNet" : "(for dVPN, activate TestNet)",
     },
 
 
@@ -964,6 +966,7 @@ let lang = {
         'TotalPayment':'Total Payment',
         "ReleasedFromSession":"Released From dVPNSession",
         'PeerToPeerMarket': 'Peer-to-peer marketplace for exchange of distributed resources  and application multi chain governance for secure services and privacy focused token transactions',
+        "ActivateTestNet" : "(for dVPN, activate TestNet)",
     },
     es: {
         'History': 'HISTORIAL',
@@ -1285,6 +1288,7 @@ let lang = {
         'TotalPayment':'Total Payment',
         "ReleasedFromSession":"Released From dVPNSession",
         'PeerToPeerMarket': 'Peer-to-peer marketplace for exchange of distributed resources  and application multi chain governance for secure services and privacy focused token transactions',  
+        "ActivateTestNet" : "(for dVPN, activate TestNet)",
     },
     ru: {
         "History": "История",
@@ -1606,6 +1610,7 @@ let lang = {
         'TotalPayment':'Total Payment',
         "ReleasedFromSession":"Осталось после сеанса",
         'PeerToPeerMarket': 'Пиринговый рынок для обмена распределенными ресурсами и мульти-чейн управлением приложениями для сервисов защиты и транзакций с  приватными токенами',  
+        "ActivateTestNet" : "(for dVPN, activate TestNet)", 
   
     },
 
@@ -1931,6 +1936,7 @@ let lang = {
         'TotalPayment':'总付费',
         "ReleasedFromSession":"已从dVPN会话释放",
         'PeerToPeerMarket': '用于交易分布式资源的点对点市场，及用于安全服务及以隐私为中心的代币交易的多链管理应用程序',
+        "ActivateTestNet" : "(for dVPN, activate TestNet)",
 
     },
 }

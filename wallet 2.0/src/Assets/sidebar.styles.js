@@ -45,11 +45,11 @@ const sidebarStyles = {
         fontFamily: 'Montserrat',
         backgroundColor: 'rgba(48, 50, 70, 0.16)'
     },
-    iconDisabledDivStyle: {
+    IconDisabledDivStyle: {
         padding: '16px 0px 0px 0px',
         textAlign: 'center',
         fontFamily: 'Montserrat',
-        cursor: 'pointer' // changed from not-allowed
+        cursor: 'not-allowed' // changed from not-allowed
     },
 
     activeLabelStyle: {
@@ -73,7 +73,7 @@ const sidebarStyles = {
         // padding: '16px 10px 7px 25px',
         fontSize: 16,
         color: '#CECECE',
-        cursor: 'pointer', // changed from not-allowed
+        cursor: 'not-allowed', // changed from not-allowed
      
 
     },

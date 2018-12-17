@@ -68,11 +68,13 @@ const headerStyles = {
         color: '#FAFAFA',
         marginTop: '-5%'
     },
+  
     tmBalance: {
         fontSize: 14,
         fontWeight: '600',
         color: '#FAFAFA',
-        marginTop: '1%'
+        marginTop: '1%',
+        marginLeft:-110,
     },
     sentBalance: {
         fontSize: 14,
@@ -98,7 +100,7 @@ const headerStyles = {
     },
     tmBalanceText: {
         textOverflow: 'ellipsis',
-        overflow: 'hidden',
+        // overflow: 'hidden',
         width: 80
     },
     bal: {

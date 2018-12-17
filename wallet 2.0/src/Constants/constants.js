@@ -11,10 +11,22 @@ module.exports = {
 
     notTestItemIcons: [
 
+        // {
+        //     'name': 'ETH',
+        //     'value': 'eth',
+        //     'icon': 'ethereumIcon'
+        // },
+
         {
-            'name': 'ETH',
-            'value': 'eth',
-            'icon': 'ethereumIcon'
+            'name': 'VpnList',
+            'value': 'vpnList',
+            'icon': 'listIcon'
+        },
+
+        {
+            'name': 'VpnHistory',
+            'value': 'vpnHistory',
+            'icon': 'vpnHisIcon'
         },
 
         {
@@ -36,17 +48,17 @@ module.exports = {
     ],
 
     testMenuItemsIcons: [
-        {
-            'name': 'TM',
-            'value': 'tmint',
-            'icon': 'tmintIcon'
-        },
+        // {
+        //     'name': 'TM',
+        //     'value': 'tmint',
+        //     'icon': 'tmintIcon'
+        // },
 
-        {
-            'name': 'ETH',
-            'value': 'eth',
-            'icon': 'ethereumIcon'
-        },
+        // {
+        //     'name': 'ETH',
+        //     'value': 'eth',
+        //     'icon': 'ethereumIcon'
+        // },
 
         {
             'name': 'VpnList',

@@ -1,7 +1,7 @@
 let lang = {
     zh: {
         'History': '历史记录',
-        'EthTransactions': 'ETH 交易',
+        'EthTransactions': 'ETH交易',
         'SentTransactions': 'SENT 交易',
         'TestEthTransactions': 'TestETH 交易',
         'TestSentTransactions': 'TestSENT 交易',
@@ -16,9 +16,10 @@ let lang = {
         'ExchangeERC': '将ERC20代币兑换为SENT代币',
         'From': '从',
         'Amount': '数量',
-        'GasLimit': '燃料限值',
+        'GasLimit': 'Gas限值',
         'Password': '密码',
-        'GasPrice': '燃料价格',
+        'GasPrice': 'Gas价格',
+
         'Next': '下一步',
         'Back': '返回',
         'Out': '转出',
@@ -80,12 +81,12 @@ let lang = {
         'Connect': '连接',
         'Submit': '提交',
         'TestMode': '测试模式已激活',
-        'AnonymousVPN': '由区块链保障安全性的匿名VPN',
-        'OpenSource': '开源钱包和安全服务平台',
+        'AnonymousVPN': '由区块链安全性提供支持的匿名dVPN',
+        'OpenSource': '开源的$SENT钱包和安全的dVPN',
         'CreateRestore': '创建/恢复钱包',
-        'SentinelAnonymity': 'Sentinel匿名平台',
+        'SentinelAnonymity': 'Sentinel网络',
         'PeerToPeer': '适用于多链的点对点基于ERC隐私应用程序套件，提供无燃料费用服务及匿名ERC代币交易',
-        'BetaVersion': '带有测试网络的测试版0.1.01',
+        'BetaVersion': '带有ETH Rinkeby测试网和Tendermint测试网的测试版0.1.0',
         'InitialPayment': '初始付款提醒',
         'InorderVPN': '为了使用VPN，首次需要先支付100 SENT。请支付，然后尝试连接到VPN',
         'CreateAUID': '创建您的匿名用户ID',
@@ -315,12 +316,12 @@ let lang = {
         "Socks5ComingSoon" : "SOCKS5 （即将推出）",
         "PrivateComingSoon" : "私有网络（即将推出）",
         "VersionInSidebar":"dVPN - alpha-0.1.01",
-        "LockedForSession" : "被锁定用于会话",
+        "LockedForSession" : "被锁定用于dVPN会话",
 
         'TotalPayment':'总付费',
-        "ReleasedFromSession":"已从会话中释放",
-        'PeerToPeerMarket': 'Peer-to-peer marketplace for exchange of distributed resources  and application multi chain governance for secure services and privacy focused token transactions',  
-
+        "ReleasedFromSession":"已从dVPN会话释放",
+        'PeerToPeerMarket': '用于交易分布式资源的点对点市场，及用于安全服务及以隐私为中心的代币交易的多链管理应用程序',
+        "ActivateTestNet" : "(for dVPN, activate TestNet)",
 
     },
 }

@@ -87,6 +87,11 @@ const footerStyles = {
     name:{
         marginLeft:-15,
     },
+
+    activateTestNet:{
+        marginLeft:5,
+        color:'white'
+    },
     activated:{
         display:'block',
         marginLeft:35,

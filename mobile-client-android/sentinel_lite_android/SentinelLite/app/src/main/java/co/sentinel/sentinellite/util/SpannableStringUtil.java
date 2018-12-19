@@ -72,9 +72,15 @@ public class SpannableStringUtil {
          * @param subString the sub-string which is to be styled
          */
         public SpannableStringUtilBuilder(String string, String subString) {
-            this.string = string;
-            this.startIndex = string.indexOf(subString);
-            this.endIndex = string.length();
+            if (string != null && subString != null) {
+                this.string = string;
+                this.startIndex = string.indexOf(subString);
+                this.endIndex = string.length();
+            } else {
+                this.string = "";
+                this.startIndex = 0;
+                this.endIndex = 0;
+            }
         }
 
         public SpannableStringUtilBuilder relativeSize(float relativeSize) {

@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,6 +83,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavMenuView, mNavFooter;
     private Toolbar mToolbar;
+    private TextView mTvToolbarTitle;
+    private ImageView mIvToolbarIcon;
     private SwitchCompat mSwitchNet;
     private TextView mSwitchState;
     private AppCompatImageButton mIbSearch, mIbSort, mIbCloseSearch, mIbClearSearch;
@@ -268,6 +271,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
      */
     private void initView() {
         mToolbar = findViewById(R.id.toolbar);
+        mTvToolbarTitle = findViewById(R.id.toolbar_title);
+        mIvToolbarIcon = findViewById(R.id.toolbar_icon);
         mSwitchNet = findViewById(R.id.switch_net);
         mSwitchState = findViewById(R.id.tv_switch_state);
         mIbSearch = findViewById(R.id.ib_search);
@@ -335,8 +340,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
      * @param iTitle [String] The title to be shown in the toolbar
      */
     protected void setToolbarTitle(String iTitle) {
-        findViewById(R.id.toolbar_icon).setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
-        ((TextView) findViewById(R.id.toolbar_title)).setText(iTitle);
+        if (mIvToolbarIcon != null)
+            mIvToolbarIcon.setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
+        if (mTvToolbarTitle != null)
+            mTvToolbarTitle.setText(iTitle);
     }
 
     /*

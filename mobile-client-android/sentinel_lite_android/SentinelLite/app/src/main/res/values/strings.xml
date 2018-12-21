@@ -243,7 +243,7 @@
     <string name="action_confirm">Confirm</string>
     <string name="action_enter_address">Enter Address</string>
     <string name="filter_by_title">Filters</string>
-    <string name="filter_by_bookmark">Show bookmarks only</string>
+    <string name="filter_by_bookmark">Show favourites only</string>
     <string name="sort_by_title">Sort By</string>
     <string name="sort_by_default">Default</string>
     <string name="sort_by_country_a">Country</string>
@@ -257,5 +257,7 @@
     <string name="sort_by_rating_i">Rating ↑</string>
     <string name="sort_by_rating_d">Rating</string>
     <string name="hint_search_vpn_list">Search by country</string>
+    <string name="alert_bookmark_added">VPN added to favourites</string>
+    <string name="alert_bookmark_removed">VPN removed from favourites</string>
 
 </resources>

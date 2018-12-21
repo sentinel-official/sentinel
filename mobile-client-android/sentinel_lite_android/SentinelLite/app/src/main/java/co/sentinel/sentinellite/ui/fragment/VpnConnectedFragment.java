@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -158,6 +159,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mIbBookmark.setOnClickListener(v -> {
             if (mVpnEntity != null) {
                 mViewModel.toggleVpnBookmark(mVpnEntity.getAccountAddress(), mVpnEntity.getIp());
+                Toast.makeText(getContext(), mVpnEntity.isBookmarked() ? R.string.alert_bookmark_removed : R.string.alert_bookmark_added, Toast.LENGTH_SHORT).show();
             }
         });
     }

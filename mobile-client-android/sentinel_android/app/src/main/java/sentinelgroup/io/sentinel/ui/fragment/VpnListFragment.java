@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
@@ -309,6 +310,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     @Override
     public void onBookmarkClicked(VpnListEntity iItemData) {
         mViewModel.toggleVpnBookmark(iItemData.getAccountAddress(), iItemData.getIp());
+        Toast.makeText(getContext(), iItemData.isBookmarked() ? R.string.alert_bookmark_removed : R.string.alert_bookmark_added, Toast.LENGTH_SHORT).show();
     }
 
     public void getVpnListLiveDataSearchSortFilterBy(String iSearchQuery, String iSelectedSortType, boolean toFilterByBookmark) {

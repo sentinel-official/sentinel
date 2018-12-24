@@ -124,7 +124,7 @@ let lang = {
         'ERC20WalletCopy': '复制ERC20 Sent钱包地址',
         'TMWalletCopy': '复制Tendermint钱包地址',
         'TestSent': '测试网',
-        'Sent': '已发送',
+        'Sent': 'SENT',
         'Eth': 'ETH',
         'TestEth': '测试ETH',
         'TestNetTM': 'TENDERMINT测试网',
@@ -322,6 +322,8 @@ let lang = {
         "ReleasedFromSession":"已从dVPN会话释放",
         'PeerToPeerMarket': '用于交易分布式资源的点对点市场，及用于安全服务及以隐私为中心的代币交易的多链管理应用程序',
         "ActivateTestNet" : "(for dVPN, activate TestNet)",
+        "CannotSwitch" : "Can not switch TestNet when dVPN is connected" ,
+        "LessBalance":"您没有足够的余额来进行交易",
 
     },
 }

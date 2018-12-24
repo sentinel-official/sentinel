@@ -19,6 +19,7 @@ import lang from '../Constants/language';
 
 const electron = window.require('electron');
 const remote = electron.remote;
+let tmCurrentBalance = 0;
 
 
 const Customstyles = theme => ({
@@ -66,7 +67,12 @@ class TMTransfer extends Component {
 
     sendTransaction = () => {
         this.setState({ sending: true })
-        if (this.props.vpnPayment.isPayment) {
+        if (tmCurrentBalance < this.state.amount) {
+            this.setState({
+                sending: false, openSnack: true, snackMessage: lang[this.props.language].LessBalance
+            })
+        }
+        else if (this.props.vpnPayment.isPayment) {
             checkVPNDependencies(remote.process.platform, (otherErr, winErr) => {
                 if (otherErr) {
                     this.setState({ sending: false, openSnack: true, snackMessage: otherErr.message });
@@ -168,7 +174,11 @@ class TMTransfer extends Component {
     };
 
     render() {
-        let { classes, language } = this.props;
+        let { classes, language, balance } = this.props;
+        let balValue = (typeof balance === 'object' && balance !== null) ? ('value' in balance ? balance.value : {}) : {};
+        let coins = (typeof balValue === 'object' && balValue !== null) ? ('coins' in balValue ? balValue.coins : []) : [];
+        let token = coins && coins.length !== 0 ? coins.find(o => o.denom === 'sut') : {};
+        tmCurrentBalance = token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 0;
         let isDisabled = (this.state.sending || this.state.keyPassword === '' ||
             this.state.toAddress === '' || this.state.amount === '') ? true : false
         return (
@@ -227,7 +237,8 @@ function mapStateToProps(state) {
         language: state.setLanguage,
         isTest: state.setTestNet,
         account: state.setTMAccount,
-        vpnPayment: state.payVPNTM
+        vpnPayment: state.payVPNTM,
+        balance: state.tmBalance,
     }
 }
 

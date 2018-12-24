@@ -20,13 +20,13 @@ module.exports = {
         {
             'name': 'VpnList',
             'value': 'vpnList',
-            'icon': 'listIcon'
+            'icon': 'vpnHisIcon'
         },
 
         {
             'name': 'VpnHistory',
             'value': 'vpnHistory',
-            'icon': 'vpnHisIcon'
+            'icon': 'listIcon'
         },
 
         {
@@ -63,13 +63,13 @@ module.exports = {
         {
             'name': 'VpnList',
             'value': 'vpnList',
-            'icon': 'listIcon'
+            'icon': 'vpnHisIcon'
         },
 
         {
             'name': 'VpnHistory',
             'value': 'vpnHistory',
-            'icon': 'vpnHisIcon'
+            'icon': 'listIcon'
         },
 
         {
@@ -95,13 +95,13 @@ module.exports = {
         {
             'name': 'VpnList',
             'value': 'vpnList',
-            'icon': 'listIcon'
+            'icon': 'vpnHisIcon'
         },
 
         {
             'name': 'VpnHistory',
             'value': 'vpnHistory',
-            'icon': 'vpnHisIcon'
+            'icon': 'listIcon'
         },
 
         {

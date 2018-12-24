@@ -114,7 +114,7 @@ class Header extends Component {
             }
         }
 
-     
+
         else {
             this.props.setTendermint(false);
             this.props.getETHBalance(this.props.walletAddress);
@@ -171,7 +171,7 @@ class Header extends Component {
                         <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
                                 <span style={headerStyles.basicWallet}>
-                                {isTendermint ?  lang[language].WalletTM : lang[language].WalletERC } {lang[language].WalletAddress} </span>
+                                    {isTendermint ? lang[language].WalletTM : lang[language].WalletERC} {lang[language].WalletAddress} </span>
                             </div>
                             <Row>
                                 <Col xs={8}><span
@@ -185,7 +185,7 @@ class Header extends Component {
                                 </Col>
                                 <Col xs={4}>
                                     {isTendermint && !tmAccountDetails ? null :
-                                        <Tooltip title={isTendermint ?lang[language].TMWalletCopy : lang[language].ERC20WalletCopy  }>
+                                        <Tooltip title={isTendermint ? lang[language].TMWalletCopy : lang[language].ERC20WalletCopy}>
 
                                             <CopyToClipboard text={
                                                 isTendermint ?
@@ -222,7 +222,7 @@ class Header extends Component {
                                     : null)
                                 :
                                 <Row>
-                                    <Col xs={12} style={{ marginLeft:-55}}>
+                                    <Col xs={12} style={{ marginLeft: -55 }}>
                                         <div style={headerStyles.sentBalance}>
                                             <Row>
                                                 <Col xs={6} style={headerStyles.balanceHead}> {this.props.isTest ? lang[language].TestSENTunit : lang[language].Sent} </Col>
@@ -258,17 +258,20 @@ class Header extends Component {
 
 
                         <Col xs={2} style={headerStyles.alignRight}>
-                            <div style={headerStyles.columnStyle}>
-                                <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
-                            </div>
+                                <div style={headerStyles.columnStyle}>
+                                    <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
+                                </div>
+
+                         <Tooltip title={this.props.vpnStatus ? lang[language].CannotSwitch : ''}>
                             <div style={headerStyles.toggleStyle}>
-                                <Switch
+                               <Switch
                                     disabled={this.props.vpnStatus}
                                     checked={this.props.isTest}
                                     onChange={this.testNetChange()}
                                     color="primary"
                                 />
-                            </div>
+                               </div>
+                               </Tooltip>
                         </Col>
 
 
@@ -281,18 +284,18 @@ class Header extends Component {
 
                             >
 
-                         
+
                                 <Select
                                     displayEmpty
                                     disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
-                                    value={this.props.walletValue}                                    onChange={this.tendermintChange()}
+                                    value={this.props.walletValue} onChange={this.tendermintChange()}
 
                                     className={this.props.isTest ? 'dropDownStyle' : 'disabledDropDownStyle'}
                                 >
-                                    
+
                                     <MenuItem value='TM'>
                                         <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
-                                         style={ isTest ? { width: 15, paddingRight: 5, marginTop: -5 } : { width: 15, paddingRight: 5, marginTop: -5,opacity:0.2 }} />
+                                            style={isTest ? { width: 15, paddingRight: 5, marginTop: -5 } : { width: 15, paddingRight: 5, marginTop: -5, opacity: 0.2 }} />
 
                                         {lang[language].TestNetTM}
                                     </MenuItem>
@@ -326,8 +329,8 @@ class Header extends Component {
                                     </IconButton>
                                 </Tooltip>
                             }
-                       </Col>
-                    
+                        </Col>
+
                     </Row>
                 </Grid>
                 <Snackbar

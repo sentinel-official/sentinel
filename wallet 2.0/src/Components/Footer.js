@@ -245,10 +245,18 @@ class Footer extends Component {
                                             </p>
                                         </Col>
                                         <Col xs={2} style={footerStyles.vpnConnected}>
-                                            <label style={footerStyles.headingStyle}>{lang[language].Location}</label>
-                                            <p style={footerStyles.valueStyle}>
-                                                {localStorage.getItem('LOCATION')}
-                                            </p>
+                                            {/* <label style={footerStyles.headingStyle}>{lang[language].Location}</label> */}
+                                          
+                                          <span><img src={'../src/Images/location.svg'} alt="location" width="15px" className="location-icon"/></span>
+                                           
+                                           
+                                          <Tooltip title={localStorage.getItem('LOCATION')}>
+                                        
+                                            <div>
+                                                <p className="location-style">{localStorage.getItem('LOCATION')} </p>
+                                               
+                                            </div>
+                                            </Tooltip>
                                         </Col>
 
                                         <Col xs={3} style={footerStyles.vpnConnected}>

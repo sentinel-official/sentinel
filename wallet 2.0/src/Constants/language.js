@@ -318,6 +318,8 @@ let lang = {
         "ReleasedFromSession":"Released From dVPNSession",
         'PeerToPeerMarket': 'Peer-to-peer marketplace for exchange of distributed resources  and application multi chain governance for secure services and privacy focused token transactions',
         "ActivateTestNet" : "(for dVPN, activate TestNet)",
+        "CannotSwitch" : "Can not switch TestNet when dVPN is connected" ,
+        "LessBalance":"You don't have enough balance to do transaction",
     },
 
 
@@ -375,7 +377,7 @@ let lang = {
         'Duration': 'Süre',
         'DownloadUsage': 'Yükleme Kullanımı',
         'UploadUsage': 'Yükleme kullanımı',
-        'Disconnect': 'Bağlantı Kesildi',
+        'Disconnect': 'kesmek',
         'DisconnectVPN': 'VPN Bağlantısı Kesiliyor...',
         'ConnectedVPN': "VPN' e Bağlanıyor",
         'Disconnecting': 'Bağlantı Kesiliyor...',
@@ -641,6 +643,9 @@ let lang = {
         "ReleasedFromSession":"dVPNSession' dan bırakıldı",
         'PeerToPeerMarket': 'Gizlilik odaklı tokenların aracılar olmadan transferi için çoklu zincir yönetimi ve dağıtılmış kaynak marketi',
         "ActivateTestNet" : "(for dVPN, activate TestNet)",
+        "CannotSwitch" : "Can not switch TestNet when dVPN is connected", 
+        "LessBalance":"You don't have enough balance to do transaction",
+
     },
 
 
@@ -967,6 +972,9 @@ let lang = {
         "ReleasedFromSession":"Released From dVPNSession",
         'PeerToPeerMarket': 'Peer-to-peer marketplace for exchange of distributed resources  and application multi chain governance for secure services and privacy focused token transactions',
         "ActivateTestNet" : "(for dVPN, activate TestNet)",
+        "CannotSwitch" : "Can not switch TestNet when dVPN is connected",
+        "LessBalance":"You don't have enough balance to do transaction",
+
     },
     es: {
         'History': 'HISTORIAL',
@@ -1289,6 +1297,9 @@ let lang = {
         "ReleasedFromSession":"Released From dVPNSession",
         'PeerToPeerMarket': 'Peer-to-peer marketplace for exchange of distributed resources  and application multi chain governance for secure services and privacy focused token transactions',  
         "ActivateTestNet" : "(for dVPN, activate TestNet)",
+        "CannotSwitch" : "Can not switch TestNet when dVPN is connected" ,
+        "LessBalance":"You don't have enough balance to do transaction",
+
     },
     ru: {
         "History": "История",
@@ -1611,6 +1622,8 @@ let lang = {
         "ReleasedFromSession":"Осталось после сеанса",
         'PeerToPeerMarket': 'Пиринговый рынок для обмена распределенными ресурсами и мульти-чейн управлением приложениями для сервисов защиты и транзакций с  приватными токенами',  
         "ActivateTestNet" : "(for dVPN, activate TestNet)", 
+        "CannotSwitch" : "Can not switch TestNet when dVPN is connected" ,
+        "LessBalance":"You don't have enough balance to do transaction",
   
     },
 
@@ -1739,7 +1752,7 @@ let lang = {
         'ERC20WalletCopy': '复制ERC20 Sent钱包地址',
         'TMWalletCopy': '复制Tendermint钱包地址',
         'TestSent': '测试网',
-        'Sent': '已发送',
+        'Sent': 'SENT',
         'Eth': 'ETH',
         'TestEth': '测试ETH',
         'TestNetTM': 'TENDERMINT测试网',
@@ -1937,6 +1950,8 @@ let lang = {
         "ReleasedFromSession":"已从dVPN会话释放",
         'PeerToPeerMarket': '用于交易分布式资源的点对点市场，及用于安全服务及以隐私为中心的代币交易的多链管理应用程序',
         "ActivateTestNet" : "(for dVPN, activate TestNet)",
+        "CannotSwitch" : "Can not switch TestNet when dVPN is connected" ,
+        "LessBalance":"您没有足够的余额来进行交易",
 
     },
 }

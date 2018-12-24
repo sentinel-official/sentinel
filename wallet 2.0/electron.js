@@ -16,6 +16,7 @@ if (process.env.ELECTRON_START_URL) {
 }
 
 var showPrompt = true;
+var showTmPrompt = true;
 var vpnType = 'openvpn';
 const SENT_DIR = getUserHome() + '/.sentinel';
 const CONFIG_FILE = SENT_DIR + '/config';
@@ -40,26 +41,59 @@ function windowManager() {
 
     this.window.on('close', async (e) => {
       let self = this;
-      if (process.platform === 'win32')
-        exec('taskkill /IM gaiacli.exe /F', (err, std, sto) => { });
-      else
-        exec('killall gaiacli', (err, std, sto) => { });
-      let isTM = await getTmLocal();
+      let isTM = false;
+      e.preventDefault();
+      let event = e;
+      if (mainWindow.window) {
+        isTM = await getTmLocal();
+      }
+      showTmPrompt = true;
       if (isTM === 'true') {
         isTMVPNConnected(function (isConnected) {
-          if (isConnected) {
-            stopVPN(function (err) {
-              self.window = null;
-              app.quit();
-            });
-          } else {
+          if (showTmPrompt && isConnected) {
+            // e.preventDefault();
+            let res = dialog.showMessageBox({
+              type: 'question',
+              buttons: ['OK', 'Cancel'],
+              title: 'Confirm',
+              message: 'Do you want to disconnect the current dVPN Session and close the app?'
+            })
+            if (!res) {
+              showTmPrompt = false;
+              stopVPN(function (err) {
+                if (process.platform === 'win32')
+                  exec('taskkill /IM gaiacli.exe /F', (err, std, sto) => { });
+                else
+                  exec('killall gaiacli', (err, std, sto) => { });
+                self.window = null;
+                event.defaultPrevented = false;
+                app.quit();
+              });
+            }
+            else {
+              // self.window = null;
+              showTmPrompt = false;
+              event.defaultPrevented = false;
+              // app.quit();
+            }
+          }
+          else {
+            if (process.platform === 'win32')
+              exec('taskkill /IM gaiacli.exe /F', (err, std, sto) => { });
+            else
+              exec('killall gaiacli', (err, std, sto) => { });
             self.window = null;
-            showPrompt = false;
+            showTmPrompt = false;
+            e.defaultPrevented = false;
             app.quit();
           }
         })
       } else {
-        isVPNConnected(function (isConnected) {
+        isVPNConnected((isConnected) => {
+          if (process.platform === 'win32')
+            exec('taskkill /IM gaiacli.exe /F', (err, std, sto) => { });
+          else
+            exec('killall gaiacli', (err, std, sto) => { });
           if (showPrompt && isConnected) {
             // e.preventDefault();
             let res = dialog.showMessageBox({
@@ -72,18 +106,21 @@ function windowManager() {
               showPrompt = false;
               stopVPN(function (err) {
                 self.window = null;
+                event.defaultPrevented = false;
                 app.quit();
               });
             }
             else {
               self.window = null;
               showPrompt = false;
+              event.defaultPrevented = false;
               app.quit();
             }
           }
           else {
             self.window = null;
             showPrompt = false;
+            event.defaultPrevented = false;
             app.quit();
           }
         });

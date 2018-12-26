@@ -136,3 +136,20 @@ def add_tx(tx):
                }, None
     except Exception as error:
         return str(error), None
+
+
+def get_free_coins():
+    body = {
+        "address": node.config['account']['address']
+    }
+    url = 'http://tm-api.sentinelgroup.io:3000/get-tokens'
+    try:
+        response = fetch().post(url, json=body)
+        if response and response.status_code == 200:
+            return None
+        return {
+            'code': 2,
+            'message': 'Response status code is not 200.'
+        }
+    except Exception as error:
+        return str(error)

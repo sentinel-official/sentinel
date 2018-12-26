@@ -8,6 +8,7 @@ from sentinel.config import VERSION
 from sentinel.cosmos import call as cosmos_call
 from sentinel.helpers import end_session
 from sentinel.helpers import update_session_status
+from sentinel.node import get_free_coins
 from sentinel.node import list_node
 from sentinel.node import node
 from sentinel.node import update_node
@@ -42,6 +43,14 @@ def sessions_job():
 
 
 if __name__ == '__main__':
+    print()
+    account_name = raw_input('Please enter account name: ')
+    account_password = raw_input('Please enter account password: ')
+    node.update_info('config', {
+        'account_name': account_name,
+        'account_password': account_password,
+    })
+
     if node.config['account']['address'] is None:
         error, resp = cosmos_call('generate_seed', None)
         if error:
@@ -58,10 +67,12 @@ if __name__ == '__main__':
                 exit(2)
             else:
                 node.update_info('config', {
-                    'account_seed': str(resp['seed']),
-                    'account_addr': str(resp['address']),
-                    'account_pubkey': str(resp['pub_key'])
+                    'account_address': str(resp['address'])
                 })
+                error = get_free_coins()
+                if error is not None:
+                    print(error)
+                    exit(3)
 
     node.update_info('location')
     node.update_info('netspeed')
@@ -86,7 +97,7 @@ if __name__ == '__main__':
         })
         if error:
             print(error)
-            exit(3)
+            exit(4)
         else:
             node.update_info('config', {
                 'register_hash': str(resp['hash'])
@@ -96,7 +107,7 @@ if __name__ == '__main__':
         error, resp = list_node()
         if error:
             print(error)
-            exit(4)
+            exit(5)
         else:
             node.update_info('config', {
                 'register_token': str(resp['token'])

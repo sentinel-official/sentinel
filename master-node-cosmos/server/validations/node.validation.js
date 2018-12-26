@@ -22,7 +22,7 @@ let updateNode = (req, res, next) => {
       IP: joi.string(),
       pricePerGB: joi.number(),
       encMethod: joi.string(),
-      description: joi.string(),
+      description: joi.string().allow(''),
       location: joi.object().keys({
         latitude: joi.number().required(),
         longitude: joi.number().required(),
@@ -87,7 +87,7 @@ let updateNodeSession = (req, res, next) => {
     token: joi.string().required(),
     sessionId: joi.string().required(),
     sessionToken: joi.string().required(),
-    sessionAmount: joi.number().required()
+    sessionAmount: joi.string().required()
   });
   let body = Object.assign({}, req.body, req.params);
   let { error } = joi.validate(body, updateNodeSessionSchema);

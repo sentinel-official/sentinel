@@ -158,8 +158,8 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     private void initListeners() {
         mIbBookmark.setOnClickListener(v -> {
             if (mVpnEntity != null) {
-                mViewModel.toggleVpnBookmark(mVpnEntity.getAccountAddress(), mVpnEntity.getIp());
                 Toast.makeText(getContext(), mVpnEntity.isBookmarked() ? R.string.alert_bookmark_removed : R.string.alert_bookmark_added, Toast.LENGTH_SHORT).show();
+                mViewModel.toggleVpnBookmark(mVpnEntity.getAccountAddress(), mVpnEntity.getIp());
             }
         });
     }

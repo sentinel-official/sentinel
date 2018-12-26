@@ -106,8 +106,10 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         super.onActivityCreated(savedInstanceState);
         fragmentLoaded(getString(R.string.vpn_connections));
         initViewModel();
-        ((DashboardActivity) getActivity()).setVpnListSearchListener(mVpnListSearchListener);
-        ((DashboardActivity) getActivity()).setSortDialogActionListener(mSortDialogActionListener);
+        if (getActivity() instanceof DashboardActivity) {
+            ((DashboardActivity) getActivity()).setVpnListSearchListener(mVpnListSearchListener);
+            ((DashboardActivity) getActivity()).setSortDialogActionListener(mSortDialogActionListener);
+        }
     }
 
     private void initView(View iView) {
@@ -134,7 +136,10 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
 
-        getVpnListLiveDataSearchSortFilterBy(((DashboardActivity) getActivity()).getCurrentSearchString(), ((DashboardActivity) getActivity()).getCurrentSortType(), ((DashboardActivity) getActivity()).toFilterByBookmark());
+        if (getActivity() instanceof DashboardActivity)
+            getVpnListLiveDataSearchSortFilterBy(((DashboardActivity) getActivity()).getCurrentSearchString(), ((DashboardActivity) getActivity()).getCurrentSortType(), ((DashboardActivity) getActivity()).toFilterByBookmark());
+        else
+            getVpnListLiveDataSearchSortFilterBy("%%", AppConstants.SORT_BY_DEFAULT, false);
 
         mViewModel.getVpnListErrorLiveEvent().observe(this, iMessage -> {
             if (iMessage != null && !iMessage.isEmpty() && mAdapter.getItemCount() != 0)
@@ -257,8 +262,10 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         mVpnListener = null;
         mVpnListSearchListener = null;
         mSortDialogActionListener = null;
-        ((DashboardActivity) getActivity()).removeVpnListSearchListener();
-        ((DashboardActivity) getActivity()).removeSortDialogActionListener();
+        if (getActivity() instanceof DashboardActivity) {
+            ((DashboardActivity) getActivity()).removeVpnListSearchListener();
+            ((DashboardActivity) getActivity()).removeSortDialogActionListener();
+        }
     }
 
     @Override

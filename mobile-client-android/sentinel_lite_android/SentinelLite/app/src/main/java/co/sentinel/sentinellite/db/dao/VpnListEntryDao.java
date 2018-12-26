@@ -87,6 +87,9 @@ public interface VpnListEntryDao {
     @Query("SELECT * FROM vpn_list_entity WHERE accountAddress = :iVpnAddress")
     LiveData<VpnListEntity> getVpnEntity(String iVpnAddress);
 
+    @Query("UPDATE vpn_list_entity SET isBookmarked = :isBookmarked WHERE accountAddress = :iVpnAddress AND ip = :iIP")
+    void updateBookmark(boolean isBookmarked, String iVpnAddress, String iIP);
+
     @Query("DELETE FROM vpn_list_entity")
     void deleteVpnListEntity();
 }

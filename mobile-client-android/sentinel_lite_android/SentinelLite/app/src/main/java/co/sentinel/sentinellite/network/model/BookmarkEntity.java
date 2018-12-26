@@ -43,7 +43,7 @@ public class BookmarkEntity implements Serializable {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        return obj instanceof BookmarkEntity && Arrays.asList(((BookmarkEntity) obj).accountAddress, ((BookmarkEntity) obj).ip).equals(Arrays.asList(this.accountAddress, this.ip));
+        return obj instanceof BookmarkEntity && this.accountAddress.equals(((BookmarkEntity) obj).accountAddress) && this.ip.equals(((BookmarkEntity) obj).ip);
     }
 
     @Override

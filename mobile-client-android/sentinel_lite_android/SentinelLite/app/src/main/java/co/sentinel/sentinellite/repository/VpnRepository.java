@@ -347,8 +347,10 @@ public class VpnRepository {
         mAppExecutors.diskIO().execute(() -> {
             if (isVpnBookmarked(iAccountAddress, iIP)) {
                 mBookmarkDao.deleteBookmarkEntity(iAccountAddress, iIP);
+                mListDao.updateBookmark(false, iAccountAddress, iIP);
             } else {
                 mBookmarkDao.insertBookmarkEntity(new BookmarkEntity(iAccountAddress, iIP));
+                mListDao.updateBookmark(true, iAccountAddress, iIP);
             }
         });
     }

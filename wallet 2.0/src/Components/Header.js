@@ -34,7 +34,8 @@ class Header extends Component {
             snackMessage: '',
             isGetBalanceCalled: false,
             openAccountMenu: false,
-            walletType: 'ERC20'
+            walletType: 'ERC20',
+            isLoading: false
         }
     }
 
@@ -128,12 +129,25 @@ class Header extends Component {
     };
 
     getERCBalances = () => {
+        this.setState({ isLoading: true });
         this.props.getETHBalance(this.props.walletAddress);
-        this.props.getSentBalance(this.props.walletAddress);
+        this.props.getSentBalance(this.props.walletAddress)
+            .then((res) => {
+                this.setState({ isLoading: false });
+            })
+    }
+
+    getTMBalance = () => {
+        this.setState({ isLoading: true });
+        this.props.getTMBalance(this.props.tmAccountDetails.address)
+            .then((res) => {
+                this.setState({ isLoading: false });
+            });
     }
 
     render() {
         let { balance, isTendermint, tmAccountDetails, language, isTest, walletAddress } = this.props;
+
 
         if (!this.props.isTendermint && !notTMInterval) {
             notTMInterval = setInterval(() => {
@@ -215,7 +229,14 @@ class Header extends Component {
                                             <Col xs={1}> : </Col>
                                             <Col xs={4} style={headerStyles.balanceText}>
                                                 <p style={headerStyles.tmBalanceText}>
-                                                    {token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 0.00}
+                                                    {token && 'denom' in token ?
+
+                                                        (this.state.isLoading ?
+                                                            <img src={'../src/Images/load.svg'} alt="loading..." style={{ width: 25 }} />
+                                                            :
+                                                            (parseInt(token.amount) / (10 ** 8)).toFixed(8))
+                                                        :
+                                                        <img src={'../src/Images/load.svg'} alt="loading..." style={{ width: 25 }} />}
                                                 </p>
                                             </Col>
                                         </Row>
@@ -231,8 +252,14 @@ class Header extends Component {
                                                 <Col xs={4} style={headerStyles.balanceText}>
                                                     <p style={headerStyles.tmBalanceText}>
                                                         {this.props.sentBalance === 'Loading...'
-                                                            ? lang[language].Loading :
-                                                            parseFloat(this.props.sentBalance).toFixed(8)
+                                                            ?
+                                                            <img src={'../src/Images/load.svg'} alt="loading..." style={{ width: 25 }} />
+                                                            :
+                                                            (this.state.isLoading ?
+                                                                <img src={'../src/Images/load.svg'} alt="loading..." style={{ width: 25 }} />
+                                                                :
+                                                                parseFloat(this.props.sentBalance).toFixed(8)
+                                                            )
                                                         }</p>
                                                 </Col>
                                             </Row>
@@ -244,8 +271,14 @@ class Header extends Component {
                                                 <Col xs={4} style={headerStyles.balanceText}>
                                                     <p style={headerStyles.tmBalanceText}>
                                                         {this.props.ethBalance === 'Loading...'
-                                                            ? lang[language].Loading :
-                                                            parseFloat(this.props.ethBalance).toFixed(8)
+                                                            ?
+                                                            <img src={'../src/Images/load.svg'} alt="loading..." style={{ width: 25 }} />
+                                                            :
+                                                            (this.state.isLoading ?
+                                                                <img src={'../src/Images/load.svg'} alt="loading..." style={{ width: 25 }} />
+                                                                :
+                                                                parseFloat(this.props.ethBalance).toFixed(8)
+                                                            )
                                                         }
                                                     </p>
                                                 </Col>
@@ -259,20 +292,20 @@ class Header extends Component {
 
 
                         <Col xs={2} style={headerStyles.alignRight}>
-                                <div style={headerStyles.columnStyle}>
-                                    <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
-                                </div>
+                            <div style={headerStyles.columnStyle}>
+                                <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
+                            </div>
 
-                         <Tooltip title={this.props.vpnStatus ? lang[language].CannotSwitch : ''}>
-                            <div style={headerStyles.toggleStyle}>
-                               <Switch
-                                    disabled={this.props.vpnStatus}
-                                    checked={this.props.isTest}
-                                    onChange={this.testNetChange()}
-                                    color="primary"
-                                />
-                               </div>
-                               </Tooltip>
+                            <Tooltip title={this.props.vpnStatus ? lang[language].CannotSwitch : ''}>
+                                <div style={headerStyles.toggleStyle}>
+                                    <Switch
+                                        disabled={this.props.vpnStatus}
+                                        checked={this.props.isTest}
+                                        onChange={this.testNetChange()}
+                                        color="primary"
+                                    />
+                                </div>
+                            </Tooltip>
                         </Col>
 
 
@@ -319,7 +352,8 @@ class Header extends Component {
                             {isTendermint ?
 
                                 <Tooltip title={lang[language].RefreshBalTM} placement="bottom-end">
-                                    <IconButton onClick={() => { this.props.getTMBalance(tmAccountDetails.address) }} style={headerStyles.buttonRefresh}>
+                                    <IconButton onClick={() => { this.getTMBalance() }} style={headerStyles.buttonRefresh}>
+
                                         <RefreshIcon />
                                     </IconButton>
                                 </Tooltip>

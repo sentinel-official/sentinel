@@ -7,7 +7,7 @@ const footerStyles = {
         // background:'radial-gradient(circle at 49.41% 1.55%, rgb(61, 0, 76), transparent 100%), radial-gradient(circle at 47.95% 97.06%, rgb(9, 49, 140), transparent 100%), radial-gradient(circle at 50% 50%, rgb(126, 145, 213), rgb(4, 9, 26) 100%) 50% center no-repeat',
        
         backgroundImage: 'linear-gradient(-90deg, #023B66, #241E4A)',
-        height: 65,
+        height: '100vh',
         paddingTop: 10,
         paddingRight: 25,
         paddingLeft: 10,

@@ -67,6 +67,15 @@ class Footer extends Component {
         }
     }
 
+    checkGB = (downData) => {
+        if (downData >= 900 && !this.state.showAlert) {
+            this.setState({
+                openSnack: true, showAlert: true,
+                snackMessage: lang[this.props.language].UsedFullQuota
+            })
+        }
+    }
+
     sendSignature = (downData, isFinal, counter) => {
         let amount = (this.props.activeVpn.price_per_GB * downData) / 1024;
         if (amount >= parseInt(localStorage.getItem('lockedAmount')) && !this.state.showAlert)
@@ -145,7 +154,7 @@ class Footer extends Component {
                     else {
                         this.setState({
                             openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
-                            rateDialog: true, isDisabled: false
+                            rateDialog: true, isDisabled: false, showAlert: false
                         });
                         this.props.clearUsage();
                         this.props.setVpnStatus(false);
@@ -170,7 +179,7 @@ class Footer extends Component {
                         }
                         this.setState({
                             openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
-                            rateDialog: true, isDisabled: false
+                            rateDialog: true, isDisabled: false, showAlert: false
                         });
                         this.props.clearUsage();
                         this.props.setVpnStatus(false);
@@ -188,9 +197,14 @@ class Footer extends Component {
         if (vpnStatus && isTm && downloadData >= counter * 10) {
             this.sendSignature(downloadData, false, counter);
         }
+        if (vpnStatus && !isTm) {
+            this.checkGB(downloadData);
+        }
+        if (!vpnStatus && this.state.showAlert) {
+            this.setState({ showAlert: false });
+        }
         if (!vpnStatus) {
             downloadData = 0;
-
         }
         return (
             <div style={footerStyles.mainDivStyle} className="footerStyle">
@@ -199,35 +213,35 @@ class Footer extends Component {
 
                         {
                             this.props.isTest ?
-                            <Col xs={3} style={footerStyles.firstColumn}>
-                            <p style={footerStyles.testLabelStyle}>
-                                {
-                                    isOnline() ?
-                                        this.props.isTm ?
-                                            <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].TMTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span> 
-                                            :
-                                            <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
-                                            :                                              
-                                                                                   
-                                            <span><span style={footerStyles.redDot}></span>{lang[language].OfflineInFooter}</span>
-                                }
-                            </p>
-                        </Col>
+                                <Col xs={3} style={footerStyles.firstColumn}>
+                                    <p style={footerStyles.testLabelStyle}>
+                                        {
+                                            isOnline() ?
+                                                this.props.isTm ?
+                                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].TMTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
+                                                    :
+                                                    <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHTestNet}</span><span style={footerStyles.activated}>{lang[language].Activated}</span> </span>
+                                                :
 
-                        :
+                                                <span><span style={footerStyles.redDot}></span>{lang[language].OfflineInFooter}</span>
+                                        }
+                                    </p>
+                                </Col>
 
-                        <Col xs={12} style={footerStyles.firstColumn}>
-                            <p style={footerStyles.testLabelStyle}>
-                                {
-                                    isOnline() ?
-                                        <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHMainNet}</span><span style={footerStyles.activated}>{lang[language].Activated}<span style={footerStyles.activateTestNet}>{lang[language].ActivateTestNet}</span></span></span>
-                                        :
-                                        <span><span style={footerStyles.redDot}></span>{lang[language].OfflineInFooter}</span>
-                                }
-                            </p>
-                        </Col>
+                                :
+
+                                <Col xs={12} style={footerStyles.firstColumn}>
+                                    <p style={footerStyles.testLabelStyle}>
+                                        {
+                                            isOnline() ?
+                                                <span><span style={footerStyles.greenDot}></span><span style={footerStyles.name}>{lang[language].ETHMainNet}</span><span style={footerStyles.activated}>{lang[language].Activated}<span style={footerStyles.activateTestNet}>{lang[language].ActivateTestNet}</span></span></span>
+                                                :
+                                                <span><span style={footerStyles.redDot}></span>{lang[language].OfflineInFooter}</span>
+                                        }
+                                    </p>
+                                </Col>
                         }
-                        
+
                         {
                             vpnStatus ?
                                 <Col xs={9} style={footerStyles.vpnConnected}>
@@ -246,29 +260,29 @@ class Footer extends Component {
                                         </Col>
                                         <Col xs={2} style={footerStyles.vpnConnected}>
                                             {/* <label style={footerStyles.headingStyle}>{lang[language].Location}</label> */}
-                                          
-                                          <span><img src={'../src/Images/location.svg'} alt="location" width="15px" className="location-icon"/></span>
-                                           
-                                           
-                                          <Tooltip title={localStorage.getItem('LOCATION')}>
-                                        
-                                            <div>
-                                                <p className="location-style">{localStorage.getItem('LOCATION')} </p>
-                                               
-                                            </div>
+
+                                            <span><img src={'../src/Images/location.svg'} alt="location" width="15px" className="location-icon" /></span>
+
+
+                                            <Tooltip title={localStorage.getItem('LOCATION')}>
+
+                                                <div>
+                                                    <p className="location-style">{localStorage.getItem('LOCATION')} </p>
+
+                                                </div>
                                             </Tooltip>
                                         </Col>
 
                                         <Col xs={3} style={footerStyles.vpnConnected}>
                                             <Row>
                                                 <Col xs={2}></Col>
-                                                <Col xs={5}>
+                                                <Col xs={5} style={{ padding: 0 }}>
                                                     <label style={footerStyles.headingStyle}>{lang[language].Upload}</label>
                                                     <p style={footerStyles.valueStyle}>
                                                         {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
                                                     </p>
                                                 </Col>
-                                                <Col xs={5}>
+                                                <Col xs={5} style={{ padding: 0 }}>
                                                     <label style={footerStyles.headingStyle}>{lang[language].Download}</label>
                                                     <p style={footerStyles.valueStyle}>
                                                         {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
@@ -277,7 +291,7 @@ class Footer extends Component {
                                             </Row>
                                         </Col>
 
-                                          {
+                                        {
                                             vpnStatus ?
                                                 <Col xs={3} style={footerStyles.vpnConnected}>
                                                     <Tooltip title={lang[language].Disconnect}>

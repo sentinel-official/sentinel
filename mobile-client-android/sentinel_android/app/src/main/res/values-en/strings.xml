@@ -213,7 +213,6 @@
     <string name="claim_bonus">Claim Bonus</string>
     <string name="update_available">Update Available</string>
     <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
-    <string name="downloading_app_tite">Downloading…</string>
     <string name="download">Download</string>
     <string name="referral_address_invalid">You have entered an invalid Referral ID. Please enter valid Referral Id</string>
     <string name="referral_address_missing">You have not entered a referral code.\n\nDo you wish to continue without applying a referral code?</string>
@@ -321,7 +320,6 @@
     <string name="abi_mismatch">Preferred native ABI precedence of this device (%1$s) and ABI reported by native libraries (%2$s) mismatch</string>
     <string name="unhandled_exception_context">%3$s: %1$s\n\n%2$s</string>
     <string name="unhandled_exception">Unhandled exception: %1$s\n\n%2$s</string>
-    <string name="unknown_state" translatable="false">Unknown state</string>
     <string name="state_connecting">Connecting</string>
     <string name="state_wait">Waiting for server reply</string>
     <string name="state_auth">Authenticating</string>
@@ -347,9 +345,6 @@
     <string name="deprecated_tls_remote">Config uses option tls-remote that was deprecated in 2.3 and finally removed in 2.4</string>
     <string name="ipv4_format_error">Error parsing the IPv4 address</string>
     <string name="shortcut_profile_notfound">Profile specified in shortcut not found</string>
-    <string name="state_user_vpn_permission" translatable="false">Waiting for user permission to use VPN API</string>
-    <string name="state_user_vpn_password" translatable="false">Waiting for user VPN password</string>
-    <string name="state_user_vpn_permission_cancelled" translatable="false">VPN API permission dialog cancelled.\n\nPlease grant this permission to use VPN services</string>
     <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
     <string name="config_error_found">Error in Configuration</string>
     <string name="no_vpn_support_image">Your image does not support the VPNService API.</string>

@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 @Entity(tableName = "bookmark_entity", indices = {@Index(value = {"accountAddress"}, unique = true)})
 public class BookmarkEntity implements Serializable {
@@ -43,7 +42,7 @@ public class BookmarkEntity implements Serializable {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        return obj instanceof BookmarkEntity && Arrays.asList(((BookmarkEntity) obj).accountAddress, ((BookmarkEntity) obj).ip).equals(Arrays.asList(this.accountAddress, this.ip));
+        return obj instanceof BookmarkEntity && this.accountAddress.equals(((BookmarkEntity) obj).accountAddress) && this.ip.equals(((BookmarkEntity) obj).ip);
     }
 
     @Override

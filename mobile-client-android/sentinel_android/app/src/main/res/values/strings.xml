@@ -368,7 +368,6 @@
     <string name="help">Help</string>
     <string name="ok">OK</string>
     <string name="registering_device">Setting-up Device. Please wait…</string>
-    <string name="downloading_app_tite">Downloading…</string>
     <string name="filter_by_title">Filters</string>
     <string name="filter_by_bookmark">Show favourites only</string>
     <string name="sort_by_title">Sort By</string>

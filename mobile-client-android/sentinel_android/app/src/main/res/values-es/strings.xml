@@ -68,7 +68,6 @@
     <string name="abi_mismatch">La preferencia de ABI nativa preferida de este dispositivo (%1$s) no coincide con la ABI informada por librerias nativas (%2$s)</string>
     <string name="unhandled_exception_context">%3$s: %1$s\n\n%2$s</string>
     <string name="unhandled_exception">Excepción no controlada: %1$s\n\n%2$s</string>
-    <string name="unknown_state" translatable="false">Unknown state</string>
     <string name="state_connecting">Conectando</string>
     <string name="state_wait">Esperando a respuesta del servidor</string>
     <string name="state_auth">Autentificando</string>
@@ -94,9 +93,6 @@
     <string name="deprecated_tls_remote">La configuración usa la opción tls-remote, la cual quedó obsoleta en la v2.3, y finalmente eliminada en la v2.4</string>
     <string name="ipv4_format_error">Error al analizar la dirección IPv4</string>
     <string name="shortcut_profile_notfound">No se encontró el perfil especificado en el acceso directo</string>
-    <string name="state_user_vpn_permission" translatable="false">Waiting for user permission to use VPN API</string>
-    <string name="state_user_vpn_password" translatable="false">Waiting for user VPN password</string>
-    <string name="state_user_vpn_permission_cancelled" translatable="false">VPN API permission dialog cancelled.\n\nPlease grant this permission to use VPN services</string>
     <string name="always_on_warning"><![CDATA[Si no apareció un cuadro de diálogo de confirmación de la VPN, es debido a que tiene \"Siempre en VPN\" habilitado para otra app. En ese caso, sólo esa app puede conectarse a una VPN. Compruebe en Configuración(Settings)-> Redes más ..(Networks more ..) -> VPNS]]></string>
     <string name="config_error_found">Error en la configuración</string>
     <string name="no_vpn_support_image">Tu imagen no es compatible con la API de VPNService.</string>

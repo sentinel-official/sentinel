@@ -85,7 +85,7 @@ class Dashboard extends Component {
                 } else {
                     this.props.getVPNUsageData(this.props.isTm ? this.props.tmAccount.address : this.props.walletAddress);
                 }
-            }, 3000);
+            }, 5000);
         }
 
         if (!this.props.vpnStatus) {

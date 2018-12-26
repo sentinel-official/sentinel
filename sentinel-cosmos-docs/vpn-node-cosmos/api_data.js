@@ -1,7 +1,7 @@
 define({ "api": [
   {
     "type": "POST",
-    "url": "/client/disconnect",
+    "url": "/clients/{account_addr}/sessions/{session_id}/disconnect",
     "title": "Disconnect a client",
     "name": "DisconnectClient",
     "group": "Client",
@@ -51,9 +51,9 @@ define({ "api": [
   },
   {
     "type": "POST",
-    "url": "/client/usage",
+    "url": "/clients/{account_addr}/sessions/{session_id}/usage",
     "title": "Usage of the current session",
-    "name": "GetCurrentUsage",
+    "name": "GetSessionUsage",
     "group": "Client",
     "parameter": {
       "fields": {
@@ -108,7 +108,7 @@ define({ "api": [
   },
   {
     "type": "POST",
-    "url": "/session/sign",
+    "url": "/clients/{account_addr}/sessions/{session_id}/sign",
     "title": "Add payment signature for the session",
     "name": "AddSessionPaymentSigns",
     "group": "Session",
@@ -193,7 +193,7 @@ define({ "api": [
   },
   {
     "type": "POST",
-    "url": "/session/credentials",
+    "url": "/clients/{account_addr}/sessions/{session_id}/credentials",
     "title": "VPN Session credentials",
     "name": "GetVpnCredentials",
     "group": "Session",

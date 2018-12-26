@@ -11,6 +11,7 @@ def disconnect_client(client_name):
     cmd = 'echo \'kill {}\' | nc 127.0.0.1 1195'.format(client_name)
     disconnect_proc = subprocess.Popen(cmd, shell=True)
     disconnect_proc.wait()
+    revoke(client_name)
 
 
 def revoke(client_name):
@@ -22,15 +23,17 @@ def revoke(client_name):
     return revoke_proc.returncode
 
 
-def get_connections(client_name=None):
-    connections = []
+def get_sessions(client_name=None):
+    sessions = []
     status_log = open('/etc/openvpn/openvpn-status.log', 'r').readlines()
     for line in status_log:
         line = line.strip()
         line_arr = line.split(',')
         if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
+            session_id = str(line_arr[0])[6:]
+            client_name = 'client' + session_id
             client = db.clients.find_one_and_update({
-                'session_id': str(line_arr[0])[6:]
+                'session_id': session_id
             }, {
                 '$set': {
                     'usage': {
@@ -42,10 +45,18 @@ def get_connections(client_name=None):
                 '_id': 0,
                 'token': 0
             }, return_document=ReturnDocument.AFTER)
-            if client['usage']['down'] >= LIMIT_1GB:
-                client_name = 'client' + client['session_id']
+            if client:
+                if client['usage']['down'] >= LIMIT_1GB:
+                    disconnect_client(client_name)
+                sessions.append({
+                    'sessionId': session_id,
+                    'usage': {
+                        'download': client['usage']['down'],
+                        'upload': client['usage']['up']
+                    }
+                })
+            else:
                 disconnect_client(client_name)
-            connections.append(client)
         elif 'ROUTING TABLE' in line:
             break
-    return connections
+    return sessions

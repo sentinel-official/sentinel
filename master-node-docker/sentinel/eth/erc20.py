@@ -47,11 +47,10 @@ class ERC20Manager(object):
             nonce_manager.set_nonce(from_addr, self.net.chain, nonce + 1)
         except Exception as err:
             nonce_manager.set_nonce(from_addr, self.net.chain)
-            if '-32000' not in str(err):
-                return {
-                           'code': 202,
-                           'error': str(err)
-                       }, None
+            return {
+                       'code': 202,
+                       'error': str(err)
+                   }, None
         return None, tx_hash
 
 

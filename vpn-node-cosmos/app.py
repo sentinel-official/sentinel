@@ -6,11 +6,15 @@ from thread import start_new_thread
 from sentinel.config import DEFAULT_GAS
 from sentinel.config import VERSION
 from sentinel.cosmos import call as cosmos_call
+from sentinel.helpers import end_session
+from sentinel.helpers import update_session_status
+from sentinel.node import get_free_coins
 from sentinel.node import list_node
 from sentinel.node import node
 from sentinel.node import update_node
+from sentinel.node import update_sessions
 from sentinel.vpn import OpenVPN
-from sentinel.vpn import get_connections
+from sentinel.vpn import get_sessions
 
 
 def alive_job():
@@ -22,18 +26,31 @@ def alive_job():
         time.sleep(30)
 
 
-def connections_job():
+def sessions_job():
+    extra = 5
     while True:
         try:
             vpn_status_file = path.exists('/etc/openvpn/openvpn-status.log')
             if vpn_status_file is True:
-                _ = get_connections()
+                sessions = get_sessions()
+                sessions_len = len(sessions)
+                if (sessions_len > 0) or (extra > 0):
+                    update_sessions(sessions)
+                    extra = 5 if sessions_len > 0 else extra - 1
         except Exception as err:
             print(str(err))
         time.sleep(5)
 
 
 if __name__ == '__main__':
+    print()
+    account_name = raw_input('Please enter account name: ')
+    account_password = raw_input('Please enter account password: ')
+    node.update_info('config', {
+        'account_name': account_name,
+        'account_password': account_password,
+    })
+
     if node.config['account']['address'] is None:
         error, resp = cosmos_call('generate_seed', None)
         if error:
@@ -50,10 +67,12 @@ if __name__ == '__main__':
                 exit(2)
             else:
                 node.update_info('config', {
-                    'account_seed': str(resp['seed']),
-                    'account_addr': str(resp['address']),
-                    'account_pubkey': str(resp['pub_key'])
+                    'account_address': str(resp['address'])
                 })
+                error = get_free_coins()
+                if error is not None:
+                    print(error)
+                    exit(3)
 
     node.update_info('location')
     node.update_info('netspeed')
@@ -65,6 +84,7 @@ if __name__ == '__main__':
             'download_speed': int(node.net_speed['download']),
             'price_per_gb': int(node.config['price_per_gb']),
             'enc_method': str(node.config['enc_method']),
+            'description': str(node.config['description']),
             'location_latitude': int(node.location['latitude'] * 10000),
             'location_longitude': int(node.location['longitude'] * 10000),
             'location_city': str(node.location['city']),
@@ -77,7 +97,7 @@ if __name__ == '__main__':
         })
         if error:
             print(error)
-            exit(3)
+            exit(4)
         else:
             node.update_info('config', {
                 'register_hash': str(resp['hash'])
@@ -87,7 +107,7 @@ if __name__ == '__main__':
         error, resp = list_node()
         if error:
             print(error)
-            exit(4)
+            exit(5)
         else:
             node.update_info('config', {
                 'register_token': str(resp['token'])
@@ -97,9 +117,11 @@ if __name__ == '__main__':
     openvpn = OpenVPN()
     openvpn.start()
     start_new_thread(alive_job, ())
-    start_new_thread(connections_job, ())
+    start_new_thread(sessions_job, ())
 
     while True:
+        if openvpn.vpn_proc.poll() is not None:
+            openvpn.start()
         line = openvpn.vpn_proc.stdout.readline().strip()
         line_len = len(line)
         if line_len > 0:
@@ -107,9 +129,12 @@ if __name__ == '__main__':
             if 'Peer Connection Initiated with' in line:
                 client_name = line.split()[6][1:-1]
                 if 'client' in client_name:
+                    session_id = client_name[6:]
+                    update_session_status(session_id, 'CONNECTED')
                     print('*' * 128)
             elif 'client-instance exiting' in line:
                 client_name = line.split()[5].split('/')[0]
                 if 'client' in client_name:
+                    session_id = client_name[6:]
+                    end_session(session_id)
                     print('*' * 128)
-                    openvpn.revoke(client_name)

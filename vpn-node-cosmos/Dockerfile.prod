@@ -27,10 +27,8 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/re
     wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
     python /tmp/get-pip.py && \
     pip install --no-cache-dir falcon gunicorn pymongo requests
-RUN apk add --no-cache gcc python-dev musl-dev nano && \
-    pip install --no-cache-dir ipython
 RUN rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
 
 EXPOSE 1194/udp 3000
 
-CMD ["sh", "/root/run.sh"]
+ENTRYPOINT ["sh", "/root/run.sh"]

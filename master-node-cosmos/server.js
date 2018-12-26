@@ -5,3 +5,5 @@ let serverConfig = require('./config/vars').server;
 server.listen(serverConfig.port);
 console.log();
 console.log(`Server is running on port: ${serverConfig.port}`);
+
+let ndt = require('./jobs');

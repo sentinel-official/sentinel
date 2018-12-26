@@ -56,8 +56,9 @@ class OpenVPN(object):
             line = line.strip()
             line_arr = line.split(',')
             if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
+                session_name = str(line_arr[0])
                 client = db.clients.find_one_and_update({
-                    'session_name': str(line_arr[0])
+                    'session_name': session_name
                 }, {
                     '$set': {
                         'usage': {
@@ -68,11 +69,13 @@ class OpenVPN(object):
                 }, projection={
                     '_id': 0,
                     'token': 0
-                },
-                    return_document=ReturnDocument.AFTER)
-                if client['usage']['down'] >= LIMIT_1GB:
-                    self.disconnect_client(client['session_name'])
-                connections.append(client)
+                }, return_document=ReturnDocument.AFTER)
+                if client:
+                    if client['usage']['down'] >= LIMIT_1GB:
+                        self.disconnect_client(session_name)
+                    connections.append(client)
+                else:
+                    self.disconnect_client(session_name)
             elif 'ROUTING TABLE' in line:
                 break
         return connections

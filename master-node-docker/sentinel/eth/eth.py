@@ -12,8 +12,7 @@ from web3 import HTTPProvider, IPCProvider, Web3
 class ETHManager(object):
     def __init__(self, provider=None, data_dir=None, rpc_url=None, chain=None):
         self.chain = chain
-        self.data_dir = path.join(path.expanduser(
-            '~'), '.ethereum') if data_dir is None else data_dir
+        self.data_dir = path.join(path.expanduser('~'), '.ethereum') if data_dir is None else data_dir
         self.provider = 'ipc' if provider is None else provider
         self.ipc_path = path.join(self.data_dir, 'geth.ipc')
         self.web3 = Web3(IPCProvider(self.ipc_path)) if self.provider == 'ipc' else Web3(HTTPProvider(rpc_url))

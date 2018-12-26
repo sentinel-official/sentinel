@@ -1,6 +1,8 @@
 let axios = require('axios');
-let { chainUrl,
-  localUrl } = require('./config/cosmos');
+let {
+  chainUrl,
+  localUrl
+} = require('./config/cosmos');
 
 
 let routes = {

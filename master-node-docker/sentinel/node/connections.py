@@ -20,15 +20,28 @@ class UpdateConnections(object):
         token = str(req.body['token'])
         account_addr = str(req.body['account_addr']).lower()
         connections = req.body['connections']
+        load = req.body['load'] if 'load' in req.body else None
 
         node = db.nodes.find_one({
             'account_addr': account_addr,
             'token': token
         })
         if node is not None:
+            if load:
+                _ = db.nodes.find_one_and_update({
+                    'account_addr': account_addr,
+                    'token': token
+                }, {
+                    '$set': {
+                        'load': load,
+                        'active_connections': len(connections)
+                    }
+                })
             tx_hashes, session_names = [], []
             cond = '$nin'
             for connection in connections:
+                if connection is None:
+                    continue
                 connection['vpn_addr'] = account_addr
                 if 'account_addr' in connection:
                     connection['client_addr'] = connection['account_addr'].lower()
@@ -113,6 +126,7 @@ class UpdateConnections(object):
                 'message': 'Connection details updated successfully.',
                 'tx_hashes': tx_hashes
             }
+
         else:
             message = {
                 'success': False,

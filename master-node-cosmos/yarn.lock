@@ -21,7 +21,7 @@ async@2.6.1:
 
 axios@^0.18.0:
   version "0.18.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
+  resolved "http://registry.npmjs.org/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
   dependencies:
     follow-redirects "^1.3.0"
     is-buffer "^1.1.5"
@@ -31,10 +31,10 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
 
 basic-auth@~2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/basic-auth/-/basic-auth-2.0.0.tgz#015db3f353e02e56377755f962742e8981e7bbba"
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/basic-auth/-/basic-auth-2.0.1.tgz#b998279bf47ce38344b4f3cf916d4679bbf51e3a"
   dependencies:
-    safe-buffer "5.1.1"
+    safe-buffer "5.1.2"
 
 bluebird@3.5.1:
   version "3.5.1"
@@ -75,10 +75,10 @@ bytes@3.0.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
 
 compressible@~2.0.14:
-  version "2.0.14"
-  resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.14.tgz#326c5f507fbb055f54116782b969a81b67a29da7"
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.15.tgz#857a9ab0a7e5a07d8d837ed43fe2defff64fe212"
   dependencies:
-    mime-db ">= 1.34.0 < 2"
+    mime-db ">= 1.36.0 < 2"
 
 compression@^1.7.3:
   version "1.7.3"
@@ -125,7 +125,7 @@ debug@2.6.9:
   dependencies:
     ms "2.0.0"
 
-debug@3.1.0, debug@^3.1.0:
+debug@3.1.0, debug@=3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   dependencies:
@@ -161,7 +161,7 @@ etag@~1.8.1:
 
 express@^4.16.3:
   version "4.16.3"
-  resolved "https://registry.yarnpkg.com/express/-/express-4.16.3.tgz#6af8a502350db3246ecc4becf6b5a34d22f7ed53"
+  resolved "http://registry.npmjs.org/express/-/express-4.16.3.tgz#6af8a502350db3246ecc4becf6b5a34d22f7ed53"
   dependencies:
     accepts "~1.3.5"
     array-flatten "1.1.1"
@@ -207,10 +207,10 @@ finalhandler@1.1.1:
     unpipe "~1.0.0"
 
 follow-redirects@^1.3.0:
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.7.tgz#a39e4804dacb90202bca76a9e2ac10433ca6a69a"
+  version "1.5.8"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.8.tgz#1dbfe13e45ad969f813e86c00e5296f525c885a1"
   dependencies:
-    debug "^3.1.0"
+    debug "=3.1.0"
 
 forwarded@~0.1.2:
   version "0.1.2"
@@ -250,7 +250,7 @@ http-errors@1.6.2:
 
 http-errors@~1.6.2:
   version "1.6.3"
-  resolved "https://registry.yarnpkg.com/http-errors/-/http-errors-1.6.3.tgz#8b55680bb4be283a0b5bf4ea2e38580be1d9320d"
+  resolved "http://registry.npmjs.org/http-errors/-/http-errors-1.6.3.tgz#8b55680bb4be283a0b5bf4ea2e38580be1d9320d"
   dependencies:
     depd "~1.1.2"
     inherits "2.0.3"
@@ -303,12 +303,16 @@ lodash.get@4.4.2:
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
 lodash@^4.17.10:
-  version "4.17.10"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
+
+memory-pager@^1.0.2:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/memory-pager/-/memory-pager-1.1.0.tgz#9308915e0e972849fefbae6f8bc95d6b350e7344"
 
 merge-descriptors@1.0.1:
   version "1.0.1"
@@ -327,19 +331,15 @@ methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
 
-"mime-db@>= 1.34.0 < 2":
+"mime-db@>= 1.36.0 < 2", mime-db@~1.36.0:
   version "1.36.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.36.0.tgz#5020478db3c7fe93aad7bbcc4dcf869c43363397"
 
-mime-db@~1.35.0:
-  version "1.35.0"
-  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.35.0.tgz#0569d657466491283709663ad379a99b90d9ab47"
-
 mime-types@~2.1.18:
-  version "2.1.19"
-  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.19.tgz#71e464537a7ef81c15f2db9d97e913fc0ff606f0"
+  version "2.1.20"
+  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.20.tgz#930cb719d571e903738520f8470911548ca2cc19"
   dependencies:
-    mime-db "~1.35.0"
+    mime-db "~1.36.0"
 
 mime@1.4.1:
   version "1.4.1"
@@ -351,9 +351,9 @@ minimatch@^3.0.4:
   dependencies:
     brace-expansion "^1.1.7"
 
-mongodb-core@3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.1.3.tgz#b036bce5290b383fe507238965bef748dd8adb75"
+mongodb-core@3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.1.5.tgz#59ca67d7f6cea570d5437624a7afec8d752d477a"
   dependencies:
     bson "^1.1.0"
     require_optional "^1.0.1"
@@ -361,11 +361,11 @@ mongodb-core@3.1.3:
   optionalDependencies:
     saslprep "^1.0.0"
 
-mongodb@3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.4.tgz#0ff07a7409a4edf05e71f9ff8df3633bd278ed53"
+mongodb@3.1.6:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.6.tgz#6054641973b5bf5b5ae1c67dcbcf8fa88280273d"
   dependencies:
-    mongodb-core "3.1.3"
+    mongodb-core "3.1.5"
     safe-buffer "^5.1.2"
 
 mongoose-legacy-pluralize@1.0.2:
@@ -373,15 +373,15 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
 
 mongoose@^5.2.14:
-  version "5.2.14"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.2.14.tgz#ce149749a17fffb324a9ff3bd2fa50701e75743a"
+  version "5.2.17"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.2.17.tgz#8baeb60a675d00da03633d679a72457dbb5b2285"
   dependencies:
     async "2.6.1"
     bson "~1.0.5"
     kareem "2.2.1"
     lodash.get "4.4.2"
-    mongodb "3.1.4"
-    mongodb-core "3.1.3"
+    mongodb "3.1.6"
+    mongodb-core "3.1.5"
     mongoose-legacy-pluralize "1.0.2"
     mpath "0.5.1"
     mquery "3.2.0"
@@ -506,8 +506,10 @@ safe-buffer@5.1.2, safe-buffer@^5.1.2:
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
 
 saslprep@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/saslprep/-/saslprep-1.0.1.tgz#b644e0ba25b156b652f3cb90df7542f896049ba6"
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/saslprep/-/saslprep-1.0.2.tgz#da5ab936e6ea0bbae911ffec77534be370c9f52d"
+  dependencies:
+    sparse-bitfield "^3.0.3"
 
 semver@^5.1.0:
   version "5.5.1"
@@ -551,6 +553,12 @@ setprototypeof@1.1.0:
 sliced@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/sliced/-/sliced-1.0.1.tgz#0b3a662b5d04c3177b1926bea82b03f837a2ef41"
+
+sparse-bitfield@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/sparse-bitfield/-/sparse-bitfield-3.0.3.tgz#ff4ae6e68656056ba4b3e792ab3334d38273ca11"
+  dependencies:
+    memory-pager "^1.0.2"
 
 "statuses@>= 1.3.1 < 2", "statuses@>= 1.4.0 < 2":
   version "1.5.0"

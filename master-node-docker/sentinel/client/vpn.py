@@ -29,10 +29,14 @@ def get_vpns_list(vpn_type):
         'rating': 1,
         'net_speed.download': 1,
         'enc_method': 1,
-        'version': 1
+        'description': 1,
+        'version': 1,
+        'load': 1,
+        'active_connections': 1
     }).sort([
-        ('rating', -1),
         ('version', -1),
+        ('rating', -1),
+        ('load.cpu', 1)
     ])
 
     return list(_list)
@@ -99,8 +103,8 @@ class GetVpnCredentials(object):
                                     token = uuid4().hex
                                     ip, port = str(node['ip']), 3000
                                     body = {
-                                        'account_addr': device_id if account_addr == REFERRAL_DUMMY else account_addr,
                                         # Fixes for SLC
+                                        'account_addr': device_id if account_addr == REFERRAL_DUMMY else account_addr,
                                         'token': token
                                     }
                                     url = 'http://{}:{}/token'.format(ip, port)
@@ -168,8 +172,7 @@ class PayVpnUsage(object):
             'session_id'] is not None else None
         device_id = str(req.body['device_id']) if 'device_id' in req.body else None
 
-        errors, tx_hashes = eth_helper.pay_vpn_session(from_addr, session_id, net, tx_data, payment_type,
-                                                       device_id)
+        errors, tx_hashes = eth_helper.pay_vpn_session(from_addr, session_id, net, tx_data, payment_type, device_id)
 
         if len(errors) > 0:
             message = {

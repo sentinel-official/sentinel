@@ -18,8 +18,7 @@ class DailySentsCount(object):
         while self.stop_thread is False:
             current_time = datetime.datetime.now()
             timestamp = int(time.time())
-            if (current_time.hour == self.hour) and (
-                    current_time.minute == self.minute):
+            if (current_time.hour == self.hour) and (current_time.minute == self.minute):
                 paid_count = 0
                 unpaid_count = 0
                 result = db.connections.aggregate([{
@@ -39,14 +38,11 @@ class DailySentsCount(object):
                         error, usage = eth_helper.get_vpn_usage(addr['_id'])
                         if error is None:
                             for obj in usage['sessions']:
-                                if obj['timestamp'] >= (timestamp -
-                                                        (24 * 60 * 60)):
+                                if obj['timestamp'] >= (timestamp - (24 * 60 * 60)):
                                     if obj['is_paid']:
-                                        paid_count = paid_count + (
-                                                float(obj['amount']) / (10 ** 8))
+                                        paid_count = paid_count + (float(obj['amount']) / (10 ** 8))
                                     else:
-                                        unpaid_count = unpaid_count + (
-                                                float(obj['amount']) / (10 ** 8))
+                                        unpaid_count = unpaid_count + (float(obj['amount']) / (10 ** 8))
 
                 _ = db.payments.update(
                     {
@@ -56,8 +52,7 @@ class DailySentsCount(object):
                             'paid_count': paid_count,
                             'unpaid_count': unpaid_count
                         }
-                    },
-                    upsert=True)
+                    }, upsert=True)
             time.sleep(45)
 
     def start(self):

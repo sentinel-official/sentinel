@@ -1,3 +1,7 @@
+let nodeDbo = require('./server/dbos/node.dbo');
+
+let MAX_SECS = 2 * 60 * 1000;
+
 let nodeDeadThread = () => {
   let minTime = new Date(new Date() - MAX_SECS);
   nodeDbo.updateNodes({
@@ -6,7 +10,9 @@ let nodeDeadThread = () => {
     }
   }, {
       'info.status': 'down'
-    }, (error, result) => { });
+    }, (error, result) => {
+    });
 };
 
+nodeDeadThread();
 setInterval(nodeDeadThread, MAX_SECS / 2);

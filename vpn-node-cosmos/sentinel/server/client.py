@@ -4,14 +4,14 @@ import json
 import falcon
 
 from ..db import db
-from ..vpn import disconnect_client
+from ..helpers import end_session
 
 
-class GetCurrentUsage(object):
-    def on_post(self, req, res):
+class GetSessionUsage(object):
+    def on_post(self, req, res, account_addr, session_id):
         """
-        @api {POST} /client/usage Usage of the current session
-        @apiName GetCurrentUsage
+        @api {POST} /clients/{account_addr}/sessions/{session_id}/usage Usage of the current session
+        @apiName GetSessionUsage
         @apiGroup Client
         @apiParam {String} account_addr Cosmos account address of the client.
         @apiParam {String} session_id Unique session ID.
@@ -19,14 +19,15 @@ class GetCurrentUsage(object):
         @apiSuccess {Boolean} success Success key.
         @apiSuccess {Object} usage Usage of the current session.
         """
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(account_addr)
+        session_id = str(session_id)
         token = str(req.body['token'])
 
         client = db.clients.find_one({
             'account_addr': account_addr,
             'session_id': session_id,
-            'token': token
+            'token': token,
+            'status': 'CONNECTED'
         })
         if client is None:
             message = {
@@ -44,9 +45,9 @@ class GetCurrentUsage(object):
 
 
 class DisconnectClient(object):
-    def on_post(self, req, res):
+    def on_post(self, req, res, account_addr, session_id):
         """
-        @api {POST} /client/disconnect Disconnect a client
+        @api {POST} /clients/{account_addr}/sessions/{session_id}/disconnect Disconnect a client
         @apiName DisconnectClient
         @apiGroup Client
         @apiParam {String} account_addr Cosmos account address of the client.
@@ -54,14 +55,15 @@ class DisconnectClient(object):
         @apiParam {String} token Token for communication with node.
         @apiSuccess {Boolean} success Success key.
         """
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(account_addr)
+        session_id = str(session_id)
         token = str(req.body['token'])
 
         client = db.clients.find_one({
             'account_addr': account_addr,
             'session_id': session_id,
-            'token': token
+            'token': token,
+            'status': 'CONNECTED'
         })
         if client is None:
             message = {
@@ -69,8 +71,7 @@ class DisconnectClient(object):
                 'message': 'Wrong details.'
             }
         else:
-            client_name = 'client' + session_id
-            disconnect_client(client_name)
+            end_session(session_id)
             message = {
                 'success': True,
                 'message': 'Disconnected successfully.'

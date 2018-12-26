@@ -3,25 +3,26 @@ import json
 
 import falcon
 
-from ..config import DEFAULT_GAS
-from ..cosmos import call as cosmos_call
 from ..db import db
-from ..node import node
+from ..helpers import end_session
 from ..vpn import Keys
-from ..vpn import disconnect_client
 
 
 class AddSessionDetails(object):
-    def on_post(self, req, res):
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+    def on_post(self, req, res, account_addr, session_id):
+        account_addr = str(account_addr)
+        session_id = str(session_id)
         token = str(req.body['token'])
 
-        _ = db.clients.insert_one({
+        _ = db.clients.find_one_and_update({
             'account_addr': account_addr,
-            'session_id': session_id,
-            'token': token
-        })
+            'session_id': session_id
+        }, {
+            '$set': {
+                'token': token,
+                'status': 'ADDED_SESSION_DETAILS'
+            }
+        }, upsert=True)
 
         message = {
             'success': True,
@@ -33,9 +34,9 @@ class AddSessionDetails(object):
 
 
 class GetVpnCredentials(object):
-    def on_post(self, req, res):
+    def on_post(self, req, res, account_addr, session_id):
         """
-        @api {POST} /session/credentials VPN Session credentials
+        @api {POST} /clients/{account_addr}/sessions/{session_id}/credentials VPN Session credentials
         @apiName GetVpnCredentials
         @apiGroup Session
         @apiParam {String} account_addr Cosmos account address of the client.
@@ -44,30 +45,43 @@ class GetVpnCredentials(object):
         @apiSuccess {Boolean} success Success key.
         @apiSuccess {String[]} ovpn OVPN data.
         """
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(account_addr)
+        session_id = str(session_id)
         token = str(req.body['token'])
 
         client = db.clients.find_one({
             'account_addr': account_addr,
             'session_id': session_id,
-            'token': token
+            'token': token,
+            'status': {
+                '$in': [
+                    'ADDED_SESSION_DETAILS',
+                    'SHARED_VPN_CREDS'
+                ]
+            }
         })
         if client is not None:
+            keys = Keys(session_id)
+            keys.generate()
             _ = db.clients.find_one_and_update({
                 'account_addr': account_addr,
                 'session_id': session_id,
-                'token': token
+                'token': token,
+                'status': {
+                    '$in': [
+                        'ADDED_SESSION_DETAILS',
+                        'SHARED_VPN_CREDS'
+                    ]
+                }
             }, {
                 '$set': {
                     'usage': {
                         'up': 0,
                         'down': 0
-                    }
+                    },
+                    'status': 'SHARED_VPN_CREDS'
                 }
             })
-            keys = Keys(session_id)
-            keys.generate()
             message = {
                 'success': True,
                 'ovpn': keys.ovpn()
@@ -83,9 +97,9 @@ class GetVpnCredentials(object):
 
 
 class AddSessionPaymentSign(object):
-    def on_post(self, req, res):
+    def on_post(self, req, res, account_addr, session_id):
         """
-        @api {POST} /session/sign Add payment signature for the session
+        @api {POST} /clients/{account_addr}/sessions/{session_id}/sign Add payment signature for the session
         @apiName AddSessionPaymentSigns
         @apiGroup Session
         @apiParam {String} account_addr Cosmos account address of the client.
@@ -98,8 +112,8 @@ class AddSessionPaymentSign(object):
         @apiParam {Boolean} signature.final Whether Final signature or not.
         @apiSuccess {Boolean} success Success key.
         """
-        account_addr = str(req.body['account_addr']).lower()
-        session_id = str(req.body['session_id'])
+        account_addr = str(account_addr)
+        session_id = str(session_id)
         token = str(req.body['token'])
         signature = {
             'hash': str(req.body['signature']['hash']),
@@ -110,31 +124,22 @@ class AddSessionPaymentSign(object):
         client = db.clients.find_one({
             'account_addr': account_addr,
             'session_id': session_id,
-            'token': token
+            'token': token,
+            'status': 'CONNECTED'
         })
         if client:
             _ = db.clients.find_one_and_update({
                 'account_addr': account_addr,
                 'session_id': session_id,
-                'token': token
+                'token': token,
+                'status': 'CONNECTED'
             }, {
                 '$push': {
                     'signatures': signature
                 }
             })
             if signature['final']:
-                client_name = 'client' + session_id
-                disconnect_client(client_name)
-                error, data = cosmos_call('get_vpn_payment', {
-                    'amount': signature['amount'],
-                    'session_id': session_id,
-                    'counter': signature['index'],
-                    'name': node.config['account']['name'],
-                    'gas': DEFAULT_GAS,
-                    'isfinal': True,
-                    'password': node.config['account']['password'],
-                    'signature': signature['hash']
-                })
+                end_session(session_id)
             message = {
                 'success': True
             }

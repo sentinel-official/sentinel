@@ -29,6 +29,4 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/re
     pip install --no-cache-dir falcon gunicorn pymongo requests
 RUN rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
 
-EXPOSE 1194/udp 3000
-
 ENTRYPOINT ["sh", "/root/run.sh"]

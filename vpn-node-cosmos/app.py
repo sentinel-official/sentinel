@@ -43,9 +43,10 @@ def sessions_job():
 
 
 if __name__ == '__main__':
-    print()
+    print('')
     account_name = raw_input('Please enter account name: ')
     account_password = raw_input('Please enter account password: ')
+    print('')
     node.update_info('config', {
         'account_name': account_name,
         'account_password': account_password,
@@ -83,7 +84,7 @@ if __name__ == '__main__':
             'upload_speed': int(node.net_speed['upload']),
             'download_speed': int(node.net_speed['download']),
             'price_per_gb': int(node.config['price_per_gb']),
-            'enc_method': str(node.config['enc_method']),
+            'enc_method': str(node.config['openvpn']['enc_method']),
             'description': str(node.config['description']),
             'location_latitude': int(node.location['latitude'] * 10000),
             'location_longitude': int(node.location['longitude'] * 10000),

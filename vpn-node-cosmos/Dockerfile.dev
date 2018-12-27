@@ -31,6 +31,4 @@ RUN apk add --no-cache gcc python-dev musl-dev nano && \
     pip install --no-cache-dir ipython
 RUN rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
 
-EXPOSE 1194/udp 3000
-
 CMD ["sh", "/root/run.sh"]

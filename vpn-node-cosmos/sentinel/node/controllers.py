@@ -37,8 +37,9 @@ def update_node(update_type):
     if update_type == 'details':
         body['details'] = {
             'IP': node.ip,
+            'APIPort': node.config['api_port'],
             'pricePerGB': node.config['price_per_gb'],
-            'encMethod': node.config['enc_method'],
+            'encMethod': node.config['openvpn']['enc_method'],
             'description': node.config['description'],
             'location': node.location,
             'netSpeed': node.net_speed,

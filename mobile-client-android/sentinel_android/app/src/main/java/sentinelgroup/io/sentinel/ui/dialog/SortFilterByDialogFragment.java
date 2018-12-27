@@ -106,7 +106,7 @@ public class SortFilterByDialogFragment extends BottomSheetDialogFragment {
     private void initSortTypeList() {
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_default), AppConstants.SORT_BY_DEFAULT, mCurrentSortType.equals(AppConstants.SORT_BY_DEFAULT)));
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_country_a), AppConstants.SORT_BY_COUNTRY_A, mCurrentSortType.equals(AppConstants.SORT_BY_COUNTRY_A)));
-        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_latency_d), AppConstants.SORT_BY_LATENCY_D, mCurrentSortType.equals(AppConstants.SORT_BY_LATENCY_D)));
+        mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_latency_d), AppConstants.SORT_BY_LATENCY_I, mCurrentSortType.equals(AppConstants.SORT_BY_LATENCY_I)));
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_price_i), AppConstants.SORT_BY_PRICE_I, mCurrentSortType.equals(AppConstants.SORT_BY_PRICE_I)));
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_bandwidth_d), AppConstants.SORT_BY_BANDWIDTH_D, mCurrentSortType.equals(AppConstants.SORT_BY_BANDWIDTH_D)));
         mSortTypeList.add(new GenericListItem(getString(R.string.sort_by_price_d), AppConstants.SORT_BY_PRICE_D, mCurrentSortType.equals(AppConstants.SORT_BY_PRICE_D)));

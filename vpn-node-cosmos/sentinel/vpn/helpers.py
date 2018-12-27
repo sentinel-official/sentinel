@@ -23,13 +23,13 @@ def revoke(client_name):
     return revoke_proc.returncode
 
 
-def get_sessions(client_name=None):
+def get_sessions(c_name=None):
     sessions = []
     status_log = open('/etc/openvpn/openvpn-status.log', 'r').readlines()
     for line in status_log:
         line = line.strip()
         line_arr = line.split(',')
-        if (client_name is None and 'client' in line) or (client_name is not None and client_name in line):
+        if (c_name is None and 'client' in line) or (c_name is not None and c_name in line):
             session_id = str(line_arr[0])[6:]
             client_name = 'client' + session_id
             client = db.clients.find_one_and_update({

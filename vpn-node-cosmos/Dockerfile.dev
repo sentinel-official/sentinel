@@ -17,7 +17,7 @@ COPY --from=deps /go/bin/gaiacli /usr/local/bin/
 COPY --from=deps /root/speedtest.py /usr/lib/python2.7/site-packages/
 
 ADD sentinel /root/sentinel
-ADD app.py server.py run.sh config /root/
+ADD app.py run.sh config /root/
 
 ENV SENT_ENV=DEV
 

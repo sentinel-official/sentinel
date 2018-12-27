@@ -1,5 +1,6 @@
 # coding=utf-8
 import time
+from multiprocessing import Process
 from os import path
 from thread import start_new_thread
 
@@ -13,6 +14,7 @@ from sentinel.node import list_node
 from sentinel.node import node
 from sentinel.node import update_node
 from sentinel.node import update_sessions
+from sentinel.server import APIServer
 from sentinel.vpn import OpenVPN
 from sentinel.vpn import get_sessions
 
@@ -37,6 +39,19 @@ def sessions_job():
                 if (sessions_len > 0) or (extra > 0):
                     update_sessions(sessions)
                     extra = 5 if sessions_len > 0 else extra - 1
+        except Exception as err:
+            print(str(err))
+        time.sleep(5)
+
+
+def api_server_process():
+    while True:
+        try:
+            options = {
+                'bind': '0.0.0.0:{}'.format(node.config['api_port']),
+                'loglevel': 'debug'
+            }
+            APIServer(options).run()
         except Exception as err:
             print(str(err))
         time.sleep(5)
@@ -115,10 +130,14 @@ if __name__ == '__main__':
             })
 
     update_node('details')
+
     openvpn = OpenVPN()
     openvpn.start()
-    start_new_thread(alive_job, ())
+    api_server = Process(target=api_server_process, args=())
+    api_server.start()
+
     start_new_thread(sessions_job, ())
+    start_new_thread(alive_job, ())
 
     while True:
         if openvpn.vpn_proc.poll() is not None:

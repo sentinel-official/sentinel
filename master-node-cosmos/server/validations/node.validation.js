@@ -20,6 +20,7 @@ let updateNode = (req, res, next) => {
     type: joi.string().required(),
     details: joi.object().keys({
       IP: joi.string(),
+      APIPort: joi.number(),
       pricePerGB: joi.number(),
       encMethod: joi.string(),
       description: joi.string().allow(''),

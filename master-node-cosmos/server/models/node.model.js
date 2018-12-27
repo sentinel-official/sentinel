@@ -21,6 +21,11 @@ let nodeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  APIPort: {
+    type: Number,
+    required: true,
+    default: 3000
+  },
   pricePerGB: {
     type: Number,
     required: true,

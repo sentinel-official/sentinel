@@ -52,16 +52,20 @@ class Node(object):
                 self.config['account']['name'] = str(info['account_name'])
             if ('account_password' in info) and (info['account_password'] is not None):
                 self.config['account']['password'] = str(info['account_password'])
+            if ('api_port' in info) and (info['api_port' is not None]):
+                self.config['api_port'] = int(info['api_port'])
+            if ('description' in info) and (info['description' is not None]):
+                self.config['description'] = str(info['description'])
+            if ('openvpn_enc_method' in info) and (info['openvpn_enc_method' is not None]):
+                self.config['openvpn']['enc_method'] = str(info['openvpn_enc_method'])
+            if ('openvpn_port' in info) and (info['openvpn_port' is not None]):
+                self.config['openvpn']['port'] = int(info['openvpn_port'])
+            if ('price_per_gb' in info) and (info['price_per_gb' is not None]):
+                self.config['price_per_gb'] = float(info['price_per_gb'])
             if ('register_hash' in info) and (info['register_hash'] is not None):
                 self.config['register']['hash'] = str(info['register_hash'])
             if ('register_token' in info) and (info['register_token'] is not None):
                 self.config['register']['token'] = str(info['register_token'])
-            if ('enc_method' in info) and (info['enc_method' is not None]):
-                self.config['enc_method'] = str(info['enc_method'])
-            if ('description' in info) and (info['description' is not None]):
-                self.config['description'] = str(info['description'])
-            if ('price_per_gb' in info) and (info['price_per_gb' is not None]):
-                self.config['price_per_gb'] = float(info['price_per_gb'])
             self.save_config()
 
 

@@ -17,7 +17,7 @@ COPY --from=deps /go/bin/gaiacli /usr/local/bin/
 COPY --from=deps /root/speedtest.py /usr/lib/python2.7/site-packages/
 
 ADD sentinel /root/sentinel
-ADD app.py server.py run.sh config /root/
+ADD app.py run.sh config /root/
 
 ENV SENT_ENV=DEV
 
@@ -30,7 +30,5 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/re
 RUN apk add --no-cache gcc python-dev musl-dev nano && \
     pip install --no-cache-dir ipython
 RUN rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
-
-EXPOSE 1194/udp 3000
 
 CMD ["sh", "/root/run.sh"]

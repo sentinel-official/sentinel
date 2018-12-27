@@ -54,7 +54,7 @@ let addSession = (req, res) => {
       });
     }, (payment, node, next) => {
       let token = sessionHelper.generateToken();
-      let url = `http://${node.IP}:3000`;
+      let url = `http://${node.IP}:${node.APIPort}`;
       sessionHelper.sendUserDetails(`${url}/clients/${payment.from}/sessions/${payment.sessionId}`, {
         token
       }, (error) => {

@@ -1,13 +1,22 @@
 # coding=utf-8
 import subprocess
 
+from .config import client_conf
+from .config import server_conf
 from .helpers import revoke
 from ..node import node
 
 
 class OpenVPN(object):
     def __init__(self, show_output=True):
-        self.init_cmd = 'sh /root/sentinel/shell_scripts/init.sh {}'.format(node.config['enc_method'])
+        with open('/etc/openvpn/client.conf', 'w') as f:
+            f.writelines(client_conf.format(node.config['openvpn']['port'],
+                                            node.config['openvpn']['enc_method']))
+        with open('/etc/openvpn/server.conf', 'w') as f:
+            f.writelines(server_conf.format(node.config['openvpn']['port'],
+                                            node.config['openvpn']['enc_method']))
+
+        self.init_cmd = 'sh /root/sentinel/shell_scripts/init.sh'
         self.start_cmd = 'openvpn --config /etc/openvpn/server.conf'
         if show_output is False:
             self.init_cmd += ' >> /dev/null 2>&1'

@@ -1,5 +1,6 @@
 # coding=utf-8
 import time
+from multiprocessing import Process
 from os import path
 from thread import start_new_thread
 
@@ -13,6 +14,7 @@ from sentinel.node import list_node
 from sentinel.node import node
 from sentinel.node import update_node
 from sentinel.node import update_sessions
+from sentinel.server import APIServer
 from sentinel.vpn import OpenVPN
 from sentinel.vpn import get_sessions
 
@@ -42,10 +44,24 @@ def sessions_job():
         time.sleep(5)
 
 
+def api_server_process():
+    while True:
+        try:
+            options = {
+                'bind': '0.0.0.0:{}'.format(node.config['api_port']),
+                'loglevel': 'debug'
+            }
+            APIServer(options).run()
+        except Exception as err:
+            print(str(err))
+        time.sleep(5)
+
+
 if __name__ == '__main__':
-    print()
+    print('')
     account_name = raw_input('Please enter account name: ')
     account_password = raw_input('Please enter account password: ')
+    print('')
     node.update_info('config', {
         'account_name': account_name,
         'account_password': account_password,
@@ -83,7 +99,7 @@ if __name__ == '__main__':
             'upload_speed': int(node.net_speed['upload']),
             'download_speed': int(node.net_speed['download']),
             'price_per_gb': int(node.config['price_per_gb']),
-            'enc_method': str(node.config['enc_method']),
+            'enc_method': str(node.config['openvpn']['enc_method']),
             'description': str(node.config['description']),
             'location_latitude': int(node.location['latitude'] * 10000),
             'location_longitude': int(node.location['longitude'] * 10000),
@@ -114,10 +130,14 @@ if __name__ == '__main__':
             })
 
     update_node('details')
+
     openvpn = OpenVPN()
     openvpn.start()
-    start_new_thread(alive_job, ())
+    api_server = Process(target=api_server_process, args=())
+    api_server.start()
+
     start_new_thread(sessions_job, ())
+    start_new_thread(alive_job, ())
 
     while True:
         if openvpn.vpn_proc.poll() is not None:

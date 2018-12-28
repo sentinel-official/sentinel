@@ -12,6 +12,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
+import com.amplitude.api.Amplitude;
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.security.ProviderInstaller;
 
@@ -53,6 +54,8 @@ public class SentinelLiteApp extends MultiDexApplication {
         mStatus.init(getApplicationContext());
         sInstance = this;
         Branch.getAutoInstance(this);
+        Amplitude.getInstance().initialize(this, "d8bb5499a4a1c4e7c9e3e582864d5ef1").enableForegroundTracking(this);
+        Amplitude.getInstance().setLogLevel(Log.VERBOSE);
     }
 
     public static void changeLanguage(Context iContext, String iLanguageCode) {

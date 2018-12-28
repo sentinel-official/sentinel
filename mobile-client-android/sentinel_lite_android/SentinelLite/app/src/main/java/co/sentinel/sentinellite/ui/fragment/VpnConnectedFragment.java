@@ -34,6 +34,7 @@ import co.sentinel.sentinellite.ui.activity.VpnListActivity;
 import co.sentinel.sentinellite.ui.custom.BlurFlagImageView;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.ui.custom.OnVpnConnectionListener;
+import co.sentinel.sentinellite.util.AnalyticsHelper;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
 import co.sentinel.sentinellite.util.Convert;
@@ -314,6 +315,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
             case R.id.btn_disconnect:
                 initiateVpnDisconnection();
+                AnalyticsHelper.triggerOVPNDisconnectInit();
                 break;
 
             case R.id.btn_view_vpn:

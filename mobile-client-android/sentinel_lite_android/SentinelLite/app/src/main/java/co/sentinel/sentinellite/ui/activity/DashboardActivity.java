@@ -50,6 +50,7 @@ import co.sentinel.sentinellite.ui.dialog.SortFilterByDialogFragment;
 import co.sentinel.sentinellite.ui.dialog.TripleActionDialogFragment;
 import co.sentinel.sentinellite.ui.fragment.VpnConnectedFragment;
 import co.sentinel.sentinellite.ui.fragment.VpnSelectFragment;
+import co.sentinel.sentinellite.util.AnalyticsHelper;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
 import co.sentinel.sentinellite.util.Logger;
@@ -692,6 +693,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                     default:
                         showRatingDialog();
                         loadVpnFragment(null);
+                        AnalyticsHelper.triggerOVPNDisconnectDone();
                         break;
                 }
                 SentinelLiteApp.isVpnInitiated = false;
@@ -703,6 +705,10 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                         ((VpnConnectedFragment) aFragment).updateStatus(getString(localizedResId));
                     });
                 }
+            }
+
+            if (state.equals("CONNECTED")) {
+                AnalyticsHelper.triggerOVPNConnectDone();
             }
 
             if (SentinelLiteApp.isVpnReconnectFailed) {

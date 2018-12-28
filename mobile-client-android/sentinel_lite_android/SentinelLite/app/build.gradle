@@ -63,7 +63,7 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     // Google Play Services Lib
-    implementation 'com.google.android.gms:play-services-base:15.0.1'
+    implementation 'com.google.android.gms:play-services-base:16.0.1'
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
@@ -76,11 +76,13 @@ dependencies {
     // FlagView
     implementation 'com.github.KaKaVip:Android-Flag-Kit:v0.1'
     // Bugsnag
-    implementation 'com.bugsnag:bugsnag-android:4.6.1'
+    implementation 'com.bugsnag:bugsnag-android:4.9.3'
     // ViewPagerIndicator
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:2.0.3'
     // Branch
-    implementation 'io.branch.sdk.android:library:2.19.3'
+    implementation 'io.branch.sdk.android:library:2.19.5'
+    // Amplitude Analytics
+    implementation 'com.amplitude:android-sdk:2.21.0'
     // Android Test Libs
     implementation 'junit:junit:4.12'
     testImplementation 'junit:junit:4.12'

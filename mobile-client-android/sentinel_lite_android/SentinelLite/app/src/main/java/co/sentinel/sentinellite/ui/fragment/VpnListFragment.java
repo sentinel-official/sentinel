@@ -31,6 +31,7 @@ import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.ui.custom.OnVpnConnectionListener;
 import co.sentinel.sentinellite.ui.custom.VpnListSearchListener;
 import co.sentinel.sentinellite.ui.dialog.SortFilterByDialogFragment;
+import co.sentinel.sentinellite.util.AnalyticsHelper;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.VpnListViewModel;
@@ -282,9 +283,10 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
 
     @Override
     public void onConnectClicked(String iVpnAddress) {
-        if (!SentinelLiteApp.isVpnConnected)
+        if (!SentinelLiteApp.isVpnConnected) {
             mViewModel.getVpnServerCredentials(iVpnAddress);
-        else
+            AnalyticsHelper.triggerOVPNConnectInit();
+        } else
             showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_already_connected), AppConstants.VALUE_DEFAULT);
     }
 

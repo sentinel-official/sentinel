@@ -30,6 +30,7 @@ import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.ui.custom.VpnListSearchListener;
 import sentinelgroup.io.sentinel.ui.dialog.SortFilterByDialogFragment;
+import sentinelgroup.io.sentinel.util.AnalyticsHelper;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Status;
@@ -306,9 +307,10 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     public void onConnectClicked(String iVpnAddress) {
         boolean aIsTextNetActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
         if (aIsTextNetActive) {
-            if (!SentinelApp.isVpnConnected)
+            if (!SentinelApp.isVpnConnected) {
                 mViewModel.getVpnServerCredentials(iVpnAddress);
-            else
+                AnalyticsHelper.triggerOVPNConnectInit();
+            } else
                 showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_already_connected), AppConstants.VALUE_DEFAULT);
         } else
             showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_main_net_unavailable), AppConstants.VALUE_DEFAULT);

@@ -61,6 +61,7 @@ import sentinelgroup.io.sentinel.ui.dialog.SortFilterByDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnConnectedFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
 import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
+import sentinelgroup.io.sentinel.util.AnalyticsHelper;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Logger;
@@ -818,6 +819,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                         default:
                             showRatingDialog();
                             loadVpnSelectFragment(null, "updateState default");
+                            AnalyticsHelper.triggerOVPNDisconnectDone();
                             break;
                     }
                 }
@@ -830,6 +832,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                         ((VpnConnectedFragment) aFragment).updateStatus(getString(localizedResId));
                     });
                 }
+            }
+
+            if (state.equals("CONNECTED")) {
+                AnalyticsHelper.triggerOVPNConnectDone();
             }
 
             // Called when user connects to a VPN node from other activity

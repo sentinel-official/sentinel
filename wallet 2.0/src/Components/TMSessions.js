@@ -119,12 +119,12 @@ class TMSessions extends Component {
                 let sessionAmount = sessionData.amount ? parseInt(sessionData.amount.split('s')[0]) / (10 ** 8) : 0;
                 let sessionDuration = (Date.parse(new Date(sessionData.endedOn)) -
                     Date.parse(new Date(sessionData.startedOn))) / 1000;
-                paymentCount += sessionAmount;
+                paymentCount += parseFloat(sessionAmount.toFixed(8));
                 dataCount += sessionData.usage.download;
                 durationCount += sessionDuration;
                 return (
                     <div style={historyStyles.data}>
-                        <Card className = "cardStyle" >
+                        <Card className="cardStyle" >
                             <div>
                                 <label style={historyLabel}>{`${lang[language].SessionId}:`}&nbsp;<span style={historyValue}>{sessionData.sessionId}</span></label>
                             </div>
@@ -149,7 +149,7 @@ class TMSessions extends Component {
                             {sessionData.amount ?
                                 <div>
                                     <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>
-                                        {`${sessionAmount.toFixed(4)} TSENT`}
+                                        {`${sessionAmount.toFixed(8)} TSENT`}
                                     </span></label>
                                 </div>
                                 : ''

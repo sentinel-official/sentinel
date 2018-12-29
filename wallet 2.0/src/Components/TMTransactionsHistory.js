@@ -50,7 +50,7 @@ class TMTransactionsHistory extends React.Component {
                                     gas={data.gas}
                                     from={data.from === 'Released' ? `${lang[language]['ReleasedFromSession']} ${data.sessionId}` : data.from}
                                     unit={'TSENT'}
-                                    amount={parseInt(data.amount) / (10 ** 8)} status={'Success'} tx={data.hash} />
+                                    amount={parseInt(data.amount) / (10 ** 8).toFixed(8)} status={'Success'} tx={data.hash} />
                             </div>
                         )
                     } else {

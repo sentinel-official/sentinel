@@ -63,7 +63,10 @@ class TMAccountView extends Component {
                         snackMessage: lang[this.props.language][regError] ?
                             lang[this.props.language][regError] : res.payload,
                         isFreeLoading: false
-                    })
+                    });
+                    setTimeout(() => {
+                        this.props.getTMBalance(this.props.account.address);
+                    }, 7000);
                 }
             })
     }
@@ -91,7 +94,7 @@ class TMAccountView extends Component {
                 </div>
                 <div style={this.props.vpnStatus ? accountStyles.formVpnStyle : accountStyles.formStyle}>
                     <div style={accountStyles.cardStyle} bordered={false}>
-                       
+
                         <CardContent>
                             <QRCode
                                 bgColor="#FFFFFF"
@@ -108,7 +111,7 @@ class TMAccountView extends Component {
                                         snackMessage: lang[language].Copied,
                                         openSnack: true
                                     })}>
-                                  
+
                                     <CopyIcon style={receiveStyles.clipBoard} />
                                 </CopyToClipboard>
                             </Tooltip>
@@ -118,7 +121,7 @@ class TMAccountView extends Component {
                                     {lang[language].Note}
                                 </p>
                                 :
-                               
+
                                 null
                             }
                             {
@@ -135,7 +138,7 @@ class TMAccountView extends Component {
 
                                             <Col xs={6} style={accountStyles.tsentValue}>{usedTokens}</Col>
                                         </Row>
-                                      
+
 
                                     </div>
                                     :

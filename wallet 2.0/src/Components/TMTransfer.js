@@ -66,8 +66,8 @@ class TMTransfer extends Component {
     }
 
     sendTransaction = () => {
-        this.setState({ sending: true })
-        if (tmCurrentBalance < this.state.amount) {
+        this.setState({ sending: true });
+        if (parseFloat(tmCurrentBalance) < parseFloat(this.state.amount)) {
             this.setState({
                 sending: false, openSnack: true, snackMessage: lang[this.props.language].LessBalance
             })
@@ -164,6 +164,9 @@ class TMTransfer extends Component {
                         sending: false, openSnack: true, snackMessage: lang[this.props.language].TxSuccess,
                         toAddress: '', keyPassword: '', amount: '',
                     });
+                    setTimeout(() => {
+                        this.props.getTMBalance(this.props.account.address);
+                    }, 7000);
                 }
             });
         }
@@ -178,7 +181,7 @@ class TMTransfer extends Component {
         let balValue = (typeof balance === 'object' && balance !== null) ? ('value' in balance ? balance.value : {}) : {};
         let coins = (typeof balValue === 'object' && balValue !== null) ? ('coins' in balValue ? balValue.coins : []) : [];
         let token = coins && coins.length !== 0 ? coins.find(o => o.denom === 'sut') : {};
-        tmCurrentBalance = token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(3) : 0;
+        tmCurrentBalance = token && 'denom' in token ? (parseInt(token.amount) / (10 ** 8)).toFixed(8) : 0;
         let isDisabled = (this.state.sending || this.state.keyPassword === '' ||
             this.state.toAddress === '' || this.state.amount === '') ? true : false
         return (

@@ -167,7 +167,7 @@ class SimpleDialog extends React.Component {
                             </Button>
                         </div>
                     </List>
-                  
+
                 </div>
             </Dialog>
         );
@@ -258,7 +258,8 @@ class SimpleDialogDemo extends React.Component {
         session: false,
         snackOpen: false,
         snackMessage: '',
-        openvpnAlert: false
+        openvpnAlert: false,
+        isSocksRes: false
     };
 
     handleClickOpen = () => {
@@ -331,49 +332,53 @@ class SimpleDialogDemo extends React.Component {
 
                 })
             } else {
+                this.setState({ isSocksRes: false });
                 connectSocks(this.props.getAccount, vpn_addr, remote.process.platform, (err, res) => {
-                    console.log("Socks..res..", err, res);
-                    if (err) {
-                        if ('account_addr' in err)
-                            this.setState({
-                                pendingInitPayment: err.message, open: false, isPending: true,
-                                paymentAddr: err.account_addr, isLoading: false
-                            })
-                        else {
-                            if (err.message.includes('You have due amount')) {
-                                this.setState({
-                                    open: false, isLoading: false,
-                                    snackMessage: lang[this.props.language].YouHaveDue,
-                                    snackOpen: true
-                                })
-                            } else {
-                                let regError = (err.message).replace(/\s/g, "")
-                                this.setState({
-                                    open: false, isLoading: false,
-                                    snackMessage: lang[this.props.language][regError] ?
-                                        lang[this.props.language][regError] : err.message,
-                                    snackOpen: true
-                                })
-                            }
-                        }
-                    } else if (res) {
-                        console.log("Socks...", res);
-                        if (remote.process.platform === 'win32') {
-                            exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
-                                console.log('browser opened');
-                            });
-                        }
-                        this.setState({
-                            isLoading: false, isPending: false, open: false,
-                            snackMessage: lang[this.props.language].ConnectedSocks, snackOpen: true
-                        });
-                        this.props.setActiveVpn(this.props.data);
-                        this.props.setVpnStatus(true);
-                        calculateUsage(this.props.getAccount, true, (usage) => {
-                            this.props.socksVpnUsage(usage);
-                        });
+                    if (this.state.isSocksRes) {
                     } else {
-                        this.setState({ open: false, isLoading: false })
+                        console.log("Socks..res..", err, res);
+                        if (err) {
+                            if ('account_addr' in err)
+                                this.setState({
+                                    pendingInitPayment: err.message, open: false, isPending: true,
+                                    paymentAddr: err.account_addr, isLoading: false, isSocksRes: true
+                                })
+                            else {
+                                if (err.message.includes('You have due amount')) {
+                                    this.setState({
+                                        open: false, isLoading: false,
+                                        snackMessage: lang[this.props.language].YouHaveDue,
+                                        snackOpen: true, isSocksRes: true
+                                    })
+                                } else {
+                                    let regError = (err.message).replace(/\s/g, "")
+                                    this.setState({
+                                        open: false, isLoading: false,
+                                        snackMessage: lang[this.props.language][regError] ?
+                                            lang[this.props.language][regError] : err.message,
+                                        snackOpen: true, isSocksRes: true
+                                    })
+                                }
+                            }
+                        } else if (res) {
+                            console.log("Socks...", res);
+                            if (remote.process.platform === 'win32') {
+                                exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
+                                    console.log('browser opened');
+                                });
+                            }
+                            this.setState({
+                                isLoading: false, isPending: false, open: false,
+                                snackMessage: lang[this.props.language].ConnectedSocks, snackOpen: true, isSocksRes: true
+                            });
+                            this.props.setActiveVpn(this.props.data);
+                            this.props.setVpnStatus(true);
+                            calculateUsage(this.props.getAccount, true, (usage) => {
+                                this.props.socksVpnUsage(usage);
+                            });
+                        } else {
+                            this.setState({ open: false, isLoading: false, isSocksRes: true })
+                        }
                     }
                 });
             }

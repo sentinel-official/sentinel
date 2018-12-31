@@ -242,7 +242,7 @@ let lang = {
         "Address": "地址",
         "PubKey": "公钥",
         "Seed": "种子",
-        "GoToSTWallet": "去到Sentinel Terdermint钱包",
+        "GoToSTWallet": "去到Sentinel Tendermint钱包",
         "NoVPNUsed": "没有使用过的VPN",
         "ProblemEnablingPrivateNet": "启用私人网络时发生问题",
         "PrivateNetEnabledWith": "私人网络已启用 ",

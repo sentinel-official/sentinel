@@ -86,7 +86,7 @@ let lang = {
         'CreateRestore': '创建/恢复钱包',
         'SentinelAnonymity': 'Sentinel网络',
         'PeerToPeer': '适用于多链的点对点基于ERC隐私应用程序套件，提供无燃料费用服务及匿名ERC代币交易',
-        'BetaVersion': '带有ETH Rinkeby测试网和Tendermint测试网的测试版0.1.0',
+        'BetaVersion': '带有ETH Rinkeby测试网和Tendermint测试网的测试版0.11.1',
         'InitialPayment': '初始付款提醒',
         'InorderVPN': '为了使用VPN，首次需要先支付100 SENT。请支付，然后尝试连接到VPN',
         'CreateAUID': '创建您的匿名用户ID',
@@ -315,7 +315,7 @@ let lang = {
         "NodeID" : "节点ID",
         "Socks5ComingSoon" : "SOCKS5 （即将推出）",
         "PrivateComingSoon" : "私有网络（即将推出）",
-        "VersionInSidebar":"dVPN - alpha-0.1.0",
+        "VersionInSidebar":"dVPN - alpha-0.11.1",
         "LockedForSession" : "被锁定用于dVPN会话",
 
         'TotalPayment':'总付费',

@@ -186,7 +186,7 @@ let lang = {
         "EnterAuthCode": "请输入您的授权码以连接到私人网络",
         "AuthCode": "授权码",
         "ToggleMenu": "切换菜单",
-        "WindowTitle": "Sentinel Network - dVPN - alpha-0.1.01",
+        "WindowTitle": "Sentinel Network - dVPN - alpha-0.11.1",
         "RunInBackground": "在后台运行",
         "Confirm": "确认",
         "CurrentlyConnectedToVPN": "您目前已连接VPN",
@@ -251,12 +251,12 @@ let lang = {
         "Converting": "C正在兑换",
         "OpenVpnNotInstalled": "没有安装OpenVPN。请去往",
         "PleaseGo": "请去往",
-        "OpenVpnPath": "C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.01\\resources\\extras",
+        "OpenVpnPath": "C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.11.1\\resources\\extras",
         "OpenVpnInstallCmd": "然后运行openvpn-install-2.3.18-I602-x86_64.exe",
         "OpenVpnMessage": "只需安装Openvpn而无需更改安装目录。",
         "YourUserName": "您的用户名称",
         "AndRun": "然后运行",
-        "OpenVpnInstallAlert": "没有安装OpenVPN。请去往 C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.1.01\\resources\\extras 然后运行 openvpn-install-2.3.18-I602-x86_64.exe。 只需安装Openvpn而无需更改安装目录。",
+        "OpenVpnInstallAlert": "没有安装OpenVPN。请去往 C:\\Users\\(您的用户名\\AppData\\Local\\Sentinel\\app-0.11.1\\resources\\extras 然后运行 openvpn-install-2.3.18-I602-x86_64.exe。 只需安装Openvpn而无需更改安装目录。",
         "ConnectedSocks": "已链接到Socks",
 
 

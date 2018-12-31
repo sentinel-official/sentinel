@@ -3,7 +3,7 @@
   "description": "Sentinel Network - dVPN Desktop Application",
   "productName": "Sentinel",
   "author": "Dev Team <devteam@sentinelgroup.io>",
-  "version": "0.1.01",
+  "version": "0.11.1",
   "private": true,
   "main": "electron.js",
   "license": "MIT",
@@ -35,7 +35,7 @@
     "package-mac": "electron-packager . sentinel --overwrite --asar --platform=darwin --arch=x64 --icon=public/icon256x256.ico --prune=true --out=release-builds --extra-resource=public/gaiacli",
     "package-win": "electron-packager . sentinel --overwrite --asar --platform=win32 --icon=public/icon256x256.ico --prune=true --out=release-builds --win32metadata.CompanyName=Sentinel --win32metadata.FileDescription=\"Application for Sentinel\" --win32metadata.requested-execution-level=requireAdministrator --win32metadata.ProductName=\"Sentinel\"",
     "package-linux": "electron-packager . sentinel --overwrite --asar --platform=linux --arch=x64 --icon=public/icon256x256.png --prune=true --out=release-builds",
-    "create-installer-mac": "electron-installer-dmg ./release-builds/sentinel-darwin-x64/sentinel.app sentinel-alpha-0.1.01 --out=release-builds --overwrite --icon=public/icon256x256.icns",
+    "create-installer-mac": "electron-installer-dmg ./release-builds/sentinel-darwin-x64/sentinel.app sentinel-alpha-0.11.1 --out=release-builds --overwrite --icon=public/icon256x256.icns",
     "create-installer-win": "node installers/windows/createinstaller.js",
     "create-debian-installer": "electron-installer-debian --src release-builds/sentinel-linux-x64/ --arch amd64 --config debian.json"
   },

@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
     android:fitsSystemWindows="false"
     tools:context=".ui.activity.HelperActivity">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/vp_helper"
+        android:id="@+id/vp_helper_pager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,17 +16,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.github.vivchar.viewpagerindicator.ViewPagerIndicator
-        android:id="@+id/vpi_indicator"
+    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+        android:id="@+id/vpi_helper_dots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"
-        app:delimiterSize="@dimen/margin_8"
-        app:itemScale="1"
-        app:itemSelectedTint="@color/colorTextGray"
-        app:itemSize="@dimen/margin_8"
-        app:itemTint="@color/colorTextWhite"
+        app:dotsColor="@color/colorTextWhite"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

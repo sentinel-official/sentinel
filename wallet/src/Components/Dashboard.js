@@ -3,7 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Tabs, Tab } from 'material-ui';
 import SendComponent from './SendComponent';
 import Header from './Header';
-import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnectedData, sendError } from '../Actions/AccountActions';
+import { getEthBalance, getSentBalance, getAccount, getVPNdetails, getVPNConnectedData, sendError, getMasterUrl } from '../Actions/AccountActions';
 import History from './History';
 import ReceiveComponent from './ReceiveComponent';
 import VPNComponent from './VPNComponent';
@@ -37,14 +37,14 @@ class Dashboard extends Component {
       testDisabled: false,
       lang: 'en',
       currentHash: null,
-      swapHash: null
+      swapHash: null,
+      isPrivate: false
     }
     this.set = this.props.set;
   }
 
   componentWillMount() {
     let that = this;
-
     getAccount((err, account_addr) => {
       if (err) { }
       else {
@@ -74,6 +74,10 @@ class Dashboard extends Component {
         that.setState({ ethBalance })
       }
     })
+  }
+
+  privValueChange = (value) => {
+    this.setState({ isPrivate: value })
   }
 
   getTxHash = (txHash) => {
@@ -151,7 +155,8 @@ class Dashboard extends Component {
   }
 
   onTestChange = (value) => {
-    if (value === false && (this.state.value === 'vpn' || this.state.value === 'vpn_history'))
+    if ((value === false && (this.state.value === 'vpn' || this.state.value === 'vpn_history'))
+      || (value === true && this.state.value === 'swixer'))
       this.setState({ isTest: value, value: 'send' })
     else
       this.setState({ isTest: value })
@@ -209,6 +214,7 @@ class Dashboard extends Component {
             isTest={this.state.isTest}
             isSock={this.state.isSock}
             lang={this.props.lang}
+            privateChange={this.privValueChange}
           />
           <div>
             <Tabs
@@ -259,11 +265,20 @@ class Dashboard extends Component {
                   changeTest={this.testDisable}
                   lang={this.props.lang}
                   isSock={this.state.isSock}
+                  isPrivate={this.state.isPrivate}
                 />
               </Tab>
               <Tab style={this.state.isTest ? styles.enabledTabStyle : styles.disabledTabStyle}
                 label={lang[language].VpnHistory} value="vpn_history" disabled={!this.state.isTest}>
-                <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)} lang={this.props.lang} />
+                <VPNHistory local_address={this.state.local_address} payVPN={this.vpnPayment.bind(this)}
+                  lang={this.props.lang} isPrivate={this.state.isPrivate} />
+              </Tab>
+              <Tab style={this.state.isTest ? styles.disabledTabStyle : styles.enabledTabStyle}
+                label="Swixer" value="swixer" disabled={this.state.isTest}>
+                <div>
+                  <iframe src="https://swixer.sentinelgroup.io" style={{ width: 1000, height: 525, border: 0 }}>
+                  </iframe>
+                </div>
               </Tab>
               <Tab style={styles.enabledTabStyle} label="Mixer" value="mixer">
                 <MixerComponent local_address={this.state.local_address} lang={this.props.lang} isTest={this.state.isTest} />

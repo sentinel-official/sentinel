@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activity.DeviceRegisterActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/horizontal_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.42" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="@dimen/margin_48"
+        android:layout_height="@dimen/margin_48"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toTopOf="@+id/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/ic_app_icon"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/app_name"
+        style="@style/CustomTextAppearance.AppTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
+        android:text="@string/sentinel"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toTopOf="@+id/app_sub_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_icon" />
+
+    <TextView
+        android:id="@+id/app_sub_name"
+        style="@style/CustomTextAppearance.Text14"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/app_sub_name"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline1"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
+        app:layout_constraintStart_toEndOf="@+id/vertical_guideline3"
+        app:layout_constraintTop_toBottomOf="@+id/app_name" />
+
+    <TextView
+        android:id="@+id/add_referral"
+        style="@style/CustomTextAppearance.Text12.White50Normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:padding="@dimen/margin_4"
+        android:text="@string/add_referral_desc"
+        app:layout_constraintBottom_toTopOf="@+id/til_referral"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_referral"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/referral_id"
+        android:textColorHint="@color/colorTextWhiteWithAlpha50"
+        app:hintTextAppearance="@style/TextInputLayoutTheme"
+        app:layout_constraintBottom_toTopOf="@+id/btn_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_referral">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tet_referral"
+            style="@style/CustomTextAppearance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+
+            android:inputType="textCapCharacters"
+            android:maxLength="13"
+            android:textAllCaps="true"
+            android:theme="@style/TextInputEditTextTheme" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_next"
+        style="@style/CustomTextAppearance.OrangeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
+        app:layout_constraintStart_toStartOf="@+id/vertical_guideline3" />
+</android.support.constraint.ConstraintLayout>

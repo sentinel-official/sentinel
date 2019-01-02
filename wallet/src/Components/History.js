@@ -17,7 +17,6 @@ class History extends Component {
     this.state = {
       ethData: [],
       sentData: [],
-      isGetStatusCalled: false,
       isLoading: true,
       ethActive: false,
       openSnack: false,
@@ -70,7 +69,7 @@ class History extends Component {
       else if (result['status'] === 1) {
         if (showDivCount === 0) {
           showDivCount++;
-          self.setState({ txStatus: 'Success' })
+          self.setState({ txStatus: 'Success', showDiv: true })
         }
         if (showDivCount === 1) {
           self.props.removeSwapHash();
@@ -135,12 +134,16 @@ class History extends Component {
       this.getSentHistory();
       this.setState({ isInitial: false });
     }
-    if (!this.state.isGetStatusCalled && this.props.swapHash) {
-      setInterval(function () {
-        self.getStatus();
+    if (!StatusInterval && this.props.swapHash) {
+      StatusInterval = setInterval(function () {
+        self.getStatus()
       }, 2000);
-
-      this.setState({ isGetStatusCalled: true });
+    }
+    if (!this.props.swapHash) {
+      if (StatusInterval) {
+        clearInterval(StatusInterval);
+        StatusInterval = null;
+      }
     }
     let language = this.props.lang;
     let ethOutput = <EtherTransaction
@@ -170,7 +173,7 @@ class History extends Component {
         </span>
         {this.state.isLoading === true ? this.renderProgress() :
           <div >
-            {this.state.showDiv ? <div style={styles.wholeDiv}>
+            {this.state.showDiv && !this.props.isTest ? <div style={styles.wholeDiv}>
               <span>Swap Transaction {this.props.swapHash} Status: <span style={{ fontWeight: 'bold' }}>{this.state.txStatus}</span></span>
             </div> : null}
             {this.state.ethActive ?

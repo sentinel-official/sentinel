@@ -1,0 +1,16 @@
+{
+    "account": {
+        "address": null
+    }, 
+    "api_port": 3000, 
+    "description": "", 
+    "openvpn": {
+        "enc_method": "AES-256-CBC", 
+        "port": 1194
+    }, 
+    "price_per_gb": 100, 
+    "register": {
+        "hash": null, 
+        "token": null
+    }
+}

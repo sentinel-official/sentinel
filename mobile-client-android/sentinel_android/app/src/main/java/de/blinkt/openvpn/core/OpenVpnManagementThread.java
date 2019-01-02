@@ -170,7 +170,7 @@ public class OpenVpnManagementThread implements Runnable, OpenVPNManagement {
         try {
             Method getInt = FileDescriptor.class.getDeclaredMethod("getInt$");
             int fdint = (Integer) getInt.invoke(fd);
-            // You can even get more evil by parsing toString() and extract the int from that :)
+            // You can even getGenericWebService more evil by parsing toString() and extract the int from that :)
             boolean result = mOpenVPNService.protect(fdint);
             if (!result) VpnStatus.logWarning("Could not protect VPN socket");
             //ParcelFileDescriptor pfd = ParcelFileDescriptor.fromFd(fdint);

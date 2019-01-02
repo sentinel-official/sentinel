@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.7
 
 ADD sentinel /root/sentinel
 
@@ -10,8 +10,9 @@ RUN apk add --no-cache gcc gmp-dev libffi-dev make mongodb musl-dev openssl-dev 
     mkdir -p /data/db && \
     wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
     python3 /tmp/get-pip.py && \
-    pip3 install --no-cache-dir bitcoin ethereum eth_keyfile falcon falcon_cors gevent gunicorn pymongo raven redis && \
-    pip3 install --no-cache-dir rlp==0.6.0 web3==3.16.5 && \
+    pip3 install --no-cache-dir bitcoin eth_keyfile falcon falcon_cors gevent gunicorn pymongo raven redis && \
+    pip3 install --no-cache-dir web3==3.16.5 && \
+    pip3 install --no-cache-dir ethereum==2.3.1 rlp==0.6.0 eth_utils==0.8.1 && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
 
 EXPOSE 8000

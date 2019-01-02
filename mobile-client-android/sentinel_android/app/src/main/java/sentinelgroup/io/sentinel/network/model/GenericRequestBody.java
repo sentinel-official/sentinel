@@ -29,6 +29,10 @@ public class GenericRequestBody {
     private BigInteger amount;
     @SerializedName("session_id")
     private String sessionId;
+    private String clientAddress;
+    private String referralAddress;
+    private String address;
+    private String deviceId;
 
     private GenericRequestBody(GenericRequestBodyBuilder iBuilder) {
         password = iBuilder.password;
@@ -43,6 +47,10 @@ public class GenericRequestBody {
         fromAddress = iBuilder.fromAddress;
         amount = iBuilder.amount;
         sessionId = iBuilder.sessionId;
+        clientAddress = iBuilder.clientAddress;
+        referralAddress = iBuilder.referralAddress;
+        address = iBuilder.address;
+        deviceId = iBuilder.deviceId;
     }
 
     // Getters
@@ -94,6 +102,22 @@ public class GenericRequestBody {
         return sessionId;
     }
 
+    public String getClientAddress() {
+        return clientAddress;
+    }
+
+    public String getReferralAddress() {
+        return referralAddress;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
     public static class GenericRequestBodyBuilder {
         @SerializedName("password")
         private String password = null;
@@ -119,6 +143,10 @@ public class GenericRequestBody {
         private BigInteger amount = null;
         @SerializedName("session_id")
         private String sessionId = null;
+        private String clientAddress = null;
+        private String referralAddress = null;
+        private String address = null;
+        private String deviceId = null;
 
         public GenericRequestBodyBuilder password(String password) {
             this.password = password;
@@ -177,6 +205,26 @@ public class GenericRequestBody {
 
         public GenericRequestBodyBuilder sessionId(String sessionId) {
             this.sessionId = sessionId;
+            return this;
+        }
+
+        public GenericRequestBodyBuilder clientAddress(String clientAddress) {
+            this.clientAddress = clientAddress;
+            return this;
+        }
+
+        public GenericRequestBodyBuilder referralAddress(String referralAddress) {
+            this.referralAddress = referralAddress;
+            return this;
+        }
+
+        public GenericRequestBodyBuilder address(String address) {
+            this.address = address;
+            return this;
+        }
+
+        public GenericRequestBodyBuilder deviceId(String deviceId) {
+            this.deviceId = deviceId;
             return this;
         }
 

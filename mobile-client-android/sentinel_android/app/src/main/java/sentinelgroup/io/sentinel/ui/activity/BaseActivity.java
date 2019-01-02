@@ -55,7 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
         mToolbar = findViewById(R.id.toolbar);
         mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
         mSwitchNet = findViewById(R.id.switch_net);
-        mSwitchState = findViewById(R.id.switch_state);
+        mSwitchState = findViewById(R.id.tv_switch_state);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         // instantiate toolbar
         setupToolbar();
@@ -71,8 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     private void setupTestNetSwitch() {
         boolean isActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
         mSwitchNet.setChecked(isActive);
-        mSwitchNet.setText(R.string.test_net);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isActive ? R.string.active : R.string.deactive)));
+        mSwitchState.setText(getString(R.string.test_net, getString(isActive ? R.string.on : R.string.off)));
     }
 
     /*
@@ -132,25 +131,16 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
             }
         } else {
             if (aFragment != null)
-                mPrgDialog.dismiss();
+                mPrgDialog.dismissAllowingStateLoss();
         }
     }
 
     /**
      * Shows an Error dialog with a Single button
      *
-     * @param iMessage [String] The error message to be displayed
-     */
-    protected void showSingleActionError(String iMessage) {
-        showSingleActionError(-1, iMessage, -1);
-    }
-
-    /**
-     * Shows an Error dialog with a Single button
-     *
-     * @param iTitleId          [int] The resource id of the title to be displayed
+     * @param iTitleId          [int] The resource id of the title to be displayed (default - "Please Note")
      * @param iMessage          [String] The error message to be displayed
-     * @param iPositiveOptionId [int] The resource id of the button text
+     * @param iPositiveOptionId [int] The resource id of the button text (default - "Ok")
      */
     protected void showSingleActionError(int iTitleId, String iMessage, int iPositiveOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(SINGLE_ACTION_DIALOG_TAG);
@@ -164,21 +154,11 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     /**
      * Shows an Error dialog with a Two buttons
      *
-     * @param iTag     [String] The Tag assigned to the fragment when it's added to the container
-     * @param iMessage [String] The error message to be displayed
-     */
-    protected void showDoubleActionError(String iTag, String iMessage) {
-        showDoubleActionError(iTag, -1, iMessage, -1, -1);
-    }
-
-    /**
-     * Shows an Error dialog with a Two buttons
-     *
      * @param iTag              [String] The Tag assigned to the fragment when it's added to the container
-     * @param iTitleId          [int] The resource id of the title to be displayed
+     * @param iTitleId          [int] The resource id of the title to be displayed (default - "Please Note")
      * @param iMessage          [String] The error message to be displayed
-     * @param iPositiveOptionId [int] The resource id of the positive button text
-     * @param iNegativeOptionId [int] The resource id of the negative button text
+     * @param iPositiveOptionId [int] The resource id of the positive button text (default - "Ok")
+     * @param iNegativeOptionId [int] The resource id of the negative button text (default - "Cancel")
      */
     protected void showDoubleActionError(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
         Fragment aFragment = getSupportFragmentManager().findFragmentByTag(DOUBLE_ACTION_DIALOG_TAG);
@@ -225,6 +205,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGeneri
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
-        mSwitchState.setText(getString(R.string.test_net_state, getString(isChecked ? R.string.active : R.string.deactive)));
+        mSwitchState.setText(getString(R.string.test_net, getString(isChecked ? R.string.on : R.string.off)));
     }
 }

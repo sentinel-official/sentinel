@@ -37,9 +37,9 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:drawableLeft="@drawable/ic_app_icon_small"
-                android:drawablePadding="@dimen/margin_8"
+                android:drawablePadding="@dimen/margin_16"
                 android:drawableStart="@drawable/ic_app_icon_small"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/margin_8"
@@ -51,7 +51,7 @@
 
             <TextView
                 android:id="@+id/sent_paid"
-                style="@style/CustomTextAppearance.Text12.GrayNormal"
+                style="@style/CustomTextAppearance.Text12.Gray"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -68,12 +68,12 @@
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/margin_1"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="24dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:src="@color/colorCardShadow"
                 app:layout_constraintBottom_toTopOf="@+id/tv_total_duration"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -102,10 +102,10 @@
 
             <TextView
                 android:id="@+id/total_duration"
-                style="@style/CustomTextAppearance.Text12.GrayNormal"
+                style="@style/CustomTextAppearance.Text12.Gray"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="24dp"
                 android:gravity="center"
                 android:text="@string/total_duration"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -132,7 +132,7 @@
 
             <TextView
                 android:id="@+id/total_received_data"
-                style="@style/CustomTextAppearance.Text12.GrayNormal"
+                style="@style/CustomTextAppearance.Text12.Gray"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:gravity="center"
@@ -153,9 +153,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_vpn_history"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="match_parent">
+
+            <sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView
+                android:id="@+id/rv_vpn_history"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_empty_message"
+                style="@style/CustomTextAppearance.Text14.White70Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_32"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/margin_16"
+                android:text="@string/vpn_history_empty_list_message" />
+        </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

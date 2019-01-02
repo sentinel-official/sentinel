@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/colorWindowDark"
-    android:fillViewport="true"
-    android:layout_height="match_parent">
+    android:fillViewport="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/tv_source"
-            style="@style/CustomTextAppearance.Text12"
+            style="@style/CustomTextAppearance.Text14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -21,7 +21,6 @@
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Send SENT"
             app:layout_constraintBottom_toTopOf="@+id/tv_date_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,11 +30,11 @@
 
         <TextView
             android:id="@+id/tv_date_time"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            style="@style/CustomTextAppearance.Text14.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="4dp"
-            android:text="Thu 11 May 2018   10:30:47 GMT"
             app:layout_constraintBottom_toTopOf="@+id/btn_open_etherscan"
             app:layout_constraintEnd_toEndOf="@+id/tv_source"
             app:layout_constraintStart_toStartOf="@+id/tv_source"
@@ -43,10 +42,9 @@
 
         <TextView
             android:id="@+id/tv_tx_status"
-            style="@style/CustomTextAppearance.Text12.GrayNormal"
+            style="@style/CustomTextAppearance.Text14.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Status: Success"
             app:layout_constraintBottom_toBottomOf="@+id/btn_open_etherscan"
             app:layout_constraintStart_toStartOf="@+id/tv_date_time"
             app:layout_constraintTop_toTopOf="@+id/btn_open_etherscan" />
@@ -56,23 +54,23 @@
             style="@style/CustomTextAppearance.BlackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_8"
-            android:layout_marginTop="8dp"
             android:text="@string/view_on_etherscan"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintEnd_toEndOf="@+id/tv_date_time"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/tv_tx_status"
             app:layout_constraintTop_toBottomOf="@+id/tv_date_time" />
 
         <ImageView
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/margin_1"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             app:layout_constraintBottom_toTopOf="@+id/from_address"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +80,7 @@
 
         <TextView
             android:id="@+id/from_address"
-            style="@style/CustomTextAppearance.Text10.Gray"
+            style="@style/CustomTextAppearance.Text12.GrayNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -95,12 +93,10 @@
 
         <TextView
             android:id="@+id/tv_from"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            style="@style/CustomTextAppearance.Text14.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginTop="4dp"
-            android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
             app:layout_constraintBottom_toTopOf="@+id/to_address"
             app:layout_constraintEnd_toEndOf="@+id/from_address"
             app:layout_constraintStart_toStartOf="@+id/from_address"
@@ -123,7 +119,7 @@
 
         <TextView
             android:id="@+id/to_address"
-            style="@style/CustomTextAppearance.Text10.Gray"
+            style="@style/CustomTextAppearance.Text12.GrayNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -137,12 +133,10 @@
 
         <TextView
             android:id="@+id/tv_to"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            style="@style/CustomTextAppearance.Text14.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginTop="4dp"
-            android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
             app:layout_constraintBottom_toTopOf="@+id/tx_hash"
             app:layout_constraintEnd_toEndOf="@+id/to_address"
             app:layout_constraintStart_toStartOf="@+id/to_address"
@@ -165,7 +159,7 @@
 
         <TextView
             android:id="@+id/tx_hash"
-            style="@style/CustomTextAppearance.Text10.Gray"
+            style="@style/CustomTextAppearance.Text12.GrayNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -179,12 +173,10 @@
 
         <TextView
             android:id="@+id/tv_tx_hash"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            style="@style/CustomTextAppearance.Text14.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginTop="4dp"
-            android:text="0x89vd6i90ab820iu9670bjw4no3kil2x0ob21a547"
             app:layout_constraintBottom_toTopOf="@+id/amount"
             app:layout_constraintEnd_toEndOf="@+id/tx_hash"
             app:layout_constraintStart_toStartOf="@+id/tx_hash"
@@ -207,7 +199,7 @@
 
         <TextView
             android:id="@+id/amount"
-            style="@style/CustomTextAppearance.Text10.Gray"
+            style="@style/CustomTextAppearance.Text12.GrayNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -223,11 +215,10 @@
 
         <TextView
             android:id="@+id/tv_amount"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            style="@style/CustomTextAppearance.Text14.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="1,743 SENTS"
             app:layout_constraintBottom_toTopOf="@+id/gas_price"
             app:layout_constraintEnd_toEndOf="@+id/amount"
             app:layout_constraintStart_toStartOf="@+id/amount"
@@ -251,11 +242,11 @@
 
         <TextView
             android:id="@+id/tv_gas_price"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+            style="@style/CustomTextAppearance.Text14.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:layout_marginTop="4dp"
-            android:text="2 Gwei"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/gas_price"
             app:layout_constraintStart_toStartOf="@+id/gas_price"

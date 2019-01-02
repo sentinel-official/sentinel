@@ -83,6 +83,7 @@ public class VpnListViewModel extends ViewModel {
                 .token(iVpnCredentials.token)
                 .build();
         String aUrl = String.format(Locale.US, AppConstants.URL_BUILDER, iVpnCredentials.ip, iVpnCredentials.port);
+        AppPreferences.getInstance().saveString(AppConstants.PREFS_IP_ADDRESS, iVpnCredentials.ip);
         mRepository.getVpnConfig(aUrl, aBody);
     }
 
@@ -94,16 +95,20 @@ public class VpnListViewModel extends ViewModel {
             File aConfigFile = new File(aConfigPath);
             // Write to the config file
             try {
+                // Create Config file if it doesn't exist
                 if (!aConfigFile.exists())
                     aConfigFile.createNewFile();
-                FileOutputStream aInternalFileStream = new FileOutputStream(aConfigFile);
-                OutputStreamWriter aInternalFileWriter = new OutputStreamWriter(aInternalFileStream);
+                // Setup FileOutputStream
+                FileOutputStream aFileStream = new FileOutputStream(aConfigFile);
+                // Setup OutputStreamWriter
+                OutputStreamWriter aStreamWriter = new OutputStreamWriter(aFileStream);
+                // Write to file
                 for (int i = 0; i < data.node.vpn.ovpn.size(); i++) {
-                    aInternalFileWriter.append(data.node.vpn.ovpn.get(i));
+                    aStreamWriter.append(data.node.vpn.ovpn.get(i));
                 }
-                aInternalFileWriter.close();
-                aInternalFileStream.close();
-
+                // Close the OutputStreamWriter and FileOutputStream
+                aStreamWriter.close();
+                aFileStream.close();
                 SentinelApp.isVpnInitiated = true;
                 mVpnConfigSaveLiveEvent.postValue(Resource.success(aConfigPath));
             } catch (IOException e) {

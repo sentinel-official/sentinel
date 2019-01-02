@@ -7,15 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.github.vivchar.viewpagerindicator.ViewPagerIndicator;
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.ui.adapter.VpnHelperPagerAdapter;
-import sentinelgroup.io.sentinel.ui.custom.PageFadeTransformer;
+import sentinelgroup.io.sentinel.ui.custom.FadePageTransformer;
 
 public class HelperActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
-    private ViewPager mVpHelper;
-    private ViewPagerIndicator mVpiIndicator;
+    private ViewPager mVpHelperPager;
+    private WormDotsIndicator mVpiIndicator;
     private Button mBtnNext;
 
     private VpnHelperPagerAdapter mAdapter;
@@ -37,8 +37,8 @@ public class HelperActivity extends AppCompatActivity implements ViewPager.OnPag
      * Instantiate all the views used in the XML and perform other instantiation steps (if needed)
      */
     private void initView() {
-        mVpHelper = findViewById(R.id.vp_helper);
-        mVpiIndicator = findViewById(R.id.vpi_indicator);
+        mVpHelperPager = findViewById(R.id.vp_helper_pager);
+        mVpiIndicator = findViewById(R.id.vpi_helper_dots);
         mBtnNext = findViewById(R.id.btn_next);
         // instantiate ViewPager and ViewPager Indicator
         setupViewPager();
@@ -51,20 +51,25 @@ public class HelperActivity extends AppCompatActivity implements ViewPager.OnPag
      * ViewPager
      */
     private void setupViewPager() {
+        // Setup ViewPagerAdapter and ViewPager
         mAdapter = new VpnHelperPagerAdapter(this);
-        mVpHelper.setAdapter(mAdapter);
-        mVpHelper.setOffscreenPageLimit(2);
-        mVpHelper.setPageTransformer(false, new PageFadeTransformer());
-        mVpiIndicator.setupWithViewPager(mVpHelper);
-        mVpiIndicator.addOnPageChangeListener(this);
+        mVpHelperPager.setAdapter(mAdapter);
+        mVpHelperPager.setOffscreenPageLimit(2);
+        mVpHelperPager.setPageTransformer(false, new FadePageTransformer());
+        mVpHelperPager.addOnPageChangeListener(this);
+        // setup WormDotsIndicator
+        mVpiIndicator.setDotsClickable(true);
+        mVpiIndicator.setViewPager(mVpHelperPager);
     }
 
     // Listener implementations
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
     @Override
-    public void onPageScrollStateChanged(int state) {}
+    public void onPageScrollStateChanged(int state) {
+    }
 
     @Override
     public void onPageSelected(int position) {
@@ -77,7 +82,7 @@ public class HelperActivity extends AppCompatActivity implements ViewPager.OnPag
             setResult(RESULT_OK);
             finish();
         } else {
-            mVpHelper.setCurrentItem(mVpHelper.getCurrentItem() + 1, true);
+            mVpHelperPager.setCurrentItem(mVpHelperPager.getCurrentItem() + 1, true);
         }
     }
 }

@@ -37,8 +37,9 @@ def update_node(update_type):
     if update_type == 'details':
         body['details'] = {
             'IP': node.ip,
+            'APIPort': node.config['api_port'],
             'pricePerGB': node.config['price_per_gb'],
-            'encMethod': node.config['enc_method'],
+            'encMethod': node.config['openvpn']['enc_method'],
             'description': node.config['description'],
             'location': node.location,
             'netSpeed': node.net_speed,
@@ -136,3 +137,20 @@ def add_tx(tx):
                }, None
     except Exception as error:
         return str(error), None
+
+
+def get_free_coins():
+    body = {
+        "address": node.config['account']['address']
+    }
+    url = 'http://tm-api.sentinelgroup.io:3000/get-tokens'
+    try:
+        response = fetch().post(url, json=body)
+        if response and response.status_code == 200:
+            return None
+        return {
+            'code': 2,
+            'message': 'Response status code is not 200.'
+        }
+    except Exception as error:
+        return str(error)

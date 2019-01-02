@@ -14,4 +14,5 @@ let nodeDeadThread = () => {
     });
 };
 
+nodeDeadThread();
 setInterval(nodeDeadThread, MAX_SECS / 2);

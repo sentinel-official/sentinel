@@ -8,11 +8,6 @@ KEYS=/etc/openvpn/keys
 ERSA_DIR=/usr/share/easy-rsa
 PUBLIC_IP=$(wget -qO- http://ipecho.net/plain; echo)
 
-cd /root/sentinel/shell_scripts/ && \
-sed -i '/cipher/d' server.conf && sed -i '/cipher/d' client.conf && \
-echo "cipher $1" >> server.conf && echo "cipher $1" >> client.conf && \
-mv server.conf client.conf /etc/openvpn/ && \
-
 echo 'net.ipv4.ip_forward = 1' >> ${SYSCTL} && sysctl -p ${SYSCTL} && \
 
 # Firewall

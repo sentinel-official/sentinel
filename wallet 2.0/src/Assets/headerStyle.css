@@ -1,0 +1,60 @@
+div.dropDownStyle{
+    color:#FFF !important;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+div.dropDownStyle:before  {
+    /* border-bottom: 1px solid #FFF; */
+    border-bottom: 0px !important;
+}
+div.dropDownStyle:after  {
+    /* border-bottom: 1px solid #FFF; */
+    border-bottom: 0px !important;
+}
+div.dropDownStyle svg {
+color: #FFF;
+}
+div.dropDownStyle:hover {
+    /* border-bottom: 2px solid #FFF; */
+    border-bottom: 0px ;
+}
+
+div.disabledDropDownStyle{
+    color: #264866 ; 
+    /* initally color: #FFF */
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    
+}
+div.disabledDropDownStyle{
+    color: #264866 !important;
+    cursor: no-drop;
+}
+div.disabledDropDownStyle div > div {
+    cursor: not-allowed !important;
+    color: #264866 !important;
+}
+div.disabledDropDownStyle:before  {
+    /* border-bottom: 1px solid #FFF !important; */
+    border-bottom: 0px !important;
+}
+div.disabledDropDownStyle:after  {
+    /* border-bottom: 1px solid #FFF; */
+    border-bottom: 0px !important;
+}
+div.disabledDropDownStyle svg {
+color: #264866;
+}
+div.disabledDropDownStyle:hover {
+    /* border-bottom: 2px solid #FFF; */
+    border-bottom: 0px;
+}
+
+div.dropDownStyle:hover{
+    border-bottom: 0px !important;
+}
+div.disabledDropDownStyle:hover{
+    border-bottom: 0px !important;
+}

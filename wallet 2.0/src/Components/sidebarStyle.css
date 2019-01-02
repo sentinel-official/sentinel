@@ -1,0 +1,95 @@
+
+.iconStyle{
+    padding-right: 20px;
+    
+}
+.iconStyle svg {
+    vertical-align: top !important;
+}
+.headingStyle{
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    font-family: inherit
+   
+}
+.social_icons{
+    display: flex;
+    flex-direction: column;
+
+    bottom: 70px;
+    padding-left: 15px;
+    position: absolute;
+}
+.social_image{
+    padding-bottom: 10px;
+    width: 30px;
+}
+
+#social {
+    margin: 0!important;
+    display: flex;
+    flex-direction: row;
+    padding-left: 55px;
+    position: absolute;
+    bottom: 27px;
+}
+#social li {
+    float: left;
+    border-bottom: none!important;
+    list-style-type: none!important;
+    padding-right: 10px;
+    margin-top: 37px;
+}
+#social #fb {
+    background-position: -170px -98px;
+}
+#social li a {
+    float: left;
+    height: 26px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 26px;
+    background: url("../Images/social_sprite.png");
+}
+
+#social #md {
+    background-position: 25px 0;
+}
+#social #md:hover {
+    background-position:2px 0;
+}
+#social #tl {
+    background-position: 25px 60px;
+}
+#social #tl:hover {
+    background-position:1px 60px;
+}
+#social #tw {
+    background-position: 25px 92px;
+}
+#social #tw:hover {
+    background-position:1px 92px;
+}
+#social #snt {
+    background-position: 25px 26px;
+}
+#social #snt:hover {
+    background-position:1px 26px;
+}
+.collapse_header{
+    margin-left: 20px; 
+    padding-bottom: 10px;
+}
+.collapse_heading{
+    margin-left: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Montserrat',
+
+}
+.version_style{
+    font-size: 14px;
+    font-family: 'Montserrat';
+    color: '#87b3d8'
+
+}

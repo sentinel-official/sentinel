@@ -185,7 +185,7 @@ class TMSessions extends Component {
                             <div style={{ paddingTop: '2%', color: '#919191', fontFamily: 'Montserrat, Medium' }}>
                                 <span style={vpnhistoryStyles.text1}>
                                     {lang[language].TotalPayment} :
-                                </span> {`${paymentCount} TSENT`}<br />
+                                </span> {`${paymentCount.toFixed(8)} TSENT`}<br />
                                 <span style={vpnhistoryStyles.text1}>
                                     {lang[language].TotalDuration} :
                                 </span> {this.getDurationFormat(durationCount)}<br />

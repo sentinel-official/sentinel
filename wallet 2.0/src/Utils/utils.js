@@ -15,7 +15,9 @@ export const CONFIG_FILE = `${SENT_DIR}/config`;
 if (!fs.existsSync(SENT_DIR)) fs.mkdirSync(SENT_DIR);
 if (!fs.existsSync(TM_DIR)) {
     fs.mkdirSync(TM_DIR);
-    execSync('chmod 777 ' + TM_DIR);
+    if (remote.process.platform !== 'win32') {
+        execSync('chmod 777 ' + TM_DIR);
+    }
 }
 if (fs.existsSync(OVPN_FILE)) fs.unlinkSync(OVPN_FILE);
 

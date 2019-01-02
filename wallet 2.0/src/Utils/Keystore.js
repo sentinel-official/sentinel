@@ -1,6 +1,6 @@
 
 import { sendError } from './../Actions/authentication.action';
-import { lang } from './../Constants/language';
+import lang from './../Constants/language';
 
 const fs = window.require('fs');
 const electron = window.require('electron');
@@ -16,7 +16,7 @@ function getUserHome() {
 
 export const uploadKeystore = (keystore, cb) => {
     try {
-        cb(null, createFile(KEYSTORE_FILE, keystore))
+        createFile(KEYSTORE_FILE, keystore, cb)
     } catch (Err) {
         sendError(Err);
     }
@@ -38,12 +38,29 @@ export function getPrivateKey(password, language, cb) {
     })
 }
 
-export function createFile(KEYSTORE_FILE, keystore) {
+export function getPrivateKeyWithoutCallback(password, cb) {
+    readFile(KEYSTORE_FILE, async function (err, data) {
+        if (err) cb(err, null);
+        else {
+            let keystore = JSON.parse(data)
+            try {
+                let privateKey = await keythereum.recover(password, keystore);
+                console.log(privateKey.toString('hex'), typeof (privateKey), ' in get')
+                setTimeout(function () { cb(null, privateKey) }, 1000);
+            }
+            catch (err) {
+                cb({ message: lang['en'].KeyPassMatch }, null);
+            }
+        }
+    })
+}
+
+export function createFile(KEYSTORE_FILE, keystore, cb) {
     fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
         if (err) {
-            return (err, null);
+            cb(err, null);
         } else {
-            return KEYSTORE_FILE
+            cb(null, KEYSTORE_FILE)
         }
     });
 }

@@ -5,25 +5,28 @@ import Authenticate from './Components/Authenticate';
 import { defaultPageStyle } from './Assets/authenticate.styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Receive from './Components/Receive';
 import { setLanguage, setComponent } from './Actions/authentication.action';
 import TermsAndConditions from './Components/TermsAndConditions';
 import { readFile } from './Utils/Keystore';
-import { KEYSTORE_FILE } from './Actions/authentication.action';
+import { KEYSTORE_FILE } from './Utils/Keystore';
 import Dashboard from './Components/Dashboard';
+import { runGaiacli } from './Utils/Gaiacli';
 const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             lang: 'en',
             component: null
         }
     }
     componentWillMount = () => {
-        var that = this;
+        let that = this;
         document.getElementById('home').style.display = 'none';
-
+        runGaiacli();
         // Read keystore file
         readFile(KEYSTORE_FILE, function (err) {
             setTimeout(function () {
@@ -31,15 +34,15 @@ class App extends Component {
                 else that.props.setComponent('authenticate');
             }, 3000);
         })
-    }
+    };
 
     componentDidMount = () => {
         ipcRenderer.on('lang', (event, arg) => {
             this.setState({ lang: arg }, () => {
                 this.props.setLanguage(this.state.lang)
-            })
-        })
-    }
+            });
+        });
+    };
 
     render() {
         let component = this.props.setComponentResponse;
@@ -51,7 +54,8 @@ class App extends Component {
                 }
             case 'authenticate':
                 {
-                    return <Authenticate />
+                    // return <Authenticate />
+                    return <Dashboard />
                 }
             case 'dashboard':
                 {
@@ -81,7 +85,7 @@ function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         setLanguage: setLanguage,
         setComponent: setComponent
-    }, dispatch)
+    }, dispatch);
 }
 
 function mapStateToProps(state) {

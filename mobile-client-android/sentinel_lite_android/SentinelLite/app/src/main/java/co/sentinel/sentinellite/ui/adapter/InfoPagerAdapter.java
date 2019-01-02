@@ -19,7 +19,7 @@ public class InfoPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -27,9 +27,6 @@ public class InfoPagerAdapter extends FragmentPagerAdapter {
         Fragment aFragment = null;
         switch (position) {
             case 0:
-                aFragment = InfoFragment.newInstance(R.drawable.ic_info_referral, R.string.info_title_1, R.string.info_desc_1);
-                break;
-            case 1:
                 aFragment = InfoFragment.newInstance(R.drawable.ic_info_vpn, R.string.info_title_2, R.string.info_desc_2);
                 break;
         }

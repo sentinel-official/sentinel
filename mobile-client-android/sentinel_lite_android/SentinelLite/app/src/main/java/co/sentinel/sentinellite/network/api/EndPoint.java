@@ -9,12 +9,16 @@ public class EndPoint {
      */
     public static final String GET_UNOCCUPIED_VPN_SERVERS = "client/vpn/list";
     public static final String GET_VPN_SERVER_CREDENTIALS = "client/vpn";
+    public static final String GET_VPN_USAGE_FOR_USER = "client/vpn/usage";
+    public static final String POST_VPN_SESSION_RATING = "client/vpn/rate";
     /*
      * Bonuses flow
      */
-    public static final String ACCOUNT = "account";
-    public static final String GET_BONUS_INFO = "bonus/info";
+    public static final String ADD_ACCOUNT = "accounts";
+    public static final String GET_ACCOUNT_INFO = "accounts/{type}/{value}";
+    public static final String GET_BONUS_INFO = "accounts/{deviceId}/bonuses/info";
     public static final String CLAIM_BONUS = "bonus/claim";
+    public static final String LINK_ACCOUNT = "/accounts/link/{sncRefId}/{slcRefId}";
     /*
      * App details Flow
      */

@@ -163,8 +163,8 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     }
 
     @Override
-    public void onRootViewClicked(String iLanguageCode) {
-        SentinelApp.changeLanguage(getContext(), iLanguageCode);
+    public void onRootViewClicked(GenericListItem iItem) {
+        SentinelApp.changeLanguage(getContext(), iItem.getItemCode());
         Objects.requireNonNull(getActivity()).onBackPressed();
     }
 }

@@ -12,22 +12,22 @@ import co.sentinel.sentinellite.util.SingleLiveEvent;
 public class SplashViewModel extends ViewModel {
     private final BonusRepository mBonusRepository;
     private final AppVersionRepository mAppVersionRepository;
-    private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoByDeviceIdLiveEvent;
     private final SingleLiveEvent<Resource<VersionInfo>> mSlcVersionInfoLiveEvent;
 
     SplashViewModel(BonusRepository iBonusRepository, AppVersionRepository iAppVersionRepository) {
         mBonusRepository = iBonusRepository;
         mAppVersionRepository = iAppVersionRepository;
-        mAccountInfoLiveEvent = iBonusRepository.getAccountInfoLiveEvent();
+        mAccountInfoByDeviceIdLiveEvent = iBonusRepository.getAccountInfoByDeviceIdLiveEvent();
         mSlcVersionInfoLiveEvent = iAppVersionRepository.getSlcVersionInfoLiveEvent();
     }
 
     /*
      * Getters
      */
-    public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
+    public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoByDeviceIdLiveEvent() {
         fetchAccountInfo();
-        return mAccountInfoLiveEvent;
+        return mAccountInfoByDeviceIdLiveEvent;
     }
 
     public SingleLiveEvent<Resource<VersionInfo>> getSlcVersionInfoLiveEvent() {
@@ -35,7 +35,7 @@ public class SplashViewModel extends ViewModel {
     }
 
     public void fetchAccountInfo() {
-        mBonusRepository.fetchAccountInfo();
+        mBonusRepository.fetchAccountInfoByDeviceId();
     }
 
     public void fetchSlcVersionInfo() {

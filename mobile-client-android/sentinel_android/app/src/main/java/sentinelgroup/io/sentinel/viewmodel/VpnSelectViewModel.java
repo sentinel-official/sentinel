@@ -17,7 +17,7 @@ public class VpnSelectViewModel extends ViewModel {
 
     VpnSelectViewModel(VpnRepository iRepository) {
         mRepository = iRepository;
-        mVpnUsageLiveEvent = iRepository.getVpnUsageLiveEvent(getRequestBody());
+        mVpnUsageLiveEvent = iRepository.getVpnUsageLiveEvent();
         mTokenAlertLiveEvent = iRepository.getTokenAlertLiveEvent(getRequestBody());
     }
 
@@ -27,6 +27,7 @@ public class VpnSelectViewModel extends ViewModel {
     }
 
     public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent() {
+        mRepository.getVpnUsageForUser(getRequestBody());
         return mVpnUsageLiveEvent;
     }
 

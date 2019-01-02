@@ -117,6 +117,6 @@ public class SingleActionDialogFragment extends DialogFragment {
         aTvDialogTitle.setText(mTitleId);
         aTvDialogBody.setText(mMessage);
         aBtnPositive.setText(mPositiveOptionId);
-        aBtnPositive.setOnClickListener(v -> getDialog().dismiss());
+        aBtnPositive.setOnClickListener(v -> SingleActionDialogFragment.this.dismiss());
     }
 }

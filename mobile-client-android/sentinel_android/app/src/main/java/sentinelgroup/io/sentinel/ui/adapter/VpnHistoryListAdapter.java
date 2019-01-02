@@ -47,7 +47,7 @@ public class VpnHistoryListAdapter extends RecyclerView.Adapter<VpnHistoryListAd
         if (!aSession.isPaid) {
             holder.mTvPayValue.setText(mContext.getString(R.string.pay_sents, Converter.getFormattedTokenString(aSession.amount)));
         }
-        holder.mTvPayValue.setOnClickListener(v -> onPayClick(Converter.getFormattedTokenString(aSession.amount), aSession.sessionId));
+        holder.mTvPayValue.setOnClickListener(v -> onPayClick(Converter.getFormattedTokenString(aSession.amount), aSession.sessionId, aSession.accountAddress));
         holder.mRootView.setOnClickListener(v -> onRootViewClick(aSession));
     }
 
@@ -119,15 +119,15 @@ public class VpnHistoryListAdapter extends RecyclerView.Adapter<VpnHistoryListAd
         }
     }
 
-    private void onPayClick(String iValue, String iSessionId) {
+    private void onPayClick(String iValue, String iSessionId, String iToAddress) {
         if (mItemClickListener != null) {
-            mItemClickListener.onPayClicked(iValue, iSessionId);
+            mItemClickListener.onPayClicked(iValue, iSessionId, iToAddress);
         }
     }
 
     public interface OnItemClickListener {
         void onRootViewClicked(Session iSession);
 
-        void onPayClicked(String iValue, String iSessionId);
+        void onPayClicked(String iValue, String iSessionId, String iToAddress);
     }
 }

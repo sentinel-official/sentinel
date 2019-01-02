@@ -31,7 +31,6 @@
             app:headerLayout="@layout/layout_header"
             app:itemBackground="@drawable/selector_drawer_item_background"
             app:itemTextColor="@color/colorTextWhite"
-            app:layout_constraintBottom_toTopOf="@+id/include"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

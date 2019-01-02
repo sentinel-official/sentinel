@@ -40,6 +40,7 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         super.onBackPressed();
+        overridePendingTransition(R.anim.enter_left_to_right, R.anim.exit_right_to_left);
     }
 
     /*
@@ -135,7 +136,7 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
         Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         if (isPositiveButton) {
             if (aFragment instanceof VpnDetailsFragment && iTag.equals(AppConstants.TAG_INIT_PAY))
-                ((VpnDetailsFragment) aFragment).loadNextActivity(getIntent());
+                ((VpnDetailsFragment) aFragment).makeInitPayment();
         }
         iDialog.dismiss();
     }

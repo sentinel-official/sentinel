@@ -4,22 +4,23 @@ import android.content.Context;
 
 import sentinelgroup.io.sentinel.db.AppDatabase;
 import sentinelgroup.io.sentinel.network.api.AppVersionWebService;
+import sentinelgroup.io.sentinel.network.api.BonusWebService;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
-import sentinelgroup.io.sentinel.network.api.ReferralWebService;
 import sentinelgroup.io.sentinel.network.client.WebClient;
 import sentinelgroup.io.sentinel.repository.AppVersionRepository;
+import sentinelgroup.io.sentinel.repository.BonusRepository;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.repository.PinRepository;
-import sentinelgroup.io.sentinel.repository.ReferralRepository;
 import sentinelgroup.io.sentinel.repository.SendRepository;
 import sentinelgroup.io.sentinel.repository.TxHistoryRepository;
 import sentinelgroup.io.sentinel.repository.VpnRepository;
 import sentinelgroup.io.sentinel.repository.WalletRepository;
 import sentinelgroup.io.sentinel.util.AppExecutors;
+import sentinelgroup.io.sentinel.viewmodel.BonusViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.CreateAuidViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ForgotPinViewModelFactory;
+import sentinelgroup.io.sentinel.viewmodel.RatingViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ReceiveViewModelFactory;
-import sentinelgroup.io.sentinel.viewmodel.ReferralViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ResetPinViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.SendViewModelFactory;
@@ -43,9 +44,9 @@ public class InjectorModule {
     private static CreateAuidRepository provideCreateAccountRepository(Context iContext) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
-        ReferralWebService aReferralWebService = WebClient.getReferralWebService();
+        BonusWebService aBonusWebService = WebClient.getBonusWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return CreateAuidRepository.getInstance(aAppDatabase.deleteTableDao(), aGenericWebService, aReferralWebService, aAppExecutors);
+        return CreateAuidRepository.getInstance(aAppDatabase.deleteTableDao(), aGenericWebService, aBonusWebService, aAppExecutors);
     }
 
     private static PinRepository providePinRepository(Context iContext) {
@@ -54,11 +55,11 @@ public class InjectorModule {
         return PinRepository.getInstance(aAppDatabase.getPinEntryDao(), aAppExecutors);
     }
 
-    private static VpnRepository provideVpnRepository(Context iContext) {
+    public static VpnRepository provideVpnRepository(Context iContext, String iDeviceId) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getVpnUsageEntryDao(), aGenericWebService, aAppExecutors);
+        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getVpnUsageEntryDao(), aAppDatabase.getBookmarkDao(), aGenericWebService, aAppExecutors, iDeviceId);
     }
 
     private static WalletRepository provideWalletRepository(Context iContext) {
@@ -81,11 +82,11 @@ public class InjectorModule {
         return TxHistoryRepository.getInstance(aGenericWebService, aAppExecutors);
     }
 
-    private static ReferralRepository provideReferralRepository(Context iContext) {
+    private static BonusRepository provideBonusRepository(Context iContext, String iDeviceId) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
-        ReferralWebService aReferralWebService = WebClient.getReferralWebService();
+        BonusWebService aBonusWebService = WebClient.getBonusWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return ReferralRepository.getInstance(aAppDatabase.getReferralInfoEntryDao(), aReferralWebService, aAppExecutors);
+        return BonusRepository.getInstance(aAppDatabase.getBonusInfoEntryDao(), aBonusWebService, aAppExecutors, iDeviceId);
     }
 
     private static AppVersionRepository provideAppVersionRepository() {
@@ -94,15 +95,17 @@ public class InjectorModule {
     }
 
     /* Static private getter methods for ViewModelFactory classes */
-    public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory(Context iContext) {
+    public static CreateAuidViewModelFactory provideCreateAccountViewModelFactory(Context iContext, String iDeviceId) {
         CreateAuidRepository aRepository = provideCreateAccountRepository(iContext);
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return new CreateAuidViewModelFactory(aRepository, aAppExecutors);
+        BonusRepository aBonusRepository = provideBonusRepository(iContext, iDeviceId);
+        return new CreateAuidViewModelFactory(aRepository, aAppExecutors, aBonusRepository, iDeviceId);
     }
 
-    public static RestoreKeystoreViewModelFactory provideRestoreKeystoreViewModelFactory() {
+    public static RestoreKeystoreViewModelFactory provideRestoreKeystoreViewModelFactory(Context iContext, String iDeviceId) {
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return new RestoreKeystoreViewModelFactory(aAppExecutors);
+        BonusRepository aBonusRepository = provideBonusRepository(iContext, iDeviceId);
+        return new RestoreKeystoreViewModelFactory(aAppExecutors, aBonusRepository, iDeviceId);
     }
 
     public static SetPinViewModelFactory provideSetPinViewModelFactory(Context iContext) {
@@ -126,34 +129,34 @@ public class InjectorModule {
         return new ResetPinViewModelFactory(aRepository);
     }
 
-    public static VpnListViewModelFactory provideVpnListViewModelFactory(Context iContext) {
-        VpnRepository aRepository = provideVpnRepository(iContext);
+    public static VpnListViewModelFactory provideVpnListViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aRepository = provideVpnRepository(iContext, iDeviceId);
         AppExecutors aAppExecutors = AppExecutors.getInstance();
         return new VpnListViewModelFactory(aRepository, aAppExecutors);
     }
 
-    public static VpnConnectedViewModelFactory provideVpnConnectedViewModelFactory(Context iContext) {
-        VpnRepository aRepository = provideVpnRepository(iContext);
+    public static VpnConnectedViewModelFactory provideVpnConnectedViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aRepository = provideVpnRepository(iContext, iDeviceId);
         return new VpnConnectedViewModelFactory(aRepository);
     }
 
-    public static VpnPayViewModelFactory provideVpnPayViewModelFactory(Context iContext) {
-        VpnRepository aRepository = provideVpnRepository(iContext);
+    public static VpnPayViewModelFactory provideVpnPayViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aRepository = provideVpnRepository(iContext, iDeviceId);
         return new VpnPayViewModelFactory(aRepository);
     }
 
-    public static VpnHistoryViewModelFactory provideVpnHistoryViewModelFactory(Context iContext) {
-        VpnRepository aRepository = provideVpnRepository(iContext);
+    public static VpnHistoryViewModelFactory provideVpnHistoryViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aRepository = provideVpnRepository(iContext, iDeviceId);
         return new VpnHistoryViewModelFactory(aRepository);
     }
 
-    public static VpnSelectViewModelFactory provideVpnSelectViewModelFactory(Context iContext) {
-        VpnRepository aRepository = provideVpnRepository(iContext);
+    public static VpnSelectViewModelFactory provideVpnSelectViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aRepository = provideVpnRepository(iContext, iDeviceId);
         return new VpnSelectViewModelFactory(aRepository);
     }
 
-    public static VpnSessionViewModelFactory provideVpnSessionViewModelFactory(Context iContext) {
-        VpnRepository aRepository = provideVpnRepository(iContext);
+    public static VpnSessionViewModelFactory provideVpnSessionViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aRepository = provideVpnRepository(iContext, iDeviceId);
         return new VpnSessionViewModelFactory(aRepository);
     }
 
@@ -178,13 +181,20 @@ public class InjectorModule {
         return new TxHistoryViewModelFactory(aRepository);
     }
 
-    public static ReferralViewModelFactory provideReferralViewModelFactory(Context iContext) {
-        ReferralRepository aRepository = provideReferralRepository(iContext);
-        return new ReferralViewModelFactory(aRepository);
+    public static BonusViewModelFactory provideBonusViewModelFactory(Context iContext, String iDeviceId) {
+        BonusRepository aRepository = provideBonusRepository(iContext, iDeviceId);
+        return new BonusViewModelFactory(aRepository);
     }
 
-    public static SplashViewModelFactory provideSplashViewModelFactory() {
-        AppVersionRepository aRepository = provideAppVersionRepository();
-        return new SplashViewModelFactory(aRepository);
+    public static SplashViewModelFactory provideSplashViewModelFactory(Context iContext, String iDeviceId) {
+        BonusRepository aBonusRepository = provideBonusRepository(iContext, iDeviceId);
+        AppVersionRepository aAppVersionRepository = provideAppVersionRepository();
+        CreateAuidRepository aCreateAuidRepository = provideCreateAccountRepository(iContext);
+        return new SplashViewModelFactory(aBonusRepository, aAppVersionRepository, aCreateAuidRepository);
+    }
+
+    public static RatingViewModelFactory provideRatingViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aVpnRepository = provideVpnRepository(iContext, iDeviceId);
+        return new RatingViewModelFactory(aVpnRepository);
     }
 }

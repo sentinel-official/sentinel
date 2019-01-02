@@ -14,8 +14,8 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import co.sentinel.sentinellite.network.api.AppVersionWebService;
-import co.sentinel.sentinellite.network.api.GenericWebService;
 import co.sentinel.sentinellite.network.api.BonusWebService;
+import co.sentinel.sentinellite.network.api.GenericWebService;
 import co.sentinel.sentinellite.util.Logger;
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
@@ -29,13 +29,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class WebClient {
     private static final String GENERIC_BASE_URL = "https://api.sentinelgroup.io/";
-    private static final String REFERRAL_BASE_URL = "https://refer-api.sentinelgroup.io/";
+    private static final String REFERRAL_BASE_URL_LIVE = "https://refer-api.sentinelgroup.io/";
+    private static final String REFERRAL_BASE_URL_TEST = "http://185.144.156.148:9000";
+    private static final String REFERRAL_BASE_URL = REFERRAL_BASE_URL_LIVE;
     private static final String App_VERSION_BASE_URL = "https://version-api.sentinelgroup.io/";
 
     private static OkHttpClient sHttpClient = enableTls12OnPreLollipop(new OkHttpClient.Builder()
-            .connectTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS)
-            .writeTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .retryOnConnectionFailure(false)
             .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(new AuthInterceptor())).build();
@@ -95,7 +97,7 @@ public class WebClient {
         return sGenericClient.create(GenericWebService.class);
     }
 
-    public static BonusWebService getReferralWebService() {
+    public static BonusWebService getBonusWebService() {
         return sReferralClient.create(BonusWebService.class);
     }
 

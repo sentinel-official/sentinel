@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.42" />
+        app:layout_constraintGuide_percent="1" />
 
     <android.support.constraint.Guideline
         android:id="@+id/vertical_guideline1"
@@ -96,65 +96,4 @@
         app:layout_constraintStart_toEndOf="@+id/vertical_guideline3"
         app:layout_constraintTop_toBottomOf="@+id/app_name" />
 
-    <TextView
-        android:id="@+id/add_referral"
-        style="@style/CustomTextAppearance.Text12.White50Normal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:padding="@dimen/margin_4"
-        android:text="@string/add_referral_desc"
-        app:layout_constraintBottom_toTopOf="@+id/til_referral"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/horizontal_guideline1"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_referral"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/referral_id"
-        android:textColorHint="@color/colorTextWhiteWithAlpha50"
-        app:hintTextAppearance="@style/TextInputLayoutTheme"
-        app:layout_constraintBottom_toTopOf="@+id/btn_next"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_referral">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/tet_referral"
-            style="@style/CustomTextAppearance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-
-            android:inputType="textCapCharacters"
-            android:maxLength="13"
-            android:textAllCaps="true"
-            android:theme="@style/TextInputEditTextTheme" />
-    </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/btn_next"
-        style="@style/CustomTextAppearance.OrangeButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline4"
-        app:layout_constraintStart_toStartOf="@+id/vertical_guideline3" />
 </android.support.constraint.ConstraintLayout>

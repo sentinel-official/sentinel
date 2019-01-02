@@ -1,9 +1,11 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,17 +15,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.ui.activity.DashboardActivity;
+import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.activity.VpnListActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
+import sentinelgroup.io.sentinel.ui.custom.VpnListSearchListener;
+import sentinelgroup.io.sentinel.ui.dialog.SortFilterByDialogFragment;
+import sentinelgroup.io.sentinel.util.AnalyticsHelper;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Status;
@@ -50,6 +57,20 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     private SwipeRefreshLayout mSrReload;
     private EmptyRecyclerView mRvVpnList;
     private VpnListAdapter mAdapter;
+
+    private String mToAddress;
+
+    private SortFilterByDialogFragment.OnSortFilterDialogActionListener mSortDialogActionListener = (iTag, iDialog, isPositiveButton, iSelectedSortType, toFilterByBookmark) -> {
+        if (isPositiveButton && iSelectedSortType != null) {
+            ((DashboardActivity) getActivity()).setFilterByBookmark(toFilterByBookmark);
+            ((DashboardActivity) getActivity()).setCurrentSortType(iSelectedSortType.getItemCode());
+            ((DashboardActivity) getActivity()).handleSortFilterIcon();
+            getVpnListLiveDataSearchSortFilterBy(((DashboardActivity) getActivity()).getCurrentSearchString(), iSelectedSortType.getItemCode(), toFilterByBookmark);
+        }
+        iDialog.dismiss();
+    };
+
+    private VpnListSearchListener mVpnListSearchListener = iSearchQuery -> getVpnListLiveDataSearchSortFilterBy(iSearchQuery, ((DashboardActivity) getActivity()).getCurrentSortType(), ((DashboardActivity) getActivity()).toFilterByBookmark());
 
     public VpnListFragment() {
         // Required empty public constructor
@@ -86,8 +107,12 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fragmentLoaded(getString(R.string.vpn_connections));
+        fragmentLoaded(getActivity() instanceof DashboardActivity ? getString(R.string.app_name) : getString(R.string.vpn_connections));
         initViewModel();
+        if (getActivity() instanceof DashboardActivity) {
+            ((DashboardActivity) getActivity()).setVpnListSearchListener(mVpnListSearchListener);
+            ((DashboardActivity) getActivity()).setSortDialogActionListener(mSortDialogActionListener);
+        }
     }
 
     private void initView(View iView) {
@@ -108,13 +133,17 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     }
 
     private void initViewModel() {
-        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext());
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
 
-        mViewModel.getVpnListLiveData().observe(this, vpnList -> {
-            if (vpnList != null && vpnList.size() > 0)
-                mAdapter.loadData(vpnList);
-        });
+        if (getActivity() instanceof DashboardActivity)
+            getVpnListLiveDataSearchSortFilterBy(((DashboardActivity) getActivity()).getCurrentSearchString(), ((DashboardActivity) getActivity()).getCurrentSortType(), ((DashboardActivity) getActivity()).toFilterByBookmark());
+        else
+            getVpnListLiveDataSearchSortFilterBy("%%", AppConstants.SORT_BY_DEFAULT, true);
+
         mViewModel.getVpnListErrorLiveEvent().observe(this, iMessage -> {
             if (iMessage != null && !iMessage.isEmpty() && mAdapter.getItemCount() != 0)
                 if (iMessage.equals(AppConstants.GENERIC_ERROR))
@@ -130,11 +159,12 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                     mViewModel.getVpnConfig(vpnCredentialsResource.data);
                 } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    if (vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR))
+                    if (vpnCredentialsResource.data != null && vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR)) {
+                        mToAddress = vpnCredentialsResource.data.accountAddr;
                         showDoubleActionDialog(AppConstants.TAG_INIT_PAY, AppConstants.VALUE_DEFAULT,
                                 getString(R.string.init_vpn_pay_pending_message),
                                 R.string.pay, AppConstants.VALUE_DEFAULT);
-                    else if (vpnCredentialsResource.message.equals(AppConstants.GENERIC_ERROR))
+                    } else if (vpnCredentialsResource.message.equals(AppConstants.GENERIC_ERROR))
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
                     else
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnCredentialsResource.message, AppConstants.VALUE_DEFAULT);
@@ -169,6 +199,21 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
                 }
             }
         });
+    }
+
+    private Intent getIntent() {
+        Intent aIntent = new Intent(getActivity(), SendActivity.class);
+        Bundle aBundle = new Bundle();
+        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
+        aBundle.putString(AppConstants.EXTRA_AMOUNT, getString(R.string.init_vpn_pay));
+        aBundle.putString(AppConstants.EXTRA_TO_ADDRESS, mToAddress);
+        aIntent.putExtras(aBundle);
+        return aIntent;
+    }
+
+    public void makeInitPayment() {
+        loadNextActivity(getIntent(), AppConstants.REQ_VPN_INIT_PAY);
     }
 
     // Interface interaction methods
@@ -238,6 +283,12 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
         super.onDetach();
         mListener = null;
         mVpnListener = null;
+        mVpnListSearchListener = null;
+        mSortDialogActionListener = null;
+        if (getActivity() instanceof DashboardActivity) {
+            ((DashboardActivity) getActivity()).removeVpnListSearchListener();
+            ((DashboardActivity) getActivity()).removeSortDialogActionListener();
+        }
     }
 
     @Override
@@ -246,6 +297,7 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
             Intent aIntent = new Intent(getActivity(), VpnListActivity.class);
             aIntent.putExtra(AppConstants.EXTRA_VPN_LIST, iItemData);
             loadNextActivity(aIntent, AppConstants.REQ_VPN_CONNECT);
+            getActivity().overridePendingTransition(R.anim.enter_right_to_left, R.anim.exit_left_to_right);
         } else {
             loadNextFragment(VpnDetailsFragment.newInstance(iItemData));
         }
@@ -255,11 +307,30 @@ public class VpnListFragment extends Fragment implements VpnListAdapter.OnItemCl
     public void onConnectClicked(String iVpnAddress) {
         boolean aIsTextNetActive = AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE);
         if (aIsTextNetActive) {
-            if (!SentinelApp.isVpnConnected)
+            if (!SentinelApp.isVpnConnected) {
                 mViewModel.getVpnServerCredentials(iVpnAddress);
-            else
+                AnalyticsHelper.triggerOVPNConnectInit();
+            } else
                 showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_already_connected), AppConstants.VALUE_DEFAULT);
         } else
             showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.vpn_main_net_unavailable), AppConstants.VALUE_DEFAULT);
     }
+
+    @Override
+    public void onBookmarkClicked(VpnListEntity iItemData) {
+        mViewModel.toggleVpnBookmark(iItemData.getAccountAddress(), iItemData.getIp());
+        Toast.makeText(getContext(), iItemData.isBookmarked() ? R.string.alert_bookmark_removed : R.string.alert_bookmark_added, Toast.LENGTH_SHORT).show();
+    }
+
+    public void getVpnListLiveDataSearchSortFilterBy(String iSearchQuery, String iSelectedSortType, boolean toFilterByBookmark) {
+        if (mViewModel != null) {
+            mViewModel.getVpnListLiveDataSearchSortFilterBy(iSearchQuery, iSelectedSortType, toFilterByBookmark).observe(this, vpnList -> {
+                if (vpnList != null) {
+                    mAdapter.loadData(vpnList);
+                    mRvVpnList.scrollToPosition(0);
+                }
+            });
+        }
+    }
+
 }

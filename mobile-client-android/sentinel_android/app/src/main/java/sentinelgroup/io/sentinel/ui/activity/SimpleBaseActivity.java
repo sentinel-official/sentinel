@@ -41,7 +41,7 @@ public abstract class SimpleBaseActivity extends AppCompatActivity implements On
      */
     private void initView() {
         mToolbar = findViewById(R.id.toolbar);
-        mToolbarTitle = mToolbar.findViewById(R.id.toolbar_title);
+        mToolbarTitle = findViewById(R.id.toolbar_title);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         // instantiate toolbar
         setupToolbar();

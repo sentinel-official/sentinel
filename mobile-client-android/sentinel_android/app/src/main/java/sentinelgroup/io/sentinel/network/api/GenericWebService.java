@@ -9,6 +9,7 @@ import sentinelgroup.io.sentinel.network.model.Account;
 import sentinelgroup.io.sentinel.network.model.Balance;
 import sentinelgroup.io.sentinel.network.model.GasEstimateEntity;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.network.model.GenericResponse;
 import sentinelgroup.io.sentinel.network.model.PayResponse;
 import sentinelgroup.io.sentinel.network.model.ReportPay;
 import sentinelgroup.io.sentinel.network.model.Tokens;
@@ -55,9 +56,15 @@ public interface GenericWebService {
     @POST
     Call<VpnConfig> getVpnConfig(@Url String url, @Body GenericRequestBody iBody);
 
+    @POST
+    Call<GenericResponse> disconnectVpn(@Url String url, @Body GenericRequestBody iBody);
+
     @GET
     Call<GasEstimateEntity> getGasPriceEstimate(@Url String url);
 
     @POST
     Call<TxHistory> getTransactionHistory(@Url String url);
+
+    @POST(EndPoint.POST_VPN_SESSION_RATING)
+    Call<GenericResponse> rateVpnSession(@Body GenericRequestBody iBody);
 }

@@ -1,9 +1,12 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -16,7 +19,6 @@ import android.view.ViewGroup;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
-import sentinelgroup.io.sentinel.ui.activity.SendActivity;
 import sentinelgroup.io.sentinel.ui.adapter.VpnSelectPagerAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
@@ -104,7 +106,10 @@ public class VpnSelectFragment extends Fragment {
         if (SentinelApp.isVpnInitiated)
             loadNextFragment(VpnConnectedFragment.newInstance());
         else {
-            VpnSelectViewModelFactory aFactory = InjectorModule.provideVpnSelectViewModelFactory(getContext());
+            // init Device ID
+            @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            VpnSelectViewModelFactory aFactory = InjectorModule.provideVpnSelectViewModelFactory(getContext(), aDeviceId);
             mViewModel = ViewModelProviders.of(this, aFactory).get(VpnSelectViewModel.class);
 
             mViewModel.getTokenAlertLiveEvent().observe(this, isTokenRequested -> {
@@ -159,20 +164,6 @@ public class VpnSelectFragment extends Fragment {
         }
     }
 
-    private Intent getIntent() {
-        Intent aIntent = new Intent(getActivity(), SendActivity.class);
-        Bundle aBundle = new Bundle();
-        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
-        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
-        aBundle.putString(AppConstants.EXTRA_AMOUNT, getString(R.string.init_vpn_pay));
-        aIntent.putExtras(aBundle);
-        return aIntent;
-    }
-
-    public void makeInitPayment() {
-        loadNextActivity(getIntent(), AppConstants.REQ_VPN_INIT_PAY);
-    }
-
     // Interface interaction methods
     public void fragmentLoaded(String iTitle) {
         if (mListener != null) {
@@ -209,6 +200,15 @@ public class VpnSelectFragment extends Fragment {
             mListener.onLoadNextActivity(iIntent, iReqCode);
     }
 
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+        if (isPositiveButton && iTag.equals(AppConstants.TAG_INIT_PAY)) {
+            if (mAdapter.getItem(mVpVpnSelect.getCurrentItem()) instanceof VpnListFragment) {
+                ((VpnListFragment) mAdapter.getItem(mVpVpnSelect.getCurrentItem())).makeInitPayment();
+            }
+        }
+        iDialog.dismiss();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -226,4 +226,5 @@ public class VpnSelectFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 }

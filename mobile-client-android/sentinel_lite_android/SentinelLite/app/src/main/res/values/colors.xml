@@ -14,6 +14,7 @@
     <color name="colorTextWhite">#DDDDDD</color>
     <color name="colorTextWhiteWithAlpha70">#BADDDDDD</color>
     <color name="colorTextWhiteWithAlpha50">#80DDDDDD</color>
+    <color name="colorTextBlack">#1D1D27</color>
     <color name="colorTextDarkBlue">#32445c</color>
     <color name="colorTextGray">#AEB1B5</color>
     <color name="colorTextBlue">#4F749B</color>
@@ -26,6 +27,7 @@
     <color name="colorCardDark">#363749</color>
     <color name="colorCardShadow">#3D000000</color>
     <color name="colorCardInfoBackground">#1F000000</color>
+    <color name="colorLocationBackgroundAlpha60">#99181818</color>
     <!-- Ripple Mask -->
     <color name="colorRippleMask">#33000000</color>
     <color name="colorRippleMaskLight">#66FFFFFF</color>

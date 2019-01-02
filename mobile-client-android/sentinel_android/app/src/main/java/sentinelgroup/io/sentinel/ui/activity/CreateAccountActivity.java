@@ -123,7 +123,7 @@ public class CreateAccountActivity extends SimpleBaseActivity implements DoubleA
             if (iTag.equals(AppConstants.TAG_ADD_REFERRAL)) {
                 Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
                 if (aFragment instanceof CreateAuidFragment) {
-                    ((CreateAuidFragment) aFragment).loadNextFragment();
+                    ((CreateAuidFragment) aFragment).addAccountInfo(null);
                 }
             }
         }

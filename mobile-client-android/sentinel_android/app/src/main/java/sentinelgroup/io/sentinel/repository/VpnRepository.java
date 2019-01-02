@@ -4,14 +4,18 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import sentinelgroup.io.sentinel.db.dao.BookmarkDao;
 import sentinelgroup.io.sentinel.db.dao.VpnListEntryDao;
 import sentinelgroup.io.sentinel.db.dao.VpnUsageEntryDao;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
+import sentinelgroup.io.sentinel.network.model.BookmarkEntity;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
+import sentinelgroup.io.sentinel.network.model.GenericResponse;
 import sentinelgroup.io.sentinel.network.model.ReportPay;
 import sentinelgroup.io.sentinel.network.model.Tokens;
 import sentinelgroup.io.sentinel.network.model.Vpn;
@@ -36,6 +40,7 @@ public class VpnRepository {
     private static VpnRepository sInstance;
     private final VpnListEntryDao mListDao;
     private final VpnUsageEntryDao mUsageDao;
+    private final BookmarkDao mBookmarkDao;
     private final GenericWebService mGenericWebService;
     private final AppExecutors mAppExecutors;
     private final MutableLiveData<List<VpnListEntity>> mVpnListMutableLiveData;
@@ -45,11 +50,15 @@ public class VpnRepository {
     private final SingleLiveEvent<Resource<VpnCredentials>> mVpnServerCredentialsLiveEvent;
     private final SingleLiveEvent<Resource<VpnConfig>> mVpnConfigLiveEvent;
     private final SingleLiveEvent<Resource<ReportPay>> mReportPaymentLiveEvent;
+    private final SingleLiveEvent<Resource<String>> mDisconnectLiveEvent;
     private final SingleLiveEvent<Boolean> mTokenAlertLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mRatingLiveEvent;
+    private final String mDeviceId;
 
-    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
+    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, BookmarkDao iBookmarkDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
         mListDao = iListDao;
         mUsageDao = iUsageDao;
+        mBookmarkDao = iBookmarkDao;
         mGenericWebService = iGenericWebService;
         mAppExecutors = iAppExecutors;
         mVpnListMutableLiveData = new MutableLiveData<>();
@@ -59,12 +68,20 @@ public class VpnRepository {
         mVpnServerCredentialsLiveEvent = new SingleLiveEvent<>();
         mVpnConfigLiveEvent = new SingleLiveEvent<>();
         mReportPaymentLiveEvent = new SingleLiveEvent<>();
+        mDisconnectLiveEvent = new SingleLiveEvent<>();
         mTokenAlertLiveEvent = new SingleLiveEvent<>();
+        mRatingLiveEvent = new SingleLiveEvent<>();
+        mDeviceId = iDeviceId;
 
         LiveData<List<VpnListEntity>> aVpnListServerData = getVpnListMutableLiveData();
         aVpnListServerData.observeForever(vpnList -> {
             mAppExecutors.diskIO().execute(() -> {
                 if (vpnList != null && vpnList.size() > 0) {
+                    List<BookmarkEntity> aBookmarks = mBookmarkDao.getAllBookmarkEntities();
+                    for (int i = 0; i < vpnList.size(); i++) {
+                        vpnList.get(i).setServerSequence(i);
+                        vpnList.get(i).setBookmarked(aBookmarks.contains(new BookmarkEntity(vpnList.get(i).getAccountAddress(), vpnList.get(i).getIp())));
+                    }
                     mListDao.deleteVpnListEntity();
                     mListDao.insertVpnListEntity(vpnList);
                 }
@@ -81,10 +98,10 @@ public class VpnRepository {
         });
     }
 
-    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors) {
+    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, BookmarkDao iBookmarkDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new VpnRepository(iListDao, iUsageDao, iGenericWebService, iAppExecutors);
+                sInstance = new VpnRepository(iListDao, iUsageDao, iBookmarkDao, iGenericWebService, iAppExecutors, iDeviceId);
             }
         }
         return sInstance;
@@ -100,12 +117,36 @@ public class VpnRepository {
     }
 
     // public getter methods for LiveData & SingleLiveEvent
-    public LiveData<List<VpnListEntity>> getVpnListLiveData() {
-        return mListDao.getVpnLisEntity();
+    public LiveData<VpnListEntity> getVpnLiveDataByVpnAddress(String iVpnAddress) {
+        return mListDao.getVpnEntity(iVpnAddress);
     }
 
-    public LiveData<VpnListEntity> getVpnLiveData(String iVpnAddress) {
-        return mListDao.getVpnEntity(iVpnAddress);
+    public LiveData<List<VpnListEntity>> getVpnListLiveDataSortedBy(String iSearchQuery, String iSelectedSortType, boolean toFilterByBookmark) {
+        switch (iSelectedSortType) {
+            case AppConstants.SORT_BY_COUNTRY_A:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortCountryA(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortCountryA(iSearchQuery);
+            case AppConstants.SORT_BY_COUNTRY_D:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortCountryD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortCountryD(iSearchQuery);
+            case AppConstants.SORT_BY_LATENCY_I:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortLatencyI(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortLatencyI(iSearchQuery);
+            case AppConstants.SORT_BY_LATENCY_D:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortLatencyD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortLatencyD(iSearchQuery);
+            case AppConstants.SORT_BY_BANDWIDTH_I:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortBandwidthI(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortBandwidthI(iSearchQuery);
+            case AppConstants.SORT_BY_BANDWIDTH_D:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortBandwidthD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortBandwidthD(iSearchQuery);
+            case AppConstants.SORT_BY_PRICE_I:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortPriceI(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortPriceI(iSearchQuery);
+            case AppConstants.SORT_BY_PRICE_D:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortPriceD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortPriceD(iSearchQuery);
+            case AppConstants.SORT_BY_RATING_I:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortRatingI(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortRatingI(iSearchQuery);
+            case AppConstants.SORT_BY_RATING_D:
+                return toFilterByBookmark ? mListDao.getVpnLisEntitySortRatingD(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntitySortRatingD(iSearchQuery);
+            case AppConstants.SORT_BY_DEFAULT:
+            default:
+                return toFilterByBookmark ? mListDao.getVpnLisEntity(iSearchQuery, toFilterByBookmark) : mListDao.getVpnLisEntity(iSearchQuery);
+        }
     }
 
     public LiveData<VpnUsageEntity> getVpnUsageEntity() {
@@ -116,8 +157,7 @@ public class VpnRepository {
         return mVpnListErrorLiveEvent;
     }
 
-    public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent(GenericRequestBody iRequestBody) {
-        getVpnUsageForUser(iRequestBody);
+    public SingleLiveEvent<Resource<VpnUsage>> getVpnUsageLiveEvent() {
         return mVpnUsageLiveEvent;
     }
 
@@ -137,6 +177,10 @@ public class VpnRepository {
         if (!AppPreferences.getInstance().getBoolean(AppConstants.PREFS_IS_FREE_TOKEN_RECEIVED))
             getFreeTokens(iBody);
         return mTokenAlertLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getRatingLiveEvent() {
+        return mRatingLiveEvent;
     }
 
     // Network call
@@ -193,7 +237,7 @@ public class VpnRepository {
 
             private void reportErrorResponse(Response<VpnCredentials> response, String iThrowableLocalMessage) {
                 if (response != null && response.body() != null) {
-                    mVpnServerCredentialsLiveEvent.postValue(Resource.error(response.body().message, null));
+                    mVpnServerCredentialsLiveEvent.postValue(Resource.error(response.body().message, response.body()));
                 } else if (iThrowableLocalMessage != null)
                     mVpnServerCredentialsLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 else
@@ -269,6 +313,15 @@ public class VpnRepository {
         });
     }
 
+    public Call<GenericResponse> disconnectVpn() {
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .accountAddress(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS))
+                .token(AppPreferences.getInstance().getString(AppConstants.PREFS_VPN_TOKEN))
+                .build();
+        String aUrl = String.format(Locale.US, AppConstants.DISCONNECT_URL_BUILDER, AppPreferences.getInstance().getString(AppConstants.PREFS_IP_ADDRESS), AppPreferences.getInstance().getInteger(AppConstants.PREFS_IP_PORT));
+        return disconnectVpn(aUrl, aBody);
+    }
+
     public void reportPayment(GenericRequestBody iRequestBody) {
         mReportPaymentLiveEvent.postValue(Resource.loading(null));
         mGenericWebService.reportPayment(iRequestBody).enqueue(new Callback<ReportPay>() {
@@ -320,5 +373,55 @@ public class VpnRepository {
                 }
             }
         });
+    }
+
+    private Call<GenericResponse> disconnectVpn(String iUrl, GenericRequestBody iRequestBody) {
+        mDisconnectLiveEvent.postValue(Resource.loading(null));
+        return mGenericWebService.disconnectVpn(iUrl, iRequestBody);
+    }
+
+    public void rateVpnSession(GenericRequestBody iRequestBody) {
+        mRatingLiveEvent.postValue(Resource.loading(null));
+        mGenericWebService.rateVpnSession(iRequestBody).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                reportErrorResponse(t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
+            }
+
+            private void reportSuccessResponse(Response<GenericResponse> iResponse) {
+                if (iResponse.isSuccessful() && iResponse.body() != null)
+                    mRatingLiveEvent.postValue(Resource.success(iResponse.body()));
+                else
+                    reportErrorResponse(null);
+            }
+
+            private void reportErrorResponse(String iThrowableLocalMessage) {
+                if (iThrowableLocalMessage != null)
+                    mRatingLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                else
+                    mRatingLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+            }
+        });
+    }
+
+    public void toggleVpnBookmark(String iAccountAddress, String iIP) {
+        mAppExecutors.diskIO().execute(() -> {
+            if (isVpnBookmarked(iAccountAddress, iIP)) {
+                mBookmarkDao.deleteBookmarkEntity(iAccountAddress, iIP);
+                mListDao.updateBookmark(false, iAccountAddress, iIP);
+            } else {
+                mBookmarkDao.insertBookmarkEntity(new BookmarkEntity(iAccountAddress, iIP));
+                mListDao.updateBookmark(true, iAccountAddress, iIP);
+            }
+        });
+    }
+
+    public boolean isVpnBookmarked(String iAccountAddress, String iIP) {
+        return mBookmarkDao.getBookmarkEntity(iAccountAddress, iIP) > 0;
     }
 }

@@ -12,6 +12,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
+import com.amplitude.api.Amplitude;
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.security.ProviderInstaller;
 
@@ -22,13 +23,20 @@ import co.sentinel.sentinellite.util.AppPreferences;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.PRNGFixes;
 import de.blinkt.openvpn.core.StatusListener;
+import io.branch.referral.Branch;
 
 public class SentinelLiteApp extends MultiDexApplication {
     public static final String TAG = SentinelLiteApp.class.getSimpleName();
 
     private static SentinelLiteApp sInstance;
-    public static boolean isVpnInitiated, isVpnConnected;
+    public static boolean isVpnInitiated, isVpnConnected, isVpnReconnectFailed;
     public static Locale sLocale = null;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
@@ -45,7 +53,9 @@ public class SentinelLiteApp extends MultiDexApplication {
         StatusListener mStatus = new StatusListener();
         mStatus.init(getApplicationContext());
         sInstance = this;
-        MultiDex.install(this);
+        Branch.getAutoInstance(this);
+        Amplitude.getInstance().initialize(this, "d8bb5499a4a1c4e7c9e3e582864d5ef1").enableForegroundTracking(this);
+        Amplitude.getInstance().setLogLevel(Log.VERBOSE);
     }
 
     public static void changeLanguage(Context iContext, String iLanguageCode) {

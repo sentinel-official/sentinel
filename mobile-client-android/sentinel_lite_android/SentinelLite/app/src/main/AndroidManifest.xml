@@ -6,12 +6,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".SentinelLiteApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:resizeableActivity="false"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -22,11 +24,41 @@
 
         <activity
             android:name=".ui.activity.SplashActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Branch URI scheme -->
+            <intent-filter>
+                <data
+                    android:host="open"
+                    android:scheme="sentinel-lite://" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="refer.sentinel.co"
+                    android:scheme="https" />
+                <data
+                    android:host="pd4d-alternate.app.link"
+                    android:scheme="https" />
+                <data
+                    android:host="pd4d.test-app.link"
+                    android:scheme="https" />
+                <data
+                    android:host="pd4d-alternate.test-app.link"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -50,7 +82,10 @@
             android:name=".ui.activity.GenericListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.ReferralActivity"
+            android:name=".ui.activity.ShareAppActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.VpnUsageActivity"
             android:screenOrientation="portrait" />
 
         <!-- Declaring components in ics-openVPN -->
@@ -86,6 +121,19 @@
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
             android:value="1a6577e99de2f3137015aff209ca8ee2" />
+
+        <!-- Branch init -->
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="key_live_jmz61cUGXl4qyzJYhrBEQkgpyEfWsajh" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey.test"
+            android:value="key_test_pjq93pJK9k2vEzU7oFrw5phcwxa0qlox" />
+
+        <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
+        <meta-data
+            android:name="io.branch.sdk.TestMode"
+            android:value="false" />
 
     </application>
 

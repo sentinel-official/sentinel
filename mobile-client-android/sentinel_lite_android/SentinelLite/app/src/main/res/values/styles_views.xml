@@ -24,6 +24,10 @@
         <item name="android:textSize">@dimen/text_32</item>
     </style>
 
+    <style name="CustomTextAppearance.Text10">
+        <item name="android:textSize">@dimen/text_10</item>
+    </style>
+
     <style name="CustomTextAppearance.Text12">
         <item name="android:textSize">@dimen/text_12</item>
     </style>
@@ -66,8 +70,17 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="CustomTextAppearance.Text12.BlueNormal">
+        <item name="android:textColor">@color/colorTextBlue</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="CustomTextAppearance.Text12.GrayNormal">
         <item name="android:textColor">@color/colorTextGray</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text12.WhiteNormal">
         <item name="android:textStyle">normal</item>
     </style>
 
@@ -101,6 +114,11 @@
 
     <style name="CustomTextAppearance.Text18.InfoWhite">
         <item name="android:textColor">@color/colorTextInfoWhite</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text20.Orange">
+        <item name="android:textColor">@color/colorButtonOrange</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="CustomTextAppearance.Text32.Orange">
@@ -193,4 +211,9 @@
     </style>
 
     <!-- RadioButton Theme -->
+
+    <!-- RatingBar Theme -->
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlActivated">@color/colorButtonOrange</item>
+    </style>
 </resources>

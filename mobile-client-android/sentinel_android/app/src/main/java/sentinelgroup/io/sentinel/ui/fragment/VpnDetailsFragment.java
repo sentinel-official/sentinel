@@ -1,13 +1,17 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +20,17 @@ import android.widget.TextView;
 
 import com.haipq.android.flagkit.FlagImageView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
+import sentinelgroup.io.sentinel.network.model.VpnDetailListData;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
+import sentinelgroup.io.sentinel.ui.activity.SendActivity;
+import sentinelgroup.io.sentinel.ui.adapter.VpnDetailListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
@@ -44,8 +55,13 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     private OnGenericFragmentInteractionListener mListener;
 
     private FlagImageView mFvFlag;
-    private TextView mTvLocation, mTvCity, mTvCountry, mTvBandwidth, mTvLatency, mTvPrice;
+    private TextView mTvLocation;
+    private RecyclerView mRvVpnDetailsList;
     private Button mBtnConnect;
+
+    private VpnDetailListAdapter mAdapter;
+
+    private String mToAddress;
 
     public VpnDetailsFragment() {
         // Required empty public constructor
@@ -97,29 +113,43 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     private void initView(View iView) {
         mFvFlag = iView.findViewById(R.id.fv_flag);
         mTvLocation = iView.findViewById(R.id.tv_location);
-        mTvCity = iView.findViewById(R.id.tv_city);
-        mTvCountry = iView.findViewById(R.id.tv_country);
-        mTvBandwidth = iView.findViewById(R.id.tv_bandwidth);
-        mTvLatency = iView.findViewById(R.id.tv_latency);
-        mTvPrice = iView.findViewById(R.id.tv_price);
+        mRvVpnDetailsList = iView.findViewById(R.id.rv_vpn_detail_list);
         mBtnConnect = iView.findViewById(R.id.btn_connect);
         // set default value
         mFvFlag.setCountryCode(Converter.getCountryCode(mVpnListData.getLocation().country));
-        mTvLocation.setText(getString(R.string.vpn_location, mVpnListData.getLocation().city, mVpnListData.getLocation().country));
-        mTvCity.setText(mVpnListData.getLocation().city);
-        mTvCountry.setText(mVpnListData.getLocation().country);
-        String aBandwidthValue = getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(mVpnListData.getNetSpeed().download, Convert.DataUnit.MBPS));
-        mTvBandwidth.setText(aBandwidthValue);
-        String aLatencyValue = getString(R.string.vpn_latency_value, mVpnListData.getLatency());
-        mTvLatency.setText(aLatencyValue);
-        String aPriceValue = getString(R.string.vpn_price_value, mVpnListData.getPricePerGb());
-        mTvPrice.setText(aPriceValue);
+        mTvLocation.setText(mVpnListData.getLocation().country);
+        // setup recyclerview
+        mAdapter = new VpnDetailListAdapter(getContext(), getListData());
+        mRvVpnDetailsList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRvVpnDetailsList.setAdapter(mAdapter);
         // Set listener
         mBtnConnect.setOnClickListener(this);
     }
 
+    private List<VpnDetailListData> getListData() {
+        List<VpnDetailListData> aData = new ArrayList<>();
+        aData.add(new VpnDetailListData(getString(R.string.city), mVpnListData.getLocation().city));
+        aData.add(new VpnDetailListData(getString(R.string.country), mVpnListData.getLocation().country));
+        aData.add(new VpnDetailListData(getString(R.string.bandwidth), getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(mVpnListData.getNetSpeed().download, Convert.DataUnit.MBPS))));
+        aData.add(new VpnDetailListData(getString(R.string.latency), getString(R.string.vpn_latency_value, mVpnListData.getLatency())));
+        aData.add(new VpnDetailListData(getString(R.string.encryption), mVpnListData.getEncryptionMethod()));
+        aData.add(new VpnDetailListData(getString(R.string.node_version), mVpnListData.getVersion()));
+        String aRatingValue;
+        if (mVpnListData.getRating() == 0.0) {
+            aRatingValue = "N/A";
+        } else {
+            aRatingValue = String.format(Locale.getDefault(), "%.1f / %.1f", mVpnListData.getRating(), AppConstants.MAX_NODE_RATING);
+        }
+        aData.add(new VpnDetailListData(getString(R.string.node_rating), aRatingValue));
+        aData.add(new VpnDetailListData(getString(R.string.price), getString(R.string.vpn_price_value, mVpnListData.getPricePerGb())));
+        return aData;
+    }
+
     private void initViewModel() {
-        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext());
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        VpnListViewModelFactory aFactory = InjectorModule.provideVpnListViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnListViewModel.class);
 
         mViewModel.getVpnGetServerCredentials().observe(this, vpnCredentialsResource -> {
@@ -130,11 +160,12 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                     mViewModel.getVpnConfig(vpnCredentialsResource.data);
                 } else if (vpnCredentialsResource.message != null && vpnCredentialsResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    if (vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR))
+                    if (vpnCredentialsResource.data != null && vpnCredentialsResource.message.equals(AppConstants.INIT_PAY_ERROR)) {
+                        mToAddress = vpnCredentialsResource.data.accountAddr;
                         showDoubleActionDialog(AppConstants.TAG_INIT_PAY, AppConstants.VALUE_DEFAULT,
                                 getString(R.string.init_vpn_pay_pending_message),
                                 R.string.pay, AppConstants.VALUE_DEFAULT);
-                    else if (vpnCredentialsResource.message.equals(AppConstants.GENERIC_ERROR))
+                    } else if (vpnCredentialsResource.message.equals(AppConstants.GENERIC_ERROR))
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
                     else
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnCredentialsResource.message, AppConstants.VALUE_DEFAULT);
@@ -162,13 +193,28 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
                     showProgressDialog(true, getString(R.string.saving_config));
                 } else if (vpnConfigSaveResource.data != null && vpnConfigSaveResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
-                    loadNextActivity(null);
+                    loadNextActivity(null, AppConstants.REQ_CODE_NULL);
                 } else if (vpnConfigSaveResource.message != null && vpnConfigSaveResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     showSingleActionDialog(AppConstants.VALUE_DEFAULT, vpnConfigSaveResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
+    }
+
+    private Intent getIntent() {
+        Intent aIntent = new Intent(getActivity(), SendActivity.class);
+        Bundle aBundle = new Bundle();
+        aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
+        aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, true);
+        aBundle.putString(AppConstants.EXTRA_AMOUNT, getString(R.string.init_vpn_pay));
+        aBundle.putString(AppConstants.EXTRA_TO_ADDRESS, mToAddress);
+        aIntent.putExtras(aBundle);
+        return aIntent;
+    }
+
+    public void makeInitPayment() {
+        loadNextActivity(getIntent(), AppConstants.REQ_VPN_INIT_PAY);
     }
 
     // Interface interaction methods
@@ -202,9 +248,9 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    public void loadNextActivity(Intent iIntent) {
+    public void loadNextActivity(Intent iIntent, int iReqCode) {
         if (mListener != null) {
-            mListener.onLoadNextActivity(iIntent, AppConstants.REQ_VPN_INIT_PAY);
+            mListener.onLoadNextActivity(iIntent, iReqCode);
         }
     }
 

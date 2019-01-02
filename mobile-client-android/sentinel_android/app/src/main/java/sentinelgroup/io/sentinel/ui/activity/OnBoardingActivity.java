@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.TextView;
 
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
@@ -39,25 +38,13 @@ public class OnBoardingActivity extends AppCompatActivity {
         mAdapter = new InfoPagerAdapter(getSupportFragmentManager(), this);
         mVpInfoPager.setAdapter(mAdapter);
         mVpInfoPager.setPageTransformer(true, new ZoomOutPageTransformer());
-        mVpInfoPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mTvNext.setVisibility(position == 1 ? View.VISIBLE : View.GONE);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
         // setup DotsIndicator
         mVpiInfoDots.setDotsClickable(true);
         mVpiInfoDots.setViewPager(mVpInfoPager);
         // Set listeners
-        mTvNext.setOnClickListener(v -> openLauncherActivity());
+        mTvNext.setOnClickListener(v -> {
+            openLauncherActivity();
+        });
     }
 
     private void openLauncherActivity() {

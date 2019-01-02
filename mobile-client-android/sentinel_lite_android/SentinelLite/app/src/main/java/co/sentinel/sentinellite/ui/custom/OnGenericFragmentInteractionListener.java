@@ -61,6 +61,19 @@ public interface OnGenericFragmentInteractionListener {
     void onShowDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId);
 
     /**
+     * This method is intended to instruct the activity implementing this callback to show
+     * a dialog with three buttons from the fragment contained in this activity
+     *
+     * @param iTag              [String] The tag used to identify the dialog
+     * @param iTitleId          [int] The resource id of the dialog title
+     * @param iMessage          [String] The error message to be shown in the dialog
+     * @param iPositiveOptionId [int] The resource id of the positive button text
+     * @param iNegativeOptionId [int] The resource id of the negative button text
+     * @param iNeutralOptionId  [int] The resource id of the neutral button text
+     */
+    void onShowTripleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId, int iNeutralOptionId);
+
+    /**
      * This method is intended to instruct the activity implementing this callback to copy the
      * string to the clipboard and shows a Toast on completing it from the fragment contained in
      * this activity

@@ -9,7 +9,7 @@ export function setListViewType(state = 'list', action) {
     }
 }
 
-export function setVpnType(state = 'openvpn', action) {
+export function setVpnType(state = 'socks5', action) {
     switch (action.type) {
         case types.SET_VPN_TYPE:
             return action.payload;

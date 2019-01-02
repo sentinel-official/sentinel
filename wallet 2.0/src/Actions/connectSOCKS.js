@@ -122,15 +122,15 @@ function checkMacDependencies(cb) {
 }
 
 export async function checksentinelSocks(cb) {
-    exec("net start sentinelSocksv1", function (stderr, stdout, error) {
+    exec("net start sentinelSocksv111", function (stderr, stdout, error) {
         if (stderr && stderr.toString().trim().split(" ")[9] === 'already') {
             cb(null);
         } else if (stdout.toString().trim().split(" ")[8] === 'started') {
             cb(null);
         } else {
             let username = getUserHome();
-            exec(`${username}\\AppData\\Local\\Sentinel\\app-0.1.0\\resources\\extras\\socks5\\service.exe`, function (execErr, execOut, execStd) {
-                exec(`net start sentinelSocksv1`, function (stderr, stdout, error) {
+            exec(`${username}\\AppData\\Local\\Sentinel\\app-0.11.1\\resources\\extras\\socks5\\service.exe`, function (execErr, execOut, execStd) {
+                exec(`net start sentinelSocksv111`, function (stderr, stdout, error) {
                     cb(null);
                 });
             });
@@ -174,7 +174,7 @@ export function connectwithSocks(data, cb) {
                 configData.global = true;
                 var config = JSON.stringify(configData);
                 fs.writeFile('resources\\extras\\socks5\\gui-config.json', config, function (writeErr) {
-                    exec('net start sentinelSocksv1', function (servErr, serveOut, serveStd) {
+                    exec('net start sentinelSocksv111', function (servErr, serveOut, serveStd) {
                     })
                 });
             }

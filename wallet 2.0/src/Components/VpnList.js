@@ -52,7 +52,7 @@ class VpnList extends Component {
             uri: false,
             snackMessage: '',
             authCode: '',
-            vpnType: 'openvpn',
+            vpnType: 'socks5',
             networkType: 'public',
             dVpnQuery: '',
             listLoading: true
@@ -262,7 +262,7 @@ class VpnList extends Component {
                             value={this.state.vpnType}
                             onChange={this.handleRadioChange}
                         >
-                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN} />
+                            <FormControlLabel value="openvpn"  disabled={!isTM} control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN} />
                             <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5} />
                         </RadioGroup>
                     </FormControl>

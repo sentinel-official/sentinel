@@ -56,15 +56,15 @@ let updateSessionUsage = (nodeAccountAddress, sessionId, usage, cb) => {
   sessionDbo.updateSession({
     sessionId,
     nodeAccountAddress,
-    startedOn: {
+    'startedOn': {
       $exists: true
     },
-    endedOn: {
+    'endedOn': {
       $exists: false
     }
   }, {
       usage,
-      updatedOn: new Date()
+      'updatedOn': new Date()
     }, (error, result) => {
       if (error) cb({
         code: 3,

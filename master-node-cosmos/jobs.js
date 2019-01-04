@@ -9,12 +9,18 @@ let endSessions = (nodes, cb) => {
     (node, next) => {
       sessionDbo.updateSessions({
         'nodeAccountAddress': node.accountAddress,
-        'endedOn': {
-          $exists: false
-        }
+        '$or': [{
+          'endedOn': null
+        }, {
+          'endedOn': {
+            $exists: false
+          }
+        }]
       }, {
           'endedOn': node.statusOn
-        }, (error, result) => next(null));
+        }, (error, result) => {
+          next(null);
+        });
     }, cb);
 };
 

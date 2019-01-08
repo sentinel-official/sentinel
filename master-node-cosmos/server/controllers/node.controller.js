@@ -202,6 +202,7 @@ let updateNodeSessions = (req, res) => {
           else next(null);
         });
     }, (next) => {
+      let now = new Date();
       let sessionIds = lodash.map(sessions, 'sessionId');
       sessionDbo.updateSessions({
         'nodeAccountAddress': accountAddress,
@@ -215,7 +216,8 @@ let updateNodeSessions = (req, res) => {
           $exists: false
         }
       }, {
-          'endedOn': new Date()
+          'endedOn': now,
+          'updatedOn': now
         }, (error, result) => {
           if (error) next({
             status: 500,
@@ -268,7 +270,8 @@ let updateNodeSession = (req, res) => {
         'token': sessionToken,
         'nodeAccountAddress': accountAddress
       }, {
-          amount: sessionAmount
+          'amount': sessionAmount,
+          'updatedOn': new Date()
         }, (error, result) => {
           if (error) next({
             status: 500,

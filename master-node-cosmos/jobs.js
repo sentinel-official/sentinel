@@ -17,7 +17,8 @@ let endSessions = (nodes, cb) => {
           }
         }]
       }, {
-          'endedOn': node.statusOn
+          'endedOn': node.statusOn,
+          'updatedOn': node.statusOn
         }, (error, result) => {
           next(null);
         });

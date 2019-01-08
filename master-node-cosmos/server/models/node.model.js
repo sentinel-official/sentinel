@@ -76,25 +76,24 @@ let nodeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  info: {
-    status: {
-      type: String,
-      required: true,
-      default: 'down'
-    },
-    startOn: {
-      type: Date,
-      required: true,
-      default: Date.now
-    },
-    pingOn: {
-      type: Date,
-      required: true,
-      default: Date.now
-    }
-  },
   addedOn: {
     type: Date,
+    required: true,
+    default: Date.now
+  },
+  lastOn: {
+    type: Date,
+    required: true,
+    default: Date.now
+  },
+  status: {
+    type: String,
+    required: true,
+    default: 'down'
+  },
+  statusOn: {
+    type: Date,
+    required: true,
     default: Date.now
   }
 }, {

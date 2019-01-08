@@ -68,10 +68,12 @@ let updateNode = (req, res) => {
     type,
     details
   } = req.body;
+  let now = new Date();
   if (!details) details = {};
-  details['info.pingOn'] = new Date();
-  if (type === 'alive') details['info.status'] = 'up';
-  else if (type === 'details') details['info.startOn'] = new Date();
+  if (type === 'alive') {
+    details['status'] = 'up';
+    details['statusOn'] = now;
+  } else if (type === 'details') details['lastOn'] = now;
   async.waterfall([
     (next) => {
       nodeDbo.getNode({ accountAddress, token },
@@ -130,10 +132,10 @@ let getNodes = (req, res) => {
     status
   } = req.query;
   let findObj = {
-    '$and': [{
-      '$or': type === 'any' ? [{ 'nodeType': 'OpenVPN' }, { 'nodeType': 'Socks5' }] : [{ 'nodeType': type }]
+    $and: [{
+      $or: type === 'any' ? [{ 'nodeType': 'OpenVPN' }, { 'nodeType': 'Socks5' }] : [{ 'nodeType': type }]
     }, {
-      '$or': status === 'any' ? [{ 'info.status': 'up' }, { 'info.status': 'down' }] : [{ 'info.status': status }]
+      $or: status === 'any' ? [{ 'status': 'up' }, { 'status': 'down' }] : [{ 'status': status }]
     }]
   };
   async.waterfall([
@@ -144,10 +146,16 @@ let getNodes = (req, res) => {
             status: 500,
             message: 'Error occurred while fetching nodes.'
           });
-          else next(null, {
-            status: 200,
-            nodes
-          });
+          else {
+            nodes.forEach((node) => {
+              node.netSpeed.download = node.netSpeed.download * 8;
+              node.netSpeed.upload = node.netSpeed.upload * 8;
+            });
+            next(null, {
+              status: 200,
+              nodes
+            });
+          }
         });
     }
   ], (error, success) => {
@@ -194,20 +202,22 @@ let updateNodeSessions = (req, res) => {
           else next(null);
         });
     }, (next) => {
+      let now = new Date();
       let sessionIds = lodash.map(sessions, 'sessionId');
       sessionDbo.updateSessions({
-        nodeAccountAddress: accountAddress,
-        sessionId: {
+        'nodeAccountAddress': accountAddress,
+        'sessionId': {
           $nin: sessionIds
         },
-        startedOn: {
+        'startedOn': {
           $exists: true
         },
-        endedOn: {
+        'endedOn': {
           $exists: false
         }
       }, {
-          endedOn: new Date()
+          'endedOn': now,
+          'updatedOn': now
         }, (error, result) => {
           if (error) next({
             status: 500,
@@ -257,10 +267,11 @@ let updateNodeSession = (req, res) => {
     }, (next) => {
       sessionDbo.updateSession({
         sessionId,
-        token: sessionToken,
-        nodeAccountAddress: accountAddress
+        'token': sessionToken,
+        'nodeAccountAddress': accountAddress
       }, {
-          amount: sessionAmount
+          'amount': sessionAmount,
+          'updatedOn': new Date()
         }, (error, result) => {
           if (error) next({
             status: 500,

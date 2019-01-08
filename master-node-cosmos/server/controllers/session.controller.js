@@ -39,8 +39,8 @@ let addSession = (req, res) => {
         });
     }, (payment, next) => {
       nodeDbo.getNode({
-        accountAddress: payment.to,
-        'info.status': 'up'
+        'accountAddress': payment.to,
+        'status': 'up'
       }, (error, node) => {
         if (error) next({
           status: 500,
@@ -116,7 +116,7 @@ let getSessions = (req, res) => {
   async.waterfall([
     (next) => {
       sessionDbo.getSessions({
-        clientAccountAddress: accountAddress
+        'clientAccountAddress': accountAddress
       }, (error, sessions) => {
         if (error) next({
           status: 500,

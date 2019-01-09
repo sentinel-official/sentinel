@@ -7,10 +7,11 @@ import RightArrow from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {
   transferAmount, isOnline, payVPNUsage, getAvailableTokens, sendError, getTokenBalance,
-  getSentValue, swapRawTransaction
+  getSentValue, getSentTransactionHistory, swapRawTransaction, swapPivx
 } from '../Actions/AccountActions';
 import { getPrivateKey, ethTransaction, tokenTransaction, getGasCost, swapTransaction } from '../Actions/TransferActions';
 import ReactTooltip from 'react-tooltip';
+import CopyToClipboard from 'react-copy-to-clipboard';
 var config = require('../config');
 var lang = require('./language');
 
@@ -59,7 +60,21 @@ class SendComponent extends Component {
       swapAmount: 1,
       convertPass: '',
       converting: false,
-      logoUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png'
+      logoUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
+      testDisabled: false,
+      pivxScreenToAddr: '',
+      pivxScreenAmount: 0,
+      pivxScreenExpctd: 0,
+      pivxTokenDetails: [],
+      pivxSendAddr: '',
+      showAddress: false,
+      isPivxDisabled: true,
+      showTransPivxScreen: false,
+      pivxOption: 1,
+      isFromPivx: true,
+      isEthIn: false,
+      pivxScreenPwd: '',
+      isPivxSend: false
     };
   }
 
@@ -84,6 +99,7 @@ class SendComponent extends Component {
     shell.openExternal(url);
     this.setState({ tx_addr: null })
   };
+
 
   getStatusUrl() {
     if (localStorage.getItem('config') === 'TEST')
@@ -188,7 +204,7 @@ class SendComponent extends Component {
     let amount = this.state.amount;
     let gas_price = this.state.sliderValue * (10 ** 9)
     if (this.state.unit === 'ETH') {
-      ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, function (data) {
+      ethTransaction(from_addr, to_addr, amount, gas_price, gas, privateKey, false, function (data) {
         self.mainTransaction(data)
       })
     }
@@ -302,6 +318,22 @@ class SendComponent extends Component {
     }
   }
 
+  pivxAddressChange = (event, to_addr) => {
+    if (this.state.isFromPivx) {
+      this.setState({ pivxScreenToAddr: to_addr })
+      let trueAddress = to_addr.match(/^0x[a-zA-Z0-9]{40}$/)
+      if (trueAddress !== null) {
+        this.setState({ isPivxDisabled: false })
+      }
+      else {
+        this.setState({ isPivxDisabled: true })
+      }
+    }
+    else {
+      this.setState({ pivxScreenToAddr: to_addr })
+    }
+  }
+
   getGasLimit = (amount, to, unit) => {
     var from = this.props.local_address;
     // if (unit === 'ETH') amount = amount * Math.pow(10, 18)
@@ -334,13 +366,18 @@ class SendComponent extends Component {
     this.setState({ showTransScreen: false });
   };
 
+  handleTransClose = () => {
+    this.setState({ showTransPivxScreen: false });
+  };
+
   getTokensList = () => {
     let self = this;
     getAvailableTokens(function (err, tokens) {
       if (err) { }
       else {
-        let tokensList = tokens.filter((token) => token.symbol !== 'SENT');
-        self.setState({ tokens: tokensList })
+        let tokensList = tokens.filter((token) => (token.symbol !== 'SENT' && token.symbol !== 'PIVX'));
+        let pivxToken = tokens.filter((token) => token.symbol === 'PIVX');
+        self.setState({ tokens: tokensList, pivxTokenDetails: pivxToken })
         tokensList.map((token) => {
           self.getUnitBalance(token);
         })
@@ -385,7 +422,7 @@ class SendComponent extends Component {
     if (token) {
       let self = this;
       let value = 10 ** token.decimals;
-      getSentValue(token.address, value, function (err, swapValue) {
+      getSentValue(token.symbol, 'SENT', value, 8, function (err, swapValue) {
         if (err) { }
         else {
           self.setState({ currentSentValue: swapValue });
@@ -397,6 +434,64 @@ class SendComponent extends Component {
   valueChange = (event, value) => {
     this.setState({ swapAmount: value });
     this.getCompareValue(this.state.selectedToken);
+  }
+
+  pivxValueChange = (event, value) => {
+    if (this.state.isFromPivx) {
+      this.setState({ pivxScreenAmount: value, showAddress: false });
+      if (value !== '') this.getPivxCompareValue('PIVX', this.state.isEthIn ? 'ETH' : 'SENT', value, this.state.isEthIn ? 18 : 8);
+    } else {
+      this.setState({ pivxScreenAmount: value, showAddress: false });
+      if (value !== '') {
+        if (this.state.isEthIn) {
+          value = (value * (10 ** 18)).noExponents();
+          console.log("Value....",value)
+          this.getPivxCompareValue('ETH', 'PIVX', value, 0);
+        }
+        else {
+          value = (value * (10 ** 8)).noExponents();
+          this.getPivxCompareValue('SENT', 'PIVX', value, 0);
+        }
+      };
+    }
+  }
+
+  getPivxCompareValue = (from, to, value, decimals) => {
+    let self = this;
+    getSentValue(from, to, value, decimals, function (err, swapValue) {
+      if (err) { }
+      else {
+        self.setState({ pivxScreenExpctd: swapValue });
+      }
+    })
+  }
+
+  onClickPivxConvert = () => {
+    let self = this;
+    let to = this.state.isEthIn ? 'ETH' : 'SENT';
+    this.setState({ isPivxSend: true })
+    swapPivx(this.state.pivxScreenToAddr, 'PIVX', to, function (err, address) {
+      if (err) { isPivxSend: false }
+      else {
+        self.setState({
+          pivxSendAddr: address, showAddress: true, isPivxSend: false,
+          pivxScreenToAddr: self.props.local_address, pivxScreenExpctd: 0, isPivxDisabled: false
+        });
+      }
+    })
+  }
+
+  handlePivxMenuChange = (event, index, value) => {
+    if (value === 1 || value === 2)
+      this.setState({
+        pivxOption: value, isFromPivx: true, isEthIn: value === 2, isPivxSend: false,
+        pivxScreenToAddr: '', pivxScreenAmount: 0, pivxScreenExpctd: 0, isPivxDisabled: true
+      });
+    else
+      this.setState({
+        pivxOption: value, isFromPivx: false, isEthIn: value === 4, isPivxSend: false,
+        pivxScreenToAddr: '', pivxScreenAmount: 0, pivxScreenExpctd: 0, isPivxDisabled: true
+      });
   }
 
   onClickConvert = () => {
@@ -436,7 +531,7 @@ class SendComponent extends Component {
                     })
                   }
                   else if (data) {
-                    swapRawTransaction(data, function (err, txHash) {
+                    swapRawTransaction(data, self.props.local_address, token.symbol, 'SENT', function (err, txHash) {
                       if (err) {
                         self.setState({
                           snackOpen: true,
@@ -473,10 +568,82 @@ class SendComponent extends Component {
     }
   }
 
+  onClickPivxTrans = () => {
+    let self = this;
+    if (this.state.pivxScreenPwd === '') {
+      this.setState({ snackOpen: true, snackMessage: lang[this.props.lang].PasswordEmpty })
+    }
+    else {
+      this.setState({ isPivxSend: true });
+      setTimeout(function () {
+        getPrivateKey(self.state.pivxScreenPwd, self.props.lang, function (err, privateKey) {
+          if (err) {
+            self.setState({
+              snackOpen: true,
+              snackMessage: err.message,
+              isPivxSend: false
+            })
+          }
+          else {
+            let from_addr = self.props.local_address;
+            let amount = self.state.pivxScreenAmount;
+            let gas_price = 20 * (10 ** 9)
+            let ether_address = (self.state.tokens.find(o => o.symbol === 'ETH'))['address'];
+            if (self.state.isEthIn) {
+              ethTransaction(from_addr, ether_address, amount, gas_price, 100000, privateKey, true, function (data) {
+                swapRawTransaction(data, self.state.pivxScreenToAddr, 'ETH', 'PIVX', function (err, txHash) {
+                  if (err) {
+                    self.setState({
+                      snackOpen: true,
+                      snackMessage: err.message,
+                      isPivxSend: false
+                    })
+                  }
+                  else {
+                    self.props.getCurrentSwapHash(txHash);
+                    self.setState({
+                      pivxScreenPwd: '',
+                      openSnack: true,
+                      tx_addr: txHash,
+                      isPivxSend: false
+                    })
+                  }
+                })
+              })
+            }
+            else {
+              tokenTransaction(from_addr, ether_address, amount * (10 ** 8), gas_price, 100000, privateKey, function (data) {
+                swapRawTransaction(data, self.state.pivxScreenToAddr, 'SENT', 'PIVX', function (err, txHash) {
+                  if (err) {
+                    self.setState({
+                      snackOpen: true,
+                      snackMessage: err.message,
+                      isPivxSend: false
+                    })
+                  }
+                  else {
+                    self.props.getCurrentSwapHash(txHash);
+                    self.setState({
+                      pivxScreenPwd: '',
+                      openSnack: true,
+                      tx_addr: txHash,
+                      isPivxSend: false
+                    })
+                  }
+                })
+              })
+            }
+          }
+        })
+      }, 500);
+    }
+  }
+
   render() {
     let self = this;
     if (!this.state.isGetBalanceCalled) {
       setInterval(function () {
+        self.getTokensList()
         self.getBalancesTokens()
       }, 10000);
 
@@ -529,6 +696,26 @@ class SendComponent extends Component {
                                             </p>
                     </div>
                   }
+                  {this.state.pivxTokenDetails.length !== 0 ?
+                    this.state.pivxTokenDetails.map((token) =>
+                      <Row style={{ cursor: this.props.isTest ? 'not-allowed' : 'pointer', backgroundColor: '#badee4', paddingTop: 5 }}
+                        onClick={() => { if (!this.props.isTest) this.setState({ showTransPivxScreen: true, showAddress: false, isPivxSend: false }); }}>
+                        <Col xs={4}>
+                          <img src={token.logo_url ? token.logo_url : '../src/Images/default.png'} alt="logo" style={styles.otherBalanceLogo} />
+                        </Col>
+                        <Col xs={8}>
+                          {/* <p style={styles.otherBalanceBalc}>{this.state.tokenBalances[token.symbol] ? this.state.tokenBalances[token.symbol] : 0}</p> */}
+                          <p style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            letterSpacing: 3,
+                            wordBreak: 'break-all',
+                            marginTop: 10
+                          }}>{token.name} [{token.symbol}]</p>
+                        </Col>
+                      </Row>
+                    )
+                    : null}
                 </div>
               </Col>
               <Col xs={8} style={{ padding: '3% 5% 0px' }}>
@@ -536,7 +723,7 @@ class SendComponent extends Component {
                   <span style={styles.formHeading}>{lang[language].SendTo}</span>
                   <span data-tip data-for="toField" style={styles.questionMark}>?</span>
                   <TextField
-                    hintText="Example: 0x6b6df9e25f7bf23343mfkr45"
+                    hintText="Ex:0x93186402811baa5b188a14122C11B41dA0099844"
                     hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
                     style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15 }}
                     underlineShow={false} fullWidth={true}
@@ -821,6 +1008,148 @@ class SendComponent extends Component {
                 </Row>
               </div>
             </Dialog>
+            < Dialog
+              contentStyle={{ width: 700 }}
+              bodyStyle={{ padding: '5%' }}
+              open={this.state.showTransPivxScreen}
+              onRequestClose={this.handleTransClose}
+            >
+              <div style={{ marginBottom: 10, display: this.state.showAddress ? 'none' : 'inline' }}>
+                <span style={{ fontWeight: 'bold', color: '#253245' }}>Swap on PIVX Tokens</span>
+                <DropDownMenu value={this.state.pivxOption}
+                  autoWidth={false}
+                  underlineStyle={{ border: 0 }}
+                  labelStyle={{ color: '#253245', fontWeight: 'bold' }}
+                  menuStyle={{ width: 'auto' }}
+                  style={{ position: 'absolute', right: 0, marginTop: -16 }}
+                  onChange={this.handlePivxMenuChange}>
+                  <MenuItem value={1} primaryText="PIVX to SENT" />
+                  <MenuItem value={2} primaryText="PIVX to ETH" />
+                  <MenuItem value={3} primaryText="SENT to PIVX" />
+                  <MenuItem value={4} primaryText="ETH to PIVX" />
+                </DropDownMenu>
+                <hr />
+              </div>
+              {this.state.isFromPivx ?
+                (!this.state.showAddress ?
+                  <div>
+                    <span style={styles.formHeading}>Total PIVX Tokens to be swapped</span>
+                    <TextField
+                      type="number"
+                      underlineShow={false} fullWidth={true}
+                      inputStyle={styles.textInputStyle}
+                      style={styles.textStyle}
+                      onChange={this.pivxValueChange.bind(this)}
+                      value={this.state.pivxScreenAmount}
+                      underlineShow={false} fullWidth={true}
+                    />
+                    <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins', marginTop: 10, marginBottom: 10 }}>
+                      <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>Expected {this.state.pivxScreenExpctd}</span>
+                        <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}>{this.state.isEthIn ? ' ETH TOKENS' : ' SENT TOKENS'}</span>
+                      </p>
+                    </div>
+                    <span style={styles.formHeading}>{this.state.isEthIn ? 'ETH Address' : 'SENT Address'}</span>
+                    <TextField
+                      hintText="Example: 0x93186402811baa5b188a14122C11B41dA0099844"
+                      hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
+                      style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15, marginBottom: 10 }}
+                      underlineShow={false} fullWidth={true}
+                      onChange={this.pivxAddressChange.bind(this)}
+                      value={this.state.pivxScreenToAddr}
+                      inputStyle={styles.textInputStyle}
+                    />
+                    <RaisedButton
+                      disabled={this.state.pivxScreenToAddr === '' || this.state.isPivxDisabled || this.state.isPivxSend ? true : false}
+                      onClick={this.onClickPivxConvert.bind(this)}
+                      label={this.state.isPivxSend ? 'Swapping' : 'Swap'}
+                      labelStyle={styles.buttonLabelStyle}
+                      fullWidth={true}
+                      buttonStyle={
+                        this.state.pivxScreenToAddr === '' || this.state.isPivxDisabled || this.state.isPivxSend ?
+                          styles.disabledButtonStyle : styles.enabledButtonStyle
+                      }
+                      style={{ height: 48 }}
+                    />
+                  </div>
+                  :
+                  <span style={{ fontWeight: 'bold' }}>Send {this.state.pivxScreenAmount} PIVX Tokens to <span style={{ color: 'green' }}>{this.state.pivxSendAddr}</span>
+                    <CopyToClipboard text={this.state.pivxSendAddr}
+                      onCopy={() => this.setState({
+                        snackMessage: 'Copied to Clipboard Successfully',
+                        snackOpen: true
+                      })} >
+                      <img
+                        src={'../src/Images/download.jpeg'}
+                        data-tip data-for="copyImage"
+                        style={{
+                          height: 18,
+                          width: 18,
+                          cursor: 'pointer'
+                        }}
+                      />
+                    </CopyToClipboard>
+                    <ReactTooltip id="copyImage" place="bottom">
+                      <span>Copy</span>
+                    </ReactTooltip>
+                  </span>
+                ) :
+                <div>
+                  <span style={styles.formHeading}>{this.state.isEthIn ? 'Total ETH Tokens to be swapped' : 'Total SENT Tokens to be swapped'}</span>
+                  <TextField
+                    type="number"
+                    underlineShow={false} fullWidth={true}
+                    inputStyle={styles.textInputStyle}
+                    style={styles.textStyle}
+                    onChange={this.pivxValueChange.bind(this)}
+                    value={this.state.pivxScreenAmount}
+                    underlineShow={false} fullWidth={true}
+                  />
+                  <div style={{ backgroundColor: '#4e5565', fontFamily: 'Poppins', marginTop: 10, marginBottom: 10 }}>
+                    <p style={{ fontSize: 16, color: 'white', padding: 10, letterSpacing: 1, textAlign: 'center' }}><span style={{ fontWeight: 'bold' }}>Expected {this.state.pivxScreenExpctd}</span>
+                      <span style={{ fontSize: 16, color: 'white', letterSpacing: 1 }}> PIVX TOKENS</span>
+                    </p>
+                  </div>
+                  <span style={styles.formHeading}>PIVX Address</span>
+                  <TextField
+                    hintText="Enter pivx address"
+                    hintStyle={{ bottom: 8, paddingLeft: 10, letterSpacing: 2 }}
+                    style={{ backgroundColor: '#d4dae2', height: 42, marginTop: 15, marginBottom: 10 }}
+                    underlineShow={false} fullWidth={true}
+                    onChange={this.pivxAddressChange.bind(this)}
+                    value={this.state.pivxScreenToAddr}
+                    inputStyle={styles.textInputStyle}
+                  />
+                  <Row>
+                    <Col xs={6}>
+                      <TextField
+                        type="password"
+                        hintText="KEYSTORE PASSWORD"
+                        hintStyle={{ fontSize: 16, bottom: 11, paddingLeft: 10 }}
+                        onChange={(event, password) => this.setState({ pivxScreenPwd: password })}
+                        value={this.state.pivxScreenPwd}
+                        underlineShow={false} fullWidth={true}
+                        inputStyle={styles.textInputStyle}
+                        style={{ height: 48, backgroundColor: '#d4dae2' }}
+                      />
+                    </Col>
+                    <Col xs={6}>
+                      <RaisedButton
+                        disabled={this.state.pivxScreenToAddr === '' || this.state.isPivxSend ? true : false}
+                        onClick={this.onClickPivxTrans.bind(this)}
+                        label={this.state.isPivxSend ? 'Swapping' : 'Swap'}
+                        labelStyle={styles.buttonLabelStyle}
+                        fullWidth={true}
+                        buttonStyle={
+                          this.state.pivxScreenToAddr === '' || this.state.isPivxSend ?
+                            styles.disabledButtonStyle : styles.enabledButtonStyle
+                        }
+                        style={{ height: 48 }}
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              }
+            </Dialog>
           </Grid>
         </div>
       </MuiThemeProvider>
@@ -914,3 +1243,21 @@ const styles = {
 }
 
 export default SendComponent;
+
+Number.prototype.noExponents = function () {
+  var data = String(this).split(/[eE]/);
+  if (data.length == 1) return data[0];
+
+  var z = '', sign = this < 0 ? '-' : '',
+    str = data[0].replace('.', ''),
+    mag = Number(data[1]) + 1;
+
+  if (mag < 0) {
+    z = sign + '0.';
+    while (mag++) z += '0';
+    return z + str.replace(/^\-/, '');
+  }
+  mag -= str.length;
+  while (mag--) z += '0';
+  return str + z;
+}

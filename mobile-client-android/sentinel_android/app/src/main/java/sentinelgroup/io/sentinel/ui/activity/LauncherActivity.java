@@ -19,12 +19,22 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setInfoShownBoolean();
         setupAppLanguage();
         setContentView(R.layout.activity_launcher);
         initializePathIfNeeded();
         initView();
         checkUserLoginState();
         switchOnTestNet();
+    }
+
+
+    /*
+     * Set the info shown boolean in the preferences to true indicating the Info screen is already
+     * shown
+     */
+    private void setInfoShownBoolean() {
+        AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_INFO_SHOWN, true);
     }
 
     /*

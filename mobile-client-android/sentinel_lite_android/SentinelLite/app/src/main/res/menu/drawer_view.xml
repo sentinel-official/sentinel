@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_language"
+            android:icon="@drawable/menu_language"
+            android:title="@string/language" />
+        <item
+            android:id="@+id/nav_referral"
+            android:icon="@drawable/menu_referrals"
+            android:title="@string/referrals" />
+        <item
+            android:id="@+id/nav_faq"
+            android:icon="@drawable/menu_faq"
+            android:title="@string/faq" />
+    </group>
+</menu>

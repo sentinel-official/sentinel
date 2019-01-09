@@ -18,7 +18,4 @@ public interface BalanceEntryDao {
 
     @Query("SELECT * FROM balance_entity")
     LiveData<Chains> getBalanceEntity();
-
-    @Query("DELETE FROM balance_entity")
-    void deleteBalanceEntity();
 }

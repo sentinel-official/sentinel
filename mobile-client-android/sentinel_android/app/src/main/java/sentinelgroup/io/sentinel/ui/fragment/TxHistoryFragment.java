@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -27,7 +26,9 @@ import sentinelgroup.io.sentinel.network.model.TxResult;
 import sentinelgroup.io.sentinel.ui.adapter.MaterialSpinnerAdapter;
 import sentinelgroup.io.sentinel.ui.adapter.TxHistoryListAdapter;
 import sentinelgroup.io.sentinel.ui.custom.CustomSpinner;
+import sentinelgroup.io.sentinel.ui.custom.EmptyRecyclerView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.TxHistoryViewModel;
 import sentinelgroup.io.sentinel.viewmodel.TxHistoryViewModelFactory;
@@ -45,7 +46,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
 
     private CustomSpinner mCsTokens;
     private SwipeRefreshLayout mSrReload;
-    private RecyclerView mRvTransactionList;
+    private EmptyRecyclerView mRvTransactionList;
 
     private TxHistoryListAdapter mAdapter;
     private MaterialSpinnerAdapter mSpinnerAdapter;
@@ -96,6 +97,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
         mRvTransactionList = iView.findViewById(R.id.rv_list);
         // Setup RecyclerView
         mRvTransactionList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mRvTransactionList.setEmptyView(iView.findViewById(R.id.tv_empty_message));
         mAdapter = new TxHistoryListAdapter(this, getContext());
         mRvTransactionList.setAdapter(mAdapter);
         // setup swipe to refresh layout
@@ -104,7 +106,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
             mSrReload.setRefreshing(false);
         });
         // setup adapter for custom spinner
-        List<String> input = Arrays.asList(Objects.requireNonNull(getContext()).getResources().getStringArray(R.array.spinner_list));
+        List<String> input = Arrays.asList(Objects.requireNonNull(getContext()).getResources().getStringArray(R.array.spinner_test_list));
         mSpinnerAdapter = new MaterialSpinnerAdapter(getContext(), input);
         mCsTokens.setAdapter(mSpinnerAdapter);
         mCsTokens.setSelectedPosition(0);
@@ -114,19 +116,22 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
     }
 
     private void initViewModel() {
-        TxHistoryViewModelFactory aFactory = InjectorModule.provideTxHistoryViewModelFactory(getContext());
+        TxHistoryViewModelFactory aFactory = InjectorModule.provideTxHistoryViewModelFactory();
         mViewModel = ViewModelProviders.of(this, aFactory).get(TxHistoryViewModel.class);
 
         mViewModel.getTxHistoryLiveEvent().observe(this, txListResource -> {
             if (txListResource != null) {
                 if (txListResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true,getString(R.string.loading_tx_history));
+                    showProgressDialog(true, getString(R.string.loading_tx_history));
                 } else if (txListResource.data != null && txListResource.data.size() > 0 && txListResource.status.equals(Status.SUCCESS)) {
                     mAdapter.loadData(txListResource.data);
                     hideProgressDialog();
                 } else if (txListResource.message != null && txListResource.status.equals(Status.ERROR)) {
-                    showErrorDialog(txListResource.message);
                     hideProgressDialog();
+                    if (txListResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, txListResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -151,9 +156,9 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 
@@ -201,7 +206,7 @@ public class TxHistoryFragment extends Fragment implements TxHistoryListAdapter.
 
     @Override
     public void afterTextChanged(Editable s) {
-        mIsEthHistory = s.toString().equalsIgnoreCase("eth");
+        mIsEthHistory = s.toString().toLowerCase().contains("eth");
         mViewModel.reloadTxHistory(mIsEthHistory);
     }
 }

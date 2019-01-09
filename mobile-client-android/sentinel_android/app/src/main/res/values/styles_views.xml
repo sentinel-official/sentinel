@@ -8,6 +8,7 @@
         <item name="android:textSize">@dimen/text_14</item>
         <item name="android:textColor">@color/colorTextWhite</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- Toolbar Themes -->
@@ -16,31 +17,35 @@
         <item name="android:textSize">@dimen/margin_18</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- Text Themes -->
     <style name="CustomTextAppearance.AppTitle">
-        <item name="android:textSize">@dimen/text_36</item>
+        <item name="android:textSize">@dimen/text_32</item>
     </style>
 
     <style name="CustomTextAppearance.Text10">
         <item name="android:textSize">@dimen/text_10</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="CustomTextAppearance.Text12">
         <item name="android:textSize">@dimen/text_12</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="CustomTextAppearance.Text14">
         <item name="android:textSize">@dimen/text_14</item>
-        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text16">
+        <item name="android:textSize">@dimen/text_16</item>
     </style>
 
     <style name="CustomTextAppearance.Text18">
         <item name="android:textSize">@dimen/text_18</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text20">
+        <item name="android:textSize">@dimen/text_20</item>
     </style>
 
     <style name="CustomTextAppearance.Text24">
@@ -55,12 +60,26 @@
         <item name="android:textColor">@color/colorTextGray</item>
     </style>
 
+    <style name="CustomTextAppearance.Text12.Gray">
+        <item name="android:textColor">@color/colorTextGray</item>
+    </style>
+
     <style name="CustomTextAppearance.Text12.WhiteNormal">
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text12.InfoWhiteNormal">
+        <item name="android:textColor">@color/colorTextInfoWhite</item>
         <item name="android:textStyle">normal</item>
     </style>
 
     <style name="CustomTextAppearance.Text12.White50Normal">
         <item name="android:textColor">@color/colorTextWhiteWithAlpha50</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text12.OrangeNormal">
+        <item name="android:textColor">@color/colorButtonOrange</item>
         <item name="android:textStyle">normal</item>
     </style>
 
@@ -83,6 +102,19 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="CustomTextAppearance.Text14.GrayNormal">
+        <item name="android:textColor">@color/colorTextGray</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text14.WhiteNormal">
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="CustomTextAppearance.Text16.WhiteNormal">
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="CustomTextAppearance.Text14.Orange">
         <item name="android:textColor">@color/colorButtonOrange</item>
     </style>
@@ -96,8 +128,8 @@
     <style name="DrawerItemTheme">
         <item name="android:textSize">@dimen/text_14</item>
         <item name="android:fontFamily">@font/bangla_sangam_mn</item>
-        <item name="android:listPreferredItemHeightSmall">40dp</item><!-- item size in menu-->
-        <item name="listPreferredItemHeightSmall">40dp</item><!-- item size in menu-->
+        <item name="android:listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
+        <item name="listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
     </style>
 
     <!-- TextInputLayout And TextInputEditText Theme -->
@@ -127,8 +159,7 @@
     <!-- Button Themes -->
     <style name="CustomTextAppearance.OrangeButton">
         <item name="android:textAllCaps">true</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/selector_button_text_white</item>
+        <item name="android:textColor">@color/selector_button_text_dark_blue</item>
         <item name="android:paddingRight">@dimen/margin_16</item>
         <item name="android:paddingLeft">@dimen/margin_16</item>
         <item name="android:paddingTop">@dimen/margin_8</item>
@@ -137,7 +168,6 @@
     </style>
 
     <style name="CustomTextAppearance.BlueButton">
-        <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/selector_button_text_white</item>
         <item name="android:paddingRight">@dimen/margin_16</item>
@@ -147,16 +177,30 @@
         <item name="android:background">@drawable/shape_button_blue</item>
     </style>
 
-    <style name="CustomTextAppearance.BlackButton">
-        <item name="android:textSize">@dimen/text_10</item>
-        <item name="android:minHeight">@dimen/margin_32</item>
+    <style name="CustomTextAppearance.Disconnect">
         <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/selector_button_text_white</item>
+        <item name="android:paddingRight">@dimen/margin_16</item>
+        <item name="android:paddingLeft">@dimen/margin_16</item>
+        <item name="android:paddingTop">@dimen/margin_8</item>
+        <item name="android:paddingBottom">@dimen/margin_8</item>
+        <item name="android:background">@drawable/shape_button_disconnect</item>
+    </style>
+
+    <style name="CustomTextAppearance.BlackButton">
+        <item name="android:textSize">@dimen/text_14</item>
+        <item name="android:minHeight">@dimen/margin_48</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:paddingRight">@dimen/margin_16</item>
+        <item name="android:paddingLeft">@dimen/margin_16</item>
+        <item name="android:paddingTop">@dimen/margin_8</item>
+        <item name="android:paddingBottom">@dimen/margin_8</item>
         <item name="android:textColor">@color/colorButtonOrange</item>
         <item name="android:background">@drawable/shape_button_black</item>
     </style>
 
     <style name="CustomTextAppearance.HelperButton">
-        <item name="android:textStyle">bold</item>
         <item name="android:minHeight">@dimen/margin_48</item>
         <item name="android:minWidth">@dimen/margin_128</item>
         <item name="android:textAllCaps">true</item>
@@ -164,7 +208,6 @@
     </style>
 
     <style name="CustomTextAppearance.TransparentOrangeButton">
-        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/colorButtonOrange</item>
         <item name="android:paddingRight">@dimen/margin_16</item>
         <item name="android:paddingLeft">@dimen/margin_16</item>
@@ -174,10 +217,13 @@
     </style>
 
     <!-- RadioButton Theme -->
-    <style name="CustomTextAppearance.AgreeRadioButton">
+    <style name="CustomTextAppearance.CheckedView">
         <item name="android:textSize">@dimen/text_12</item>
-        <item name="android:paddingLeft">@dimen/margin_8</item>
-        <item name="android:paddingRight">@dimen/margin_8</item>
-        <item name="android:button">@drawable/selector_agree_radio_button</item>
+        <item name="android:paddingTop">@dimen/margin_8</item>
+        <item name="android:paddingBottom">@dimen/margin_8</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">@dimen/margin_16</item>
+        <item name="android:checkMark">@null</item>
+        <item name="android:drawableLeft">@drawable/selector_agree_radio_button</item>
     </style>
 </resources>

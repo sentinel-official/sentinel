@@ -31,35 +31,22 @@
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switch_net"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:background="@color/colorCardShadow"
             android:gravity="center_vertical"
-            android:paddingBottom="@dimen/margin_8"
-            android:paddingEnd="@dimen/margin_16"
-            android:paddingLeft="@dimen/margin_16"
-            android:paddingRight="@dimen/margin_16"
-            android:paddingStart="@dimen/margin_16"
-            android:paddingTop="@dimen/margin_8"
-            android:text="@string/test_net"
-            app:switchPadding="@dimen/margin_4"
+            android:padding="@dimen/margin_8"
             app:trackTint="@color/colorTextWhiteWithAlpha50" />
 
         <TextView
-            android:id="@+id/switch_state"
+            android:id="@+id/tv_switch_state"
             style="@style/CustomTextAppearance.Text12.WhiteNormal"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorCardShadow"
-            android:gravity="end|center_vertical"
-            android:paddingBottom="@dimen/margin_8"
-            android:paddingEnd="@dimen/margin_16"
-            android:paddingLeft="@dimen/margin_1"
-            android:paddingRight="@dimen/margin_16"
-            android:paddingStart="@dimen/margin_1"
-            android:paddingTop="@dimen/margin_8" />
+            android:gravity="center_vertical"
+            android:textAllCaps="true" />
     </LinearLayout>
 </android.support.design.widget.AppBarLayout>

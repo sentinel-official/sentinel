@@ -1,6 +1,8 @@
 # coding=utf-8
-
+import os
 from urlparse import urljoin
+
+from psutil import cpu_count, cpu_percent, virtual_memory
 
 from ..config import MASTER_NODE_URL
 from ..utils import fetch
@@ -28,8 +30,14 @@ def register_node(node):
         'ip': node.ip,
         'account_addr': node.config['account_addr'],
         'price_per_gb': node.config['price_per_gb'],
+        'enc_method': node.config['enc_method'],
+        'description': node.config['description'],
         'location': node.location,
-        'net_speed': node.net_speed
+        'net_speed': node.net_speed,
+        'version': node.version,
+        'cpus': cpu_count(),
+        'memory': virtual_memory().total,
+        'lite': os.getenv('LITE_NETWORK')
     }
     url = urljoin(MASTER_NODE_URL, 'node/register')
     try:
@@ -65,6 +73,10 @@ def send_connections_info(account_addr, token, connections):
     body = {
         'account_addr': account_addr,
         'token': token,
+        'load': {
+            'cpu': cpu_percent(),
+            'memory': virtual_memory().active
+        },
         'connections': connections
     }
     url = urljoin(MASTER_NODE_URL, 'node/update-connections')

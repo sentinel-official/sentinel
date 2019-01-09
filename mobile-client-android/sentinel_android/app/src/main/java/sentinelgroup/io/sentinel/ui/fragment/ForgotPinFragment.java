@@ -111,7 +111,7 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, View.OnC
                 } else if (passwordResource.message != null && passwordResource.status.equals(Status.ERROR)) {
                     clearInput();
                     hideProgressDialog();
-                    showErrorDialog(passwordResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, passwordResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -126,7 +126,7 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, View.OnC
                         loadNextActivity();
                     } else {
                         clearInput();
-                        Toast.makeText(getContext(), AppConstants.GENERIC_ERROR, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.generic_error, Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -143,7 +143,7 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, View.OnC
     private boolean validatePin(int iPin, int iPin2) {
         if (iPin != iPin2) {
             mEtReEnterPin.setText("");
-            showErrorDialog(getString(R.string.pin_mismatch));
+            showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.pin_mismatch), AppConstants.VALUE_DEFAULT);
             return false;
         } else {
             return true;
@@ -169,9 +169,9 @@ public class ForgotPinFragment extends Fragment implements TextWatcher, View.OnC
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

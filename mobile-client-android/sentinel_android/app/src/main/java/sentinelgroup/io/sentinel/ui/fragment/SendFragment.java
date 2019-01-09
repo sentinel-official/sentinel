@@ -198,7 +198,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
                 } else if (txDataResource.message != null && txDataResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
                     clearForm(false);
-                    showErrorDialog(txDataResource.message);
+                    showSingleActionDialog(AppConstants.VALUE_DEFAULT, txDataResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -215,7 +215,10 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
                         showTransactionStatus(mViewModel.getTransactionStatusUrl(payResponseResource.data.txHash));
                 } else if (payResponseResource.message != null && payResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    showErrorDialog(payResponseResource.message);
+                    if (payResponseResource.message.equals(AppConstants.GENERIC_ERROR))
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
+                    else
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, payResponseResource.message, AppConstants.VALUE_DEFAULT);
                 }
             }
         });
@@ -249,7 +252,7 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
 
     private void showTransactionStatus(Uri iUri) {
         mTransactionSuccess = true;
-        Snackbar aSnackbar = Snackbar.make(mRootLayout, R.string.transaction_placed, Snackbar.LENGTH_LONG)
+        Snackbar aSnackbar = Snackbar.make(mRootLayout, R.string.transaction_placed, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.check_status, v -> {
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW, iUri));
@@ -340,9 +343,9 @@ public class SendFragment extends Fragment implements TextWatcher, SeekBar.OnSee
         }
     }
 
-    public void showErrorDialog(String iError) {
+    public void showSingleActionDialog(int iTitleId, String iMessage, int iPositiveOptionId) {
         if (mListener != null) {
-            mListener.onShowSingleActionDialog(iError);
+            mListener.onShowSingleActionDialog(iTitleId, iMessage, iPositiveOptionId);
         }
     }
 

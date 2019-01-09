@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sr_reload"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sr_reload"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="@dimen/margin_8">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_make_payment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ScrollView
-            android:id="@+id/scroll_view"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@+id/btn_make_payment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:layout_constraintVertical_chainStyle="spread_inside">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingTop="@dimen/margin_8">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/cardView"
@@ -52,10 +48,9 @@
 
                         <TextView
                             android:id="@+id/vpn_state"
-                            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                            style="@style/CustomTextAppearance.Text14.WhiteNormal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
                             android:background="@drawable/shape_state_red"
                             android:gravity="center"
                             android:paddingBottom="@dimen/margin_4"
@@ -74,6 +69,7 @@
                             style="@style/CustomTextAppearance.Text24"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="24dp"
                             android:drawableLeft="@drawable/ic_app_icon_small"
                             android:drawablePadding="@dimen/margin_8"
                             android:drawableStart="@drawable/ic_app_icon_small"
@@ -87,9 +83,10 @@
 
                         <TextView
                             android:id="@+id/sent_due"
-                            style="@style/CustomTextAppearance.Text12.GrayNormal"
+                            style="@style/CustomTextAppearance.Text12.Gray"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/amount_owed"
                             app:layout_constraintBottom_toTopOf="@+id/divider"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -123,6 +120,7 @@
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="4dp"
                             android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
                             android:gravity="center"
                             android:paddingLeft="@dimen/margin_8"
                             android:paddingRight="@dimen/margin_8"
@@ -134,10 +132,10 @@
 
                         <TextView
                             android:id="@+id/duration"
-                            style="@style/CustomTextAppearance.Text12.GrayNormal"
+                            style="@style/CustomTextAppearance.Text12.Gray"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
+                            android:layout_marginBottom="24dp"
                             android:gravity="center"
                             android:text="@string/duration"
                             app:layout_constraintBottom_toTopOf="@+id/session_id"
@@ -164,7 +162,7 @@
 
                         <TextView
                             android:id="@+id/data_used"
-                            style="@style/CustomTextAppearance.Text12.GrayNormal"
+                            style="@style/CustomTextAppearance.Text12.Gray"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:gravity="center"
@@ -176,12 +174,12 @@
 
                         <TextView
                             android:id="@+id/session_id"
-                            style="@style/CustomTextAppearance.Text10.Gray"
+                            style="@style/CustomTextAppearance.Text12.GrayNormal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:paddingEnd="@dimen/margin_8"
                             android:paddingStart="@dimen/margin_8"
-                            android:paddingTop="@dimen/margin_16"
+                            android:paddingTop="@dimen/margin_24"
                             android:text="@string/session_id"
                             app:layout_constraintBottom_toTopOf="@+id/tv_session_id"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -192,7 +190,7 @@
 
                         <TextView
                             android:id="@+id/tv_session_id"
-                            style="@style/CustomTextAppearance.Text12.GrayNormal"
+                            style="@style/CustomTextAppearance.Text14.WhiteNormal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:paddingEnd="@dimen/margin_8"
@@ -205,7 +203,7 @@
 
                         <TextView
                             android:id="@+id/tv_date_time"
-                            style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                            style="@style/CustomTextAppearance.Text14.WhiteNormal"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_marginEnd="8dp"
@@ -224,14 +222,14 @@
                             style="@style/CustomTextAppearance.BlackButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="24dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginTop="16dp"
                             android:enabled="false"
                             android:padding="@dimen/margin_8"
-                            android:textSize="@dimen/text_14"
                             android:text="@string/report"
+                            android:textSize="@dimen/text_14"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/tv_date_time"
@@ -255,36 +253,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:padding="@dimen/margin_16"
                     android:gravity="center|bottom"
+                    android:padding="@dimen/margin_16"
                     android:text="@string/vpn_pay_desc" />
             </LinearLayout>
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
-        <Button
-            android:id="@+id/btn_make_payment"
-            style="@style/CustomTextAppearance.OrangeButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="@string/make_payment"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_view_vpn"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scroll_view" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-        <Button
-            android:id="@+id/btn_view_vpn"
-            style="@style/CustomTextAppearance.BlueButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:enabled="false"
-            android:text="@string/view_vpns"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_make_payment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_make_payment"
-            app:layout_constraintTop_toTopOf="@+id/btn_make_payment" />
-    </android.support.constraint.ConstraintLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+    <Button
+        android:id="@+id/btn_make_payment"
+        style="@style/CustomTextAppearance.OrangeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/make_payment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_view_vpn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sr_reload" />
+
+    <Button
+        android:id="@+id/btn_view_vpn"
+        style="@style/CustomTextAppearance.BlueButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:enabled="false"
+        android:text="@string/view_vpns"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_make_payment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_make_payment"
+        app:layout_constraintTop_toTopOf="@+id/btn_make_payment" />
+</android.support.constraint.ConstraintLayout>

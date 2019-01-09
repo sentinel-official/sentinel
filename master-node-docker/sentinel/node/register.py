@@ -1,7 +1,7 @@
 # coding=utf-8
 import json
 import time
-from subprocess import PIPE, Popen
+from subprocess import Popen, PIPE
 from uuid import uuid4
 
 import falcon
@@ -24,21 +24,22 @@ def get_latency(url):
 class RegisterNode(object):
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
-        price_per_gb = float(
-            req.body['price_per_gb']) if 'price_per_gb' in req.body else float(
-                req.body['price_per_GB'])
         ip = str(req.body['ip'])
-        vpn_type = str(
-            req.body['vpn_type']
-        ) if 'vpn_type' in req.body and req.body['vpn_type'] else 'openvpn'
         location = req.body['location']
         net_speed = req.body['net_speed']
+        price_per_gb = float(req.body['price_per_gb']) if 'price_per_gb' in req.body else float(
+            req.body['price_per_GB'])
+        vpn_type = str(req.body['vpn_type']) if 'vpn_type' in req.body and req.body['vpn_type'] else 'openvpn'
+        version = str(req.body['version']) if 'version' in req.body else '0.0.4-alpha'
         token = uuid4().hex
         latency = get_latency(ip)
         joined_on = int(time.time())
-        enc_method = str(
-            req.body['enc_method']
-        ) if 'enc_method' in req.body else 'aes-256-cfb' if vpn_type=='socks5' else 'AES-128-CBC'
+        lite = req.body['lite'] if 'lite' in req.body else False
+        enc_method = str(req.body[
+                             'enc_method']) if 'enc_method' in req.body else 'aes-256-cfb' if vpn_type == 'socks5' else 'AES-128-CBC'
+        description = str(req.body['description']) if 'description' in req.body else ''
+        cpus = int(req.body['cpus']) if 'cpus' in req.body else None
+        memory = int(req.body['memory']) if 'memory' in req.body else None
 
         node = db.nodes.find_one({'account_addr': account_addr})
         if location['city'] == 'None':
@@ -54,7 +55,12 @@ class RegisterNode(object):
                 'joined_on': joined_on,
                 'location': location,
                 'net_speed': net_speed,
-                'enc_method': enc_method
+                'enc_method': enc_method,
+                'description': description,
+                'version': version,
+                'lite': lite,
+                'cpus': cpus,
+                'memory': memory
             })
         else:
             _ = db.nodes.find_one_and_update({
@@ -68,7 +74,12 @@ class RegisterNode(object):
                     'vpn_type': vpn_type,
                     'location': location,
                     'net_speed': net_speed,
-                    'enc_method': enc_method
+                    'enc_method': enc_method,
+                    'description': description,
+                    'version': version,
+                    'lite': lite,
+                    'cpus': cpus,
+                    'memory': memory
                 }
             })
         message = {
@@ -84,7 +95,7 @@ class RegisterNode(object):
 class DeRegisterNode(object):
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
-        token = req.body['token']
+        token = str(req.body['token'])
 
         node = db.nodes.find_one_and_delete({
             'account_addr': account_addr,
@@ -92,7 +103,10 @@ class DeRegisterNode(object):
         })
 
         if node is None:
-            message = {'success': False, 'message': 'Node is not registered.'}
+            message = {
+                'success': False,
+                'message': 'Node is not registered.'
+            }
         else:
             message = {
                 'success': True,

@@ -1,3 +1,5 @@
+import audiotrack from 'material-ui/svg-icons/image/audiotrack';
+
 const fs = window.require('fs');
 var async = window.require('async');
 const electron = window.require('electron');
@@ -5,7 +7,8 @@ const remote = electron.remote;
 const { exec, execSync } = window.require('child_process');
 const os = window.require('os');
 const config = require('../config');
-const B_URL = 'https://api.sentinelgroup.io';
+const BOOT_URL = 'https://bootnode-gateway.sentinelgroup.io';
+var B_URL = 'https://api.sentinelgroup.io';
 var ETH_BALANCE_URL;
 var SENT_BALANCE_URL;
 var ETH_TRANSC_URL;
@@ -56,30 +59,38 @@ export const createAccount = (password, cb) => {
         'Accept': 'application/json',
         'Content-type': 'application/json',
         'Access-Control-Allow-Origin': '*',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify({
         password: password
       })
     }).then(function (response) {
-      response.json().then(function (response) {
-        if (response.success === true) {
-          var account_addr = response['account_addr'];
-          var keystore = response['keystore'];
-          var private_key = response['private_key'];
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          createAccount(password, cb);
+        })
+      }
+      else {
+        response.json().then(function (response) {
+          if (response.success === true) {
+            var account_addr = response['account_addr'];
+            var keystore = response['keystore'];
+            var private_key = response['private_key'];
 
-          fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
-            if (err) {
-              cb(err, null);
-            } else {
-              cb(null, {
-                account_addr: account_addr,
-                private_key: private_key,
-                keystore_addr: KEYSTORE_FILE
-              });
-            }
-          });
-        }
-      });
+            fs.writeFile(KEYSTORE_FILE, keystore, function (err) {
+              if (err) {
+                cb(err, null);
+              } else {
+                cb(null, {
+                  account_addr: account_addr,
+                  private_key: private_key,
+                  keystore_addr: KEYSTORE_FILE
+                });
+              }
+            });
+          }
+        });
+      }
     });
   } catch (Err) {
     sendError(Err);
@@ -136,7 +147,10 @@ export function getConfig(cb) {
   try {
     fs.readFile(CONFIG_FILE, 'utf8', function (err, data) {
       if (err) {
-        sendError(err);
+        console.log("Er..", err);
+        err.toString().includes('ENOENT') ?
+          fs.writeFile(CONFIG_FILE, JSON.stringify({ isConnected: false }), function (Er) { })
+          : null
         cb(err, null);
       }
       else {
@@ -146,6 +160,170 @@ export function getConfig(cb) {
   } catch (Err) {
     sendError(Err);
   }
+}
+
+export function isPrivate(cb) {
+  getConfig(function (err, data) {
+    if (err) { cb(false) }
+    else {
+      let configData = JSON.parse(data);
+      if (configData.hasOwnProperty('isPrivate')) {
+        if (configData.isPrivate) {
+          B_URL = configData.gatewayUrl
+          localStorage.setItem('isPrivate', true);
+          localStorage.setItem('authcode', configData.authcode);
+          getClientToken(configData.authcode, configData.gatewayUrl, function (error, data) {
+            cb(true, configData.authcode)
+          })
+        }
+        else {
+          getMasterUrl();
+          cb(false, '')
+        }
+      }
+      else {
+        getMasterUrl();
+        cb(false, '')
+      }
+    }
+  })
+}
+
+export function checkGateway(cb) {
+  getConfig(function (err, data) {
+    if (err) {
+      cb(true, null, null);
+    }
+    else {
+      let configData = JSON.parse(data);
+      if (configData.hasOwnProperty('gatewayUrl')) {
+        if (configData.gatewayUrl) {
+          B_URL = configData.gatewayUrl
+          configData.isPrivate = true;
+          localStorage.setItem('isPrivate', true);
+          localStorage.setItem('authcode', configData.authcode);
+          fs.writeFile(CONFIG_FILE, JSON.stringify(configData), function (errR) {
+            getClientToken(configData.authcode, configData.gatewayUrl, function (error, data) {
+              cb(null, configData.authcode, configData.gatewayUrl)
+            })
+          })
+        }
+        else {
+          cb(true, null, null)
+        }
+      }
+      else {
+        cb(true, null, null);
+      }
+    }
+  });
+
+}
+
+export function setMaster(cb) {
+  getConfig(function (err, data) {
+    if (err) {
+      cb(true);
+    }
+    else {
+      let configData = JSON.parse(data);
+      configData.isPrivate = false;
+      fs.writeFile(CONFIG_FILE, JSON.stringify(configData), function (err) {
+        getMasterUrl()
+        cb(true)
+      })
+    }
+  });
+}
+
+export function getMasterUrl() {
+  fetch(BOOT_URL + '/master', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify({
+      authCode: null
+    })
+  }).then(function (response) {
+    response.json().then(function (res) {
+      if (res.success) {
+        localStorage.setItem('isPrivate', false)
+        localStorage.setItem('authcode', null);
+        localStorage.setItem('access_token', null)
+        B_URL = res.url
+      } else {
+      }
+    })
+  })
+}
+
+export function getGatewayUrl(authcode, cb) {
+  try {
+    fetch(BOOT_URL + '/master', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({
+        authCode: authcode
+      })
+    }).then(function (response) {
+      response.json().then(function (response) {
+        if (response.success) {
+          B_URL = response.url;
+          getConfig(function (err, data) {
+            if (err) { }
+            else {
+              let configData = JSON.parse(data);
+              configData.gatewayUrl = response.url;
+              configData.isPrivate = true;
+              configData.authcode = authcode;
+              fs.writeFile(CONFIG_FILE, JSON.stringify(configData), function (err) {
+                localStorage.setItem('isPrivate', true);
+                localStorage.setItem('authcode', authcode);
+                getClientToken(authcode, response.url, function (error, data) {
+                  cb(error, data, response.url);
+                })
+              })
+            }
+          });
+        } else {
+          cb({ message: response.message }, null, null)
+        }
+      })
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
+export function getClientToken(authcode, address, cb) {
+  fetch(B_URL + '/client/token', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify({
+      auth_code: authcode,
+      address: address
+    })
+  }).then(function (response) {
+    response.json().then(function (response) {
+      if (response.success) {
+        localStorage.setItem('access_token', 'Bearer ' + response.token)
+        cb(null, true)
+      } else {
+        cb({ message: response.message || 'Wrong details' }, null)
+      }
+    })
+  });
 }
 
 export function sendError(err) {
@@ -164,12 +342,20 @@ export function sendError(err) {
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify(data)
     }).then(function (res) {
-      res.json().then(function (resp) {
-      })
+      if (res.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          sendError(err);
+        })
+      }
+      else {
+        res.json().then(function (resp) {
+        })
+      }
     })
   }
 }
@@ -197,14 +383,20 @@ export function transferAmount(net, data, cb) {
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify({
         tx_data: data,
         net: net
       })
     }).then(function (response) {
-      if (response.status === 200) {
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          transferAmount(net, data, cb);
+        })
+      }
+      else if (response.status === 200) {
         response.json().then(function (response) {
           console.log("Response...", response)
           if (response.success === true) {
@@ -262,11 +454,17 @@ export function payVPNUsage(data, cb) {
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify(data)
     }).then(function (response) {
-      if (response.status === 200) {
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          payVPNUsage(data, cb);
+        })
+      }
+      else if (response.status === 200) {
         response.json().then(function (response) {
           console.log("Transaction Response...", response)
           if (response.success === true) {
@@ -317,16 +515,24 @@ export function getFreeAmount(account_addr, cb) {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-type': 'application/json'
+        'Content-type': 'application/json',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify({
         account_addr: account_addr
       })
     }).then(function (response) {
-      response.json().then(function (response) {
-        console.log("Free res:", response)
-        cb(response.message)
-      })
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          getFreeAmount(account_addr, cb);
+        })
+      }
+      else {
+        response.json().then(function (response) {
+          console.log("Free res:", response)
+          cb(response.message)
+        })
+      }
     });
   } catch (Err) {
     sendError(Err);
@@ -339,22 +545,30 @@ export function getVPNUsageData(account_addr, cb) {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-type': 'application/json'
+        'Content-type': 'application/json',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify({
         account_addr: account_addr,
         session_name: SESSION_NAME
       })
     }).then(function (response) {
-      response.json().then(function (response) {
-        if (response.success === true) {
-          var usage = response['usage'];
-          cb(null, usage)
-        }
-        else {
-          cb({ message: response.message || 'No data got' }, null);
-        }
-      })
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          getVPNUsageData(account_addr, cb);
+        })
+      }
+      else {
+        response.json().then(function (response) {
+          if (response.success === true) {
+            var usage = response['usage'];
+            cb(null, usage)
+          }
+          else {
+            cb({ message: response.message || 'No data got' }, null);
+          }
+        })
+      }
     })
   } catch (Err) {
     sendError(Err);
@@ -373,15 +587,23 @@ export function sendUsage(account_addr, vpn_addr, usage) {
     headers: {
       'Accept': 'application/json',
       'Content-type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': localStorage.getItem('access_token')
     },
     body: JSON.stringify({
       'account_addr': vpn_addr,
       'connections': connections
     })
   }).then(function (res) {
-    res.json().then(function (resp) {
-    })
+    if (res.status === 401) {
+      getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+        sendUsage(account_addr, vpn_addr, usage);
+      })
+    }
+    else {
+      res.json().then(function (resp) {
+      })
+    }
   })
 }
 
@@ -392,11 +614,17 @@ export function reportPayment(data, cb) {
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify(data)
     }).then(function (response) {
-      if (response.status === 200) {
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          reportPayment(data, cb);
+        })
+      }
+      else if (response.status === 200) {
         response.json().then(function (response) {
           console.log("Res Report...", response)
           if (response.success === true) {
@@ -420,14 +648,20 @@ export function reportPayment(data, cb) {
 
 export function getAvailableTokens(cb) {
   try {
-    fetch(B_URL + '/tokens/available', {
+    fetch(B_URL + '/swaps/available', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
+        'Authorization': localStorage.getItem('access_token')
       }
     }).then(function (response) {
-      if (response.status === 200) {
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          getAvailableTokens(cb);
+        })
+      }
+      else if (response.status === 200) {
         response.json().then(function (response) {
           if (response.success === true) {
             cb(null, response.tokens);
@@ -594,20 +828,29 @@ export function getTokenBalance(contract, addr, decimals, cb) {
   }
 }
 
-export function swapRawTransaction(data, cb) {
+export function swapRawTransaction(data, toAddr, from, to, cb) {
   try {
-    fetch(B_URL + '/tokens/swaps/raw-transaction', {
+    fetch(B_URL + '/swaps/raw-transaction', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify({
-        tx_data: data
+        tx_data: data,
+        account_addr: toAddr,
+        from: from,
+        to: to
       })
     }).then(function (response) {
-      if (response.status === 200) {
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          swapRawTransaction(data, toAddr, from, to, cb);
+        })
+      }
+      else if (response.status === 200) {
         response.json().then(function (response) {
           console.log("Response...", response)
           if (response.success === true) {
@@ -632,21 +875,63 @@ export function swapRawTransaction(data, cb) {
   }
 }
 
-export function getSentValue(toAddr, value, cb) {
+export function getSentValue(from, to, value, decimals, cb) {
   try {
-    fetch(B_URL + '/tokens/sents?to_addr=' + toAddr + '&value=' + value, {
+    fetch(B_URL + '/swaps/exchange?from=' + from + '&to=' + to + '&value=' + value, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
+        'Authorization': localStorage.getItem('access_token')
       }
     }).then(function (response) {
-      response.json().then(function (resp) {
-        if (resp.success === true) {
-          var sents = resp['sents'] / (10 ** 8);
-          cb(null, sents);
-        } else cb({ message: 'Error occurred while getting balance.' }, null);
-      });
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          getSentValue(from, to, value, decimals, cb);
+        })
+      }
+      else {
+        response.json().then(function (resp) {
+          if (resp.success === true) {
+            var tokens = resp['value'] / (10 ** decimals);
+            cb(null, tokens);
+          } else cb({ message: 'Error occurred while getting balance.' }, null);
+        });
+      }
+    });
+  } catch (Err) {
+    sendError(Err);
+  }
+}
+
+export function swapPivx(account_addr, from, to, cb) {
+  try {
+    fetch(B_URL + '/swaps/new-address', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Authorization': localStorage.getItem('access_token')
+      },
+      body: JSON.stringify({
+        account_addr: account_addr,
+        from: from,
+        to: to
+      })
+    }).then(function (response) {
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          swapPivx(account_addr, from, to, cb);
+        })
+      }
+      else {
+        response.json().then(function (response) {
+          if (response.success) {
+            var address = response['address'];
+            cb(null, address);
+          } else cb({ message: response.message || 'Error occurred while swapping.' }, null);
+        });
+      }
     });
   } catch (Err) {
     sendError(Err);
@@ -722,18 +1007,26 @@ export function getVpnHistory(account_addr, cb) {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-type': 'application/json'
+        'Content-type': 'application/json',
+        'Authorization': localStorage.getItem('access_token')
       },
       body: JSON.stringify({
         account_addr: account_addr,
       })
     }).then(function (response) {
-      response.json().then(function (response) {
-        if (response.success === true) {
-          var history = response['usage'];
-          cb(null, history);
-        } else cb({ message: response.message || 'Error occurred while getting vpn history.' }, null);
-      });
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          getVpnHistory(account_addr, cb);
+        })
+      }
+      else {
+        response.json().then(function (response) {
+          if (response.success === true) {
+            var history = response['usage'];
+            cb(null, history);
+          } else cb({ message: response.message || 'Error occurred while getting vpn history.' }, null);
+        });
+      }
     });
   } catch (Err) {
     sendError(Err);
@@ -752,9 +1045,15 @@ export const getVPNList = (cb) => {
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
+        'Authorization': localStorage.getItem('access_token')
       },
     }).then(function (response) {
-      if (response.status === 200) {
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          getVPNList(cb);
+        })
+      }
+      else if (response.status === 200) {
         response.json().then(function (response) {
           if (response.success === true) {
             cb(null, response.list);
@@ -918,125 +1217,137 @@ export function connectSocks(account_addr, vpn_addr, cb) {
         headers: {
           'Accept': 'application/json',
           'Content-type': 'application/json',
+          'Authorization': localStorage.getItem('access_token')
         },
         body: JSON.stringify({
           account_addr: account_addr,
           vpn_addr: vpn_addr
         })
       }).then(function (response) {
-        response.json().then(function (res) {
-          if (res.success === true) {
-            getSocksCreds(account_addr, res['ip'], res['port'], res['vpn_addr'], res['token'], function (err, data) {
-              if (err) cb(err);
-              else {
-                if (remote.process.platform === 'win32') {
-                  fs.readFile('resources\\extras\\socks5\\gui-config.json', 'utf8', function (err, conf) {
-                    if (err) {
-                      console.log("Err...", err)
-                    }
-                    else {
-                      var configData = JSON.parse(conf);
-                      configData.configs[0].server = data['ip'];
-                      configData.configs[0].server_port = data['port'];
-                      configData.configs[0].password = data['password'];
-                      configData.configs[0].method = data['method'];
-                      configData.global = true;
-                      var config = JSON.stringify(configData);
-                      fs.writeFile('resources\\extras\\socks5\\gui-config.json', config, function (writeErr) {
-                        exec('net start sentinelSocks', function (servErr, serveOut, serveStd) {
-                          console.log("Started...", servErr, serveOut, serveStd)
-                        })
-                      });
-                    }
-                  });
-                }
+        if (response.status === 401) {
+          getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+            nextStep();
+          })
+        }
+        else {
+          response.json().then(function (res) {
+            if (res.success === true) {
+              getSocksCreds(account_addr, res['ip'], res['port'], res['vpn_addr'], res['token'], function (err, data) {
+                if (err) cb(err);
                 else {
-                  exec('ss-local -s ' + data['ip'] + ' -m ' + data['method'] + ' -k ' + data['password'] + ' -p ' + data['port'] + ' -l 1080', function (err, stdout, stderr) {
-                  })
-                  if (remote.process.platform === 'darwin') {
-                    let netcmd = `services=$(networksetup -listnetworkserviceorder | grep 'Hardware Port'); while read line; do sname=$(echo $line | awk -F  "(, )|(: )|[)]" '{print $2}'); sdev=$(echo $line | awk -F  "(, )|(: )|[)]" '{print $4}'); if [ -n "$sdev" ]; then ifout="$(ifconfig $sdev 2>/dev/null)"; echo "$ifout" | grep 'status: active' > /dev/null 2>&1; rc="$?"; if [ "$rc" -eq 0 ]; then currentservice="$sname"; currentdevice="$sdev"; currentmac=$(echo "$ifout" | awk '/ether/{print $2}'); fi; fi; done <<< "$(echo "$services")"; if [ -n "$currentservice" ]; then echo $currentservice; else >&2 echo "Could not find current service"; exit 1; fi`;
-                    exec(netcmd, function (err, stdout, stderr) {
-                      if (stdout) {
-                        console.log("NEt Out...", stdout.toString())
-                        var currentService = stdout.trim();
-                        exec(`networksetup -setsocksfirewallproxy '${currentService}' localhost 1080 && networksetup -setsocksfirewallproxystate '${currentService}' on`, function (error, Stdout, Stderr) {
+                  if (remote.process.platform === 'win32') {
+                    fs.readFile('resources\\extras\\socks5\\gui-config.json', 'utf8', function (err, conf) {
+                      if (err) {
+                        console.log("Err...", err)
+                      }
+                      else {
+                        var configData = JSON.parse(conf);
+                        configData.configs[0].server = data['ip'];
+                        configData.configs[0].server_port = data['port'];
+                        configData.configs[0].password = data['password'];
+                        configData.configs[0].method = data['method'];
+                        configData.global = true;
+                        var config = JSON.stringify(configData);
+                        fs.writeFile('resources\\extras\\socks5\\gui-config.json', config, function (writeErr) {
+                          exec('net start sentinelSocks', function (servErr, serveOut, serveStd) {
+                            console.log("Started...", servErr, serveOut, serveStd)
+                          })
+                        });
+                      }
+                    });
+                  }
+                  else {
+                    exec('ss-local -s ' + data['ip'] + ' -m ' + data['method'] + ' -k ' + data['password'] + ' -p ' + data['port'] + ' -l 1080', function (err, stdout, stderr) {
+                    })
+                    if (remote.process.platform === 'darwin') {
+                      let netcmd = `services=$(networksetup -listnetworkserviceorder | grep 'Hardware Port'); while read line; do sname=$(echo $line | awk -F  "(, )|(: )|[)]" '{print $2}'); sdev=$(echo $line | awk -F  "(, )|(: )|[)]" '{print $4}'); if [ -n "$sdev" ]; then ifout="$(ifconfig $sdev 2>/dev/null)"; echo "$ifout" | grep 'status: active' > /dev/null 2>&1; rc="$?"; if [ "$rc" -eq 0 ]; then currentservice="$sname"; currentdevice="$sdev"; currentmac=$(echo "$ifout" | awk '/ether/{print $2}'); fi; fi; done <<< "$(echo "$services")"; if [ -n "$currentservice" ]; then echo $currentservice; else >&2 echo "Could not find current service"; exit 1; fi`;
+                      exec(netcmd, function (err, stdout, stderr) {
+                        if (stdout) {
+                          console.log("NEt Out...", stdout.toString())
+                          var currentService = stdout.trim();
+                          exec(`networksetup -setsocksfirewallproxy '${currentService}' localhost 1080 && networksetup -setsocksfirewallproxystate '${currentService}' on`, function (error, Stdout, Stderr) {
+                          })
+                        }
+                        if (err) {
+                          console.log("Error..", err);
+                        }
+                      })
+                    }
+                  }
+                  var count = 0;
+                  if (remote.process.platform === 'win32') checkWindows();
+                  else {
+                    setTimeout(function () {
+                      getSocksPIDs(function (err, pids) {
+                        if (err) cb({ message: err });
+                        else {
+                          CONNECTED = true;
+                          getConfig(function (err, confdata) {
+                            let data = JSON.parse(confdata);
+                            data.isConnected = true;
+                            data.ipConnected = IPGENERATED;
+                            data.location = LOCATION;
+                            data.speed = SPEED;
+                            data.connectedAddr = CONNECTED_VPN;
+                            data.vpn_type = 'socks5';
+                            data.session_name = SESSION_NAME;
+                            let keystore = JSON.stringify(data);
+                            fs.writeFile(CONFIG_FILE, keystore, function (err) {
+                            });
+                            cb(null, false, false, false, SESSION_NAME);
+                          })
+                        }
+                      });
+                    }, 2000);
+                  }
+                  function checkWindows() {
+                    console.log(count);
+                    getSocksProcesses(function (err, pids) {
+                      if (err) { }
+                      else {
+                        CONNECTED = true;
+                        getConfig(function (err, confdata) {
+                          let data = JSON.parse(confdata);
+                          data.isConnected = true;
+                          data.ipConnected = IPGENERATED;
+                          data.location = LOCATION;
+                          data.speed = SPEED;
+                          data.connectedAddr = CONNECTED_VPN;
+                          data.vpn_type = 'socks5';
+                          data.session_name = SESSION_NAME;
+                          let keystore = JSON.stringify(data);
+                          fs.writeFile(CONFIG_FILE, keystore, function (err) {
+                          });
+                          let cmd1 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 1';
+                          let cmd2 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyServer /t REG_SZ /d 127.0.0.1:1080';
+                          exec(`${cmd1} && ${cmd2}`, function (stderr, stdout, error) {
+                            cb(null, false, false, false, SESSION_NAME);
+                            count = 4;
+                          });
                         })
                       }
-                      if (err) {
-                        console.log("Error..", err);
+
+                      count++;
+                      if (count < 4) {
+                        setTimeout(function () { checkWindows(); }, 5000);
+                      }
+                      if (count == 4 && CONNECTED === false) {
+                        cb({ message: 'Something went wrong. Please Try Again' }, false, false, false, null)
                       }
                     })
                   }
                 }
-                var count = 0;
-                if (remote.process.platform === 'win32') checkWindows();
-                else {
-                  setTimeout(function () {
-                    getSocksPIDs(function (err, pids) {
-                      if (err) cb({ message: err });
-                      else {
-                        CONNECTED = true;
-                        let data = {};
-                        data.isConnected = true;
-                        data.ipConnected = IPGENERATED;
-                        data.location = LOCATION;
-                        data.speed = SPEED;
-                        data.connectedAddr = CONNECTED_VPN;
-                        data.vpn_type = 'socks5';
-                        data.session_name = SESSION_NAME;
-                        let keystore = JSON.stringify(data);
-                        fs.writeFile(CONFIG_FILE, keystore, function (err) {
-                        });
-                        cb(null, false, false, false, SESSION_NAME);
-                      }
-                    });
-                  }, 2000);
-                }
-                function checkWindows() {
-                  console.log(count);
-                  getSocksProcesses(function (err, pids) {
-                    if (err) { }
-                    else {
-                      CONNECTED = true;
-                      let data = {};
-                      data.isConnected = true;
-                      data.ipConnected = IPGENERATED;
-                      data.location = LOCATION;
-                      data.speed = SPEED;
-                      data.connectedAddr = CONNECTED_VPN;
-                      data.vpn_type = 'socks5';
-                      data.session_name = SESSION_NAME;
-                      let keystore = JSON.stringify(data);
-                      fs.writeFile(CONFIG_FILE, keystore, function (err) {
-                      });
-                      let cmd1 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 1';
-                      let cmd2 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyServer /t REG_SZ /d 127.0.0.1:1080';
-                      exec(`${cmd1} && ${cmd2}`, function (stderr, stdout, error) {
-                        cb(null, false, false, false, SESSION_NAME);
-                        count = 4;
-                      });
-                    }
-
-                    count++;
-                    if (count < 4) {
-                      setTimeout(function () { checkWindows(); }, 5000);
-                    }
-                    if (count == 4 && CONNECTED === false) {
-                      cb({ message: 'Something went wrong. Please Try Again' }, false, false, false, null)
-                    }
-                  })
-                }
-              }
-            })
-          }
-          else {
-            sendError(res);
-            if (res.account_addr)
-              cb({ message: res.message || 'Initial Payment is not done' }, false, false, res.account_addr, null);
-            else
-              cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false, false, false, null);
-          }
-        })
+              })
+            }
+            else {
+              sendError(res);
+              if (res.account_addr)
+                cb({ message: res.message || 'Initial Payment is not done' }, false, false, res.account_addr, null);
+              else
+                cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false, false, false, null);
+            }
+          })
+        }
       })
     }
   } catch (Err) {
@@ -1114,14 +1425,16 @@ export function disconnectSocks(cb) {
         else {
           CONNECTED = false;
           CONNECTED_VPN = null;
-          let data = {};
-          data.isConnected = null;
-          data.connectedAddr = null;
-          let keystore = JSON.stringify(data);
-          fs.writeFile(CONFIG_FILE, keystore, function (err) {
-          });
-          exec(cmd1, function (stderr, stdout, error) {
-            cb(null);
+          getConfig(function (err, confdata) {
+            let data = JSON.parse(confdata);
+            data.isConnected = null;
+            data.connectedAddr = null;
+            let keystore = JSON.stringify(data);
+            fs.writeFile(CONFIG_FILE, keystore, function (err) {
+            });
+            exec(cmd1, function (stderr, stdout, error) {
+              cb(null);
+            })
           })
         }
       });
@@ -1151,14 +1464,16 @@ export function disconnectSocks(cb) {
             }
             CONNECTED = false;
             CONNECTED_VPN = null;
-            let data = {};
-            data.isConnected = null;
-            data.connectedAddr = null;
-            let keystore = JSON.stringify(data);
-            fs.writeFile(CONFIG_FILE, keystore, function (err) {
-            });
+            getConfig(function (err, confdata) {
+              let data = JSON.parse(confdata);
+              data.isConnected = null;
+              data.connectedAddr = null;
+              let keystore = JSON.stringify(data);
+              fs.writeFile(CONFIG_FILE, keystore, function (err) {
+              });
 
-            cb(null);
+              cb(null);
+            })
           }
         });
       }
@@ -1168,20 +1483,28 @@ export function disconnectSocks(cb) {
 
 export function getSwapTransactionStatus(tx_addr, cb) {
   try {
-    fetch(B_URL + '/tokens/swaps/status?tx_hash=' + tx_addr, {
+    fetch(B_URL + '/swaps/status?key=' + tx_addr, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': localStorage.getItem('access_token')
       }
     }).then(function (response) {
-      response.json().then(function (response) {
-        if (response.success) {
-          var result = response['result'];
-          cb(null, result);
-        } else cb({ message: 'Error occurred while getting balance.' }, false);
-      })
+      if (response.status === 401) {
+        getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+          getSwapTransactionStatus(tx_addr, cb);
+        })
+      }
+      else {
+        response.json().then(function (response) {
+          if (response.success) {
+            var result = response['result'];
+            cb(null, result);
+          } else cb({ message: 'Error occurred while getting balance.' }, false);
+        })
+      }
     });
   } catch (Err) {
     sendError(Err);
@@ -1305,133 +1628,147 @@ export function connectVPN(account_addr, vpn_addr, cb) {
         headers: {
           'Accept': 'application/json',
           'Content-type': 'application/json',
+          'Authorization': localStorage.getItem('access_token')
         },
         body: JSON.stringify({
           account_addr: account_addr,
           vpn_addr: vpn_addr
         })
       }).then(function (response) {
-        response.json().then(function (res) {
-          if (res.success === true) {
-            getOVPNAndSave(account_addr, res['ip'], res['port'], res['vpn_addr'], res['token'], function (err) {
-              if (err) cb(err, false, false, false, null);
-              else {
-                if (OVPNDelTimer) clearInterval(OVPNDelTimer);
-                if (remote.process.platform === 'win32') {
-                  sudo.exec(command, connect,
-                    function (error, stdout, stderr) {
-                      console.log('Err...', error, 'Stdout..', stdout, 'Stderr..', stderr)
+        if (response.status === 401) {
+          getClientToken(localStorage.getItem('authcode'), B_URL, function (err, data) {
+            nextStep();
+          })
+        }
+        else {
+          response.json().then(function (res) {
+            if (res.success === true) {
+              getOVPNAndSave(account_addr, res['ip'], res['port'], res['vpn_addr'], res['token'], function (err) {
+                if (err) cb(err, false, false, false, null);
+                else {
+                  if (OVPNDelTimer) clearInterval(OVPNDelTimer);
+                  if (remote.process.platform === 'win32') {
+                    sudo.exec(command, connect,
+                      function (error, stdout, stderr) {
+                        console.log('Err...', error, 'Stdout..', stdout, 'Stderr..', stderr)
+                        OVPNDelTimer = setTimeout(function () {
+                          fs.unlinkSync(OVPN_FILE);
+                        }, 5 * 1000);
+                      }
+                    );
+                  }
+                  else {
+                    exec(command, function (err, stdout, stderr) {
                       OVPNDelTimer = setTimeout(function () {
                         fs.unlinkSync(OVPN_FILE);
-                      }, 5 * 1000);
-                    }
-                  );
-                }
-                else {
-                  exec(command, function (err, stdout, stderr) {
-                    OVPNDelTimer = setTimeout(function () {
-                      fs.unlinkSync(OVPN_FILE);
+                      }, 1000);
+                    });
+                  }
+                  var count = 0;
+                  if (remote.process.platform === 'darwin') checkVPNConnection();
+                  else if (remote.process.platform === 'win32') checkWindows();
+                  else {
+                    setTimeout(function () {
+                      getVPNPIDs(function (err, pids) {
+                        if (err) cb({ message: err }, false, false, false, null);
+                        else {
+                          CONNECTED = true;
+                          getConfig(function (err, confdata) {
+                            let data = JSON.parse(confdata);
+                            data.isConnected = true;
+                            data.ipConnected = IPGENERATED;
+                            data.location = LOCATION;
+                            data.speed = SPEED;
+                            data.connectedAddr = CONNECTED_VPN;
+                            data.session_name = SESSION_NAME;
+                            data.vpn_type = 'openvpn';
+                            let keystore = JSON.stringify(data);
+                            fs.writeFile(CONFIG_FILE, keystore, function (err) {
+                            });
+                            cb(null, false, false, false, res.message);
+                          })
+                        }
+                      });
+
                     }, 1000);
-                  });
-                }
-                var count = 0;
-                if (remote.process.platform === 'darwin') checkVPNConnection();
-                else if (remote.process.platform === 'win32') checkWindows();
-                else {
-                  setTimeout(function () {
-                    getVPNPIDs(function (err, pids) {
-                      if (err) cb({ message: err }, false, false, false, null);
+                  }
+                  function checkWindows() {
+                    exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
+                      if (stdout.toString() === '') {
+                      }
                       else {
                         CONNECTED = true;
-                        let data = {};
-                        data.isConnected = true;
-                        data.ipConnected = IPGENERATED;
-                        data.location = LOCATION;
-                        data.speed = SPEED;
-                        data.connectedAddr = CONNECTED_VPN;
-                        data.session_name = SESSION_NAME;
-                        data.vpn_type = 'openvpn';
-                        let keystore = JSON.stringify(data);
-                        fs.writeFile(CONFIG_FILE, keystore, function (err) {
-                        });
-                        cb(null, false, false, false, res.message);
+                        getConfig(function (err, confdata) {
+                          let data = JSON.parse(confdata);
+                          data.isConnected = true;
+                          data.ipConnected = IPGENERATED;
+                          data.location = LOCATION;
+                          data.speed = SPEED;
+                          data.connectedAddr = CONNECTED_VPN;
+                          data.session_name = SESSION_NAME;
+                          data.vpn_type = 'openvpn';
+                          let keystore = JSON.stringify(data);
+                          fs.writeFile(CONFIG_FILE, keystore, function (err) {
+                          });
+                          cb(null, false, false, false, res.message);
+                          count = 4;
+                        })
+                      }
+                      count++;
+                      if (count < 4) {
+                        setTimeout(function () { checkWindows(); }, 5000);
+                      }
+                      if (count == 4 && CONNECTED === false) {
+                        cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
+                      }
+                    })
+                  }
+                  function checkVPNConnection() {
+                    getVPNPIDs(function (err, pids) {
+                      if (err) { }
+                      else {
+                        CONNECTED = true;
+                        getConfig(function (err, confdata) {
+                          let data = JSON.parse(confdata);
+                          data.isConnected = true;
+                          data.ipConnected = IPGENERATED;
+                          data.location = LOCATION;
+                          data.connectedAddr = CONNECTED_VPN;
+                          data.speed = SPEED;
+                          data.vpn_type = 'openvpn';
+                          data.session_name = SESSION_NAME;
+                          let keystore = JSON.stringify(data);
+                          fs.writeFile(CONFIG_FILE, keystore, function (err) {
+                          });
+                          cb(null, false, false, false, res.message);
+                          count = 2;
+                        })
+                      }
+
+                      getOsascriptIDs(function (ERr, pid) {
+                        if (ERr) count++;
+                      })
+
+                      if (count < 2) {
+                        setTimeout(function () { checkVPNConnection(); }, 5000);
+                      }
+                      if (count == 2 && CONNECTED === false) {
+                        cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
                       }
                     });
-
-                  }, 1000);
+                  }
                 }
-                function checkWindows() {
-                  exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
-                    if (stdout.toString() === '') {
-                    }
-                    else {
-                      CONNECTED = true;
-                      let data = {};
-                      data.isConnected = true;
-                      data.ipConnected = IPGENERATED;
-                      data.location = LOCATION;
-                      data.speed = SPEED;
-                      data.connectedAddr = CONNECTED_VPN;
-                      data.session_name = SESSION_NAME;
-                      data.vpn_type = 'openvpn';
-                      let keystore = JSON.stringify(data);
-                      fs.writeFile(CONFIG_FILE, keystore, function (err) {
-                      });
-                      cb(null, false, false, false, res.message);
-                      count = 4;
-                    }
-                    count++;
-                    if (count < 4) {
-                      setTimeout(function () { checkWindows(); }, 5000);
-                    }
-                    if (count == 4 && CONNECTED === false) {
-                      cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
-                    }
-                  })
-                }
-                function checkVPNConnection() {
-                  getVPNPIDs(function (err, pids) {
-                    if (err) { }
-                    else {
-                      CONNECTED = true;
-                      let data = {};
-                      data.isConnected = true;
-                      data.ipConnected = IPGENERATED;
-                      data.location = LOCATION;
-                      data.connectedAddr = CONNECTED_VPN;
-                      data.speed = SPEED;
-                      data.vpn_type = 'openvpn';
-                      data.session_name = SESSION_NAME;
-                      let keystore = JSON.stringify(data);
-                      fs.writeFile(CONFIG_FILE, keystore, function (err) {
-                      });
-                      cb(null, false, false, false, res.message);
-                      count = 2;
-                    }
-
-                    getOsascriptIDs(function (ERr, pid) {
-                      if (ERr) count++;
-                    })
-
-                    if (count < 2) {
-                      setTimeout(function () { checkVPNConnection(); }, 5000);
-                    }
-                    if (count == 2 && CONNECTED === false) {
-                      cb({ message: 'Something went wrong.Please Try Again' }, false, false, false, null)
-                    }
-                  });
-                }
-              }
-            });
-          }
-          else {
-            sendError(res);
-            if (res.account_addr)
-              cb({ message: res.message || 'Initial Payment is not done' }, false, false, res.account_addr, null);
-            else
-              cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false, false, false, null);
-          }
-        })
+              });
+            }
+            else {
+              sendError(res);
+              if (res.account_addr)
+                cb({ message: res.message || 'Initial Payment is not done' }, false, false, res.account_addr, null);
+              else
+                cb({ message: res.message || 'Connecting VPN Failed.Please Try Again' }, false, false, false, null);
+            }
+          })
+        }
       })
     }
   } catch (Err) {
@@ -1550,13 +1887,15 @@ export function disconnectVPN(cb) {
           else {
             CONNECTED = false;
             CONNECTED_VPN = null;
-            let data = {};
-            data.isConnected = null;
-            data.connectedAddr = null;
-            let keystore = JSON.stringify(data);
-            fs.writeFile(CONFIG_FILE, keystore, function (err) {
-            });
-            cb(null);
+            getConfig(function (err, confdata) {
+              let data = JSON.parse(confdata);
+              data.isConnected = null;
+              data.connectedAddr = null;
+              let keystore = JSON.stringify(data);
+              fs.writeFile(CONFIG_FILE, keystore, function (err) {
+              });
+              cb(null);
+            })
           }
         });
     }
@@ -1575,13 +1914,15 @@ export function disconnectVPN(cb) {
             else {
               CONNECTED = false;
               CONNECTED_VPN = null;
-              let data = {};
-              data.isConnected = null;
-              data.connectedAddr = null;
-              let keystore = JSON.stringify(data);
-              fs.writeFile(CONFIG_FILE, keystore, function (err) {
-              });
-              cb(null);
+              getConfig(function (err, confdata) {
+                let data = JSON.parse(confdata);
+                data.isConnected = null;
+                data.connectedAddr = null;
+                let keystore = JSON.stringify(data);
+                fs.writeFile(CONFIG_FILE, keystore, function (err) {
+                });
+                cb(null);
+              })
             }
           });
         }

@@ -5,6 +5,7 @@ import time
 import falcon
 
 from ..config import DECIMALS
+from ..config import REFERRAL_DUMMY
 from ..db import db
 from ..helpers import eth_helper
 
@@ -19,15 +20,28 @@ class UpdateConnections(object):
         token = str(req.body['token'])
         account_addr = str(req.body['account_addr']).lower()
         connections = req.body['connections']
+        load = req.body['load'] if 'load' in req.body else None
 
         node = db.nodes.find_one({
             'account_addr': account_addr,
             'token': token
         })
         if node is not None:
+            if load:
+                _ = db.nodes.find_one_and_update({
+                    'account_addr': account_addr,
+                    'token': token
+                }, {
+                    '$set': {
+                        'load': load,
+                        'active_connections': len(connections)
+                    }
+                })
             tx_hashes, session_names = [], []
             cond = '$nin'
             for connection in connections:
+                if connection is None:
+                    continue
                 connection['vpn_addr'] = account_addr
                 if 'account_addr' in connection:
                     connection['client_addr'] = connection['account_addr'].lower()
@@ -35,6 +49,10 @@ class UpdateConnections(object):
                 if 'usage' in connection:
                     connection['server_usage'] = connection['usage']
                     connection.pop('usage')
+
+                if 'client_addr' in connection and len(connection['client_addr']) < 35:  # Fixes for SLC
+                    connection['device_id'] = connection['client_addr']
+                    connection['client_addr'] = REFERRAL_DUMMY
 
                 data = db.connections.find_one({
                     'vpn_addr': connection['vpn_addr'],
@@ -84,12 +102,12 @@ class UpdateConnections(object):
                     sent_bytes = int(connection['server_usage']['down'])
                     session_duration = int(int(connection['end_time']) - int(connection['start_time']))
                     amount = int(calculate_amount(sent_bytes, node['price_per_gb']) * DECIMALS)
+                    device_id = connection['device_id'] if 'device_id' in connection else None
                     timestamp = int(time.time())
-                    print(account_addr, to_addr, sent_bytes, session_duration, amount, timestamp)
+                    print(account_addr, to_addr, sent_bytes, session_duration, amount, timestamp, device_id)
 
                     error, tx_hash = eth_helper.add_vpn_usage(account_addr, to_addr, sent_bytes, session_duration,
-                                                              amount,
-                                                              timestamp)
+                                                              amount, timestamp, device_id)
                     if error:
                         tx_hashes.append(error)
                     else:
@@ -108,6 +126,7 @@ class UpdateConnections(object):
                 'message': 'Connection details updated successfully.',
                 'tx_hashes': tx_hashes
             }
+
         else:
             message = {
                 'success': False,

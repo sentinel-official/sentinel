@@ -5,9 +5,9 @@
 	<executable>C:\Program Files\nodejs\node.exe</executable>
 	<logmode>rotate</logmode>
 	<argument>-c config.json</argument>
-	<argument>C:\Users\anilCSE\Desktop\sevi\node_modules\node-windows\lib\wrapper.js</argument>
+	<argument>C:\Users\<user>\Desktop\sevi\node_modules\node-windows\lib\wrapper.js</argument>
 	<argument>--file</argument>
-	<argument>C:\Users\anilCSE\Downloads\Shadowsocks\Shadowsocks.exe</argument>
+	<argument>C:\Users\<user>\Downloads\Shadowsocks\Shadowsocks.exe</argument>
 	<argument>--log</argument>
 	<argument>Hello World wrapper</argument>
 	<argument>--grow</argument>
@@ -21,5 +21,5 @@
 	<argument>--stopparentfirst</argument>
 	<argument>undefined</argument>
 	<stoptimeout>30sec</stoptimeout>
-	<workingdirectory>C:\Users\anilCSE\Desktop\sevi</workingdirectory>
+	<workingdirectory>C:\Users\<user>\Desktop\sevi</workingdirectory>
 </service>

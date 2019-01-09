@@ -1,0 +1,32 @@
+FROM golang:alpine3.7 AS deps
+
+RUN apk add git gcc linux-headers make musl-dev wget
+RUN go get -u github.com/golang/dep/cmd/dep && \
+    mkdir -p /go/src/github.com/cosmos && \
+    cd /go/src/github.com/cosmos && \
+    git clone --depth 1 --branch develop https://github.com/sentinel-official/cosmos-sdk.git && \
+    cd /go/src/github.com/cosmos/cosmos-sdk && \
+    dep ensure -v && \
+    make install
+RUN cd /root && \
+    wget https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
+
+FROM alpine:3.7
+
+COPY --from=deps /go/bin/gaiacli /usr/local/bin/
+COPY --from=deps /root/speedtest.py /usr/lib/python2.7/site-packages/
+
+ADD sentinel /root/sentinel
+ADD app.py run.sh config /root/
+
+ENV SENT_ENV=DEV
+
+RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
+    apk add --no-cache ca-certificates easy-rsa mongodb openvpn ufw@testing && \
+    mkdir -p /data/db && \
+    wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
+    python /tmp/get-pip.py && \
+    pip install --no-cache-dir falcon gunicorn pymongo requests
+RUN rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
+
+ENTRYPOINT ["sh", "/root/run.sh"]

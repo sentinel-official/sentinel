@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomTextAppearance.Disconnect">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:textColor">@color/selector_button_text_white</item>
+        <item name="android:paddingRight">@dimen/margin_16</item>
+        <item name="android:paddingLeft">@dimen/margin_16</item>
+        <item name="android:paddingTop">@dimen/margin_8</item>
+        <item name="android:paddingBottom">@dimen/margin_8</item>
+        <item name="android:background">@drawable/shape_button_disconnect</item>
+    </style>
+</resources>

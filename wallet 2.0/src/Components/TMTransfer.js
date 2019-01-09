@@ -16,6 +16,7 @@ import OpenvpnAlert from './OpenvpnAlert';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import lang from '../Constants/language';
 import SimpleMenuTM from './SharedComponents/SimpleMenuTM';
+import CustomTooltips from './SharedComponents/customTooltip';
 
 
 const electron = window.require('electron');
@@ -261,14 +262,24 @@ class TMTransfer extends Component {
             <div style={accountStyles.sendFormStyle}>
                 <div style={createAccountStyle.secondDivStyle}
                     onKeyPress={(ev) => { if (ev.key === 'Enter' && !isDisabled) this.sendTransaction() }}>
-                    <p style={createAccountStyle.headingStyle}>{lang[language].AddressToSend}</p>
+                    <div style={createAccountStyle.tooltipDiv}>
+                        <p style={createAccountStyle.headingStyle}>{lang[language].AddressToSend}</p>
+                        <span style={createAccountStyle.questionMarkDiv}>
+                            <CustomTooltips title={lang[language].TMAddressToSendHelp} />
+                        </span>
+                    </div>
                     <CustomTextField type={'text'} placeholder={''} disabled={this.state.isTextDisabled}
                         value={this.state.toAddress} onChange={(e) => { this.setState({ toAddress: e.target.value }) }}
                     />
                     {
                         this.props.vpnPayment.isPayment ?
                             <div>
-                                <p style={createAccountStyle.headingStyle}>{this.state.token === 'SENT' ? 'TOKENS TO LOCK' : 'TOTAL DATA REQUIRED'} </p>
+                                <div style={createAccountStyle.tooltipDiv}>
+                                    <p style={createAccountStyle.headingStyle}>{this.state.token === 'SENT' ? lang[language].TokensToLock : lang[language].TotalDataRequired} </p>
+                                    <span style={createAccountStyle.questionMarkDiv}>
+                                        <CustomTooltips title={this.state.token === 'SENT' ? lang[language].TMTokensToLockHelp : lang[language].TMTotalDataRequiredHelp} />
+                                    </span>
+                                </div>
                                 <div div style={{ display: 'inline-flex' }}>
                                     <div style={{ width: '435px', }}>
                                         <CustomTextField type={'number'} placeholder={''}
@@ -286,20 +297,25 @@ class TMTransfer extends Component {
                                 </div>
                                 <div style={createAccountStyle.userNote}>
                                     {this.state.token === 'SENT' ?
-                                        <span style={createAccountStyle.equalAmountStyle}>In exchange for <span style={createAccountStyle.datavalue}>
-                                            {this.state.totalData} GB </span> of data by user from
-                                        <span style={createAccountStyle.datavalue}>{this.state.country}</span></span>
+                                        <span style={createAccountStyle.equalAmountStyle}>
+                                            {lang[language].InExchange} <span style={createAccountStyle.datavalue}> {this.state.totalData} GB </span>
+                                            {lang[language].DataBy} <span style={createAccountStyle.datavalue}>{this.state.country}</span></span>
                                         :
-                                        <span style={createAccountStyle.equalAmountStyle}>Get <span style={createAccountStyle.datavalue}>
-                                            {this.state.totalData} GB </span> data in exchange for locking
-                                        <span style={createAccountStyle.datavalue}> {this.state.amountToLock} SENT</span></span>
+                                        <span style={createAccountStyle.equalAmountStyle}>{lang[language].GetData}
+                                            <span style={createAccountStyle.datavalue}> {this.state.totalData} GB </span> {lang[language].DataInExchange}
+                                            <span style={createAccountStyle.datavalue}> {this.state.amountToLock} SENT</span></span>
                                     }
                                 </div>
                             </div>
 
                             :
                             <div>
-                                <p style={createAccountStyle.headingStyle}>{lang[language].AmountTo}</p>
+                                <div style={createAccountStyle.tooltipDiv}>
+                                    <p style={createAccountStyle.headingStyle}>{lang[language].AmountTo}</p>
+                                    <span style={createAccountStyle.questionMarkDiv}>
+                                        <CustomTooltips title={lang[language].TMAmountToHelp} />
+                                    </span>
+                                </div>
                                 <CustomTextField type={'number'} placeholder={''} disabled={this.state.isTextDisabled}
                                     value={this.state.amount} onChange={(e) => {
                                         if (e.target.value.match("^[0-9]([0-9]+)?([0-9]*\.[0-9]+)?$"))
@@ -310,7 +326,12 @@ class TMTransfer extends Component {
                                 />
                             </div>
                     }
-                    <p style={createAccountStyle.headingStyle}>{lang[language].Password}</p>
+                    <div style={createAccountStyle.tooltipDiv}>
+                        <p style={createAccountStyle.headingStyle}>{lang[language].Password}</p>
+                        <span style={createAccountStyle.questionMarkDiv}>
+                            <CustomTooltips title={lang[language].TMPasswordHelp} />
+                        </span>
+                    </div>
                     <CustomTextField type={'password'} placeholder={''} disabled={false}
                         value={this.state.keyPassword} onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
                     />

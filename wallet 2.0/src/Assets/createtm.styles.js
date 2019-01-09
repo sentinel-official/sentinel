@@ -81,7 +81,14 @@ const createAccountStyle = {
     },
     datavalue:{
         fontWeight: 'bold',
-    }
+    },
+    tooltipDiv:{
+        display:'flex',
+    },
+    questionMarkDiv: {
+        marginBottom: '-1.7px',
+        marginTop:20,
+      },
 }
 
 module.exports = {

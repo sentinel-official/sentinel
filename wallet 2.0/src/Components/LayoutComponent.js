@@ -14,6 +14,7 @@ import VpnList from './VpnList';
 import TMSessions from './TMSessions';
 import TMTransactionsHistory from './TMTransactionsHistory';
 import TMTransfer from './TMTransfer';
+import TMRecoverWallet from './TMRecoverWallet';
 
 class LayoutComponent extends Component {
     constructor(props) {
@@ -61,6 +62,10 @@ class LayoutComponent extends Component {
             case 'tmint':
                 {
                     return <TenderMint />
+                }
+            case 'recover':
+                {
+                    return <TMRecoverWallet />
                 }
             default:
                 {

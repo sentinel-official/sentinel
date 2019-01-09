@@ -120,7 +120,7 @@ class Header extends Component {
             this.props.setTendermint(false);
             this.props.getETHBalance(this.props.walletAddress);
             this.props.getSentBalance(this.props.walletAddress);
-            this.props.setCurrentTab(currentTab);
+            this.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
             this.setState({
                 walletType: 'ERC20'
             })

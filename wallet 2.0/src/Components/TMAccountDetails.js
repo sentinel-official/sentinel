@@ -12,8 +12,20 @@ import lang from '../Constants/language';
 
 const Customstyles = theme => ({
     button: {
-
-    }
+        margin: theme.spacing.unit,
+    },
+    enableButton: {
+        "&:hover": {
+          backgroundColor: '#2f3245'
+        },
+        backgroundColor: '#2f3245',
+        // height: '45px',
+      },
+      disableButton: {
+        backgroundColor: '#BDBDBD',
+        // height: '45px',
+        cursor: 'not-allowed',
+      }
 });
 
 class TMAccountDetails extends Component {
@@ -41,7 +53,9 @@ class TMAccountDetails extends Component {
                     variant="outlined"
                     color="primary"
                     onClick={() => { this.gotoDashboard() }}
-                    className={classes.button} style={{ outline: 'none' }}>
+                    className={ classes.enableButton }
+                    style={createAccountStyle.gotoTMWalletbuttonStyle}>
+                    
                     {lang[language].GoToSTWallet}
                 </Button>
             </div>

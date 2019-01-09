@@ -87,7 +87,7 @@ module.exports = {
             'value': 'history',
             'icon': 'historyIcon'
         },
-      
+
 
     ],
     testMenuItems: [
@@ -119,10 +119,10 @@ module.exports = {
             'value': 'history',
             'icon': 'historyIcon'
         },
-      
-      
+
+
     ],
-    notInTestMenuItems : [
+    notInTestMenuItems: [
 
         {
             'name': 'Send',
@@ -139,21 +139,31 @@ module.exports = {
             'value': 'history',
             'icon': 'historyIcon'
         },
-      
-       
+
+
     ],
 
 
     TMdisabledmenuItems: [
-
-      
         {
-            'name': 'Account', 
+            'name': 'Account',
+            'value': 'receive',
+            'icon': 'receiveIcon'
+        }
+
+    ],
+
+    TMrecoverItems: [
+        {
+            'name': 'Account',
             'value': 'receive',
             'icon': 'receiveIcon'
         },
-     
-
+        {
+            'name': 'Recover',
+            'value': 'recover',
+            'icon': 'receiveIcon'
+        }
     ],
     disabledItemsTest: [
         'swixer',

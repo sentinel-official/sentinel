@@ -1,8 +1,33 @@
 const createAccountStyle = {
     headingStyle: {
         marginLeft: 20,
-        marginTop: 15,
-        marginBottom: 5
+        marginTop: 20,
+        marginBottom: -7,
+        fontSize: '16px',
+        color: '#434343',
+        fontFamily: 'Montserrat,Medium',
+        textAlign: 'left',
+        fontWeight: 'bold',
+    },
+    amountHeadingStyle: {
+        marginLeft: 20,
+        marginTop: 20,
+        marginBottom: 5,
+        fontSize: '16px',
+        color: '#434343',
+        fontFamily: 'Montserrat,Medium',
+        textAlign: 'left',
+        fontWeight: 'bold',
+    },
+    equalAmountStyle:{
+        marginLeft: 20,
+        marginTop: 20,
+        marginBottom: -7,
+        fontSize: '12px',
+        color: '#434343',
+        fontFamily: 'Montserrat,Medium',
+        textAlign: 'left',
+        fontWeight: '500',
     },
     formStyle: {
         display: 'flex',
@@ -12,7 +37,7 @@ const createAccountStyle = {
         flexDirection: 'column'
     },
     secondDivStyle: {
-        width: '50%'
+        width: '60%' // intially 50%
     },
     detailsHeading: {
         fontWeight: 'bold',
@@ -29,15 +54,33 @@ const createAccountStyle = {
 
     },
     buttonStyle: {
+        color: '#fff', 
+        fontWeight: '600', 
+        fontSize: '16px', 
+        fontFamily: 'Montserrat,Medium',
         margin: 20,
-        outline: 'none'
+        outline: 'none',
+        border: 'none',
+        padding: '0px 30px',
+    },
+    gotoTMWalletbuttonStyle: {
+        color: '#fff', 
+        fontWeight: '600', 
+        fontSize: '16px', 
+        fontFamily: 'Montserrat,Medium',
+        outline: 'none',
+        border: 'none',
     },
     createStyle: {
         fontSize: 22,
         fontWeight: 'bold',
+        fontFamily: 'Montserrat,Medium',
     },
     userNote: {
         paddingTop: 5
+    },
+    datavalue:{
+        fontWeight: 'bold',
     }
 }
 

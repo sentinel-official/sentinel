@@ -31,7 +31,8 @@ const styles = theme => ({
     fontFamily: 'Montserrat,Medium',
     fontWeight: 600,
     fontSize: '18px',
-    alignItems: 'center'
+    alignItems: 'center',
+
   },
   pivxList: {
     backgroundColor: '#fff',

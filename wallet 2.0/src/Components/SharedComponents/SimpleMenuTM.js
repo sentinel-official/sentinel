@@ -33,7 +33,10 @@ const styles = theme => ({
     fontFamily: 'Montserrat,Medium',
     fontWeight: 600,
     fontSize: '18px',
-    alignItems: 'center'
+    alignItems: 'center',
+    height : '39px',
+
+
   },
   pivxList: {
     backgroundColor: '#fff',
@@ -71,13 +74,13 @@ class SimpleListMenu extends React.Component {
 
   componentWillMount() {
     if (this.props.isSend) {
-      this.props.token('ETH');
-      this.setState({ token: 'ETH' });
-      if (this.props.isVPN) {
-        console.log("Props...", this.props)
-        this.props.token('SENT');
-        this.setState({ token: 'SENT' })
-      }
+      this.props.token('SENT');
+      this.setState({ token: 'SENT' });
+      // if (this.props.isVPN) {
+      //   console.log("Props...", this.props)
+      //   this.props.token('SENT');
+      //   this.setState({ token: 'SENT' })
+      // }
     }
   }
 
@@ -117,10 +120,10 @@ class SimpleListMenu extends React.Component {
           >
 
             <MenuItem value={'SENT'}>
-              /SENT
+              SENT
               </MenuItem>
             <MenuItem value={'ETH'} >
-              /GB
+              GB
               </MenuItem>
           </Select>
         </div>

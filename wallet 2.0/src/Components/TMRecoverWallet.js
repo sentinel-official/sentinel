@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { setTMAccount } from '../Actions/tendermint.action';
-import { createTMAccount } from '../Actions/createTM.action';
+import { setCurrentTab } from '../Actions/sidebar.action';
+import { createTMAccount, recoverTMAccount } from '../Actions/createTM.action';
 import { setTMConfig } from '../Utils/UserConfig';
 import CustomTextField from './customTextfield';
+import { accountStyles } from '../Assets/tmaccount.styles';
 import { Button, Snackbar } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
@@ -14,9 +16,12 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { createAccountStyle } from '../Assets/createtm.styles';
 import '../Assets/createtm.css';
+import lang from '../Constants/language';
 
 
-let lang = require('./../Constants/language');
+const electron = window.require('electron');
+const remote = electron.remote;
+
 
 const Customstyles = theme => ({
     button: {
@@ -35,15 +40,16 @@ const Customstyles = theme => ({
         cursor: 'not-allowed',
     }
 });
-class CreateTMAccount extends Component {
+
+class TMRecoverWallet extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            keyName: '',
-            keyPassword: '',
-            openSnack: false,
-            snackMessage: '',
-            showPassword: false
+            username: '',
+            password: '',
+            seedWords: '',
+            showPassword: false,
+
         }
     }
 
@@ -52,7 +58,7 @@ class CreateTMAccount extends Component {
     }
 
     createAccount = () => {
-        this.props.createTMAccount(this.state.keyName, this.state.keyPassword, null).then(res => {
+        this.props.createTMAccount(this.state.username, this.state.password, this.state.seedWords).then(res => {
             if (res.error) {
                 let regError = (res.error.data).replace(/\s/g, "");
                 this.setState({
@@ -62,7 +68,7 @@ class CreateTMAccount extends Component {
                 })
             }
             else {
-                setTMConfig(this.state.keyName);
+                setTMConfig(this.state.username);
                 let data = {
                     name: res.payload.name,
                     type: res.payload.type,
@@ -70,72 +76,81 @@ class CreateTMAccount extends Component {
                     pub_key: res.payload.pub_key
                 }
                 this.props.setTMAccount(data);
+                this.props.setCurrentTab('tmint');
             }
         });
     }
 
-    handleClose = (event, reason) => {
-        this.setState({ openSnack: false });
-    };
     handleShow = () => {
         this.setState({ showPassword: !this.state.showPassword })
     }
 
-    render() {
-        const { classes } = this.props;
-        let language = this.props.lang;
-        let isDisabled = (this.state.keyName === '' || this.state.keyPassword === '') ? true : false
-        return (
-            <div style={createAccountStyle.formStyle}>
-                <div> <h2 style={createAccountStyle.createStyle}><center>  {lang[language].CreateWalletSST}</center></h2></div>
-                <div style={createAccountStyle.secondDivStyle}>
-                    <p style={createAccountStyle.headingStyle}>{lang[language].AccountName}</p>
-                    <CustomTextField type={'text'} placeholder={''} disabled={false} value={this.state.keyName}
-                        onChange={(e) => { this.setState({ keyName: e.target.value }) }}
-                    />
-                    <p style={createAccountStyle.headingStyle}>{lang[language].AccountPwd}</p>
-                    <CustomTextField type={this.state.showPassword ? 'text' : 'password'} placeholder={''} disabled={false} value={this.state.keyPassword}
-                        onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
-                    />
 
+    render() {
+        let { classes, language } = this.props;
+        let isDisabled = (this.state.username === '' || this.state.password === '') ? true : false
+        return (
+            <div style={accountStyles.sendFormStyle}>
+                <div style={createAccountStyle.secondDivStyle}
+                    onKeyPress={(ev) => { if (ev.key === 'Enter') this.sendTransaction() }}>
+
+                    <h1 className="loginHeading">{lang[language].RecoverTMWalletHeading}</h1>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].NewAccountName}</p>
+                    <CustomTextField type={'text'} placeholder={''} disabled={false}
+                        value={this.state.username} onChange={(e) => { this.setState({ username: e.target.value }) }}
+                    />
+                    <p style={createAccountStyle.headingStyle}>{lang[language].NewAccountPwd}</p>
+                    <CustomTextField
+                        type={this.state.showPassword ? 'text' : 'password'}
+                        placeholder={''} disabled={false}
+                        value={this.state.password} onChange={(e) => { this.setState({ password: e.target.value }) }}
+                    />
                     <IconButton
                         aria-label="Toggle password visibility"
                         className="showPassword"
-                        onMouseDown={() => this.handleShow()}
+                        onClick={() => this.handleShow()}
                     >
                         {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
+                    <p style={createAccountStyle.headingStyle}>{lang[language].EnterYourTMSeed}</p>
+                    <CustomTextField
+                        type={'text'}
+                        placeholder={''} disabled={false}
+                        value={this.state.seedWords} onChange={(e) => { this.setState({ seedWords: e.target.value }) }}
+                    />
 
                     <Button
                         variant="outlined"
-                        color="primary"
                         disabled={isDisabled}
                         onClick={() => { this.createAccount() }}
+                        // className={classes.button} 
                         className={!isDisabled ? classes.enableButton : classes.disableButton}
                         style={createAccountStyle.buttonStyle}>
-
-                        {lang[language].CreateAccount}
+                        {lang[language].RecoverTMWallet}
                     </Button>
+
                 </div>
+
                 <Snackbar
                     open={this.state.openSnack}
                     autoHideDuration={4000}
                     onClose={this.handleClose}
                     message={this.state.snackMessage}
                 />
+
             </div>
         )
     }
 }
 
-CreateTMAccount.propTypes = {
+TMRecoverWallet.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 
 function mapStateToProps(state) {
     return {
-        lang: state.setLanguage,
+        language: state.setLanguage,
         isTest: state.setTestNet
     }
 }
@@ -143,8 +158,9 @@ function mapStateToProps(state) {
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         createTMAccount,
-        setTMAccount
+        setTMAccount,
+        setCurrentTab
     }, dispatch)
 }
 
-export default compose(withStyles(Customstyles), connect(mapStateToProps, mapDispatchToActions))(CreateTMAccount);
+export default compose(withStyles(Customstyles), connect(mapStateToProps, mapDispatchToActions))(TMRecoverWallet);

@@ -108,8 +108,8 @@ class TMSessions extends Component {
     render() {
         let { sessions, language } = this.props;
         let sessionOutput;
-        let filteredSes = sessions.filter(obj => obj.endedOn)
-        let sortedSessions = _.sortBy(filteredSes, o => o.endedOn).reverse();
+        let filteredSes = sessions.filter(obj => obj.startedOn)
+        let sortedSessions = _.sortBy(filteredSes, o => o.startedOn).reverse();
         const { classes } = this.props;
         let paymentCount = 0;
         let durationCount = 0;
@@ -157,7 +157,7 @@ class TMSessions extends Component {
 
                             <div>
                                 <label style={historyLabel}>{`${lang[language].Duration}:`}&nbsp;
-                                <span style={historyValue}>{sessionDuration}{lang[language].Secs}</span></label>
+                                <span style={historyValue}>{sessionData.endedOn ? sessionDuration : 0}{lang[language].Secs}</span></label>
 
                             </div>
                             <div>

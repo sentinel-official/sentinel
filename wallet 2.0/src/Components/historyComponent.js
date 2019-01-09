@@ -4,7 +4,11 @@ import { historyStyles } from '../Assets/txhistory.styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import lang from '../Constants/language';
-import { Card } from '@material-ui/core';
+import { Card,Tooltip } from '@material-ui/core';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import CopyIcon from '@material-ui/icons/FileCopyOutlined';
+import { receiveStyles } from './../Assets/receive.styles';
+
 import '../Assets/commonStyles.css';
 
 class History extends React.Component {
@@ -26,14 +30,26 @@ class History extends React.Component {
                     <span style={status === 'Success' ? historyStyles.inStyle : historyStyles.outStyle}>{lang[language][status]}</span></label>
                 </div>
                 <div>
+
                     <label style={historyLabel} >{from !== ownWallet ? `${lang[language].From}:` : `${lang[language].To}:`}&nbsp;
                             <span style={historyStyles.recepientStyle}>
                             {from !== ownWallet ? from : to}
                         </span></label>
+                        <Tooltip title={lang[language].Copy}>
+                                <CopyToClipboard text={from !== ownWallet ? from : to}
+                                    onCopy={() => this.setState({
+                                        snackMessage: lang[language].Copied,
+                                        openSnack: true
+                                    })}>
+
+                                    <CopyIcon style={receiveStyles.clipBoard} />
+                                </CopyToClipboard>
+                     </Tooltip>
+        
                 </div>
 
                 <div>
-                    <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{amount} {unit}</span></label>
+                    <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{amount} {unit} </span></label>
                     <label style={historyLabel}>{`${lang[language].GasPrice}:`}&nbsp;<span style={historyValue}>{gas}</span></label>
 
                 </div>

@@ -4,7 +4,7 @@ import { historyStyles } from '../Assets/txhistory.styles';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import lang from '../Constants/language';
-import { Card,Tooltip } from '@material-ui/core';
+import { Card, Tooltip, Snackbar } from '@material-ui/core';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { receiveStyles } from './../Assets/receive.styles';
@@ -14,11 +14,20 @@ import '../Assets/commonStyles.css';
 class History extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            openSnack: false,
+            snackMessage: ''
+        }
     }
+
+    handleClose = (event, reason) => {
+        this.setState({ openSnack: false });
+    };
+    
     render() {
-        let { date, to, from, gas, amount, status, tx, ownWallet, data, unit,gasUnit, language } = this.props;
+        let { date, to, from, gas, amount, status, tx, ownWallet, data, unit, gasUnit, language } = this.props;
         return (
-            <Card className = "cardStyle">
+            <Card className="cardStyle">
                 <div>
                     <label style={from !== ownWallet ? historyStyles.inStyle : historyStyles.outStyle}>{from !== ownWallet ?
                         lang[language].In : lang[language].Out}&nbsp;
@@ -35,17 +44,17 @@ class History extends React.Component {
                             <span style={historyStyles.recepientStyle}>
                             {from !== ownWallet ? from : to}
                         </span></label>
-                        <Tooltip title={lang[language].Copy}>
-                                <CopyToClipboard text={from !== ownWallet ? from : to}
-                                    onCopy={() => this.setState({
-                                        snackMessage: lang[language].Copied,
-                                        openSnack: true
-                                    })}>
+                    <Tooltip title={lang[language].Copy}>
+                        <CopyToClipboard text={from !== ownWallet ? from : to}
+                            onCopy={() => this.setState({
+                                snackMessage: lang[language].Copied,
+                                openSnack: true
+                            })}>
 
-                                    <CopyIcon style={receiveStyles.clipBoard} />
-                                </CopyToClipboard>
-                     </Tooltip>
-        
+                            <CopyIcon style={receiveStyles.clipBoard} />
+                        </CopyToClipboard>
+                    </Tooltip>
+
                 </div>
 
                 <div>
@@ -56,6 +65,12 @@ class History extends React.Component {
                 <div>
                     <label style={historyLabel}>{`${lang[language].TxID}:`}&nbsp;<span style={historyValue}>{tx}</span></label>
                 </div>
+                <Snackbar
+                    open={this.state.openSnack}
+                    autoHideDuration={4000}
+                    onClose={this.handleClose}
+                    message={this.state.snackMessage}
+                />
             </Card>
         )
     }

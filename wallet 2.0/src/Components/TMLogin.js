@@ -72,12 +72,14 @@ class TMLogin extends Component {
                     <h1 className="loginHeading">{lang[language].LoginToTM}</h1>
                     <p style={createAccountStyle.headingStyle}>{lang[language].AccountName}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false}
+                    multi={false}
                         value={this.state.username} onChange={(e) => { this.setState({ username: e.target.value }) }}
                     />
                     <p style={createAccountStyle.headingStyle}>{lang[language].AccountPwd}</p>
                     <CustomTextField
                         type={this.state.showPassword ? 'text' : 'password'}
                         placeholder={''} disabled={false}
+                        multi={false}
                         value={this.state.password} onChange={(e) => { this.setState({ password: e.target.value }) }}
                     />
                     <IconButton

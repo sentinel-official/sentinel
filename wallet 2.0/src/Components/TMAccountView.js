@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Card, CardContent, CardHeader, Tooltip, Snackbar, IconButton, Button } from '@material-ui/core';
+import {
+    Card, CardContent, CardHeader, Tooltip, Snackbar, IconButton, Button, TextField, Dialog, DialogActions, DialogContent,
+    DialogContentText, DialogTitle
+} from '@material-ui/core';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { accountStyles } from '../Assets/tmaccount.styles';
 import { withStyles } from '@material-ui/core/styles';
@@ -11,14 +14,34 @@ import { compose } from 'recompose';
 import PropTypes from 'prop-types';
 import { QRCode } from 'react-qr-svg';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { getTMBalance, getFreeTokens } from '../Actions/tendermint.action';
+import { getTMBalance, getFreeTokens, getManualRefund } from '../Actions/tendermint.action';
 import { receiveStyles } from './../Assets/receive.styles';
+import { createAccountStyle } from '../Assets/createtm.styles';
 
 let lang = require('./../Constants/language');
 
-const customStyles = theme => ({
-    title: accountStyles.titleStyle
-})
+const Customstyles = theme => ({
+    button: {
+        margin: theme.spacing.unit,
+    },
+    enableButton: {
+        "&:hover": {
+            backgroundColor: '#2f3245'
+        },
+        backgroundColor: '#2f3245',
+        outline: 'none'
+        // height: '45px',
+    },
+    disableButton: {
+        backgroundColor: '#BDBDBD',
+        // height: '45px',
+        cursor: 'not-allowed',
+        outline: 'none'
+    },
+    submitButton:{
+        outline:'none'
+    }
+});
 
 class TMAccountView extends Component {
     constructor(props) {
@@ -26,7 +49,10 @@ class TMAccountView extends Component {
         this.state = {
             openSnack: false,
             snackMessage: '',
-            isFreeLoading: false
+            isFreeLoading: false,
+            open: false,
+            sessionId: '',
+            password: ''
         }
     }
 
@@ -70,6 +96,48 @@ class TMAccountView extends Component {
                 }
             })
     }
+
+    getRefund = () => {
+        let data = {
+            session_id: this.state.sessionId,
+            name: this.props.account.name,
+            password: this.state.password,
+            gas: 200000
+        }
+        this.props.getManualRefund(data).then((res) => {
+            console.log("Res..", res);
+            if (res.error) {
+                if (res.error.data === 'Ciphertext decryption failed') {
+                    this.setState({
+                        openSnack: true, snackMessage: lang[this.props.language].IncorrectPwd,
+                        password: ''
+                    })
+                } else if (res.error.data.includes('24 hours')) {
+                    this.setState({
+                        openSnack: true, snackMessage: lang[this.props.language].TryAfter24hours,
+                        password: ''
+                    })
+                } else {
+                    this.setState({
+                        openSnack: true, snackMessage: lang[this.props.language].InvalidSession,
+                        password: ''
+                    })
+                }
+            } else {
+                this.setState({
+                    openSnack: true, snackMessage: lang[this.props.language].RefundSuccess,
+                })
+            }
+        })
+    }
+
+    handleClickOpen = () => {
+        this.setState({ open: true });
+    };
+
+    handleDialogClose = () => {
+        this.setState({ open: false });
+    };
 
     render() {
         let account_key = this.props.account;
@@ -153,6 +221,64 @@ class TMAccountView extends Component {
                         message={this.state.snackMessage}
                     />
                 </div >
+                {!vpnStatus ?
+                    <div style={receiveStyles.refundRequestDiv}>
+
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={this.handleClickOpen}
+                            className={classes.enableButton}
+                            style={createAccountStyle.buttonStyle}
+                        >
+
+                            {lang[language].ManualRefundReq}
+                        </Button>
+                        <Dialog
+                            open={this.state.open}
+                            onClose={this.handleDialogClose}
+                            aria-labelledby="form-dialog-title"
+                        >
+                            <DialogTitle id="form-dialog-title">  {lang[language].ManualRefundReq}
+                            </DialogTitle>
+                            <DialogContent>
+
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="name"
+                                    label={lang[language].SessionId}
+                                    type="text"
+                                    value={this.state.sessionId}
+                                    onChange={(e) => { this.setState({ sessionId: e.target.value }) }}
+                                    fullWidth
+                                />
+                                <TextField
+                                    margin="dense"
+                                    id="name"
+                                    label={lang[language].AccountPwd}
+                                    value={this.state.password}
+                                    onChange={(e) => { this.setState({ password: e.target.value }) }}
+                                    type="password"
+                                    fullWidth
+                                />
+
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={this.handleDialogClose} color="primary">
+                                    Cancel
+            </Button>
+                                <Button
+                                    disabled={!this.state.sessionId || !this.state.password}
+                                    onClick={this.getRefund}
+                                    className={classes.submitButton}
+                                    color="primary">
+                                    Submit
+            </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    : null}
             </div>
         )
     }
@@ -177,8 +303,9 @@ function mapStateToProps(state) {
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         getTMBalance,
-        getFreeTokens
+        getFreeTokens,
+        getManualRefund
     }, dispatch)
 }
 
-export default compose(withStyles(customStyles), connect(mapStateToProps, mapDispatchToActions))(TMAccountView);
+export default compose(withStyles(Customstyles), connect(mapStateToProps, mapDispatchToActions))(TMAccountView);

@@ -19,7 +19,7 @@ const createAccountStyle = {
         textAlign: 'left',
         fontWeight: 'bold',
     },
-    equalAmountStyle:{
+    equalAmountStyle: {
         marginLeft: 20,
         marginTop: 20,
         marginBottom: -7,
@@ -50,13 +50,13 @@ const createAccountStyle = {
         fontSize: 16,
         wordBreak: 'break-all',
         wordSpacing: 10,
-        marginBottom: 30,
+        // marginBottom: 30,
 
     },
     buttonStyle: {
-        color: '#fff', 
-        fontWeight: '600', 
-        fontSize: '16px', 
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: '16px',
         fontFamily: 'Montserrat,Medium',
         margin: 20,
         outline: 'none',
@@ -64,9 +64,9 @@ const createAccountStyle = {
         padding: '0px 30px',
     },
     gotoTMWalletbuttonStyle: {
-        color: '#fff', 
-        fontWeight: '600', 
-        fontSize: '16px', 
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: '16px',
         fontFamily: 'Montserrat,Medium',
         outline: 'none',
         border: 'none',
@@ -79,16 +79,26 @@ const createAccountStyle = {
     userNote: {
         paddingTop: 5
     },
-    datavalue:{
+    datavalue: {
         fontWeight: 'bold',
     },
-    tooltipDiv:{
-        display:'flex',
+    tooltipDiv: {
+        display: 'flex',
     },
     questionMarkDiv: {
         marginBottom: '-1.7px',
-        marginTop:20,
-      },
+        marginTop: 20,
+    },
+    checkboxDiv: {
+        display: 'flex',
+        marginLeft: -14
+    },
+    copyDiv: {
+        display: 'flex',
+    },
+    seedDiv: {
+        marginBottom: 20
+    }
 }
 
 module.exports = {

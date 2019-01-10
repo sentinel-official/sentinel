@@ -208,7 +208,9 @@ class VpnList extends Component {
                                 </FormControl>
                                 :
                                 <CustomTextfield type={'text'} placeholder={lang[language].SearchdVPNnode} disabled={false}
-                                    value={this.state.dVpnQuery} onChange={(e) => {
+                                    value={this.state.dVpnQuery}
+                                    multi={false}
+                                     onChange={(e) => {
                                         this.setState({ dVpnQuery: e.target.value })
                                     }} />
                         }

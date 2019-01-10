@@ -57,7 +57,7 @@ const theme = createMuiTheme({
     },
 });
 
-const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value }) => {
+const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value, multi }) => {
     return (
         <div className={classes.container}>
             <TextField
@@ -67,6 +67,7 @@ const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value
                 placeholder={placeholder}
                 id="bootstrap-input"
                 value={value}
+                multiline={multi?multi:false}
                 inputProps={type === 'number' ? {
                     min: 0
                 } : {}}

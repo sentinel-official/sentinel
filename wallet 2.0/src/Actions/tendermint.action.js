@@ -88,6 +88,28 @@ export function setTMAccount(data) {
     }
 }
 
+export async function getManualRefund(data) {
+    try {
+        let response = await axios.post(TM_URL + '/refund', data, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        })
+        return {
+            type: types.GET_MANUAL_REFUND,
+            payload: response.data,
+            error: null
+        }
+    } catch (err) {
+        return {
+            type: types.GET_MANUAL_REFUND,
+            payload: null,
+            error: err.response || 'Something went wrong'
+        }
+    }
+}
+
 export async function getFreeTokens(account_addr) {
     try {
         let response = await axios({

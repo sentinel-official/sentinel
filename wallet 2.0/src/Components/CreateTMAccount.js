@@ -90,12 +90,15 @@ class CreateTMAccount extends Component {
                 <div> <h2 style={createAccountStyle.createStyle}><center>  {lang[language].CreateWalletSST}</center></h2></div>
                 <div style={createAccountStyle.secondDivStyle}>
                     <p style={createAccountStyle.headingStyle}>{lang[language].AccountName}</p>
-                    <CustomTextField type={'text'} placeholder={''} disabled={false} value={this.state.keyName}
+                    <CustomTextField type={'text'} placeholder={''} disabled={false}
+                     multi={false}
+                      value={this.state.keyName}
                         onChange={(e) => { this.setState({ keyName: e.target.value }) }}
                     />
                     <p style={createAccountStyle.headingStyle}>{lang[language].AccountPwd}</p>
                     <CustomTextField type={this.state.showPassword ? 'text' : 'password'} placeholder={''} disabled={false} value={this.state.keyPassword}
-                        onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
+                        multi={false}
+                       onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
                     />
 
                     <IconButton

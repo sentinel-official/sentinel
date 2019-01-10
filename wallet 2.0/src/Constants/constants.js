@@ -157,12 +157,12 @@ module.exports = {
         {
             'name': 'Account',
             'value': 'receive',
-            'icon': 'receiveIcon'
+            'icon': 'createIcon'
         },
         {
             'name': 'Recover',
             'value': 'recover',
-            'icon': 'receiveIcon'
+            'icon': 'recoverIcon'
         }
     ],
     disabledItemsTest: [

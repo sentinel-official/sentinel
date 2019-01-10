@@ -48,4 +48,5 @@ export const SET_CURRENT_VPN = 'SET_CURRENT_VPN';
 export const GET_TOKENS = 'GET_TOKENS';
 export const GET_SESSION_HISTORY = 'GET_SESSION_HISTORY';
 export const GET_TX_DATA = 'GET_TX_DATA';
-export const WALLET_VALUE = 'WALLET_VALUE'
+export const WALLET_VALUE = 'WALLET_VALUE';
+export const GET_MANUAL_REFUND = 'GET_MANUAL_REFUND';

@@ -2,6 +2,7 @@
 .showPassword{
     float: right;
     margin-top: -43px !important;
+    outline:none
 };
 .showPassword:focus{
     outline: none !important;

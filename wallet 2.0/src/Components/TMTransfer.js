@@ -59,24 +59,30 @@ class TMTransfer extends Component {
             amountToLock: 100,  // Amount of Tokens to be locked in a session
             country: '',     // node country
             totalData: '1',   // total data that user get for amount of SENT he spends
+            gotVPN: false
         }
     }
 
     componentDidMount = () => {
-        if (this.props.vpnPayment.isPayment) {
+        if (this.props.vpnPayment.isPayment && !this.state.gotVPN) {
             this.setState({
                 toAddress: this.props.vpnPayment.data.vpn_addr,
                 nodePrice: this.props.vpnPayment.data.price_per_GB,
-                amount: this.props.vpnPayment.data.price_per_GB, isTextDisabled: true,
-                amountToLock: this.props.vpnPayment.data.price_per_GB,
-                totalData: 1,
-                equalAmountOfType: 'GB',
                 country: this.props.vpnPayment.data.country,
-                token: 'SENT'
             })
+            if (!this.state.gotVPN) {
+                this.setState({
+                    amount: this.props.vpnPayment.data.price_per_GB, isTextDisabled: true,
+                    amountToLock: this.props.vpnPayment.data.price_per_GB,
+                    totalData: 1,
+                    equalAmountOfType: 'GB',
+                    token: 'SENT',
+                    gotVPN: true
+                })
+            }
         }
         else {
-            this.setState({ isTextDisabled: false })
+            this.setState({ isTextDisabled: false, gotVPN: false })
         }
     }
 
@@ -84,17 +90,22 @@ class TMTransfer extends Component {
         if (nextProps.vpnPayment.isPayment) {
             this.setState({
                 toAddress: nextProps.vpnPayment.data.vpn_addr,
-                nodePrice: this.props.vpnPayment.data.price_per_GB,
-                amount: this.props.vpnPayment.data.price_per_GB, isTextDisabled: true,
-                amountToLock: this.props.vpnPayment.data.price_per_GB,
-                totalData: 1,
-                country: this.props.vpnPayment.data.country,
-                equalAmountOfType: 'GB',
-                token: 'SENT'
-            })
+                nodePrice: nextProps.vpnPayment.data.price_per_GB,
+                country: nextProps.vpnPayment.data.country,
+            });
+            if (!this.state.gotVPN) {
+                this.setState({
+                    amount: nextProps.vpnPayment.data.price_per_GB, isTextDisabled: true,
+                    amountToLock: nextProps.vpnPayment.data.price_per_GB,
+                    totalData: 1,
+                    equalAmountOfType: 'GB',
+                    token: 'SENT',
+                    gotVPN: true
+                })
+            }
         }
         else {
-            this.setState({ isTextDisabled: false })
+            this.setState({ isTextDisabled: false, gotVPN: false })
         }
     }
 
@@ -147,7 +158,10 @@ class TMTransfer extends Component {
                             this.props.getSessionInfo(response.payload.hash).then(sesRes => {
                                 if (sesRes.error) {
                                     console.log("Ses..Error", sesRes.error);
-                                    this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].WentWrong });
+                                    this.setState({
+                                        sending: false, openSnack: true,
+                                        snackMessage: lang[this.props.language].WentWrong
+                                    });
                                 }
                                 else {
                                     let data = sesRes.payload;
@@ -165,7 +179,8 @@ class TMTransfer extends Component {
                                             this.props.setVpnStatus(true);
                                             this.setState({
                                                 sending: false, toAddress: '', keyPassword: '', amount: '',
-                                                openSnack: true, snackMessage: lang[this.props.language].VpnConnected
+                                                openSnack: true, snackMessage: lang[this.props.language].VpnConnected,
+                                                gotVPN: false
                                             });
                                             this.props.setCurrentTab('receive');
                                         }
@@ -223,7 +238,6 @@ class TMTransfer extends Component {
     };
 
     setTotalValue = (e) => {
-        console.log("setting total value", e.target.value);
         this.setState({ amount: e.target.value })
         let calculate;
         let inputValue = e.target.value;
@@ -268,7 +282,9 @@ class TMTransfer extends Component {
                             <CustomTooltips title={lang[language].TMAddressToSendHelp} />
                         </span>
                     </div>
-                    <CustomTextField type={'text'} placeholder={''} disabled={this.state.isTextDisabled}
+                    <CustomTextField type={'text'} placeholder={`${lang[language].Example}: cosmosaccaddr1ycyynt2hht7gmcqudd2jf08d22k5ekllsqgs3u`}
+                        disabled={this.state.isTextDisabled}
+                        multi={false}
                         value={this.state.toAddress} onChange={(e) => { this.setState({ toAddress: e.target.value }) }}
                     />
                     {
@@ -285,6 +301,7 @@ class TMTransfer extends Component {
                                         <CustomTextField type={'number'} placeholder={''}
                                             //  disabled={this.state.isTextDisabled}
                                             value={this.state.amount}
+                                            multi={false}
                                             onChange={(e) => {
                                                 this.setTotalValue(e)
                                             }}
@@ -301,8 +318,11 @@ class TMTransfer extends Component {
                                             {lang[language].InExchange} <span style={createAccountStyle.datavalue}> {this.state.totalData} GB </span>
                                             {lang[language].DataBy} <span style={createAccountStyle.datavalue}>{this.state.country}</span></span>
                                         :
-                                        <span style={createAccountStyle.equalAmountStyle}>{lang[language].GetData}
-                                            <span style={createAccountStyle.datavalue}> {this.state.totalData} GB </span> {lang[language].DataInExchange}
+                                        <span style={createAccountStyle.equalAmountStyle}>
+                                            {/* {lang[language].GetData}
+                                            <span style={createAccountStyle.datavalue}> {this.state.totalData} GB </span>  */}
+
+                                            {lang[language].DataInExchange}
                                             <span style={createAccountStyle.datavalue}> {this.state.amountToLock} SENT</span></span>
                                     }
                                 </div>
@@ -317,7 +337,9 @@ class TMTransfer extends Component {
                                     </span>
                                 </div>
                                 <CustomTextField type={'number'} placeholder={''} disabled={this.state.isTextDisabled}
-                                    value={this.state.amount} onChange={(e) => {
+                                    value={this.state.amount}
+                                    multi={false}
+                                    onChange={(e) => {
                                         if (e.target.value.match("^[0-9]([0-9]+)?([0-9]*\.[0-9]+)?$"))
                                             this.setState({ amount: e.target.value })
                                         else
@@ -333,6 +355,7 @@ class TMTransfer extends Component {
                         </span>
                     </div>
                     <CustomTextField type={'password'} placeholder={''} disabled={false}
+                        multi={false}
                         value={this.state.keyPassword} onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
                     />
                     <Button

@@ -49,7 +49,8 @@ class TMRecoverWallet extends Component {
             password: '',
             seedWords: '',
             showPassword: false,
-
+            openSnack: false,
+            snackMessage: '',
         }
     }
 
@@ -60,11 +61,12 @@ class TMRecoverWallet extends Component {
     createAccount = () => {
         this.props.createTMAccount(this.state.username, this.state.password, this.state.seedWords).then(res => {
             if (res.error) {
+                console.log("Error..",res.error.data);
                 let regError = (res.error.data).replace(/\s/g, "");
                 this.setState({
                     openSnack: true,
-                    snackMessage: lang[this.props.lang][regError] ?
-                        lang[this.props.lang][regError] : res.error.data
+                    snackMessage: lang[this.props.language][regError] ?
+                        lang[this.props.language][regError] : res.error.data
                 })
             }
             else {
@@ -85,10 +87,14 @@ class TMRecoverWallet extends Component {
         this.setState({ showPassword: !this.state.showPassword })
     }
 
+    handleClose = (event, reason) => {
+        this.setState({ openSnack: false });
+    };
+
 
     render() {
         let { classes, language } = this.props;
-        let isDisabled = (this.state.username === '' || this.state.password === '') ? true : false
+        let isDisabled = (!this.state.username|| !this.state.password || !this.state.seedWords) ? true : false
         return (
             <div style={accountStyles.sendFormStyle}>
                 <div style={createAccountStyle.secondDivStyle}
@@ -97,12 +103,14 @@ class TMRecoverWallet extends Component {
                     <h1 className="loginHeading">{lang[language].RecoverTMWalletHeading}</h1>
                     <p style={createAccountStyle.headingStyle}>{lang[language].NewAccountName}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false}
+                     multi={false}
                         value={this.state.username} onChange={(e) => { this.setState({ username: e.target.value }) }}
                     />
                     <p style={createAccountStyle.headingStyle}>{lang[language].NewAccountPwd}</p>
                     <CustomTextField
                         type={this.state.showPassword ? 'text' : 'password'}
                         placeholder={''} disabled={false}
+                        multi={false}
                         value={this.state.password} onChange={(e) => { this.setState({ password: e.target.value }) }}
                     />
                     <IconButton
@@ -116,6 +124,7 @@ class TMRecoverWallet extends Component {
                     <CustomTextField
                         type={'text'}
                         placeholder={''} disabled={false}
+                        multi={true}
                         value={this.state.seedWords} onChange={(e) => { this.setState({ seedWords: e.target.value }) }}
                     />
 

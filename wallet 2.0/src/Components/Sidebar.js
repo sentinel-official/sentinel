@@ -110,10 +110,8 @@ class Sidebar extends Component {
                 disabledItemsMain.includes(item.value)) { }
             else if (this.props.isTest && disabledItemsTest.includes(item.value)) { }
             else {
-                console.log("setting current ", item.value)
-                if (item.value === 'eth' || item.value === 'tmint') { console.log("not setting current1 ", item.value) }
+                if (item.value === 'eth' || item.value === 'tmint') { }
                 else {
-                    console.log("setting current1 ", item.value)
                     this.props.setCurrentTab(item.value);
 
                 }
@@ -123,11 +121,8 @@ class Sidebar extends Component {
             if (this.props.component !== 'dashboard' && disabledItemsTM.includes(item.value)) { }
             else if (!this.props.isTest) { }
             else {
-
-                console.log("in last if condition jh", this.props.isTest)
-                if (item.value === 'eth' || item.value === 'tmint') { console.log("not setting current2 ", item.value) }
+                if (item.value === 'eth' || item.value === 'tmint') { }
                 else {
-                    console.log("setting current2 ", item.value)
                     this.props.setCurrentTab(item.value);
 
                 }
@@ -148,6 +143,15 @@ class Sidebar extends Component {
     }
 
     getIcon = (iconName) => {
+
+        if( iconName === 'createIcon'){
+            return <img src={'../src/Images/create.svg'} alt="create_logo"
+                    style={{ width: 25, paddingBottom: 7, marginTop: -3}} />
+        }
+        if( iconName === 'recoverIcon'){
+            return <img src={'../src/Images/recover.svg'} alt="recover_logo"
+                    style={{ width: 25, paddingBottom: 7, marginTop: -3}} />
+        }
         if (iconName === 'tmintIcon') {
             if (!this.props.isTenderMint)
                 return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"

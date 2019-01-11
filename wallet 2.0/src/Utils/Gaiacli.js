@@ -7,7 +7,7 @@ export function runGaiacli(cb) {
     if (remote.process.platform === 'linux') {
         try {
             execSync('chmod +x /usr/lib/sentinel/public/gaiacli');
-            exec('/usr/lib/sentinel/public/gaiacli advanced rest-server --node tcp://tm-lcd.sentinelgroup.io:26657 --chain-id=Sentinel-testnet-1.1',
+            exec('/usr/lib/sentinel/public/gaiacli advanced rest-server --node tcp://209.182.217.171:26657 --chain-id=Sentinel-testnet-1.1',
                 function (err, stdout, stderr) {
                     if (err) {
                         cb(true)
@@ -23,7 +23,7 @@ export function runGaiacli(cb) {
         try {
             let gaiacliPath = path.join(remote.process.resourcesPath, 'gaiacli');
             execSync(`chmod +x ${gaiacliPath}`);
-            exec(`${gaiacliPath} advanced rest - server--node tcp://tm-lcd.sentinelgroup.io:26657 --chain-id=Sentinel-testnet-1.1`,
+            exec(`${gaiacliPath} advanced rest - server--node tcp://209.182.217.171:26657 --chain-id=Sentinel-testnet-1.1`,
                 function (err, stdout, stderr) {
                     if (err) {
                         cb(true)
@@ -37,7 +37,7 @@ export function runGaiacli(cb) {
         }
     }
     else {
-        exec('resources\\extras\\gaiacli.exe advanced rest-server --node tcp://tm-lcd.sentinelgroup.io:26657 --chain-id=Sentinel-testnet-1.1',
+        exec('resources\\extras\\gaiacli.exe advanced rest-server --node tcp://209.182.217.171:26657 --chain-id=Sentinel-testnet-1.1',
             function (err, stdout, stderr) {
                 if (err) {
                     cb(true)

@@ -38,8 +38,8 @@ const Customstyles = theme => ({
         cursor: 'not-allowed',
         outline: 'none'
     },
-    submitButton:{
-        outline:'none'
+    submitButton: {
+        outline: 'none'
     }
 });
 
@@ -266,15 +266,15 @@ class TMAccountView extends Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleDialogClose} color="primary">
-                                    Cancel
-            </Button>
+                                    {lang[language].Cancel}
+                                </Button>
                                 <Button
                                     disabled={!this.state.sessionId || !this.state.password}
                                     onClick={this.getRefund}
                                     className={classes.submitButton}
                                     color="primary">
-                                    Submit
-            </Button>
+                                    {lang[language].Submit}
+                                </Button>
                             </DialogActions>
                         </Dialog>
                     </div>

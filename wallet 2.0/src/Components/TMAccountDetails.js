@@ -58,7 +58,7 @@ class TMAccountDetails extends Component {
     render() {
         const { classes, account, language } = this.props;
         return (
-            <div style={{ padding: '2% 3%' }}>
+            <div style={{ padding: '3% 8%' }}>
                 <h3 style={createPagestyles.headingCreate}>{lang[language].TMBeCareful}</h3>
                 <hr width="50%" align="left" size="3" noshade style={createPagestyles.hr_color} />
                 <p style={createPagestyles.copyHeading}>{lang[language].TMCopyKeys}</p>
@@ -114,6 +114,7 @@ class TMAccountDetails extends Component {
                 <div style={createAccountStyle.checkboxDiv} >
                     <Checkbox
                         checked={this.state.checked}
+                        color="primary"
                         onChange={() => this.handleChange()}
                     />
                     <h3 style={createPagestyles.headingCreate}>{lang[language].TMYesUnderstood}</h3>

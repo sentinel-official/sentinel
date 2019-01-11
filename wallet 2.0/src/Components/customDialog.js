@@ -21,6 +21,7 @@ import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
 import lang from '../Constants/language';
 import { calculateUsage, socksVpnUsage } from '../Actions/calculateUsage';
+import { createAccountStyle } from '../Assets/createtm.styles';
 
 const electron = window.require('electron');
 const { exec } = window.require('child_process');
@@ -41,7 +42,7 @@ const styles = theme => ({
     },
     container2: {
         width: 400,
-        padding: '0px 35px 25px 35px',
+        padding: '0 35px 0 33px',
         overflowX: 'hidden',
 
     },
@@ -90,6 +91,16 @@ const styles = theme => ({
         marginRight: theme.spacing.unit,
     },
 
+    enableButton: {
+        "&:hover": {
+            backgroundColor: '#2f3245'
+        },
+        backgroundColor: '#2f3245',
+    },
+    disableButton: {
+        backgroundColor: '#BDBDBD',
+    }
+
 });
 
 
@@ -123,32 +134,32 @@ class SimpleDialog extends React.Component {
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].City}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
                         <Col xs={6}>  <label
-                            style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}
+                            style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}
                         >{this.props.data.city}</label> </Col>
 
                     </Row>
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Country}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.country}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.country}</label> </Col>
 
                     </Row>
 
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Bandwidth}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + lang[language].Mbps}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + lang[language].Mbps}</label> </Col>
                     </Row>
 
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Cost}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.price_per_GB + lang[language].SentPerGb}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.price_per_GB + lang[language].SentPerGb}</label> </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Latency}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.latency ? `${this.props.data.latency} ${lang[language].MS}` : 'None'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.latency ? `${this.props.data.latency} ${lang[language].MS}` : 'None'}</label> </Col>
                     </Row>
 
 
@@ -158,7 +169,9 @@ class SimpleDialog extends React.Component {
                         <div className={classes.listRoot}>
                             <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label={this.props.isLoading || this.props.vpnStatus ? lang[language].ConnectingdVPN : lang[language].Connect}
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
-                                className={classes.button}>
+                                className={classes.enableButton}
+                                style={createAccountStyle.buttonStyle}
+                                >
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> :
                                     null

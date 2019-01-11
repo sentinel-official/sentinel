@@ -246,48 +246,62 @@ class Footer extends Component {
                             vpnStatus ?
                                 <Col xs={9} style={footerStyles.vpnConnected}>
                                     <Row style={footerStyles.textCenter}>
+                                    <Tooltip title={`${lang[language].IPAddress} : ${localStorage.getItem('IPGENERATED')} `}>
                                         <Col xs={2} style={footerStyles.vpnConnected} >
-                                            <label style={footerStyles.headingStyle}>{lang[language].IPAddress}</label>
+                                            {/* <label style={footerStyles.headingStyle}>{lang[language].IPAddress}</label> */}
+                                            <span><img src={'../src/Images/IP.svg'} alt="location" width="16px"  /></span>
                                             <p style={footerStyles.valueStyle}>
                                                 {localStorage.getItem('IPGENERATED')}
                                             </p>
                                         </Col>
+                                        </Tooltip>
+
+                                        <Tooltip title={`${lang[language].Speed} : ${localStorage.getItem('SPEED')} `}>
+
                                         <Col xs={2} style={footerStyles.vpnConnected}>
-                                            <label style={footerStyles.headingStyle}>{lang[language].Speed}</label>
+                                            {/* <label style={footerStyles.headingStyle}>{lang[language].Speed}</label> */}
+                                            <span><img src={'../src/Images/Speed.svg'} alt="location" width="20px"  /></span>
                                             <p style={footerStyles.valueStyle}>
                                                 {localStorage.getItem('SPEED')}
                                             </p>
                                         </Col>
+                                        </Tooltip>
+                                        <Tooltip title={`${lang[language].Location} : ${localStorage.getItem('LOCATION')} `}>
                                         <Col xs={2} style={footerStyles.vpnConnected}>
                                             {/* <label style={footerStyles.headingStyle}>{lang[language].Location}</label> */}
 
-                                            <span><img src={'../src/Images/location.svg'} alt="location" width="15px" className="location-icon" /></span>
-
-
-                                            <Tooltip title={localStorage.getItem('LOCATION')}>
-
-                                                <div>
+                                           <span><img src={'../src/Images/Location.svg'} alt="location" width="10px" /></span>
+                                                                              
                                                     <p className="location-style">{localStorage.getItem('LOCATION')} </p>
-
-                                                </div>
+                                            
+                                            </Col>
                                             </Tooltip>
-                                        </Col>
 
                                         <Col xs={3} style={footerStyles.vpnConnected}>
                                             <Row>
                                                 <Col xs={2}></Col>
-                                                <Col xs={5} style={{ padding: 0 }}>
-                                                    <label style={footerStyles.headingStyle}>{lang[language].Upload}</label>
+
+                                                <Tooltip title={`${lang[language].Upload} : ${currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} ${lang[language].MB} `}>
+                                                <Col xs={5} style={{ padding: 0,  }}>
+                                                    {/* <label style={footerStyles.headingStyle}>{lang[language].Upload}</label> */}
+                                                    <span><img src={'../src/Images/Upload.svg'} alt="location" width="17px"  /></span>
+
                                                     <p style={footerStyles.valueStyle}>
                                                         {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
                                                     </p>
                                                 </Col>
-                                                <Col xs={5} style={{ padding: 0 }}>
-                                                    <label style={footerStyles.headingStyle}>{lang[language].Download}</label>
+                                                </Tooltip>
+
+                                                <Tooltip title={`${lang[language].Download} : ${currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} ${lang[language].MB} `}>
+
+                                                <Col xs={5} style={{ padding: 0,}}>
+                                                    {/* <label style={footerStyles.headingStyle}>{lang[language].Download}</label> */}
+                                                    <span><img src={'../src/Images/Download.svg'} alt="location" width="17px"  /></span>
                                                     <p style={footerStyles.valueStyle}>
                                                         {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
                                                     </p>
                                                 </Col>
+                                                </Tooltip>
                                             </Row>
                                         </Col>
 

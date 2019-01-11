@@ -127,6 +127,16 @@ class TMSessions extends Component {
                         <Card className="cardStyle" >
                             <div>
                                 <label style={historyLabel}>{`${lang[language].SessionId}:`}&nbsp;<span style={historyValue}>{sessionData.sessionId}</span></label>
+                                <Tooltip title={lang[language].Copy}>
+                                    <CopyToClipboard text={sessionData.sessionId}
+                                        onCopy={() => this.setState({
+                                            snackMessage: lang[language].Copied,
+                                            openSnack: true
+                                        })}>
+
+                                        <CopyIcon style={receiveStyles.clipBoard} />
+                                    </CopyToClipboard>
+                                </Tooltip>
                             </div>
                             <div>
                                 <label style={historyLabel}>{`${lang[language].NodeID}:`}&nbsp;<span style={historyValue}>{sessionData.nodeAccountAddress}</span></label>

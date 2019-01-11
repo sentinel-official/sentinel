@@ -189,7 +189,9 @@ export async function getTxInfo(hash, time) {
                 : response.data.tx.value.msg[0].value.From,
             to: response.data.tx.value.msg[0].value.To ? response.data.tx.value.msg[0].value.To : 'ClaimedBy',
             sessionId: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ?
-                new Buffer(response.data.tx.value.msg[0].value.Sessionid, 'base64').toString() : null,
+                new Buffer(response.data.tx.value.msg[0].value.Sessionid, 'base64').toString() : 
+                (response.data.tx.value.msg[0].type === 'sentinel/payvpnservice' ?
+                new Buffer(response.data.result.tags[1].value, 'base64').toString():null),
             gas: response.data.result.gas_used,
             timestamp: time
         })

@@ -19,14 +19,14 @@ const styles = theme => ({
         },
     },
     bootstrapInput: {
-        borderRadius: 1,    
+        borderRadius: 1,
         // backgroundColor: theme.palette.common.white,
         background: '#F5F5F5',
- 
+
 
         // border: '1px solid #ced4da',
         fontSize: 16,
-        padding: '10px 12px', 
+        padding: '10px 12px',
         width: '600px',
         transition: theme.transitions.create(['border-color', 'box-shadow']),
         fontFamily: [
@@ -67,7 +67,8 @@ const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value
                 placeholder={placeholder}
                 id="bootstrap-input"
                 value={value}
-                multiline={multi?multi:false}
+                multiline={multi ? multi : false}
+                rows={2}
                 inputProps={type === 'number' ? {
                     min: 0
                 } : {}}

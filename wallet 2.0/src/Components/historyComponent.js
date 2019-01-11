@@ -58,12 +58,22 @@ class History extends React.Component {
                 </div>
 
                 <div>
-                    <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{amount} {unit} </span></label>
+                    <label style={historyLabel}>{`${lang[language].Amount}:`}&nbsp;<span style={historyValue}>{amount} {unit} &nbsp;</span></label>
                     <label style={historyLabel}>{`${lang[language].GasPrice}:`}&nbsp;<span style={historyValue}>{gas}</span></label>
 
                 </div>
                 <div>
                     <label style={historyLabel}>{`${lang[language].TxID}:`}&nbsp;<span style={historyValue}>{tx}</span></label>
+                    <Tooltip title={lang[language].Copy}>
+                        <CopyToClipboard text={tx}
+                            onCopy={() => this.setState({
+                                snackMessage: lang[language].Copied,
+                                openSnack: true
+                            })}>
+
+                            <CopyIcon style={receiveStyles.clipBoard} />
+                        </CopyToClipboard>
+                    </Tooltip>
                 </div>
                 <Snackbar
                     open={this.state.openSnack}

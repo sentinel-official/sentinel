@@ -32,7 +32,7 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel Network - dVPN - alpha-0.1.0", resizable: false, maximizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel Network - dVPN - alpha-0.1.1", resizable: false, maximizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -246,7 +246,7 @@ function stopVPN(cb) {
     try {
       var cmd;
       if (vpnType === 'socks5')
-        cmd = 'net stop sentinelSocksv1 /f  && taskkill /IM sentinel.exe /f'
+        cmd = 'net stop sentinelSocksv11 /f  && taskkill /IM sentinel.exe /f'
       else cmd = 'taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f';
       let stdout = execSync(cmd)
       if (stdout) cb(null);

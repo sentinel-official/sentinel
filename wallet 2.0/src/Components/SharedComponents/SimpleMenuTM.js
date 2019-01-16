@@ -127,7 +127,7 @@ class SimpleListMenu extends React.Component {
             <MenuItem value={'SENT'}>
             <img src={'../src/Images/logo.svg'} alt="sentinel_logo"
                 style={{ width: 16, paddingRight: 10, marginTop: -2, marginLeft: -10}} />
-              SENT
+              TSENT
               </MenuItem>
             <MenuItem value={'ETH'} >
             <img src={''} 

@@ -349,6 +349,8 @@ let lang = {
         "TryAfter24hours": "Please try refund after 24 hours",
         "InvalidSession": "Invalid Session Id",
         "FromUser" : "from a user in",
+        "Successfullysent500TSENT": "Successfully sent 500 TSENT",
+        "Successfullysent200TSENT": "Successfully sent 200 TSENT",
 
 
     },
@@ -705,6 +707,8 @@ let lang = {
         "TryAfter24hours": "Please try refund after 24 hours",
         "InvalidSession": "Invalid Session Id",
         "FromUser" : "from a user in",
+        "Successfullysent500TSENT": "500 TSENT başarılı bir şekilde gönderildi",
+        "Successfullysent200TSENT": "200 TSENT başarılı bir şekilde gönderildi",
     },
 
 
@@ -1062,6 +1066,8 @@ let lang = {
         "TryAfter24hours": "Please try refund after 24 hours",
         "InvalidSession": "Invalid Session Id",
         "FromUser" : "from a user in",
+        "Successfullysent500TSENT": "Successfully sent 500 TSENT",
+        "Successfullysent200TSENT": "Successfully sent 200 TSENT",
 
 
     },
@@ -1417,6 +1423,8 @@ let lang = {
         "TryAfter24hours": "Please try refund after 24 hours",
         "InvalidSession": "Invalid Session Id",
         "FromUser" : "from a user in",
+        "Successfullysent500TSENT": "Successfully sent 500 TSENT",
+        "Successfullysent200TSENT": "Successfully sent 200 TSENT",
 
 
     },
@@ -1773,6 +1781,8 @@ let lang = {
         "TryAfter24hours": "Пожалуйста, обратитесь к возврату через 24 часа",
         "InvalidSession": "Неверный идентификатор сеанса",
         "FromUser" : "от пользователя в",
+        "Successfullysent500TSENT": "Успешно отправлено 500 TSENT",
+        "Successfullysent200TSENT": "Успешно отправлено 200 TSENT",
 
     },
 
@@ -2129,6 +2139,8 @@ let lang = {
         "TryAfter24hours": "请在24小时后再尝试退款",
         "InvalidSession": " 会话ID无效",
         "FromUser" : " 在...的用户",
+        "Successfullysent500TSENT": "成功发送500 TSENT",
+        "Successfullysent200TSENT": "成功发送200 TSENT",
 
     },
 }

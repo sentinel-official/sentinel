@@ -321,7 +321,7 @@ class TMTransfer extends Component {
                                         <span style={createAccountStyle.equalAmountStyle}>
                                             {/* {lang[language].GetData}
                                             <span style={createAccountStyle.datavalue}> {this.state.totalData} GB </span>  */}
-                                             {lang[language].FromUser} <span style={createAccountStyle.datavalue}>{this.state.country}</span>, {lang[language].DataInExchange} <span style={createAccountStyle.datavalue}> {this.state.amountToLock} SENT</span></span>
+                                             {lang[language].FromUser} <span style={createAccountStyle.datavalue}>{this.state.country}</span>, {lang[language].DataInExchange} <span style={createAccountStyle.datavalue}> {this.state.amountToLock} TSENT</span></span>
                                     }
                                 </div>
                             </div>

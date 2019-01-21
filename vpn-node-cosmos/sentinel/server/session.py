@@ -13,6 +13,7 @@ class AddSessionDetails(object):
         account_addr = str(account_addr)
         session_id = str(session_id)
         token = str(req.body['token'])
+        max_usage = req.body['maxUsage']
 
         _ = db.clients.find_one_and_update({
             'account_addr': account_addr,
@@ -20,6 +21,7 @@ class AddSessionDetails(object):
         }, {
             '$set': {
                 'token': token,
+                'max_usage': max_usage,
                 'status': 'ADDED_SESSION_DETAILS'
             }
         }, upsert=True)

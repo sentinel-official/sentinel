@@ -3,7 +3,6 @@ import subprocess
 
 from pymongo import ReturnDocument
 
-from ..config import LIMIT_1GB
 from ..db import db
 
 
@@ -46,7 +45,7 @@ def get_sessions(c_name=None):
                 'token': 0
             }, return_document=ReturnDocument.AFTER)
             if client:
-                if client['usage']['down'] >= LIMIT_1GB:
+                if client['usage']['down'] > client['max_usage']['down']:
                     disconnect_client(client_name)
                 sessions.append({
                     'sessionId': session_id,

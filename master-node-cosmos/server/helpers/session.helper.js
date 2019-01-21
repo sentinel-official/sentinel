@@ -20,12 +20,15 @@ let getPaymentDetails = (txHash, cb) => {
     else {
       let data = Buffer.from(result.result.data, 'base64');
       let sessionId = Buffer.from(result.result.tags[1].value, 'base64');
+      let lockedAmount = Buffer.from(result.result.tags[2].value, 'base64');
       data = JSON.parse(data.toString()).value;
       sessionId = sessionId.toString();
+      lockedAmount = parseInt(lockedAmount.toString());
       result = {
         from: data.From,
         to: data.Vpnaddr,
-        sessionId
+        sessionId,
+        lockedAmount
       };
       cb(null, result);
     }

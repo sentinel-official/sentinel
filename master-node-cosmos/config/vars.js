@@ -10,7 +10,10 @@ let mongoDb = {
   dbName: 'sentinel'
 };
 
+let GB = 1.0 * 1024 * 1024 * 1024;
+
 module.exports = {
   server,
-  mongoDb
+  mongoDb,
+  GB
 };

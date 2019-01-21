@@ -1,4 +1,5 @@
 let mongoose = require('mongoose');
+let { GB } = require('../../config/vars');
 
 
 let sessionSchema = new mongoose.Schema({
@@ -17,6 +18,18 @@ let sessionSchema = new mongoose.Schema({
   nodeAccountAddress: {
     type: String,
     required: true
+  },
+  maxUsage: {
+    download: {
+      type: Number,
+      required: true,
+      default: GB
+    },
+    upload: {
+      type: Number,
+      required: true,
+      default: GB
+    }
   },
   usage: {
     download: {

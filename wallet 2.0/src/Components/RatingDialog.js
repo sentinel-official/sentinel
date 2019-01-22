@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Rating } from 'material-ui-rating';
 import { rateVPNSession } from './../Actions/vpnlist.action';
+import { setCurrentTab } from '../Actions/sidebar.action';
 import TextField from '@material-ui/core/TextField';
 import { MuiThemeProvider } from 'material-ui/styles';
 import lang from '../Constants/language';
@@ -14,12 +15,13 @@ class RatingDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rateValue: 5  
+            rateValue: 5
         }
     }
 
     handleCancel = () => {
         this.props.onClose();
+        this.props.setCurrentTab('vpnHistory');
     };
 
     handleOk = () => {
@@ -29,9 +31,11 @@ class RatingDialog extends React.Component {
                 let regError = (err.message).replace(/\s/g, "");
                 this.props.snackOpenDialog(lang[this.props.language][regError] ?
                     lang[this.props.language][regError] : err.message);
+                this.props.setCurrentTab('vpnHistory');
             } else {
                 this.props.onClose();
                 this.props.snackOpenDialog(lang[this.props.language].RatedSuccess);
+                this.props.setCurrentTab('vpnHistory');
             }
         })
     };
@@ -92,6 +96,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
+        setCurrentTab
     }, dispatch)
 }
 

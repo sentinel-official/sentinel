@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { Button, Tooltip, Snackbar } from '@material-ui/core';
 import DisconnectIcon from '@material-ui/icons/HighlightOff';
 import { setVpnStatus, clearUsage } from '../Actions/vpnlist.action';
+import { setCurrentTab } from '../Actions/sidebar.action';
 import { getSignHash, addSignature, deleteTmAccount } from '../Actions/tmvpn.action';
 import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { footerStyles } from '../Assets/footer.styles';
@@ -45,7 +46,8 @@ class Footer extends Component {
             status: false,
             counter: 1,
             showAlert: false,
-            isDisabled: false
+            isDisabled: false,
+            disconnectCalled: false
         }
     }
 
@@ -114,30 +116,38 @@ class Footer extends Component {
         })
     }
 
+    disconnectTMVpn = () => {
+        this.setState({ disconnectCalled: true });
+        disconnectVPN((res) => {
+            if (res) {
+                let regError = res.replace(/\s/g, "");
+                this.setState({
+                    openSnack: true,
+                    snackMessage: lang[this.props.language][regError] ?
+                        lang[this.props.language][regError] : res,
+                    isDisabled: false, disconnectCalled: false
+                });
+            }
+            else {
+                this.setState({
+                    openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
+                    counter: 1, showAlert: false, isDisabled: false
+                });
+                this.props.clearUsage();
+                this.props.setVpnStatus(false);
+                deleteTmAccount();
+                setTimeout(() => {
+                    this.props.setCurrentTab('vpnHistory');
+                }, 1200);
+            }
+        })
+    }
+
     disconnect = () => {
         this.setState({ isDisabled: true })
         if (this.props.isTm) {
             this.sendSignature(downloadData, true, this.state.counter);
-            disconnectVPN((res) => {
-                if (res) {
-                    let regError = res.replace(/\s/g, "");
-                    this.setState({
-                        openSnack: true,
-                        snackMessage: lang[this.props.language][regError] ?
-                            lang[this.props.language][regError] : res,
-                        isDisabled: false
-                    });
-                }
-                else {
-                    this.setState({
-                        openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
-                        counter: 1, showAlert: false, isDisabled: false
-                    });
-                    this.props.clearUsage();
-                    this.props.setVpnStatus(false);
-                    deleteTmAccount();
-                }
-            })
+            this.disconnectTMVpn();
         }
         else {
             if (this.props.vpnType === 'openvpn') {
@@ -193,19 +203,35 @@ class Footer extends Component {
         let language = this.props.language;
         let { vpnStatus, currentUsage, isTm, classes } = this.props;
         let counter = this.state.counter;
+        console.log("CUrrent..", currentUsage ? currentUsage : true);
         downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
+
+        // Sending signature for every 10mb of usage
         if (vpnStatus && isTm && downloadData >= counter * 10) {
             this.sendSignature(downloadData, false, counter);
         }
+
+        // Check vpn connection in ethereum net whether 900 mb used
         if (vpnStatus && !isTm) {
             this.checkGB(downloadData);
         }
-        if (!vpnStatus && this.state.showAlert) {
-            this.setState({ showAlert: false });
+
+        // Automatically disconnecting vpn in TM when full data is used
+        if (vpnStatus && isTm && currentUsage && 'message' in currentUsage) {
+            if (currentUsage.message === 'Wrong details.' && !this.state.disconnectCalled) {
+                this.disconnectTMVpn();
+            }
         }
+
+        // Changing to default values after vpn disconnection
         if (!vpnStatus) {
             downloadData = 0;
+            if (this.state.showAlert)
+                this.setState({ showAlert: false });
+            if (this.state.disconnectCalled)
+                this.setState({ disconnectCalled: false });
         }
+
         return (
             <div style={footerStyles.mainDivStyle} className="footerStyle">
                 <Grid>
@@ -246,61 +272,61 @@ class Footer extends Component {
                             vpnStatus ?
                                 <Col xs={9} style={footerStyles.vpnConnected}>
                                     <Row style={footerStyles.textCenter}>
-                                    <Tooltip title={`${lang[language].IPAddress} : ${localStorage.getItem('IPGENERATED')} `}>
-                                        <Col xs={2} style={footerStyles.vpnConnected} >
-                                            {/* <label style={footerStyles.headingStyle}>{lang[language].IPAddress}</label> */}
-                                            <span><img src={'../src/Images/IP.svg'} alt="location" width="16px"  /></span>
-                                            <p style={footerStyles.valueStyle}>
-                                                {localStorage.getItem('IPGENERATED')}
-                                            </p>
-                                        </Col>
+                                        <Tooltip title={`${lang[language].IPAddress} : ${localStorage.getItem('IPGENERATED')} `}>
+                                            <Col xs={2} style={footerStyles.vpnConnected} >
+                                                {/* <label style={footerStyles.headingStyle}>{lang[language].IPAddress}</label> */}
+                                                <span><img src={'../src/Images/IP.svg'} alt="location" width="16px" /></span>
+                                                <p style={footerStyles.valueStyle}>
+                                                    {localStorage.getItem('IPGENERATED')}
+                                                </p>
+                                            </Col>
                                         </Tooltip>
 
                                         <Tooltip title={`${lang[language].Speed} : ${localStorage.getItem('SPEED')} `}>
 
-                                        <Col xs={2} style={footerStyles.vpnConnected}>
-                                            {/* <label style={footerStyles.headingStyle}>{lang[language].Speed}</label> */}
-                                            <span><img src={'../src/Images/Speed.svg'} alt="location" width="20px"  /></span>
-                                            <p style={footerStyles.valueStyle}>
-                                                {localStorage.getItem('SPEED')}
-                                            </p>
-                                        </Col>
+                                            <Col xs={2} style={footerStyles.vpnConnected}>
+                                                {/* <label style={footerStyles.headingStyle}>{lang[language].Speed}</label> */}
+                                                <span><img src={'../src/Images/Speed.svg'} alt="location" width="20px" /></span>
+                                                <p style={footerStyles.valueStyle}>
+                                                    {localStorage.getItem('SPEED')}
+                                                </p>
+                                            </Col>
                                         </Tooltip>
                                         <Tooltip title={`${lang[language].Location} : ${localStorage.getItem('LOCATION')} `}>
-                                        <Col xs={2} style={footerStyles.vpnConnected}>
-                                            {/* <label style={footerStyles.headingStyle}>{lang[language].Location}</label> */}
+                                            <Col xs={2} style={footerStyles.vpnConnected}>
+                                                {/* <label style={footerStyles.headingStyle}>{lang[language].Location}</label> */}
 
-                                           <span><img src={'../src/Images/Location.svg'} alt="location" width="10px" /></span>
-                                                                              
-                                                    <p className="location-style">{localStorage.getItem('LOCATION')} </p>
-                                            
+                                                <span><img src={'../src/Images/Location.svg'} alt="location" width="10px" /></span>
+
+                                                <p className="location-style">{localStorage.getItem('LOCATION')} </p>
+
                                             </Col>
-                                            </Tooltip>
+                                        </Tooltip>
 
                                         <Col xs={3} style={footerStyles.vpnConnected}>
                                             <Row>
                                                 <Col xs={2}></Col>
 
                                                 <Tooltip title={`${lang[language].Upload} : ${currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} ${lang[language].MB} `}>
-                                                <Col xs={5} style={{ padding: 0,  }}>
-                                                    {/* <label style={footerStyles.headingStyle}>{lang[language].Upload}</label> */}
-                                                    <span><img src={'../src/Images/Upload.svg'} alt="location" width="17px"  /></span>
+                                                    <Col xs={5} style={{ padding: 0, }}>
+                                                        {/* <label style={footerStyles.headingStyle}>{lang[language].Upload}</label> */}
+                                                        <span><img src={'../src/Images/Upload.svg'} alt="location" width="17px" /></span>
 
-                                                    <p style={footerStyles.valueStyle}>
-                                                        {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
-                                                    </p>
-                                                </Col>
+                                                        <p style={footerStyles.valueStyle}>
+                                                            {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
+                                                        </p>
+                                                    </Col>
                                                 </Tooltip>
 
                                                 <Tooltip title={`${lang[language].Download} : ${currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} ${lang[language].MB} `}>
 
-                                                <Col xs={5} style={{ padding: 0,}}>
-                                                    {/* <label style={footerStyles.headingStyle}>{lang[language].Download}</label> */}
-                                                    <span><img src={'../src/Images/Download.svg'} alt="location" width="17px"  /></span>
-                                                    <p style={footerStyles.valueStyle}>
-                                                        {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
-                                                    </p>
-                                                </Col>
+                                                    <Col xs={5} style={{ padding: 0, }}>
+                                                        {/* <label style={footerStyles.headingStyle}>{lang[language].Download}</label> */}
+                                                        <span><img src={'../src/Images/Download.svg'} alt="location" width="17px" /></span>
+                                                        <p style={footerStyles.valueStyle}>
+                                                            {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
+                                                        </p>
+                                                    </Col>
                                                 </Tooltip>
                                             </Row>
                                         </Col>
@@ -367,7 +393,8 @@ function mapDispatchToActions(dispatch) {
         setVpnStatus,
         getSignHash,
         addSignature,
-        clearUsage
+        clearUsage,
+        setCurrentTab
     }, dispatch)
 }
 

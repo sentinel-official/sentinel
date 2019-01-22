@@ -124,14 +124,19 @@ class TMTransfer extends Component {
         else if (this.props.vpnPayment.isPayment) {
             checkVPNDependencies(remote.process.platform, (otherErr, winErr) => {
                 if (otherErr) {
-                    this.setState({ sending: false, openSnack: true, snackMessage: otherErr.message });
+                    let regError = otherErr.message.replace(/\s/g, "");
+                    this.setState({
+                        sending: false, openSnack: true,
+                        snackMessage: lang[this.props.language][regError] ?
+                            lang[this.props.language][regError] : otherErr.message
+                    });
                 }
                 else if (winErr) {
                     this.setState({ sending: false, openvpnAlert: true })
                 }
                 else {
                     let data = {
-                        "amount": (parseFloat(this.state.amountToLock) * (10 ** 8)).toString() + 'sut',
+                        "amount": Math.ceil(parseFloat(this.state.amountToLock) * (10 ** 8)).toString() + 'sut',
                         "name": this.props.account.name,
                         "password": this.state.keyPassword,
                         "gas": 200000,
@@ -166,12 +171,19 @@ class TMTransfer extends Component {
                                 else {
                                     let data = sesRes.payload;
                                     let vpn_data = this.props.vpnPayment.data;
-                                    let session_data = sesRes.payload
+                                    let session_data = sesRes.payload;
+                                    let availableData = 'maxUsage' in session_data ? session_data.maxUsage.download : 0;
+                                    localStorage.setItem('availableData', availableData);
                                     connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
                                         console.log("VPN Response...", err, platformErr, res);
                                         if (err) {
                                             console.log("Connect VPN Err...", err, platformErr, res);
-                                            this.setState({ sending: false, openSnack: true, snackMessage: err.message });
+                                            let regError = err.message.replace(/\s/g, "");
+                                            this.setState({
+                                                sending: false, openSnack: true,
+                                                snackMessage: lang[this.props.language][regError] ?
+                                                    lang[this.props.language][regError] : err.message
+                                            });
                                         }
                                         else {
                                             this.props.setActiveVpn(vpn_data);
@@ -194,7 +206,7 @@ class TMTransfer extends Component {
         }
         else {
             let data = {
-                "amount": (parseFloat(this.state.amount) * (10 ** 8)).toString() + 'sut',
+                "amount": Math.ceil(parseFloat(this.state.amount) * (10 ** 8)).toString() + 'sut',
                 "name": this.props.account.name,
                 "password": this.state.keyPassword,
                 "gas": 200000,
@@ -257,7 +269,7 @@ class TMTransfer extends Component {
             })
 
         }
-        console.log("amount to lock ", this.state.amountToLock)
+
     }
 
     handleClose = (event, reason) => {
@@ -277,7 +289,7 @@ class TMTransfer extends Component {
                 <div style={createAccountStyle.secondDivStyle}
                     onKeyPress={(ev) => { if (ev.key === 'Enter' && !isDisabled) this.sendTransaction() }}>
                     <div style={createAccountStyle.tooltipDiv}>
-                        <p style={createAccountStyle.headingStyle}>{lang[language].AddressToSend}</p>
+                        <p style={createAccountStyle.headingStyle}>{this.props.vpnPayment.isPayment ? lang[language].AddressToLockTokens : lang[language].AddressToSend}</p>
                         <span style={createAccountStyle.questionMarkDiv}>
                             <CustomTooltips title={lang[language].TMAddressToSendHelp} />
                         </span>
@@ -321,7 +333,7 @@ class TMTransfer extends Component {
                                         <span style={createAccountStyle.equalAmountStyle}>
                                             {/* {lang[language].GetData}
                                             <span style={createAccountStyle.datavalue}> {this.state.totalData} GB </span>  */}
-                                             {lang[language].FromUser} <span style={createAccountStyle.datavalue}>{this.state.country}</span>, {lang[language].DataInExchange} <span style={createAccountStyle.datavalue}> {this.state.amountToLock} TSENT</span></span>
+                                            {lang[language].FromUser} <span style={createAccountStyle.datavalue}>{this.state.country}</span>, {lang[language].DataInExchange} <span style={createAccountStyle.datavalue}> {this.state.amountToLock} TSENT</span></span>
                                     }
                                 </div>
                             </div>

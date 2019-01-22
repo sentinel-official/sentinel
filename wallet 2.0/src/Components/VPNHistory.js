@@ -113,6 +113,7 @@ class VPNHistory extends Component {
         this.props.setsnackMessage('')
     }
     handleclick = (sessiondata) => {
+        
         var txhash = this.state.txHash
         this.setState({ txHash: '' })
         compareTransaction(sessiondata, txhash,
@@ -138,6 +139,7 @@ class VPNHistory extends Component {
             if (this.props.VPNUsage.sessions.length !== 0) {
                 var sessions = _.sortBy(this.props.VPNUsage.sessions, o => o.timeStamp).reverse()
                 sessionOutput = sessions.map((sessionData) => {
+                    console.log("session data ", sessionData);
                     return (
 
                         
@@ -146,7 +148,18 @@ class VPNHistory extends Component {
                                     <CardContent >
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].SessionId}:`}&nbsp;<span style={historyValue}>{sessionData.id}</span></label>
+                                            <Tooltip title={lang[language].Copy}>
+                                                <CopyToClipboard text={sessionData.id}
+                                                    onCopy={() => this.setState({
+                                                        snackMessage: lang[language].Copied,
+                                                        openSnack: true
+                                                    })}>
+
+                                                    <CopyIcon style={receiveStyles.clipBoard} />
+                                                </CopyToClipboard>
+                                        </Tooltip>
                                         </div>
+                            
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].NodeID}:`}&nbsp;<span style={historyValue}>{sessionData.account_addr}</span></label>
                                             <Tooltip title={lang[language].Copy}>
@@ -160,6 +173,10 @@ class VPNHistory extends Component {
                                                 </CopyToClipboard>
                                             </Tooltip>
                                         </div>
+
+                                        <div>
+                                            <label style={historyLabel}>{`${lang[language].SessionStartTime}:`}&nbsp;<span style={historyValue}>{new Date(sessionData.timestamp * 1000).toLocaleString()}</span></label>
+                                        </div>
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].Duration}:`}&nbsp;<span style={historyValue}>{sessionData.session_duration} {lang[language].Secs}</span></label>
 
@@ -168,9 +185,7 @@ class VPNHistory extends Component {
                                         <div>
                                             <label style={historyLabel}>{`${lang[language].ReceivedData}:`}&nbsp;<span style={historyValue}>{this.getPaymentBytes(sessionData.received_bytes)}</span></label>
                                         </div>
-                                        <div>
-                                            <label style={historyLabel}>{`${lang[language].Time}:`}&nbsp;<span style={historyValue}>{new Date(sessionData.timestamp * 1000).toLocaleString()}</span></label>
-                                        </div>
+                                      
                                     </CardContent>
                                     {
                                         sessionData.is_paid ?

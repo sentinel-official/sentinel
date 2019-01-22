@@ -332,7 +332,7 @@ let lang = {
         "TotalDataRequired": "TOTAL DATA REQUIRED",
         "TokensToLock": "TOKENS TO LOCK",
         "InExchange": "in exchange for",
-        "DataBy": "of data by user from",
+        "DataBy": "of data by a user from",
         "GetData": "Get",
         "DataInExchange": "in exchange for locking",
         "TMAddressToSendHelp": "Enter Sentinel Tendermint TestNet Wallet Address",
@@ -352,6 +352,10 @@ let lang = {
         "Successfullysent500TSENT": "Successfully sent 500 TSENT",
         "Successfullysent200TSENT": "Successfully sent 200 TSENT",
 
+        "AddressToLockTokens" : "ADDRESS TO LOCK TOKENS",
+        "SessionStartTime" : "Session Start Time",
+        "AvailableData" : "Available Data",
+        "RefundedFromSession": "Refunded From dVPNSession",
 
     },
 
@@ -675,6 +679,9 @@ let lang = {
         'TotalPayment': 'Toplam Ödeme',
         "ReleasedFromSession": "dVPNSession' dan bırakıldı",
         'PeerToPeerMarket': 'Gizlilik odaklı tokenların aracılar olmadan transferi için çoklu zincir yönetimi ve dağıtılmış kaynak marketi',
+        "Successfullysent500TSENT": "500 TSENT başarılı bir şekilde gönderildi",
+        "Successfullysent200TSENT": "200 TSENT başarılı bir şekilde gönderildi",
+
         "ActivateTestNet": "(for dVPN, activate TestNet)",
         "CannotSwitch": "Can not switch TestNet when dVPN is connected",
         "LessBalance": "You don't have enough balance to do transaction",
@@ -690,7 +697,7 @@ let lang = {
         "TotalDataRequired": "TOTAL DATA REQUIRED",
         "TokensToLock": "TOKENS TO LOCK",
         "InExchange": "in exchange for",
-        "DataBy": "of data by user from",
+        "DataBy": "of data by a user from",
         "GetData": "Get",
         "DataInExchange": "in exchange for locking",
         "TMAddressToSendHelp": "Enter Sentinel Tendermint TestNet Wallet Address",
@@ -707,8 +714,12 @@ let lang = {
         "TryAfter24hours": "Please try refund after 24 hours",
         "InvalidSession": "Invalid Session Id",
         "FromUser" : "from a user in",
-        "Successfullysent500TSENT": "500 TSENT başarılı bir şekilde gönderildi",
-        "Successfullysent200TSENT": "200 TSENT başarılı bir şekilde gönderildi",
+      
+
+        "AddressToLockTokens" : "ADDRESS TO LOCK TOKENS",
+        "SessionStartTime" : "Session Start Time",
+        "AvailableData" : "Available Data",
+        "RefundedFromSession": "Refunded From dVPNSession",
     },
 
 
@@ -1049,7 +1060,7 @@ let lang = {
         "TotalDataRequired": "TOTAL DATA REQUIRED",
         "TokensToLock": "TOKENS TO LOCK",
         "InExchange": "in exchange for",
-        "DataBy": "of data by user from",
+        "DataBy": "of data by a user from",
         "GetData": "Get",
         "DataInExchange": "in exchange for locking",
         "TMAddressToSendHelp": "Enter Sentinel Tendermint TestNet Wallet Address",
@@ -1069,6 +1080,10 @@ let lang = {
         "Successfullysent500TSENT": "Successfully sent 500 TSENT",
         "Successfullysent200TSENT": "Successfully sent 200 TSENT",
 
+        "AddressToLockTokens" : "ADDRESS TO LOCK TOKENS",
+        "SessionStartTime" : "Session Start Time",
+        "AvailableData" : "Available Data",
+        "RefundedFromSession": "Refunded From dVPNSession",
 
     },
     es: {
@@ -1406,7 +1421,7 @@ let lang = {
         "TotalDataRequired": "TOTAL DATA REQUIRED",
         "TokensToLock": "TOKENS TO LOCK",
         "InExchange": "in exchange for",
-        "DataBy": "of data by user from",
+        "DataBy": "of data by a user from",
         "GetData": "Get",
         "DataInExchange": "in exchange for locking",
         "TMAddressToSendHelp": "Enter Sentinel Tendermint TestNet Wallet Address",
@@ -1426,7 +1441,10 @@ let lang = {
         "Successfullysent500TSENT": "Successfully sent 500 TSENT",
         "Successfullysent200TSENT": "Successfully sent 200 TSENT",
 
-
+        "AddressToLockTokens" : "ADDRESS TO LOCK TOKENS",
+        "SessionStartTime" : "Session Start Time",
+        "AvailableData" : "Available Data",
+        "RefundedFromSession": "Refunded From dVPNSession",
     },
     ru: {
         "History": "История",
@@ -1784,6 +1802,10 @@ let lang = {
         "Successfullysent500TSENT": "Успешно отправлено 500 TSENT",
         "Successfullysent200TSENT": "Успешно отправлено 200 TSENT",
 
+        "AddressToLockTokens" : "Адрес отправки залога",
+        "SessionStartTime" : "Время начала сеанса",
+        "AvailableData" : "Доступно данных",
+        "RefundedFromSession": "Возвращено после сессии",
     },
 
     zh: {
@@ -2141,6 +2163,11 @@ let lang = {
         "FromUser" : " 在...的用户",
         "Successfullysent500TSENT": "成功发送500 TSENT",
         "Successfullysent200TSENT": "成功发送200 TSENT",
+
+        "AddressToLockTokens" : "要锁定代币的地址",
+        "SessionStartTime" : "会话开始时间",
+        "AvailableData" : "可用的数据",
+        "RefundedFromSession": "已从dVPN会话退款",
 
     },
 }

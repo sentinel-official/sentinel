@@ -117,8 +117,8 @@ class TMSessions extends Component {
         if (sortedSessions.length > 0) {
             sessionOutput = sortedSessions.map((sessionData) => {
                 let sessionAmount = sessionData.amount ? parseInt(sessionData.amount.split('s')[0]) / (10 ** 8) : 0;
-                let sessionDuration = (Date.parse(new Date(sessionData.endedOn)) -
-                    Date.parse(new Date(sessionData.startedOn))) / 1000;
+                let sessionDuration = sessionData.endedOn && sessionData.startedOn ? (Date.parse(new Date(sessionData.endedOn)) -
+                    Date.parse(new Date(sessionData.startedOn))) / 1000 : 0;
                 paymentCount += parseFloat(sessionAmount.toFixed(8));
                 dataCount += sessionData.usage.download;
                 durationCount += sessionDuration;
@@ -151,10 +151,7 @@ class TMSessions extends Component {
                                     </CopyToClipboard>
                                 </Tooltip>
                             </div>
-                            <div>
-                                <label style={historyLabel}>{`${lang[language].ReceivedData}:`}&nbsp;
-                                <span style={historyValue}>{this.getPaymentBytes(sessionData.usage.download)}</span></label>
-                            </div>
+
 
                             {sessionData.amount ?
                                 <div>
@@ -164,15 +161,22 @@ class TMSessions extends Component {
                                 </div>
                                 : ''
                             }
-
                             <div>
-                                <label style={historyLabel}>{`${lang[language].Duration}:`}&nbsp;
+                                <label style={historyLabel}>{`${lang[language].SessionStartTime}:`}&nbsp;
+                                <span style={historyValue}>{new Date(sessionData.startedOn).toLocaleString()}</span></label>
+                            </div>
+                            {sessionData.endedOn ?
+                                <div>
+                                    <label style={historyLabel}>{`${lang[language].Duration}:`}&nbsp;
                                 <span style={historyValue}>{sessionData.endedOn ? sessionDuration : 0}{lang[language].Secs}</span></label>
 
-                            </div>
+                                </div>
+                                : null}
+
+
                             <div>
-                                <label style={historyLabel}>{`${lang[language].Time}:`}&nbsp;
-                                <span style={historyValue}>{new Date(sessionData.startedOn).toLocaleString()}</span></label>
+                                <label style={historyLabel}>{`${lang[language].ReceivedData}:`}&nbsp;
+                                <span style={historyValue}>{this.getPaymentBytes(sessionData.usage.download)}</span></label>
                             </div>
                         </Card>
                     </div>

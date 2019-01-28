@@ -82,6 +82,11 @@ if __name__ == '__main__':
                 print(error)
                 exit(2)
             else:
+                seed_path = '/root/.sentinel/{}'.format(str(resp['address']))
+                with open(seed_path, 'w') as f:
+                    f.writelines(str(resp['seed']))
+                    f.close()
+
                 node.update_info('config', {
                     'account_address': str(resp['address'])
                 })
@@ -90,6 +95,7 @@ if __name__ == '__main__':
                     print(error)
                     exit(3)
 
+    print('Updating location and Internet speed information...')
     node.update_info('location')
     node.update_info('netspeed')
 

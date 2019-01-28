@@ -21,7 +21,10 @@ class AddSessionDetails(object):
         }, {
             '$set': {
                 'token': token,
-                'max_usage': max_usage,
+                'max_usage': {
+                    'up': max_usage['upload'],
+                    'down': max_usage['download']
+                },
                 'status': 'ADDED_SESSION_DETAILS'
             }
         }, upsert=True)

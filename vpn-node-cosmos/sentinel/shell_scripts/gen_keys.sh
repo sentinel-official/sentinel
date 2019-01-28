@@ -5,6 +5,7 @@ KEYS=/etc/openvpn/keys
 ERSA_DIR=/usr/share/easy-rsa
 
 cd ${ERSA_DIR} && \
+cat /dev/null > ${ERSA_DIR}/pki/index.txt && \
 ./easyrsa build-client-full client$1 nopass && \
 
 cd pki && \

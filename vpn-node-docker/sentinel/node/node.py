@@ -28,7 +28,7 @@ class Node(object):
             'enc_method': None,
             'description': '',
         }
-        self.version = '0.0.6-alpha'
+        self.version = '0.0.7-alpha'
 
         if config is not None:
             self.config['account_addr'] = str(config['account_addr']).lower() if 'account_addr' in config else None

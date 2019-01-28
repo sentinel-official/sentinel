@@ -23,7 +23,7 @@ let getPaymentDetails = (txHash, cb) => {
       let lockedAmount = Buffer.from(result.result.tags[2].value, 'base64');
       data = JSON.parse(data.toString()).value;
       sessionId = sessionId.toString();
-      lockedAmount = parseInt(lockedAmount.toString());
+      lockedAmount = parseInt(lockedAmount.toString()) / Math.pow(10, 8);
       result = {
         from: data.From,
         to: data.Vpnaddr,

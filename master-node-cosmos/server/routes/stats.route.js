@@ -1,4 +1,4 @@
-let statsContoller = require('../controllers/stats.controller');
+// let statsContoller = require('../controllers/stats.controller');
 
 
 module.exports = (server) => {

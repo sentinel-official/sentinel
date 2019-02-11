@@ -29,7 +29,10 @@ let getNodesStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       } else if (timeline) {
         statsHelper.getNodesTimeline(startDate, endDate,
@@ -37,7 +40,10 @@ let getNodesStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       } else {
         statsHelper.getActiveNodesCount(
@@ -45,7 +51,10 @@ let getNodesStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       }
     }
@@ -86,7 +95,10 @@ let getSessionsStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       } else if (timeline) {
         statsHelper.getSessionsTimeline(startDate, endDate,
@@ -94,7 +106,10 @@ let getSessionsStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       } else {
         statsHelper.getActiveSessionsCount(
@@ -102,7 +117,10 @@ let getSessionsStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       }
     }
@@ -141,7 +159,10 @@ let getDataConsumedStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       } else {
         statsHelper.getDataConsumed(
@@ -149,7 +170,10 @@ let getDataConsumedStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       }
     }
@@ -188,7 +212,10 @@ let getAverageDurationStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       } else {
         statsHelper.getAverageDuration(
@@ -196,7 +223,10 @@ let getAverageDurationStats = (req, res) => {
             if (error) next({
               status: 500,
               message: 'Error occurred while fetching data.'
-            }); else next(null, result);
+            }); else next(null, {
+              status: 200,
+              result
+            });
           });
       }
     }

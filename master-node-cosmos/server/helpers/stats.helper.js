@@ -409,9 +409,9 @@ module.exports = {
   getAverageSessionsCount,
   getSessionsTimeline,
 
-  getAverageDuration,
-  getAverageDurationTimeline,
-
   getDataConsumed,
   getDataConsumedTimeline,
+
+  getAverageDuration,
+  getAverageDurationTimeline,
 };

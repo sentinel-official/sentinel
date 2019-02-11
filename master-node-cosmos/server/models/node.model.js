@@ -76,6 +76,16 @@ let nodeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  ratingPoints: {
+    type: Number,
+    required: true,
+    default: 5,
+  },
+  ratingCount: {
+    type: Number,
+    required: true,
+    default: 1,
+  },
   addedOn: {
     type: Date,
     required: true,

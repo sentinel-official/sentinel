@@ -1,4 +1,5 @@
 let async = require('async');
+let nodeDbo = require('../dbos/node.dbo');
 let sessionDbo = require('../dbos/session.dbo');
 let ratingDbo = require('../dbos/rating.dbo');
 
@@ -57,8 +58,19 @@ let addRating = (req, res) => {
         if (error) next({
           status: 500,
           message: 'Error occurred while adding rating.'
-        });
-        else next(null, {
+        }); else next(null, nodeAccountAddress);
+      });
+    }, (accountAddress, next) => {
+      nodeDbo.updateNode({ accountAddress }, {
+        $inc: {
+          'ratingPoints': rating,
+          'ratingCount': 1,
+        }
+      }, (error, result) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while adding rating.'
+        }); else next(null, {
           status: 200
         });
       });

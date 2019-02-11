@@ -18,8 +18,8 @@ let getNodesStats = (req, res) => {
     startSeconds,
     endSeconds
   } = req.query;
-  let startDate = startSeconds ? new Date(startSeconds).toISOString() : new Date(0).toISOString();
-  let endDate = endSeconds ? new Date(endSeconds).toISOString() : new Date(Date.now()).toISOString();
+  let startDate = startSeconds ? new Date(startSeconds) : new Date(0);
+  let endDate = endSeconds ? new Date(endSeconds) : new Date(Date.now());
 
   async.waterfall([
     (next) => {
@@ -84,8 +84,8 @@ let getSessionsStats = (req, res) => {
     startSeconds,
     endSeconds
   } = req.query;
-  let startDate = startSeconds ? new Date(startSeconds).toISOString() : new Date(0).toISOString();
-  let endDate = endSeconds ? new Date(endSeconds).toISOString() : new Date(Date.now()).toISOString();
+  let startDate = startSeconds ? new Date(startSeconds) : new Date(0);
+  let endDate = endSeconds ? new Date(endSeconds) : new Date(Date.now());
 
   async.waterfall([
     (next) => {
@@ -148,8 +148,8 @@ let getDataConsumedStats = (req, res) => {
     startSeconds,
     endSeconds
   } = req.query;
-  let startDate = startSeconds ? new Date(startSeconds).toISOString() : new Date(0).toISOString();
-  let endDate = endSeconds ? new Date(endSeconds).toISOString() : new Date(Date.now()).toISOString();
+  let startDate = startSeconds ? new Date(startSeconds) : new Date(0);
+  let endDate = endSeconds ? new Date(endSeconds) : new Date(Date.now());
 
   async.waterfall([
     (next) => {
@@ -201,8 +201,8 @@ let getAverageDurationStats = (req, res) => {
     startSeconds,
     endSeconds
   } = req.query;
-  let startDate = startSeconds ? new Date(startSeconds).toISOString() : new Date(0).toISOString();
-  let endDate = endSeconds ? new Date(endSeconds).toISOString() : new Date(Date.now()).toISOString();
+  let startDate = startSeconds ? new Date(startSeconds) : new Date(0);
+  let endDate = endSeconds ? new Date(endSeconds) : new Date(Date.now());
 
   async.waterfall([
     (next) => {

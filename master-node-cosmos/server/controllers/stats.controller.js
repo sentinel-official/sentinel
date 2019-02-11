@@ -165,7 +165,7 @@ let getDataConsumedStats = (req, res) => {
             });
           });
       } else {
-        statsHelper.getDataConsumed(
+        statsHelper.getDataConsumed(startDate, endDate,
           (error, result) => {
             if (error) next({
               status: 500,
@@ -218,7 +218,7 @@ let getAverageDurationStats = (req, res) => {
             });
           });
       } else {
-        statsHelper.getAverageDuration(
+        statsHelper.getAverageDuration(startDate, endDate,
           (error, result) => {
             if (error) next({
               status: 500,

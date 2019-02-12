@@ -22,6 +22,7 @@ import '../Assets/footerStyle.css';
 const electron = window.require('electron');
 const { exec } = window.require('child_process');
 const remote = electron.remote;
+var notifier = window.require('node-notifier');
 
 const styles = theme => ({
     paper: {
@@ -65,7 +66,7 @@ class Footer extends Component {
 
     componentWillReceiveProps = (next) => {
         if (this.state.status !== next.vpnStatus) {
-            this.setState({ status: next.vpnStatus, counter: 1 })
+            this.setState({ status: next.vpnStatus, counter: 0 })
         }
     }
 
@@ -131,14 +132,11 @@ class Footer extends Component {
             else {
                 this.setState({
                     openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
-                    counter: 1, showAlert: false, isDisabled: false
+                    counter: 1, rateDialog: true, showAlert: false, isDisabled: false
                 });
                 this.props.clearUsage();
                 this.props.setVpnStatus(false);
                 deleteTmAccount();
-                setTimeout(() => {
-                    this.props.setCurrentTab('vpnHistory');
-                }, 1200);
             }
         })
     }
@@ -203,12 +201,11 @@ class Footer extends Component {
         let language = this.props.language;
         let { vpnStatus, currentUsage, isTm, classes } = this.props;
         let counter = this.state.counter;
-        console.log("CUrrent..", currentUsage ? currentUsage : true);
-        downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
+        downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down / (1024 * 1024) : downloadData);
 
         // Sending signature for every 10mb of usage
         if (vpnStatus && isTm && downloadData >= counter * 10) {
-            this.sendSignature(downloadData, false, counter);
+            this.sendSignature(counter === 0 ? 0 : downloadData, false, counter);
         }
 
         // Check vpn connection in ethereum net whether 900 mb used
@@ -217,8 +214,14 @@ class Footer extends Component {
         }
 
         // Automatically disconnecting vpn in TM when full data is used
-        if (vpnStatus && isTm && currentUsage && 'message' in currentUsage) {
+        if (vpnStatus && isTm && currentUsage && 'message' in currentUsage && downloadData !== 0) {
             if (currentUsage.message === 'Wrong details.' && !this.state.disconnectCalled) {
+                notifier.notify({
+                    title: 'Vpn Disconnected',
+                    message: 'Used full quota',
+                    sound: true,
+                    wait: false
+                });
                 this.disconnectTMVpn();
             }
         }

@@ -15,6 +15,7 @@ import TMSessions from './TMSessions';
 import TMTransactionsHistory from './TMTransactionsHistory';
 import TMTransfer from './TMTransfer';
 import TMRecoverWallet from './TMRecoverWallet';
+import AddNode from './AddNode';
 
 class LayoutComponent extends Component {
     constructor(props) {
@@ -51,6 +52,15 @@ class LayoutComponent extends Component {
                         </div>
                     )
                 }
+
+            case 'addNode':
+            {
+                return (
+                    <div style={vpnhistoryStyles.contianer}>
+                         <AddNode />                     
+                    </div>
+                )
+            }
             case 'swixer':
                 {
                     return <Swixer />

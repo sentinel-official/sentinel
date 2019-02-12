@@ -9,13 +9,14 @@ import { setCurrentTab } from '../Actions/sidebar.action';
 import TextField from '@material-ui/core/TextField';
 import { MuiThemeProvider } from 'material-ui/styles';
 import lang from '../Constants/language';
-import './ratingStyle.css'
+import './ratingStyle.css';
 
 class RatingDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rateValue: 5
+            rateValue: 5,
+            comments: ''
         }
     }
 
@@ -25,7 +26,7 @@ class RatingDialog extends React.Component {
     };
 
     handleOk = () => {
-        rateVPNSession(this.state.rateValue, (err) => {
+        rateVPNSession(this.state.rateValue, this.props.isTm, this.state.comments, (err) => {
             if (err) {
                 this.props.onClose();
                 let regError = (err.message).replace(/\s/g, "");
@@ -39,6 +40,7 @@ class RatingDialog extends React.Component {
             }
         })
     };
+
 
     render() {
         let { language, ...other } = this.props;
@@ -56,17 +58,20 @@ class RatingDialog extends React.Component {
                         <Rating
                             value={this.state.rateValue}
                             max={5}
-                            onChange={(value) => { this.setState({ rateValue: value }) }}
+                            onChange={(value) => { 
+                                this.setState({ rateValue: value }); 
+                            }}
                         />
                         <TextField
                             id="filled-multiline-flexible"
                             label={lang[language].Comment}
                             multiline
                             rowsMax="4"
-                            value={this.state.multiline}
+                            value={this.state.comments}
                             className="commentField"
                             margin="normal"
                             variant="filled"
+                            onChange={(e) => { this.setState({ comments: e.target.value }) }}
                         />
                     </DialogContent>
                     <DialogActions>
@@ -90,7 +95,8 @@ RatingDialog.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        language: state.setLanguage
+        language: state.setLanguage,
+        isTm: state.setTendermint,
     }
 }
 

@@ -28,6 +28,15 @@ const accountStyles = {
         justifyContent: 'center',
        marginTop:70, // changed from 474
     },
+
+
+    nodeFormStyle: {
+
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+       marginTop:50, // changed from 474
+    },
     titleStyle: {
         color: '#3f3f94',
         fontWeight: 500,

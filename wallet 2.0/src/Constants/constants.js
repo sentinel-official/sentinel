@@ -48,18 +48,6 @@ module.exports = {
     ],
 
     testMenuItemsIcons: [
-        // {
-        //     'name': 'TM',
-        //     'value': 'tmint',
-        //     'icon': 'tmintIcon'
-        // },
-
-        // {
-        //     'name': 'ETH',
-        //     'value': 'eth',
-        //     'icon': 'ethereumIcon'
-        // },
-
         {
             'name': 'VpnList',
             'value': 'vpnList',
@@ -86,6 +74,11 @@ module.exports = {
             'name': 'TxHistory',
             'value': 'history',
             'icon': 'historyIcon'
+        },
+        {
+            'name': 'AddNode',
+            'value': 'addNode',
+            'icon': 'nodeIcon'
         },
 
 

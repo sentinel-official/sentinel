@@ -18,25 +18,11 @@ import ListIcon from '@material-ui/icons/List';
 import ReceiveIcon from '@material-ui/icons/CallReceived';
 import VpnHisIcon from '@material-ui/icons/VpnLock';
 import BackIcon from '@material-ui/icons/KeyboardBackspace';
-import { Drawer, IconButton, Tooltip } from '@material-ui/core';
+import {  Tooltip } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import BackArrowIcon from '@material-ui/icons/ArrowBackOutlined';
 import { compose } from 'recompose';
 import lang from '../Constants/language';
-
-
-
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import StarBorder from '@material-ui/icons/StarBorder';
 
 import './sidebarStyle.css'
 
@@ -148,8 +134,13 @@ class Sidebar extends Component {
             return <img src={'../src/Images/create.svg'} alt="create_logo"
                     style={{ width: 25, paddingBottom: 7, marginTop: -3}} />
         }
+
         if( iconName === 'recoverIcon'){
             return <img src={'../src/Images/recover.svg'} alt="recover_logo"
+                    style={{ width: 25, paddingBottom: 7, marginTop: -3}} />
+        }
+        if( iconName === 'nodeIcon'){
+            return <img src={'../src/Images/node.svg'} alt="node_logo"
                     style={{ width: 25, paddingBottom: 7, marginTop: -3}} />
         }
         if (iconName === 'tmintIcon') {

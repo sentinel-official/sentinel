@@ -69,14 +69,26 @@ export function payVPNTM(data) {
     }
 }
 
-export async function rateVPNSession(value, cb) {
+export async function rateVPNSession(value, isTm, comments, cb) {
     try {
-        let data = {
-            vpn_addr: localStorage.getItem('CONNECTED_VPN'),
-            rating: value,
-            session_name: localStorage.getItem('SESSION_NAME')
+        let data, url;
+        if (isTm) {
+            url = TMain_URL + '/ratings';
+            data = {
+                fromAccountAddress: localStorage.getItem('tmAccount'),
+                rating: value,
+                sessionId: localStorage.getItem('SESSION_NAME'),
+                comments: comments
+            }
+        } else {
+            url = B_URL + '/client/vpn/rate';
+            data = {
+                vpn_addr: localStorage.getItem('CONNECTED_VPN'),
+                rating: value,
+                session_name: localStorage.getItem('SESSION_NAME')
+            }
         }
-        let response = await axios.post(B_URL + '/client/vpn/rate', data, {
+        let response = await axios.post(url, data, {
             headers: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json',

@@ -23,7 +23,9 @@
     "material-ui-rating": "^2.0.0",
     "moment": "^2.22.2",
     "net-stat": "^2.0.1",
+    "node-notifier": "^5.3.0",
     "path": "^0.12.7",
+    "ssh2": "^0.8.2",
     "sudo-prompt": "^8.1.0",
     "url": "^0.11.0"
   },

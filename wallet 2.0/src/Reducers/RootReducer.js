@@ -16,6 +16,7 @@ import { VPNUsage } from './vpnUsage'
 import { getKeys, setTMComponent, tmBalance, setTMAccount } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
 import { getSessionInfo, sessionHistory } from './tmvpn.reducer';
+import { getDockerImages, getDockerContainers, getImagesClients, isLoggedOutNode , connectionStatus} from './node.reducer';
 import { networkChange } from './NetworkChange'
 
 const rootReducer = combineReducers({
@@ -56,7 +57,12 @@ const rootReducer = combineReducers({
     networkChange,
     getActiveVpn,
     getCurrentVpn,
-    sessionHistory
+    sessionHistory,
+    getDockerImages,
+    getDockerContainers,
+    getImagesClients,
+    isLoggedOutNode,
+    connectionStatus
 });
 
 export default rootReducer;

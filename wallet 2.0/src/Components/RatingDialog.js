@@ -11,12 +11,14 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import lang from '../Constants/language';
 import './ratingStyle.css';
 
+let ratingStatements = ['Worst', 'Awful', 'Poor', 'Okay', 'Good', 'Excellent']
+
 class RatingDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             rateValue: 5,
-            comments: ''
+            comments: 'Excellent'
         }
     }
 
@@ -58,8 +60,8 @@ class RatingDialog extends React.Component {
                         <Rating
                             value={this.state.rateValue}
                             max={5}
-                            onChange={(value) => { 
-                                this.setState({ rateValue: value }); 
+                            onChange={(value) => {
+                                this.setState({ rateValue: value, comments: ratingStatements[value] });
                             }}
                         />
                         <TextField

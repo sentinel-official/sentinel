@@ -217,8 +217,8 @@ class Footer extends Component {
         if (vpnStatus && isTm && currentUsage && 'message' in currentUsage && downloadData !== 0) {
             if (currentUsage.message === 'Wrong details.' && !this.state.disconnectCalled) {
                 notifier.notify({
-                    title: 'Vpn Disconnected',
-                    message: 'Used full quota',
+                    title: lang[language].DisconnectVPN,
+                    message: lang[language].QuotaFull,
                     sound: true,
                     wait: false
                 });

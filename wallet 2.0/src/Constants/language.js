@@ -389,7 +389,8 @@ let lang = {
         "NoNodeData" : "No Data Found",
         "Clients" : "Clients",
         "Logout" : "Logout",
-        "Logging" : "Logging In..."
+        "Logging" : "Logging In...",
+        "QuotaFull":"Full Quota of VPN used",
     },
 
 
@@ -787,6 +788,7 @@ let lang = {
         "Clients" : "Clients",
         "Logout" : "Logout",
         "Logging" : "Logging In...",
+        "QuotaFull":"Full Quota of VPN used",
         
     },
 
@@ -1186,6 +1188,7 @@ let lang = {
         "Clients" : "Clients",
         "Logout" : "Logout",
         "Logging" : "Logging In...",
+        "QuotaFull":"Full Quota of VPN used",
 
     },
     es: {
@@ -1581,6 +1584,7 @@ let lang = {
         "Clients" : "Clients",
         "Logout" : "Logout",
         "Logging" : "Logging In...",
+        "QuotaFull":"Cuota completa de vpn utilizada",
     },
     ru: {
         "History": "История",
@@ -1976,6 +1980,7 @@ let lang = {
         "Clients" : "клиенты",
         "Logout" : "Выйти",
         "Logging" : "Вход в систему...",
+        "QuotaFull":"Используется полная квота vpn",
     },
 
     zh: {
@@ -2372,7 +2377,7 @@ let lang = {
         "Clients" : "客户端",
         "Logout" : "登出",
         "Logging" : "在登录...",
-
+        "QuotaFull":"使用过vpn的完整配额",
     },
 }
 

@@ -6,60 +6,74 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import CustomButton from "./customButton";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { compose } from 'recompose';
 import CopyIcon from "@material-ui/icons/FileCopyOutlined";
 import lang from '../Constants/language';
-import {logoutNode } from '../Actions/node.action';
-import { setCurrentTab } from '../Actions/sidebar.action';
+import { logoutNode, } from '../Actions/node.action';
 import addNode from './AddNode';
-
+import { setDockerImages, setDockerContainers, } from '../Actions/node.action';
 import "./nodeStyle.css";
-import AddNode from "./AddNode";
 
 
-let NM = require('../nm-tools/nm');
-
-var nm = new NM()
-
+let ImagesInterval = null;
+let ContainersInterval = null;
 class NodeManagement extends React.Component {
   state = {
     isActive: "true",
     showing: "Images",
-    parent : false,
   };
 
   componentWillMount = () => {
-    
+
   }
   componentWillUnmount = () => {
     // localStorage.setItem("Connected" , false)
   }
-  handleNodeLogout(){
-    this.props.logoutNode(true);
-    this.setState({ parent: true});
+
+  handleNodeLogout = () => {
+    this.props.logoutNode();
+   
+      // console.log("clearing the interval")
+      // if(ImagesInterval){
+      //   // console.log("clearing image")
+      //   clearInterval(ImagesInterval);
+      //   ImagesInterval = null;
+      // }
+      if(ContainersInterval){
+        // console.log("clearing cont")
+        clearInterval(ContainersInterval);
+        ContainersInterval = null;
+      }
+       
+    
+
   }
   showListOf(val) {
     this.setState({ showing: val });
-   
+
   }
   render() {
 
-    let { classes, language} = this.props;
+    let { classes, language, connectionStatus } = this.props;
     // console.log("node add props ", this.props)
+    if (connectionStatus === true &&  !ContainersInterval) {
+  
+      ContainersInterval = setInterval(() => {
+        this.props.setDockerContainers();
+    }, 15000);
+  }
+ 
 
-    
     this.onClickRefresh = () => {
-      
+      // console.log("refreshed ");
+      this.props.setDockerImages(); 
+      this.props.setDockerContainers();
     };
 
     return (
 
-      <div>
-        {this.state.parent === true ? < AddNode /> :  
-     
       <div className="mainDiv">
         <div className="SecondDiv">
-          <div className="heading">{this.state.showing === "Images" ? lang[language].ImagesList : lang[language].ContainersList }</div>
+          <div className="heading">{this.state.showing === "Images" ? lang[language].ImagesList : lang[language].ContainersList}</div>
           <div className="buttonsGroup">
             {/* <div className="giveSpace">
               <IconButton
@@ -94,7 +108,7 @@ class NodeManagement extends React.Component {
             <div className="logoutButton">
               <CustomButton
                 color={"#d9534f"}
-                danger ={true}
+                danger={true}
                 label={lang[language].Logout}
                 // active={this.state.showing === "Images"}
                 active={true}
@@ -106,25 +120,25 @@ class NodeManagement extends React.Component {
 
           </div>
         </div>
-        {this.state.showing === "Images" ? <ImagesList/> : <ContainersList/>}
+        {this.state.showing === "Images" ? <ImagesList /> : <ContainersList />}
       </div>
-        }
-         </div>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-      language: state.setLanguage,
-     
+    language: state.setLanguage,
+    connectionStatus : state.connectionStatus,
+
   }
 }
 
 function mapDispatchToActions(dispatch) {
   return bindActionCreators({
     logoutNode,
-    setCurrentTab,
+    setDockerImages,
+    setDockerContainers,
 
   }, dispatch)
 }

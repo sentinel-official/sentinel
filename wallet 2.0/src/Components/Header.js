@@ -60,22 +60,22 @@ class Header extends Component {
         let value = event.target.checked;
         let currentTab = this.props.currentTab;
         this.props.setTestNet(value);
-        this.props.setWalletType('TM')
+        this.props.setWalletType('ERC')
 
         if (value) {
-            this.props.setTendermint(true);
+            // this.props.setTendermint(true);
             this.props.setVpnType('openvpn');
             this.props.networkChange('public');
             this.setState({
-                walletType: 'TENDERMINT'
+                walletType: 'ERC20'
             })
-            if (this.props.tmAccountDetails) {
-                this.props.getTMBalance(this.props.tmAccountDetails.address);
-                this.props.setCurrentTab('vpnList');
-            }
-            else {
-                this.props.setCurrentTab('receive');
-            }
+            // if (this.props.tmAccountDetails) {
+            //     this.props.getTMBalance(this.props.tmAccountDetails.address);
+            //     this.props.setCurrentTab('vpnList');
+            // }
+            // else {
+            //     this.props.setCurrentTab('receive');
+            // }
         }
         if (!value) {
             this.props.setTendermint(false);
@@ -86,9 +86,9 @@ class Header extends Component {
             this.setState({
                 walletType: 'ERC20'
             })
-            this.props.getETHBalance(this.props.walletAddress);
-            this.props.getSentBalance(this.props.walletAddress);
         }
+        this.props.getETHBalance(this.props.walletAddress);
+        this.props.getSentBalance(this.props.walletAddress);
         if ((value && disabledItemsTest.includes(currentTab))) {
             this.props.setCurrentTab('receive');
         }
@@ -298,7 +298,7 @@ class Header extends Component {
                             <Tooltip title={this.props.vpnStatus ? lang[language].CannotSwitch : ''}>
                                 <div style={headerStyles.toggleStyle}>
                                     <Switch
-                                        disabled={this.props.vpnStatus}
+                                        disabled={this.props.vpnStatus || isTendermint}
                                         checked={this.props.isTest}
                                         onChange={this.testNetChange()}
                                         color="primary"
@@ -320,10 +320,11 @@ class Header extends Component {
 
                                 <Select
                                     displayEmpty
-                                    disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
+                                    // disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
+                                    disabled={true}
                                     value={this.props.walletValue} onChange={this.tendermintChange()}
 
-                                    className={this.props.isTest ? 'dropDownStyle' : 'disabledDropDownStyle'}
+                                    className={'dropDownStyle'}
                                 >
 
                                     <MenuItem value='TM'>
@@ -337,7 +338,7 @@ class Header extends Component {
                                         <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
                                             style={{ width: 12, paddingRight: 5, marginTop: -5 }} />
 
-                                        {lang[language].TestNetETH}
+                                        {isTest ? lang[language].TestNetETH : 'ETHEREUM MAINNET'}
                                     </MenuItem>
 
                                 </Select>

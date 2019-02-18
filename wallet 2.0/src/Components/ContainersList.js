@@ -4,13 +4,16 @@ import { bindActionCreators } from "redux";
 import { compose } from 'recompose';
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import { Card,} from "@material-ui/core";
-import CopyIcon from "@material-ui/icons/FileCopyOutlined";
+import { setDockerContainers } from '../Actions/node.action';
+import { Card,Tooltip, Snackbar} from "@material-ui/core";
 import lang from '../Constants/language';
-
+import CountUp from 'react-countup';
+import CopyIcon from "@material-ui/icons/FileCopyOutlined";
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { receiveStyles } from './../Assets/receive.styles';
 import "./nodeStyle.css";
 
-let NM = require('../nm-tools/nm');
+let NM = require('../NM-Tools/nm');
 var nm = new NM()
 
 const styles = theme => ({
@@ -33,21 +36,21 @@ const styles = theme => ({
 
 class ContainersList extends React.Component {
   state = {
-    ip: "",
-    root: "",
-    pwd: ""
+    openSnack: false,
+    snackMessage: '',
   };
 
   componentWillMount = () => {
-    
+    this.props.setDockerContainers();
   };
   handleClick() {
   }
   render() {
     let { language ,clientsData, ContainersData} = this.props;
+    // console.log("setting contatiner ", ContainersData, clientsData)
     return (
       <div className="listData">
-    {ContainersData === null ?
+    { (ContainersData === null || clientsData === null) ?
              <div style={{display: 'flex', justifyContent: 'center', paddingTop: '20%', fontSize: '25px'}}>{lang[language].Loading}</div> : 
           
           <div>
@@ -60,6 +63,16 @@ class ContainersList extends React.Component {
                   <label className="nodeLabel">
                   {lang[language].ID}:&nbsp;<span className="nodeValue">{item.ID}</span>
                   </label>
+                  <Tooltip title={lang[language].Copy}>
+                    <CopyToClipboard text={item.ID}
+                      onCopy={() => this.setState({
+                        snackMessage: lang[language].Copied,
+                        openSnack: true
+                      })}>
+
+                      <CopyIcon style={receiveStyles.clipBoard} />
+                    </CopyToClipboard>
+                  </Tooltip>
                 </div>
                 <div>
                   <label className="nodeLabel">
@@ -80,7 +93,7 @@ class ContainersList extends React.Component {
                 
                 <div>
                   <label className="nodeLabel">
-                  {lang[language].RunningFor}:&nbsp;<span className="nodeValue">{item.RunningFor}</span>
+                  {lang[language].RunningFor}:&nbsp;<span className="nodeValue">{item.RunningFor.slice(0,-3)}</span>
                   </label>
                 </div>
                 <div>
@@ -101,12 +114,15 @@ class ContainersList extends React.Component {
                     <span className="nodeValue">{item.Status} </span>
                   </label>
                 </div>
-                {/* <div>
+                <div>
                   <label className="nodeLabel">
                   {lang[language].Clients}:&nbsp;
-                    <span className="nodeValue">{ clientsData[i].trim()} </span>
+                    <span className="nodeValue">{ <CountUp start={0} end={clientsData[i]} />} </span>
+
+                    {/* <span className="nodeValue">{clientsData[i] === undefined ? "undef" : clientsData[i]} </span> */}
+
                   </label>
-                 </div> */}
+                 </div>
               </div>
             </Card>
          
@@ -114,6 +130,13 @@ class ContainersList extends React.Component {
         })}
         </div>
             }
+
+                <Snackbar
+                    open={this.state.openSnack}
+                    autoHideDuration={4000}
+                    onClose={this.handleClose}
+                    message={this.state.snackMessage}
+                />
       </div>
       
     );
@@ -136,7 +159,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
   return bindActionCreators({
-
+    setDockerContainers,
   }, dispatch)
 }
 

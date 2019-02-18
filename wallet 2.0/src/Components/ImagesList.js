@@ -2,14 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { setDockerImages } from '../Actions/node.action';
 import { withStyles } from "@material-ui/core/styles";
-import { Card} from "@material-ui/core";
+import { Card,Tooltip, Snackbar} from "@material-ui/core";
 import { compose } from 'recompose';
 import lang from '../Constants/language';
+import CopyIcon from "@material-ui/icons/FileCopyOutlined";
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { receiveStyles } from './../Assets/receive.styles';
 
 import "./nodeStyle.css";
 
-let NM = require('../nm-tools/nm');
+let NM = require('../NM-Tools/nm');
 
 var nm = new NM() 
 
@@ -33,16 +37,19 @@ const styles = theme => ({
 
 class ImagesList extends React.Component {
   state = {
-  containerData : ''
+  containerData : '',
+  openSnack: false,
+  snackMessage: '',
   };
 
   componentWillMount = () => {
-   
+    this.props.setDockerImages() 
   }
   handleClick() {
   }
   render() {
     let {  language,  ImagesData } = this.props;
+    // console.log(" setting images list ", ImagesData);
 
     return (
       <div className="listData">
@@ -60,6 +67,16 @@ class ImagesList extends React.Component {
                   {lang[language].ID}:&nbsp;
                     <span className="nodeValue">{item.ID}</span>
                   </label>
+                  <Tooltip title={lang[language].Copy}>
+                    <CopyToClipboard text={item.ID}
+                      onCopy={() => this.setState({
+                        snackMessage: lang[language].Copied,
+                        openSnack: true
+                      })}>
+
+                      <CopyIcon style={receiveStyles.clipBoard} />
+                    </CopyToClipboard>
+                  </Tooltip>
                 </div>
                 <div>
                   <label className="nodeLabel">
@@ -102,6 +119,12 @@ class ImagesList extends React.Component {
         })}
         </div>
             }
+             <Snackbar
+                    open={this.state.openSnack}
+                    autoHideDuration={4000}
+                    onClose={this.handleClose}
+                    message={this.state.snackMessage}
+                />
       </div>
       
     );
@@ -123,6 +146,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
   return bindActionCreators({
+    setDockerImages,
 
   }, dispatch)
 }

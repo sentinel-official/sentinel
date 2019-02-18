@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Home from './Components/Home';
 import Create from './Components/Create';
 import Authenticate from './Components/Authenticate';
+import SelectScreen from './Components/SelectScreen';
 import { defaultPageStyle } from './Assets/authenticate.styles';
 import { Dialog, DialogActions, DialogContent, Button, DialogTitle, DialogContentText } from '@material-ui/core';
 import { connect } from 'react-redux';
@@ -51,12 +52,13 @@ class App extends Component {
         });
         setTimeout(() => {
             if (!isErr) {
-                readFile(KEYSTORE_FILE, function (err) {
-                    setTimeout(function () {
-                        if (err) that.props.setComponent('home');
-                        else that.props.setComponent('authenticate');
-                    }, 1000);
-                })
+                // readFile(KEYSTORE_FILE, function (err) {
+                // setTimeout(function () {
+                //     if (err) that.props.setComponent('home');
+                //     else that.props.setComponent('authenticate');
+                // }, 1000);
+                // })
+                this.props.setComponent('home');
             }
         }, 1500);
     };
@@ -92,7 +94,7 @@ class App extends Component {
                 }
             case 'home':
                 {
-                    return <Home />
+                    return <SelectScreen />
                 }
             case 'terms':
                 {

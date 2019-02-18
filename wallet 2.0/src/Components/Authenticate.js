@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { sendError, setComponent, getPrivateKey } from '../Actions/authentication.action';
+import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
 import { authenticateStyles } from './../Assets/authenticate.styles'
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -59,7 +60,10 @@ class Authenticate extends Component {
                     })
                 }
                 else {
-                    self.setState({ statusSnack: false, password: '' })
+                    self.setState({ statusSnack: false, password: '' });
+                    self.props.setTestNet(false);
+                    self.props.setWalletType('ERC');
+                    self.props.setTendermint(false);
                     self.props.setComponent('dashboard');
                 }
             })
@@ -147,7 +151,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setComponent: setComponent
+        setComponent: setComponent,
+        setTestNet,
+        setTendermint,
+        setWalletType
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToActions)(Authenticate);

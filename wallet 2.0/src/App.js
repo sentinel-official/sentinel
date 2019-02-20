@@ -9,6 +9,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Receive from './Components/Receive';
 import { setLanguage, setComponent } from './Actions/authentication.action';
+import { setActiveVpn, setVpnType, setVpnStatus } from './Actions/vpnlist.action';
+import { setTestNet, setWalletType } from './Actions/header.action';
+import { getVPNConnectedData } from './Utils/VpnConfig';
+import { getStartValues } from './Actions/calculateUsage';
 import TermsAndConditions from './Components/TermsAndConditions';
 import { readFile } from './Utils/Keystore';
 import { KEYSTORE_FILE } from './Utils/Keystore';
@@ -40,6 +44,7 @@ class App extends Component {
     componentWillMount = () => {
         let that = this;
         let isErr = false;
+        console.log("In..");
         localStorage.setItem('isTM', false);
         localStorage.setItem('B_URL', B_URL);
         document.getElementById('home').style.display = 'none';
@@ -58,7 +63,20 @@ class App extends Component {
                 //     else that.props.setComponent('authenticate');
                 // }, 1000);
                 // })
-                this.props.setComponent('home');
+                getVPNConnectedData((err, data, sock) => {
+                    if (err) {
+                        this.props.setComponent('home');
+                    }
+                    else {
+                        this.props.setTestNet(true);
+                        this.props.setActiveVpn(data);
+                        this.props.setVpnType(sock ? 'socks5' : 'openvpn');
+                        this.props.setVpnStatus(true);
+                        this.props.setWalletType('ERC');
+                        getStartValues();
+                        this.props.setComponent('authenticate');
+                    }
+                })
             }
         }, 1500);
     };
@@ -94,7 +112,7 @@ class App extends Component {
                 }
             case 'home':
                 {
-                    return <SelectScreen />
+                    return <Home />
                 }
             case 'terms':
                 {
@@ -141,7 +159,12 @@ class App extends Component {
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         setLanguage: setLanguage,
-        setComponent: setComponent
+        setComponent: setComponent,
+        setActiveVpn,
+        setTestNet,
+        setWalletType,
+        setVpnStatus,
+        setVpnType,
     }, dispatch);
 }
 

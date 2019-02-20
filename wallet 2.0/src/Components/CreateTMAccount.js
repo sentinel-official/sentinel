@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { setTMAccount } from '../Actions/tendermint.action';
+import { setTMAccount, setTMAccountslist, getKeys } from '../Actions/tendermint.action';
 import { createTMAccount } from '../Actions/createTM.action';
 import { setTMConfig } from '../Utils/UserConfig';
 import CustomTextField from './customTextfield';
@@ -62,14 +62,21 @@ class CreateTMAccount extends Component {
                 })
             }
             else {
-                setTMConfig(this.state.keyName);
+                setTMConfig(this.state.keyName, true);
+                let tmAccounts = this.props.accountsList;
+                tmAccounts.push(this.state.keyName);
+                this.props.setTMAccountslist(tmAccounts);
                 let data = {
                     name: res.payload.name,
                     type: res.payload.type,
                     address: res.payload.address,
                     pub_key: res.payload.pub_key
-                }
+                };
+                this.props.getKeys();
                 this.props.setTMAccount(data);
+                if (this.props.isPopup) {
+                    this.props.accountCreated(true);
+                }
             }
         });
     }
@@ -82,23 +89,23 @@ class CreateTMAccount extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, isPopup } = this.props;
         let language = this.props.lang;
         let isDisabled = (this.state.keyName === '' || this.state.keyPassword === '') ? true : false
         return (
-            <div style={createAccountStyle.formStyle}>
+            <div style={isPopup ? {} : createAccountStyle.formStyle}>
                 <div> <h2 style={createAccountStyle.createStyle}><center>  {lang[language].CreateWalletSST}</center></h2></div>
-                <div style={createAccountStyle.secondDivStyle}>
+                <div style={isPopup ? {} : createAccountStyle.secondDivStyle}>
                     <p style={createAccountStyle.headingStyle}>{lang[language].AccountName}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false}
-                     multi={false}
-                      value={this.state.keyName}
+                        multi={false}
+                        value={this.state.keyName}
                         onChange={(e) => { this.setState({ keyName: e.target.value }) }}
                     />
                     <p style={createAccountStyle.headingStyle}>{lang[language].AccountPwd}</p>
                     <CustomTextField type={this.state.showPassword ? 'text' : 'password'} placeholder={''} disabled={false} value={this.state.keyPassword}
                         multi={false}
-                       onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
+                        onChange={(e) => { this.setState({ keyPassword: e.target.value }) }}
                     />
 
                     <IconButton
@@ -133,20 +140,24 @@ class CreateTMAccount extends Component {
 
 CreateTMAccount.propTypes = {
     classes: PropTypes.object.isRequired,
+    accountCreated: PropTypes.func
 };
 
 
 function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
-        isTest: state.setTestNet
+        isTest: state.setTestNet,
+        accountsList: state.getTMAccountsList
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         createTMAccount,
-        setTMAccount
+        setTMAccount,
+        setTMAccountslist,
+        getKeys
     }, dispatch)
 }
 

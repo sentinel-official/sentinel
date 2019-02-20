@@ -68,13 +68,13 @@ const headerStyles = {
         color: '#FAFAFA',
         marginTop: '-5%'
     },
-  
+
     tmBalance: {
         fontSize: 14,
         fontWeight: '600',
         color: '#FAFAFA',
         marginTop: '1%',
-        marginLeft:-110,
+        marginLeft: -110,
     },
     sentBalance: {
         fontSize: 14,
@@ -144,6 +144,16 @@ const headerStyles = {
     },
     noDrop: {
         cursor: 'noDrop',
+    },
+    popperDiv: {
+        zIndex: 2
+    },
+    menuItemStyle: {
+        height: 20
+    },
+    menuListStyle: {
+        maxHeight: 150,
+        overflowY: 'auto'
     }
 }
 

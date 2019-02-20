@@ -16,9 +16,10 @@ import IconButton from "@material-ui/core/IconButton";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import NodeManagement from './NodeManagement';
+import { setDockerContainers } from '../Actions/node.action';
 import './nodeStyle.css';
 
-
+let ContainersInterval = null;
 const Customstyles = theme => ({
     button: {
         margin: theme.spacing.unit,
@@ -96,10 +97,30 @@ class AddNode extends Component {
 
         })
 
-
     }
+
+    handleLogout = () => {
+        this.props.logoutNode();
+        if (ContainersInterval) {
+            // console.log("clearing cont")
+            clearInterval(ContainersInterval);
+            ContainersInterval = null;
+        }
+    }
+
     render() {
         let { classes, language, connectionStatus, logout } = this.props;
+        if (connectionStatus === true && !ContainersInterval) {
+            ContainersInterval = setInterval(() => {
+                this.props.setDockerContainers();
+            }, 15000);
+        }
+
+        if (!connectionStatus && ContainersInterval) {
+            // console.log("clearing cont")
+            clearInterval(ContainersInterval);
+            ContainersInterval = null;
+        }
 
         let isDisabled = (this.state.sending || this.state.username === '' ||
             this.state.password === '') ? true : false
@@ -146,7 +167,7 @@ class AddNode extends Component {
                         </div>
                     </div>
                     :
-                    <NodeManagement />
+                    <NodeManagement logoutNode={this.handleLogout} />
                 }
 
                 <Snackbar
@@ -180,8 +201,7 @@ function mapDispatchToActions(dispatch) {
         logoutNode,
         isConnected,
         connectToNodeDocker,
-
-
+        setDockerContainers
     }, dispatch)
 }
 

@@ -39,6 +39,7 @@ export const TENDERMINT = 'TENDERMINT';
 export const TM_PAY_VPN = 'TM_PAY_VPN';
 export const PAY_VPN = 'PAY_VPN';
 export const SET_TM_ACCOUNT = 'SET_TM_ACCOUNT';
+export const SET_TM_ACCOUNTS_LIST = 'SET_TM_ACCOUNTS_LIST';
 export const GET_SESSION_INFO = 'GET_SESSION_INFO';
 export const NETWORK_TYPE = 'NETWORK_TYPE';
 export const SET_ACTIVE_VPN = 'SET_ACTIVE_VPN';

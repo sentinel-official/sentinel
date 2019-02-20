@@ -13,10 +13,10 @@ import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 import { connectVPNReducer } from './connectVPN.reducer'
 import { initPaymentDetails } from './initPayment.reducer';
 import { VPNUsage } from './vpnUsage'
-import { getKeys, setTMComponent, tmBalance, setTMAccount } from './tendermint.reducer';
+import { getKeys, setTMComponent, tmBalance, setTMAccount, getTMAccountsList } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
 import { getSessionInfo, sessionHistory } from './tmvpn.reducer';
-import { getDockerImages, getDockerContainers, getImagesClients, isLoggedOutNode , connectionStatus, isNMConnected} from './node.reducer';
+import { getDockerImages, getDockerContainers, getImagesClients, isLoggedOutNode, connectionStatus, isNMConnected } from './node.reducer';
 import { networkChange } from './NetworkChange'
 
 const rootReducer = combineReducers({
@@ -53,6 +53,7 @@ const rootReducer = combineReducers({
     setTendermint,
     payVPNTM,
     setTMAccount,
+    getTMAccountsList,
     sessionInfo: getSessionInfo,
     networkChange,
     getActiveVpn,

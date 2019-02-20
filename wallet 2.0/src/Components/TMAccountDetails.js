@@ -56,17 +56,17 @@ class TMAccountDetails extends Component {
     };
 
     render() {
-        const { classes, account, language } = this.props;
+        const { classes, account, language, isPopup } = this.props;
         return (
-            <div style={{ padding: '3% 8%' }}>
+            <div style={isPopup ? {} : { padding: '3% 8%' }}>
                 <h3 style={createPagestyles.headingCreate}>{lang[language].TMBeCareful}</h3>
                 <hr width="50%" align="left" size="3" noshade style={createPagestyles.hr_color} />
                 <p style={createPagestyles.copyHeading}>{lang[language].TMCopyKeys}</p>
                 <p style={createAccountStyle.detailsHeading}>{lang[language].Address}&nbsp;:</p>
 
-                <div style={createAccountStyle.copyDiv}>
+                <div style={{}}>
 
-                    <p style={createAccountStyle.detailsText}>{account.address}</p>
+                    <span style={createAccountStyle.detailsText}>{account.address}</span>
                     <Tooltip title={lang[language].Copy}>
                         <CopyToClipboard text={account.address ? account.address : lang[language].Loading}
                             onCopy={() => this.setState({
@@ -82,8 +82,8 @@ class TMAccountDetails extends Component {
 
                 <p style={createAccountStyle.detailsHeading}>{lang[language].PubKey}&nbsp;:</p>
 
-                <div style={createAccountStyle.copyDiv}>
-                    <p style={createAccountStyle.detailsText}>{account.pub_key}</p>
+                <div style={{}}>
+                    <span style={createAccountStyle.detailsText}>{account.pub_key}</span>
                     <Tooltip title={lang[language].Copy}>
                         <CopyToClipboard text={account.pub_key ? account.pub_key : lang[language].Loading}
                             onCopy={() => this.setState({
@@ -110,26 +110,31 @@ class TMAccountDetails extends Component {
                         </CopyToClipboard>
                     </Tooltip>
                 </div>
-
-                <div style={createAccountStyle.checkboxDiv} >
-                    <Checkbox
-                        checked={this.state.checked}
+                {isPopup ?
+                    null :
+                    <div style={createAccountStyle.checkboxDiv} >
+                        <Checkbox
+                            checked={this.state.checked}
+                            color="primary"
+                            onChange={() => this.handleChange()}
+                        />
+                        <h3 style={createPagestyles.headingCreate}>{lang[language].TMYesUnderstood}</h3>
+                    </div>
+                }
+                {isPopup ?
+                    null :
+                    <Button
+                        variant="outlined"
                         color="primary"
-                        onChange={() => this.handleChange()}
-                    />
-                    <h3 style={createPagestyles.headingCreate}>{lang[language].TMYesUnderstood}</h3>
-                </div>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    disabled={this.state.checked ? false : true}
-                    onClick={() => { this.gotoDashboard() }}
-                    className={classes.enableButton}
-                    className={this.state.checked ? classes.enableButton : classes.disableButton}
-                    style={createAccountStyle.gotoTMWalletbuttonStyle}>
+                        disabled={this.state.checked ? false : true}
+                        onClick={() => { this.gotoDashboard() }}
+                        className={classes.enableButton}
+                        className={this.state.checked ? classes.enableButton : classes.disableButton}
+                        style={createAccountStyle.gotoTMWalletbuttonStyle}>
 
-                    {lang[language].GoToSTWallet}
-                </Button>
+                        {lang[language].GoToSTWallet}
+                    </Button>
+                }
                 <Snackbar
                     open={this.state.openSnack}
                     autoHideDuration={4000}

@@ -7,6 +7,9 @@ import {
 import Toolbar from '@material-ui/core/Toolbar';
 import { bindActionCreators } from 'redux';
 import { createAccount, sendError, setComponent } from '../Actions/authentication.action';
+import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
+import { disabledItemsMain } from '../Constants/constants';
+import { setCurrentTab } from './../Actions/sidebar.action';
 import { isOnline } from './../Utils/UserConfig';
 import { uploadKeystore } from './../Utils/Keystore';
 import ReactTooltip from 'react-tooltip';
@@ -124,11 +127,11 @@ class Create extends Component {
         })
         var keystore = this.state.keystore;
         var password = this.state.keystorePassword;
-        var that = this;
+        var self = this;
         setTimeout(function () {
-            that.getPrivateKey(keystore, password, function (err, private_key) {
+            self.getPrivateKey(keystore, password, function (err, private_key) {
                 if (err) {
-                    that.setState({
+                    self.setState({
                         snackOpen: false,
                         openSnack: true,
                         snackMessage: err.message
@@ -138,7 +141,15 @@ class Create extends Component {
                     uploadKeystore(keystore, function (err, keystotefile) {
                         if (err) sendError(err);
                         else {
-                            that.props.setComponent('dashboard');
+                            let currentTab = self.props.currentTab;
+                            self.props.setTestNet(false);
+                            if (disabledItemsMain.includes(currentTab))
+                                self.props.setCurrentTab('send');
+                            else
+                                self.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
+                            self.props.setWalletType('ERC');
+                            self.props.setTendermint(false);
+                            self.props.setComponent('dashboard');
                         }
                     })
                 }
@@ -266,14 +277,19 @@ class Create extends Component {
 function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
-        createAccountResponse: state.createAccount
+        createAccountResponse: state.createAccount,
+        currentTab: state.setCurrentTab,
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         createAccount: createAccount,
-        setComponent: setComponent
+        setComponent: setComponent,
+        setTestNet,
+        setTendermint,
+        setWalletType,
+        setCurrentTab
     }, dispatch)
 }
 

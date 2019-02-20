@@ -54,13 +54,13 @@ class LayoutComponent extends Component {
                 }
 
             case 'addNode':
-            {
-                return (
-                    <div style={vpnhistoryStyles.contianer}>
-                         <AddNode />                     
-                    </div>
-                )
-            }
+                {
+                    return (
+                        <div style={vpnhistoryStyles.contianer}>
+                            <AddNode />
+                        </div>
+                    )
+                }
             case 'swixer':
                 {
                     return <Swixer />
@@ -75,7 +75,7 @@ class LayoutComponent extends Component {
                 }
             case 'recover':
                 {
-                    return <TMRecoverWallet />
+                    return <TMRecoverWallet isPopup={false} />
                 }
             default:
                 {

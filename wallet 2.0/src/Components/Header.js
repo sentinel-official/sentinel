@@ -2,29 +2,51 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {
-    Switch, Snackbar, Tooltip, IconButton
+    Switch, Snackbar, Tooltip, IconButton, Menu, MenuItem, MenuList,
+    Select, Paper, Grow, ClickAwayListener, Popper, Divider, ListItemText, ListItemIcon
 } from '@material-ui/core';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { headerStyles } from '../Assets/header.styles';
 import { setTestNet, getETHBalance, getSentBalance, setTendermint, setWalletType } from '../Actions/header.action';
-import { getTMBalance } from '../Actions/tendermint.action';
+import { setComponent } from '../Actions/authentication.action';
+import { getTMBalance, getKeys, setTMAccount } from '../Actions/tendermint.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
+import { logoutNode } from './../Actions/node.action';
+import { setTMConfig } from '../Utils/UserConfig';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import LogoutIcon from '@material-ui/icons/PowerSettingsNew';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import AddIcon from '@material-ui/icons/Add';
+import ImportIcon from '@material-ui/icons/PlayForWork';
+import AccountIcon from '@material-ui/icons/AccountBox';
+import DoneIcon from '@material-ui/icons/Done';
 import SimpleMenuTestnet from './SharedComponents/SimpleMenuTestnet';
-import Select from '@material-ui/core/Select';
 import SendIcon from '@material-ui/icons/Send';
 import lang from '../Constants/language';
 import { networkChange } from '../Actions/NetworkChange';
 import { setVpnType } from '../Actions/vpnlist.action';
+import { withStyles } from '@material-ui/core/styles';
+import { compose } from 'recompose';
+import CreateImportDialog from './CreateImportDialog';
+import PropTypes from 'prop-types';
 import '../Assets/headerStyle.css';
 
 let notTMInterval = null;
 let TMInterval = null;
+
+const Customstyles = theme => ({
+    primaryText: {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        width: 100
+    },
+    paper: {
+        width: '50%',
+    },
+});
 
 class Header extends Component {
     constructor(props) {
@@ -35,7 +57,10 @@ class Header extends Component {
             isGetBalanceCalled: false,
             openAccountMenu: false,
             walletType: 'ERC20',
-            isLoading: false
+            isLoading: false,
+            openedMenu: false,
+            openCreateDialog: false,
+            isCreate: true
         }
     }
 
@@ -54,6 +79,26 @@ class Header extends Component {
     handleMenuToggle = () => {
         this.setState(state => ({ openAccountMenu: !state.openAccountMenu }));
     };
+
+    handleMenuClick = event => {
+        if (this.state.openedMenu) {
+            this.setState({ openedMenu: false });
+        } else {
+            this.setState({ openedMenu: true });
+        }
+    };
+
+    handleLogoutMenuClose = (event) => {
+        if (this.anchorEl.contains(event.target)) {
+            return;
+        }
+        this.setState({ openedMenu: false });
+    };
+
+    onLogoutClicked = () => {
+        this.props.logoutNode();
+        this.props.setComponent('home');
+    }
 
     testNetChange = () => event => {
 
@@ -144,24 +189,62 @@ class Header extends Component {
             });
     }
 
+    onClickedAccount = (name) => {
+        if (this.props.tmAccountDetails.name === name) {
+            this.setState({ openedMenu: false });
+        } else {
+            let mainAccount = this.props.keys.find(obj => obj.name === name);
+            setTMConfig(name, false);
+            if (TMInterval) {
+                clearInterval(TMInterval);
+                TMInterval = null;
+            }
+            this.props.logoutNode();
+            this.props.setTMAccount(mainAccount);
+            this.setState({ openedMenu: false });
+        }
+    }
+
+    handleDialogClose = () => {
+        this.setState({ openCreateDialog: false });
+    }
+
+    addTMAccount = () => {
+        this.setState({ openedMenu: false, isCreate: true, openCreateDialog: true });
+    }
+
+    importTMAccount = () => {
+        this.setState({ openedMenu: false, isCreate: false, openCreateDialog: true });
+    }
+
+    accountTmCreated = (value) => {
+        if (value) {
+            clearInterval(TMInterval);
+            TMInterval = null;
+            this.props.logoutNode();
+        }
+    }
+
     render() {
-        let { balance, isTendermint, tmAccountDetails, language, isTest, walletAddress } = this.props;
+        let { balance, isTendermint, tmAccountDetails, tmAccountsList, language, isTest, walletAddress } = this.props;
+        const { classes } = this.props;
 
-
-        if (!this.props.isTendermint && !notTMInterval) {
+        if (!isTendermint && !notTMInterval) {
+            this.getERCBalances();
             notTMInterval = setInterval(() => {
                 this.props.getETHBalance(walletAddress);
                 this.props.getSentBalance(walletAddress);
             }, 30000);
         }
 
-        if (this.props.isTendermint && !TMInterval && tmAccountDetails) {
+        if (isTendermint && !TMInterval && tmAccountDetails) {
+            this.getTMBalance();
             TMInterval = setInterval(() => {
                 this.props.getTMBalance(tmAccountDetails.address);
             }, 30000);
         }
 
-        if (this.props.isTendermint) {
+        if (isTendermint) {
             if (notTMInterval) {
                 clearInterval(notTMInterval);
                 notTMInterval = null;
@@ -218,7 +301,7 @@ class Header extends Component {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={3}>
                             {isTendermint ?
                                 (tmAccountDetails ?
                                     < div style={headerStyles.tmBalance}  >
@@ -306,54 +389,10 @@ class Header extends Component {
                                 </div>
                             </Tooltip>
                         </Col>
-
-
-
-
-
-                        <Col xs={3} style={headerStyles.alignRight}>
-
-                            <div
-
-                            >
-
-
-                                <Select
-                                    displayEmpty
-                                    // disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
-                                    disabled={true}
-                                    value={this.props.walletValue} onChange={this.tendermintChange()}
-
-                                    className={'dropDownStyle'}
-                                >
-
-                                    <MenuItem value='TM'>
-                                        <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
-                                            style={isTest ? { width: 15, paddingRight: 5, marginTop: -5 } : { width: 15, paddingRight: 5, marginTop: -5, opacity: 0.2 }} />
-
-                                        {lang[language].TestNetTM}
-                                    </MenuItem>
-                                    <MenuItem value='ERC'>
-                                        {/* <SendIcon /> */}
-                                        <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                                            style={{ width: 12, paddingRight: 5, marginTop: -5 }} />
-
-                                        {isTest ? lang[language].TestNetETH : 'ETHEREUM MAINNET'}
-                                    </MenuItem>
-
-                                </Select>
-
-
-                            </div>
-
-                        </Col>
-                        <Col xs={1}>
-
+                        <Col xsOffset={1} xs={1}>
                             {isTendermint ?
-
                                 <Tooltip title={lang[language].RefreshBalTM} placement="bottom-end">
                                     <IconButton onClick={() => { this.getTMBalance() }} style={headerStyles.buttonRefresh}>
-
                                         <RefreshIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -365,6 +404,88 @@ class Header extends Component {
                                 </Tooltip>
                             }
                         </Col>
+                        <Col xs={1}>
+                            <IconButton
+                                buttonRef={node => {
+                                    this.anchorEl = node;
+                                }}
+                                aria-owns={this.state.openedMenu ? 'long-menu' : undefined}
+                                aria-haspopup="true"
+                                disabled={this.props.vpnStatus}
+                                onClick={this.handleMenuClick}
+                                style={headerStyles.buttonRefresh}>
+                                <MoreVertIcon />
+                            </IconButton>
+                            <Popper open={this.state.openedMenu} anchorEl={this.anchorEl}
+                                placement={'bottom-end'}
+                                style={headerStyles.popperDiv}
+                                transition disablePortal>
+                                {({ TransitionProps, placement }) => (
+                                    <Grow
+                                        {...TransitionProps}
+                                        id="long-menu"
+                                        style={{ transformOrigin: placement === 'bottom' ? 'left top' : 'left bottom' }}
+                                    >
+                                        <Paper>
+                                            <ClickAwayListener onClickAway={this.handleLogoutMenuClose}>
+                                                {isTendermint && tmAccountDetails ?
+                                                    <div>
+                                                        <MenuList style={headerStyles.menuListStyle}>
+                                                            {
+                                                                tmAccountsList.map((item, index) => {
+                                                                    return (<MenuItem onClick={() => { this.onClickedAccount(item); }}
+                                                                        disabled={this.props.vpnStatus}>
+                                                                        <ListItemIcon>
+                                                                            <AccountIcon />
+                                                                        </ListItemIcon>
+                                                                        <ListItemText classes={{ primary: classes.primaryText }} inset
+                                                                            primary={item} />
+                                                                        {tmAccountDetails.name === item ?
+                                                                            <ListItemIcon>
+                                                                                <DoneIcon />
+                                                                            </ListItemIcon>
+                                                                            : null
+                                                                        }
+                                                                    </MenuItem>)
+                                                                })
+                                                            }
+                                                        </MenuList>
+                                                        <Divider variant="light" />
+                                                    </div>
+                                                    : null}
+                                                <MenuList>
+                                                    {isTendermint && tmAccountDetails ?
+                                                        <div>
+                                                            <MenuItem onClick={this.addTMAccount} style={{ height: 20 }}
+                                                                disabled={this.props.vpnStatus}>
+                                                                <ListItemIcon>
+                                                                    <AddIcon />
+                                                                </ListItemIcon>
+                                                                <ListItemText inset primary={lang[language].CreateAccount} />
+                                                            </MenuItem>
+                                                            <MenuItem onClick={this.importTMAccount} style={{ height: 20 }}
+                                                                disabled={this.props.vpnStatus}>
+                                                                <ListItemIcon>
+                                                                    <ImportIcon />
+                                                                </ListItemIcon>
+                                                                <ListItemText inset primary={`${lang[language].Recover} ${lang[language].Account}`} />
+                                                            </MenuItem>
+                                                        </div>
+                                                        : null}
+                                                    <MenuItem onClick={this.onLogoutClicked} style={{ height: 20 }}
+                                                        disabled={this.props.vpnStatus}>
+                                                        <ListItemIcon>
+                                                            <LogoutIcon />
+                                                        </ListItemIcon>
+                                                        <ListItemText inset primary="Logout" />
+                                                    </MenuItem>
+                                                </MenuList>
+                                            </ClickAwayListener>
+                                        </Paper>
+                                    </Grow>
+                                )}
+                            </Popper>
+                        </Col>
 
                     </Row>
                 </Grid>
@@ -374,10 +495,23 @@ class Header extends Component {
                     onClose={this.handleClose}
                     message={this.state.snackMessage}
                 />
+                <CreateImportDialog
+                    classes={{
+                        paper: classes.paper,
+                    }}
+                    open={this.state.openCreateDialog}
+                    isCreate={this.state.isCreate}
+                    tmAccountDone={this.accountTmCreated}
+                    onClose={this.handleDialogClose}
+                />
             </div >
         )
     }
 }
+
+Header.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
 
 function mapStateToProps(state) {
     return {
@@ -392,6 +526,8 @@ function mapStateToProps(state) {
         vpnStatus: state.setVpnStatus,
         balance: state.tmBalance,
         tmAccountDetails: state.setTMAccount,
+        tmAccountsList: state.getTMAccountsList,
+        keys: state.getKeys
     }
 }
 
@@ -405,8 +541,12 @@ function mapDispatchToActions(dispatch) {
         setWalletType,
         getTMBalance,
         networkChange,
-        setVpnType
+        setVpnType,
+        setComponent,
+        getKeys,
+        setTMAccount,
+        logoutNode
     }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToActions)(Header);
+export default compose(withStyles(Customstyles), connect(mapStateToProps, mapDispatchToActions))(Header);

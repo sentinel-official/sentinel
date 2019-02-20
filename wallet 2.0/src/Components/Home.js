@@ -3,16 +3,52 @@ import { homePageStyles } from './../Assets/authenticate.styles';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import { sendError, setComponent } from '../Actions/authentication.action';
+import { setCurrentTab } from './../Actions/sidebar.action';
 import Toolbar from '@material-ui/core/Toolbar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Button from '@material-ui/core/Button';
+import { screenStyles } from '../Assets/selectScreen.styles';
+import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
+// import { setVpnType } from '../Actions/vpnlist.action';
+import { readFile, KEYSTORE_FILE } from './../Utils/Keystore';
+import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 let lang = require('./../Constants/language');
 
 class Home extends Component {
-    componentDidCatch(error, info) {
-        sendError(error);
+    constructor(props) {
+        super(props);
+        this.state = {
+            openSnack: false,
+            snackMessage: ''
+        }
     }
+
+    clickedEth = () => {
+        readFile(KEYSTORE_FILE, (err) => {
+            setTimeout(() => {
+                if (err) this.props.setComponent('create');
+                else this.props.setComponent('authenticate');
+            }, 1000);
+        })
+    }
+
+    clickedTm = () => {
+        let currentTab = this.props.currentTab;
+        this.props.setTestNet(true);
+        this.props.setWalletType('TM');
+        this.props.setVpnType('openvpn');
+        this.props.setTendermint(true);
+        if (this.props.tmAccountDetails)
+            this.props.setCurrentTab(currentTab);
+        else
+            this.props.setCurrentTab('receive');
+        this.props.setComponent('dashboard');
+    }
+
+    // componentDidCatch(error, info) {
+    //     sendError(error);
+    // }
 
     render() {
         let language = this.props.language;
@@ -31,12 +67,22 @@ class Home extends Component {
                         <br /><br />
                     </Row>
                 </Grid>
-                <Button variant="contained"
-                    style={homePageStyles.raisedButton}
-                    labelStyle={homePageStyles.yesButtonLabel}
-                    buttonStyle={homePageStyles.yesButton}
-                    onClick={() => { this.props.setComponent('create') }}
-                >{lang[language].CreateRestore}</Button>
+                <div style={homePageStyles.wholeDiv}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => { this.clickedEth() }}
+                        style={homePageStyles.ethButtonStyle}>
+                        ETHEREUM NETWORK <span>&nbsp;&nbsp;&gt;&gt; </span>
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => { this.clickedTm() }}
+                        style={homePageStyles.tmButtonStyle}>
+                        <span>&lt;&lt;&nbsp;&nbsp;</span>TENDERMINT NETWORK
+                </Button>
+                </div>
             </div>
             <Grid >
                 <Row style={homePageStyles.m_l_20}>
@@ -59,13 +105,20 @@ class Home extends Component {
 }
 function mapStateToProps(state) {
     return {
-        language: state.setLanguage
+        language: state.setLanguage,
+        tmAccountDetails: state.setTMAccount,
+        currentTab: state.setCurrentTab,
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setComponent: setComponent
+        setComponent: setComponent,
+        setTestNet,
+        setTendermint,
+        setWalletType,
+        setCurrentTab,
+        // setVpnType
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToActions)(Home);

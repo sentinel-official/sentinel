@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { sendError, setComponent, getPrivateKey } from '../Actions/authentication.action';
 import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
+import { setCurrentTab } from './../Actions/sidebar.action';
 import { authenticateStyles } from './../Assets/authenticate.styles'
+import { disabledItemsMain } from '../Constants/constants';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -38,6 +40,9 @@ class Authenticate extends Component {
         sendError(error);
     }
 
+    goBack = () => {
+        this.props.setComponent('home');
+    }
 
     submitPassword = () => {
         this.setState({
@@ -49,7 +54,7 @@ class Authenticate extends Component {
         let self = this;
         setTimeout(function () {
             getPrivateKey(self.state.password, self.props.language, function (err, privateKey) {
-                sendError(err);
+                // sendError(err);
                 if (err) {
                     self.setState({
                         isDisabled: false,
@@ -61,7 +66,14 @@ class Authenticate extends Component {
                 }
                 else {
                     self.setState({ statusSnack: false, password: '' });
-                    self.props.setTestNet(false);
+                    let currentTab = self.props.currentTab;
+                    if (!self.props.vpnStatus) {
+                        self.props.setTestNet(false);
+                        if (disabledItemsMain.includes(currentTab))
+                            self.props.setCurrentTab('send');
+                        else
+                            self.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
+                    }
                     self.props.setWalletType('ERC');
                     self.props.setTendermint(false);
                     self.props.setComponent('dashboard');
@@ -106,13 +118,23 @@ class Authenticate extends Component {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions style={authenticateStyles.buttonsGroup}>
-                                <Button
-                                    onClick={this.closeWindow}
-                                    style={authenticateStyles.closeButton}
-                                    variant="contained"
-                                >
-                                    {lang[language].Close}
-                                </Button>
+                                {this.props.vpnStatus ?
+                                    <Button
+                                        onClick={this.closeWindow}
+                                        style={authenticateStyles.closeButton}
+                                        variant="contained"
+                                    >
+                                        {lang[language].Close}
+                                    </Button>
+                                    :
+                                    <Button
+                                        onClick={this.goBack}
+                                        style={authenticateStyles.closeButton}
+                                        variant="contained"
+                                    >
+                                        {lang[language].Back}
+                                    </Button>
+                                }
                                 <Button
                                     onClick={this.submitPassword}
                                     disabled={this.state.isDisabled || this.state.password === ''}
@@ -145,7 +167,9 @@ class Authenticate extends Component {
 
 function mapStateToProps(state) {
     return {
-        language: state.setLanguage
+        language: state.setLanguage,
+        vpnStatus: state.setVpnStatus,
+        currentTab: state.setCurrentTab,
     }
 }
 
@@ -154,7 +178,8 @@ function mapDispatchToActions(dispatch) {
         setComponent: setComponent,
         setTestNet,
         setTendermint,
-        setWalletType
+        setWalletType,
+        setCurrentTab
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToActions)(Authenticate);

@@ -8,14 +8,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CopyIcon from "@material-ui/icons/FileCopyOutlined";
 import lang from '../Constants/language';
-import { logoutNode, } from '../Actions/node.action';
+// import { logoutNode, } from '../Actions/node.action';
 import addNode from './AddNode';
 import { setDockerImages, setDockerContainers, } from '../Actions/node.action';
 import "./nodeStyle.css";
 
 
 let ImagesInterval = null;
-let ContainersInterval = null;
 class NodeManagement extends React.Component {
   state = {
     isActive: "true",
@@ -25,26 +24,22 @@ class NodeManagement extends React.Component {
   componentWillMount = () => {
 
   }
+
+
   componentWillUnmount = () => {
     // localStorage.setItem("Connected" , false)
   }
 
   handleNodeLogout = () => {
     this.props.logoutNode();
-   
-      // console.log("clearing the interval")
-      // if(ImagesInterval){
-      //   // console.log("clearing image")
-      //   clearInterval(ImagesInterval);
-      //   ImagesInterval = null;
-      // }
-      if(ContainersInterval){
-        // console.log("clearing cont")
-        clearInterval(ContainersInterval);
-        ContainersInterval = null;
-      }
-       
-    
+
+    // console.log("clearing the interval")
+    // if(ImagesInterval){
+    //   // console.log("clearing image")
+    //   clearInterval(ImagesInterval);
+    //   ImagesInterval = null;
+    // }
+
 
   }
   showListOf(val) {
@@ -55,17 +50,9 @@ class NodeManagement extends React.Component {
 
     let { classes, language, connectionStatus } = this.props;
     // console.log("node add props ", this.props)
-    if (connectionStatus === true &&  !ContainersInterval) {
-  
-      ContainersInterval = setInterval(() => {
-        this.props.setDockerContainers();
-    }, 15000);
-  }
- 
-
     this.onClickRefresh = () => {
       // console.log("refreshed ");
-      this.props.setDockerImages(); 
+      this.props.setDockerImages();
       this.props.setDockerContainers();
     };
 
@@ -129,14 +116,14 @@ class NodeManagement extends React.Component {
 function mapStateToProps(state) {
   return {
     language: state.setLanguage,
-    connectionStatus : state.connectionStatus,
+    connectionStatus: state.connectionStatus,
 
   }
 }
 
 function mapDispatchToActions(dispatch) {
   return bindActionCreators({
-    logoutNode,
+    // logoutNode,
     setDockerImages,
     setDockerContainers,
 

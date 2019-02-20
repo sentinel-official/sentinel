@@ -1,6 +1,6 @@
 const defaultPageStyle = {
     division: {
-        backgroundColor: '#1e1e1e'  ,//'#1e1e1e',
+        backgroundColor: '#1e1e1e',//'#1e1e1e',
         height: '100vh',
         display: 'flex',
         justifyContent: 'center',
@@ -23,10 +23,10 @@ const homePageStyles = {
         padding: '7%'
     },
     m_l_5: {
-        marginLeft: '5%' 
+        marginLeft: '5%'
     },
     m_l_20: {
-        marginLeft: -20 
+        marginLeft: -20
     },
     toolbar: {
         backgroundColor: '#2f3245',
@@ -107,19 +107,49 @@ const homePageStyles = {
         fontSize: 14,
         color: 'rgba(47, 50, 69, 0.68)',
         marginTop: 25
+    },
+    wholeDiv: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
+    ethButtonStyle: {
+        color: '#d6d1cb',
+        fontWeight: '500',
+        fontSize: '16px',
+        fontFamily: 'Montserrat,Medium',
+        outline: 'none',
+        // border: '1px solid #6facc8',
+        borderRadius: '5px',
+        padding: '13px 32px',
+        textTransform: 'uppercase',
+        backgroundColor: '#2f3245'
+    },
+    tmButtonStyle: {
+        color: '#2f3245',
+        fontWeight: '500',
+        fontSize: '16px',
+        fontFamily: 'Montserrat,Medium',
+        outline: 'none',
+        // border: '1px solid #6facc8',
+        borderRadius: '5px',
+        padding: '13px 23px',
+        textTransform: 'uppercase',
+        backgroundColor: 'white'
     }
 }
 
 const createPagestyles = {
-    f_12: { 
-        fontSize: 12 
+    f_12: {
+        fontSize: 12
     },
     m_b_1: {
         marginBottom: '1%'
     },
     hr_color: {
         backgroundColor: 'rgb(83, 45, 145)',
-        marginTop:0 // changed to decrease the distance between the userId and hr  
+        marginTop: 0 // changed to decrease the distance between the userId and hr  
     },
     c_t_t: {
         color: 'white',
@@ -134,7 +164,7 @@ const createPagestyles = {
     f_m_l_3: {
         fontSize: 12,
         // marginLeft: '3%'
-        textAlign:'center',
+        textAlign: 'center',
     },
     m_t_5: {
         marginTop: '2%'
@@ -161,7 +191,7 @@ const createPagestyles = {
         backgroundColor: '#bdbdbd',
         height: '30px',
         lineHeight: '30px',
-        borderRadius: 4,   
+        borderRadius: 4,
 
     },
     createDiv: {
@@ -181,8 +211,8 @@ const createPagestyles = {
         // backgroundColor: 'rgba(229, 229, 229, 0.66)',
         marginTop: '3%',
         background: '#F5F5F5',
-        boxShadow:'none',
-        
+        boxShadow: 'none',
+
     },
     keyTextBoxPaper: {
         // height: 35,
@@ -193,7 +223,7 @@ const createPagestyles = {
     },
     textFieldCreateHint: {
         fontSize: 12,
-        color:  '#606162' //'#2f3245'
+        color: '#606162' //'#2f3245'
     },
     textFieldCreate: {
         width: '100%',
@@ -219,11 +249,11 @@ const createPagestyles = {
 
         height: '30px',
         lineHeight: '30px',
-        backgroundColor: '#31b0d5', 
+        backgroundColor: '#31b0d5',
         color: '#fff',
         borderRadius: 4,
     },
-   
+
     createStyle: {
         marginTop: '5%',
         marginBottom: '3%'
@@ -257,7 +287,7 @@ const createPagestyles = {
         width: 20,
         cursor: 'pointer',
         marginLeft: 2,
-        color:'#5ca1e8',
+        color: '#5ca1e8',
     },
     checkboxLabel: {
         color: 'rgb(240, 94, 9)',
@@ -294,29 +324,30 @@ const createPagestyles = {
 }
 
 const authenticateStyles = {
-    w_600:{width: 600 ,    
+    w_600: {
+        width: 600,
         // background:'rgba(255, 255, 255, 0.18)'
         //  padding: '0 24px 10px 24px'
-        },
-    f_s_16: { fontSize: 16 , color:'#fff'},
-    f_s_14: { fontSize: 14, color:'#efb77c',  borderBottom: '2.5px solid green !important' },
+    },
+    f_s_16: { fontSize: 16, color: '#fff' },
+    f_s_14: { fontSize: 14, color: '#efb77c', borderBottom: '2.5px solid green !important' },
     textFieldCreate: {
         width: '100%',
         // paddingLeft: '5%',
         color: '#f0ad4e',
         height: 40,
         lineHeight: '18px',
-        
+
         borderBottom: '2.5px solid red !important'
 
     },
-    backgroundStyle:{
+    backgroundStyle: {
         background: 'radial-gradient(circle at 49.41% 1.55%,#3d004c,transparent 100%),radial-gradient(circle at 47.95% 97.06%,#09318c,transparent 100%),radial-gradient(circle at 50% 50%,#04091a,#04091a 100%) no-repeat 50%',
     },
-    dialogueStyle:{
-            backgroundColor:'#ffffff30'
+    dialogueStyle: {
+        backgroundColor: '#ffffff30'
     },
-   
+
     closeButton: {
         // border: '1px solid #00bcd4',
         borderRadius: 4
@@ -331,10 +362,10 @@ const authenticateStyles = {
     snackBarStyle: {
         marginBottom: '1%'
     },
-    buttonsGroup:{
+    buttonsGroup: {
         marginTop: 0,
         marginBottom: 30,
-    }
+    },
 }
 
 module.exports = {

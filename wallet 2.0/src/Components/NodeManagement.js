@@ -19,12 +19,17 @@ class NodeManagement extends React.Component {
   state = {
     isActive: "true",
     showing: "Images",
+    ipHosted: null
   };
 
   componentWillMount = () => {
 
   }
 
+
+  componentWillReceiveProps = () => {
+
+  }
 
   componentWillUnmount = () => {
     // localStorage.setItem("Connected" , false)
@@ -117,7 +122,6 @@ function mapStateToProps(state) {
   return {
     language: state.setLanguage,
     connectionStatus: state.connectionStatus,
-
   }
 }
 

@@ -165,6 +165,7 @@ module.exports = {
     disabledItemsMain: [
         'vpnHistory',
         'vpnList',
+        'addNode'
     ],
     disabledItemsTM: [
         'history',

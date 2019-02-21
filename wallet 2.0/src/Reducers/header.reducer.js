@@ -49,3 +49,12 @@ export function setTendermint(state = false, action) {
             return state
     }
 }
+
+export function getEthLogged(state = false, action) {
+    switch (action.type) {
+        case types.ETH_LOGGED:
+            return action.payload;
+        default:
+            return state
+    }
+}

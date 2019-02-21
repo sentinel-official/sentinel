@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { headerStyles } from '../Assets/header.styles';
-import { setTestNet, getETHBalance, getSentBalance, setTendermint, setWalletType } from '../Actions/header.action';
+import { setTestNet, getETHBalance, getSentBalance, setTendermint, setWalletType, setEthLogged } from '../Actions/header.action';
 import { setComponent } from '../Actions/authentication.action';
 import { getTMBalance, getKeys, setTMAccount } from '../Actions/tendermint.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
@@ -66,6 +66,22 @@ class Header extends Component {
 
     componentWillMount = () => {
         this.getERCBalances()
+    }
+
+    componentWillReceiveProps = (next) => {
+        if (next.ethLogged !== this.props.ethLogged && next.ethLogged) {
+            let currentTab = next.currentTab;
+            if (!next.vpnStatus) {
+                this.props.setTestNet(false);
+                if (disabledItemsMain.includes(currentTab))
+                    this.props.setCurrentTab('send');
+                else
+                    this.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
+            }
+            this.props.setWalletType('ERC');
+            this.props.setTendermint(false);
+            this.props.setEthLogged(false);
+        }
     }
 
     handleClose = (event, reason) => {
@@ -527,6 +543,7 @@ function mapStateToProps(state) {
         balance: state.tmBalance,
         tmAccountDetails: state.setTMAccount,
         tmAccountsList: state.getTMAccountsList,
+        ethLogged: state.getEthLogged,
         keys: state.getKeys
     }
 }
@@ -545,7 +562,8 @@ function mapDispatchToActions(dispatch) {
         setComponent,
         getKeys,
         setTMAccount,
-        logoutNode
+        logoutNode,
+        setEthLogged
     }, dispatch)
 }
 

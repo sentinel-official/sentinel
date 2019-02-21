@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { sendError, setComponent, getPrivateKey } from '../Actions/authentication.action';
-import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
+import { setTestNet, setWalletType, setTendermint, setEthLogged } from '../Actions/header.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
 import { authenticateStyles } from './../Assets/authenticate.styles'
 import { disabledItemsMain } from '../Constants/constants';
@@ -66,17 +66,8 @@ class Authenticate extends Component {
                 }
                 else {
                     self.setState({ statusSnack: false, password: '' });
-                    let currentTab = self.props.currentTab;
-                    if (!self.props.vpnStatus) {
-                        self.props.setTestNet(false);
-                        if (disabledItemsMain.includes(currentTab))
-                            self.props.setCurrentTab('send');
-                        else
-                            self.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
-                    }
-                    self.props.setWalletType('ERC');
-                    self.props.setTendermint(false);
                     self.props.setComponent('dashboard');
+                    self.props.setEthLogged(true);
                 }
             })
         }, 500);
@@ -179,7 +170,8 @@ function mapDispatchToActions(dispatch) {
         setTestNet,
         setTendermint,
         setWalletType,
-        setCurrentTab
+        setCurrentTab,
+        setEthLogged
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToActions)(Authenticate);

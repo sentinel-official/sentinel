@@ -55,7 +55,8 @@ class VpnList extends Component {
             vpnType: 'openvpn',
             networkType: 'public',
             dVpnQuery: '',
-            listLoading: true
+            listLoading: true,
+            walletType: 'ERC'
         }
     }
 
@@ -66,7 +67,7 @@ class VpnList extends Component {
             if (err) {
                 this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
-            
+
             }
             else {
                 this.setState({ isPrivate: true, openPopup: false, openSnack: true, snackMessage: `${lang[this.props.language].PrivateNetEnabledWith}${url}` });
@@ -79,13 +80,22 @@ class VpnList extends Component {
 
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ vpnType: nextProps.vpnType })
-        if (nextProps.walletType != this.props.walletType) {
-            this.setState({ listLoading: true })
-            this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
-                .then((res) => {
-                    this.setState({ listLoading: false })
-                })
+        this.setState({ vpnType: nextProps.vpnType, walletType: nextProps.walletType });
+        if (nextProps.walletType != this.state.walletType) {
+            if (nextProps.isTM) {
+                this.setState({ listLoading: true, vpnType: 'openvpn' });
+                this.props.setVpnType('openvpn');
+                this.props.getVpnList('openvpn', nextProps.isTM)
+                    .then((res) => {
+                        this.setState({ listLoading: false })
+                    })
+            } else {
+                this.setState({ listLoading: true })
+                this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
+                    .then((res) => {
+                        this.setState({ listLoading: false })
+                    })
+            }
         }
     }
 
@@ -210,7 +220,7 @@ class VpnList extends Component {
                                 <CustomTextfield type={'text'} placeholder={lang[language].SearchdVPNnode} disabled={false}
                                     value={this.state.dVpnQuery}
                                     multi={false}
-                                     onChange={(e) => {
+                                    onChange={(e) => {
                                         this.setState({ dVpnQuery: e.target.value })
                                     }} />
                         }
@@ -252,7 +262,7 @@ class VpnList extends Component {
                                 >
                                     <FormControlLabel value="public" control={<Radio style={radioStyle} />} label={lang[this.props.language].Public} />
                                     <FormControlLabel value="private" control={<Radio style={radioStyle} disabled={isTM} />}
-                                label={isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private}  />
+                                        label={isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private} />
                                 </RadioGroup>
                             </FormControl>
                     }
@@ -265,7 +275,7 @@ class VpnList extends Component {
                             onChange={this.handleRadioChange}
                         >
                             <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN} />
-                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5} />
+                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5} />
                         </RadioGroup>
                     </FormControl>
 

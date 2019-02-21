@@ -44,7 +44,6 @@ class App extends Component {
     componentWillMount = () => {
         let that = this;
         let isErr = false;
-        console.log("In..");
         localStorage.setItem('isTM', false);
         localStorage.setItem('B_URL', B_URL);
         document.getElementById('home').style.display = 'none';

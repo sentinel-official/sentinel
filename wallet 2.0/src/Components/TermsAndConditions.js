@@ -9,7 +9,7 @@ import { Tooltip } from '@material-ui/core';
 import ReactTooltip from 'react-tooltip';
 import { bindActionCreators } from 'redux';
 import { sendError, setComponent } from '../Actions/authentication.action';
-import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
+import { setTestNet, setWalletType, setTendermint, setEthLogged } from '../Actions/header.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
 import { disabledItemsMain } from '../Constants/constants';
 
@@ -95,15 +95,8 @@ class TermsAndConditions extends Component {
                     buttonStyle={this.state.checked ? createPagestyles.yesButton : createPagestyles.disabledButton}
                     disabled={this.state.checked ? false : true}
                     onClick={() => {
-                        let currentTab = this.props.currentTab;
-                        this.props.setTestNet(false);
-                        if (disabledItemsMain.includes(currentTab))
-                            this.props.setCurrentTab('send');
-                        else
-                            this.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
-                        this.props.setWalletType('ERC');
-                        this.props.setTendermint(false);
                         this.props.setComponent('dashboard');
+                        this.props.setEthLogged(true);
                     }}
                 />
             </div>
@@ -125,7 +118,8 @@ function mapDispatchToActions(dispatch) {
         setTestNet,
         setTendermint,
         setWalletType,
-        setCurrentTab
+        setCurrentTab,
+        setEthLogged
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToActions)(TermsAndConditions);

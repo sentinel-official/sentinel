@@ -391,6 +391,9 @@ let lang = {
         "Logout": "Logout",
         "Logging": "Logging In...",
         "QuotaFull": "Full Quota of VPN used",
+        "TMNetwork": "TENDERMINT NETWORK",
+        "ETHNetwork": "ETHEREUM NETWORK",
+        "NoNodeFound":"Unable to find node hosted with this address",
     },
 
 
@@ -789,7 +792,9 @@ let lang = {
         "Logout": "Logout",
         "Logging": "Logging In...",
         "QuotaFull": "Full Quota of VPN used",
-
+        "TMNetwork": "TENDERMINT NETWORK",
+        "ETHNetwork": "ETHEREUM NETWORK",
+        "NoNodeFound":"Unable to find node hosted with this address",
     },
 
 
@@ -1189,6 +1194,9 @@ let lang = {
         "Logout": "Logout",
         "Logging": "Logging In...",
         "QuotaFull": "Full Quota of VPN used",
+        "TMNetwork": "TENDERMINT NETWORK",
+        "ETHNetwork": "ETHEREUM NETWORK",
+        "NoNodeFound":"Unable to find node hosted with this address",
 
     },
     es: {
@@ -1585,6 +1593,9 @@ let lang = {
         "Logout": "Logout",
         "Logging": "Logging In...",
         "QuotaFull": "Cuota completa de vpn utilizada",
+        "TMNetwork": "TENDERMINT NETWORK",
+        "ETHNetwork": "ETHEREUM NETWORK",
+        "NoNodeFound":"Unable to find node hosted with this address",
     },
     ru: {
         "History": "История",
@@ -1981,6 +1992,9 @@ let lang = {
         "Logout": "Выйти",
         "Logging": "Вход в систему...",
         "QuotaFull": "Используется полная квота vpn",
+        "TMNetwork": "TENDERMINT СЕТЬ",
+        "ETHNetwork": "ETHEREUM СЕТЬ",
+        "NoNodeFound":"Невозможно найти узел, размещенный с этим адресом",
     },
 
     zh: {
@@ -2378,7 +2392,9 @@ let lang = {
         "Logout": "登出",
         "Logging": "在登录...",
         "QuotaFull": "使用过vpn的完整配额",
-
+        "TMNetwork": "TENDERMINT 网络",
+        "ETHNetwork": "以太坊网络",
+        "NoNodeFound":"无法找到使用此地址托管的节点",
     },
 }
 

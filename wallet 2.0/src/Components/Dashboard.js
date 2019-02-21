@@ -46,18 +46,16 @@ class Dashboard extends Component {
                         let mainAccount = res.payload.find(obj => obj.name === name)
                         if (mainAccount) {
                             this.props.setTMAccount(mainAccount);
-                            this.props.setTMComponent('dashboard');
                             this.props.setTMAccountslist(accounts);
+                            this.props.setTMComponent('dashboard');
                         }
                         else {
-                            console.log("Account...", mainAccount, name)
                             this.props.setTMComponent('home');
                             this.props.setCurrentTab('receive');
                             this.props.setTMAccountslist(accounts);
                         }
                     }
                     else {
-                        console.log("No Account in TMConfig..", name)
                         this.props.setTMComponent('home');
                         this.props.setCurrentTab('receive');
                         this.props.setTMAccountslist(accounts);
@@ -65,7 +63,6 @@ class Dashboard extends Component {
                 });
             }
             else {
-                console.log("No Keys")
                 this.props.setTMComponent('home');
                 this.props.setCurrentTab('receive');
                 this.props.setTMAccountslist([]);

@@ -109,6 +109,12 @@ const accountStyles = {
     },
     lastDiv: {
         marginTop: 8
+    },
+    noIp: {
+        display: 'flex',
+        justifyContent: 'center',
+        paddingTop: '20%',
+        fontSize: '25px'
     }
 }
 

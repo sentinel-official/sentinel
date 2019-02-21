@@ -7,7 +7,7 @@ import {
 import Toolbar from '@material-ui/core/Toolbar';
 import { bindActionCreators } from 'redux';
 import { createAccount, sendError, setComponent } from '../Actions/authentication.action';
-import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
+import { setTestNet, setWalletType, setTendermint, setEthLogged } from '../Actions/header.action';
 import { disabledItemsMain } from '../Constants/constants';
 import { setCurrentTab } from './../Actions/sidebar.action';
 import { isOnline } from './../Utils/UserConfig';
@@ -141,15 +141,8 @@ class Create extends Component {
                     uploadKeystore(keystore, function (err, keystotefile) {
                         if (err) sendError(err);
                         else {
-                            let currentTab = self.props.currentTab;
-                            self.props.setTestNet(false);
-                            if (disabledItemsMain.includes(currentTab))
-                                self.props.setCurrentTab('send');
-                            else
-                                self.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
-                            self.props.setWalletType('ERC');
-                            self.props.setTendermint(false);
                             self.props.setComponent('dashboard');
+                            self.props.setEthLogged(true);
                         }
                     })
                 }
@@ -289,7 +282,8 @@ function mapDispatchToActions(dispatch) {
         setTestNet,
         setTendermint,
         setWalletType,
-        setCurrentTab
+        setCurrentTab,
+        setEthLogged
     }, dispatch)
 }
 

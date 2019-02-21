@@ -46,8 +46,8 @@ export function getTMConfig(cb) {
             let configData = data ? JSON.parse(data) : { tmUserName: null, accounts: [] };
             if (configData.tmUserName && !(configData.accounts)) {
                 configData.accounts = [configData.tmUserName];
-                let config = JSON.stringify(configData);
-                fs.writeFileSync(TM_CONFIG_FILE, config);
+                data = JSON.stringify(configData);
+                fs.writeFileSync(TM_CONFIG_FILE, data);
             }
             cb(null, data);
         }

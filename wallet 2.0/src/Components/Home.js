@@ -10,9 +10,7 @@ import { bindActionCreators } from 'redux';
 import Button from '@material-ui/core/Button';
 import { screenStyles } from '../Assets/selectScreen.styles';
 import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
-// import { setVpnType } from '../Actions/vpnlist.action';
 import { readFile, KEYSTORE_FILE } from './../Utils/Keystore';
-import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 let lang = require('./../Constants/language');
 
 class Home extends Component {
@@ -37,7 +35,6 @@ class Home extends Component {
         let currentTab = this.props.currentTab;
         this.props.setTestNet(true);
         this.props.setWalletType('TM');
-        this.props.setVpnType('openvpn');
         this.props.setTendermint(true);
         if (this.props.tmAccountDetails)
             this.props.setCurrentTab(currentTab);
@@ -73,15 +70,15 @@ class Home extends Component {
                         color="primary"
                         onClick={() => { this.clickedEth() }}
                         style={homePageStyles.ethButtonStyle}>
-                        ETHEREUM NETWORK <span>&nbsp;&nbsp;&gt;&gt; </span>
+                        {lang[language].ETHNetwork}<span>&nbsp;&nbsp;&gt;&gt; </span>
                     </Button>
                     <Button
                         variant="outlined"
                         color="primary"
                         onClick={() => { this.clickedTm() }}
                         style={homePageStyles.tmButtonStyle}>
-                        <span>&lt;&lt;&nbsp;&nbsp;</span>TENDERMINT NETWORK
-                </Button>
+                        <span>&lt;&lt;&nbsp;&nbsp;</span>{lang[language].TMNetwork}
+                    </Button>
                 </div>
             </div>
             <Grid >
@@ -118,7 +115,6 @@ function mapDispatchToActions(dispatch) {
         setTendermint,
         setWalletType,
         setCurrentTab,
-        // setVpnType
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToActions)(Home);

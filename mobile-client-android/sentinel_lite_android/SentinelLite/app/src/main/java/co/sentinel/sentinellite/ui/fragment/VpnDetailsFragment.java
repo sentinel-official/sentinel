@@ -31,7 +31,6 @@ import co.sentinel.sentinellite.di.InjectorModule;
 import co.sentinel.sentinellite.network.model.VpnDetailListData;
 import co.sentinel.sentinellite.network.model.VpnListEntity;
 import co.sentinel.sentinellite.ui.adapter.VpnDetailListAdapter;
-import co.sentinel.sentinellite.ui.adapter.VpnListAdapter;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.Convert;
@@ -83,6 +82,7 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setHasOptionsMenu(false);
         if (getArguments() != null) {
             mVpnListData = (VpnListEntity) getArguments().getSerializable(ARG_VPN_LIST);
         }
@@ -107,6 +107,11 @@ public class VpnDetailsFragment extends Fragment implements View.OnClickListener
         fragmentLoaded(getString(R.string.vpn_connections));
         initViewModel();
     }
+
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        menu.clear();
+//    }
 
     private void initView(View iView) {
         mFvFlag = iView.findViewById(R.id.fv_flag);

@@ -706,6 +706,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         aMenuSocialLinks.setTitle(R.string.faq);
         MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);
         aMenuLogout.setTitle(R.string.logout);
+        setToolbarTitle(getString(R.string.app_name));
     }
 
     /*

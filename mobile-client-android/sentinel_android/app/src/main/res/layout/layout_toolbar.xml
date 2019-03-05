@@ -134,6 +134,8 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="@string/hint_search_vpn_list"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:maxLines="1"
                 android:padding="@dimen/margin_8"
                 android:textColorHint="@color/colorTextWhiteWithAlpha50" />

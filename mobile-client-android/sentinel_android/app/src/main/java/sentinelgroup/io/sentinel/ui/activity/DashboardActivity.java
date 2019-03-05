@@ -64,6 +64,7 @@ import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
 import sentinelgroup.io.sentinel.util.AnalyticsHelper;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.DoneOnEditorActionListener;
 import sentinelgroup.io.sentinel.util.Logger;
 
 import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
@@ -301,6 +302,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mIbSearch.setOnClickListener(this);
         mIbSort.setOnClickListener(this);
         mEtSearch.addTextChangedListener(mSearchWatcher);
+        mEtSearch.setOnEditorActionListener(new DoneOnEditorActionListener());
         mIbCloseSearch.setOnClickListener(this);
         mIbClearSearch.setOnClickListener(this);
         mNavMenuView.setItemIconTintList(null);
@@ -898,11 +900,11 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     private void closeSearch() {
+        hideKeyboard();
         mLlSearch.setVisibility(View.GONE);
         mEtSearch.getText().clear();
         mEtSearch.clearFocus();
         mCurrentSearchString.delete(0, mCurrentSearchString.length());
-        hideKeyboard();
     }
 
     private void showKeyboard(View iView) {

@@ -8,6 +8,8 @@ import android.view.View;
 
 public class EmptyRecyclerView extends RecyclerView {
     private View mEmptyView;
+//    private RecyclerView.OnScrollListener onKeyboardDismissingScrollListener;
+//    private InputMethodManager inputMethodManager;
 
     final private AdapterDataObserver mObserver = new AdapterDataObserver() {
         @Override
@@ -36,6 +38,7 @@ public class EmptyRecyclerView extends RecyclerView {
 
     public EmptyRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+//        setOnKeyboardDismissingListener();
     }
 
     void checkIfEmpty() {
@@ -46,6 +49,31 @@ public class EmptyRecyclerView extends RecyclerView {
             setVisibility(emptyViewVisible ? GONE : VISIBLE);
         }
     }
+
+//    /**
+//     * Creates {@link OnScrollListener} that will dismiss keyboard when scrolling if the keyboard
+//     * has not been dismissed internally before
+//     */
+//    private void setOnKeyboardDismissingListener() {
+//        onKeyboardDismissingScrollListener = new RecyclerView.OnScrollListener() {
+//            boolean isKeyboardDismissedByScroll;
+//
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int state) {
+//                switch (state) {
+//                    case RecyclerView.SCROLL_STATE_DRAGGING:
+//                        if (!isKeyboardDismissedByScroll) {
+//                            hideKeyboard();
+//                            isKeyboardDismissedByScroll = !isKeyboardDismissedByScroll;
+//                        }
+//                        break;
+//                    case RecyclerView.SCROLL_STATE_IDLE:
+//                        isKeyboardDismissedByScroll = false;
+//                        break;
+//                }
+//            }
+//        };
+//    }
 
     @Override
     public void setAdapter(Adapter adapter) {
@@ -61,8 +89,42 @@ public class EmptyRecyclerView extends RecyclerView {
         checkIfEmpty();
     }
 
+//    @Override
+//    protected void onAttachedToWindow() {
+//        super.onAttachedToWindow();
+//        addOnScrollListener(onKeyboardDismissingScrollListener);
+//    }
+//
+//    @Override
+//    protected void onDetachedFromWindow() {
+//        super.onDetachedFromWindow();
+//        removeOnScrollListener(onKeyboardDismissingScrollListener);
+//    }
+
     public void setEmptyView(View emptyView) {
         this.mEmptyView = emptyView;
         checkIfEmpty();
     }
+
+//    /**
+//     * Hides the keyboard
+//     */
+//    public void hideKeyboard() {
+//        getInputMethodManager().hideSoftInputFromWindow(getWindowToken(), 0);
+//        clearFocus();
+//    }
+//
+//    /**
+//     * Returns an {@link InputMethodManager}
+//     *
+//     * @return input method manager
+//     */
+//    public InputMethodManager getInputMethodManager() {
+//        if (null == inputMethodManager) {
+//            inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        }
+//
+//        return inputMethodManager;
+//    }
+
 }

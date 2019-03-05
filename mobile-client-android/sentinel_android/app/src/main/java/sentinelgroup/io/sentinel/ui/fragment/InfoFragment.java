@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import sentinelgroup.io.sentinel.R;
+import sentinelgroup.io.sentinel.network.model.OnBoardingInfo;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,6 +52,24 @@ public class InfoFragment extends Fragment {
         args.putInt(ARG_IMAGE_2_ID, iImageId2);
         args.putInt(ARG_INFO_TITLE_ID, iInfoTitle);
         args.putInt(ARG_INFO_DESC_ID, iInfoDesc);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param iOnBoardingInfo Object containing details of on-boarding info
+     * @return A new instance of fragment InfoFragment.
+     */
+    public static InfoFragment newInstance(OnBoardingInfo iOnBoardingInfo) {
+        InfoFragment fragment = new InfoFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_IMAGE_1_ID, iOnBoardingInfo.image1Id);
+        args.putInt(ARG_IMAGE_2_ID, iOnBoardingInfo.image2Id);
+        args.putInt(ARG_INFO_TITLE_ID, iOnBoardingInfo.infoTitle);
+        args.putInt(ARG_INFO_DESC_ID, iOnBoardingInfo.infoDesc);
         fragment.setArguments(args);
         return fragment;
     }

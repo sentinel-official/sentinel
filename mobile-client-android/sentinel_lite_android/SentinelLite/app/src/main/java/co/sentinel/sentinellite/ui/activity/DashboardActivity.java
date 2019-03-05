@@ -775,11 +775,11 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     private void closeSearch() {
+        hideKeyboard();
         mLlSearch.setVisibility(View.GONE);
         mEtSearch.getText().clear();
         mEtSearch.clearFocus();
         mCurrentSearchString.delete(0, mCurrentSearchString.length());
-        hideKeyboard();
     }
 
     private void showKeyboard(View iView) {

@@ -123,8 +123,8 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
             super.onBackPressed();
             toShowOptionsMenu = getCurrentFragment() instanceof VpnListFragment;
             invalidateOptionsMenu();
+            overridePendingTransition(R.anim.enter_left_to_right, R.anim.exit_right_to_left);
         }
-        overridePendingTransition(R.anim.enter_left_to_right, R.anim.exit_right_to_left);
     }
 
     /*
@@ -241,11 +241,11 @@ public class VpnListActivity extends BaseActivity implements OnVpnConnectionList
     }
 
     private void closeSearch() {
+        hideKeyboard();
         mLlSearch.setVisibility(View.GONE);
         mEtSearch.getText().clear();
         mEtSearch.clearFocus();
         mCurrentSearchString.delete(0, mCurrentSearchString.length());
-        hideKeyboard();
     }
 
     private void showKeyboard(View iView) {

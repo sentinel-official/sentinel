@@ -27,6 +27,7 @@ import co.sentinel.sentinellite.util.Logger;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.SplashViewModel;
 import co.sentinel.sentinellite.viewmodel.SplashViewModelFactory;
+import de.blinkt.openvpn.core.ProfileManager;
 import io.branch.referral.Branch;
 
 import static co.sentinel.sentinellite.util.AppConstants.NEGATIVE_BUTTON;
@@ -45,9 +46,24 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!isTaskRoot()) {
+            final Intent aIntent = getIntent();
+            final String aIntentAction = aIntent.getAction();
+            if (aIntent.hasCategory(Intent.CATEGORY_LAUNCHER) && aIntentAction != null && aIntentAction.equals(Intent.ACTION_MAIN)) {
+                finish();
+                return;
+            }
+        }
         setupAppLanguage();
         setContentView(R.layout.activity_splash);
-        initViewModel();
+        if (ProfileManager.isVpnConnected(this)) {
+            Intent aIntent = new Intent(this, DashboardActivity.class);
+            aIntent.putExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY, AppConstants.HOME);
+            aIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(aIntent);
+        } else {
+            initViewModel();
+        }
     }
 
     /*

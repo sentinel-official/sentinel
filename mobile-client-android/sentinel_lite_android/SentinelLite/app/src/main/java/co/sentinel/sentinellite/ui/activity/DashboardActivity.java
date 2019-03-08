@@ -459,6 +459,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
         toShowOptionsMenu = iFragment instanceof VpnSelectFragment;
         invalidateOptionsMenu();
+        closeSearch();
     }
 
     /*

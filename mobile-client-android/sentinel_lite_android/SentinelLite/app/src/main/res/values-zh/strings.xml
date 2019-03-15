@@ -17,7 +17,6 @@
     <string name="no_error_found">没有发现错误</string>
     <string name="screenoff_pause">在锁屏时暂停连接: 小于 %1$s 中 %2$ss</string>
     <string name="screen_nopersistenttun">警告: 此VPN不能在你锁屏时使用，将使用本身网络连接.</string>
-    <string name="netstatus">Network Status: %s</string>
     <string name="reread_log">重读 (%d) 缓存日志</string>
     <string name="mobile_info">%10$s %9$s running on %3$s %1$s (%2$s), Android %6$s (%7$s) API %4$d, ABI %5$s, (%8$s)</string>
     <string name="official_build">官方</string>
@@ -119,8 +118,6 @@ PKCS12文件加密密钥</string>
     <!-- Translatable strings -->
     <string name="app_sub_name">安全的分散式VPN</string>
     <string name="action_next">下一步</string>
-    <string name="action_done">Done</string>
-    <string name="action_apply">Apply</string>
     <string name="disconnect">断开连接</string>
     <string name="view_vpns">查看VPN</string>
     <string name="view_vpn_list">VPN节点</string>
@@ -168,7 +165,6 @@ PKCS12文件加密密钥</string>
     <string name="referral_id">邀请码</string>
     <string name="share_app">推荐人</string>
     <string name="send_to">转账…</string>
-    <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">糖果数量</string>
     <string name="invite_friend">共享 ID</string>
     <string name="share_string">共享流量获取SENT币，使用的我的激活码将获得奖励.\n\邀请码: %1$s\n\nLink: %2$s</string>
@@ -177,8 +173,6 @@ PKCS12文件加密密钥</string>
     <string name="info_desc_1">与朋友分享前哨应用程序，使用DVPN应用程序并得到社区发展的激励 &amp; 网络分散化</string>
     <string name="info_desc_2">在您的手指间创造分散式网络</string>
     <string name="generic_error">无法连接服务器，请重试.</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="claim_bonus">奖金</string>
     <string name="update_available">可用更新</string>
     <string name="update_desc">新版本发布.\n\n请下载并安装最新版本.</string>
@@ -190,7 +184,6 @@ PKCS12文件加密密钥</string>
     <string name="action_cancel">取消</string>
     <string name="registering_device">正在设置请等待…</string>
     <string name="add_referral_desc">您有邀请码吗?\n填写邀请码可获得奖励.</string>
-    <string name="ok">Ok</string>
     <string name="can_claim_after">可领取奖金: %s</string>
     <string name="download_desc">1. 在GITHUB下载哨兵网络应用程序 \"Download\" 按钮. 已安装程序，跳过.\n2. 创建钱包地址点击复制 \"输入地址\" 按钮.</string>
     <string name="referral_desc">欢迎来到哨兵网络共享区块链.\n\n您通过我们的Lite Clinet安装21天内使用VPN消耗至少100MB的数据流量可申请奖励.\n\n奖励计划如下 : \n\n500 SENT : 用于下载游戏客端使用100M数据流量 \n\n300 SENT : For downloading the Sentinel Network Client which includes a mobile ERC20 wallet. This client will have to be downloaded by users in order to claim $SENT\n\n200 SENT : 对于每个下载安装的用户</string>
@@ -222,22 +215,30 @@ PKCS12文件加密密钥</string>
     <string name="label_link_account_success">祝贺你！你的哨兵免费VPN DAPP和哨兵网络DVPN DAPP现在链接到输入的地址。糖果将在完成1周的后发</string>
     <string name="action_confirm">确认</string>
     <string name="action_enter_address">确认地址</string>
-    <string name="filter_by_title">Filters</string>
-    <string name="filter_by_bookmark">Show favourites only</string>
-    <string name="sort_by_title">Sort By</string>
-    <string name="sort_by_default">Default</string>
-    <string name="sort_by_country_a">Country</string>
-    <string name="sort_by_country_d">Country ↓</string>
-    <string name="sort_by_latency_i">Latency ↑</string>
-    <string name="sort_by_latency_d">Latency</string>
-    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
-    <string name="sort_by_bandwidth_d">Bandwidth</string>
-    <string name="sort_by_price_i">Price ↑</string>
-    <string name="sort_by_price_d">Price ↓</string>
-    <string name="sort_by_rating_i">Rating ↑</string>
-    <string name="sort_by_rating_d">Rating</string>
-    <string name="hint_search_vpn_list">Search by country</string>
-    <string name="alert_bookmark_added">VPN added to favourites</string>
-    <string name="alert_bookmark_removed">VPN removed from favourites</string>
+    <string name="invitation_desc">"与您的朋友分享该链接，邀请他们使用Sentinel dVPN应用 "</string>
+    <string name="netstatus">网络状态： %s</string>
+    <string name="action_done">"完成 "</string>
+    <string name="action_apply">应用</string>
+    <string name="no_of_referrals">"不。我没有邀请码。 "</string>
+    <string name="no">否</string>
+    <string name="filter_by_title">筛选</string>
+    <string name="filter_by_bookmark">"仅显示收藏夹 "</string>
+    <string name="sort_by_country_a">国家</string>
+    <string name="sort_by_bandwidth_d">"带宽 "</string>
+    <string name="sort_by_price_i">价格↑</string>
+    <string name="sort_by_country_d">"国家↓ "</string>
+    <string name="sort_by_price_d">价格↓</string>
+    <string name="sort_by_rating_i">"评价↑ "</string>
+    <string name="sort_by_latency_i">"延时↑ "</string>
+    <string name="sort_by_rating_d">"评价 "</string>
+    <string name="sort_by_latency_d">"延时 "</string>
+    <string name="sort_by_bandwidth_i">"带宽↑ "</string>
+    <string name="sort_by_title">"排序方式 "</string>
+    <string name="sort_by_default">"默认 "</string>
+    <string name="hint_search_vpn_list">"按国家搜索 "</string>
+    <string name="alert_bookmark_added">VPN已添加到收藏夹</string>
+    <string name="alert_bookmark_removed">VPN已从收藏夹中删除</string>
+    <string name="yes">是</string>
+    <string name="ok">好</string>
 
 </resources>

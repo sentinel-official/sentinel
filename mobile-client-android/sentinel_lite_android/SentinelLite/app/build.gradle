@@ -7,8 +7,8 @@ android {
         applicationId "co.sentinel.sentinellite"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.sdkVersion
-        versionCode 7
-        versionName '0.2.0'
+        versionCode 8
+        versionName '0.2.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // Enable Vector drawable
         vectorDrawables.useSupportLibrary = true
@@ -63,7 +63,7 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     // Google Play Services Lib
-    implementation 'com.google.android.gms:play-services-base:16.0.1'
+    implementation 'com.google.android.gms:play-services-base:16.1.0'
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
@@ -78,7 +78,9 @@ dependencies {
     // Bugsnag
     implementation 'com.bugsnag:bugsnag-android:4.9.3'
     // ViewPagerIndicator
-    implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:2.0.3'
+    implementation('com.tbuonomo.andrui:viewpagerdotsindicator:2.0.3') {
+        exclude group: 'com.android.support', module: 'support-dynamic-animation'
+    }
     // Branch
     implementation 'io.branch.sdk.android:library:2.19.5'
     // Amplitude Analytics

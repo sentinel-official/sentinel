@@ -42,7 +42,17 @@ public class WebClient {
             .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(new AuthInterceptor())).build();
 
-    private static Retrofit sGenericClient, sReferralClient, sAppVersionClient;
+    private static OkHttpClient sHttpRetryClient = sHttpClient.newBuilder()
+            .retryOnConnectionFailure(true)
+            .build();
+
+    private static OkHttpClient sHttpLongTimeoutClient = sHttpClient.newBuilder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build();
+
+    private static Retrofit sGenericClient, sGenericRetryClient, sReferralClient, sReferralLongTimeoutClient, sAppVersionClient;
 
     private static GenericWebService sGenericWebService;
     private static BonusWebService sBonusWebService;
@@ -50,7 +60,9 @@ public class WebClient {
 
     static {
         setupGenericRestClient();
+        setupGenericRetryRestClient();
         setupReferralRestClient();
+        setupReferralLongTimeoutRestClient();
         setupAppVersionClient();
     }
 
@@ -65,10 +77,26 @@ public class WebClient {
                 .build();
     }
 
+    private static void setupGenericRetryRestClient() {
+        sGenericRetryClient = new Retrofit.Builder()
+                .baseUrl(GENERIC_BASE_URL)
+                .client(sHttpRetryClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
     private static void setupReferralRestClient() {
         sReferralClient = new Retrofit.Builder()
                 .baseUrl(REFERRAL_BASE_URL)
                 .client(sHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    private static void setupReferralLongTimeoutRestClient() {
+        sReferralLongTimeoutClient= new Retrofit.Builder()
+                .baseUrl(REFERRAL_BASE_URL)
+                .client(sHttpLongTimeoutClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -85,6 +113,10 @@ public class WebClient {
         return sGenericClient;
     }
 
+    public static Retrofit getGenericRetryClient() {
+        return sGenericRetryClient;
+    }
+
     public static Retrofit getReferralClient() {
         return sReferralClient;
     }
@@ -97,8 +129,16 @@ public class WebClient {
         return sGenericClient.create(GenericWebService.class);
     }
 
+    public static GenericWebService getGenericRetryWebService() {
+        return sGenericRetryClient.create(GenericWebService.class);
+    }
+
     public static BonusWebService getBonusWebService() {
         return sReferralClient.create(BonusWebService.class);
+    }
+
+    public static BonusWebService getBonusLongTimeoutWebService() {
+        return sReferralLongTimeoutClient.create(BonusWebService.class);
     }
 
     public static AppVersionWebService getAppVersionWebService() {

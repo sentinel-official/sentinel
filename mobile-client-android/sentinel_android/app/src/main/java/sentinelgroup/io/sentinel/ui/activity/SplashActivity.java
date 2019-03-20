@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import org.json.JSONException;
 
+import de.blinkt.openvpn.core.ProfileManager;
 import io.branch.referral.Branch;
 import sentinelgroup.io.sentinel.BuildConfig;
 import sentinelgroup.io.sentinel.R;
@@ -48,8 +49,23 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!isTaskRoot()) {
+            final Intent aIntent = getIntent();
+            final String aIntentAction = aIntent.getAction();
+            if (aIntent.hasCategory(Intent.CATEGORY_LAUNCHER) && aIntentAction != null && aIntentAction.equals(Intent.ACTION_MAIN)) {
+                finish();
+                return;
+            }
+        }
         setContentView(R.layout.activity_splash);
-        initViewModel();
+        if (ProfileManager.isVpnConnected(this)) {
+            Intent aIntent = new Intent(this, DashboardActivity.class);
+            aIntent.putExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY, AppConstants.HOME);
+            aIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(aIntent);
+        } else {
+            initViewModel();
+        }
     }
 
     private void initViewModel() {

@@ -489,6 +489,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             mIbSort.setVisibility(View.GONE);
             mLlSearch.setVisibility(View.GONE);
         }
+        closeSearch();
     }
 
     /*

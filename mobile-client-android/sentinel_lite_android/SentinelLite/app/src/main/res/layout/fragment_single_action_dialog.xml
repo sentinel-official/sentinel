@@ -28,8 +28,6 @@
             android:gravity="center"
             android:paddingBottom="@dimen/margin_16"
             android:paddingEnd="@dimen/margin_16"
-            android:paddingLeft="@dimen/margin_16"
-            android:paddingRight="@dimen/margin_16"
             android:paddingStart="@dimen/margin_16" />
     </ScrollView>
 

@@ -64,11 +64,28 @@ public class SentinelLiteApp extends MultiDexApplication {
             AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, iLanguageCode);
             // change/update config
             Configuration aConfig = iContext.getResources().getConfiguration();
-            sLocale = new Locale(iLanguageCode);
+            sLocale = new Locale(iLanguageCode, getCountryCodeByLanguageCode(iLanguageCode));
             Locale.setDefault(sLocale);
             Configuration aNewConfig = new Configuration(aConfig);
             aNewConfig.locale = sLocale;
+            aNewConfig.setLayoutDirection(sLocale);
             iContext.getResources().updateConfiguration(aNewConfig, iContext.getResources().getDisplayMetrics());
+        }
+    }
+
+    private static String getCountryCodeByLanguageCode(String iLanguageCode) {
+        switch (iLanguageCode) {
+            case "ru":
+                return "RU";
+            case "zh":
+                return "CN";
+            case "tr":
+                return "TR";
+            case "fa":
+                return "IR";
+            case "en":
+            default:
+                return Locale.getDefault().getCountry();
         }
     }
 

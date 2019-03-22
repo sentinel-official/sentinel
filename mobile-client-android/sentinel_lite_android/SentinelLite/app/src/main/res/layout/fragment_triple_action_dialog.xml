@@ -41,8 +41,8 @@
     <android.support.v7.widget.ButtonBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|end"
-        android:gravity="right|end"
+        android:layout_gravity="end"
+        android:gravity="end"
         android:orientation="vertical"
         app:allowStacking="false">
 

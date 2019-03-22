@@ -10,8 +10,6 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/margin_8"
         android:layout_marginEnd="@dimen/margin_16"
-        android:layout_marginLeft="@dimen/margin_16"
-        android:layout_marginRight="@dimen/margin_16"
         android:layout_marginStart="@dimen/margin_16"
         android:layout_marginTop="@dimen/margin_8"
         app:cardBackgroundColor="@color/colorCardInfoBackground"

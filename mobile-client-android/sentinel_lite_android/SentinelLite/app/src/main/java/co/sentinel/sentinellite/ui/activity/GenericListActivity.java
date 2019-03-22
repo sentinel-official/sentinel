@@ -28,8 +28,7 @@ public class GenericListActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_OK);
-        finish();
+        super.onBackPressed();
     }
 
     /*

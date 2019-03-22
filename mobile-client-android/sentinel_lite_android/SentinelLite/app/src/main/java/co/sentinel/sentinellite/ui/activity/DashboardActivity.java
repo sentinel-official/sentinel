@@ -582,28 +582,22 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
 
             case AppConstants.REQ_LANGUAGE:
                 if (resultCode == RESULT_OK)
-                    refreshMenuTitles();
-                loadVpnFragment(null);
+                    reloadApp();
+                else
+                    loadVpnFragment(null);
                 break;
         }
     }
 
     /*
-     * Refresh the navigation menu titles after a new language is set
+     * Reload the app after a new language is set
      */
-    private void refreshMenuTitles() {
-        Menu aMenu = mNavMenuView.getMenu();
-        MenuItem aMenuVpnUsage = aMenu.findItem(R.id.nav_vpn_usage);
-        aMenuVpnUsage.setTitle(R.string.vpn_usage);
-        MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
-        aMenuLanguage.setTitle(R.string.language);
-        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_share_app);
-        aMenuReferral.setTitle(R.string.share_app);
-        MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
-        aMenuSocialLinks.setTitle(R.string.faq);
-        setToolbarTitle(getString(R.string.app_name));
+    private void reloadApp() {
+        Intent aIntent = new Intent(this, DashboardActivity.class);
+        aIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
+        startActivity(aIntent);
     }
-
 
     @Override
     public void onFragmentLoaded(String iTitle) {

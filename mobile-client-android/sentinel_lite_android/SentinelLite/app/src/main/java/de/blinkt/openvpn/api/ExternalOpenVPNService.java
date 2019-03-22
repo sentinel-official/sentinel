@@ -43,7 +43,6 @@ import de.blinkt.openvpn.core.VPNLaunchHelper;
 import de.blinkt.openvpn.core.VpnStatus;
 import de.blinkt.openvpn.core.VpnStatus.StateListener;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
 public class ExternalOpenVPNService extends Service implements StateListener {
     private static final int SEND_TOALL = 0;
     private static final OpenVPNServiceHandler mHandler = new OpenVPNServiceHandler();

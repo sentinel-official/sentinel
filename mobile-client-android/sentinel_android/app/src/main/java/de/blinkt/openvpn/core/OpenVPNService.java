@@ -242,9 +242,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             nbuilder.setContentIntent(getUserInputIntent(msg));
         else nbuilder.setContentIntent(getGraphPendingIntent());
         if (when != 0) nbuilder.setWhen(when);
-        // Try to set the priority available since API 16 (Jellybean)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            jbNotificationExtras(priority, nbuilder);
+        jbNotificationExtras(priority, nbuilder);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) lpNotificationExtras(nbuilder);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //noinspection NewApi
@@ -307,7 +305,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         return R.drawable.ic_notification;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void jbNotificationExtras(int priority, android.app.Notification.Builder nbuilder) {
         try {
             if (priority != 0) {

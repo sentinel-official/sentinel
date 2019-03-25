@@ -359,9 +359,6 @@ public class VpnProfile implements Serializable, Cloneable {
                         cfg += "management-external-key\n";
                     } else {
                         cfg += context.getString(R.string.keychain_access) + "\n";
-                        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN)
-                            if (!mAlias.matches("^[a-zA-Z0-9]$"))
-                                cfg += context.getString(R.string.jelly_keystore_alphanumeric_bug) + "\n";
                     }
                 }
                 break;
@@ -683,11 +680,6 @@ public class VpnProfile implements Serializable, Cloneable {
             e.printStackTrace();
             VpnStatus.logError(R.string.keyChainAccessError, e.getLocalizedMessage());
             VpnStatus.logError(R.string.keychain_access);
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN) {
-                if (!mAlias.matches("^[a-zA-Z0-9]$")) {
-                    VpnStatus.logError(R.string.jelly_keystore_alphanumeric_bug);
-                }
-            }
             return null;
         } catch (AssertionError e) {
             if (tries == 0) return null;
@@ -833,11 +825,6 @@ public class VpnProfile implements Serializable, Cloneable {
     public String getSignedData(String b64data) {
         PrivateKey privkey = getKeystoreKey();
         byte[] data = Base64.decode(b64data, Base64.DEFAULT);
-        // The Jelly Bean *evil* Hack
-        // 4.2 implements the RSA/ECB/PKCS1PADDING in the OpenSSLprovider
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN) {
-            return processSignJellyBeans(privkey, data);
-        }
         try {
             /* ECB is perfectly fine in this special case, since we are using it for
                the public/private part in the TLS exchange

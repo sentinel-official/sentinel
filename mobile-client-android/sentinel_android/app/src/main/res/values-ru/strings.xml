@@ -343,9 +343,7 @@
     <string name="read_more">Узнать больше</string>
     <string name="vpn_enc_method">Шифрование %s</string>
     <string name="registering_device">Подготавливаем ваше устройство. Подождите…</string>
-    <string name="ok">OK</string>
     <string name="help">Помогите</string>
-    <string name="alert_bookmark_removed">Удаленные VPN</string>
     <string name="faq">FAQ</string>
     <string name="ok">OK</string>
     <string name="filter_by_title">Фильтр</string>

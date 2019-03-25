@@ -678,7 +678,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case AppConstants.REQ_LANGUAGE:
                 if (resultCode == RESULT_OK) {
-                    refreshMenuTitles();
+                    reloadApp();
+                } else {
                     if (!(getCurrentFragment() instanceof WalletFragment))
                         loadVpnSelectFragment(null, "onActivityResult REQ_LANGUAGE");
                     else
@@ -689,25 +690,13 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     /*
-     * Refresh the navigation menu titles after a new language is set
+     * Reload the app after a new language is set
      */
-    private void refreshMenuTitles() {
-        Menu aMenu = mNavMenuView.getMenu();
-        MenuItem aMenuTxHistory = aMenu.findItem(R.id.nav_tx_history);
-        aMenuTxHistory.setTitle(R.string.transaction_history);
-        MenuItem aMenuVpnHistory = aMenu.findItem(R.id.nav_vpn_history);
-        aMenuVpnHistory.setTitle(R.string.vpn_history);
-        MenuItem aMenuResetPin = aMenu.findItem(R.id.nav_reset_pin);
-        aMenuResetPin.setTitle(R.string.reset_pin);
-        MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
-        aMenuLanguage.setTitle(R.string.language);
-        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_share_app);
-        aMenuReferral.setTitle(R.string.share_app);
-        MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
-        aMenuSocialLinks.setTitle(R.string.faq);
-        MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);
-        aMenuLogout.setTitle(R.string.logout);
-        setToolbarTitle(getString(R.string.app_name));
+    private void reloadApp() {
+        Intent aIntent = new Intent(this, DashboardActivity.class);
+        aIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
+        startActivity(aIntent);
     }
 
     /*

@@ -825,8 +825,6 @@ public class VpnProfile implements Serializable, Cloneable {
     public String getSignedData(String b64data) {
         PrivateKey privkey = getKeystoreKey();
         byte[] data = Base64.decode(b64data, Base64.DEFAULT);
-        // The Jelly Bean *evil* Hack
-        // 4.2 implements the RSA/ECB/PKCS1PADDING in the OpenSSLprovider
         try {
             /* ECB is perfectly fine in this special case, since we are using it for
                the public/private part in the TLS exchange

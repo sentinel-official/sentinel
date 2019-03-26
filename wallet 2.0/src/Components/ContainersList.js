@@ -47,14 +47,22 @@ class ContainersList extends React.Component {
   }
   render() {
     let { language ,clientsData, ContainersData} = this.props;
-    // console.log("setting contatiner ", ContainersData, clientsData)
+    console.log("setting contatiner ", ContainersData, clientsData)
     return (
       <div className="listData">
     { (ContainersData === null || clientsData === null) ?
              <div style={{display: 'flex', justifyContent: 'center', paddingTop: '20%', fontSize: '25px'}}>{lang[language].Loading}</div> : 
           
           <div>
-        { ContainersData === [] ? <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%', fontSize: '25px'}}>{lang[language].NoNodeData}</div>: ContainersData.map( (item, i) => {
+        { ContainersData === [] ? <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%', fontSize: '25px'}}>{lang[language].NoNodeData}</div>: 
+        ContainersData.map( (item, i) => {
+          let a,b,c,d,s,newStatus;
+          a = item.Status;
+          b = a.split(" ");
+          c =  b[0] === "Up" && b[1] !== "About" ? (b.splice(1,0,"since")) : "";
+          d = b.join(" ");
+          s = d.toLowerCase();
+          newStatus = s.charAt(0).toUpperCase() + s.slice(1);
           return (
             <Card className="nodeCardStyle">
               <div className="leftDiv">
@@ -109,9 +117,11 @@ class ContainersList extends React.Component {
               </div>
               <div className="rightDiv">
                 <div>
-                  <label className="nodeLabel">
+                  <label className="nodeLabel" >
                   {lang[language].Status}:&nbsp;
-                    <span className="nodeValue">{item.Status} </span>
+                    <span className="nodeValue" >
+                    {newStatus} 
+                    </span>
                   </label>
                 </div>
                 <div>

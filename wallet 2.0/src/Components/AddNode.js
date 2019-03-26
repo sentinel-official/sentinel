@@ -45,6 +45,7 @@ class AddNode extends Component {
         super(props);
         this.state = {
             ip: '',
+            enteredIp:'',
             username: '',
             password: '',
             keystorePassword: '',
@@ -76,7 +77,10 @@ class AddNode extends Component {
                 if (hostedNode) {
                     this.setState({ ip: hostedNode.IP, loading: false });
                 } else {
+
                     this.setState({ ip: null, loading: false });
+                    // this.setState({ ip: '209.182.216.142', loading: false });
+
                 }
             })
     }
@@ -105,7 +109,8 @@ class AddNode extends Component {
         if (this.props.connectionStatus === true) {
             this.setState({
                 connected: false,
-                ip: null,
+                ip: '',
+                // enteredIp:'',
                 username: '',
                 password: '',
                 sending: false,
@@ -131,7 +136,6 @@ class AddNode extends Component {
     }
     componentDidMount = () => {
 
-        console.log("did");
     }
     handleSnackClose = (event, reason) => {
         this.setState({ snackOpen: false });
@@ -141,20 +145,29 @@ class AddNode extends Component {
     }
     handleConnect = () => {
         this.setState({ sending: true })
-        if (!this.props.isTM) {
-            getPrivateKey(this.state.keystorePassword, this.props.language, (err, privateKey) => {
-                if (err) {
-                    this.setState({
-                        sending: false,
-                        snackOpen: true,
-                        snackMessage: err.message
-                    })
-                } else {
-                    this.connectNM();
-                }
+        if(this.state.ip !== this.state.enteredIp){
+            this.setState({
+                sending: false,
+                snackOpen: true,
+                snackMessage: lang[this.props.language].NodeIPErr,
             })
-        } else {
-            this.connectNM();
+        }
+        else{
+            if (!this.props.isTM) {
+                getPrivateKey(this.state.keystorePassword, this.props.language, (err, privateKey) => {
+                    if (err) {
+                        this.setState({
+                            sending: false,
+                            snackOpen: true,
+                            snackMessage: err.message
+                        })
+                    } else {
+                        this.connectNM();
+                    }
+                })
+            } else {
+                this.connectNM();
+            }
         }
     }
 
@@ -197,7 +210,7 @@ class AddNode extends Component {
             ContainersInterval = null;
         }
 
-        let isDisabled = (this.state.sending || this.state.username === '' ||
+        let isDisabled = (this.state.sending || this.state.enteredIp === '' || this.state.username === '' ||
             this.state.password === '') ? true : false
         return (
             <div>
@@ -208,8 +221,8 @@ class AddNode extends Component {
                         (this.state.ip ?
                             <div style={accountStyles.nodeFormStyle}>
                                 <div style={createAccountStyle.secondDivStyle}
-                                    onKeyPress={(ev) => { if (ev.key === 'Enter') this.handleConnect() }}>
-                                    <h1 className="nodeHeading">{lang[language].NodeHeading}</h1>
+                                    onKeyPress={(ev) => { if (ev.key === 'Enter'&& !isDisabled) this.handleConnect() }}>
+                                    <h1 className="nodeHeading">{lang[language].NodeLogin}</h1>
                                     {this.props.isTM ?
                                         null :
                                         <div>
@@ -222,6 +235,18 @@ class AddNode extends Component {
                                             />
                                         </div>
                                     }
+                                    {this.props.isTM ?
+                                        <div>
+                                            <p style={createAccountStyle.headingStyle}>{lang[language].NodeUserIP}</p>
+                                            <CustomTextField type={'text'} placeholder={''} disabled={false}
+                                                multi={false}
+                                                value={this.state.enteredIp} onChange={(e) => { this.setState({ enteredIp: e.target.value }) }}
+                                            />
+                                        </div>
+                                        :
+                                        null
+                                    }
+
                                     <p style={createAccountStyle.headingStyle}>{lang[language].NodeUserID}</p>
                                     <CustomTextField type={'text'} placeholder={''} disabled={false}
                                         multi={false}

@@ -94,7 +94,7 @@ class CreateTMAccount extends Component {
         let isDisabled = (this.state.keyName === '' || this.state.keyPassword === '') ? true : false
         return (
             <div style={isPopup ? {} : createAccountStyle.formStyle}>
-                <div> <h2 style={createAccountStyle.createStyle}><center>  {lang[language].CreateWalletSST}</center></h2></div>
+                <div> <h2 style={createAccountStyle.createStyle}>{lang[language].CreateWalletSST}</h2></div>
                 <div style={isPopup ? {} : createAccountStyle.secondDivStyle}>
                     <p style={createAccountStyle.headingStyle}>{lang[language].AccountName}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false}

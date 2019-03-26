@@ -1,10 +1,9 @@
 import * as types from './../Constants/action.names';
-
+import axios from 'axios';
+import { TM_URL } from '../Constants/constants';
 
 let NM = require('../NM-Tools/nm');
 var nm = new NM()
-
-
 
 export async function connectToNodeDocker(ip, uid, pwd) {
     return dispatch => {
@@ -29,7 +28,6 @@ export async function connectToNodeDocker(ip, uid, pwd) {
     }
 
 }
-
 
 export function connectToNM(ip, uid, pwd, cb) {
     nm.connect(ip, uid, pwd, (res) => {
@@ -142,6 +140,36 @@ export function setImageClients(data) {
 export function isConnected(data) {
     return {
         type: types.CONNECT_STATUS,
+        payload: data
+    }
+}
+
+export function verifyMyAccount(address, name, password, cb){
+
+        let data = {
+            // "name": "sentinel",
+            // "address": "cosmosaccaddr1a0kfc36av9gapyhqlhwkh8wd4p33v6zk7wkzr6",
+            // "password" : "1234567890"
+            "address" : address,
+            "name": name,
+            "password" : password
+        }
+        let response = axios.post(TM_URL + `/verify`, data, {
+        // axios.post('http://192.168.0.192:1317/verify', data, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        }).then( async (res) => {
+            cb(res)
+        })
+        .catch(err => { cb(err) }) 
+}
+
+
+export function setAccountVerified(data){
+    return {
+        type: types.IS_ACCOUNT_VERIFIED,
         payload: data
     }
 }

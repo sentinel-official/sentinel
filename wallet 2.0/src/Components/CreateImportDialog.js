@@ -38,9 +38,9 @@ class CreateImportDialog extends React.Component {
         return (
             <MuiThemeProvider>
                 <Dialog
-                    disableBackdropClick
+                    // disableBackdropClick
                     disableEscapeKeyDown
-                    maxWidth="md"
+                    maxWidth="lg"
                     fullWidth={true}
                     aria-labelledby="confirmation-dialog-title"
                     {...other}
@@ -58,7 +58,7 @@ class CreateImportDialog extends React.Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleCancel} color="primary">
-                            {this.state.seedData ? lang[language].GoToSTWallet : lang[language].Close}
+                            {this.state.seedData ? lang[language].GoToSTWallet : lang[language].Cancel}
                         </Button>
                     </DialogActions>
                 </Dialog>

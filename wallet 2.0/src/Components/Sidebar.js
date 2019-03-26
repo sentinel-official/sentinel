@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
     menuItems, TMdisabledmenuItems, TMrecoverItems, notTestItemIcons, notInTestMenuItems, testMenuItems,
-    testMenuItemsIcons, disabledItemsMain, disabledItemsTest, disabledItemsTM
+    TMtestMenuItemsIcons,testMenuItemsIcons, disabledItemsMain, disabledItemsTest, disabledItemsTM
 } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { setTendermint, setWalletType } from '../Actions/header.action';
-
 import MenuIcon from '@material-ui/icons/Menu';
 import HistoryIcon from '@material-ui/icons/History';
 import SendIcon from '@material-ui/icons/Send';
@@ -200,8 +199,18 @@ class Sidebar extends Component {
             (account ? TMdisabledmenuItems : TMrecoverItems) : testMenuItems) : notInTestMenuItems
         let menuItemsIcons = isTest ?
             (isTenderMint && component !== 'dashboard' ?
-                (account ? TMdisabledmenuItems : TMrecoverItems) : testMenuItemsIcons)
+                (account ? TMdisabledmenuItems : TMrecoverItems) : (isTenderMint ? TMtestMenuItemsIcons :testMenuItemsIcons ) )
             : notTestItemIcons
+
+        // let menuItemsIcons = isTest ? 
+        //     (isTenderMint && component !== 'dashboard') ?
+        //         (account ? TMdisabledmenuItems : TMrecoverItems)
+        //         :
+        //         (isTendermint ? TMtestMenuItemsIcons :testMenuItemsIcons )
+        //         :
+        //         notTestItemIcons
+                
+
         return (
             <div style={sidebarStyles.totalDiv}>
 
@@ -247,68 +256,7 @@ class Sidebar extends Component {
                         )
                     })
                 }
-                {/* <Drawer
-                    open={this.state.openDrawer}
-                    onClose={this.toggleDrawer(false)}
-                    classes={{ paper: classes.paper }}
-                >
-                    <div
-                        tabIndex={0}
-                        role="button"
-                        style={sidebarStyles.outlineNone}
-                    >
-                        <IconButton aria-label="Back" style={sidebarStyles.backArrowStyle} onClick={this.toggleDrawer(false)}>
-                            <BackArrowIcon />
-                        </IconButton>
-                        <div>
-                            {this.props.isTenderMint ?
-                                <div className="collapse_header">
-                                    <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
-                                        style={{ width: 20, }} />
-                                    <span className="collapse_heading">{lang[language].TM}</span>
-                                </div>
-                                :
-                                <div className="collapse_header"> <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                                    style={{ width: 20 }} />
-                                    <span className="collapse_heading">{lang[language].ETH}</span>
 
-                                </div>
-                            }
-                            <hr style={sidebarStyles.m_0} />
-
-                            <List component="div" disablePadding>
-                                {
-
-                                    sidebarMenuItems.map((item) => {
-                                        return (
-                                            <div>
-                                                <div style={
-                                                    (item.value === currentTab ?
-                                                        sidebarStyles.currentDivStyle :
-                                                        sidebarStyles.activeDivStyle)
-                                                } onClick={() => { this.setMenu(item),this.setState({openDrawer: false}) }}>
-                                                    <label
-                                                        style={
-                                                            
-                                                            (item.value === currentTab ?
-                                                                sidebarStyles.activeLabelStyle :
-                                                                sidebarStyles.normalLabelStyle)
-                                                        }>
-                                                        <span className="iconStyle"> {this.getIcon(item.icon)}</span> {lang[language][item.name]}
-
-                                                    </label>
-                                                </div>
-                                                <hr style={sidebarStyles.m_0} />
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </List>
-                        </div>
-
-                          <span style={sidebarStyles.drawerHeading}><span className='version_style'>{lang[language].VersionInSidebar}</span></span>
-                    </div>
-                </Drawer> */}
             </div>
         )
     }

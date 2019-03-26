@@ -154,6 +154,12 @@ const headerStyles = {
     menuListStyle: {
         maxHeight: 150,
         overflowY: 'auto'
+    },
+    accountsHeading:{
+        padding:10,
+        fontSize: 15,
+        fontWeight: '600',
+
     }
 }
 

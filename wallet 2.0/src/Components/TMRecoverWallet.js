@@ -108,7 +108,7 @@ class TMRecoverWallet extends Component {
                 <div style={isPopup ? {} : createAccountStyle.secondDivStyle}
                     onKeyPress={(ev) => { if (ev.key === 'Enter') this.sendTransaction() }}>
 
-                    <h1 className="nodeHeading">{lang[language].RecoverTMWalletHeading}</h1>
+                    <h1 className="recoverHeading">{lang[language].RecoverTMWalletHeading}</h1>
                     <p style={createAccountStyle.headingStyle}>{lang[language].NewAccountName}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false}
                         multi={false}

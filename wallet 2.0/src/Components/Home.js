@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
-import { homePageStyles } from './../Assets/authenticate.styles';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 import { sendError, setComponent } from '../Actions/authentication.action';
-import { setCurrentTab } from './../Actions/sidebar.action';
-import Toolbar from '@material-ui/core/Toolbar';
+import { setCurrentTab } from '../Actions/sidebar.action';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Button from '@material-ui/core/Button';
-import { screenStyles } from '../Assets/selectScreen.styles';
 import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
-import { readFile, KEYSTORE_FILE } from './../Utils/Keystore';
-let lang = require('./../Constants/language');
+import { readFile, KEYSTORE_FILE } from '../Utils/Keystore';
+import Ripple from "rippl";
+import "./home.css";
 
-class Home extends Component {
+let lang = require('../Constants/language');
+
+class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -43,61 +40,126 @@ class Home extends Component {
         this.props.setComponent('dashboard');
     }
 
-    // componentDidCatch(error, info) {
-    //     sendError(error);
-    // }
-
     render() {
         let language = this.props.language;
-        return (<div>
-            <Toolbar style={homePageStyles.toolbar}>\
-                            <img src={'../src/Images/logo.svg'} alt="Logo" style={homePageStyles.toolbarImage} />
-            </Toolbar>
-            <div style={homePageStyles.middleDiv} >
-                <Grid style={homePageStyles.middleDivGrid}>
-                    <br />
-                    <Row>
-                        <Col>
-                            <h2>{lang[language].AnonymousVPN}</h2>
-                        </Col>
-                        <p style={homePageStyles.middleDivText}>{lang[language].OpenSource}</p>
-                        <br /><br />
-                    </Row>
-                </Grid>
-                <div style={homePageStyles.wholeDiv}>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => { this.clickedEth() }}
-                        style={homePageStyles.ethButtonStyle}>
-                        {lang[language].ETHNetwork}<span>&nbsp;&nbsp;&gt;&gt; </span>
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => { this.clickedTm() }}
-                        style={homePageStyles.tmButtonStyle}>
-                        <span>&lt;&lt;&nbsp;&nbsp;</span>{lang[language].TMNetwork}
-                    </Button>
+        return (
+            <div className="main_div">
+                <div className="section_1">
+                    <div className="section1_child">
+                        <div className="heading_section">
+                            <img
+                                src={'../src/Images/SENT_logo.svg'}
+                                width="300px"
+                                alt="logo"
+                            />
+                        </div>
+                        <div className="client_div">
+                            <span className="desk_1">{lang[language].DesktopClient}</span>
+                            <span className="version">{lang[language].DesktopClientVersion}</span>
+                        </div>
+                        <Ripple>
+                            <div className="network_section_1"
+                                onClick={() => { this.clickedTm() }} >
+                                <img
+                                    src={'../src/Images/TM.svg'}
+                                    width="30px"
+                                    alt="Tendermint_logo"
+                                />
+                                <div>
+                                    <div className="btn_div">
+                                        <p>{lang[language].TMNetworkMain}</p>
+                                        <p>{lang[language].TMNetworkSub}</p>
+                                    </div>
+                                </div>
+                                <div className="arrow">
+                                    <img
+                                        src={'../src/Images/Arrow.svg'}
+                                        width="30px"
+                                        alt="Arrow"
+                                    />
+                                </div>
+                            </div>
+                        </Ripple>
+                        <Ripple>
+                            <div className="network_section_2 section_a"
+                                onClick={() => { this.clickedEth() }} >
+                                <img
+                                    src={'../src/Images/Classic.svg'}
+                                    width="30px"
+                                    alt="Ethereum"
+                                />
+                                <div>
+                                    <div className="btn_div">
+                                        <p>{lang[language].ETHNetworkMain}</p>
+                                        <p>{lang[language].ETHNetworkSub}</p>
+                                    </div>
+                                </div>
+                                <div className="arrow">
+                                    <img
+                                        src={'../src/Images/Arrow.svg'}
+                                        width="30px"
+                                        alt="Arrow"
+                                    />
+                                </div>
+                            </div>
+                        </Ripple>
+                    </div>
+                </div>
+                <div className="section_2">
+                    {/* <div className="open_app">
+                        <div>{lang[language].HomeOpenSource}</div>
+                        <div>{lang[language].ApplicationIncludes}:</div>
+                    </div> */}
+
+                    <div className="includes">
+                        <div className="give_space">
+                            <div>
+                                {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                                <img
+                                    src={'../src/Images/check-mark.svg'}
+                                    width="15px"
+                                    alt="tick"
+                                    className="ticks"
+                                />
+                                <span>{lang[language].Includes1}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <img
+                                src={'../src/Images/check-mark.svg'}
+                                width="15px"
+                                alt="tick"
+                                className="ticks"
+                            />
+                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            {lang[language].Includes2}
+                        </div>
+                    </div>
+                    <div className="includes">
+                        <div className="give_space">
+                            <img
+                                src={'../src/Images/check-mark.svg'}
+                                width="15px"
+                                alt="tick"
+                                className="ticks"
+                            />
+                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            {lang[language].Includes3}
+                        </div>
+                        <div>
+                            <img
+                                src={'../src/Images/check-mark.svg'}
+                                width="15px"
+                                alt="tick"
+                                className="ticks"
+                            />
+                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            {lang[language].Includes4}
+                        </div>
+                    </div>
                 </div>
             </div>
-            <Grid >
-                <Row style={homePageStyles.m_l_20}>
-                    <Col xs={7} style={homePageStyles.bottomDivCol}>
-                        <div style={homePageStyles.m_l_p_5}>
-                            <h4 style={homePageStyles.moreAboutText}>{lang[language].SentinelAnonymity}</h4>
-                            <p style={{ fontSize: 14 }}>{lang[language].PeerToPeerMarket}</p>
-                        </div>
-                    </Col>
-                    <Col xs={4} style={homePageStyles.m_l_5}>
-                        <h4 style={homePageStyles.bottomDivBuilt}>{lang[language].BetaVersion}</h4>
-                        <hr align="left" style={homePageStyles.underLine} />
-                        <p style={homePageStyles.copyRight}>{lang[language].SentGroup}</p>
-                    </Col>
-                </Row>
-            </Grid>
-        </div>
-        )
+        );
     }
 }
 function mapStateToProps(state) {

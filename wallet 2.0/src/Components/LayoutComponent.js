@@ -15,7 +15,7 @@ import TMSessions from './TMSessions';
 import TMTransactionsHistory from './TMTransactionsHistory';
 import TMTransfer from './TMTransfer';
 import TMRecoverWallet from './TMRecoverWallet';
-import AddNode from './AddNode';
+import AddNode from './VerifyAccount';
 
 class LayoutComponent extends Component {
     constructor(props) {

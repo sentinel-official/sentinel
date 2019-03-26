@@ -195,6 +195,7 @@ class TMTransfer extends Component {
                                                 gotVPN: false
                                             });
                                             this.props.setCurrentTab('receive');
+                                           
                                         }
                                     })
                                 }
@@ -229,6 +230,10 @@ class TMTransfer extends Component {
                         sending: false, openSnack: true, snackMessage: lang[this.props.language].TxSuccess,
                         toAddress: '', keyPassword: '', amount: '',
                     });
+                    setTimeout(() => {
+                        this.props.setCurrentTab('history');
+                    }, 3000);
+                  
                     setTimeout(() => {
                         this.props.getTMBalance(this.props.account.address);
                     }, 7000);

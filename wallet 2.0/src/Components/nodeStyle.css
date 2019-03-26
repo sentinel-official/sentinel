@@ -22,6 +22,7 @@
   font-family: Montserrat;
   font-size: 13px;
 }
+
 .copyStyle {
   height: 18;
   width: 15;
@@ -76,6 +77,12 @@
   font-family: Montserrat, Medium;
   font-weight: 600;
   font-size: 24px;
-  margin-left: 20px;
+  /* margin-left: 20px; */
+  margin-bottom: 25px;
+}
+.recoverHeading{
+  font-family: Montserrat, Medium;
+  font-weight: 600;
+  font-size: 20px;
   margin-bottom: 25px;
 }

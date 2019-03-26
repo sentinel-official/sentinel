@@ -49,7 +49,7 @@ class ImagesList extends React.Component {
   }
   render() {
     let {  language,  ImagesData } = this.props;
-    // console.log(" setting images list ", ImagesData);
+    console.log(" setting images list ", ImagesData);
 
     return (
       <div className="listData">

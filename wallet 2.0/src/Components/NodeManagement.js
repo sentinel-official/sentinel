@@ -18,7 +18,7 @@ let ImagesInterval = null;
 class NodeManagement extends React.Component {
   state = {
     isActive: "true",
-    showing: "Images",
+    showing: "Containers",
     ipHosted: null
   };
 
@@ -78,22 +78,22 @@ class NodeManagement extends React.Component {
               </IconButton>
             </div> */}
             <div className="nodeGiveSpace">
-              <CustomButton
-                color={"#FFFFFF"}
-                label={lang[language].Images}
-                active={this.state.showing !== "Images"}
-                onClick={() => {
-                  this.showListOf("Images");
-                }}
-              />
-            </div>
-            <div className="nodeGiveSpaceEnd">
-              <CustomButton
+            <CustomButton
                 color={"#F2F2F2"}
                 label={lang[language].Containers}
                 active={this.state.showing !== "Containers"}
                 onClick={() => {
                   this.showListOf("Containers");
+                }}
+              />
+             </div>
+            <div className="nodeGiveSpaceEnd">
+            <CustomButton
+                color={"#FFFFFF"}
+                label={lang[language].Images}
+                active={this.state.showing !== "Images"}
+                onClick={() => {
+                  this.showListOf("Images");
                 }}
               />
             </div>

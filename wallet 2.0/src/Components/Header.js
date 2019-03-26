@@ -19,15 +19,17 @@ import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import LogoutIcon from '@material-ui/icons/PowerSettingsNew';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import SwitchIcon from '@material-ui/icons/SwapHoriz';
 import AddIcon from '@material-ui/icons/Add';
 import ImportIcon from '@material-ui/icons/PlayForWork';
-import AccountIcon from '@material-ui/icons/AccountBox';
+import AccountIcon from '@material-ui/icons/AccountCircle';
 import DoneIcon from '@material-ui/icons/Done';
 import SimpleMenuTestnet from './SharedComponents/SimpleMenuTestnet';
 import SendIcon from '@material-ui/icons/Send';
 import lang from '../Constants/language';
 import { networkChange } from '../Actions/NetworkChange';
 import { setVpnType } from '../Actions/vpnlist.action';
+import { setAccountVerified } from '../Actions/node.action';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
 import CreateImportDialog from './CreateImportDialog';
@@ -79,6 +81,7 @@ class Header extends Component {
                     this.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
             }
             this.props.setWalletType('ERC');
+            this.getERCBalances();
             this.props.setTendermint(false);
             this.props.setEthLogged(false);
         }
@@ -113,6 +116,7 @@ class Header extends Component {
 
     onLogoutClicked = () => {
         this.props.logoutNode();
+        this.props.setAccountVerified(false)
         this.props.setComponent('home');
     }
 
@@ -216,6 +220,7 @@ class Header extends Component {
                 TMInterval = null;
             }
             this.props.logoutNode();
+            this.props.setAccountVerified(false)
             this.props.setTMAccount(mainAccount);
             this.setState({ openedMenu: false });
         }
@@ -238,6 +243,8 @@ class Header extends Component {
             clearInterval(TMInterval);
             TMInterval = null;
             this.props.logoutNode();
+            this.props.setAccountVerified(false)
+
         }
     }
 
@@ -246,7 +253,6 @@ class Header extends Component {
         const { classes } = this.props;
 
         if (!isTendermint && !notTMInterval) {
-            this.getERCBalances();
             notTMInterval = setInterval(() => {
                 this.props.getETHBalance(walletAddress);
                 this.props.getSentBalance(walletAddress);
@@ -430,7 +436,8 @@ class Header extends Component {
                                 disabled={this.props.vpnStatus}
                                 onClick={this.handleMenuClick}
                                 style={headerStyles.buttonRefresh}>
-                                <MoreVertIcon />
+                                {/* <MoreVertIcon /> */}
+                                <AccountIcon viewBox='0 0 24 24' />
                             </IconButton>
                             <Popper open={this.state.openedMenu} anchorEl={this.anchorEl}
                                 placement={'bottom-end'}
@@ -444,6 +451,14 @@ class Header extends Component {
                                     >
                                         <Paper>
                                             <ClickAwayListener onClickAway={this.handleLogoutMenuClose}>
+                                                {this.props.isTendermint ?
+                                                    <div>
+                                                        <div style={headerStyles.accountsHeading}>{tmAccountsList.length === 1 ? lang[language].YourAccount :lang[language].YourAccounts}</div>
+                                                        <Divider variant="light" />
+                                                    </div>
+                                                    :
+                                                    null
+                                                }
                                                 {isTendermint && tmAccountDetails ?
                                                     <div>
                                                         <MenuList style={headerStyles.menuListStyle}>
@@ -491,9 +506,9 @@ class Header extends Component {
                                                     <MenuItem onClick={this.onLogoutClicked} style={{ height: 20 }}
                                                         disabled={this.props.vpnStatus}>
                                                         <ListItemIcon>
-                                                            <LogoutIcon />
+                                                          <SwitchIcon />
                                                         </ListItemIcon>
-                                                        <ListItemText inset primary="Logout" />
+                                                        <ListItemText inset primary={`${lang[language].SwitchNetwork}`} />
                                                     </MenuItem>
                                                 </MenuList>
                                             </ClickAwayListener>
@@ -563,7 +578,8 @@ function mapDispatchToActions(dispatch) {
         getKeys,
         setTMAccount,
         logoutNode,
-        setEthLogged
+        setEthLogged,
+        setAccountVerified,
     }, dispatch)
 }
 

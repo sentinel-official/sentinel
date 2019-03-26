@@ -44,7 +44,16 @@ export function connectionStatus (state = false, action){
         case types.CONNECT_STATUS:
           {  
               return action.payload;
-              
+        }
+        default:
+        return state;
+    }
+}
+export function isAccountVerified( state = false, action){
+    switch (action.type){
+        case types.IS_ACCOUNT_VERIFIED:
+          {  
+              return action.payload;
         }
         default:
         return state;

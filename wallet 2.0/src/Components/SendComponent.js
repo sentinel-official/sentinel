@@ -16,6 +16,8 @@ import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/lab/Slider';
 import PositionedSnackbar from './SharedComponents/simpleSnackbar';
+import { setCurrentTab } from '../Actions/sidebar.action';
+
 import { TX_SUCCESS } from '../Constants/sendcomponent.types';
 const shell = window.require('electron').shell;
 
@@ -211,6 +213,9 @@ class SendComponent extends React.Component {
                   console.log('eth tx complete', response);
                   if (response.type === TX_SUCCESS) {
                     self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: lang[this.props.language]['TransactionSuccess'], url: true, txHash: response.payload });
+                    setTimeout(() => {
+                      this.props.setCurrentTab('history');
+                    }, 3000);  // to show the tx-history
                   } else {
                     if (response.payload) {
                       let regError = (response.payload).replace(/\s/g, "");
@@ -253,6 +258,10 @@ class SendComponent extends React.Component {
                     console.log('vpn payment', response);
                     if (response.type === TX_SUCCESS) {
                       self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', isVPNPayment: false, open: true, snackMessage: lang[this.props.language]['TransactionSuccess'], url: true, txHash: response.payload });
+                      
+                      setTimeout(() => {
+                        this.props.setCurrentTab('history');
+                      }, 3000);
                     } else {
                       self.setState({
                         label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, isVPNPayment: false,
@@ -265,6 +274,9 @@ class SendComponent extends React.Component {
                     console.log(response)
                     if (response.type === TX_SUCCESS) {
                       self.setState({ label: 'Send', isDisabled: true, sendToAddress: '', amount: '', password: '', open: true, snackMessage: lang[this.props.language]['TransactionSuccess'], url: true, txHash: response.payload });
+                      setTimeout(() => {
+                        this.props.setCurrentTab('history');
+                      }, 3000);
                     } else {
                       if (response.payload) {
                         let regError = (response.payload).replace(/\s/g, "");
@@ -508,7 +520,8 @@ function mapDispatchToActions(dispatch) {
   return bindActionCreators({
     transferAmount,
     payVPNUsage,
-    setVPNDuePayment
+    setVPNDuePayment,
+    setCurrentTab,
   }, dispatch)
 }
 

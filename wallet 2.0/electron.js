@@ -246,7 +246,7 @@ function stopVPN(cb) {
     try {
       var cmd;
       if (vpnType === 'socks5')
-        cmd = 'net stop sentinelSocksv11 /f  && taskkill /IM sentinel.exe /f'
+        cmd = 'net stop sentinelSocksv12 /f  && taskkill /IM sentinel.exe /f'
       else cmd = 'taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f';
       let stdout = execSync(cmd)
       if (stdout) cb(null);

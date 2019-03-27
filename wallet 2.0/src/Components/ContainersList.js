@@ -47,7 +47,6 @@ class ContainersList extends React.Component {
   }
   render() {
     let { language ,clientsData, ContainersData} = this.props;
-    console.log("setting contatiner ", ContainersData, clientsData)
     return (
       <div className="listData">
     { (ContainersData === null || clientsData === null) ?

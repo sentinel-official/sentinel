@@ -128,26 +128,25 @@ class Sidebar extends Component {
     }
 
     getIcon = (iconName) => {
-
         if( iconName === 'createIcon'){
             return <img src={'../src/Images/create.svg'} alt="create_logo"
-                    style={{ width: 25, paddingBottom: 7, marginTop: -3}} />
+                    style={{ width: 25, paddingBottom: 7, marginTop: -3,opacity: 0.7}} />
         }
 
         if( iconName === 'recoverIcon'){
             return <img src={'../src/Images/recover.svg'} alt="recover_logo"
-                    style={{ width: 25, paddingBottom: 7, marginTop: -3}} />
+                    style={{ width: 25, paddingBottom: 7, marginTop: -3, opacity: 0.7}} />
         }
         if( iconName === 'nodeIcon'){
-            return <img src={'../src/Images/node.svg'} alt="node_logo"
-                    style={{ width: 25, paddingBottom: 7, marginTop: -3}} />
+            return <img src={'../src/Images/NMT.png'} alt="node_logo"
+                    style={{ width: 20, paddingBottom: 7, marginTop: -3, opacity: 0.7}} />
         }
         if (iconName === 'tmintIcon') {
             if (!this.props.isTenderMint)
                 return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
                     style={{ width: 25, paddingBottom: 7, marginTop: -3, opacity: 0.3 }} />
             else
-                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 25, paddingBottom: 7, marginTop: -3 }} />
+                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 25, paddingBottom: 7, marginTop: -3, opacity: 0.7}} />
         }
         if (iconName === 'ethereumIcon') {
             if (this.props.isTenderMint)
@@ -156,20 +155,47 @@ class Sidebar extends Component {
 
             else
                 return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                    style={{ width: 20, paddingBottom: 4, marginTop: -5, }} />
+                    style={{ width: 20, paddingBottom: 4, marginTop: -5, opacity: 0.7}} />
         }
-
         if (iconName === 'listIcon') {
-            if (this.props.isTest) {
-                return <img src={'../src/Images/list.svg'} alt="etherem_logo"
-                    style={{ width: 25, paddingBottom: 6, marginTop: 2 }} />
-            }
-            else {
-                return <img src={'../src/Images/list.svg'} alt="etherem_logo"
-                    style={{ width: 25, paddingBottom: 6, marginTop: 2, opacity: 0.3 }} />
-            }
+            if (this.props.isTest)
+                return <img src={'../src/Images/VPN_history.png'} alt="vpn_list_logo"
+                    style={{ width: 25, paddingBottom: 5, marginTop: -5,opacity: 0.7 }} />
+
+            else
+                return <img src={'../src/Images/VPN_history.png'} alt="vpn_list_logo"
+                    style={{ width: 25, paddingBottom: 4, marginTop: -5, opacity: 0.3 }} />
+        }
+        if (iconName === 'vpnHisIcon') {
+            if (this.props.isTest)
+                return <img src={'../src/Images/VPN_history.png'} alt="vpn_history_logo"
+                    style={{ width: 25, paddingBottom: 5, marginTop: -5,opacity: 0.7 }} />
+
+            else
+                return <img src={'../src/Images/VPN_history.png'} alt="vpn_history_logo"
+                    style={{ width: 25, paddingBottom: 4, marginTop: -5, opacity: 0.3 }} />
+        }
+        if (iconName === 'sendIcon') {
+           
+                return <img src={'../src/Images/Send.png'} alt="send_logo"
+                    style={{ width: 30, marginLeft:5, opacity: 0.7}} />
+
+         }
+         if (iconName === 'receiveIcon') {
+           
+            return <img src={'../src/Images/Receive.png'} alt="receive_logo"
+                style={{ width: 30,marginLeft:5, opacity: 0.7 }} />
 
         }
+        if (iconName === 'historyIcon') {
+           
+            return <img src={'../src/Images/Tr_list.png'} alt="tx_history_logo"
+                style={{ width: 25, paddingBottom: 5, marginTop: -5, opacity: 0.7  }} />
+
+        }
+        
+
+       
         else {
             let Icon = this.components[iconName];
             return <Icon />
@@ -239,13 +265,14 @@ class Sidebar extends Component {
                                 >
                                     <Tooltip title={lang[language][item.name]} placement="right">
                                         <label
-                                            style={
+                                             className={
                                                 isDisabled ?
-                                                    sidebarStyles.disabledLabelStyle :
+                                                    'disabledLabelStyle' :
                                                     (item.value === currentTab ?
-                                                        sidebarStyles.IconActiveLabelStyle :
-                                                        sidebarStyles.IconNormalLabelStyle)
-                                            }>
+                                                        'IconActiveLabelStyle' :
+                                                        'IconNormalLabelStyle')
+                                            }
+                                            >
                                             {this.getIcon(item.icon)}
 
                                         </label>

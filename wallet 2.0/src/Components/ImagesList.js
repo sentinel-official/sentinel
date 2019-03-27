@@ -48,9 +48,7 @@ class ImagesList extends React.Component {
   handleClick() {
   }
   render() {
-    let {  language,  ImagesData } = this.props;
-    console.log(" setting images list ", ImagesData);
-
+    let {  language,  ImagesData } = this.props; 
     return (
       <div className="listData">
          

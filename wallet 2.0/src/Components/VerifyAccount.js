@@ -79,8 +79,7 @@ class VerifyAccount extends React.Component {
     verifyAccount = () => {
         this.setState({ sending : true})
         verifyMyAccount(this.state.AccountAddress,this.state.AccountName,this.state.AccountPassword, res =>{
-            // console.log("response from 405", res)
-            if(res.data){
+                if(res.data){
                 if (res.data.success) {
                     this.setState({ verfied: true, sending : false })
                     this.props.setAccountVerified(true)

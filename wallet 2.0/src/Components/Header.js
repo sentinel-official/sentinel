@@ -426,6 +426,7 @@ class Header extends Component {
                                 </Tooltip>
                             }
                         </Col>
+                        <Tooltip title={this.props.vpnStatus ? lang[language].CannotClickUser : ''}>
                         <Col xs={1}>
                             <IconButton
                                 buttonRef={node => {
@@ -517,7 +518,7 @@ class Header extends Component {
                                 )}
                             </Popper>
                         </Col>
-
+                        </Tooltip>
                     </Row>
                 </Grid>
                 <Snackbar

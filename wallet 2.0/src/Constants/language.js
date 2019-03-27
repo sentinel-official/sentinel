@@ -420,8 +420,8 @@ let lang = {
         "Includes3" : "dVPN on STT v 1.1",
         "Includes4" : "dVPN Node Management Tools (NMT)",
 
-        "NodeManagement" : "Node Management",
-
+        "NodeManagement" : "NODE MANAGEMENT",
+        "CannotClickUser" : 'Disconnect VPN to access Menu (or) Switch Network',
 
 
     },
@@ -849,7 +849,8 @@ let lang = {
         "Includes3" : "dVPN on STT v 1.1",
         "Includes4" : "dVPN Node Management Tools (NMT)",
 
-        "NodeManagement" : "Node Management",
+        "NodeManagement" : "NODE MANAGEMENT",
+        "CannotClickUser" : 'Disconnect VPN to access Menu (or) Switch Network',
     },
 
 
@@ -1276,7 +1277,8 @@ let lang = {
         "Includes3" : "dVPN on STT v 1.1",
         "Includes4" : "dVPN Node Management Tools (NMT)",
 
-        "NodeManagement" : "Node Management",
+        "NodeManagement" : "NODE MANAGEMENT",
+        "CannotClickUser" : 'Disconnect VPN to access Menu (or) Switch Network',
 
     },
     es: {
@@ -1700,7 +1702,8 @@ let lang = {
         "Includes3" : "dVPN on STT v 1.1",
         "Includes4" : "dVPN Node Management Tools (NMT)",
 
-        "NodeManagement" : "Node Management",
+        "NodeManagement" : "NODE MANAGEMENT",
+        "CannotClickUser" : 'Disconnect VPN to access Menu (or) Switch Network',
     },
     ru: {
         "History": "История",
@@ -2102,29 +2105,29 @@ let lang = {
         "NoNodeFound":"Невозможно найти узел, размещенный с этим адресом",
 
        
-        "NodeLogin" : "Login to your dVPN Service Node",
-        'Verifying' : 'Verifying...',
-        'Verify' : 'Verify',
-        'AccountAddress' : 'Account Address',
-        'VerifyHeading' : 'Verify Your Account',
-        'YourAccount' : 'Your Account',
-        'YourAccounts' : 'Your Accounts',
-        'NodeIPErr' : 'IP not bound to this address',
-        'SwitchNetwork' : 'Switch Network',
-        "DesktopClient" : "Desktop Client",
+        "NodeLogin" : "Войдите в свой сервисный узел dVPN",
+        'Verifying' : 'Проверка ...',
+        'Verify' : 'проверить',
+        'AccountAddress' : 'Адрес аккаунта',
+        'VerifyHeading' : 'Подтвердите ваш аккаунт',
+        'YourAccount' : 'Ваш счет',
+        'YourAccounts' : 'Ваши аккаунты',
+        'NodeIPErr' : 'IP не привязан к этому адресу',
+        'SwitchNetwork' : 'Переключить сеть',
+        "DesktopClient" : "Настольный клиент",
         "DesktopClientVersion" : 'v 0.1.1',
-        "TMNetworkMain" : "Sentinel Tendermint",
+        "TMNetworkMain" : "Сентинел Тендерминт",
         "TMNetworkSub" : "TestNet(STT) v1.1",
         "ETHNetworkMain" : "Ethereum",
-        "ETHNetworkSub" : "Network",
-        "HomeOpenSource" : "Open Source",
-        "ApplicationIncludes" : "Application includes",
-        "Includes1" : "$SENT ERC20 Wallet",
-        "Includes2" : "dVPN on Rinkeby TestNet",
-        "Includes3" : "dVPN on STT v 1.1",
-        "Includes4" : "dVPN Node Management Tools (NMT)",
-
-        "NodeManagement" : "Управление узлами",
+        "ETHNetworkSub" : "сеть",
+        "HomeOpenSource" : "Открытый исходный код",
+        "ApplicationIncludes" : "Приложение включает в себя",
+        "Includes1" : "$ SENT ERC20 Кошелек",
+        "Includes2" : "dVPN на Rinkeby TestNet",
+        "Includes3" : "dVPN на STT v 1.1",
+        "Includes4" : "Инструменты управления узлами dVPN (NMT)",
+        "NodeManagement" : "УПРАВЛЕНИЕ УЗЛАМИ",
+        "CannotClickUser" : 'Отключите VPN для доступа к Меню (или) Переключить сеть',
     },
 
     zh: {
@@ -2527,29 +2530,30 @@ let lang = {
         "NoNodeFound":"无法找到使用此地址托管的节点",
 
       
-        "NodeLogin" : "Login to your dVPN Service Node",
-        'Verifying' : 'Verifying...',
-        'Verify' : 'Verify',
-        'AccountAddress' : 'Account Address',
-        'VerifyHeading' : 'Verify Your Account',
-        'YourAccount' : 'Your Account',
-        'YourAccounts' : 'Your Accounts',
-        'NodeIPErr' : 'IP not bound to this address',
-        'SwitchNetwork' : 'Switch Network',
-        "DesktopClient" : "Desktop Client",
+        "NodeLogin" : "登录您的dVPN服务节点",
+        'Verifying' : '验证中...',
+        'Verify' : '校验',
+        'AccountAddress' : '帐户地址',
+        'VerifyHeading' : '验证您的帐户',
+        'YourAccount' : '你的帐户',
+        'YourAccounts' : '你的账户',
+        'NodeIPErr' : 'IP没有绑定到此地址',
+        'SwitchNetwork' : '切换网络',
+        "DesktopClient" : "桌面客户端",
         "DesktopClientVersion" : 'v 0.1.1',
         "TMNetworkMain" : "Sentinel Tendermint",
         "TMNetworkSub" : "TestNet(STT) v1.1",
-        "ETHNetworkMain" : "Ethereum",
-        "ETHNetworkSub" : "Network",
-        "HomeOpenSource" : "Open Source",
-        "ApplicationIncludes" : "Application includes",
-        "Includes1" : "$SENT ERC20 Wallet",
-        "Includes2" : "dVPN on Rinkeby TestNet",
-        "Includes3" : "dVPN on STT v 1.1",
-        "Includes4" : "dVPN Node Management Tools (NMT)",
+        "ETHNetworkMain" : "复仇",
+        "ETHNetworkSub" : "网络",
+        "HomeOpenSource" : "开源",
+        "ApplicationIncludes" : "申请包括",
+        "Includes1" : "$ SENT ERC20钱包",
+        "Includes2" : "Rinkeby TestNet上的dVPN",
+        "Includes3" : "STV v 1.1上的dVPN",
+        "Includes4" : "dVPN节点管理工具（NMT",
 
         "NodeManagement" : "节点管理",
+        "CannotClickUser" : '断开VPN连接以访问菜单（或）交换机网络',
     },
 }
 

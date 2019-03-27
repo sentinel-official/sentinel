@@ -34,7 +34,8 @@ const sidebarStyles = {
         textAlign: 'center', //changed center to left
         cursor: 'pointer',
         fontWeight: 'bold',
-        fontFamily: 'Montserrat'
+        fontFamily: 'Montserrat',
+       
     },
 
     IconCurrentDivStyle: {
@@ -43,7 +44,8 @@ const sidebarStyles = {
         fontWeight: 'bold',
         cursor: 'pointer',
         fontFamily: 'Montserrat',
-        backgroundColor: 'rgba(48, 50, 70, 0.16)'
+        backgroundColor: 'rgba(48, 50, 70, 0.16)',
+        opacity: 1,
     },
     IconDisabledDivStyle: {
         padding: '16px 0px 0px 0px',
@@ -91,7 +93,9 @@ const sidebarStyles = {
     },
     IconActiveLabelStyle:{
         cursor:'pointer',
+        opacity:1,
     },
+  
     collapseType:{
         fontWeight: 'bold',
         fontFamily: 'Montserrat',

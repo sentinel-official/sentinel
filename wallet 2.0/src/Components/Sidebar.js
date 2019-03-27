@@ -159,11 +159,11 @@ class Sidebar extends Component {
         }
         if (iconName === 'listIcon') {
             if (this.props.isTest)
-                return <img src={'../src/Images/VPN_history.png'} alt="vpn_list_logo"
+                return <img src={'../src/Images/VPN_list.png'} alt="vpn_list_logo"
                     style={{ width: 25, paddingBottom: 5, marginTop: -5,opacity: 0.7 }} />
 
             else
-                return <img src={'../src/Images/VPN_history.png'} alt="vpn_list_logo"
+                return <img src={'../src/Images/VPN_list.png'} alt="vpn_list_logo"
                     style={{ width: 25, paddingBottom: 4, marginTop: -5, opacity: 0.3 }} />
         }
         if (iconName === 'vpnHisIcon') {

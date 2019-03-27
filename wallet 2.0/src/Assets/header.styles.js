@@ -36,7 +36,7 @@ const headerStyles = {
         color: '#5ca1e8',
         cursor: 'pointer',
         marginTop: '5%',
-        marginLeft: -12
+        marginLeft: -12,
     },
     clipBoardDialog: {
         height: 14,
@@ -74,7 +74,6 @@ const headerStyles = {
         fontWeight: '600',
         color: '#FAFAFA',
         marginTop: '1%',
-        marginLeft: -110,
     },
     sentBalance: {
         fontSize: 14,

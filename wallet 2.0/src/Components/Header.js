@@ -394,8 +394,12 @@ class Header extends Component {
                             }
                         </Col>
 
+                     
 
                         <Col xs={2} style={headerStyles.alignRight}>
+                        {isTendermint ? null : 
+
+                        <div>
                             <div style={headerStyles.columnStyle}>
                                 <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
                             </div>
@@ -410,7 +414,11 @@ class Header extends Component {
                                     />
                                 </div>
                             </Tooltip>
+                            </div>
+                        }
                         </Col>
+                        
+
                         <Col xsOffset={1} xs={1}>
                             {isTendermint ?
                                 <Tooltip title={lang[language].RefreshBalTM} placement="bottom-end">

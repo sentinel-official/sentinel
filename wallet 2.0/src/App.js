@@ -26,6 +26,7 @@ const { ipcRenderer } = window.require('electron');
 const styles = theme => ({
     progress: {
         margin: theme.spacing.unit * 2,
+        color: 'red'
     },
 });
 
@@ -92,10 +93,8 @@ class App extends Component {
         window.close()
     };
 
-
     render() {
         let component = this.props.setComponentResponse;
-
         switch (component) {
             case 'create':
                 {
@@ -146,9 +145,13 @@ class App extends Component {
             default:
                 {
                     return <div style={defaultPageStyle.division}>
-                        <img src='../src/Images/logo.jpeg' style={defaultPageStyle.image} />
-                        <p style={defaultPageStyle.p}>Sentinel</p>
-                        <CircularProgress className={styles.progress} />
+                        <img src='../src/Images/Sentinel_Logo.gif'
+                        //  style={defaultPageStyle.image} 
+                         />
+                        {/* <p style={defaultPageStyle.p}>Sentinel</p> */}
+                        <CircularProgress className={styles.progress} 
+                        style={{color: '#008BF1',position:"absolute",top: '50%'}}
+                        />
                     </div>
                 }
         }

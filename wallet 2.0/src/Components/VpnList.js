@@ -78,7 +78,11 @@ class VpnList extends Component {
         })
     };
 
-
+    componentDidMount = () => {
+        if(this.props && this.props.listView === "map") {
+            this.setState({ listActive: false , mapActive: true });
+        }  
+    }
     componentWillReceiveProps(nextProps) {
         this.setState({ vpnType: nextProps.vpnType, walletType: nextProps.walletType });
         if (nextProps.walletType != this.state.walletType) {
@@ -217,12 +221,14 @@ class VpnList extends Component {
                                     </RadioGroup>
                                 </FormControl>
                                 :
+                                <div   style = {{marginLeft : 20}}>
                                 <CustomTextfield type={'text'} placeholder={lang[language].SearchdVPNnode} disabled={false}
                                     value={this.state.dVpnQuery}
                                     multi={false}
-                                    onChange={(e) => {
+                                        onChange={(e) => {
                                         this.setState({ dVpnQuery: e.target.value })
                                     }} />
+                                    </div>
                         }
                         <NetworkChangeDialog open={this.state.openPopup}
                             close={this.closePrivDialog} getGatewayAddr={this.getGatewayAddr}
@@ -286,7 +292,8 @@ class VpnList extends Component {
                 </div>
                 {
                     !this.props.vpnList ?
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> :
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> 
+                        :
                         this.props.listView === 'list' ?
                             <div style={{ maxWidth: 895, marginLeft: 20 }} >
                                 <VpnListView query={this.state.dVpnQuery} loading={this.state.listLoading} />

@@ -5,7 +5,8 @@ const defaultPageStyle = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        paddingBottom: 150,
     },
     p: {
         fontSize: 40,
@@ -279,7 +280,7 @@ const createPagestyles = {
     },
     detailVal: {
         fontSize: '12px',
-        wordBreak: 'break-all',
+        wordBreak: 'keep-all',
         marginTop: 0
     },
     clipBoard: {

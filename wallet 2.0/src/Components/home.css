@@ -19,7 +19,7 @@
     display: flex;
     justify-content: center;
   }
- 
+
   .version {
     background-color: #13375e;
     color: #449d44;
@@ -30,7 +30,7 @@
     width: inherit;
     height: 21px;
     margin-top: 7.5px;
-    margin-left: 15px;
+    margin-left: 10px;
   }
   .section1_child {
     display: flex;

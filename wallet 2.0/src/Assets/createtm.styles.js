@@ -48,7 +48,7 @@ const createAccountStyle = {
     },
     detailsText: {
         fontSize: 16,
-        wordBreak: 'break-all',
+        wordBreak: 'keep-all',
         wordSpacing: 10,
         // marginBottom: 30,
 

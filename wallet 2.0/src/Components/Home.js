@@ -90,8 +90,9 @@ class Home extends React.Component {
                                 />
                                 <div>
                                     <div className="btn_div">
-                                        <p>{lang[language].ETHNetworkMain}</p>
-                                        <p>{lang[language].ETHNetworkSub}</p>
+                                        {/* swapping this persian text values here as it is a Right-to-Left language */}
+                                        <p>{language !== 'per' ? lang[language].ETHNetworkMain : lang[language].ETHNetworkSub}</p>
+                                        <p>{language !== 'per' ? lang[language].ETHNetworkSub : lang[language].ETHNetworkMain}</p>
                                     </div>
                                 </div>
                                 <div className="arrow">

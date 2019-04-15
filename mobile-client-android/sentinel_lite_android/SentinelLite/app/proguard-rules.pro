@@ -133,15 +133,6 @@
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
 }
-#//Bugsnag
-#-renamesourcefileattribute SourceFile
--keepattributes SourceFile,LineNumberTable
--keep class com.bugsnag.android.NativeInterface { *; }
--keep class com.bugsnag.android.Breadcrumbs { *; }
--keep class com.bugsnag.android.Breadcrumbs$Breadcrumb { *; }
--keep class com.bugsnag.android.BreadcrumbType { *; }
--keep class com.bugsnag.android.Severity { *; }
--keep class com.bugsnag.android.ndk.BugsnagObserver { *; }
 -keep public class * extends java.lang.Exception
 
 -keepattributes Signature

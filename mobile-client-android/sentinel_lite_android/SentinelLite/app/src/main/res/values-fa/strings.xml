@@ -109,7 +109,7 @@
     <string name = "state_user_vpn_permission_cancelled"> درخواست اجازه ی استفاده از API وی پی ان توسط کاربر رد شد. \n\n لطفا برای استفاده از سرویس های وی پی ان اجازه را صادر کنید</string>
     <string name = "missing_ca_certificate"> گواهی نامه CA موجود نیست.</string>
     <string name = "private_key_password"> گذرواژه محرمانه</string>
-    <string name = "fetching_server_details"> در حال سازماندهی اتصال dVPN ...</string>
+    <string name = "fetching_server_details"> در حال سازماندهی اتصال dVPN …</string>
     <string name = "disconnect"> قطع اتصال</string>
     <string name = "view_socks5_list"> گره های SOCKS5</string>
     <string name = "connect_to_vpn"> اتصال به وی پی ان</string>
@@ -144,7 +144,7 @@
     <string name = "vpn_latency_value"> %.3f ms</string>
     <string name = "country"> کشور:</string>
     <string name = "select_vpn"> وی پی ان را انتخاب کنید</string>
-    <string name = "fetching_config"> در حال سازماندهی اتصال dVPN ...</string>
+    <string name = "fetching_config"> در حال سازماندهی اتصال dVPN …</string>
     <string name = "vpn_connections"> اتصالات وی پی ان</string>
     <string name = "download_speed"> سرعت دانلود</string>
     <string name = "data_used"> داده استفاده شده</string>
@@ -180,7 +180,7 @@
     <string name = "invite_friend"> به اشتراک گذاری کدشناسایی</string>
     <string name = "branch_share_title"> سلام این  dVPN جدید اندروید را بررسی کنید.</string>
     <string name = "branch_share_desc"> هنگام ثبت نام، از کد معرفی من برای دریافت توکن‌های رایگان استفاده کنید. کد معرفی:٪ 1 $ s</string>
-    <string name = "share_string"> سلام، این برنامه جدید dVPN اندروید را بررسی کنید. برای دریافت توکن‌های رایگان در هنگام ثبت نام، از کد معرفی من استفاده کنید. \ n \ n کد معرفی:٪ 1 $ s \ n \ n لینک:٪ 2 $ s</string>
+    <string name = "share_string"> سلام، این برنامه جدید dVPN اندروید را بررسی کنید. برای دریافت توکن‌های رایگان در هنگام ثبت نام، از کد معرفی من استفاده کنید. \n\n کد معرفی:٪1$s  \n\n لینک:%1$s</string>
     <string name = "info_title_1"> کد معرفی خود را به اشتراک بگذارید تا برای هر ثبت نام توکن رایگان دریافت کنید</string>
     <string name = "info_title_2"> وی پی ان غیرمتمرکز و امن</string>
     <string name = "info_desc_1"> برنامه سنتینل را با دوستان خود به اشتراک بگذارید، از برنامه dVPN استفاده کنید و از توسعه انجمن برای غیرمتمرکز سازی شبکه انگیزه بگیرید</string>

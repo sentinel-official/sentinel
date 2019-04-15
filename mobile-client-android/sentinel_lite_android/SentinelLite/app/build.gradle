@@ -65,24 +65,20 @@ dependencies {
     // Google Play Services Lib
     implementation 'com.google.android.gms:play-services-base:16.1.0'
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.11.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.0'
     // GSON
     implementation 'com.google.code.gson:gson:2.8.5'
     // LoadingView
     implementation 'com.wang.avi:library:2.1.3'
     // FlagView
     implementation 'com.github.KaKaVip:Android-Flag-Kit:v0.1'
-    // Bugsnag
-    implementation 'com.bugsnag:bugsnag-android:4.9.3'
     // ViewPagerIndicator
     implementation('com.tbuonomo.andrui:viewpagerdotsindicator:2.0.3') {
         exclude group: 'com.android.support', module: 'support-dynamic-animation'
     }
-    // Branch
-    implementation 'io.branch.sdk.android:library:2.19.5'
     // Amplitude Analytics
     implementation 'com.amplitude:android-sdk:2.21.0'
     // Android Test Libs

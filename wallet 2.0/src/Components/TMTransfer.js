@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { sendAmount, getTMBalance, addTransaction } from '../Actions/tendermint.action';
+import { sendAmount, getTMBalance, addTransaction, generateWireguardKeys } from '../Actions/tendermint.action';
 import { payVPNSession, getSessionInfo } from './../Actions/tmvpn.action';
-import { payVPNTM, setVpnStatus, setActiveVpn } from '../Actions/vpnlist.action';
+import { payVPNTM, setVpnStatus, setActiveVpn, isConnectionEstablishing } from '../Actions/vpnlist.action';
 import { connectVPN, checkVPNDependencies } from './../Actions/connectOVPN';
+import { connectWireguard } from './../Actions/connectWG';
 import CustomTextField from './customTextfield';
 import { Button, Snackbar } from '@material-ui/core';
 import { createAccountStyle } from '../Assets/createtm.styles';
@@ -85,7 +86,6 @@ class TMTransfer extends Component {
             this.setState({ isTextDisabled: false, gotVPN: false })
         }
     }
-
     componentWillReceiveProps = (nextProps) => {
         if (nextProps.vpnPayment.isPayment) {
             this.setState({
@@ -124,14 +124,19 @@ class TMTransfer extends Component {
         else if (this.props.vpnPayment.isPayment) {
             checkVPNDependencies(remote.process.platform, (otherErr, winErr) => {
                 if (otherErr) {
-                    this.setState({ sending: false, openSnack: true, snackMessage: otherErr.message });
+                    let regError = otherErr.message.replace(/\s/g, "");
+                    this.setState({
+                        sending: false, openSnack: true,
+                        snackMessage: lang[this.props.language][regError] ?
+                            lang[this.props.language][regError] : otherErr.message
+                    });
                 }
                 else if (winErr) {
                     this.setState({ sending: false, openvpnAlert: true })
                 }
                 else {
                     let data = {
-                        "amount": (parseFloat(this.state.amountToLock) * (10 ** 8)).toString() + 'sut',
+                        "amount": Math.ceil(parseFloat(this.state.amountToLock) * (10 ** 8)).toString() + 'sut',
                         "name": this.props.account.name,
                         "password": this.state.keyPassword,
                         "gas": 200000,
@@ -166,25 +171,65 @@ class TMTransfer extends Component {
                                 else {
                                     let data = sesRes.payload;
                                     let vpn_data = this.props.vpnPayment.data;
-                                    let session_data = sesRes.payload
-                                    connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
-                                        console.log("VPN Response...", err, platformErr, res);
-                                        if (err) {
-                                            console.log("Connect VPN Err...", err, platformErr, res);
-                                            this.setState({ sending: false, openSnack: true, snackMessage: err.message });
-                                        }
-                                        else {
-                                            this.props.setActiveVpn(vpn_data);
-                                            localStorage.setItem('lockedAmount', parseFloat(transAmount));
-                                            this.props.setVpnStatus(true);
-                                            this.setState({
-                                                sending: false, toAddress: '', keyPassword: '', amount: '',
-                                                openSnack: true, snackMessage: lang[this.props.language].VpnConnected,
-                                                gotVPN: false
-                                            });
-                                            this.props.setCurrentTab('receive');
-                                        }
-                                    })
+                                    let session_data = sesRes.payload;
+                                    let availableData = 'maxUsage' in session_data ? session_data.maxUsage.download : 0;
+                                    localStorage.setItem('availableData', availableData);
+                                    if (this.props.vpnType === 'wireguard') {
+                                        generateWireguardKeys(); // Generate WG Keys
+                                        connectWireguard(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
+                                            // console.log("Wireguard Response...", err, platformErr, res);
+                                            if (err) {
+                                                let regError = err.message.replace(/\s/g, "");
+                                                this.setState({
+                                                    sending: false, openSnack: true,
+                                                    snackMessage: lang[this.props.language][regError] ?
+                                                        lang[this.props.language][regError] : err.message
+                                                });
+                                            }
+                                            else {
+                                                this.props.isConnectionEstablishing(true)
+                                                this.props.setActiveVpn(vpn_data);
+                                                localStorage.setItem('lockedAmount', parseFloat(transAmount));
+                                                //as there is a delay for establishing WG connection in Server we have to wait here
+                                                setTimeout(() => {
+                                                    this.props.setVpnStatus(true);
+                                                    this.props.isConnectionEstablishing(false)
+
+                                                }, 10000);
+                                                this.setState({
+                                                    sending: false, toAddress: '', keyPassword: '', amount: '',
+                                                    openSnack: true, snackMessage: lang[this.props.language].VpnConnected,
+                                                    gotVPN: false
+                                                });
+                                                this.props.setCurrentTab('receive');
+                                            }
+                                        })
+                                    }
+                                    else {
+                                        connectVPN(this.props.account.address, vpn_data, remote.process.platform, session_data, (err, platformErr, res) => {
+                                            if (err) {
+                                                // console.log("Connect VPN Err...", err, platformErr, res);
+                                                let regError = err.message.replace(/\s/g, "");
+                                                this.setState({
+                                                    sending: false, openSnack: true,
+                                                    snackMessage: lang[this.props.language][regError] ?
+                                                        lang[this.props.language][regError] : err.message
+                                                });
+                                            }
+                                            else {
+
+                                                this.props.setActiveVpn(vpn_data);
+                                                localStorage.setItem('lockedAmount', parseFloat(transAmount));
+                                                this.props.setVpnStatus(true);
+                                                this.setState({
+                                                    sending: false, toAddress: '', keyPassword: '', amount: '',
+                                                    openSnack: true, snackMessage: lang[this.props.language].VpnConnected,
+                                                    gotVPN: false
+                                                });
+                                                this.props.setCurrentTab('receive');
+                                            }
+                                        })
+                                    }
                                 }
                             })
                         }
@@ -194,7 +239,7 @@ class TMTransfer extends Component {
         }
         else {
             let data = {
-                "amount": (parseFloat(this.state.amount) * (10 ** 8)).toString() + 'sut',
+                "amount": Math.ceil(parseFloat(this.state.amount) * (10 ** 8)).toString() + 'sut',
                 "name": this.props.account.name,
                 "password": this.state.keyPassword,
                 "gas": 200000,
@@ -257,7 +302,7 @@ class TMTransfer extends Component {
             })
 
         }
-        console.log("amount to lock ", this.state.amountToLock)
+
     }
 
     handleClose = (event, reason) => {
@@ -277,7 +322,7 @@ class TMTransfer extends Component {
                 <div style={createAccountStyle.secondDivStyle}
                     onKeyPress={(ev) => { if (ev.key === 'Enter' && !isDisabled) this.sendTransaction() }}>
                     <div style={createAccountStyle.tooltipDiv}>
-                        <p style={createAccountStyle.headingStyle}>{lang[language].AddressToSend}</p>
+                        <p style={createAccountStyle.headingStyle}>{this.props.vpnPayment.isPayment ? lang[language].AddressToLockTokens : lang[language].AddressToSend}</p>
                         <span style={createAccountStyle.questionMarkDiv}>
                             <CustomTooltips title={lang[language].TMAddressToSendHelp} />
                         </span>
@@ -321,7 +366,7 @@ class TMTransfer extends Component {
                                         <span style={createAccountStyle.equalAmountStyle}>
                                             {/* {lang[language].GetData}
                                             <span style={createAccountStyle.datavalue}> {this.state.totalData} GB </span>  */}
-                                             {lang[language].FromUser} <span style={createAccountStyle.datavalue}>{this.state.country}</span>, {lang[language].DataInExchange} <span style={createAccountStyle.datavalue}> {this.state.amountToLock} SENT</span></span>
+                                            {lang[language].FromUser} <span style={createAccountStyle.datavalue}>{this.state.country}</span>, {lang[language].DataInExchange} <span style={createAccountStyle.datavalue}> {this.state.amountToLock} TSENT</span></span>
                                     }
                                 </div>
                             </div>
@@ -394,6 +439,9 @@ function mapStateToProps(state) {
         account: state.setTMAccount,
         vpnPayment: state.payVPNTM,
         balance: state.tmBalance,
+        wireguardData: state.generateWireguardKeys,
+        vpnType: state.vpnType,
+
     }
 }
 
@@ -406,7 +454,8 @@ function mapDispatchToActions(dispatch) {
         getSessionInfo,
         setVpnStatus,
         setActiveVpn,
-        setCurrentTab
+        setCurrentTab,
+        isConnectionEstablishing,
     }, dispatch)
 }
 

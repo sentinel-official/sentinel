@@ -30,7 +30,7 @@ export async function getSessionInfo(hash) {
             headers: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json',
-            }
+            }, timeout: 12000
         })
         return {
             type: types.GET_SESSION_INFO,
@@ -45,6 +45,8 @@ export async function getSessionInfo(hash) {
         }
     }
 }
+
+
 
 export async function getSignHash(amount, counter, isfinal) {
     // let sessionBuffer = new Buffer(localStorage.getItem('SESSION_NAME'), 'base64');

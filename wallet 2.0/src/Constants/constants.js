@@ -1,13 +1,14 @@
 
 module.exports = {
     B_URL: 'https://api.sentinelgroup.io',
-    BOOT_URL: 'https://bootnode-gateway.sentinelgroup.io',
-    TMain_URL: 'http://tm-master.sentinelgroup.io:8000',
+    // BOOT_URL: 'https://bootnode-gateway.sentinelgroup.io',
+    TMain_URL: 'http://35.154.179.57:8000',
+//    TMain_URL: 'http://tm-master.sentinelgroup.io:8000',
     S_URL: 'https://api-rinkeby.etherscan.io/api?module=account&action=tokentx&contractaddress=',
     SM_URL: '&address=',
     SE_URL: '&page=1&offset=100&sort=asc&apikey=YourApiKeyToken',
     TM_URL: 'http://localhost:1317',
-    TM_FREE_TOKEN_URL: 'http://tm-api.sentinelgroup.io:3000',
+    TM_FREE_TOKEN_URL: 'http://209.182.217.171:3000',
 
     notTestItemIcons: [
 
@@ -48,18 +49,6 @@ module.exports = {
     ],
 
     testMenuItemsIcons: [
-        // {
-        //     'name': 'TM',
-        //     'value': 'tmint',
-        //     'icon': 'tmintIcon'
-        // },
-
-        // {
-        //     'name': 'ETH',
-        //     'value': 'eth',
-        //     'icon': 'ethereumIcon'
-        // },
-
         {
             'name': 'VpnList',
             'value': 'vpnList',
@@ -87,8 +76,6 @@ module.exports = {
             'value': 'history',
             'icon': 'historyIcon'
         },
-
-
     ],
     testMenuItems: [
 

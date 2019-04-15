@@ -27,6 +27,15 @@ export function setVpnStatus(state = false, action) {
     }
 }
 
+export function isConnectionEstablishing(state = false, action) {
+    switch (action.type) {
+        case types.SET_CONNECTION_ESTABLISHING_STATUS:
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 export function getVpnList(state = [], action) {
     switch (action.type) {
         case types.GET_VPN_LIST_SUCCESS:

@@ -38,6 +38,7 @@ function windowManager() {
       protocol: 'file:',
       slashes: true
     }));
+    // this.window.loadURL('http://localhost:3000');
 
     this.window.on('close', async (e) => {
       let self = this;
@@ -49,6 +50,18 @@ function windowManager() {
       }
       showTmPrompt = true;
       if (isTM === 'true') {
+        if (process.platform === 'linux'){
+          exec(`wg-quick down wg0`, async function (error, stdout, stderr) {  
+            console.log("disconnecting local Wireguard...")
+            if (error) throw error;
+            else {
+                // removeItemsLocal();
+                // clearConfig();
+                cb(null);
+            }
+        });
+        }
+
         isTMVPNConnected(function (isConnected) {
           if (showTmPrompt && isConnected) {
             // e.preventDefault();
@@ -88,6 +101,10 @@ function windowManager() {
             app.quit();
           }
         })
+
+
+
+
       } else {
         isVPNConnected((isConnected) => {
           if (process.platform === 'win32')

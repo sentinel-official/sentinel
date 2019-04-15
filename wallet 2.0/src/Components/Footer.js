@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { Button, Tooltip, Snackbar } from '@material-ui/core';
 import DisconnectIcon from '@material-ui/icons/HighlightOff';
 import { setVpnStatus, clearUsage } from '../Actions/vpnlist.action';
+import { setCurrentTab } from '../Actions/sidebar.action';
 import { getSignHash, addSignature, deleteTmAccount } from '../Actions/tmvpn.action';
 import { disconnectVPN } from '../Utils/DisconnectVpn';
 import { footerStyles } from '../Assets/footer.styles';
@@ -17,10 +18,12 @@ import { disconnectSocks } from '../Utils/DisconnectSocks';
 import { isOnline } from "../Actions/convertErc.action";
 
 import '../Assets/footerStyle.css';
+import { disconnectWireguard } from '../Utils/DisconnecWireguard';
 
 const electron = window.require('electron');
 const { exec } = window.require('child_process');
 const remote = electron.remote;
+var notifier = window.require('node-notifier');
 
 const styles = theme => ({
     paper: {
@@ -45,7 +48,8 @@ class Footer extends Component {
             status: false,
             counter: 1,
             showAlert: false,
-            isDisabled: false
+            isDisabled: false,
+            disconnectCalled: false
         }
     }
 
@@ -63,7 +67,7 @@ class Footer extends Component {
 
     componentWillReceiveProps = (next) => {
         if (this.state.status !== next.vpnStatus) {
-            this.setState({ status: next.vpnStatus, counter: 1 })
+            this.setState({ status: next.vpnStatus, counter: 0 })
         }
     }
 
@@ -114,10 +118,42 @@ class Footer extends Component {
         })
     }
 
-    disconnect = () => {
-        this.setState({ isDisabled: true })
-        if (this.props.isTm) {
-            this.sendSignature(downloadData, true, this.state.counter);
+    disconnectTMVpn = () => {
+        this.setState({ disconnectCalled: true });
+        this.sendSignature(downloadData, true, this.state.counter); // as we need to send Last sign for OpenVPN and WG
+        if(this.props.vpnType === 'wireguard'){
+            disconnectWireguard((res) => {
+                if (res) {
+                    // let regError = res.replace(/\s/g, "");
+                    console.log("disconnect response in Footer ", res)
+
+                    let regError = '';
+
+                    this.setState({
+                        openSnack: true,
+                        snackMessage:res,
+                            // snackMessage: lang[this.props.language][regError] ?
+                            // lang[this.props.language][regError] : res,
+                        isDisabled: false, disconnectCalled: false
+                    });
+                }
+                else {
+                    this.setState({
+                        openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
+                        counter: 1,rateDialog: true, showAlert: false, isDisabled: false
+                    });
+    
+                    this.props.clearUsage();
+                    this.props.setVpnStatus(false);
+                    deleteTmAccount();
+                    setTimeout(() => {
+                        this.props.setCurrentTab('vpnHistory');
+                    }, 1200);
+                }
+            })
+        }
+
+        else{
             disconnectVPN((res) => {
                 if (res) {
                     let regError = res.replace(/\s/g, "");
@@ -125,19 +161,32 @@ class Footer extends Component {
                         openSnack: true,
                         snackMessage: lang[this.props.language][regError] ?
                             lang[this.props.language][regError] : res,
-                        isDisabled: false
+                        isDisabled: false, disconnectCalled: false
                     });
                 }
                 else {
                     this.setState({
                         openSnack: true, snackMessage: lang[this.props.language].DisconnectVPN,
-                        counter: 1, showAlert: false, isDisabled: false
+                        counter: 1,rateDialog: true, showAlert: false, isDisabled: false
                     });
+    
                     this.props.clearUsage();
                     this.props.setVpnStatus(false);
                     deleteTmAccount();
+                    setTimeout(() => {
+                        this.props.setCurrentTab('vpnHistory');
+                    }, 1200);
                 }
             })
+
+        }
+        
+    }
+
+    disconnect = () => {
+        this.setState({ isDisabled: true })
+        if (this.props.isTm) {
+            this.disconnectTMVpn();
         }
         else {
             if (this.props.vpnType === 'openvpn') {
@@ -191,21 +240,53 @@ class Footer extends Component {
 
     render() {
         let language = this.props.language;
-        let { vpnStatus, currentUsage, isTm, classes } = this.props;
+        let { vpnStatus, currentUsage, isTm, classes, vpnType} = this.props;
+
+        // console.log("current vpn usage ", currentUsage);
         let counter = this.state.counter;
         downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
+
+        // Sending signature for every 10mb of usage
         if (vpnStatus && isTm && downloadData >= counter * 10) {
-            this.sendSignature(downloadData, false, counter);
+            this.sendSignature(counter === 0 ? 0 : downloadData, false, counter);
         }
+
+        // Check vpn connection in ethereum net whether 900 mb used
         if (vpnStatus && !isTm) {
             this.checkGB(downloadData);
         }
-        if (!vpnStatus && this.state.showAlert) {
-            this.setState({ showAlert: false });
+
+        // Automatically disconnecting vpn in TM when full data is used
+        if (vpnStatus && isTm && currentUsage && 'message' in currentUsage) {
+            if (currentUsage.message === 'Wrong details.' && !this.state.disconnectCalled & vpnType !== 'wireguard') {
+                notifier.notify({
+                    title: 'Vpn Disconnected',
+                    message: 'Used full quota',
+                    sound: true,
+                    wait: false
+                });
+                this.disconnectTMVpn();
+            }
+            if (currentUsage.message === 'limit has exceeded' && !this.state.disconnectCalled & vpnType === 'wireguard') {
+                notifier.notify({
+                    title: 'Vpn Disconnected',
+                    message: 'Used full quota',
+                    sound: true,
+                    wait: false
+                });
+                this.disconnectTMVpn();
+            }
         }
+
+        // Changing to default values after vpn disconnection
         if (!vpnStatus) {
             downloadData = 0;
+            if (this.state.showAlert)
+                this.setState({ showAlert: false });
+            if (this.state.disconnectCalled)
+                this.setState({ disconnectCalled: false });
         }
+
         return (
             <div style={footerStyles.mainDivStyle} className="footerStyle">
                 <Grid>
@@ -246,61 +327,61 @@ class Footer extends Component {
                             vpnStatus ?
                                 <Col xs={9} style={footerStyles.vpnConnected}>
                                     <Row style={footerStyles.textCenter}>
-                                    <Tooltip title={`${lang[language].IPAddress} : ${localStorage.getItem('IPGENERATED')} `}>
-                                        <Col xs={2} style={footerStyles.vpnConnected} >
-                                            {/* <label style={footerStyles.headingStyle}>{lang[language].IPAddress}</label> */}
-                                            <span><img src={'../src/Images/IP.svg'} alt="location" width="16px"  /></span>
-                                            <p style={footerStyles.valueStyle}>
-                                                {localStorage.getItem('IPGENERATED')}
-                                            </p>
-                                        </Col>
+                                        <Tooltip title={`${lang[language].IPAddress} : ${localStorage.getItem('IPGENERATED')} `}>
+                                            <Col xs={2} style={footerStyles.vpnConnected} >
+                                                {/* <label style={footerStyles.headingStyle}>{lang[language].IPAddress}</label> */}
+                                                <span><img src={'../src/Images/IP.svg'} alt="location" width="16px" /></span>
+                                                <p style={footerStyles.valueStyle}>
+                                                    {localStorage.getItem('IPGENERATED')}
+                                                </p>
+                                            </Col>
                                         </Tooltip>
 
                                         <Tooltip title={`${lang[language].Speed} : ${localStorage.getItem('SPEED')} `}>
 
-                                        <Col xs={2} style={footerStyles.vpnConnected}>
-                                            {/* <label style={footerStyles.headingStyle}>{lang[language].Speed}</label> */}
-                                            <span><img src={'../src/Images/Speed.svg'} alt="location" width="20px"  /></span>
-                                            <p style={footerStyles.valueStyle}>
-                                                {localStorage.getItem('SPEED')}
-                                            </p>
-                                        </Col>
+                                            <Col xs={2} style={footerStyles.vpnConnected}>
+                                                {/* <label style={footerStyles.headingStyle}>{lang[language].Speed}</label> */}
+                                                <span><img src={'../src/Images/Speed.svg'} alt="location" width="20px" /></span>
+                                                <p style={footerStyles.valueStyle}>
+                                                    {localStorage.getItem('SPEED')}
+                                                </p>
+                                            </Col>
                                         </Tooltip>
                                         <Tooltip title={`${lang[language].Location} : ${localStorage.getItem('LOCATION')} `}>
-                                        <Col xs={2} style={footerStyles.vpnConnected}>
-                                            {/* <label style={footerStyles.headingStyle}>{lang[language].Location}</label> */}
+                                            <Col xs={2} style={footerStyles.vpnConnected}>
+                                                {/* <label style={footerStyles.headingStyle}>{lang[language].Location}</label> */}
 
-                                           <span><img src={'../src/Images/Location.svg'} alt="location" width="10px" /></span>
-                                                                              
-                                                    <p className="location-style">{localStorage.getItem('LOCATION')} </p>
-                                            
+                                                <span><img src={'../src/Images/Location.svg'} alt="location" width="10px" /></span>
+
+                                                <p className="location-style">{localStorage.getItem('LOCATION')} </p>
+
                                             </Col>
-                                            </Tooltip>
+                                        </Tooltip>
 
                                         <Col xs={3} style={footerStyles.vpnConnected}>
                                             <Row>
                                                 <Col xs={2}></Col>
 
                                                 <Tooltip title={`${lang[language].Upload} : ${currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} ${lang[language].MB} `}>
-                                                <Col xs={5} style={{ padding: 0,  }}>
-                                                    {/* <label style={footerStyles.headingStyle}>{lang[language].Upload}</label> */}
-                                                    <span><img src={'../src/Images/Upload.svg'} alt="location" width="17px"  /></span>
+                                                    <Col xs={5} style={{ padding: 0, }}>
+                                                        {/* <label style={footerStyles.headingStyle}>{lang[language].Upload}</label> */}
+                                                        <span><img src={'../src/Images/Upload.svg'} alt="location" width="17px" /></span>
 
-                                                    <p style={footerStyles.valueStyle}>
-                                                        {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
-                                                    </p>
-                                                </Col>
+                                                        <p style={footerStyles.valueStyle}>
+                                                            {currentUsage ? (parseInt('up' in currentUsage ? currentUsage.up : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
+                                                        </p>
+                                                    </Col>
                                                 </Tooltip>
 
                                                 <Tooltip title={`${lang[language].Download} : ${currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} ${lang[language].MB} `}>
 
-                                                <Col xs={5} style={{ padding: 0,}}>
-                                                    {/* <label style={footerStyles.headingStyle}>{lang[language].Download}</label> */}
-                                                    <span><img src={'../src/Images/Download.svg'} alt="location" width="17px"  /></span>
-                                                    <p style={footerStyles.valueStyle}>
-                                                        {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
-                                                    </p>
-                                                </Col>
+                                                    <Col xs={5} style={{ padding: 0, }}>
+                                                        {/* <label style={footerStyles.headingStyle}>{lang[language].Download}</label> */}
+                                                        <span><img src={'../src/Images/Download.svg'} alt="location" width="17px" /></span>
+                                                        <p style={footerStyles.valueStyle}>
+                                                            {currentUsage ? (parseInt('down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024)).toFixed(2) : 0.00} {lang[language].MB}
+                                                        </p>
+                                                    </Col>
                                                 </Tooltip>
                                             </Row>
                                         </Col>
@@ -327,7 +408,8 @@ class Footer extends Component {
                 </Grid>
                 <Snackbar
                     open={this.state.openSnack}
-                    autoHideDuration={4000}
+                    autoHideDuration={2000}
+                    // changed from 4000 -> 2000 coz, user has to wait to give rating in this span as there is snack dialog is not editable
                     onClose={this.handleClose}
                     message={this.state.snackMessage}
                 />
@@ -367,7 +449,8 @@ function mapDispatchToActions(dispatch) {
         setVpnStatus,
         getSignHash,
         addSignature,
-        clearUsage
+        clearUsage,
+        setCurrentTab
     }, dispatch)
 }
 

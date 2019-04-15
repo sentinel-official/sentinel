@@ -8,7 +8,7 @@ import { getVPNUsageData } from "../Utils/utils";
 import { getVPNConnectedData } from '../Utils/VpnConfig';
 import { setTestNet, setWalletType } from '../Actions/header.action';
 import { setActiveVpn, setVpnType, setVpnStatus } from './../Actions/vpnlist.action';
-import { getKeys, setTMComponent, getTendermintAccount, setTMAccount } from './../Actions/tendermint.action';
+import { getKeys, setTMComponent, getTendermintAccount, setTMAccount,  } from './../Actions/tendermint.action';
 import { calculateUsage, getStartValues, socksVpnUsage } from '../Actions/calculateUsage';
 import { dashboardStyles } from '../Assets/dashboard.styles';
 import { connect } from 'react-redux';

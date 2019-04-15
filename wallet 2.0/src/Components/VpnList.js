@@ -20,6 +20,10 @@ import { checkGateway, getGatewayUrl, isPrivate, setMaster, getMasterUrl } from 
 import { isVPNConnected } from '../Utils/VpnConfig';
 import NetworkChangeDialog from "./SharedComponents/networkChangeDialog";
 import lang from '../Constants/language';
+import { getWireguardDetails } from './../Actions/tendermint.action';
+
+const electron = window.require('electron');
+const remote = electron.remote;
 
 const styles = theme => ({
     root: {
@@ -98,6 +102,7 @@ class VpnList extends Component {
     };
 
     componentWillMount = () => {
+        // console.log("remote plotform ",remote.process.platform)
         isVPNConnected((err, data) => {
             if (err) {
                 getMasterUrl();
@@ -119,8 +124,29 @@ class VpnList extends Component {
         })
     };
 
+
+    // handleRadioChange = (event) => {
+    //     this.props.setVpnType(event.target.value);
+    //     console.log("wireguard listing ", event.target.value);
+    //     // console.log("it is me " ,getWireguardDetails)
+    //     if (event.target.value === 'wireguard') {
+    //         getWireguardDetails();
+    //     }
+    //     else {
+    //         this.setState({ listLoading: true });
+    //         this.props.getVpnList(event.target.value, this.props.isTM)
+    //             .then((res) => {
+    //                 this.setState({ listLoading: false })
+    //             })
+    //     }
+
+    // };
+    
     handleRadioChange = (event) => {
         this.props.setVpnType(event.target.value);
+        // console.log("wireguard listing ", event.target.value);
+        // console.log("it is me " ,getWireguardDetails)
+       
         this.setState({ listLoading: true });
         this.props.getVpnList(event.target.value, this.props.isTM)
             .then((res) => {
@@ -266,6 +292,11 @@ class VpnList extends Component {
                         >
                             <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN} />
                             <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5} />
+                           { isTM ? 
+                            <FormControlLabel value="wireguard" control={<Radio style={radioStyle}
+                            disabled = {remote.process.platform === 'linux' ? false : true} />} label="WireGuard" />
+                            : ''
+                        }
                         </RadioGroup>
                     </FormControl>
 
@@ -308,7 +339,8 @@ function mapStateToProps(state) {
         vpnList: state.getVpnList,
         isTM: state.setTendermint,
         networkType: state.networkChange,
-        walletType: state.getWalletType
+        walletType: state.getWalletType,
+        wireguardData : state.getWireguardDetails
     }
 }
 

@@ -16,17 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.TextView;
 
-import org.json.JSONException;
-
 import de.blinkt.openvpn.core.ProfileManager;
-import io.branch.referral.Branch;
 import sentinelgroup.io.sentinel.BuildConfig;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
-import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.SplashViewModel;
 import sentinelgroup.io.sentinel.viewmodel.SplashViewModelFactory;
@@ -210,36 +206,4 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Branch branch = Branch.getInstance();
-
-        // Branch init
-        branch.initSession((referringParams, error) -> {
-            if (error == null) {
-                // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
-                // params will be empty if no data found
-                // ... insert custom logic here ...
-                Logger.logInfo("BRANCH SDK", referringParams.toString());
-
-                try {
-                    if (referringParams.has(AppConstants.BRANCH_REFERRAL_ID)) {
-                        String aReferrerID = referringParams.getString(AppConstants.BRANCH_REFERRAL_ID);
-                        AppPreferences.getInstance().saveString(AppConstants.PREFS_BRANCH_REFERRER_ID, aReferrerID);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                Logger.logInfo("BRANCH SDK", error.getMessage());
-            }
-        }, this.getIntent().getData(), this);
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        this.setIntent(intent);
-    }
 }

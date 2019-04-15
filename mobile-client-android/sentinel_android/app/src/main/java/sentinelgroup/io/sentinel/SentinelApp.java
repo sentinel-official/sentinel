@@ -13,7 +13,6 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.amplitude.api.Amplitude;
-import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.security.ProviderInstaller;
 
 import java.util.Locale;
@@ -21,7 +20,6 @@ import java.util.Locale;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.PRNGFixes;
 import de.blinkt.openvpn.core.StatusListener;
-import io.branch.referral.Branch;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 
@@ -42,7 +40,6 @@ public class SentinelApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         PRNGFixes.apply();
-        Bugsnag.init(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannels();
         }
@@ -53,7 +50,6 @@ public class SentinelApp extends MultiDexApplication {
         StatusListener mStatus = new StatusListener();
         mStatus.init(getApplicationContext());
         sInstance = this;
-        Branch.getAutoInstance(this);
         Amplitude.getInstance().initialize(this, "1e24e0776e2f0b2fe704d2eef83ca5d3").enableForegroundTracking(this);
         Amplitude.getInstance().setLogLevel(Log.VERBOSE);
     }

@@ -4,8 +4,8 @@ const accountStyles = {
         minHeight: 245,
         fontFamily: 'Montserrat',
         textAlign: 'center',
-       
-       
+
+
 
     },
     formVpnStyle: {
@@ -26,7 +26,20 @@ const accountStyles = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-       marginTop:70, // changed from 474
+        marginTop: 70, // changed from 474
+    },
+    sendPopupStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    nodeFormStyle: {
+
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 50, // changed from 474
     },
     titleStyle: {
         color: '#3f3f94',
@@ -40,7 +53,7 @@ const accountStyles = {
         // overflow: 'hidden',
         // whiteSpace: 'nowrap'
         color: '#272727',
-        fontWeight:'bold',
+        fontWeight: 'bold',
     },
     clipBoard: {
         height: 18,
@@ -48,8 +61,8 @@ const accountStyles = {
         color: '#5ca1e8',
         cursor: 'pointer',
         // marginTop: '-10%'
-        marginBottom:3,
-        marginLeft:3,
+        marginBottom: 3,
+        marginLeft: 3,
     },
     balanceStyle: {
         // padding: 15,
@@ -68,34 +81,40 @@ const accountStyles = {
         color: '#5ca1e8',
         borderRight: '1px solid #cec8c8'
     },
-    tsentRow:{
-        textAlign:'center'
+    tsentRow: {
+        textAlign: 'center'
     },
-    tsentValue:{
-        textAlign:'center'
+    tsentValue: {
+        textAlign: 'center'
     },
-    tsentValue1:{
-        textAlign:'center',
+    tsentValue1: {
+        textAlign: 'center',
         borderRight: '1px solid #cec8c8'
 
     },
     qrCodeStyle: {
         width: 250,
-        marginBottom:10
+        marginBottom: 10
     },
 
     vpnQrCodeStyle: {
         width: 250,
-        marginBottom:10
+        marginBottom: 10
     },
-    normalQrStyle:{
-        marginBottom:1,
+    normalQrStyle: {
+        marginBottom: 1,
     },
     outlineNone: {
         outline: 'none'
     },
     lastDiv: {
         marginTop: 8
+    },
+    noIp: {
+        display: 'flex',
+        justifyContent: 'center',
+        paddingTop: '20%',
+        fontSize: '25px'
     }
 }
 

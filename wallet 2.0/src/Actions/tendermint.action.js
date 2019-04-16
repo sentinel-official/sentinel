@@ -75,9 +75,9 @@ export function getTendermintAccount(cb) {
     getTMConfig((err, data) => {
         let configData = data ? JSON.parse(data) : {};
         if (configData && 'tmUserName' in configData)
-            cb(configData.tmUserName)
+            cb(configData.tmUserName, configData.accounts)
         else
-            cb(null)
+            cb(null, [])
     })
 }
 export function generateWireguardKeys(cb) {
@@ -94,6 +94,13 @@ export function generateWireguardKeys(cb) {
 export function setTMAccount(data) {
     return {
         type: types.SET_TM_ACCOUNT,
+        payload: data
+    }
+}
+
+export function setTMAccountslist(data) {
+    return {
+        type: types.SET_TM_ACCOUNTS_LIST,
         payload: data
     }
 }

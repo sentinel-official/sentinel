@@ -93,3 +93,24 @@
     color: '#87b3d8'
 
 }
+.IconActiveLabelStyle{
+    cursor:pointer;
+
+}
+.IconActiveLabelStyle > img{
+    opacity: 1 !important;
+
+
+}
+
+.IconNormalLabelStyle{
+    cursor:pointer;
+ }
+ .IconNormalLabelStyle:hover > img{
+    opacity: 1 !important;
+}
+ .disabledLabelStyle {
+        font-size: 16px;
+        color: '#CECECE';
+        cursor: 'not-allowed';
+}

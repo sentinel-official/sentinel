@@ -171,11 +171,11 @@ export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
                     });
                 }
                 else {
-                    cb({ message: 'Error occured while getting ovpn' })
+                    cb({ message: 'Error occurred while getting ovpn file' })
                 }
             })
             .catch(err => {
-                cb({ message: 'Error occured while getting ovpn' })
+                cb({ message: 'Error occurred while getting ovpn file' })
             })
     }
 }

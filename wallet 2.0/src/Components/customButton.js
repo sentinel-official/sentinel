@@ -18,7 +18,15 @@ const styles = theme => ({
         fontWeight: 'bold',
         fontFamily: 'Montserrat',
         textTransform: 'none',
-    }
+    },
+    redLabel: {
+        fontWeight: 'bold',
+        fontFamily: 'Montserrat',
+        textTransform: 'none',
+        color : '#d9534f',
+        
+    },
+
 });
 
 class CustomButton extends Component {
@@ -27,7 +35,7 @@ class CustomButton extends Component {
         const { classes } = this.props;
         return (
             <Button onClick={this.props.onClick} variant={ this.props.active ? 'contained' : 'flat' } component="span" className={ this.props.active ? classes.highlightBtn : classes.disabledBtn }>
-                <span className={classes.btnLabel} >{this.props.label}</span>
+                <span className={this.props.danger ? classes.redLabel : classes.btnLabel} >{this.props.label}</span>
             </Button>
         );
     }

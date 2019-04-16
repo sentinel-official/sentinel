@@ -263,6 +263,10 @@ class TMTransfer extends Component {
                         toAddress: '', keyPassword: '', amount: '',
                     });
                     setTimeout(() => {
+                        this.props.setCurrentTab('history');
+                    }, 3000);
+                  
+                    setTimeout(() => {
                         this.props.getTMBalance(this.props.account.address);
                     }, 7000);
                 }

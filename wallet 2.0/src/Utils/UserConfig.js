@@ -41,11 +41,17 @@ export function getTMConfig(cb) {
     fs.readFile(TM_CONFIG_FILE, 'utf8', function (err, data) {
         if (err) {
             err.toString().includes('ENOENT') ?
-                fs.writeFileSync(TM_CONFIG_FILE, JSON.stringify({ isCreated: false }))
+                fs.writeFileSync(TM_CONFIG_FILE, JSON.stringify({ tmUserName: null, accounts: [] }))
                 : null
             cb(err, null);
         }
         else {
+            let configData = data ? JSON.parse(data) : { tmUserName: null, accounts: [] };
+            if (configData.tmUserName && !(configData.accounts)) {
+                configData.accounts = [configData.tmUserName];
+                data = JSON.stringify(configData);
+                fs.writeFileSync(TM_CONFIG_FILE, data);
+            }
             cb(null, data);
         }
     });
@@ -76,11 +82,14 @@ export function getWireguardKeys(cb) {
     })
 
 }
-export function setTMConfig(username) {
+export function setTMConfig(username, isNewAccount) {
     getTMConfig(function (error, configData) {
         let data = configData ? JSON.parse(configData) : {};
         data.tmUserName = username;
-        data.isCreated = true;
+        // data.isCreated = true;
+        if (isNewAccount) {
+            data.accounts.push(username);
+        }
         let config = JSON.stringify(data);
         fs.writeFileSync(TM_CONFIG_FILE, config);
     })

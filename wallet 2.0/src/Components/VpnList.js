@@ -59,7 +59,8 @@ class VpnList extends Component {
             vpnType: 'openvpn',
             networkType: 'public',
             dVpnQuery: '',
-            listLoading: true
+            listLoading: true,
+            walletType: 'ERC'
         }
     }
 
@@ -70,7 +71,7 @@ class VpnList extends Component {
             if (err) {
                 this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
-            
+
             }
             else {
                 this.setState({ isPrivate: true, openPopup: false, openSnack: true, snackMessage: `${lang[this.props.language].PrivateNetEnabledWith}${url}` });
@@ -81,15 +82,28 @@ class VpnList extends Component {
         })
     };
 
-
+    componentDidMount = () => {
+        if(this.props && this.props.listView === "map") {
+            this.setState({ listActive: false , mapActive: true });
+        }  
+    }
     componentWillReceiveProps(nextProps) {
-        this.setState({ vpnType: nextProps.vpnType })
-        if (nextProps.walletType != this.props.walletType) {
-            this.setState({ listLoading: true })
-            this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
-                .then((res) => {
-                    this.setState({ listLoading: false })
-                })
+        this.setState({ vpnType: nextProps.vpnType, walletType: nextProps.walletType });
+        if (nextProps.walletType != this.state.walletType) {
+            if (nextProps.isTM) {
+                this.setState({ listLoading: true, vpnType: 'openvpn' });
+                this.props.setVpnType('openvpn');
+                this.props.getVpnList('openvpn', nextProps.isTM)
+                    .then((res) => {
+                        this.setState({ listLoading: false })
+                    })
+            } else {
+                this.setState({ listLoading: true })
+                this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
+                    .then((res) => {
+                        this.setState({ listLoading: false })
+                    })
+            }
         }
     }
 
@@ -233,12 +247,14 @@ class VpnList extends Component {
                                     </RadioGroup>
                                 </FormControl>
                                 :
+                                <div   style = {{marginLeft : 20}}>
                                 <CustomTextfield type={'text'} placeholder={lang[language].SearchdVPNnode} disabled={false}
                                     value={this.state.dVpnQuery}
                                     multi={false}
-                                     onChange={(e) => {
+                                        onChange={(e) => {
                                         this.setState({ dVpnQuery: e.target.value })
                                     }} />
+                                    </div>
                         }
                         <NetworkChangeDialog open={this.state.openPopup}
                             close={this.closePrivDialog} getGatewayAddr={this.getGatewayAddr}
@@ -278,7 +294,7 @@ class VpnList extends Component {
                                 >
                                     <FormControlLabel value="public" control={<Radio style={radioStyle} />} label={lang[this.props.language].Public} />
                                     <FormControlLabel value="private" control={<Radio style={radioStyle} disabled={isTM} />}
-                                label={isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private}  />
+                                        label={isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private} />
                                 </RadioGroup>
                             </FormControl>
                     }
@@ -307,7 +323,8 @@ class VpnList extends Component {
                 </div>
                 {
                     !this.props.vpnList ?
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> :
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> 
+                        :
                         this.props.listView === 'list' ?
                             <div style={{ maxWidth: 895, marginLeft: 20 }} >
                                 <VpnListView query={this.state.dVpnQuery} loading={this.state.listLoading} />

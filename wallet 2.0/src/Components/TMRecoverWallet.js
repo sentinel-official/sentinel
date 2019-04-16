@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { setTMAccount } from '../Actions/tendermint.action';
+import { setTMAccount, setTMAccountslist, getKeys } from '../Actions/tendermint.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { createTMAccount, recoverTMAccount } from '../Actions/createTM.action';
 import { setTMConfig } from '../Utils/UserConfig';
@@ -61,7 +61,7 @@ class TMRecoverWallet extends Component {
     createAccount = () => {
         this.props.createTMAccount(this.state.username, this.state.password, this.state.seedWords).then(res => {
             if (res.error) {
-                console.log("Error..",res.error.data);
+                console.log("Error..", res.error.data);
                 let regError = (res.error.data).replace(/\s/g, "");
                 this.setState({
                     openSnack: true,
@@ -70,15 +70,23 @@ class TMRecoverWallet extends Component {
                 })
             }
             else {
-                setTMConfig(this.state.username);
+                setTMConfig(this.state.username, true);
+                let tmAccounts = this.props.accountsList;
+                tmAccounts.push(this.state.username);
+                this.props.setTMAccountslist(tmAccounts);
                 let data = {
                     name: res.payload.name,
                     type: res.payload.type,
                     address: res.payload.address,
                     pub_key: res.payload.pub_key
                 }
+                this.props.getKeys();
                 this.props.setTMAccount(data);
-                this.props.setCurrentTab('tmint');
+                if (this.props.isPopup) {
+                    this.props.accountCreated(true);
+                } else {
+                    this.props.setCurrentTab('tmint');
+                }
             }
         });
     }
@@ -93,17 +101,17 @@ class TMRecoverWallet extends Component {
 
 
     render() {
-        let { classes, language } = this.props;
-        let isDisabled = (!this.state.username|| !this.state.password || !this.state.seedWords) ? true : false
+        let { classes, language, isPopup } = this.props;
+        let isDisabled = (!this.state.username || !this.state.password || !this.state.seedWords) ? true : false
         return (
-            <div style={accountStyles.sendFormStyle}>
-                <div style={createAccountStyle.secondDivStyle}
+            <div style={isPopup ? {} : accountStyles.sendFormStyle}>
+                <div style={isPopup ? {} : createAccountStyle.secondDivStyle}
                     onKeyPress={(ev) => { if (ev.key === 'Enter') this.sendTransaction() }}>
 
-                    <h1 className="loginHeading">{lang[language].RecoverTMWalletHeading}</h1>
+                    <h1 className="recoverHeading">{lang[language].RecoverTMWalletHeading}</h1>
                     <p style={createAccountStyle.headingStyle}>{lang[language].NewAccountName}</p>
                     <CustomTextField type={'text'} placeholder={''} disabled={false}
-                     multi={false}
+                        multi={false}
                         value={this.state.username} onChange={(e) => { this.setState({ username: e.target.value }) }}
                     />
                     <p style={createAccountStyle.headingStyle}>{lang[language].NewAccountPwd}</p>
@@ -160,7 +168,8 @@ TMRecoverWallet.propTypes = {
 function mapStateToProps(state) {
     return {
         language: state.setLanguage,
-        isTest: state.setTestNet
+        isTest: state.setTestNet,
+        accountsList: state.getTMAccountsList
     }
 }
 
@@ -168,7 +177,9 @@ function mapDispatchToActions(dispatch) {
     return bindActionCreators({
         createTMAccount,
         setTMAccount,
-        setCurrentTab
+        setCurrentTab,
+        setTMAccountslist,
+        getKeys
     }, dispatch)
 }
 

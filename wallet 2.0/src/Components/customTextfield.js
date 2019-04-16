@@ -10,7 +10,7 @@ const styles = theme => ({
         display: 'flex',
         flexWrap: 'wrap',
         marginTop: 15,
-        marginLeft: 20,
+        // marginLeft: 20,
     },
     bootstrapRoot: {
         padding: 0,
@@ -57,7 +57,7 @@ const theme = createMuiTheme({
     },
 });
 
-const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value, multi }) => {
+const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value, multi, defaultValue }) => {
     return (
         <div className={classes.container}>
             <TextField
@@ -67,6 +67,7 @@ const CustomTextfield = ({ classes, onChange, placeholder, type, disabled, value
                 placeholder={placeholder}
                 id="bootstrap-input"
                 value={value}
+                defaultValue={defaultValue}
                 multiline={multi ? multi : false}
                 rows={2}
                 inputProps={type === 'number' ? {

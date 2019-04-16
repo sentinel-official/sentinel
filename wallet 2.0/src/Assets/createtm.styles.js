@@ -1,6 +1,6 @@
 const createAccountStyle = {
     headingStyle: {
-        marginLeft: 20,
+        // marginLeft: 20,
         marginTop: 20,
         marginBottom: -7,
         fontSize: '16px',
@@ -10,7 +10,7 @@ const createAccountStyle = {
         fontWeight: 'bold',
     },
     amountHeadingStyle: {
-        marginLeft: 20,
+        // marginLeft: 20,
         marginTop: 20,
         marginBottom: 5,
         fontSize: '16px',
@@ -20,7 +20,7 @@ const createAccountStyle = {
         fontWeight: 'bold',
     },
     equalAmountStyle: {
-        marginLeft: 20,
+        // marginLeft: 20,
         marginTop: 20,
         marginBottom: -7,
         fontSize: '12px',
@@ -48,7 +48,7 @@ const createAccountStyle = {
     },
     detailsText: {
         fontSize: 16,
-        wordBreak: 'break-all',
+        wordBreak: 'keep-all',
         wordSpacing: 10,
         // marginBottom: 30,
 
@@ -59,6 +59,7 @@ const createAccountStyle = {
         fontSize: '16px',
         fontFamily: 'Montserrat,Medium',
         margin: 20,
+        marginLeft:0,
         outline: 'none',
         border: 'none',
         padding: '0px 30px',
@@ -72,7 +73,8 @@ const createAccountStyle = {
         border: 'none',
     },
     createStyle: {
-        fontSize: 22,
+        lineHeight:1.3,
+        fontSize: 20,
         fontWeight: 'bold',
         fontFamily: 'Montserrat,Medium',
     },

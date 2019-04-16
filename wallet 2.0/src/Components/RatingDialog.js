@@ -24,7 +24,7 @@ class RatingDialog extends React.Component {
 
     handleCancel = () => {
         this.props.onClose();
-        // this.props.setCurrentTab('vpnHistory');
+        this.props.setCurrentTab('vpnHistory');
     };
 
     handleOk = () => {
@@ -34,11 +34,11 @@ class RatingDialog extends React.Component {
                 let regError = (err.message).replace(/\s/g, "");
                 this.props.snackOpenDialog(lang[this.props.language][regError] ?
                     lang[this.props.language][regError] : err.message);
-                // this.props.setCurrentTab('vpnHistory');
+                this.props.setCurrentTab('vpnHistory');
             } else {
                 this.props.onClose();
                 this.props.snackOpenDialog(lang[this.props.language].RatedSuccess);
-                // this.props.setCurrentTab('vpnHistory');
+                this.props.setCurrentTab('vpnHistory');
             }
         })
     };

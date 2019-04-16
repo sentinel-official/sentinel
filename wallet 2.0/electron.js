@@ -32,7 +32,7 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel Network - dVPN - alpha-0.1.1", resizable: false, maximizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel Network - dVPN - alpha-0.1.2", resizable: false, maximizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
@@ -263,7 +263,7 @@ function stopVPN(cb) {
     try {
       var cmd;
       if (vpnType === 'socks5')
-        cmd = 'net stop sentinelSocksv11 /f  && taskkill /IM sentinel.exe /f'
+        cmd = 'net stop sentinelSocksv12 /f  && taskkill /IM sentinel.exe /f'
       else cmd = 'taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f';
       let stdout = execSync(cmd)
       if (stdout) cb(null);
@@ -380,8 +380,7 @@ app.on('ready', function () {
           m.items[1].submenu.items[0].checked = true;
           m.items[1].submenu.items[1].checked = false;
           m.items[1].submenu.items[2].checked = false;
-          // m.items[1].submenu.items[2].checked = false;
-          // m.items[1].submenu.items[3].checked = false;
+          m.items[1].submenu.items[3].checked = false;
           // m.items[1].submenu.items[4].checked = false;
           // m.items[1].submenu.items[5].checked = false;
           mainWindow.window.webContents.send('lang', 'en');
@@ -412,7 +411,7 @@ app.on('ready', function () {
           m.items[1].submenu.items[0].checked = false;
           m.items[1].submenu.items[1].checked = true;
           m.items[1].submenu.items[2].checked = false;
-          // m.items[1].submenu.items[2].checked = false;
+          m.items[1].submenu.items[3].checked = false;
           // m.items[1].submenu.items[3].checked = false;
           // m.items[1].submenu.items[4].checked = true;
           // m.items[1].submenu.items[5].checked = false;
@@ -423,10 +422,21 @@ app.on('ready', function () {
           m.items[1].submenu.items[0].checked = false;
           m.items[1].submenu.items[1].checked = false;
           m.items[1].submenu.items[2].checked = true;
-          // m.items[1].submenu.items[3].checked = true;
+          m.items[1].submenu.items[3].checked = false;
           // m.items[1].submenu.items[4].checked = false;
           // m.items[1].submenu.items[5].checked = false;
           mainWindow.window.webContents.send('lang', 'ru');
+        }
+      },
+      {
+        label: 'Persian', type: 'checkbox', checked: false, click() {
+          m.items[1].submenu.items[0].checked = false;
+          m.items[1].submenu.items[1].checked = false;
+          m.items[1].submenu.items[2].checked = false;
+          m.items[1].submenu.items[3].checked = true;
+          // m.items[1].submenu.items[4].checked = false;
+          // m.items[1].submenu.items[5].checked = false;
+          mainWindow.window.webContents.send('lang', 'per');
         }
       },
       // {

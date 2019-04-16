@@ -67,6 +67,8 @@ class EnhancedTableHead extends React.Component {
             { id: 'version', numeric: false, disablePadding: false, label: lang[language].Version },
             { id: 'rating', numeric: true, disablePadding: false, label: lang[language].Rating },
             { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
+            // { id: 'monikar', numeric: false, disablePadding: false, label: 'Monikar' },
+
         ];
 
         return (
@@ -260,6 +262,7 @@ class EnhancedTable extends React.Component {
             return createData(obj);
         });
         const { order, orderBy, } = this.state;
+        const { isTM } = this.props;
 
         return (
             <Paper className={classes.root}>
@@ -307,11 +310,19 @@ class EnhancedTable extends React.Component {
                                                     {n.version ? n.version : 'None'}
                                                 </TableCell>
                                                 <TableCell numeric padding="dense" className={classes.head}>
-                                                    {n.rating ? n.rating : 'None'}
+                                                    {isTM ? 
+                                                    n.ratingCount && n.ratingCount !== 0 ? n.ratingPoints/n.ratingCount : 'None'
+                                                    :
+                                                    n.rating ? n.rating : 'None'}
                                                 </TableCell>
                                                 <TableCell numeric padding="dense" className={classes.head}>
                                                     {n.price_per_GB ? n.price_per_GB : 100}
                                                 </TableCell>
+{/* c
+                                                <TableCell numeric padding="dense" className={classes.head}>
+                                                    Monikar
+                                                </TableCell> */}
+
                                             </TableRow>
                                         );
                                     })}
@@ -333,7 +344,8 @@ EnhancedTable.propTypes = {
 function mapStateToProps(state) {
     return {
         language: state.setLanguage,
-        isTest: state.setTestNet
+        isTest: state.setTestNet,
+        isTM: state.setTendermint,
     }
 }
 

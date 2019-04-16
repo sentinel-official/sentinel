@@ -6,7 +6,7 @@ import { DialogContent, DialogContentText, DialogActions, Snackbar } from '@mate
 import OpenvpnAlert from './OpenvpnAlert';
 import { Row, Col } from 'react-flexbox-grid';
 import {
-    withStyles, Button, List, ListItem, ListItemText,
+    withStyles, Button, List,
     DialogTitle, Dialog,
 } from '@material-ui/core';
 import green from '@material-ui/core/colors/green';

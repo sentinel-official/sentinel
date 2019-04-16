@@ -186,6 +186,7 @@ class Footer extends Component {
     disconnect = () => {
         this.setState({ isDisabled: true })
         if (this.props.isTm) {
+            this.sendSignature(downloadData, true, this.state.counter);
             this.disconnectTMVpn();
         }
         else {
@@ -244,7 +245,7 @@ class Footer extends Component {
 
         // console.log("current vpn usage ", currentUsage);
         let counter = this.state.counter;
-        downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
+        downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down / (1024 * 1024) : downloadData);
 
         // Sending signature for every 10mb of usage
         if (vpnStatus && isTm && downloadData >= counter * 10) {

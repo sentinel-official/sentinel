@@ -150,154 +150,154 @@ class TMAccountView extends Component {
         let coins = (typeof balValue === 'object' && balValue !== null) ? ('coins' in balValue ? balValue.coins : []) : [];
         let token = coins && coins.length !== 0 ? coins.find(o => o.denom === 'sut') : {};
         let usedTokens = 0, remainingData;
-            if (vpnStatus) {
+        if (vpnStatus) {
             let downloadData = parseInt(currentUsage && 'down' in currentUsage ? currentUsage.down : 0) / (1024 * 1024);
             usedTokens = ((this.props.activeVpn.price_per_GB * downloadData) / 1024).toFixed(3);
             let availableData = parseInt(localStorage.getItem('availableData')) / (1024 * 1024);
             // remainingData = ((parseFloat(localStorage.getItem('lockedAmount')) - usedTokens) / this.props.activeVpn.price_per_GB).toFixed(4);
             remainingData = ((availableData - downloadData) / 1024).toFixed(4);
-            }
+        }
         return (
             <div>
-            {isConnectionEstablishing ?
-                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '25%', fontSize: '25px',  color: '#c3c3c3' }}>
-                    {lang[language].EstablishingConnection} <img src={'../src/Images/load.svg'} alt="loading..." style={{ width: 25,marginTop: 10 }} />
-                </div>
-                :
-                <div>
-                    <div style={receiveStyles.getTokenButtonStyle}>
-                        <Button
-                            disabled={this.state.isFreeLoading || this.props.vpnStatus}
-                            onClick={this.getFree.bind(this)}
-                            style={this.state.isFreeLoading ? receiveStyles.tmFlatButtonStyleOffTest : receiveStyles.tmFlatButtonStyleOnTest}
-                            style={this.props.vpnStatus ? receiveStyles.vpnFlatButtonStyleOffTest : receiveStyles.vpnFlatButtonStyleOnTest}
-                        >{this.state.isFreeLoading ? lang[language].Loading : lang[language].GetTokens}</Button>
+                {isConnectionEstablishing ?
+                    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '25%', fontSize: '25px', color: '#c3c3c3' }}>
+                        {lang[language].EstablishingConnection} <img src={'../src/Images/load.svg'} alt="loading..." style={{ width: 25, marginTop: 10 }} />
                     </div>
-                    <div style={this.props.vpnStatus ? accountStyles.formVpnStyle : accountStyles.formStyle}>
-                        <div style={accountStyles.cardStyle} bordered={false}>
-
-                            <CardContent>
-                                <QRCode
-                                    bgColor="#FFFFFF"
-                                    level="Q"
-                                    style={accountStyles.qrCodeStyle}
-                                    value={account_key ? account_key.address : lang[language].Loading}
-                                    fgColor="#000000"
-                                />
-                                <label style={accountStyles.addressStyle}>
-                                    {account_key ? account_key.address : lang[language].Loading}</label>
-                                <Tooltip title={lang[language].Copy}>
-                                    <CopyToClipboard text={account_key ? account_key.address : lang[language].Loading}
-                                        onCopy={() => this.setState({
-                                            snackMessage: lang[language].Copied,
-                                            openSnack: true
-                                        })}>
-
-                                        <CopyIcon style={receiveStyles.clipBoard} />
-                                    </CopyToClipboard>
-                                </Tooltip>
-
-                                {balance === "" ?
-                                    <p style={accountStyles.notInNetStyle}>
-                                        {lang[language].Note}
-                                    </p>
-                                    :
-
-                                    null
-                                }
-                                {
-                                    vpnStatus ?
-
-                                        <div style={accountStyles.lastDiv}>
-                                            <Row style={accountStyles.tsentRow}>
-                                                <Col xs={4} style={accountStyles.notInNetStyle1}>{lang[language].TSentLocked}</Col>
-
-                                                <Col xs={4} style={accountStyles.notInNetStyle1}>{lang[language].TSentConsumed}</Col>
-
-                                                <Col xs={4} style={accountStyles.notInNetStyle}>{lang[language].AvailableData}</Col>
-
-                                            </Row>
-                                            <Row style={accountStyles.tsentRow}>
-                                                <Col xs={4} style={accountStyles.tsentValue1}>  {localStorage.getItem('lockedAmount')}</Col>
-
-                                                <Col xs={4} style={accountStyles.tsentValue1}>{usedTokens}</Col>
-
-                                                <Col xs={4} style={accountStyles.tsentValue}>{ remainingData > 0 ? remainingData : "0.0000"} GB</Col>                                            </Row>
-
-                                        </div>
-                                        :
-                                        null
-                                }
-                            </CardContent>
-                        </div>
-                        <Snackbar
-                            open={this.state.openSnack}
-                            autoHideDuration={4000}
-                            onClose={this.handleClose}
-                            message={this.state.snackMessage}
-                        />
-                    </div >
-                    {!vpnStatus ?
-                        <div style={receiveStyles.refundRequestDiv}>
-
+                    :
+                    <div>
+                        <div style={receiveStyles.getTokenButtonStyle}>
                             <Button
-                                variant="outlined"
-                                color="primary"
-                                onClick={this.handleClickOpen}
-                                className={classes.enableButton}
-                                style={createAccountStyle.buttonStyle}
-                            >
-
-                                {lang[language].ManualRefundReq}
-                            </Button>
-                            <Dialog
-                                open={this.state.open}
-                                onClose={this.handleDialogClose}
-                                aria-labelledby="form-dialog-title"
-                            >
-                                <DialogTitle id="form-dialog-title">  {lang[language].ManualRefundReq}
-                                </DialogTitle>
-                                <DialogContent>
-
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="name"
-                                        label={lang[language].SessionId}
-                                        type="text"
-                                        value={this.state.sessionId}
-                                        onChange={(e) => { this.setState({ sessionId: e.target.value }) }}
-                                        fullWidth
-                                    />
-                                    <TextField
-                                        margin="dense"
-                                        id="name"
-                                        label={lang[language].AccountPwd}
-                                        value={this.state.password}
-                                        onChange={(e) => { this.setState({ password: e.target.value }) }}
-                                        type="password"
-                                        fullWidth
-                                    />
-
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={this.handleDialogClose} color="primary">
-                                        {lang[language].Cancel}
-                                    </Button>
-                                    <Button
-                                        disabled={!this.state.sessionId || !this.state.password}
-                                        onClick={this.getRefund}
-                                        className={classes.submitButton}
-                                        color="primary">
-                                        {lang[language].Submit}
-                                    </Button>
-                                </DialogActions>
-                            </Dialog>
+                                disabled={this.state.isFreeLoading || this.props.vpnStatus}
+                                onClick={this.getFree.bind(this)}
+                                style={this.state.isFreeLoading ? receiveStyles.tmFlatButtonStyleOffTest : receiveStyles.tmFlatButtonStyleOnTest}
+                                style={this.props.vpnStatus ? receiveStyles.vpnFlatButtonStyleOffTest : receiveStyles.vpnFlatButtonStyleOnTest}
+                            >{this.state.isFreeLoading ? lang[language].Loading : lang[language].GetTokens}</Button>
                         </div>
-                        : null}
-                </div>
-            }
-        </div>
+                        <div style={this.props.vpnStatus ? accountStyles.formVpnStyle : accountStyles.formStyle}>
+                            <div style={accountStyles.cardStyle} bordered={false}>
+
+                                <CardContent>
+                                    <QRCode
+                                        bgColor="#FFFFFF"
+                                        level="Q"
+                                        style={accountStyles.qrCodeStyle}
+                                        value={account_key ? account_key.address : lang[language].Loading}
+                                        fgColor="#000000"
+                                    />
+                                    <label style={accountStyles.addressStyle}>
+                                        {account_key ? account_key.address : lang[language].Loading}</label>
+                                    <Tooltip title={lang[language].Copy}>
+                                        <CopyToClipboard text={account_key ? account_key.address : lang[language].Loading}
+                                            onCopy={() => this.setState({
+                                                snackMessage: lang[language].Copied,
+                                                openSnack: true
+                                            })}>
+
+                                            <CopyIcon style={receiveStyles.clipBoard} />
+                                        </CopyToClipboard>
+                                    </Tooltip>
+
+                                    {balance === "" ?
+                                        <p style={accountStyles.notInNetStyle}>
+                                            {lang[language].Note}
+                                        </p>
+                                        :
+
+                                        null
+                                    }
+                                    {
+                                        vpnStatus ?
+
+                                            <div style={accountStyles.lastDiv}>
+                                                <Row style={accountStyles.tsentRow}>
+                                                    <Col xs={4} style={accountStyles.notInNetStyle1}>{lang[language].TSentLocked}</Col>
+
+                                                    <Col xs={4} style={accountStyles.notInNetStyle1}>{lang[language].TSentConsumed}</Col>
+
+                                                    <Col xs={4} style={accountStyles.notInNetStyle}>{lang[language].AvailableData}</Col>
+
+                                                </Row>
+                                                <Row style={accountStyles.tsentRow}>
+                                                    <Col xs={4} style={accountStyles.tsentValue1}>  {localStorage.getItem('lockedAmount')}</Col>
+
+                                                    <Col xs={4} style={accountStyles.tsentValue1}>{usedTokens}</Col>
+
+                                                    <Col xs={4} style={accountStyles.tsentValue}>{remainingData} GB</Col>
+                                                </Row>
+                                                </div>
+                                            :
+                                            null
+                                    }
+                                </CardContent>
+                            </div>
+                            <Snackbar
+                                open={this.state.openSnack}
+                                autoHideDuration={4000}
+                                onClose={this.handleClose}
+                                message={this.state.snackMessage}
+                            />
+                        </div >
+                        {!vpnStatus ?
+                            <div style={receiveStyles.refundRequestDiv}>
+
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={this.handleClickOpen}
+                                    className={classes.enableButton}
+                                    style={createAccountStyle.buttonStyle}
+                                >
+
+                                    {lang[language].ManualRefundReq}
+                                </Button>
+                                <Dialog
+                                    open={this.state.open}
+                                    onClose={this.handleDialogClose}
+                                    aria-labelledby="form-dialog-title"
+                                >
+                                    <DialogTitle id="form-dialog-title">  {lang[language].ManualRefundReq}
+                                    </DialogTitle>
+                                    <DialogContent>
+
+                                        <TextField
+                                            autoFocus
+                                            margin="dense"
+                                            id="name"
+                                            label={lang[language].SessionId}
+                                            type="text"
+                                            value={this.state.sessionId}
+                                            onChange={(e) => { this.setState({ sessionId: e.target.value }) }}
+                                            fullWidth
+                                        />
+                                        <TextField
+                                            margin="dense"
+                                            id="name"
+                                            label={lang[language].AccountPwd}
+                                            value={this.state.password}
+                                            onChange={(e) => { this.setState({ password: e.target.value }) }}
+                                            type="password"
+                                            fullWidth
+                                        />
+
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={this.handleDialogClose} color="primary">
+                                            {lang[language].Cancel}
+                                        </Button>
+                                        <Button
+                                            disabled={!this.state.sessionId || !this.state.password}
+                                            onClick={this.getRefund}
+                                            className={classes.submitButton}
+                                            color="primary">
+                                            {lang[language].Submit}
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </div>
+                            : null}
+                    </div>
+                }
+            </div>
         )
     }
 }

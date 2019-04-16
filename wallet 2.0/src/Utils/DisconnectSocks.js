@@ -22,7 +22,7 @@ export async function disconnectSocks(account_addr, cb) {
 
 export async function disconnectSocksWin(addr, cb) {
     let cmd1 = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 0';
-    exec(`net stop sentinelSocksv11`, disconnect,
+    exec(`net stop sentinelSocksv12`, disconnect,
         function (error, stdout, stderr) {
             if (error) cb({ message: error.toString() || 'Disconnecting failed' });
             else {

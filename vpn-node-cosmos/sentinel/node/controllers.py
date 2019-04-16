@@ -37,6 +37,7 @@ def update_node(update_type):
     if update_type == 'details':
         body['details'] = {
             'IP': node.ip,
+            'moniker': node.config['moniker'],
             'APIPort': node.config['api_port'],
             'pricePerGB': node.config['price_per_gb'],
             'encMethod': node.config['openvpn']['enc_method'],

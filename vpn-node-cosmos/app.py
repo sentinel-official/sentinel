@@ -102,6 +102,7 @@ if __name__ == '__main__':
     if node.config['register']['hash'] is None:
         error, resp = cosmos_call('register_vpn_node', {
             'ip': str(node.ip),
+            'moniker': str(node.config['moniker']),
             'upload_speed': int(node.net_speed['upload']),
             'download_speed': int(node.net_speed['download']),
             'price_per_gb': int(node.config['price_per_gb']),

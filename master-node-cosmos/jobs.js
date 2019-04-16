@@ -1,5 +1,6 @@
 let async = require('async');
 let nodeDbo = require('./server/dbos/node.dbo');
+let statsDbo = require('./server/dbos/stats.dbo');
 let sessionDbo = require('./server/dbos/session.dbo');
 
 let MAX_SECS = 2 * 60 * 1000;
@@ -51,6 +52,57 @@ let nodeDeadThread = () => {
     }, (error, result) => { });
 };
 
+let nodesStatsThread = () => {
+  let activeNodesCount = 0;
+  let totalNodesCount = 0;
+  let date = new Date(new Date().toDateString());
+
+  async.waterfall([
+    (next) => {
+      statsDbo.getStats({
+        date
+      }, (error, result) => {
+        if (error) next(error);
+        else if (result) next({
+          message: 'Today\'s stats are already exist.'
+        });
+        else next(null);
+      });
+    }, (next) => {
+      nodeDbo.getNodes({
+        'status': 'up',
+      }, (error, result) => {
+        if (error) next(error);
+        else {
+          activeNodesCount = result.length;
+          next(null);
+        }
+      });
+    }, (next) => {
+      nodeDbo.getNodes({},
+        (error, result) => {
+          if (error) next(error);
+          else {
+            totalNodesCount = result.length;
+            next(null);
+          }
+        });
+    }, (next) => {
+      statsDbo.addStats({
+        date,
+        totalNodesCount,
+        activeNodesCount,
+      }, (error, result) => {
+        if (error) next(error);
+        else next(null);
+      });
+    }
+  ], (error, result) => {
+    setTimeout(nodesStatsThread, new Date(new Date(new Date().setDate(new Date().getDate() + 1)).toDateString()) - new Date());
+  });
+};
+
+nodesStatsThread();
 nodeDeadThread();
 sessionDeadThread();
 setInterval(nodeDeadThread, MAX_SECS / 2);

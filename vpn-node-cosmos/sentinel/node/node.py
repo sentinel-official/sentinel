@@ -56,6 +56,8 @@ class Node(object):
                 self.config['api_port'] = int(info['api_port'])
             if ('description' in info) and (info['description' is not None]):
                 self.config['description'] = str(info['description'])
+            if ('moniker' in info) and (info['moniker' is not None]):
+                self.config['moniker'] = str(info['moniker'])
             if ('openvpn_enc_method' in info) and (info['openvpn_enc_method' is not None]):
                 self.config['openvpn']['enc_method'] = str(info['openvpn_enc_method'])
             if ('openvpn_port' in info) and (info['openvpn_port' is not None]):

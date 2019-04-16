@@ -6,7 +6,7 @@ let addRating = (req, res, next) => {
     fromAccountAddress: joi.string().required(),
     sessionId: joi.string().required(),
     rating: joi.number().integer().min(0).max(5).required(),
-    comments: joi.string()
+    comments: joi.string().allow('')
   });
   let { error } = joi.validate(req.body, addRatingSchema);
   if (error) res.status(422).send({

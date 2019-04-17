@@ -89,17 +89,18 @@ let updateNode = (req, res) => {
           });
         });
     }, (next) => {
-      nodeDbo.updateNode({ accountAddress }, details,
-        (error, result) => {
-          if (error) next({
-            status: 500,
-            message: 'Error occurred while updating node details.'
-          });
-          else next(null, {
-            status: 200,
-            message: 'Updated node details successfully.'
-          });
+      nodeDbo.updateNode({ accountAddress }, {
+        $set: details
+      }, (error, result) => {
+        if (error) next({
+          status: 500,
+          message: 'Error occurred while updating node details.'
         });
+        else next(null, {
+          status: 200,
+          message: 'Updated node details successfully.'
+        });
+      });
     }
   ], (error, success) => {
     let response = Object.assign({

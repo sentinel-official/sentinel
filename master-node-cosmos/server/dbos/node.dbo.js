@@ -33,12 +33,11 @@ let getNodes = (findObj, cb) => {
 };
 
 let updateNode = (findObj, updateObj, cb) => {
-  NodeModel.findOneAndUpdate(findObj, {
-    $set: updateObj
-  }, (error, result) => {
-    if (error) cb(error);
-    else cb(null, result);
-  });
+  NodeModel.findOneAndUpdate(findObj, updateObj,
+    (error, result) => {
+      if (error) cb(error);
+      else cb(null, result);
+    });
 };
 
 let updateNodes = (findObj, updateObj, cb) => {

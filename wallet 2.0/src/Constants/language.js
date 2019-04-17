@@ -392,6 +392,7 @@ let lang = {
         
         "Logout": "Logout", 
         "Logging": "Logging In...",
+        "EstablishingConnection" : "Establishing Connection",
         "QuotaFull": "Available data/bandwidth utilized. Please lock additional tokens & continue",
 
         "TMNetwork": "TENDERMINT NETWORK",
@@ -821,6 +822,7 @@ let lang = {
         "Clients": "Connected Clients",
         "Logout": "Logout",
         "Logging": "Logging In...",
+        "EstablishingConnection" : "Establishing Connection",
         "QuotaFull":"Available data/bandwidth utilized. Please lock additional tokens & continue",
         "TMNetwork": "TENDERMINT NETWORK",
         "ETHNetwork": "ETHEREUM NETWORK",
@@ -1249,6 +1251,7 @@ let lang = {
         "Clients": "Connected Clients",
         "Logout": "Logout",
         "Logging": "Logging In...",
+        "EstablishingConnection" : "Establishing Connection",
         "QuotaFull":"Available data/bandwidth utilized. Please lock additional tokens & continue",
         "TMNetwork": "TENDERMINT NETWORK",
         "ETHNetwork": "ETHEREUM NETWORK",
@@ -1674,6 +1677,7 @@ let lang = {
         "Clients": "Connected Clients",
         "Logout": "Logout",
         "Logging": "Logging In...",
+        "EstablishingConnection" : "Establishing Connection",
         "QuotaFull":"Available data/bandwidth utilized. Please lock additional tokens & continue",
         "TMNetwork": "TENDERMINT NETWORK",
         "ETHNetwork": "ETHEREUM NETWORK",
@@ -2099,6 +2103,7 @@ let lang = {
         "Clients": "Подключенные клиенты",
         "Logout": "Выйти",
         "Logging": "Вход в систему...",
+        "EstablishingConnection" : "Установление соединения",
         "QuotaFull": "Доступные данные / используемая пропускная способность. Пожалуйста, заблокируйте дополнительные токены и продолжайте",
         "TMNetwork": "TENDERMINT СЕТЬ",
         "ETHNetwork": "ETHEREUM СЕТЬ",
@@ -2131,7 +2136,7 @@ let lang = {
     },
     
     per: {
- "History": "تاریخچه",
+"History": "تاریخچه",
     "EthTransactions": "تراکنش های ETH",
     "SentTransactions": "تراکنش‌های SENT",
     "TestEthTransactions": "تست تراکنش های ETH",
@@ -2523,6 +2528,7 @@ let lang = {
 
     "Logout": "خروج",
     "Logging": "در حال ورود...",
+    "EstablishingConnection" : "ایجاد اتصال",
     "QuotaFull": "داده های موجود / پهنای باند مورد استفاده. لطفا توکن‌های اضافی را قفل کنید و ادامه دهید",
 
     "TMNetwork": "شبکه TENDERMINT",
@@ -2950,6 +2956,7 @@ let lang = {
         "Clients": "连接客户端",
         "Logout": "登出",
         "Logging": "在登录...",
+        "EstablishingConnection" : "建立连接",
         "QuotaFull": "使用的可用数据/带宽。请锁定其他令牌并继续",
         "TMNetwork": "TENDERMINT 网络",
         "ETHNetwork": "以太坊网络",

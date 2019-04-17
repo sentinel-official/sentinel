@@ -56,9 +56,21 @@ class EnhancedTableHead extends React.Component {
     };
 
     render() {
-        const { order, orderBy, classes, language } = this.props;
+        const { order, orderBy, classes, language, isTM} = this.props;
 
-        let columnData = [
+        let columnData = isTM ? 
+         [
+            { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
+            { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
+            { id: 'moniker', numeric: false, disablePadding: true, label: 'dVPN Moniker' },
+            { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth + lang[language].Mbps}` },
+            { id: 'latency', numeric: true, disablePadding: false, label: `${lang[language].Latency + lang[language].MS}` },
+            { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
+            { id: 'version', numeric: false, disablePadding: false, label: lang[language].Version },
+            { id: 'rating', numeric: true, disablePadding: false, label: lang[language].Rating },
+            { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
+        ] :
+        [
             { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
             { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
             { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth + lang[language].Mbps}` },
@@ -67,9 +79,7 @@ class EnhancedTableHead extends React.Component {
             { id: 'version', numeric: false, disablePadding: false, label: lang[language].Version },
             { id: 'rating', numeric: true, disablePadding: false, label: lang[language].Rating },
             { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
-            // { id: 'monikar', numeric: false, disablePadding: false, label: 'Monikar' },
-
-        ];
+        ] 
 
         return (
             <TableHead>
@@ -79,6 +89,8 @@ class EnhancedTableHead extends React.Component {
                             <TableCell
                                 key={column.id}
                                 numeric={column.numeric}
+                                align={columnData.numeric ? 'right' : 'center'}
+                                padding={columnData.disablePadding ? 'none' : 'default'}
                                 sortDirection={orderBy === column.id ? order : false}
                                 padding={"dense"}
                                 className={classes.head}
@@ -274,6 +286,7 @@ class EnhancedTable extends React.Component {
                             onRequestSort={this.handleRequestSort}
                             language={this.props.language}
                             rowCount={data.length}
+                            isTM = {isTM}
                         />
                         <TableBody>
                             {
@@ -290,38 +303,40 @@ class EnhancedTable extends React.Component {
                                                 key={n.id}
                                             
                                             >
-                                                <TableCell padding="dense" className={classes.head}>
+                                                <TableCell numeric padding="dense" className={classes.head}>
                                                     <Flag code={Country.getCode(n.location.country)} height="16" />
                                                 </TableCell>
                                                 <TableCell padding="dense" className={classes.head}>
                                                     {`${n.location.city}, `} {n.location.country}
                                                 </TableCell>
-                                                <TableCell numeric padding='default'>
+
+                                                { isTM ?
+                                                <TableCell numeric  padding="dense" className={classes.head}>
+                                                     {n.moniker ? n.moniker : 'None'}
+                                                </TableCell> 
+                                                : '' }
+                                                <TableCell numeric padding='dense'>
                                                     {((n.net_speed ? ('download' in n.net_speed ? n.net_speed.download : 0) : 0) / (1024 * 1024)).toFixed(2)}
                                                 </TableCell>
-                                                <TableCell numeric padding="dense" className={classes.head}>
+                                                <TableCell  numeric padding="dense" className={classes.head}>
                                                     {n.latency ? n.latency : 'None'}
                                                     {n.latency ? (n.latency === 'Loading...' ? null : '') : null}
                                                 </TableCell>
                                                 <TableCell padding="dense" className={classes.head}>
                                                     {n.enc_method ? n.enc_method : 'None'}
                                                 </TableCell>
-                                                <TableCell padding="dense" className={classes.head}>
+                                                <TableCell  padding="dense" className={classes.head}>
                                                     {n.version ? n.version : 'None'}
                                                 </TableCell>
-                                                <TableCell numeric padding="dense" className={classes.head}>
+                                                <TableCell numeric  padding="dense" className={classes.head}>
                                                     {isTM ? 
                                                     n.ratingCount && n.ratingCount !== 0 ? n.ratingPoints/n.ratingCount : 'None'
                                                     :
                                                     n.rating ? n.rating : 'None'}
                                                 </TableCell>
-                                                <TableCell numeric padding="dense" className={classes.head}>
+                                                <TableCell numeric  padding="dense" className={classes.head}>
                                                     {n.price_per_GB ? n.price_per_GB : 100}
                                                 </TableCell>
-{/* c
-                                                <TableCell numeric padding="dense" className={classes.head}>
-                                                    Monikar
-                                                </TableCell> */}
 
                                             </TableRow>
                                         );

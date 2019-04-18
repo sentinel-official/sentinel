@@ -130,7 +130,7 @@ class App extends Component {
                             <DialogTitle id="alert-dialog-title">{"Problem Occured"}</DialogTitle>
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
-                                    Unable to run tendermint server. Please restart app again.
+                                    Unable to run Tendermint server. Please restart app again.
                           </DialogContentText>
                             </DialogContent>
                             <DialogActions>

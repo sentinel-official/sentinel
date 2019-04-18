@@ -100,9 +100,8 @@ class VpnList extends Component {
         this.setState({ vpnType: nextProps.vpnType, walletType: nextProps.walletType });
         if (nextProps.walletType != this.state.walletType) {
             if (nextProps.isTM) {
-                this.setState({ listLoading: true, vpnType: 'openvpn' });
-                this.props.setVpnType('openvpn');
-                this.props.getVpnList('openvpn', nextProps.isTM)
+                this.setState({ listLoading: true,  });
+                this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
                     .then((res) => {
                         this.setState({ listLoading: false })
                     })
@@ -270,18 +269,18 @@ class VpnList extends Component {
                                     </RadioGroup> */}
 
                                     <InputLabel htmlFor="age-simple" >
-                                        Network
+                                    {lang[this.props.language].NodeNetworkLabel}
                                     </InputLabel>
                                     <Select
                                         value={this.state.network}
                                         onChange={this.handleNetworkChange}
-                                        className="dpn_label"
+                                        className="dpn_value"
                                         inputProps={{
                                             name: "network"
                                         }}
                                     >
-                                        <MenuItem value="public">{lang[this.props.language].Public}</MenuItem>
-                                        <MenuItem value="private" disabled={isTM}>{isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private}</MenuItem>
+                                        <MenuItem className="dpn_value" value="public">{lang[this.props.language].Public}</MenuItem>
+                                        <MenuItem className="dpn_value" value="private" disabled={isTM}>{isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private}</MenuItem>
                                     </Select>
 
                                 </FormControl>
@@ -304,23 +303,22 @@ class VpnList extends Component {
                                 </RadioGroup> */}
 
                                 <InputLabel htmlFor="age-simple" >
-                                    Protocol
+                                {lang[this.props.language].Protocol}
                                 </InputLabel>
                                 <Select
                                     value={this.state.protocol}
-                                    className="dpn_label"
+                                    className="dpn_value"
                                     onChange={this.handleProtocolChange}
                                     inputProps={{
                                         name: "protocol"
                                     }}
                                 >
-                                     <MenuItem className="dpn_value" value="all">All</MenuItem>
+                                     <MenuItem className="dpn_value" value="all">{lang[this.props.language].AllOption}</MenuItem>
                                     <MenuItem className="dpn_value" value="openvpn">{lang[this.props.language].OpenVPN}</MenuItem>
                                     {isTM && remote.process.platform === 'linux' ?
-                                    <MenuItem className="dpn_value" value="wireguard">Wireguard</MenuItem> : ""}
+                                    <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : ""}
                                     <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
-                                   
-                                </Select>
+                                 </Select>
 
                                 </FormControl>
                                 </div>
@@ -380,12 +378,12 @@ class VpnList extends Component {
                                 </RadioGroup> */}
 
                                 <InputLabel htmlFor="age-simple">
-                                    Network
+                                {lang[this.props.language].NodeNetworkLabel}
                                 </InputLabel>
                                 <Select
                                     value={this.state.network}
                                     onChange={this.handleNetworkChange}
-                                    className="dpn_label"
+                                    className="dpn_value"
                                     inputProps={{
                                         name: "network"
                                     }}
@@ -396,24 +394,25 @@ class VpnList extends Component {
 
                             </FormControl>
                             <FormControl component="fieldset" className={classes.dVPNFormControl}>
-                           
-    
-                            <InputLabel htmlFor="age-simple" >
-                                Protocol
+                                                  
+                                <InputLabel htmlFor="age-simple" >
+                                {lang[this.props.language].Protocol}
+
                          </InputLabel>
                             <Select
                                 value={this.state.protocol}
                                 onChange={this.handleProtocolChange}
+                                className="dpn_value"
                                 inputProps={{
                                     name: "protocol"
                                 }}
                             >
-                             <MenuItem className="dpn_value" value="all">All</MenuItem>
-                                <MenuItem className="dpn_value" value="openvpn">{lang[this.props.language].OpenVPN}</MenuItem>
+                               <MenuItem className="dpn_value" value="all">{lang[this.props.language].AllOption}</MenuItem>
+                                    <MenuItem className="dpn_value" value="openvpn">{lang[this.props.language].OpenVPN}</MenuItem>
                                     {isTM && remote.process.platform === 'linux' ?
-                                    <MenuItem className="dpn_value" value="wireguard">Wireguard</MenuItem> : ""}
-                                    <MenuItem className="dpn_value" value="socks5" disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
-                                    </Select>
+                                    <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : ""}
+                                    <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
+                                 </Select>
     
                         </FormControl>
                         </div>

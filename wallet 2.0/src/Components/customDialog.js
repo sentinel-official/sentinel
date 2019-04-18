@@ -22,6 +22,8 @@ import { getVPNUsageData } from "../Utils/utils";
 import lang from '../Constants/language';
 import { calculateUsage, socksVpnUsage } from '../Actions/calculateUsage';
 import { createAccountStyle } from '../Assets/createtm.styles';
+import '../Assets/footerStyle.css';
+import { Tooltip } from '@material-ui/core';
 
 const electron = window.require('electron');
 const { exec } = window.require('child_process');
@@ -162,6 +164,26 @@ class SimpleDialog extends React.Component {
                         <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.latency ? `${this.props.data.latency} ${lang[language].MS}` : 'None'}</label> </Col>
                     </Row>
 
+                    <Row>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Protocol}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.node_type ? this.props.data.node_type  : 'None'}</label> </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Moniker}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>
+                        <Tooltip title={this.props.data.moniker ? this.props.data.moniker  : 'None'}>
+                        <div className="dialog_moniker_value">{this.props.data.moniker ? this.props.data.moniker  : 'None'}</div>
+                        </Tooltip></label> </Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Version}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.version ? this.props.data.version  : 'None'}</label> </Col>
+                    </Row>
 
                     <List style={{ paddingBottom: 5 }}>
 
@@ -407,6 +429,7 @@ class SimpleDialogDemo extends React.Component {
     };
 
     render() {
+        console.log("c data", this.props.data)
         return (
             <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }} >
                 {!this.state.isPending ?

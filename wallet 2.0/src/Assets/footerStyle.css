@@ -49,12 +49,21 @@ overflow: hidden;
 margin-top: 5px;
 }
 
-.moniker_value{
-  padding: 7px;
-  word-break: break-all;
+.dialog_moniker_value{
   text-align: center !important;
   display: -webkit-box !important;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
+      /* autoprefixer: off */
+      -webkit-box-orient: vertical;
+      /* autoprefixer: on */
+  overflow: hidden;
+  height: inherit;
+}
+.moniker_value{
+  padding: 7px;
+  text-align: center !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1;
       /* autoprefixer: off */
       -webkit-box-orient: vertical;
       /* autoprefixer: on */
@@ -63,8 +72,8 @@ margin-top: 5px;
 
   }
   .dpn_value{
-    font-size: 14px !important;
+    /* font-size: 14px !important; */
   }
   .dpn_label{
-    font-size: 15px !important;
+    /* font-size: 14px !important; */
   }

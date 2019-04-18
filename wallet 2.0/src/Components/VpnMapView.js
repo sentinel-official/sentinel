@@ -78,7 +78,8 @@ class VpnMapView extends Component {
             'city': marker.vpn.location.city, 'country': marker.vpn.location.country,
             'speed': marker.vpn.bandwidth, 'latency': marker.vpn.latency,
             'price_per_GB': marker.vpn.price_per_GB, 'vpn_addr': marker.vpn.account_addr,
-            'node_type' : marker.vpn.nodeType
+            'node_type' : marker.vpn.nodeType,
+            'moniker': marker.vpn.moniker, 'version':marker.vpn.version, 'enc_method':marker.vpn.encMethod,
         }
         this.props.setCurrentVpn(data);
         this.setState({

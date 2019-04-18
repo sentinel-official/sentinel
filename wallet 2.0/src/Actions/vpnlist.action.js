@@ -22,11 +22,11 @@ export async function getVpnList(vpnType, isTM) {
             listUrl = isTM ? TMain_URL + '/nodes?type=Socks5&status=up' : uri + '/client/vpn/socks-list';
 
         else if (vpnType === 'wireguard'){
-            listUrl = isTM ? TMain_URL + '/nodes?type=wireguard&status=up' : uri + '/client/vpn/socks-list';
+            listUrl = isTM ? TMain_URL + '/nodes?type=wireguard&status=up' : uri + '/client/vpn/list'; // we won't have WG in Eth actually
             // listUrl = 'http://tm-master.sentinelgroup.io:8000/nodes?type=wireguard&status=up'
         }
         else if (vpnType === 'openvpn'){
-            listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : uri + '/client/vpn/socks-list';
+            listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : uri + '/client/vpn/list';
             // listUrl = 'http://tm-master.sentinelgroup.io:8000/nodes?type=wireguard&status=up'
         }
         else

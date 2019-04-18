@@ -32,7 +32,24 @@ class VpnListView extends Component {
                 nextProps.query.toLowerCase()
             ) !== -1) || (item.location.country.toLowerCase().search(
                 nextProps.query.toLowerCase()
-            ) !== -1);
+            ) !== -1) ||
+            (item.moniker.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            ||
+            (item.version.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            ||
+            (item.nodeType.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            ||
+            (item.pricePerGB.toString().search(
+                nextProps.query
+            ) !== -1)
+            
+            ;
         });
         this.setState({ updatedList: list });
     }

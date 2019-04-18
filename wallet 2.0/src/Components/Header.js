@@ -284,9 +284,12 @@ class Header extends Component {
             <div style={headerStyles.mainDivStyle}>
                 <Grid>
                     <Row style={headerStyles.firstRowStyle}>
-                        <Col xs={1}>
+                     <Col xs={1}>
+                        <Tooltip title="Sentinel Network" placement="right">
                             <img src={'../src/Images/logo.svg'} alt="sentinel network" style={headerStyles.logoStyle} />
+                            </Tooltip>
                         </Col>
+                       
                         <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
                                 <span style={headerStyles.basicWallet}>
@@ -436,6 +439,8 @@ class Header extends Component {
                         </Col>
                         <Tooltip title={this.props.vpnStatus ? lang[language].CannotClickUser : ''}>
                         <Col xs={1}>
+                        <Tooltip title={tmAccountsList.length === 1 ? lang[language].YourAccount :lang[language].YourAccounts}
+                        placement="left" >
                             <IconButton
                                 buttonRef={node => {
                                     this.anchorEl = node;
@@ -448,6 +453,7 @@ class Header extends Component {
                                 {/* <MoreVertIcon /> */}
                                 <AccountIcon viewBox='0 0 24 24' />
                             </IconButton>
+                            </Tooltip>
                             <Popper open={this.state.openedMenu} anchorEl={this.anchorEl}
                                 placement={'bottom-end'}
                                 style={headerStyles.popperDiv}

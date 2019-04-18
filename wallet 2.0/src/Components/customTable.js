@@ -63,10 +63,11 @@ class EnhancedTableHead extends React.Component {
          [
             { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
             { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
-            { id: 'moniker', numeric: false, disablePadding: true, label: 'dVPN Moniker' },
+            { id: 'node_type', numeric: false, disablePadding: false, label:lang[language].Protocol },
+            { id: 'moniker', numeric: false, disablePadding: true, label: lang[language].Moniker },
             { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth + lang[language].Mbps}` },
             { id: 'latency', numeric: true, disablePadding: false, label: `${lang[language].Latency + lang[language].MS}` },
-            { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
+            // { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
             { id: 'version', numeric: false, disablePadding: false, label: lang[language].Version },
             { id: 'rating', numeric: true, disablePadding: false, label: lang[language].Rating },
             { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
@@ -74,9 +75,10 @@ class EnhancedTableHead extends React.Component {
         [
             { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
             { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
+            { id: 'node_type', numeric: false, disablePadding: false, label:'Type' },
             { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth + lang[language].Mbps}` },
             { id: 'latency', numeric: true, disablePadding: false, label: `${lang[language].Latency + lang[language].MS}` },
-            { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
+            // { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
             { id: 'version', numeric: false, disablePadding: false, label: lang[language].Version },
             { id: 'rating', numeric: true, disablePadding: false, label: lang[language].Rating },
             { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
@@ -249,12 +251,12 @@ class EnhancedTable extends React.Component {
     };
 
 
-    showConnectDialog = (event, city, country, speed, latency, price_per_GB, vpn_addr, node_type) => {
+    showConnectDialog = (event, city, country, speed, latency, price_per_GB, vpn_addr, node_type, moniker, version, enc_method) => {
 
         let data = {
             'city': city, 'country': country, 'speed': speed,
             'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr, 
-            'node_type' : node_type,
+            'node_type' : node_type, 'moniker': moniker, 'version':version, 'enc_method':enc_method,
         }
         this.props.setCurrentVpn(data);
         this.setState({
@@ -300,7 +302,8 @@ class EnhancedTable extends React.Component {
                                             <TableRow
                                                 hover
                                                 onClick={event => this.showConnectDialog(event, n.location.city, n.location.country,
-                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr, n.nodeType
+                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr, n.nodeType,
+                                                    n.moniker, n.version, n.encMethod, 
                                                 )}
                                                 role="button"
                                                 key={n.id}
@@ -312,11 +315,19 @@ class EnhancedTable extends React.Component {
                                                 <TableCell padding="dense" className={classes.head}>
                                                     {`${n.location.city}, `} {n.location.country}
                                                 </TableCell>
-
+                                                <Tooltip title={n.enc_method ? n.enc_method : 'None'} 
+                                                   // placement="right"
+                                                >
+                                                <TableCell padding="dense" className={classes.head}>
+                                                    {n.nodeType ? n.nodeType : 'None'}
+                                                </TableCell>
+                                                </Tooltip>
                                                 { isTM ?
                                                 <Tooltip title={n.moniker ? n.moniker : 'None'} >
-                                                <TableCell numeric  padding="dense" className='moniker_value'>
-                                                  {n.moniker}
+                                                <TableCell numeric  padding="dense"
+                                                className={classes.head}
+                                               >
+                                                  <div className='moniker_value'>{n.moniker ? n.moniker : 'None' }</div>
                                                   </TableCell> 
                                                   </Tooltip>
                                                 : '' }
@@ -327,9 +338,10 @@ class EnhancedTable extends React.Component {
                                                     {n.latency ? n.latency : 'None'}
                                                     {n.latency ? (n.latency === 'Loading...' ? null : '') : null}
                                                 </TableCell>
-                                                <TableCell padding="dense" className={classes.head}>
+                                                {/* <TableCell padding="dense" className={classes.head}>
                                                     {n.enc_method ? n.enc_method : 'None'}
-                                                </TableCell>
+                                                </TableCell> */}
+                                                
                                                 <TableCell  padding="dense" className={classes.head}>
                                                     {n.version ? n.version : 'None'}
                                                 </TableCell>

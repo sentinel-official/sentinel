@@ -25,8 +25,13 @@ export async function getVpnList(vpnType, isTM) {
             listUrl = isTM ? TMain_URL + '/nodes?type=wireguard&status=up' : uri + '/client/vpn/socks-list';
             // listUrl = 'http://tm-master.sentinelgroup.io:8000/nodes?type=wireguard&status=up'
         }
+        else if (vpnType === 'openvpn'){
+            listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : uri + '/client/vpn/socks-list';
+            // listUrl = 'http://tm-master.sentinelgroup.io:8000/nodes?type=wireguard&status=up'
+        }
         else
-            listUrl = isTM ? TMain_URL + '/nodes?type=OpenVPN&status=up' : uri + '/client/vpn/list';
+            listUrl = isTM ? TMain_URL + '/nodes?type=any&status=up' : uri + '/client/vpn/list';
+
         let response = await axiosInstance.get(listUrl, {
             headers: {
                 'Accept': 'application/json',

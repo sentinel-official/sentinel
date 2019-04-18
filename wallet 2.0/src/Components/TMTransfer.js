@@ -15,6 +15,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
 import OpenvpnAlert from './OpenvpnAlert';
 import { setCurrentTab } from '../Actions/sidebar.action';
+import { setVpnType } from '../Actions/vpnlist.action';
+
 import lang from '../Constants/language';
 import SimpleMenuTM from './SharedComponents/SimpleMenuTM';
 import CustomTooltips from './SharedComponents/customTooltip';
@@ -65,12 +67,16 @@ class TMTransfer extends Component {
     }
 
     componentDidMount = () => {
+        console.log('this vpn', this.props.vpnPayment)
         if (this.props.vpnPayment.isPayment && !this.state.gotVPN) {
+            this.props.setVpnType(this.props.vpnPayment.data.node_type)
             this.setState({
                 toAddress: this.props.vpnPayment.data.vpn_addr,
                 nodePrice: this.props.vpnPayment.data.price_per_GB,
                 country: this.props.vpnPayment.data.country,
+                nodeType : this.props.vpnPayment.data.node_type
             })
+          
             if (!this.state.gotVPN) {
                 this.setState({
                     amount: this.props.vpnPayment.data.price_per_GB, isTextDisabled: true,
@@ -87,7 +93,10 @@ class TMTransfer extends Component {
         }
     }
     componentWillReceiveProps = (nextProps) => {
+        console.log('this next  vpn', this.props.vpnPayment)
         if (nextProps.vpnPayment.isPayment) {
+            this.props.setVpnType(nextProps.vpnPayment.data.node_type)
+
             this.setState({
                 toAddress: nextProps.vpnPayment.data.vpn_addr,
                 nodePrice: nextProps.vpnPayment.data.price_per_GB,
@@ -113,7 +122,7 @@ class TMTransfer extends Component {
         this.setState({ openvpnAlert: false });
     }
 
-    sendTransaction = () => {
+    sendTransaction = (event) => {
         this.setState({ sending: true });
         let transAmount = this.props.vpnPayment.isPayment ? this.state.amountToLock : this.state.amount;
         if (parseFloat(tmCurrentBalance) < parseFloat(transAmount)) {
@@ -459,6 +468,7 @@ function mapDispatchToActions(dispatch) {
         setVpnStatus,
         setActiveVpn,
         setCurrentTab,
+        setVpnType,
         isConnectionEstablishing,
     }, dispatch)
 }

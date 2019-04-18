@@ -42,11 +42,29 @@ display: -webkit-box;
     -webkit-box-orient: vertical;
     /* autoprefixer: on */
 overflow: hidden;
-
-
-
 }
+
 .location-icon{
 
 margin-top: 5px;
 }
+
+.moniker_value{
+  padding: 7px;
+  word-break: break-all;
+  text-align: center !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+      /* autoprefixer: off */
+      -webkit-box-orient: vertical;
+      /* autoprefixer: on */
+  overflow: hidden;
+  height: inherit;
+
+  }
+  .dpn_value{
+    font-size: 14px !important;
+  }
+  .dpn_label{
+    font-size: 15px !important;
+  }

@@ -77,7 +77,8 @@ class VpnMapView extends Component {
         let data = {
             'city': marker.vpn.location.city, 'country': marker.vpn.location.country,
             'speed': marker.vpn.bandwidth, 'latency': marker.vpn.latency,
-            'price_per_GB': marker.vpn.price_per_GB, 'vpn_addr': marker.vpn.account_addr
+            'price_per_GB': marker.vpn.price_per_GB, 'vpn_addr': marker.vpn.account_addr,
+            'node_type' : marker.vpn.nodeType
         }
         this.props.setCurrentVpn(data);
         this.setState({

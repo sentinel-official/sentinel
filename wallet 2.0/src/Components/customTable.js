@@ -22,6 +22,7 @@ import SimpleDialogDemo from "./customDialog";
 import lang from '../Constants/language';
 import { compose } from 'recompose';
 import { setCurrentVpn } from '../Actions/vpnlist.action';
+import '../Assets/footerStyle.css';
 
 let Country = window.require('countrynames');
 
@@ -126,7 +127,7 @@ const alignStyle = theme => ({
     head: {
         padding: 7,
         textAlign: 'center'
-    }
+    },
 });
 
 EnhancedTableHead = withStyles(alignStyle)(EnhancedTableHead);
@@ -248,11 +249,12 @@ class EnhancedTable extends React.Component {
     };
 
 
-    showConnectDialog = (event, city, country, speed, latency, price_per_GB, vpn_addr) => {
+    showConnectDialog = (event, city, country, speed, latency, price_per_GB, vpn_addr, node_type) => {
 
         let data = {
             'city': city, 'country': country, 'speed': speed,
-            'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr
+            'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr, 
+            'node_type' : node_type,
         }
         this.props.setCurrentVpn(data);
         this.setState({
@@ -273,6 +275,7 @@ class EnhancedTable extends React.Component {
         let data = this.props.data.map(obj => {
             return createData(obj);
         });
+
         const { order, orderBy, } = this.state;
         const { isTM } = this.props;
 
@@ -297,7 +300,7 @@ class EnhancedTable extends React.Component {
                                             <TableRow
                                                 hover
                                                 onClick={event => this.showConnectDialog(event, n.location.city, n.location.country,
-                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr
+                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr, n.nodeType
                                                 )}
                                                 role="button"
                                                 key={n.id}
@@ -311,9 +314,11 @@ class EnhancedTable extends React.Component {
                                                 </TableCell>
 
                                                 { isTM ?
-                                                <TableCell numeric  padding="dense" className={classes.head}>
-                                                  {n.moniker ? n.moniker : 'None'}
+                                                <Tooltip title={n.moniker ? n.moniker : 'None'} >
+                                                <TableCell numeric  padding="dense" className='moniker_value'>
+                                                  {n.moniker}
                                                   </TableCell> 
+                                                  </Tooltip>
                                                 : '' }
                                                 <TableCell numeric padding='dense'>
                                                     {((n.net_speed ? ('download' in n.net_speed ? n.net_speed.download : 0) : 0) / (1024 * 1024)).toFixed(2)}
@@ -330,7 +335,7 @@ class EnhancedTable extends React.Component {
                                                 </TableCell>
                                                 <TableCell numeric  padding="dense" className={classes.head}>
                                                     {isTM ? 
-                                                    n.ratingCount && n.ratingCount !== 0 ? n.ratingPoints/n.ratingCount : 'None'
+                                                    n.ratingCount && n.ratingCount !== 0 ? (n.ratingPoints/n.ratingCount).toFixed(2) : 'None'
                                                     :
                                                     n.rating ? n.rating : 'None'}
                                                 </TableCell>

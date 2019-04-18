@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel, IconButton, Snackbar } from '@material-ui/core'
+import {
+    CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel, IconButton, Snackbar,
+    InputLabel, MenuItem, Select
+} from '@material-ui/core';
 import { connect } from 'react-redux';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
@@ -21,6 +24,9 @@ import { isVPNConnected } from '../Utils/VpnConfig';
 import NetworkChangeDialog from "./SharedComponents/networkChangeDialog";
 import lang from '../Constants/language';
 import { getWireguardDetails } from './../Actions/tendermint.action';
+
+import '../Assets/footerStyle.css';
+
 
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -60,7 +66,10 @@ class VpnList extends Component {
             networkType: 'public',
             dVpnQuery: '',
             listLoading: true,
-            walletType: 'ERC'
+            walletType: 'ERC',
+
+            network: "public",
+            protocol: "all",
         }
     }
 
@@ -69,7 +78,7 @@ class VpnList extends Component {
         getGatewayUrl(authCode, (err, data, url) => {
             console.log("Pri...", err, data, url);
             if (err) {
-                this.setState({ isPrivate: false, openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
+                this.setState({ isPrivate: false,network :'public', openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
 
             }
@@ -83,9 +92,9 @@ class VpnList extends Component {
     };
 
     componentDidMount = () => {
-        if(this.props && this.props.listView === "map") {
-            this.setState({ listActive: false , mapActive: true });
-        }  
+        if (this.props && this.props.listView === "map") {
+            this.setState({ listActive: false, mapActive: true });
+        }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({ vpnType: nextProps.vpnType, walletType: nextProps.walletType });
@@ -155,28 +164,42 @@ class VpnList extends Component {
     //     }
 
     // };
-    
+
     handleRadioChange = (event) => {
         this.props.setVpnType(event.target.value);
         // console.log("wireguard listing ", event.target.value);
         // console.log("it is me " ,getWireguardDetails)
-       
-        this.setState({ listLoading: true });
+
+        this.setState({ listLoading: true , [event.target.name]: event.target.value});
         this.props.getVpnList(event.target.value, this.props.isTM)
             .then((res) => {
                 this.setState({ listLoading: false })
             })
 
     };
+
+   
+    handleProtocolChange = event => {
+        console.log("event", event.target)
+        this.props.setVpnType(event.target.value);
+        this.setState({ listLoading: true , [event.target.name]: event.target.value});
+        this.props.getVpnList(event.target.value, this.props.isTM)
+            .then((res) => {
+                this.setState({ listLoading: false })
+            })
+    };
+
+
     handleNetworkChange = (event) => {
         if (isOnline()) {
+            
             if (event.target.value === 'private') {
                 checkGateway((err, data, url) => {
                     if (err) {
                         this.setState({ openPopup: true });
                     }
                     else {
-                        this.setState({ authcode: data, isPrivate: true, openSnack: true, openPopup: false, snackMessage: 'Private Net is Enabled with ' + url })
+                        this.setState({ authcode: data, isPrivate: true,network:'private', openSnack: true, openPopup: false, snackMessage: 'Private Net is Enabled with ' + url })
                         this.props.networkChange('private');
                         setTimeout(() => { this.getVPNs(); }, 500);
                     }
@@ -184,7 +207,7 @@ class VpnList extends Component {
             }
             else {
                 setMaster((data) => {
-                    this.setState({ isPrivate: false, authcode: '', openPopup: false })
+                    this.setState({ isPrivate: false,network : 'public', authcode: '', openPopup: false })
                     this.props.networkChange('public');
                     setTimeout(() => { this.getVPNs(); }, 500);
                 })
@@ -196,7 +219,7 @@ class VpnList extends Component {
     }
 
     closePrivDialog = () => {
-        this.setState({ openPopup: false });
+        this.setState({ openPopup: false, network:'public' });
     };
     listViewActive = () => {
         this.setState({ listActive: true, mapActive: false });
@@ -233,9 +256,9 @@ class VpnList extends Component {
                     <div>
                         {
                             this.state.mapActive ?
-
+                            <div>
                                 <FormControl component="fieldset" className={classes.networkFormControl}>
-                                    <RadioGroup
+                                    {/* <RadioGroup
                                         aria-label="dVPN Type"
                                         name="nodes"
                                         className={classes.group}
@@ -244,17 +267,73 @@ class VpnList extends Component {
                                     >
                                         <FormControlLabel value="public" control={<Radio style={radioStyle} />} label={lang[this.props.language].Public} />
                                         <FormControlLabel value="private" control={<Radio disabled={isTM} style={radioStyle} />} label={isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private} />
-                                    </RadioGroup>
+                                    </RadioGroup> */}
+
+                                    <InputLabel htmlFor="age-simple" >
+                                        Network
+                                    </InputLabel>
+                                    <Select
+                                        value={this.state.network}
+                                        onChange={this.handleNetworkChange}
+                                        className="dpn_label"
+                                        inputProps={{
+                                            name: "network"
+                                        }}
+                                    >
+                                        <MenuItem value="public">{lang[this.props.language].Public}</MenuItem>
+                                        <MenuItem value="private" disabled={isTM}>{isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private}</MenuItem>
+                                    </Select>
+
                                 </FormControl>
+
+                                <FormControl component="fieldset" className={classes.dVPNFormControl}>
+                                {/* <RadioGroup
+                                    aria-label="dVPN Type"
+                                    name="nodes"
+                                    className={classes.group}
+                                    value={this.state.vpnType}
+                                    onChange={this.handleRadioChange}
+                                >
+                                    <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN} />
+                                    <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5} />
+                                { isTM ? 
+                                    <FormControlLabel value="wireguard" control={<Radio style={radioStyle}
+                                    disabled = {remote.process.platform === 'linux' ? false : true} />} label="WireGuard" />
+                                    : ''
+                                }
+                                </RadioGroup> */}
+
+                                <InputLabel htmlFor="age-simple" >
+                                    Protocol
+                                </InputLabel>
+                                <Select
+                                    value={this.state.protocol}
+                                    className="dpn_label"
+                                    onChange={this.handleProtocolChange}
+                                    inputProps={{
+                                        name: "protocol"
+                                    }}
+                                >
+                                     <MenuItem className="dpn_value" value="all">All</MenuItem>
+                                    <MenuItem className="dpn_value" value="openvpn">{lang[this.props.language].OpenVPN}</MenuItem>
+                                    {isTM && remote.process.platform === 'linux' ?
+                                    <MenuItem className="dpn_value" value="wireguard">Wireguard</MenuItem> : ""}
+                                    <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
+                                   
+                                </Select>
+
+                                </FormControl>
+                                </div>
+
                                 :
-                                <div   style = {{marginLeft : 20}}>
-                                <CustomTextfield type={'text'} placeholder={lang[language].SearchdVPNnode} disabled={false}
-                                    value={this.state.dVpnQuery}
-                                    multi={false}
+                                <div style={{ marginLeft: 20 }}>
+                                    <CustomTextfield type={'text'} placeholder={lang[language].SearchdVPNnode} disabled={false}
+                                        value={this.state.dVpnQuery}
+                                        multi={false}
                                         onChange={(e) => {
-                                        this.setState({ dVpnQuery: e.target.value })
-                                    }} />
-                                    </div>
+                                            this.setState({ dVpnQuery: e.target.value })
+                                        }} />
+                                </div>
                         }
                         <NetworkChangeDialog open={this.state.openPopup}
                             close={this.closePrivDialog} getGatewayAddr={this.getGatewayAddr}
@@ -283,9 +362,12 @@ class VpnList extends Component {
                                 <IconButton onClick={this.handleZoomOut} style={{ marginTop: 15, outline: 'none' }}>
                                     <ZoomOutIcon />
                                 </IconButton>
+
+
                             </div> :
+                            <div>
                             <FormControl component="fieldset" className={classes.networkFormControl}>
-                                <RadioGroup
+                                {/* <RadioGroup
                                     aria-label="dVPN Type"
                                     name="nodes"
                                     className={classes.group}
@@ -295,26 +377,48 @@ class VpnList extends Component {
                                     <FormControlLabel value="public" control={<Radio style={radioStyle} />} label={lang[this.props.language].Public} />
                                     <FormControlLabel value="private" control={<Radio style={radioStyle} disabled={isTM} />}
                                         label={isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private} />
-                                </RadioGroup>
+                                </RadioGroup> */}
+
+                                <InputLabel htmlFor="age-simple">
+                                    Network
+                                </InputLabel>
+                                <Select
+                                    value={this.state.network}
+                                    onChange={this.handleNetworkChange}
+                                    className="dpn_label"
+                                    inputProps={{
+                                        name: "network"
+                                    }}
+                                >
+                                    <MenuItem className="dpn_value" value="public">{lang[this.props.language].Public}</MenuItem>
+                                    <MenuItem className="dpn_value" value="private" disabled={isTM}>{isTM ? lang[this.props.language].PrivateComingSoon : lang[this.props.language].Private}</MenuItem>
+                                </Select>
+
                             </FormControl>
+                            <FormControl component="fieldset" className={classes.dVPNFormControl}>
+                           
+    
+                            <InputLabel htmlFor="age-simple" >
+                                Protocol
+                         </InputLabel>
+                            <Select
+                                value={this.state.protocol}
+                                onChange={this.handleProtocolChange}
+                                inputProps={{
+                                    name: "protocol"
+                                }}
+                            >
+                             <MenuItem className="dpn_value" value="all">All</MenuItem>
+                                <MenuItem className="dpn_value" value="openvpn">{lang[this.props.language].OpenVPN}</MenuItem>
+                                    {isTM && remote.process.platform === 'linux' ?
+                                    <MenuItem className="dpn_value" value="wireguard">Wireguard</MenuItem> : ""}
+                                    <MenuItem className="dpn_value" value="socks5" disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
+                                    </Select>
+    
+                        </FormControl>
+                        </div>
                     }
-                    <FormControl component="fieldset" className={classes.dVPNFormControl}>
-                        <RadioGroup
-                            aria-label="dVPN Type"
-                            name="nodes"
-                            className={classes.group}
-                            value={this.state.vpnType}
-                            onChange={this.handleRadioChange}
-                        >
-                            <FormControlLabel value="openvpn" control={<Radio style={radioStyle} />} label={lang[this.props.language].OpenVPN} />
-                            <FormControlLabel value="socks5" control={<Radio style={radioStyle} disabled={isTM} />} label={ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5} />
-                           { isTM ? 
-                            <FormControlLabel value="wireguard" control={<Radio style={radioStyle}
-                            disabled = {remote.process.platform === 'linux' ? false : true} />} label="WireGuard" />
-                            : ''
-                        }
-                        </RadioGroup>
-                    </FormControl>
+                    
 
                     <IconButton onClick={() => { this.getVPNs() }} style={{ marginTop: 15, marginRight: 10, outline: 'none' }}>
                         <RefreshIcon />
@@ -323,7 +427,7 @@ class VpnList extends Component {
                 </div>
                 {
                     !this.props.vpnList ?
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div> 
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ><CircularProgress size={50} /></div>
                         :
                         this.props.listView === 'list' ?
                             <div style={{ maxWidth: 895, marginLeft: 20 }} >
@@ -357,7 +461,7 @@ function mapStateToProps(state) {
         isTM: state.setTendermint,
         networkType: state.networkChange,
         walletType: state.getWalletType,
-        wireguardData : state.getWireguardDetails
+        wireguardData: state.getWireguardDetails
     }
 }
 

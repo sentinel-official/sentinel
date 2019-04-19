@@ -8,7 +8,7 @@ import { getAvailableTokens, getSentValue } from './swaps.reducer';
 import { getVPNHistory, getSnackMessage, getVPNDuePaymentDetails } from './vpnHistory.reducer';
 import { sendComponentReducer } from './sendcomponent.reducer';
 import { setListViewType, setVpnType, getVpnList, setVpnStatus, payVPNTM, getActiveVpn, getCurrentVpn,
-isConnectionEstablishing } from './vpnlist.reducer';
+isConnectionEstablishing, setProtocolType} from './vpnlist.reducer';
 import { swixRateInState } from './swixReducer';
 import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 import { connectVPNReducer } from './connectVPN.reducer'
@@ -70,6 +70,7 @@ const rootReducer = combineReducers({
     connectionStatus,
     isNMConnected,
     isAccountVerified,
+    protocolType:setProtocolType,
 });
 
 export default rootReducer;

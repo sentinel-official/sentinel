@@ -29,6 +29,7 @@ const headerStyles = {
         height: 40,
         marginLeft: -5,
         marginTop: 5,
+        cursor: 'pointer',
     },
     clipBoard: {
         height: 18,

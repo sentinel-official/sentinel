@@ -9,9 +9,18 @@ export function setListViewType(state = 'list', action) {
     }
 }
 
-export function setVpnType(state = 'all', action) {
+export function setVpnType(state = 'openvpn', action) {
     switch (action.type) {
         case types.SET_VPN_TYPE:
+            return action.payload;
+        default:
+            return state
+    }
+}
+
+export function setProtocolType(state = 'all', action) {
+    switch (action.type) {
+        case types.SET_PROTOCOL_TYPE:
             return action.payload;
         default:
             return state

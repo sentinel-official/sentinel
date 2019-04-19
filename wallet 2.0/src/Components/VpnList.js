@@ -11,7 +11,7 @@ import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import { compose } from 'recompose';
 import { bindActionCreators } from 'redux';
 import { networkChange } from '../Actions/NetworkChange';
-import { setListViewType, getVpnList, setVpnType } from '../Actions/vpnlist.action';
+import { setListViewType, getVpnList, setVpnType, setProtocolType } from '../Actions/vpnlist.action';
 import CustomTextfield from "./customTextfield";
 import VpnListView from './VpnListView';
 import VpnMapView from './VpnMapView';
@@ -95,20 +95,20 @@ class VpnList extends Component {
         if (this.props && this.props.listView === "map") {
             this.setState({ listActive: false, mapActive: true , });
         }
-        this.setState({protocol : this.props.vpnType}) // to list the nodes based on the previous nodeType
+        this.setState({protocol : this.props.protocolType}) // to list the nodes based on the previous nodeType
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({ vpnType: nextProps.vpnType, walletType: nextProps.walletType });
+        this.setState({ protocolType: nextProps.protocolType, walletType: nextProps.walletType });
         if (nextProps.walletType != this.state.walletType) {
             if (nextProps.isTM) {
                 this.setState({ listLoading: true,  });
-                this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
+                this.props.getVpnList(nextProps.protocolType, nextProps.isTM)
                     .then((res) => {
                         this.setState({ listLoading: false })
                     })
             } else {
                 this.setState({ listLoading: true })
-                this.props.getVpnList(nextProps.vpnType, nextProps.isTM)
+                this.props.getVpnList(nextProps.protocolType, nextProps.isTM)
                     .then((res) => {
                         this.setState({ listLoading: false })
                     })
@@ -166,7 +166,8 @@ class VpnList extends Component {
     // };
 
     handleRadioChange = (event) => {
-        this.props.setVpnType(event.target.value.toLocaleLowerCase());
+        // this.props.setVpnType(event.target.value.toLocaleLowerCase());
+        this.props.setProtocolType(event.target.value.toLocaleLowerCase());
         // console.log("wireguard listing ", event.target.value);
         // console.log("it is me " ,getWireguardDetails)
 
@@ -181,7 +182,8 @@ class VpnList extends Component {
    
     handleProtocolChange = event => {
         console.log("event", event.target)
-        this.props.setVpnType(event.target.value.toLocaleLowerCase());
+        // this.props.setVpnType(event.target.value.toLocaleLowerCase());
+        this.props.setProtocolType(event.target.value.toLocaleLowerCase());
         this.setState({ listLoading: true , [event.target.name]: event.target.value});
         this.props.getVpnList(event.target.value, this.props.isTM)
             .then((res) => {
@@ -307,11 +309,11 @@ class VpnList extends Component {
                                 <InputLabel htmlFor="age-simple" >
                                 {lang[this.props.language].Protocol}
                                 </InputLabel>
-                                <Tooltip title={this.props.vpnStatus ? lang[language].CannotChooseVPN : ''}>
+                                {/* <Tooltip title={this.props.vpnStatus ? lang[language].CannotChooseVPN : ''}> */}
                                 <Select
                                     value={this.state.protocol}
                                     className="dpn_value"
-                                    disabled={this.props.vpnStatus}
+                                    // disabled={this.props.vpnStatus}
                                     onChange={this.handleProtocolChange}
                                     inputProps={{
                                         name: "protocol"
@@ -323,7 +325,7 @@ class VpnList extends Component {
                                     <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : ""}
                                     <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
                                  </Select>
-                                </Tooltip>
+                                {/* </Tooltip> */}
                                 </FormControl>
                                 </div>
 
@@ -404,12 +406,12 @@ class VpnList extends Component {
                                 {lang[this.props.language].Protocol}
 
                          </InputLabel>
-                         <Tooltip title={this.props.vpnStatus ? lang[language].CannotChooseVPN : ''}>
+                         {/* <Tooltip title={this.props.vpnStatus ? lang[language].CannotChooseVPN : ''}> */}
                             <Select
                                 value={this.state.protocol}
                                 onChange={this.handleProtocolChange}
                                 className="dpn_value"
-                                disabled={this.props.vpnStatus}
+                                // disabled={this.props.vpnStatus}
                                 inputProps={{
                                     name: "protocol"
                                 }}
@@ -420,7 +422,7 @@ class VpnList extends Component {
                                     <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : ""}
                                     <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
                                  </Select>
-                            </Tooltip>
+                            {/* </Tooltip> */}
                         </FormControl>
                         </div>
                     }
@@ -468,7 +470,8 @@ function mapStateToProps(state) {
         isTM: state.setTendermint,
         networkType: state.networkChange,
         walletType: state.getWalletType,
-        wireguardData: state.getWireguardDetails
+        wireguardData: state.getWireguardDetails,
+        protocolType: state.protocolType,
     }
 }
 
@@ -477,6 +480,7 @@ function mapDispatchToActions(dispatch) {
         setListViewType,
         getVpnList,
         setVpnType,
+        setProtocolType,
         networkChange,
     }, dispatch)
 }

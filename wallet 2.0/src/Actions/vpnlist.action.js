@@ -65,6 +65,14 @@ export function setVpnType(vpnType) {
     }
 }
 
+export function setProtocolType(protocolType) {
+    localStorage.setItem('PROTOCOL_TYPE', protocolType); // remove once code finilised
+    return {
+        type: types.SET_PROTOCOL_TYPE,
+        payload: protocolType
+    }
+}
+
 export function setVpnStatus(value) {
     return {
         type: types.SET_VPN_STATUS,

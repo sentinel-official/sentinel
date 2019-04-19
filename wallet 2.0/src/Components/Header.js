@@ -28,7 +28,7 @@ import SimpleMenuTestnet from './SharedComponents/SimpleMenuTestnet';
 import SendIcon from '@material-ui/icons/Send';
 import lang from '../Constants/language';
 import { networkChange } from '../Actions/NetworkChange';
-import { setVpnType } from '../Actions/vpnlist.action';
+import { setVpnType, setProtocolType} from '../Actions/vpnlist.action';
 import { setAccountVerified } from '../Actions/node.action';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
@@ -118,6 +118,7 @@ class Header extends Component {
         this.props.logoutNode();
         this.props.setAccountVerified(false)
         this.props.setComponent('home');
+        this.props.setProtocolType('all');
     }
 
     testNetChange = () => event => {
@@ -247,6 +248,12 @@ class Header extends Component {
 
         }
     }
+    gotoHome = () => {
+        console.log("going hoem")
+        if(this.props.isTest){
+            this.props.setCurrentTab('vpnList');
+        }
+    }
 
     render() {
         let { balance, isTendermint, tmAccountDetails, tmAccountsList, language, isTest, walletAddress } = this.props;
@@ -286,7 +293,9 @@ class Header extends Component {
                     <Row style={headerStyles.firstRowStyle}>
                      <Col xs={1}>
                         <Tooltip title="Sentinel Network" placement="right">
-                            <img src={'../src/Images/logo.svg'} alt="sentinel network" style={headerStyles.logoStyle} />
+                            <img src={'../src/Images/logo.svg'} alt="Sentinel Network" 
+                             onClick = {() => this.gotoHome()} 
+                              style={headerStyles.logoStyle} />
                             </Tooltip>
                         </Col>
                        
@@ -595,6 +604,7 @@ function mapDispatchToActions(dispatch) {
         logoutNode,
         setEthLogged,
         setAccountVerified,
+        setProtocolType,
     }, dispatch)
 }
 

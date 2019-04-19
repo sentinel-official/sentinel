@@ -120,7 +120,6 @@ class SimpleDialog extends React.Component {
 
     render() {
         const { classes, language, ...other } = this.props;
-        console.log("simle demo", this.props)
         return (
             <Dialog
                 open={this.props.open}
@@ -322,17 +321,18 @@ class SimpleDialogDemo extends React.Component {
 
     handleListItemClick = (vpn_addr) => {
 
-        console.log("cd data", this.props.data)
-        this.props.setVpnType(this.props.data.node_type.toLocaleLowerCase())
+        let node_type=this.props.data.node_type.toLocaleLowerCase();
+
+        this.props.setVpnType(node_type)
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
             this.props.setCurrentTab('send');
         }
         else {
             this.setState({ isLoading: true });
-            if (this.props.vpnType === 'openvpn') {
+            if (node_type === 'openvpn') {
                 connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (err, platformErr, res) => {
-                    console.log("VPn..res..", err, platformErr, res);
+                    // console.log("VPn..res..", err, platformErr, res);
                     if (platformErr) {
                         this.setState({ open: false, isLoading: false, openvpnAlert: true })
                     }
@@ -379,7 +379,7 @@ class SimpleDialogDemo extends React.Component {
                 connectSocks(this.props.getAccount, vpn_addr, remote.process.platform, (err, res) => {
                     if (this.state.isSocksRes) {
                     } else {
-                        console.log("Socks..res..", err, res);
+                        // console.log("Socks..res..", err, res);
                         if (err) {
                             if ('account_addr' in err)
                                 this.setState({
@@ -404,10 +404,10 @@ class SimpleDialogDemo extends React.Component {
                                 }
                             }
                         } else if (res) {
-                            console.log("Socks...", res);
+                            // console.log("Socks...", res);
                             if (remote.process.platform === 'win32') {
                                 exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
-                                    console.log('browser opened');
+                                    // console.log('browser opened');
                                 });
                             }
                             this.setState({

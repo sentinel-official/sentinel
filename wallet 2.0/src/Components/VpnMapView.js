@@ -32,6 +32,8 @@ class VpnMapView extends Component {
                 node.price_per_GB = node.pricePerGB;
                 node.enc_method = node.encMethod;
                 node.ip = node.IP;
+                node.node_type = node.nodeType
+                node.rating = (node.ratingPoints/node.ratingCount).toFixed(2)
             })
         }
         let markers = [];
@@ -57,6 +59,8 @@ class VpnMapView extends Component {
                 node.price_per_GB = node.pricePerGB;
                 node.enc_method = node.encMethod;
                 node.ip = node.IP;
+                node.node_type = node.nodeType
+                node.rating = (node.ratingPoints/node.ratingCount).toFixed(2)
             })
         }
         let markers = [];

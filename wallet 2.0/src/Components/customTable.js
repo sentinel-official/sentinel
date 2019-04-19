@@ -274,7 +274,6 @@ class EnhancedTable extends React.Component {
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
-        console.log("cts data", this.props.data)
         const { classes } = this.props;
         counter = 0;
         let data = this.props.data.map(obj => {

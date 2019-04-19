@@ -431,6 +431,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
 
 
     },
@@ -869,6 +870,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
     },
 
 
@@ -1306,6 +1308,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
 
     },
     es: {
@@ -1740,6 +1743,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
     },
     ru: {
         "History": "История",
@@ -2173,6 +2177,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
     },
     
     per: {
@@ -2607,6 +2612,7 @@ let lang = {
     "Protocol" : "Protocol",
     "AllOption" : "All",
     "WireGuard" : "WireGuard",
+    "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
 
     },
 
@@ -3043,6 +3049,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
     },
 }
 

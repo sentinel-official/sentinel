@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
     CircularProgress, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel, IconButton, Snackbar,
-    InputLabel, MenuItem, Select
+    InputLabel, MenuItem, Select,Tooltip
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
@@ -275,6 +275,7 @@ class VpnList extends Component {
                                     <Select
                                         value={this.state.network}
                                         onChange={this.handleNetworkChange}
+                                        // disabled={this.props.vpnStatus}
                                         className="dpn_value"
                                         inputProps={{
                                             name: "network"
@@ -306,9 +307,11 @@ class VpnList extends Component {
                                 <InputLabel htmlFor="age-simple" >
                                 {lang[this.props.language].Protocol}
                                 </InputLabel>
+                                <Tooltip title={this.props.vpnStatus ? lang[language].CannotChooseVPN : ''}>
                                 <Select
                                     value={this.state.protocol}
                                     className="dpn_value"
+                                    disabled={this.props.vpnStatus}
                                     onChange={this.handleProtocolChange}
                                     inputProps={{
                                         name: "protocol"
@@ -320,7 +323,7 @@ class VpnList extends Component {
                                     <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : ""}
                                     <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
                                  </Select>
-
+                                </Tooltip>
                                 </FormControl>
                                 </div>
 
@@ -385,6 +388,7 @@ class VpnList extends Component {
                                     value={this.state.network}
                                     onChange={this.handleNetworkChange}
                                     className="dpn_value"
+                                    // disabled={this.props.vpnStatus}
                                     inputProps={{
                                         name: "network"
                                     }}
@@ -400,10 +404,12 @@ class VpnList extends Component {
                                 {lang[this.props.language].Protocol}
 
                          </InputLabel>
+                         <Tooltip title={this.props.vpnStatus ? lang[language].CannotChooseVPN : ''}>
                             <Select
                                 value={this.state.protocol}
                                 onChange={this.handleProtocolChange}
                                 className="dpn_value"
+                                disabled={this.props.vpnStatus}
                                 inputProps={{
                                     name: "protocol"
                                 }}
@@ -414,7 +420,7 @@ class VpnList extends Component {
                                     <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : ""}
                                     <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
                                  </Select>
-    
+                            </Tooltip>
                         </FormControl>
                         </div>
                     }
@@ -457,6 +463,7 @@ function mapStateToProps(state) {
         isTest: state.setTestNet,
         listView: state.setListViewType,
         vpnType: state.vpnType,
+        vpnStatus: state.setVpnStatus,
         vpnList: state.getVpnList,
         isTM: state.setTendermint,
         networkType: state.networkChange,

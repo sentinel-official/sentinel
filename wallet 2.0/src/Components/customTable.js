@@ -256,7 +256,9 @@ class EnhancedTable extends React.Component {
         let data = {
             'city': city, 'country': country, 'speed': speed,
             'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr, 
-            'node_type' : node_type, 'moniker': moniker, 'version':version, 'enc_method':enc_method,
+            'node_type' : node_type ? node_type : "openvpn", //Remove the conditional statement when we gets node_type in vpnlist API response 
+            'moniker': moniker ? moniker : 'None',
+            'version':version, 'enc_method':enc_method,
         }
         this.props.setCurrentVpn(data);
         this.setState({
@@ -272,6 +274,7 @@ class EnhancedTable extends React.Component {
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
+        console.log("cts data", this.props.data)
         const { classes } = this.props;
         counter = 0;
         let data = this.props.data.map(obj => {
@@ -302,8 +305,8 @@ class EnhancedTable extends React.Component {
                                             <TableRow
                                                 hover
                                                 onClick={event => this.showConnectDialog(event, n.location.city, n.location.country,
-                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr, n.nodeType,
-                                                    n.moniker, n.version, n.encMethod, 
+                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr, n.node_type,
+                                                    n.moniker, n.version, n.enc_method, 
                                                 )}
                                                 role="button"
                                                 key={n.id}

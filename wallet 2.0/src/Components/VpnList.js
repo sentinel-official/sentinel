@@ -93,8 +93,9 @@ class VpnList extends Component {
 
     componentDidMount = () => {
         if (this.props && this.props.listView === "map") {
-            this.setState({ listActive: false, mapActive: true });
+            this.setState({ listActive: false, mapActive: true , });
         }
+        this.setState({protocol : this.props.vpnType}) // to list the nodes based on the previous nodeType
     }
     componentWillReceiveProps(nextProps) {
         this.setState({ vpnType: nextProps.vpnType, walletType: nextProps.walletType });
@@ -165,7 +166,7 @@ class VpnList extends Component {
     // };
 
     handleRadioChange = (event) => {
-        this.props.setVpnType(event.target.value);
+        this.props.setVpnType(event.target.value.toLocaleLowerCase());
         // console.log("wireguard listing ", event.target.value);
         // console.log("it is me " ,getWireguardDetails)
 
@@ -180,7 +181,7 @@ class VpnList extends Component {
    
     handleProtocolChange = event => {
         console.log("event", event.target)
-        this.props.setVpnType(event.target.value);
+        this.props.setVpnType(event.target.value.toLocaleLowerCase());
         this.setState({ listLoading: true , [event.target.name]: event.target.value});
         this.props.getVpnList(event.target.value, this.props.isTM)
             .then((res) => {

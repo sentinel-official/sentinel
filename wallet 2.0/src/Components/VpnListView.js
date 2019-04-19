@@ -25,27 +25,44 @@ class VpnListView extends Component {
                 node.price_per_GB = node.pricePerGB;
                 node.enc_method = node.encMethod;
                 node.ip = node.IP;
+                node.node_type = node.nodeType
+                node.rating = (node.ratingPoints/node.ratingCount).toFixed(2)
             })
         }
+        console.log("searching list", list);
         list = list.filter(function (item) {
             return (item.location.city.toLowerCase().search(
                 nextProps.query.toLowerCase()
             ) !== -1) || (item.location.country.toLowerCase().search(
                 nextProps.query.toLowerCase()
-            ) !== -1) ||
-            (item.moniker.toLowerCase().search(
+            ) !== -1)
+            
+            ||
+            (item.moniker ? ( item.moniker.toLowerCase().search(
                 nextProps.query.toLowerCase()
             ) !== -1)
+            : '' )
+            ||
+            (item.net_speed.download ? ( (item.net_speed.download/ (1024 * 1024).toFixed(3)).toString().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            : '' )
             ||
             (item.version.toLowerCase().search(
                 nextProps.query.toLowerCase()
             ) !== -1)
             ||
-            (item.nodeType.toLowerCase().search(
+            (item.node_type ? ( item.node_type.toLowerCase().search(
                 nextProps.query.toLowerCase()
             ) !== -1)
+            : '' )
             ||
-            (item.pricePerGB.toString().search(
+            (item.rating ? ( item.rating.toString().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            : '' )
+            ||
+            (item.price_per_GB.toString().search(
                 nextProps.query
             ) !== -1)
             
@@ -56,6 +73,7 @@ class VpnListView extends Component {
 
     componentDidMount() {
         let list = this.props.availableVpns;
+
         if (this.props.isTM) {
             list.map((node) => {
                 node.net_speed = node.netSpeed;
@@ -63,6 +81,7 @@ class VpnListView extends Component {
                 node.price_per_GB = node.pricePerGB;
                 node.enc_method = node.encMethod;
                 node.ip = node.IP;
+                node.node_type = node.nodeType;
             })
         }
         this.setState({ updatedList: list });

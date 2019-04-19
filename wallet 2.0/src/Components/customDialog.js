@@ -15,7 +15,7 @@ import ConnectIcon from '@material-ui/icons/SwapVerticalCircle';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { connectSocks } from '../Actions/connectSOCKS';
-import { setVpnStatus, payVPNTM, setActiveVpn } from '../Actions/vpnlist.action';
+import { setVpnStatus, payVPNTM, setActiveVpn, setVpnType } from '../Actions/vpnlist.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
@@ -120,7 +120,7 @@ class SimpleDialog extends React.Component {
 
     render() {
         const { classes, language, ...other } = this.props;
-
+        console.log("simle demo", this.props)
         return (
             <Dialog
                 open={this.props.open}
@@ -167,22 +167,27 @@ class SimpleDialog extends React.Component {
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Protocol}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.node_type ? this.props.data.node_type  : 'None'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.node_type ? this.props.data.node_type : 'None'}</label> </Col>
                     </Row>
 
+                    {
+                        this.props.isTm ? 
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Moniker}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
                         <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>
-                        <Tooltip title={this.props.data.moniker ? this.props.data.moniker  : 'None'}>
-                        <div className="dialog_moniker_value">{this.props.data.moniker ? this.props.data.moniker  : 'None'}</div>
-                        </Tooltip></label> </Col>
+                            <Tooltip title={this.props.data.moniker ? this.props.data.moniker : 'None'}>
+                                <div className="dialog_moniker_value">{this.props.data.moniker ? this.props.data.moniker : 'None'}</div>
+                            </Tooltip></label> </Col>
                     </Row>
+                    :
+                    ''
+                    }
 
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Version}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.version ? this.props.data.version  : 'None'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.version ? this.props.data.version : 'None'}</label> </Col>
                     </Row>
 
                     <List style={{ paddingBottom: 5 }}>
@@ -193,7 +198,7 @@ class SimpleDialog extends React.Component {
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
                                 className={classes.enableButton}
                                 style={createAccountStyle.buttonStyle}
-                                >
+                            >
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> :
                                     null
@@ -316,6 +321,9 @@ class SimpleDialogDemo extends React.Component {
     }
 
     handleListItemClick = (vpn_addr) => {
+
+        console.log("cd data", this.props.data)
+        this.props.setVpnType(this.props.data.node_type.toLocaleLowerCase())
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
             this.props.setCurrentTab('send');
@@ -429,7 +437,6 @@ class SimpleDialogDemo extends React.Component {
     };
 
     render() {
-        console.log("c data", this.props.data)
         return (
             <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }} >
                 {!this.state.isPending ?
@@ -443,6 +450,7 @@ class SimpleDialogDemo extends React.Component {
                         execIT={this.execIT}
                         language={this.props.language}
                         vpnStatus={this.props.vpnStatus}
+                        isTm = {this.props.isTm}
                     />
                     :
                     <AlertDialog
@@ -474,7 +482,7 @@ function mapDispatchToProps(dispatch) {
 
     return bindActionCreators({
         setCurrentTab, initPaymentAction, getVPNUsageData,
-        setVpnStatus, connectVPN, connectSocks, payVPNTM, setActiveVpn, socksVpnUsage
+        setVpnStatus, connectVPN, connectSocks, payVPNTM, setActiveVpn, socksVpnUsage, setVpnType
     }, dispatch)
 }
 

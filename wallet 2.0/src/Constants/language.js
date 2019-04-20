@@ -431,7 +431,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
-        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
+       
 
 
     },
@@ -870,7 +870,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
-        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
+       
     },
 
 
@@ -1308,7 +1308,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
-        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
+       
 
     },
     es: {
@@ -1743,7 +1743,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
-        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
+       
     },
     ru: {
         "History": "История",
@@ -2177,7 +2177,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
-        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
+       
     },
     
     per: {
@@ -2604,15 +2604,15 @@ let lang = {
 
     "NodeManagement" : "مدیریت گره",
     "CannotClickUser" : 'برای دسترسی به منو (یا) سوئیچ شبکه، VPN را قطع کنید',
-
-    "Includes5" : "Linux supports WireGuard on STT v1.1",
-    "Includes6" : "Moniker for dVPN Nodes on STT v1.1",
-    "Moniker" : 'dVPN Moniker',
-    "NodeNetworkLabel" : "Network",
-    "Protocol" : "Protocol",
-    "AllOption" : "All",
+    "Includes5" : "لینوکس WireGuard را در STT v1.1 ساپورت میکند",
+    "Includes6" : " Moniker برای گره های وی.پی.ان در STT v1.1" ,
+    "Moniker" : 'VPN Moniker',
+    "NodeNetworkLabel" : "شبکه",
+    "Protocol" : "پروتوکل",
+    "AllOption" : "همه",
     "WireGuard" : "WireGuard",
-    "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
+
+   
 
     },
 
@@ -3049,7 +3049,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
-        "CannotChooseVPN" : "Cannot change dVPN, when dVPN connected",
+       
     },
 }
 

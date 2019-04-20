@@ -76,7 +76,7 @@ class VpnList extends Component {
     getGatewayAddr = async (authCode) => {
         this.setState({ isLoading: true });
         getGatewayUrl(authCode, (err, data, url) => {
-            console.log("Pri...", err, data, url);
+            // console.log("Pri...", err, data, url);
             if (err) {
                 this.setState({ isPrivate: false,network :'public', openPopup: false, openSnack: true, snackMessage: lang[this.props.language].ProblemEnablingPrivateNet });
                 setTimeout(() => { this.setState({ isLoading: false, }) }, 1500);
@@ -181,7 +181,6 @@ class VpnList extends Component {
 
    
     handleProtocolChange = event => {
-        console.log("event", event.target)
         // this.props.setVpnType(event.target.value.toLocaleLowerCase());
         this.props.setProtocolType(event.target.value.toLocaleLowerCase());
         this.setState({ listLoading: true , [event.target.name]: event.target.value});

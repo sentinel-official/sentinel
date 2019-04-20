@@ -90,10 +90,8 @@ if __name__ == '__main__':
                 node.update_info('config', {
                     'account_address': str(resp['address'])
                 })
-                error = get_free_coins()
-                if error is not None:
-                    print(error)
-                    exit(3)
+
+    _ = get_free_coins()
 
     print('Updating location and Internet speed information...')
     node.update_info('location')

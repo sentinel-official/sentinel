@@ -37,6 +37,7 @@ class RegisterNode(object):
         lite = req.body['lite'] if 'lite' in req.body else False
         enc_method = str(req.body[
                              'enc_method']) if 'enc_method' in req.body else 'aes-256-cfb' if vpn_type == 'socks5' else 'AES-128-CBC'
+        moniker = str(req.body['moniker']) if 'moniker' in req.body else ''
         description = str(req.body['description']) if 'description' in req.body else ''
         cpus = int(req.body['cpus']) if 'cpus' in req.body else None
         memory = int(req.body['memory']) if 'memory' in req.body else None
@@ -56,6 +57,7 @@ class RegisterNode(object):
                 'location': location,
                 'net_speed': net_speed,
                 'enc_method': enc_method,
+                'moniker': moniker,
                 'description': description,
                 'version': version,
                 'lite': lite,
@@ -75,6 +77,7 @@ class RegisterNode(object):
                     'location': location,
                     'net_speed': net_speed,
                     'enc_method': enc_method,
+                    'moniker': moniker,
                     'description': description,
                     'version': version,
                     'lite': lite,

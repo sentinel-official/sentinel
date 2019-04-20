@@ -53,6 +53,7 @@ import co.sentinel.sentinellite.ui.fragment.VpnSelectFragment;
 import co.sentinel.sentinellite.util.AnalyticsHelper;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
+import co.sentinel.sentinellite.util.DoneOnEditorActionListener;
 import co.sentinel.sentinellite.util.Logger;
 import de.blinkt.openvpn.LaunchVPN;
 import de.blinkt.openvpn.VpnProfile;
@@ -102,6 +103,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     private VpnListSearchListener mVpnListSearchListener;
 
     private boolean toFilterByBookmark;
+    private boolean toShowOptionsMenu;
     private String mCurrentSortType = AppConstants.SORT_BY_DEFAULT;
     private StringBuilder mCurrentSearchString = new StringBuilder();
     private TextWatcher mSearchWatcher = new TextWatcher() {
@@ -284,6 +286,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
      */
     private void initListeners() {
         mEtSearch.addTextChangedListener(mSearchWatcher);
+        mEtSearch.setOnEditorActionListener(new DoneOnEditorActionListener());
         mIbCloseSearch.setOnClickListener(this);
         mIbClearSearch.setOnClickListener(this);
     }
@@ -454,15 +457,9 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
      */
     private void loadFragment(Fragment iFragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
-        if (mMenuSearch != null && mMenuSort != null) {
-            if (iFragment instanceof VpnSelectFragment) {
-                mMenuSearch.setVisible(true);
-                mMenuSort.setVisible(true);
-            } else {
-                mMenuSearch.setVisible(false);
-                mMenuSort.setVisible(false);
-            }
-        }
+        toShowOptionsMenu = iFragment instanceof VpnSelectFragment;
+        invalidateOptionsMenu();
+        closeSearch();
     }
 
     /*
@@ -477,6 +474,8 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
         getMenuInflater().inflate(R.menu.menu_dashboard, menu);
         mMenuSearch = menu.findItem(R.id.action_search);
         mMenuSort = menu.findItem(R.id.action_sort);
+        mMenuSearch.setVisible(toShowOptionsMenu);
+        mMenuSort.setVisible(toShowOptionsMenu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -583,27 +582,22 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
 
             case AppConstants.REQ_LANGUAGE:
                 if (resultCode == RESULT_OK)
-                    refreshMenuTitles();
-                loadVpnFragment(null);
+                    reloadApp();
+                else
+                    loadVpnFragment(null);
                 break;
         }
     }
 
     /*
-     * Refresh the navigation menu titles after a new language is set
+     * Reload the app after a new language is set
      */
-    private void refreshMenuTitles() {
-        Menu aMenu = mNavMenuView.getMenu();
-        MenuItem aMenuVpnUsage = aMenu.findItem(R.id.nav_vpn_usage);
-        aMenuVpnUsage.setTitle(R.string.vpn_usage);
-        MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
-        aMenuLanguage.setTitle(R.string.language);
-        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_share_app);
-        aMenuReferral.setTitle(R.string.share_app);
-        MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
-        aMenuSocialLinks.setTitle(R.string.faq);
+    private void reloadApp() {
+        Intent aIntent = new Intent(this, DashboardActivity.class);
+        aIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
+        startActivity(aIntent);
     }
-
 
     @Override
     public void onFragmentLoaded(String iTitle) {
@@ -643,6 +637,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     @Override
     public void onLoadNextFragment(Fragment iNextFragment) {
         loadFragment(iNextFragment);
+        hideKeyboard();
     }
 
     @Override
@@ -652,6 +647,7 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
                 startActivityForResult(iIntent, iReqCode);
             else
                 startActivity(iIntent);
+        hideKeyboard();
     }
 
     @Override
@@ -774,11 +770,11 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
     }
 
     private void closeSearch() {
+        hideKeyboard();
         mLlSearch.setVisibility(View.GONE);
         mEtSearch.getText().clear();
         mEtSearch.clearFocus();
         mCurrentSearchString.delete(0, mCurrentSearchString.length());
-        hideKeyboard();
     }
 
     private void showKeyboard(View iView) {
@@ -799,4 +795,20 @@ public class DashboardActivity extends AppCompatActivity implements OnGenericFra
             aInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+//    public boolean overrideDispatchEvent() {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        if (getCurrentFocus() != null && ev.getAction() == MotionEvent.ACTION_UP && getCurrentFocus() instanceof AppCompatEditText) {
+//            if (!overrideDispatchEvent()) {
+//                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+//            }
+//        }
+//        return super.dispatchTouchEvent(ev);
+//    }
+
 }

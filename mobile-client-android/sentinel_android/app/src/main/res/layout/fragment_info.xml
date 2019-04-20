@@ -10,8 +10,6 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/margin_8"
         android:layout_marginEnd="@dimen/margin_16"
-        android:layout_marginLeft="@dimen/margin_16"
-        android:layout_marginRight="@dimen/margin_16"
         android:layout_marginStart="@dimen/margin_16"
         app:cardBackgroundColor="@color/colorCardInfoBackground"
         app:cardCornerRadius="@dimen/margin_4"
@@ -95,8 +93,6 @@
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/margin_16"
                     android:paddingEnd="@dimen/margin_16"
-                    android:paddingLeft="@dimen/margin_16"
-                    android:paddingRight="@dimen/margin_16"
                     android:paddingStart="@dimen/margin_16">
 
                     <TextView

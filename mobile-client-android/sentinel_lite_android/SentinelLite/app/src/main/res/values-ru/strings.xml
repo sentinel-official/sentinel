@@ -116,8 +116,6 @@
     <!-- Translatable strings -->
     <string name="app_sub_name">Защищённая децентрализованная VPN-платформа</string>
     <string name="action_next">Дальше</string>
-    <string name="action_done">Done</string>
-    <string name="action_apply">Apply</string>
     <string name="disconnect">Отключиться</string>
     <string name="view_vpns">Список VPN</string>
     <string name="view_vpn_list">Список VPN</string>
@@ -220,22 +218,24 @@
     <string name="read_more">Узнать больше</string>
     <string name="action_confirm">Подтвердить</string>
     <string name="action_enter_address">Введите адрес</string>
-    <string name="filter_by_title">Filters</string>
-    <string name="filter_by_bookmark">Show favourites only</string>
-    <string name="sort_by_title">Sort By</string>
-    <string name="sort_by_default">Default</string>
-    <string name="sort_by_country_a">Country</string>
-    <string name="sort_by_country_d">Country ↓</string>
-    <string name="sort_by_latency_i">Latency ↑</string>
-    <string name="sort_by_latency_d">Latency</string>
-    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
-    <string name="sort_by_bandwidth_d">Bandwidth</string>
-    <string name="sort_by_price_i">Price ↑</string>
-    <string name="sort_by_price_d">Price ↓</string>
-    <string name="sort_by_rating_i">Rating ↑</string>
-    <string name="sort_by_rating_d">Rating</string>
-    <string name="hint_search_vpn_list">Search by country</string>
-    <string name="alert_bookmark_added">VPN added to favourites</string>
-    <string name="alert_bookmark_removed">VPN removed from favourites</string>
+    <string name="filter_by_title">Фильтр</string>
+    <string name="filter_by_bookmark">Показывать только избранные</string>
+    <string name="sort_by_title">Сортировать по</string>
+    <string name="sort_by_default">По умолчанию</string>
+    <string name="sort_by_country_a">Страна</string>
+    <string name="sort_by_country_d">Страна ↓</string>
+    <string name="sort_by_latency_i">Задержка ↑</string>
+    <string name="sort_by_latency_d">Задержка</string>
+    <string name="sort_by_bandwidth_i">Трафик ↑</string>
+    <string name="sort_by_bandwidth_d">Трафик</string>
+    <string name="sort_by_price_i">Цена ↑</string>
+    <string name="sort_by_price_d">Цена ↓</string>
+    <string name="sort_by_rating_i">Рейтинг ↑</string>
+    <string name="sort_by_rating_d">Рейтинг</string>
+    <string name="hint_search_vpn_list">Поиск по стране</string>
+    <string name="alert_bookmark_added">Избранные VPN</string>
+    <string name="alert_bookmark_removed">Удаленные VPN</string>
+    <string name="action_done">Готово</string>
+    <string name="action_apply">Применить</string>
 
 </resources>

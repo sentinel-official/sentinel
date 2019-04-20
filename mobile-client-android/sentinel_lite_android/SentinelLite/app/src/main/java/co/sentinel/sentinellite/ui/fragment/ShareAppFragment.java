@@ -24,7 +24,6 @@ import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.di.InjectorModule;
 import co.sentinel.sentinellite.ui.custom.OnGenericFragmentInteractionListener;
 import co.sentinel.sentinellite.util.AppConstants;
-import co.sentinel.sentinellite.util.BranchUrlHelper;
 import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.ShareAppViewModel;
 
@@ -40,7 +39,7 @@ public class ShareAppFragment extends Fragment implements View.OnClickListener, 
     private OnGenericFragmentInteractionListener mListener;
 
     private SwipeRefreshLayout mSrReload;
-    private TextView mTvReferralLink;
+    private TextView mTvInvitationLink;
     private ImageButton mIbCopyReferralLink;
     private Button mBtnShareAddress;
 
@@ -85,7 +84,7 @@ public class ShareAppFragment extends Fragment implements View.OnClickListener, 
 
     private void initView(View iView) {
         mSrReload = iView.findViewById(R.id.sr_reload);
-        mTvReferralLink = iView.findViewById(R.id.tv_invitation_link);
+        mTvInvitationLink = iView.findViewById(R.id.tv_invitation_link);
         mIbCopyReferralLink = iView.findViewById(R.id.ib_copy_invitation_link);
         mBtnShareAddress = iView.findViewById(R.id.btn_invite_friend);
         // Set listeners
@@ -109,19 +108,17 @@ public class ShareAppFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_invite_friend:
-                shareLink(getString(R.string.share_string, mViewModel.getReferralId(), mTvReferralLink.getText().toString().trim()));
+                shareLink(getString(R.string.share_string, mViewModel.getReferralId(), mTvInvitationLink.getText().toString().trim()));
                 break;
 
             case R.id.ib_copy_invitation_link:
-                copyToClipboard(mTvReferralLink.getText().toString().trim(), R.string.link_copied);
+                copyToClipboard(mTvInvitationLink.getText().toString().trim(), R.string.link_copied);
                 break;
         }
     }
 
     private void generateLinkAndShare() {
-        new BranchUrlHelper(getActivity()).createLink(mViewModel.getReferralId(), iUrl -> {
-            mTvReferralLink.setText(iUrl);
-        });
+        mTvInvitationLink.setText(getString(R.string.share_url));
     }
 
     private void shareLink(String iShareString) {

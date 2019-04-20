@@ -23,6 +23,7 @@
     <string name="medium_url" translatable="false">https://medium.com/@Sentinel</string>
     <string name="twitter_url" translatable="false">https://twitter.com/sentinel_co</string>
     <string name="website_url" translatable="false">https://sentinel.co</string>
+    <string name="share_url" translatable="false">https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
 
 
     <!-- ics_openVPN strings -->

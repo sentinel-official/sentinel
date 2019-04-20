@@ -26,7 +26,6 @@ import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
-import sentinelgroup.io.sentinel.util.BranchUrlHelper;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.BonusViewModelFactory;
 import sentinelgroup.io.sentinel.viewmodel.ShareAppViewModel;
@@ -138,9 +137,7 @@ public class ShareAppFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void generateLinkAndShare() {
-        new BranchUrlHelper(getActivity()).createLink(mViewModel.getReferralId(), iUrl -> {
-            mTvInvitationLink.setText(iUrl);
-        });
+        mTvInvitationLink.setText(getString(R.string.share_url));
     }
 
     private void shareLink(String iShareString) {

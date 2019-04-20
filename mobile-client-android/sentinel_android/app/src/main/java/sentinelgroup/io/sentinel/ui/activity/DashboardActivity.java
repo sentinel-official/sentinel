@@ -64,6 +64,7 @@ import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
 import sentinelgroup.io.sentinel.util.AnalyticsHelper;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.DoneOnEditorActionListener;
 import sentinelgroup.io.sentinel.util.Logger;
 
 import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
@@ -301,6 +302,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mIbSearch.setOnClickListener(this);
         mIbSort.setOnClickListener(this);
         mEtSearch.addTextChangedListener(mSearchWatcher);
+        mEtSearch.setOnEditorActionListener(new DoneOnEditorActionListener());
         mIbCloseSearch.setOnClickListener(this);
         mIbClearSearch.setOnClickListener(this);
         mNavMenuView.setItemIconTintList(null);
@@ -487,6 +489,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             mIbSort.setVisibility(View.GONE);
             mLlSearch.setVisibility(View.GONE);
         }
+        closeSearch();
     }
 
     /*
@@ -675,7 +678,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case AppConstants.REQ_LANGUAGE:
                 if (resultCode == RESULT_OK) {
-                    refreshMenuTitles();
+                    reloadApp();
+                } else {
                     if (!(getCurrentFragment() instanceof WalletFragment))
                         loadVpnSelectFragment(null, "onActivityResult REQ_LANGUAGE");
                     else
@@ -686,24 +690,13 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     /*
-     * Refresh the navigation menu titles after a new language is set
+     * Reload the app after a new language is set
      */
-    private void refreshMenuTitles() {
-        Menu aMenu = mNavMenuView.getMenu();
-        MenuItem aMenuTxHistory = aMenu.findItem(R.id.nav_tx_history);
-        aMenuTxHistory.setTitle(R.string.transaction_history);
-        MenuItem aMenuVpnHistory = aMenu.findItem(R.id.nav_vpn_history);
-        aMenuVpnHistory.setTitle(R.string.vpn_history);
-        MenuItem aMenuResetPin = aMenu.findItem(R.id.nav_reset_pin);
-        aMenuResetPin.setTitle(R.string.reset_pin);
-        MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
-        aMenuLanguage.setTitle(R.string.language);
-        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_share_app);
-        aMenuReferral.setTitle(R.string.share_app);
-        MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
-        aMenuSocialLinks.setTitle(R.string.faq);
-        MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);
-        aMenuLogout.setTitle(R.string.logout);
+    private void reloadApp() {
+        Intent aIntent = new Intent(this, DashboardActivity.class);
+        aIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
+        startActivity(aIntent);
     }
 
     /*
@@ -898,11 +891,11 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     private void closeSearch() {
+        hideKeyboard();
         mLlSearch.setVisibility(View.GONE);
         mEtSearch.getText().clear();
         mEtSearch.clearFocus();
         mCurrentSearchString.delete(0, mCurrentSearchString.length());
-        hideKeyboard();
     }
 
     private void showKeyboard(View iView) {

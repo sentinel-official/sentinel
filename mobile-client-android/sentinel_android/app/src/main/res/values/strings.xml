@@ -20,6 +20,12 @@
         <item>ru</item>
     </string-array>
 
+    <string name="telegram_url" translatable="false">https://t.me/sentinel_co</string>
+    <string name="medium_url" translatable="false">https://medium.com/@Sentinel</string>
+    <string name="twitter_url" translatable="false">https://twitter.com/sentinel_co</string>
+    <string name="website_url" translatable="false">https://sentinel.co</string>
+    <string name="share_url" translatable="false">https://github.com/sentinel-official/sentinel/tree/master/mobile-client-android/binaries</string>
+
     <!-- ics_openVPN strings -->
     <string name="fetching_server_details">Establishing dVPN connection…</string>
     <string name="channel_name_background">Connection Statistics</string>
@@ -288,10 +294,6 @@
     <string name="receive_sent">Receive SENT</string>
     <string name="tx_details">Transaction Details</string>
     <string name="view_on_etherscan">View on Etherscan</string>
-    <string name="telegram_url" translatable="false">https://t.me/sentinel_co</string>
-    <string name="medium_url" translatable="false">https://medium.com/@Sentinel</string>
-    <string name="twitter_url" translatable="false">https://twitter.com/sentinel_co</string>
-    <string name="website_url" translatable="false">https://sentinel.co</string>
     <string name="link_coming_soon">This data will be added soon.</string>
     <string name="faq">FAQ</string>
     <string name="check_for_updates">Check for Updates</string>

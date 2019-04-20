@@ -63,8 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_8"
             android:gravity="center"
-            android:paddingLeft="@dimen/margin_8"
-            android:paddingRight="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
+            android:paddingEnd="@dimen/margin_8"
             android:paddingTop="@dimen/margin_8" />
 
         <TextView
@@ -76,8 +76,8 @@
             android:layout_marginTop="@dimen/margin_8"
             android:gravity="center"
             android:paddingBottom="@dimen/margin_8"
-            android:paddingLeft="@dimen/margin_8"
-            android:paddingRight="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
+            android:paddingEnd="@dimen/margin_8"
             android:paddingTop="@dimen/margin_4" />
 
     </LinearLayout>
@@ -88,9 +88,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:paddingStart="@dimen/margin_16"
-        android:paddingLeft="@dimen/margin_16"
         android:paddingEnd="@dimen/margin_8"
-        android:paddingRight="@dimen/margin_8"
         android:paddingBottom="@dimen/margin_16"
         android:src="@drawable/ic_bookmark_inactive"
         app:layout_constraintEnd_toEndOf="@+id/ll_location"
@@ -100,7 +98,6 @@
         android:id="@+id/fl_download_speed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginStart="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_16"
         app:layout_constraintEnd_toStartOf="@+id/fl_upload_speed"
@@ -114,7 +111,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableLeft="@drawable/ic_download_speed"
             android:drawablePadding="@dimen/margin_8"
             android:drawableStart="@drawable/ic_download_speed"
             android:gravity="center_horizontal|bottom" />
@@ -162,7 +158,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableLeft="@drawable/ic_upload_speed"
             android:drawablePadding="@dimen/margin_8"
             android:drawableStart="@drawable/ic_upload_speed" />
     </FrameLayout>
@@ -197,7 +192,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/margin_8"
-        android:layout_marginRight="@dimen/margin_8"
         app:layout_constraintBottom_toBottomOf="@+id/fl_upload_speed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -211,7 +205,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableLeft="@drawable/ic_data_usage"
             android:drawablePadding="@dimen/margin_8"
             android:drawableStart="@drawable/ic_data_usage" />
     </FrameLayout>
@@ -305,7 +298,6 @@
         style="@style/CustomTextAppearance.Text12.Gray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginStart="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_16"
         android:drawablePadding="@dimen/margin_8"
@@ -390,7 +382,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/margin_8"
-        android:layout_marginRight="@dimen/margin_8"
         android:drawablePadding="@dimen/margin_8"
         android:drawableTop="@drawable/ic_duration"
         android:gravity="center_horizontal|bottom"

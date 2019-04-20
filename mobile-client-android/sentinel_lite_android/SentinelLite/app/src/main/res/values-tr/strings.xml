@@ -116,8 +116,6 @@
     <!-- Translatable strings -->
     <string name="app_sub_name">Merkezi olmayan VPN\'yi güvenli hale getirin</string>
     <string name="action_next">İleri</string>
-    <string name="action_done">Done</string>
-    <string name="action_apply">Apply</string>
     <string name="disconnect">Bağlantı kesiliyor</string>
     <string name="view_vpns">VPN\'leri görüntüle</string>
     <string name="view_vpn_list">VPN Nodları</string>
@@ -220,23 +218,25 @@
     <string name="action_rate">Değerlendir</string>
     <string name="action_confirm">Kabul et</string>
     <string name="action_enter_address">Adres Giriniz</string>
-    <string name="filter_by_title">Filters</string>
-    <string name="filter_by_bookmark">Show favourites only</string>
-    <string name="sort_by_title">Sort By</string>
-    <string name="sort_by_default">Default</string>
-    <string name="sort_by_country_a">Country</string>
-    <string name="sort_by_country_d">Country ↓</string>
-    <string name="sort_by_latency_i">Latency ↑</string>
-    <string name="sort_by_latency_d">Latency</string>
-    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
-    <string name="sort_by_bandwidth_d">Bandwidth</string>
-    <string name="sort_by_price_i">Price ↑</string>
-    <string name="sort_by_price_d">Price ↓</string>
-    <string name="sort_by_rating_i">Rating ↑</string>
-    <string name="sort_by_rating_d">Rating</string>
-    <string name="hint_search_vpn_list">Search by country</string>
-    <string name="alert_bookmark_added">VPN added to favourites</string>
-    <string name="alert_bookmark_removed">VPN removed from favourites</string>
+    <string name="filter_by_title">Filtreler</string>
+    <string name="filter_by_bookmark">Yalnızca favorileri göster</string>
+    <string name="sort_by_title">Sırala</string>
+    <string name="sort_by_default">varsayılan</string>
+    <string name="sort_by_country_a">Ülke</string>
+    <string name="sort_by_country_d">Ülke ↓</string>
+    <string name="sort_by_latency_i">Gecikme ↑</string>
+    <string name="sort_by_latency_d">Gecikme</string>
+    <string name="sort_by_bandwidth_i">Bant genişliği ↑</string>
+    <string name="sort_by_bandwidth_d">Bant genişliği</string>
+    <string name="sort_by_price_i">Ücret ↑</string>
+    <string name="sort_by_price_d">Ücret ↓</string>
+    <string name="sort_by_rating_i">Dercelendirme ↑</string>
+    <string name="sort_by_rating_d">Dercelendirme</string>
+    <string name="hint_search_vpn_list">Ülkeye göre ara</string>
+    <string name="alert_bookmark_added">VPN favorilere eklendi</string>
+    <string name="alert_bookmark_removed">VPN favorilerden çıkarılıyor</string>
+    <string name="action_done">Tamam</string>
+    <string name="action_apply">Uygula</string>
 
 
 </resources>

@@ -26,15 +26,17 @@ class Node(object):
             'price_per_gb': None,
             'token': None,
             'enc_method': None,
+            'moniker': '',
             'description': '',
         }
-        self.version = '0.0.6-alpha'
+        self.version = '0.0.8-alpha'
 
         if config is not None:
             self.config['account_addr'] = str(config['account_addr']).lower() if 'account_addr' in config else None
             self.config['price_per_gb'] = float(config['price_per_gb']) if 'price_per_gb' in config else None
             self.config['token'] = str(config['token']) if 'token' in config else None
             self.config['enc_method'] = str(config['enc_method']) if 'enc_method' in config else None
+            self.config['moniker'] = str(config['moniker']) if 'moniker' in config else ''
             self.config['description'] = str(config['description']) if 'description' in config else ''
 
         self.update_nodeinfo({'type': 'location'})
@@ -52,6 +54,7 @@ class Node(object):
                 'price_per_gb': self.config['price_per_gb'],
                 'token': self.config['token'],
                 'enc_method': self.config['enc_method'],
+                'moniker': self.config['moniker'],
                 'description': self.config['description']
             }
         }, upsert=True)
@@ -88,6 +91,8 @@ class Node(object):
                 self.config['token'] = info['token']
             if ('enc_method' in info) and (info['enc_method' is not None]):
                 self.config['enc_method'] = info['enc_method']
+            if ('moniker' in info) and (info['moniker' is not None]):
+                self.config['moniker'] = info['moniker']
             if ('description' in info) and (info['description' is not None]):
                 self.config['description'] = info['description']
             self.save_config_data()

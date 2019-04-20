@@ -39,6 +39,10 @@ let nodeSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  moniker: {
+    type: String,
+    default: '',
+  },
   location: {
     latitude: {
       type: Number,
@@ -75,6 +79,16 @@ let nodeSchema = new mongoose.Schema({
   version: {
     type: String,
     required: true
+  },
+  ratingPoints: {
+    type: Number,
+    required: true,
+    default: 5,
+  },
+  ratingCount: {
+    type: Number,
+    required: true,
+    default: 1,
   },
   addedOn: {
     type: Date,

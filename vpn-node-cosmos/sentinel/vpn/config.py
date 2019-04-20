@@ -5,8 +5,6 @@ proto udp\n\
 remote 0.0.0.0 {}\n\
 resolv-retry infinite\n\
 nobind\n\
-user nobody\n\
-group nogroup\n\
 persist-key\n\
 persist-tun\n\
 remote-cert-tls server\n\
@@ -38,8 +36,6 @@ key-direction 0\n\
 auth SHA256\n\
 cipher {}\n\
 comp-lzo\n\
-user nobody\n\
-group nogroup\n\
 persist-key\n\
 persist-tun\n\
 status /etc/openvpn/openvpn-status.log 2\n\

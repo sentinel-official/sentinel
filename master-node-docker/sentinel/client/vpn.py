@@ -29,10 +29,12 @@ def get_vpns_list(vpn_type):
         'rating': 1,
         'net_speed.download': 1,
         'enc_method': 1,
+        'moniker': 1,
         'description': 1,
         'version': 1,
         'load': 1,
-        'active_connections': 1
+        'active_connections': 1,
+        'vpn_type': 1
     }).sort([
         ('version', -1),
         ('rating', -1),

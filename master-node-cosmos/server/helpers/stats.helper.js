@@ -2,6 +2,7 @@ let NodeModel = require('../models/node.model');
 let SessionModel = require('../models/session.model');
 let StatsModel = require('../models/stats.model');
 
+
 let getActiveNodesCount = (cb) => {
   NodeModel.aggregate([{
     $match: {
@@ -20,7 +21,8 @@ let getActiveNodesCount = (cb) => {
     }
   }], (error, result) => {
     if (error) cb(error);
-    else cb(null, result);
+    else if (result && result.length) cb(null, result[0]);
+    else cb(null, null);
   });
 };
 
@@ -50,7 +52,8 @@ let getAverageActiveNodesCount = (startDate, endDate, cb) => {
     }
   }], (error, result) => {
     if (error) cb(error);
-    else cb(null, result);
+    else if (result && result.length) cb(null, result[0]);
+    else cb(null, null);
   });
 };
 
@@ -107,7 +110,8 @@ let getActiveSessionsCount = (cb) => {
     }
   }], (error, result) => {
     if (error) cb(error);
-    else cb(null, result);
+    else if (result && result.length) cb(null, result[0]);
+    else cb(null, null);
   });
 };
 
@@ -150,12 +154,13 @@ let getAverageSessionsCount = (startDate, endDate, cb) => {
     }
   }], (error, result) => {
     if (error) cb(error);
-    else cb(null, result);
+    else if (result && result.length) cb(null, result[0]);
+    else cb(null, null);
   });
 };
 
 let getSessionsTimeline = (startDate, endDate, cb) => {
-  StatsModel.aggregate([{
+  SessionModel.aggregate([{
     $match: {
       $and: [{
         'startedOn': {
@@ -237,12 +242,13 @@ let getDataConsumed = (startDate, endDate, cb) => {
     }
   }], (error, result) => {
     if (error) cb(error);
-    else cb(null, result);
+    else if (result && result.length) cb(null, result[0]);
+    else cb(null, null);
   });
 };
 
 let getDataConsumedTimeline = (startDate, endDate, cb) => {
-  StatsModel.aggregate([{
+  SessionModel.aggregate([{
     $match: {
       $and: [{
         'startedOn': {
@@ -335,12 +341,13 @@ let getAverageDuration = (startDate, endDate, cb) => {
     }
   }], (error, result) => {
     if (error) cb(error);
-    else cb(null, result);
+    else if (result && result.length) cb(null, result[0]);
+    else cb(null, null);
   });
 };
 
 let getAverageDurationTimeline = (startDate, endDate, cb) => {
-  StatsModel.aggregate([{
+  SessionModel.aggregate([{
     $match: {
       $and: [{
         'startedOn': {
@@ -409,9 +416,9 @@ module.exports = {
   getAverageSessionsCount,
   getSessionsTimeline,
 
-  getAverageDuration,
-  getAverageDurationTimeline,
-
   getDataConsumed,
   getDataConsumedTimeline,
+
+  getAverageDuration,
+  getAverageDurationTimeline,
 };

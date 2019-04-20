@@ -17,7 +17,7 @@ class GenerateOVPN(object):
         @apiGroup VPN
         @apiParam {String} account_addr Client account address.
         @apiParam {String} vpn_addr VPN server account address.
-        @apiParam {String} token Token for connecting to VPN servers.
+        @apiParam {String} token Token for connecting to VPN server.
         @apiSuccess {Object} node Node details including ovpn data.
         """
         account_addr = str(req.body['account_addr']).lower()
@@ -70,6 +70,13 @@ class GenerateOVPN(object):
 
 class Disconnect(object):
     def on_post(self, req, res):
+        """
+        @api {post} /disconnect Disconnect client from VPN server.
+        @apiName Disconnect
+        @apiGroup VPN
+        @apiParam {String} account_addr Client account address.
+        @apiParam {String} token Token for connecting to VPN server.
+        """
         account_addr = str(req.body['account_addr']).lower()
         token = str(req.body['token'])
 

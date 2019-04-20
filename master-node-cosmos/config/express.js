@@ -31,6 +31,8 @@ let initServer = () => {
     reconnectTries: Number.MAX_VALUE,
     reconnectInterval: 500,
     useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false
   }, (error, db) => {
     if (error) console.log(error);
     else console.log(`Connected to database URL: ${mongoDbUrl}`);

@@ -99,6 +99,7 @@
 }
 .IconActiveLabelStyle > img{
     opacity: 1 !important;
+    color: #139DEE;
 
 
 }
@@ -108,9 +109,56 @@
  }
  .IconNormalLabelStyle:hover > img{
     opacity: 1 !important;
+    color: #139DEE !important;
 }
  .disabledLabelStyle {
         font-size: 16px;
         color: '#CECECE';
         cursor: 'not-allowed';
 }
+
+.IconDisabledDivStyle {
+    padding: 16px 0px 0px 0px;
+    text-align: center;
+    font-family: 'Montserrat';
+    cursor: 'not-allowed' ;
+    display: flex;
+    justify-content: center; 
+}
+
+.IconActiveDivStyle {
+    padding: 16px 0px 0px 0px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Montserrat';
+    display: flex;
+    justify-content: center;   
+}
+
+.IconActiveDivStyle:hover {
+    background: rgb(48, 50, 70, 0.16);
+}
+.IconCurrentDivStyle{
+    padding: 16px 0px 0px 0px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Montserrat';
+    background: rgb(48, 50, 70, 0.16);
+    display : flex;
+    justify-content: center;
+   
+}
+
+/* .new_image_selected1 {
+    display: none;
+} */
+/* .new_image:hover .new_image_selected,
+.IconActiveLabelStyle .new_image_selected {
+    display: none;
+}
+.new_image:hover .new_image_selected1,
+.IconActiveLabelStyle .new_image_selected {
+    display: block;
+} */

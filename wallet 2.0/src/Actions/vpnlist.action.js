@@ -11,6 +11,8 @@ export function setListViewType(component) {
 }
 
 export async function getVpnList(vpnType, isTM) {
+
+    console.log("type gettting", vpnType);
     try {
         let listUrl;
         // let uri = localStorage.getItem('B_URL')
@@ -24,14 +26,13 @@ export async function getVpnList(vpnType, isTM) {
                 : uri + "/client/vpn/socks-list";
         else if (vpnType === "wireguard") {
             listUrl = isTM
-                ? TMain_URL + "/nodes?type=wireguard&status=up"
+                ? TMain_URL + "/nodes?type=WireGuard&status=up"
                 : uri + "/client/vpn/list"; // we won't have WG in Eth actually
-            // listUrl = 'http://tm-master.sentinelgroup.io:8000/nodes?type=wireguard&status=up'
+            // listUrl = 'http://tm-master.sentinelgroup.io:8000/nodes?type=WireGuard&status=up'
         } else if (vpnType === "openvpn") {
             listUrl = isTM
                 ? TMain_URL + "/nodes?type=OpenVPN&status=up"
                 : uri + "/client/vpn/list";
-            // listUrl = 'http://tm-master.sentinelgroup.io:8000/nodes?type=wireguard&status=up'
         } else
             listUrl = isTM
                 ? TMain_URL + "/nodes?type=any&status=up"

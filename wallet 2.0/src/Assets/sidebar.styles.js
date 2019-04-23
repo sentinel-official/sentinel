@@ -33,7 +33,9 @@ const sidebarStyles = {
         cursor: 'pointer',
         fontWeight: 'bold',
         fontFamily: 'Montserrat',
-       
+        display : 'flex',
+        justifyContent: 'center',
+      
     },
 
     IconCurrentDivStyle: {
@@ -43,6 +45,8 @@ const sidebarStyles = {
         cursor: 'pointer',
         fontFamily: 'Montserrat',
         backgroundColor: 'rgba(48, 50, 70, 0.16)',
+        display : 'flex',
+        justifyContent: 'center',
        
     },
     IconDisabledDivStyle: {

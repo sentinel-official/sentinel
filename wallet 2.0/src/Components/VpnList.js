@@ -118,7 +118,7 @@ class VpnList extends Component {
 
     getVPNs = () => {
         this.setState({ listLoading: true });
-        this.props.getVpnList(this.props.vpnType, this.props.isTM)
+        this.props.getVpnList(this.props.protocolType, this.props.isTM)
             .then((res) => {
                 this.setState({ listLoading: false })
             })

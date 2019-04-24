@@ -8,7 +8,7 @@ export function runGaiacli(cb) {
         try {
             execSync('chmod +x /usr/lib/sentinel/public/gaiacli');
             // exec('/usr/lib/sentinel/public/gaiacli advanced rest-server --node tcp://209.182.217.171:26657 --chain-id=Sentinel-dev-testnet',
-            exec('/usr/lib/sentinel/public/gaiacli advanced rest-server --node tcp://185.227.109.42:26657 --chain-id=Sentinel-testnet-1.1',
+            exec('/usr/lib/sentinel/public/gaiacli advanced rest-server --node tcp://209.182.216.153:26657 --chain-id=Sentinel-testnet-1.1',
 
                 function (err, stdout, stderr) {
                     if (err) {
@@ -26,7 +26,7 @@ export function runGaiacli(cb) {
             let gaiacliPath = path.join(remote.process.resourcesPath, 'gaiacli');
             execSync(`chmod +x ${gaiacliPath}`);
             // exec(`${gaiacliPath} advanced rest-server --node tcp://209.182.217.171:26657 --chain-id=Sentinel-dev-testnet`,
-            exec('/usr/lib/sentinel/public/gaiacli advanced rest-server --node tcp://185.227.109.42:26657 --chain-id=Sentinel-testnet-1.1',
+            exec('/usr/lib/sentinel/public/gaiacli advanced rest-server --node tcp://209.182.216.153:26657 --chain-id=Sentinel-testnet-1.1',
 
                 function (err, stdout, stderr) {
                     if (err) {

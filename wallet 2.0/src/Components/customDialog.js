@@ -169,8 +169,7 @@ class SimpleDialog extends React.Component {
                         <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.node_type ? this.props.data.node_type : 'None'}</label> </Col>
                     </Row>
 
-                    {
-                        this.props.isTm ? 
+                   
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Moniker}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
@@ -179,9 +178,7 @@ class SimpleDialog extends React.Component {
                                 <div className="dialog_moniker_value">{this.props.data.moniker ? this.props.data.moniker : 'None'}</div>
                             </Tooltip></label> </Col>
                     </Row>
-                    :
-                    ''
-                    }
+                   
 
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Version}</label> </Col>

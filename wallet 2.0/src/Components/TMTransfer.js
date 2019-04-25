@@ -65,7 +65,7 @@ class TMTransfer extends Component {
     }
 
     componentDidMount = () => {
-        console.log('this vpn', this.props.vpnPayment)
+        // console.log('this vpn', this.props.vpnPayment)
         if (this.props.vpnPayment.isPayment && !this.state.gotVPN) {
          
             this.setState({
@@ -91,7 +91,7 @@ class TMTransfer extends Component {
         }
     }
     componentWillReceiveProps = (nextProps) => {
-        console.log('this next  vpn', this.props.vpnPayment)
+        // console.log('this next  vpn', this.props.vpnPayment)
         if (nextProps.vpnPayment.isPayment) {
             this.setState({
                 toAddress: nextProps.vpnPayment.data.vpn_addr,
@@ -151,7 +151,7 @@ class TMTransfer extends Component {
                     }
                     this.props.payVPNSession(data).then(response => {
                         if (response.error) {
-                            console.log("Pay VPN Error...", response);
+                            // console.log("Pay VPN Error...", response);
                             if (response.error.data === 'Ciphertext decryption failed')
                                 this.setState({ sending: false, openSnack: true, snackMessage: lang[this.props.language].IncorrectPwd });
                             else

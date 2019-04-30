@@ -431,6 +431,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "WireGuardComingSoon" : "WireGuard (Coming Soon)",
        
 
 
@@ -870,6 +871,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "WireGuardComingSoon" : "WireGuard (Yakında)",
        
     },
 
@@ -1308,6 +1310,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "WireGuardComingSoon" : "WireGuard (Coming Soon)",
        
 
     },
@@ -1743,6 +1746,7 @@ let lang = {
         "Protocol" : "Protocol",
         "AllOption" : "All",
         "WireGuard" : "WireGuard",
+        "WireGuardComingSoon" : "WireGuard (Coming Soon)",
        
     },
     ru: {
@@ -2177,6 +2181,7 @@ let lang = {
         "Protocol" : "Протокол",
         "AllOption" : "Все",
         "WireGuard" : "WireGuard",
+        "WireGuardComingSoon" : "WireGuard (Скоро)",
        
     },
     
@@ -2611,6 +2616,7 @@ let lang = {
     "Protocol" : "پروتوکل",
     "AllOption" : "همه",
     "WireGuard" : "WireGuard",
+    "WireGuardComingSoon" : "WireGuard (به زودی)",
 
    
 
@@ -3049,6 +3055,7 @@ let lang = {
         "Protocol" : "协议",
         "AllOption" : "全部",
         "WireGuard" : "WireGuard",
+        "WireGuardComingSoon" : "WireGuard （即将推出）",
        
     },
 }

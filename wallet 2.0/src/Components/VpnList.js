@@ -321,8 +321,11 @@ class VpnList extends Component {
                                      <MenuItem className="dpn_value" value="all">{lang[this.props.language].AllOption}</MenuItem>
                                     <MenuItem className="dpn_value" value="openvpn">{lang[this.props.language].OpenVPN}</MenuItem>
                                     {isTM && remote.process.platform === 'linux' ?
-                                    <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : ""}
-                                    <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
+                                    <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : 
+                                    <MenuItem className="dpn_value" value="wireguard" disabled >{lang[this.props.language].WireGuardComingSoon}</MenuItem> 
+                                    }
+                                    <MenuItem className="dpn_value" value="socks5"  disabled >{ lang[this.props.language].Socks5ComingSoon}</MenuItem>
+                                    {/* <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem> */}
                                  </Select>
                                 {/* </Tooltip> */}
                                 </FormControl>
@@ -419,7 +422,8 @@ class VpnList extends Component {
                                     <MenuItem className="dpn_value" value="openvpn">{lang[this.props.language].OpenVPN}</MenuItem>
                                     {isTM && remote.process.platform === 'linux' ?
                                     <MenuItem className="dpn_value" value="wireguard">{lang[this.props.language].WireGuard}</MenuItem> : ""}
-                                    <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem>
+                                    <MenuItem className="dpn_value" value="socks5"  disabled >{ lang[this.props.language].Socks5ComingSoon}</MenuItem>
+                                    {/* <MenuItem className="dpn_value" value="socks5"  disabled={isTM}>{ isTM ? lang[this.props.language].Socks5ComingSoon : lang[this.props.language].Socks5}</MenuItem> */}
                                  </Select>
                             {/* </Tooltip> */}
                         </FormControl>

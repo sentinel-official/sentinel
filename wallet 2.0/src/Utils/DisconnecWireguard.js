@@ -18,9 +18,9 @@ export async function disconnectWireguard(cb) {
             removeItemsLocal();
             clearConfig();
             cb(null);
-            disConnectWireguard(localStorage.getItem("TOKEN"), (err, res) => {
-                if (err) throw err;
-            })
+            // disConnectWireguard(localStorage.getItem("TOKEN"), (err, res) => { // aborting /disconneting in WG as we are sending final sign as true
+            //     if (err) throw err; 
+            // })
         }
     });
 }

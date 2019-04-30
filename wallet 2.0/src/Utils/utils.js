@@ -181,6 +181,7 @@ export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
 }
 
 export function getWireguardTM(account_addr, vpn_data, session_data, cb) {
+   
     let pubg = localStorage.getItem("PUBG") ? localStorage.getItem("PUBG").trim() : '';
     let data = {
         token: session_data.token,

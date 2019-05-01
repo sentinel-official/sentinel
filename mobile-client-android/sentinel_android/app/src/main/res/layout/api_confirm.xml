@@ -37,7 +37,7 @@
                 android:layout_width="@android:dimen/app_icon_size"
                 android:layout_height="@android:dimen/app_icon_size"
                 android:contentDescription="@string/permission_icon_app"
-                android:paddingRight="5dp" />
+                android:paddingEnd="5dp" />
 
             <TextView
                 android:id="@+id/prompt"

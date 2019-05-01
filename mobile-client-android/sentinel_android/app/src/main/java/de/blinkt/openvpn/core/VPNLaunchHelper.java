@@ -51,10 +51,7 @@ public class VPNLaunchHelper {
     }
 
     private static String getMiniVPNExecutableName() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            return MINIPIEVPN;
-        else
-            return MININONPIEVPN;
+        return MINIPIEVPN;
     }
 
     public static String[] replacePieWithNoPie(String[] mArgv) {

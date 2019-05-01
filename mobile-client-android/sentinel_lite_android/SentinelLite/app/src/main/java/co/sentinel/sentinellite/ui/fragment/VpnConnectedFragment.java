@@ -18,6 +18,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -88,6 +89,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setHasOptionsMenu(false);
     }
 
     @Override
@@ -110,6 +112,11 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         initListeners();
         initViewModel();
     }
+
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        menu.clear();
+//    }
 
     @Override
     public void onResume() {

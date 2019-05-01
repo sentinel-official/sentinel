@@ -29,6 +29,7 @@ public class BonusRepository {
     private static BonusRepository sInstance;
     private final BonusInfoDao mDao;
     private final BonusWebService mBonusWebService;
+    private final BonusWebService mBonusLongTimeoutWebService;
     private final AppExecutors mAppExecutors;
     private final String mDeviceId;
     private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoByDeviceIdLiveEvent;
@@ -37,9 +38,10 @@ public class BonusRepository {
     private final MutableLiveData<BonusInfoEntity> mBonusInfoMutableLiveData;
     private final SingleLiveEvent<Resource<GenericResponse>> mLinkAccountLiveEvent;
 
-    private BonusRepository(BonusInfoDao iDao, BonusWebService iReferralWebService, AppExecutors iAppExecutors, String iDeviceId) {
+    private BonusRepository(BonusInfoDao iDao, BonusWebService iReferralWebService, BonusWebService iBonusLongTimeoutWebService, AppExecutors iAppExecutors, String iDeviceId) {
         this.mDao = iDao;
         this.mBonusWebService = iReferralWebService;
+        this.mBonusLongTimeoutWebService = iBonusLongTimeoutWebService;
         this.mAppExecutors = iAppExecutors;
         mDeviceId = iDeviceId;
         mAccountInfoByDeviceIdLiveEvent = new SingleLiveEvent<>();
@@ -58,10 +60,10 @@ public class BonusRepository {
         });
     }
 
-    public static BonusRepository getInstance(BonusInfoDao iDao, BonusWebService iReferralWebService, AppExecutors iAppExecutors, String iDeviceId) {
+    public static BonusRepository getInstance(BonusInfoDao iDao, BonusWebService iReferralWebService, BonusWebService iBonusLongTimeoutWebService, AppExecutors iAppExecutors, String iDeviceId) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new BonusRepository(iDao, iReferralWebService, iAppExecutors, iDeviceId);
+                sInstance = new BonusRepository(iDao, iReferralWebService, iBonusLongTimeoutWebService, iAppExecutors, iDeviceId);
             }
         }
         return sInstance;
@@ -119,7 +121,7 @@ public class BonusRepository {
      * Network call
      */
     private void getAccountDetailsByDeviceId() {
-        mBonusWebService.getAccountInfoByDeviceIdAddress(BonusWebService.ACCOUNT_INFO_BY_DEVICE_ID, mDeviceId).enqueue(new Callback<GenericResponse>() {
+        mBonusLongTimeoutWebService.getAccountInfoByDeviceIdAddress(BonusWebService.ACCOUNT_INFO_BY_DEVICE_ID, mDeviceId).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 reportSuccessResponse(response);

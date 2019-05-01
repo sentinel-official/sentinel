@@ -5,31 +5,30 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import co.sentinel.sentinellite.R;
+import java.util.ArrayList;
+
+import co.sentinel.sentinellite.network.model.OnBoardingInfo;
 import co.sentinel.sentinellite.ui.fragment.InfoFragment;
 
 public class InfoPagerAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
+    private ArrayList<OnBoardingInfo> mList;
 
-    public InfoPagerAdapter(FragmentManager fm, Context iContext) {
+    public InfoPagerAdapter(FragmentManager fm, Context iContext, ArrayList<OnBoardingInfo> iList) {
         super(fm);
         mContext = iContext;
+        this.mList = iList;
     }
 
     @Override
     public int getCount() {
-        return 1;
+        return mList.size();
     }
 
     @Override
     public Fragment getItem(int position) {
-        Fragment aFragment = null;
-        switch (position) {
-            case 0:
-                aFragment = InfoFragment.newInstance(R.drawable.ic_info_vpn, R.string.info_title_2, R.string.info_desc_2);
-                break;
-        }
+        Fragment aFragment = InfoFragment.newInstance(mList.get(position));
         return aFragment;
     }
 }

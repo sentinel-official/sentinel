@@ -27,8 +27,9 @@ public class InjectorModule {
     private static BonusRepository provideBonusRepository(Context iContext, String aDeviceId) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         BonusWebService aBonusWebService = WebClient.getBonusWebService();
+        BonusWebService iBonusLongTimeoutWebService = WebClient.getBonusLongTimeoutWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return BonusRepository.getInstance(aAppDatabase.getBonusInfoEntryDao(), aBonusWebService, aAppExecutors, aDeviceId);
+        return BonusRepository.getInstance(aAppDatabase.getBonusInfoEntryDao(), aBonusWebService, iBonusLongTimeoutWebService, aAppExecutors, aDeviceId);
     }
 
     private static AppVersionRepository provideAppVersionRepository() {
@@ -39,8 +40,9 @@ public class InjectorModule {
     public static VpnRepository provideVpnRepository(Context iContext, String iDeviceId) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
+        GenericWebService aGenericRetryWebService = WebClient.getGenericRetryWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getBookmarkDao(), aGenericWebService, aAppExecutors, iDeviceId);
+        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getBookmarkDao(), aGenericWebService, aGenericRetryWebService, aAppExecutors, iDeviceId);
     }
 
     public static VpnUsageViewModelFactory provideVpnHistoryViewModelFactory(Context iContext, String iDeviceId) {

@@ -42,6 +42,7 @@ public class VpnRepository {
     private final VpnUsageEntryDao mUsageDao;
     private final BookmarkDao mBookmarkDao;
     private final GenericWebService mGenericWebService;
+    private final GenericWebService mGenericRetryWebService;
     private final AppExecutors mAppExecutors;
     private final MutableLiveData<List<VpnListEntity>> mVpnListMutableLiveData;
     private final MutableLiveData<VpnUsageEntity> mVpnUsageMutableLiveData;
@@ -55,11 +56,12 @@ public class VpnRepository {
     private final SingleLiveEvent<Resource<GenericResponse>> mRatingLiveEvent;
     private final String mDeviceId;
 
-    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, BookmarkDao iBookmarkDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
+    private VpnRepository(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, BookmarkDao iBookmarkDao, GenericWebService iGenericWebService, GenericWebService iGenericRetryWebService, AppExecutors iAppExecutors, String iDeviceId) {
         mListDao = iListDao;
         mUsageDao = iUsageDao;
         mBookmarkDao = iBookmarkDao;
         mGenericWebService = iGenericWebService;
+        mGenericRetryWebService = iGenericRetryWebService;
         mAppExecutors = iAppExecutors;
         mVpnListMutableLiveData = new MutableLiveData<>();
         mVpnUsageMutableLiveData = new MutableLiveData<>();
@@ -98,10 +100,10 @@ public class VpnRepository {
         });
     }
 
-    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, BookmarkDao iBookmarkDao, GenericWebService iGenericWebService, AppExecutors iAppExecutors, String iDeviceId) {
+    public static VpnRepository getInstance(VpnListEntryDao iListDao, VpnUsageEntryDao iUsageDao, BookmarkDao iBookmarkDao, GenericWebService iGenericWebService, GenericWebService iGenericRetryWebService, AppExecutors iAppExecutors, String iDeviceId) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new VpnRepository(iListDao, iUsageDao, iBookmarkDao, iGenericWebService, iAppExecutors, iDeviceId);
+                sInstance = new VpnRepository(iListDao, iUsageDao, iBookmarkDao, iGenericWebService, iGenericRetryWebService, iAppExecutors, iDeviceId);
             }
         }
         return sInstance;
@@ -185,7 +187,7 @@ public class VpnRepository {
 
     // Network call
     public void getUnoccupiedVpnList() {
-        mGenericWebService.getUnoccupiedVpnList().enqueue(new Callback<Vpn>() {
+        mGenericRetryWebService.getUnoccupiedVpnList().enqueue(new Callback<Vpn>() {
             @Override
             public void onResponse(Call<Vpn> call, Response<Vpn> response) {
                 reportSuccessResponse(response);
@@ -248,7 +250,7 @@ public class VpnRepository {
 
     public void getVpnUsageForUser(GenericRequestBody iRequestBody) {
         mVpnUsageLiveEvent.postValue(Resource.loading(null));
-        mGenericWebService.getVpnUsageForUser(iRequestBody).enqueue(new Callback<VpnUsage>() {
+        mGenericRetryWebService.getVpnUsageForUser(iRequestBody).enqueue(new Callback<VpnUsage>() {
             @Override
             public void onResponse(Call<VpnUsage> call, Response<VpnUsage> response) {
                 reportSuccessResponse(response);

@@ -12,8 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import org.json.JSONException;
-
 import co.sentinel.sentinellite.BuildConfig;
 import co.sentinel.sentinellite.R;
 import co.sentinel.sentinellite.SentinelLiteApp;
@@ -23,11 +21,10 @@ import co.sentinel.sentinellite.ui.dialog.TripleActionDialogFragment;
 import co.sentinel.sentinellite.util.AppConstants;
 import co.sentinel.sentinellite.util.AppPreferences;
 import co.sentinel.sentinellite.util.FlavourHelper;
-import co.sentinel.sentinellite.util.Logger;
 import co.sentinel.sentinellite.util.Status;
 import co.sentinel.sentinellite.viewmodel.SplashViewModel;
 import co.sentinel.sentinellite.viewmodel.SplashViewModelFactory;
-import io.branch.referral.Branch;
+import de.blinkt.openvpn.core.ProfileManager;
 
 import static co.sentinel.sentinellite.util.AppConstants.NEGATIVE_BUTTON;
 import static co.sentinel.sentinellite.util.AppConstants.POSITIVE_BUTTON;
@@ -45,9 +42,24 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!isTaskRoot()) {
+            final Intent aIntent = getIntent();
+            final String aIntentAction = aIntent.getAction();
+            if (aIntent.hasCategory(Intent.CATEGORY_LAUNCHER) && aIntentAction != null && aIntentAction.equals(Intent.ACTION_MAIN)) {
+                finish();
+                return;
+            }
+        }
         setupAppLanguage();
         setContentView(R.layout.activity_splash);
-        initViewModel();
+        if (ProfileManager.isVpnConnected(this)) {
+            Intent aIntent = new Intent(this, DashboardActivity.class);
+            aIntent.putExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY, AppConstants.HOME);
+            aIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(aIntent);
+        } else {
+            initViewModel();
+        }
     }
 
     /*
@@ -208,36 +220,4 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Branch branch = Branch.getInstance();
-
-        // Branch init
-        branch.initSession((referringParams, error) -> {
-            if (error == null) {
-                // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
-                // params will be empty if no data found
-                // ... insert custom logic here ...
-                Logger.logInfo("BRANCH SDK", referringParams.toString());
-
-                try {
-                    if (referringParams.has(AppConstants.BRANCH_REFERRAL_ID)) {
-                        String aReferrerID = referringParams.getString(AppConstants.BRANCH_REFERRAL_ID);
-                        AppPreferences.getInstance().saveString(AppConstants.PREFS_BRANCH_REFERRER_ID, aReferrerID);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                Logger.logInfo("BRANCH SDK", error.getMessage());
-            }
-        }, this.getIntent().getData(), this);
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        this.setIntent(intent);
-    }
 }

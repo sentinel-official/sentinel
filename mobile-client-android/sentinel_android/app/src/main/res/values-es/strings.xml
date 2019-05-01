@@ -51,7 +51,7 @@
     <string name="session_ipv6string">%1$s - %3$s, %2$s</string>
     <string name="warn_no_dns">No se están utilizando servidores DNS. La resolución del nombre puede no funcionar. Considere establecer servidores DNS personalizados. Por favor, también tenga en cuenta que Android, aun cuando no haya servidores DNS establecidos, seguirá usando la configuración proxy especificada por tu conexión móvil/Wi-Fi.</string>
     <string name="tun_open_error">Error al abrir la interfaz tun</string>
-    <string name="error">"Error: "</string>
+    <string name="error">"Hata: "</string>
     <string name="tun_error_helpful">En algunas imágenes ICS personalizadas, el permiso en /dev/tun puede ser incorrecto, o bien el módulo tun puede faltar por completo. Para imágenes CM9, pruebe la opción de arreglo de propiedad en la configuración general</string>
     <string name="app_no_longer_exists">Package %s is no longer installed, removing it from app allow/disallow list</string>
     <string name="no_allowed_app">No se ha añadido ninguna app permitida. Debemos añadirla nosotros (%s) para tener al menos una app en la lista de apps permitidas, y así no permitir todas las apps</string>
@@ -192,7 +192,7 @@
     <string name="pin_empty">Por favor, introduce el PIN de la app</string>
     <string name="wallet_balance">Balance de la wallet</string>
     <string name="free_token_requested">Están siendo minados tokens SENT de prueba. Pronto los recibirás en tu wallet.</string>
-    <string name="yay">Yay!</string>
+    <string name="yay">Oley!</string>
     <string name="thanks">Gracias</string>
     <string name="empty_token_value">-</string>
     <string name="forgot_pin">¿Has olvidado el PIN?</string>
@@ -212,7 +212,6 @@
     <string name="vpn_price_connected">Precio (SENTs/GB)</string>
     <string name="vpn_latency">Latencia \t %s</string>
     <string name="vpn_latency_connected">Latencia</string>
-    <string name="vpn_enc_method_connected">Encryption</string>
     <string name="vpn_duration_connected">Duración</string>
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_price_value">%.0f SENTs</string>
@@ -236,8 +235,6 @@
     <string name="country">País:</string>
     <string name="bandwidth">Ancho de banda:</string>
     <string name="latency">Latencia:</string>
-    <string name="node_version">Version:</string>
-    <string name="node_rating">Rating:</string>
     <string name="price">Precio (SENTs / GB):</string>
     <string name="coming_soon">Próximamente…</string>
     <string name="fetching_config">Obteniendo configuraciones del VPN…</string>
@@ -269,7 +266,6 @@
     <string name="tx_details">Detalles de transacción</string>
     <string name="view_on_etherscan">Ver en Etherscan</string>
     <string name="link_coming_soon">Esta información se añadirá pronto.</string>
-    <string name="faq">FAQ</string>
     <string name="got_it">Entendido</string>
     <string name="no_scan_results">Resultados del scaneo no encontrados.</string>
     <string name="not_a_address">El resultado del scaneo no es una dirección de cuenta. Descartando los resultados scaneados.</string>
@@ -290,9 +286,6 @@
     <string name="send_to">Enviar a…</string>
     <string name="password_hint">Introduce una contraseña para crear el ID de usuario</string>
     <string name="key_not_copied_alert">No has copiado tu clave privada.\nPor favor, copia tu clave privada para proceder.</string>
-    <string name="test_net">TESTNET %1s</string>
-    <string name="on">ON</string>
-    <string name="off">OFF</string>
     <string name="upload_keystore_desc">Sube tu archivo Keystore</string>
     <string name="uploaded_keystore_desc">Archivo Keystore subido</string>
     <string name="referral_code_desc">Tus tokens derivados de referidos puedes reclamarlos cuando hagas tu primer pago VPN.</string>
@@ -311,7 +304,6 @@
     <string name="storage_error">Almacenamiento no encontrado. No se puede almacenar el archivo keystore.</string>
     <string name="adding_referral">Añadiendo los detalles de referido. Por favor, espera…</string>
     <string name="yes">Sí</string>
-    <string name="no">No</string>
     <string name="claiming_referral_bonus">Reclamando el bonus de referido. Por favor, espera…</string>
     <string name="claim_bonus">Reclamar Bonus</string>
     <string name="update_available">Actualización disponible</string>
@@ -331,26 +323,10 @@
     <string name="network_lost">Se detectó una pérdida de conexión de la red. La conexión de la VPN se ha desconectado.\nPor favor, vuelva a conectarse.</string>
     <string name="label_rate_session">Please rate your experience with the previous dVPN session</string>
     <string name="error_select_rating">Please select rating</string>
-    <string name="action_skip">Skip</string>
-    <string name="action_rate">Rate</string>
     <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="invitation_desc">Comparte el enlace con tus amigos para invitarlos a la app Sentinel dVPN</string>
-    <string name="filter_by_title">Filters</string>
-    <string name="filter_by_bookmark">Show favourites only</string>
-    <string name="sort_by_title">Sort By</string>
-    <string name="sort_by_default">Default</string>
-    <string name="sort_by_country_a">Country</string>
-    <string name="sort_by_country_d">Country ↓</string>
-    <string name="sort_by_latency_i">Latency ↑</string>
-    <string name="sort_by_latency_d">Latency</string>
-    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
-    <string name="sort_by_bandwidth_d">Bandwidth</string>
-    <string name="sort_by_price_i">Price ↑</string>
-    <string name="sort_by_price_d">Price ↓</string>
-    <string name="sort_by_rating_i">Rating ↑</string>
-    <string name="sort_by_rating_d">Rating</string>
-    <string name="hint_search_vpn_list">Search by country</string>
-    <string name="alert_bookmark_added">VPN added to favourites</string>
-    <string name="alert_bookmark_removed">VPN removed from favourites</string>
+    <string name="faq">SSS</string>
+    <string name="ok">TAMAM</string>
+    <string name="no">Hayır</string>
 
 </resources>

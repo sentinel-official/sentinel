@@ -18,10 +18,8 @@
         android:gravity="center"
         android:maxLines="1"
         android:paddingStart="@dimen/margin_8"
-        android:paddingLeft="@dimen/margin_8"
         android:paddingTop="@dimen/margin_4"
         android:paddingEnd="@dimen/margin_8"
-        android:paddingRight="@dimen/margin_8"
         android:paddingBottom="@dimen/margin_4"
         android:textColor="@color/colorTextDarkBlue"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,9 +62,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_8"
             android:gravity="center"
-            android:paddingLeft="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
             android:paddingTop="@dimen/margin_8"
-            android:paddingRight="@dimen/margin_8" />
+            android:paddingEnd="@dimen/margin_8" />
 
         <TextView
             android:id="@+id/tv_ip"
@@ -76,9 +74,9 @@
             android:layout_marginTop="@dimen/margin_8"
             android:layout_marginBottom="@dimen/margin_8"
             android:gravity="center"
-            android:paddingLeft="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_8"
             android:paddingTop="@dimen/margin_4"
-            android:paddingRight="@dimen/margin_8"
+            android:paddingEnd="@dimen/margin_8"
             android:paddingBottom="@dimen/margin_8" />
 
     </LinearLayout>
@@ -89,9 +87,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:paddingStart="@dimen/margin_16"
-        android:paddingLeft="@dimen/margin_16"
         android:paddingEnd="@dimen/margin_8"
-        android:paddingRight="@dimen/margin_8"
         android:paddingBottom="@dimen/margin_16"
         android:src="@drawable/ic_bookmark_inactive"
         app:layout_constraintEnd_toEndOf="@+id/ll_location"
@@ -102,7 +98,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_8"
-        android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_16"
         app:layout_constraintEnd_toStartOf="@+id/fl_upload_speed"
         app:layout_constraintHorizontal_bias="0.5"
@@ -117,7 +112,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableStart="@drawable/ic_download_speed"
-            android:drawableLeft="@drawable/ic_download_speed"
             android:drawablePadding="@dimen/margin_8"
             android:gravity="center_horizontal|bottom" />
     </FrameLayout>
@@ -165,7 +159,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableStart="@drawable/ic_upload_speed"
-            android:drawableLeft="@drawable/ic_upload_speed"
             android:drawablePadding="@dimen/margin_8" />
     </FrameLayout>
 
@@ -199,7 +192,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/margin_8"
-        android:layout_marginRight="@dimen/margin_8"
         app:layout_constraintBottom_toBottomOf="@+id/fl_upload_speed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -214,7 +206,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableStart="@drawable/ic_data_usage"
-            android:drawableLeft="@drawable/ic_data_usage"
             android:drawablePadding="@dimen/margin_8" />
     </FrameLayout>
 
@@ -265,7 +256,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_8"
-        android:layout_marginLeft="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_16"
         android:drawableTop="@drawable/ic_latency"
         android:drawablePadding="@dimen/margin_8"
@@ -349,7 +339,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/margin_8"
-        android:layout_marginRight="@dimen/margin_8"
         android:drawableTop="@drawable/ic_duration"
         android:drawablePadding="@dimen/margin_8"
         android:gravity="center_horizontal|bottom"

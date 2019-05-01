@@ -24,6 +24,11 @@ class NMTools {
     var command = `echo "cat /etc/openvpn/openvpn-status.log|grep -v '10.8.0'|grep client|sort|wc -l"|docker exec -i ${containerName} sh -`;
     this.sshManager.execute(command, cb);
   }
+  
+  nodeConfig(containerName, cb) {
+    var command = `echo "cat /root/.sentinel/config"|docker exec -i ${containerName} sh -`;
+    this.sshManager.execute(command, cb);
+  }
 }
 
 module.exports = NMTools;

@@ -46,10 +46,11 @@ class ContainersList extends React.Component {
   handleClick() {
   }
   render() {
-    let { language ,clientsData, ContainersData} = this.props;
+    let { language ,clientsData, ContainersData, monikersData} = this.props;
+    console.log("containr", this.props)
     return (
       <div className="listData">
-    { (ContainersData === null || clientsData === null) ?
+    { (ContainersData === null || clientsData === null || monikersData === null  ) ?
              <div style={{display: 'flex', justifyContent: 'center', paddingTop: '20%', fontSize: '25px'}}>{lang[language].Loading}</div> : 
           
           <div>
@@ -132,6 +133,14 @@ class ContainersList extends React.Component {
 
                   </label>
                  </div>
+                
+                 <div> 
+                  <label className="nodeLabel">
+                  {lang[language].Moniker}:&nbsp;
+                    <span className="nodeValue">{monikersData[i]}</span>
+                  </label>
+                
+                 </div>
               </div>
             </Card>
          
@@ -139,7 +148,6 @@ class ContainersList extends React.Component {
         })}
         </div>
             }
-
                 <Snackbar
                     open={this.state.openSnack}
                     autoHideDuration={4000}
@@ -161,6 +169,7 @@ function mapStateToProps(state) {
       language: state.setLanguage,
       ContainersData : state.getDockerContainers,
       clientsData : state.getImagesClients,
+      monikersData : state.getMonikers,
 
      
   }

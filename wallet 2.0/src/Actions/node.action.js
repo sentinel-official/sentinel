@@ -77,7 +77,9 @@ export function setDockerContainers(data) {
         let data = null;
         let parsedData = null;
         let clients = [];
+        let monikers = [];
         let go = false;
+        let send = false;
         nm.listDockerContainers((err, stderr, stdout) => {
             if (stdout) {
                 data = stdout;
@@ -121,6 +123,36 @@ export function setDockerContainers(data) {
                             // }       
                         }
                         )
+                        
+                        nm.nodeConfig(item.Names, (err, stderr, stdout) => { 
+
+                            if(err){
+                                console.log("mon err", err);
+                            }
+                            if(stderr){
+                                console.log("mon stderr", stderr)
+                            }
+
+                            if (i === arr.length - 1) {
+                                send = true;
+                            }
+                            if (stdout) {
+                                console.log("mon stdout1", stdout);
+                                 
+                                let parsedData = JSON.parse(stdout)
+                                monikers[i] = parsedData.moniker ? parsedData.moniker.trim() : '';
+
+
+                            }
+                            if(send){
+                                dispatch({
+                                    type: types.MONIKER_VALUE,
+                                    payload: monikers
+                                })
+                            }
+
+                        } )
+                        
 
                     })
 

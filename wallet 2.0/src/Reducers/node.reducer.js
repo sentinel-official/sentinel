@@ -30,6 +30,16 @@ export function getImagesClients( state = null , action){
     }
 
 }
+
+export function getMonikers( state = null, action){
+    switch (action.type){
+        case types.MONIKER_VALUE:
+            return action.payload;
+        default:
+        return state;
+    }
+}
+
 export function isLoggedOutNode (state = null , action){
     switch (action.type){
         case types.LOGOUT_NODE:

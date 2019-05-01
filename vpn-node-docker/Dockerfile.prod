@@ -1,4 +1,20 @@
+FROM alpine:3.7 AS deps
+
+RUN apk add alpine-sdk && \
+    adduser -D packager && \
+    addgroup packager abuild && \
+    mkdir -p /tmp/packages/ && \
+    chown -hR packager /tmp/packages/ && \
+    chgrp -hR packager /tmp/packages/ && \
+    cd /tmp/packages/ && \
+    curl https://git.alpinelinux.org/aports/plain/testing/ufw/APKBUILD?id=b56db2c574082de52cee8109469fb5da4cbcb046 -o APKBUILD && \
+    curl https://git.alpinelinux.org/aports/plain/testing/ufw/ufw.initd?id=b56db2c574082de52cee8109469fb5da4cbcb046 -o ufw.initd && \
+    su -c 'abuild-keygen -a -i' packager && \
+    su -c 'abuild -r' packager
+
 FROM alpine:3.7
+
+COPY --from=deps /home/packager/packages/tmp/x86_64/ufw-0.35-r1.apk /tmp/
 
 ADD sentinel /root/sentinel
 
@@ -6,12 +22,12 @@ ADD app.py server.py run.sh /root/
 
 ENV SENT_ENV=PROD
 
-RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
-    apk add --no-cache ca-certificates easy-rsa gcc linux-headers mongodb musl-dev openvpn python-dev ufw@testing && \
+RUN apk add --no-cache ca-certificates easy-rsa gcc linux-headers mongodb musl-dev openvpn python2-dev && \
+    apk add --no-cache /tmp/ufw-0.35-r1.apk --allow-untrusted && \
     mkdir -p /data/db && \
     wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
-    python /tmp/get-pip.py && \
-    pip install --no-cache-dir falcon gunicorn pymongo requests speedtest_cli psutil && \
+    python2 /tmp/get-pip.py && \
+    pip2 install --no-cache-dir falcon gunicorn pymongo requests speedtest_cli psutil && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
 
 EXPOSE 1194/udp 3000

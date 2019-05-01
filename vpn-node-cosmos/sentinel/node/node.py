@@ -36,8 +36,8 @@ class Node(object):
             response = json.load(urlopen(web_url))
             self.ip = str(response['query'])
             self.location = {
-                'city': str(response['city']),
-                'country': str(response['country']),
+                'city': str(response['city'].encode('utf-8')),
+                'country': str(response['country'].encode('utf-8')),
                 'latitude': float(response['lat']),
                 'longitude': float(response['lon'])
             }

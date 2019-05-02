@@ -277,6 +277,16 @@ class Footer extends Component {
                 });
                 this.disconnectTMVpn();
             }
+
+            if (currentUsage.message === 'Wrong details.' && !this.state.disconnectCalled & vpnType === 'wireguard') {
+                notifier.notify({
+                    title: 'Vpn Disconnected',
+                    message: 'Wrong details.',
+                    sound: true,
+                    wait: false
+                });
+                this.disconnectTMVpn();
+            }
         }
 
         // Changing to default values after vpn disconnection

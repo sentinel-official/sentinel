@@ -127,17 +127,17 @@ export function setDockerContainers(data) {
                         nm.nodeConfig(item.Names, (err, stderr, stdout) => { 
 
                             if(err){
-                                console.log("mon err", err);
+                                // console.log("mon err", err);
                             }
                             if(stderr){
-                                console.log("mon stderr", stderr)
+                                // console.log("mon stderr", stderr)
                             }
 
                             if (i === arr.length - 1) {
                                 send = true;
                             }
                             if (stdout) {
-                                console.log("mon stdout1", stdout);
+                                // console.log("mon stdout1", stdout);
                                  
                                 let parsedData = JSON.parse(stdout)
                                 monikers[i] = parsedData.moniker ? parsedData.moniker.trim() : '';

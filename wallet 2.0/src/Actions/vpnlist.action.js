@@ -35,7 +35,9 @@ export async function getVpnList(vpnType, isTM) {
                 : uri + "/client/vpn/list";
         } else
             listUrl = isTM
-                ? TMain_URL + "/nodes?type=any&status=up"
+                // ? TMain_URL + "/nodes?type=any&status=up" disabling this as we don't have WG now
+ 
+                ? TMain_URL + "/nodes?type=OpenVPN&status=up"
                 : uri + "/client/vpn/list";
 
         let response = await axiosInstance.get(listUrl, {

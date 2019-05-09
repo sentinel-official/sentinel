@@ -36,7 +36,7 @@ export async function getVpnList(vpnType, isTM) {
         } else
             listUrl = isTM
                 // ? TMain_URL + "/nodes?type=any&status=up" disabling this as we don't have WG now
- 
+
                 ? TMain_URL + "/nodes?type=OpenVPN&status=up"
                 : uri + "/client/vpn/list";
 
@@ -47,45 +47,45 @@ export async function getVpnList(vpnType, isTM) {
             }
         });
         if (response.data.success) {
-            if (!isTM && vpnType === "all") {
-                let nodes = [];
-                // nodes.push(response.data.list);
-                nodes = nodes.concat(response.data.list);
-                try {
-                    let socksRes = await axiosInstance.get(
-                        uri + "/client/vpn/socks-list",
-                        {
-                            headers: {
-                                Accept: "application/json",
-                                "Content-type": "application/json"
-                            }
-                        }
-                    );
-                    if (socksRes.data.success) {
-                        // nodes.push(socksRes.data.list);
-                        nodes = nodes.concat(socksRes.data.list);
-                        return {
-                            type: types.GET_VPN_LIST_SUCCESS,
-                            payload: nodes
-                        };
-                    } else {
-                        return {
-                            type: types.GET_VPN_LIST_SUCCESS,
-                            payload: nodes
-                        };
-                    }
-                } catch (error) {
-                    return {
-                        type: types.GET_VPN_LIST_SUCCESS,
-                        payload: nodes
-                    };
-                }
-            } else {
-                return {
-                    type: types.GET_VPN_LIST_SUCCESS,
-                    payload: isTM ? response.data.nodes : response.data.list
-                };
-            }
+            // if (!isTM && vpnType === "all") {
+            //     let nodes = [];
+            //     // nodes.push(response.data.list);
+            //     nodes = nodes.concat(response.data.list);
+            //     try {
+            //         let socksRes = await axiosInstance.get(
+            //             uri + "/client/vpn/socks-list",
+            //             {
+            //                 headers: {
+            //                     Accept: "application/json",
+            //                     "Content-type": "application/json"
+            //                 }
+            //             }
+            //         );
+            //         if (socksRes.data.success) {
+            //             // nodes.push(socksRes.data.list);
+            //             nodes = nodes.concat(socksRes.data.list);
+            //             return {
+            //                 type: types.GET_VPN_LIST_SUCCESS,
+            //                 payload: nodes
+            //             };
+            //         } else {
+            //             return {
+            //                 type: types.GET_VPN_LIST_SUCCESS,
+            //                 payload: nodes
+            //             };
+            //         }
+            //     } catch (error) {
+            //         return {
+            //             type: types.GET_VPN_LIST_SUCCESS,
+            //             payload: nodes
+            //         };
+            //     }
+            // } else {
+            return {
+                type: types.GET_VPN_LIST_SUCCESS,
+                payload: isTM ? response.data.nodes : response.data.list
+            };
+            // }
         } else {
             return {
                 type: types.GET_VPN_LIST_PROGRESS,

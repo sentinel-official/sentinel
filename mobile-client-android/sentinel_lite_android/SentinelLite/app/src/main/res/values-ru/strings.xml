@@ -2,23 +2,6 @@
     <string name="app_name">Sentinel Lite</string>
     <string name="sentinel">Sentinel</string>
     <string name="lite">Lite Client v %s</string>
-    <string name="default_language">en</string>
-
-    <!-- String Array -->
-    <string-array name="language">
-        <!--<item>Chinese</item>-->
-        <item>English</item>
-        <!--<item>Japanese</item>-->
-        <item>Russian</item>
-        <!--<item>Spanish</item>-->
-    </string-array>
-    <string-array name="language_code">
-        <!--<item>zh</item>-->
-        <item>en</item>
-        <!--<item>ja</item>-->
-        <item>ru</item>
-        <!--<item>es</item>-->
-    </string-array>
 
     <!-- ics_openVPN strings -->
     <string name="fetching_server_details">Получение данных от VPN-сервера</string>
@@ -132,7 +115,7 @@
 
     <!-- Translatable strings -->
     <string name="app_sub_name">Защищённая децентрализованная VPN-платформа</string>
-    <string name="next">Дальше</string>
+    <string name="action_next">Дальше</string>
     <string name="disconnect">Отключиться</string>
     <string name="view_vpns">Список VPN</string>
     <string name="view_vpn_list">Список VPN</string>
@@ -142,15 +125,18 @@
     <string name="no_internet">Нет подключения к интернету. Попробуйте еще раз.</string>
     <string name="please_note">Внимание</string>
     <string name="referral_id_copied">Реферальный код скопирован</string>
-    <string name="vpn_location">%1s, %2s</string>
+    <string name="link_copied">Реферальная ссылка скопирована</string>
+    <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Скорость %s</string>
-    <string name="vpn_bandwidth_connected">Скорость\n%s</string>
+    <string name="vpn_bandwidth_connected">Скорость соединения</string>
     <string name="vpn_enc_method">Шифрование %s</string>
-    <string name="vpn_enc_method_connected">Шифрование\n%s</string>
+    <string name="vpn_enc_method_connected">Шифрование</string>
     <string name="vpn_latency">Задержка %s</string>
-    <string name="vpn_latency_connected">Задержка\n%s</string>
-    <string name="vpn_duration_connected">Длительность\n%s</string>
+    <string name="vpn_node_version">Версия %s</string>
+    <string name="vpn_node_rating">Оценка %s</string>
+    <string name="vpn_latency_connected">Задержка</string>
+    <string name="vpn_duration_connected">Длительность</string>
     <string name="vpn_bandwidth_value">%.2f Мб/с</string>
     <string name="vpn_latency_value">%.3f мс</string>
     <string name="generic_loading_message">Загрузка. Подождите…</string>
@@ -161,6 +147,8 @@
     <string name="bandwidth">Скорость:</string>
     <string name="latency">Задержка:</string>
     <string name="encryption">Шифрование:</string>
+    <string name="node_version">Версия:</string>
+    <string name="node_rating">Оценка:</string>
     <string name="coming_soon">Скоро добавим</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
     <string name="saving_config">Сохранение конфигураций VPN…</string>
@@ -169,23 +157,31 @@
     <string name="upload_speed">Скорость исходящих данных</string>
     <string name="vpn_status">Статус VPN: %1s</string>
     <string name="vpn_already_connected">Вы уже подключены к VPN-серверу. Перед подключением к новому VPN-серверу отключите старый.</string>
-    <string name="telegram_url">https://t.me/sentinel_co</string>
-    <string name="medium_url">https://medium.com/@Sentinel</string>
-    <string name="twitter_url">https://twitter.com/sentinel_co</string>
-    <string name="website_url">https://sentinel.co</string>
     <string name="link_coming_soon">Скоро добавим.</string>
     <string name="faq">FAQ</string>
     <string name="got_it">Понял</string>
     <string name="retry">Повторить</string>
+    <string name="vpn_usage">Использование dVPN</string>
+    <string name="total_sessions">Общее количество сеансов</string>
+    <string name="total_duration">Общая длительность сеансов</string>
+    <string name="total_received_data">Общее количество полученных данных</string>
+    <string name="vpn_usage_empty_list_message">В настоящее время у вас нет использования VPN</string>
+    <string name="session_id">ID Сеанса</string>
+    <string name="received_data">Получено данных</string>
+    <string name="duration">Длительность</string>
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
     <string name="referral_id">Реферальный код</string>
-    <string name="referrals">Рефералы</string>
+    <string name="invitation_link">Ссылка на приглашение</string>
+    <string name="invitation_desc">Поделитесь этой ссылкой, чтобы ваши друзья смогли пользоваться приложением Sentinel dVPN</string>
+    <string name="share_app">Поделитесь приложением</string>
     <string name="send_to">Отправить…</string>
     <string name="no_of_referrals">Количество рефералов</string>
     <string name="reward_earned">Заработано токенов</string>
-    <string name="share_id">Поделиться кодом</string>
-    <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %s\n\nСсылка: https://play.google.com/store/apps/details?id=co.sentinel.sentinellite</string>
+    <string name="invite_friend">Пригласить друзей</string>
+    <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %1$s\n\nСсылка: %2$s</string>
+    <string name="branch_share_title">Эй, зацени это новое dVPN Андроид-приложение.</string>
+    <string name="branch_share_desc">Используй мой код, чтобы получить бесплатные токены.\nРеферальный код: %1$s</string>
     <string name="info_title_1">Поделись своим реферальным кодом для бесплатных токенов за каждого зарегистрированного пользователя</string>
     <string name="info_title_2">Защищённая децентрализованная VPN-платформа</string>
     <string name="info_desc_1">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети</string>
@@ -194,19 +190,52 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="claim_bonus">Забрать бонус</string>
+    <string name="label_enter_address_claim">Введите адрес кошелька, полученного из приложения Sentinel Network.</string>
+    <string name="hint_enter_address_claim">Адрес кошелька</string>
+    <string name="label_already_linked">Вы уже забронировали свои токены. Дождитесь пополнения баланса.\nАдрес: %1$s\nSNC Реферальный код: %2$s\nSLC Реферальный код: %3$s</string>
+    <string name="label_confirm_link_account">1.  Ваш реферальный код для данного адреса, %1$s.\n\n2.  Если данный реферальный код отличается от указанного в приложении Sentinel Network с GitHub, свяжитесь с нами в телеграмме (ссылка в боковом меню).\n\n3. Нажмите «Подтвердить», если вы хотите привязать введенный адрес с реферальным кодом в приложении для получения токенов.</string>
+    <string name="label_link_account_success">Поздравляем! Ваши приложения Sentinel Free VPN dApp и Sentinel Network dVPN dApp теперь привязаны друг к другу. Токены будут зачислены после окончания рабочей недели.</string>
     <string name="update_available">Доступно обновление</string>
     <string name="update_desc">Новая версия уже доступна для скачивания.\n\nПожалуйста, скачайте и установите новую версию для стабильной работы приложения.</string>
     <string name="downloading_app_tite">Скачивается…</string>
-    <string name="download">Скачать</string>
+    <string name="action_download">Скачать</string>
     <string name="referral_address_missing">Вы не ввели реферальный код.\n\n Вы хотите продолжить без реферального кода?</string>
     <string name="empty_list_message">Нет истории для показа.</string>
     <string name="vpn_empty_list_message">В данный момент нет доступных VPN для подключения.</string>
-    <string name="cancel">Отмена</string>
+    <string name="action_cancel">Отмена</string>
     <string name="registering_device">Подготавливаем ваше устройство. Подождите…</string>
     <string name="add_referral_desc">У вас есть реферальный код? \nВведите его при регистрации для получения бонусов.</string>
     <string name="ok">ОК</string>
     <string name="can_claim_after">Можно забрать через: %s</string>
-    <string name="download_desc">Скачайте и установите Sentinel Network Client на это же устройство, чтобы забрать свой бонусные токены и получить доступ к полноценной версии.</string>
+    <string name="download_desc">1. Скачивайте Sentinel Network App с GitHub нажатием кнопки \"Скачать\". Пропустите этот пункт, если вы уже установили это приложение.\n2. Создайте адрес и вставьте адрес кошелька, нажав на кнопку \"Ввести адрес\".</string>
     <string name="referral_desc">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети.</string>
-    <string name="network_lost">Похоже, что вы отключились от интернета. VPN подключение остановлено.\nПожалуста, переподключитесь.</string>
+    <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
+    <string name="label_rate_session">Оцените качество данного подключения к dVPN</string>
+    <string name="error_select_rating">Please select rating</string>
+    <string name="action_skip">Пропустить</string>
+    <string name="action_rate">Оценить</string>
+    <string name="referral_address_invalid">Неправильно введен реферальный код. Попробуйте ещё раз.</string>
+    <string name="read_more">Узнать больше</string>
+    <string name="action_confirm">Подтвердить</string>
+    <string name="action_enter_address">Введите адрес</string>
+    <string name="filter_by_title">Фильтр</string>
+    <string name="filter_by_bookmark">Показывать только избранные</string>
+    <string name="sort_by_title">Сортировать по</string>
+    <string name="sort_by_default">По умолчанию</string>
+    <string name="sort_by_country_a">Страна</string>
+    <string name="sort_by_country_d">Страна ↓</string>
+    <string name="sort_by_latency_i">Задержка ↑</string>
+    <string name="sort_by_latency_d">Задержка</string>
+    <string name="sort_by_bandwidth_i">Трафик ↑</string>
+    <string name="sort_by_bandwidth_d">Трафик</string>
+    <string name="sort_by_price_i">Цена ↑</string>
+    <string name="sort_by_price_d">Цена ↓</string>
+    <string name="sort_by_rating_i">Рейтинг ↑</string>
+    <string name="sort_by_rating_d">Рейтинг</string>
+    <string name="hint_search_vpn_list">Поиск по стране</string>
+    <string name="alert_bookmark_added">Избранные VPN</string>
+    <string name="alert_bookmark_removed">Удаленные VPN</string>
+    <string name="action_done">Готово</string>
+    <string name="action_apply">Применить</string>
+
 </resources>

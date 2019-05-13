@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sr_reload"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_invite_friend"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".ui.fragment.ShareAppFragment">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/margin_64">
+
+                <TextView
+                    android:id="@+id/invitation_link"
+                    style="@style/CustomTextAppearance.Text12.White50Normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/invitation_link"
+                    app:layout_constraintBottom_toBottomOf="@+id/ib_copy_invitation_link"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/ib_copy_invitation_link"
+                    tools:layout_editor_absoluteY="123dp" />
+
+                <ImageButton
+                    android:id="@+id/ib_copy_invitation_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="@dimen/margin_8"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="@dimen/margin_8"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_invitation_link"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/invitation_link"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:srcCompat="@drawable/ic_copy"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tv_invitation_link"
+                    style="@style/CustomTextAppearance.Text20.Orange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingStart="@dimen/margin_48"
+                    android:paddingEnd="@dimen/margin_48"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ib_copy_invitation_link"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/tv_invitation_desc"
+                    style="@style/CustomTextAppearance.Text14.White70Normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/margin_48"
+                    android:paddingEnd="@dimen/margin_48"
+                    android:text="@string/invitation_desc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_invitation_link"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+            </android.support.constraint.ConstraintLayout>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <Button
+        android:id="@+id/btn_invite_friend"
+        style="@style/CustomTextAppearance.OrangeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/invite_friend"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

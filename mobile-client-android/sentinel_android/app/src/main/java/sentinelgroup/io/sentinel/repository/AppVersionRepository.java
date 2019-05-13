@@ -38,7 +38,6 @@ public class AppVersionRepository {
      */
 
     public SingleLiveEvent<Resource<VersionInfo>> getVersionInfoLiveEvent() {
-        getVersionInfo();
         return mVersionInfoLiveEvent;
     }
 

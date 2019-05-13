@@ -82,20 +82,25 @@ if __name__ == '__main__':
                 print(error)
                 exit(2)
             else:
+                seed_path = '/root/.sentinel/{}'.format(str(resp['address']))
+                with open(seed_path, 'w') as f:
+                    f.writelines(str(resp['seed']))
+                    f.close()
+
                 node.update_info('config', {
                     'account_address': str(resp['address'])
                 })
-                error = get_free_coins()
-                if error is not None:
-                    print(error)
-                    exit(3)
 
+    _ = get_free_coins()
+
+    print('Updating location and Internet speed information...')
     node.update_info('location')
     node.update_info('netspeed')
 
     if node.config['register']['hash'] is None:
         error, resp = cosmos_call('register_vpn_node', {
             'ip': str(node.ip),
+            'moniker': str(node.config['moniker']),
             'upload_speed': int(node.net_speed['upload']),
             'download_speed': int(node.net_speed['download']),
             'price_per_gb': int(node.config['price_per_gb']),

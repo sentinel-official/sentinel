@@ -1,36 +1,36 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageButton;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.haipq.android.flagkit.FlagImageView;
-
-import java.util.Objects;
-
-import de.blinkt.openvpn.core.ConnectionStatus;
-import de.blinkt.openvpn.core.OpenVPNManagement;
-import de.blinkt.openvpn.core.VpnStatus;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
 import sentinelgroup.io.sentinel.ui.activity.VpnListActivity;
+import sentinelgroup.io.sentinel.ui.custom.BlurFlagImageView;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
+import sentinelgroup.io.sentinel.util.AnalyticsHelper;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Convert;
@@ -38,8 +38,6 @@ import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.SpannableStringUtil;
 import sentinelgroup.io.sentinel.viewmodel.VpnConnectedViewModel;
 import sentinelgroup.io.sentinel.viewmodel.VpnConnectedViewModelFactory;
-
-import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +48,7 @@ import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
  * Use the {@link VpnConnectedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VpnConnectedFragment extends Fragment implements View.OnClickListener, VpnStatus.StateListener, VpnStatus.ByteCountListener {
+public class VpnConnectedFragment extends Fragment implements View.OnClickListener {
 
     private VpnConnectedViewModel mViewModel;
 
@@ -58,10 +56,12 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
 
     private OnVpnConnectionListener mVpnListener;
 
-    private FlagImageView mFvFlag;
+    private BlurFlagImageView mFvFlag;
     private TextView mTvVpnState, mTvLocation, mTvIp, mTvDownloadSpeed, mTvUploadSpeed, mTvDataUsed,
-            mTvBandwidth, mTvLatency, mTvPrice, mTvDuration;
+            mTvBandwidth, mTvLatency, mTvEncMethod, mTvPrice, mTvDuration;
     private Button mBtnDisconnect, mBtnViewVpn;
+    private AppCompatImageButton mIbBookmark;
+    private VpnListEntity mVpnEntity;
 
     private Long mConnectionTime = 0L;
 
@@ -101,6 +101,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         fragmentLoaded(getString(R.string.app_name));
+        initListeners();
         initViewModel();
     }
 
@@ -109,18 +110,7 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         super.onStart();
         if (!SentinelApp.isVpnInitiated) {
             loadNextFragment(VpnSelectFragment.newInstance(null));
-        } else {
-            // setup VPN listeners
-            VpnStatus.addStateListener(this);
-            VpnStatus.addByteCountListener(this);
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        VpnStatus.removeStateListener(this);
-        VpnStatus.removeByteCountListener(this);
     }
 
     private void initView(View iView) {
@@ -128,11 +118,13 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mTvVpnState = iView.findViewById(R.id.tv_vpn_state);
         mTvLocation = iView.findViewById(R.id.tv_location);
         mTvIp = iView.findViewById(R.id.tv_ip);
+        mIbBookmark = iView.findViewById(R.id.ib_bookmark);
         mTvDownloadSpeed = iView.findViewById(R.id.tv_download_speed);
         mTvUploadSpeed = iView.findViewById(R.id.tv_upload_speed);
         mTvDataUsed = iView.findViewById(R.id.tv_data_used);
         mTvBandwidth = iView.findViewById(R.id.tv_bandwidth);
         mTvLatency = iView.findViewById(R.id.tv_latency);
+        mTvEncMethod = iView.findViewById(R.id.tv_enc_method);
         mTvPrice = iView.findViewById(R.id.tv_price);
         mTvDuration = iView.findViewById(R.id.tv_duration);
         mBtnDisconnect = iView.findViewById(R.id.btn_disconnect);
@@ -142,19 +134,32 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mBtnViewVpn.setOnClickListener(this);
     }
 
+    private void initListeners() {
+        mIbBookmark.setOnClickListener(v -> {
+            if (mVpnEntity != null) {
+                Toast.makeText(getContext(), mVpnEntity.isBookmarked() ? R.string.alert_bookmark_removed : R.string.alert_bookmark_added, Toast.LENGTH_SHORT).show();
+                mViewModel.toggleVpnBookmark(mVpnEntity.getAccountAddress(), mVpnEntity.getIp());
+            }
+        });
+    }
+
     private void initViewModel() {
-        VpnConnectedViewModelFactory aFactory = InjectorModule.provideVpnConnectedViewModelFactory(getContext());
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        VpnConnectedViewModelFactory aFactory = InjectorModule.provideVpnConnectedViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnConnectedViewModel.class);
 
         mViewModel.getVpnLiveData().observe(this, vpnEntity -> {
             if (vpnEntity != null && vpnEntity.getAccountAddress().equals(AppPreferences.getInstance().getString(AppConstants.PREFS_VPN_ADDRESS))) {
+                mVpnEntity = vpnEntity;
                 setupVpnData(vpnEntity);
             }
         });
     }
 
     private void setupVpnData(VpnListEntity iVpnEntity) {
-        mTvLocation.setText(getString(R.string.vpn_location, iVpnEntity.getLocation().city, iVpnEntity.getLocation().country));
+        mTvLocation.setText(getString(R.string.vpn_location_city_country, iVpnEntity.getLocation().city, iVpnEntity.getLocation().country));
         // Construct and set - IP SpannableString
         String aIp = getString(R.string.vpn_ip, iVpnEntity.getIp());
         SpannableString aStyledIp = new SpannableStringUtil.SpannableStringUtilBuilder(aIp, iVpnEntity.getIp())
@@ -165,30 +170,21 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         mTvIp.setText(aStyledIp);
         // Set country flag
         mFvFlag.setCountryCode(Converter.getCountryCode(iVpnEntity.getLocation().country));
-        // Construct and set - Bandwidth SpannableString
-        String aBandwidthValue = getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(iVpnEntity.getNetSpeed().download, Convert.DataUnit.MBPS));
-        String aBandwidth = getString(R.string.vpn_bandwidth_connected, aBandwidthValue);
-        SpannableString aStyledBandwidth = new SpannableStringUtil.SpannableStringUtilBuilder(aBandwidth, aBandwidthValue)
-                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
-                .customStyle(Typeface.BOLD)
-                .build();
-        mTvBandwidth.setText(aStyledBandwidth);
-        // Construct and set - Price SpannableString
-        String aPriceValue = getString(R.string.vpn_price_value, iVpnEntity.getPricePerGb());
-        String aPrice = getString(R.string.vpn_price_connected, aPriceValue);
-        SpannableString aStyledPrice = new SpannableStringUtil.SpannableStringUtilBuilder(aPrice, aPriceValue)
-                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
-                .customStyle(Typeface.BOLD)
-                .build();
-        mTvPrice.setText(aStyledPrice);
-        // Construct and set - Latency SpannableString
-        String aLatencyValue = getString(R.string.vpn_latency_value, iVpnEntity.getLatency());
-        String aLatency = getString(R.string.vpn_latency_connected, aLatencyValue);
-        SpannableString aStyleLatency = new SpannableStringUtil.SpannableStringUtilBuilder(aLatency, aLatencyValue)
-                .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
-                .customStyle(Typeface.BOLD)
-                .build();
-        mTvLatency.setText(aStyleLatency);
+
+        setBookmarkIcon(iVpnEntity);
+
+        // Set Bandwidth
+        mTvBandwidth.setText(getString(R.string.vpn_bandwidth_value, Convert.fromBitsPerSecond(iVpnEntity.getNetSpeed().download, Convert.DataUnit.MBPS)));
+        // Set Price
+        mTvPrice.setText(getString(R.string.vpn_price_value, iVpnEntity.getPricePerGb()));
+        // Set Latency
+        mTvLatency.setText(getString(R.string.vpn_latency_value, iVpnEntity.getLatency()));
+        // Set Encryption Method
+        mTvEncMethod.setText(iVpnEntity.getEncryptionMethod());
+    }
+
+    private void setBookmarkIcon(VpnListEntity iVpnEntity) {
+        mIbBookmark.setImageResource(iVpnEntity.isBookmarked() ? R.drawable.ic_bookmark_active : R.drawable.ic_bookmark_inactive);
     }
 
     public void updateStatus(String iState) {
@@ -198,44 +194,41 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
     }
 
     public void updateByteCount(String iDownloadSpeed, String iUploadSpeed, String iTotalDataUsed) {
-        if (mTvDownloadSpeed != null && mTvUploadSpeed != null && mTvDataUsed != null) {
+        if (mTvDownloadSpeed != null && !TextUtils.isEmpty(iDownloadSpeed)) {
             // Construct and set - Download Speed SpannableString
             String aDownloadSubString = iDownloadSpeed.substring(iDownloadSpeed.indexOf(' '));
             SpannableString aDownloadSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iDownloadSpeed, aDownloadSubString)
-                    .color(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorTextWhiteWithAlpha70))
+                    .color(ContextCompat.getColor(SentinelApp.getAppContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
             mTvDownloadSpeed.setText(aDownloadSpannable);
+        }
+        if (mTvUploadSpeed != null && !TextUtils.isEmpty(iUploadSpeed)) {
             // Construct and set - Upload Speed SpannableString
             String aUploadSubString = iUploadSpeed.substring(iUploadSpeed.indexOf(' '));
             SpannableString aUploadSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iUploadSpeed, aUploadSubString)
-                    .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
+                    .color(ContextCompat.getColor(SentinelApp.getAppContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
             mTvUploadSpeed.setText(aUploadSpannable);
+        }
+        if (mTvDataUsed != null && !TextUtils.isEmpty(iTotalDataUsed)) {
             // Construct and set - Data used SpannableString
             String aDataUsedSubString = iTotalDataUsed.substring(iTotalDataUsed.indexOf(' '));
             SpannableString aDataUsedSpannable = new SpannableStringUtil.SpannableStringUtilBuilder(iTotalDataUsed, aDataUsedSubString)
-                    .color(ContextCompat.getColor(getContext(), R.color.colorTextWhiteWithAlpha70))
+                    .color(ContextCompat.getColor(SentinelApp.getAppContext(), R.color.colorTextWhiteWithAlpha70))
                     .relativeSize(0.5f)
                     .build();
             mTvDataUsed.setText(aDataUsedSpannable);
+        }
+        if (mTvDuration != null) {
             // Construct and set - Duration SpannableString
             if (mConnectionTime == 0L) {
                 // Store the VPN connection initiated time
                 mConnectionTime = AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME);
             }
-            String aDurationValue = mConnectionTime == 0 ? "" : Converter.getLongDuration((long) (((double) (System.currentTimeMillis() - mConnectionTime)) / 1000));
-            String aDuration = getString(R.string.vpn_duration_connected, aDurationValue);
-            if (mConnectionTime != 0L) {
-                SpannableString aStyleDuration = new SpannableStringUtil.SpannableStringUtilBuilder(aDuration, aDurationValue)
-                        .color(ContextCompat.getColor(getContext(), R.color.colorTextWhite))
-                        .customStyle(Typeface.BOLD)
-                        .build();
-                mTvDuration.setText(aStyleDuration);
-            } else {
-                mTvDuration.setText(aDuration);
-            }
+            String aDurationValue = mConnectionTime == 0 ? "0" : Converter.getLongDuration((long) (((double) (System.currentTimeMillis() - mConnectionTime)) / 1000));
+            mTvDuration.setText(aDurationValue);
         }
     }
 
@@ -272,8 +265,6 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
 
     public void initiateVpnDisconnection() {
         if (mVpnListener != null) {
-            VpnStatus.removeStateListener(this);
-            VpnStatus.removeByteCountListener(this);
             mVpnListener.onVpnDisconnectionInitiated();
         }
     }
@@ -303,37 +294,13 @@ public class VpnConnectedFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
             case R.id.btn_disconnect:
                 initiateVpnDisconnection();
+                AnalyticsHelper.triggerOVPNDisconnectInit();
                 break;
 
             case R.id.btn_view_vpn:
                 loadNextActivity(new Intent(getActivity(), VpnListActivity.class), AppConstants.REQ_VPN_CONNECT);
+                getActivity().overridePendingTransition(R.anim.enter_right_to_left, R.anim.exit_left_to_right);
                 break;
-        }
-    }
-
-    @Override
-    public void updateState(String state, String logmessage, int localizedResId, ConnectionStatus level) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                updateStatus(getString(localizedResId, logmessage));
-            });
-        }
-    }
-
-    @Override
-    public void setConnectedVPN(String uuid) {
-
-    }
-
-    @Override
-    public void updateByteCount(long in, long out, long diffIn, long diffOut) {
-        if (getActivity() != null) {
-            String aDownloadSpeed = humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources());
-            String aUploadSpeed = humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources());
-            String aTotalData = humanReadableByteCount(in, false, getResources());
-            getActivity().runOnUiThread(() -> {
-                updateByteCount(aDownloadSpeed, aUploadSpeed, aTotalData);
-            });
         }
     }
 }

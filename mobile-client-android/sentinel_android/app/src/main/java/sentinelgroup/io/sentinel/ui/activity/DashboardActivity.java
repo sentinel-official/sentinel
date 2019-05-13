@@ -19,18 +19,31 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import de.blinkt.openvpn.LaunchVPN;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.ConnectionStatus;
 import de.blinkt.openvpn.core.IOpenVPNServiceInternal;
+import de.blinkt.openvpn.core.OpenVPNManagement;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.ProfileManager;
 import de.blinkt.openvpn.core.VpnStatus;
@@ -39,22 +52,32 @@ import sentinelgroup.io.sentinel.SentinelApp;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
 import sentinelgroup.io.sentinel.ui.custom.OnVpnConnectionListener;
 import sentinelgroup.io.sentinel.ui.custom.ProfileAsync;
+import sentinelgroup.io.sentinel.ui.custom.VpnListSearchListener;
 import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.ProgressDialogFragment;
+import sentinelgroup.io.sentinel.ui.dialog.RatingDialogFragment;
 import sentinelgroup.io.sentinel.ui.dialog.SingleActionDialogFragment;
+import sentinelgroup.io.sentinel.ui.dialog.SortFilterByDialogFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnConnectedFragment;
 import sentinelgroup.io.sentinel.ui.fragment.VpnSelectFragment;
 import sentinelgroup.io.sentinel.ui.fragment.WalletFragment;
+import sentinelgroup.io.sentinel.util.AnalyticsHelper;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppPreferences;
+import sentinelgroup.io.sentinel.util.DoneOnEditorActionListener;
 import sentinelgroup.io.sentinel.util.Logger;
 
+import static de.blinkt.openvpn.core.OpenVPNService.humanReadableByteCount;
 import static sentinelgroup.io.sentinel.util.AppConstants.DOUBLE_ACTION_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.PROGRESS_DIALOG_TAG;
+import static sentinelgroup.io.sentinel.util.AppConstants.RATING_DIALOG_TAG;
 import static sentinelgroup.io.sentinel.util.AppConstants.SINGLE_ACTION_DIALOG_TAG;
 
 public class DashboardActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
-        OnGenericFragmentInteractionListener, OnVpnConnectionListener, VpnStatus.StateListener, DoubleActionDialogFragment.OnDialogActionListener {
+        OnGenericFragmentInteractionListener, OnVpnConnectionListener, VpnStatus.StateListener, VpnStatus.ByteCountListener, DoubleActionDialogFragment.OnDialogActionListener, View.OnClickListener {
+
+    private static final int VPN_SELECT_FRAGMENT = 0;
+    private static final int WALLET_FRAGMENT = 1;
 
     private String mIntentExtra;
     private boolean mHasActivityResult;
@@ -62,8 +85,13 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavMenuView, mNavFooter;
     private Toolbar mToolbar;
+    private TextView mTvToolbarTitle;
+    private ImageView mIvToolbarIcon;
     private SwitchCompat mSwitchNet;
     private TextView mSwitchState;
+    private AppCompatImageButton mIbSearch, mIbSort, mIbCloseSearch, mIbClearSearch;
+    private LinearLayout mLlSearch;
+    private AppCompatEditText mEtSearch;
     private ProgressDialogFragment mPrgDialog;
     private MenuItem mMenuVpn, mMenuWallet;
     private ProfileAsync profileAsync;
@@ -80,13 +108,45 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         }
     };
 
+    private SortFilterByDialogFragment.OnSortFilterDialogActionListener mSortDialogActionListener;
+    private VpnListSearchListener mVpnListSearchListener;
+
+    private boolean toFilterByBookmark;
+    private String mCurrentSortType = AppConstants.SORT_BY_DEFAULT;
+    private StringBuilder mCurrentSearchString = new StringBuilder();
+    private TextWatcher mSearchWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            mIbClearSearch.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+            if (s.length() >= 3) {
+                setCurrentSearchString(s.toString());
+                triggerSearch();
+            } else if (TextUtils.isEmpty(s)) {
+                clearCurrentSearchString();
+                triggerSearch();
+            }
+        }
+    };
+
+    private Map<Integer, Fragment> mFragmentMap = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         shouldShowHelper();
         initView();
-        loadVpnFragment(null);
+        loadVpnSelectFragment(null, "onCreate");
     }
 
     @Override
@@ -94,6 +154,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         super.onResume();
         // setup VPN listeners & services
         VpnStatus.addStateListener(this);
+        VpnStatus.addByteCountListener(this);
         Intent intent = new Intent(this, OpenVPNService.class);
         intent.setAction(OpenVPNService.START_SERVICE);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
@@ -102,32 +163,90 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             mIntentExtra = getIntent().getStringExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY);
         }
         if (mIntentExtra != null && mIntentExtra.equals(AppConstants.HOME)) {
-            loadVpnFragment(null);
+            loadVpnSelectFragment(null, "onResume hasIntentExtras");
         }
         // initialize/update the TESTNET switch
         setupTestNetSwitch();
         // check and toggle TESTNET switch state (if needed) when returning from other activity
-        toggleTestNetSwitch(!(getSupportFragmentManager().findFragmentById(R.id.fl_container) instanceof VpnConnectedFragment));
+        toggleTestNetSwitch(!(getCurrentFragment() instanceof VpnConnectedFragment));
+
+        initListeners();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unbindService(mConnection);
-    }
-
-    @Override
-    protected void onStop() {
         VpnStatus.removeStateListener(this);
-        super.onStop();
+        VpnStatus.removeByteCountListener(this);
     }
 
     @Override
     public void onBackPressed() {
         if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START))
             mDrawerLayout.closeDrawers();
+        else if (mLlSearch.getVisibility() == View.VISIBLE)
+            closeSearch();
         else
             super.onBackPressed();
+    }
+
+    private Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.fl_container);
+    }
+
+    public void setCurrentSearchString(String iSearchQuery) {
+        mCurrentSearchString.replace(0, mCurrentSearchString.length(), iSearchQuery);
+    }
+
+    public void clearCurrentSearchString() {
+        mCurrentSearchString.delete(0, mCurrentSearchString.length());
+    }
+
+    public boolean toFilterByBookmark() {
+        return toFilterByBookmark;
+    }
+
+    public void setFilterByBookmark(boolean toFilterByBookmark) {
+        this.toFilterByBookmark = toFilterByBookmark;
+    }
+
+    public String getCurrentSearchString() {
+        return "%" + mCurrentSearchString.toString() + "%";
+    }
+
+    public void setCurrentSortType(String iSortType) {
+        mCurrentSortType = iSortType;
+    }
+
+    public String getCurrentSortType() {
+        return mCurrentSortType;
+    }
+
+    public void setVpnListSearchListener(VpnListSearchListener iVpnListSearchListener) {
+        mVpnListSearchListener = iVpnListSearchListener;
+    }
+
+    public void removeVpnListSearchListener() {
+        mVpnListSearchListener = null;
+    }
+
+    public void setSortDialogActionListener(SortFilterByDialogFragment.OnSortFilterDialogActionListener iSortDialogActionListener) {
+        mSortDialogActionListener = iSortDialogActionListener;
+    }
+
+    public void removeSortDialogActionListener() {
+        mSortDialogActionListener = null;
+    }
+
+    private void triggerSearch() {
+        if (mVpnListSearchListener != null) {
+            mVpnListSearchListener.onSearchTriggered(getCurrentSearchString());
+        }
+    }
+
+    public void handleSortFilterIcon() {
+        mIbSort.setImageResource((!getCurrentSortType().equals(AppConstants.SORT_BY_DEFAULT) || toFilterByBookmark()) ? R.drawable.ic_sorted : R.drawable.ic_sort);
     }
 
     /*
@@ -154,8 +273,16 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
      */
     private void initView() {
         mToolbar = findViewById(R.id.toolbar);
+        mTvToolbarTitle = findViewById(R.id.toolbar_title);
+        mIvToolbarIcon = findViewById(R.id.toolbar_icon);
         mSwitchNet = findViewById(R.id.switch_net);
         mSwitchState = findViewById(R.id.tv_switch_state);
+        mIbSearch = findViewById(R.id.ib_search);
+        mIbSort = findViewById(R.id.ib_sort);
+        mLlSearch = findViewById(R.id.ll_search);
+        mEtSearch = findViewById(R.id.et_search);
+        mIbCloseSearch = findViewById(R.id.ib_close_search);
+        mIbClearSearch = findViewById(R.id.ib_clear_search);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mPrgDialog = ProgressDialogFragment.newInstance(true);
         mNavMenuView = findViewById(R.id.nav_menu_view);
@@ -164,8 +291,20 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         // instantiate toolbar
         setupToolbar();
+    }
+
+    /**
+     * Setup Listeners for all views
+     */
+    private void initListeners() {
         // add listeners
         mSwitchNet.setOnCheckedChangeListener(this);
+        mIbSearch.setOnClickListener(this);
+        mIbSort.setOnClickListener(this);
+        mEtSearch.addTextChangedListener(mSearchWatcher);
+        mEtSearch.setOnEditorActionListener(new DoneOnEditorActionListener());
+        mIbCloseSearch.setOnClickListener(this);
+        mIbClearSearch.setOnClickListener(this);
         mNavMenuView.setItemIconTintList(null);
         mNavMenuView.getHeaderView(0).findViewById(R.id.ib_back).setOnClickListener(v -> mDrawerLayout.closeDrawers());
         mNavMenuView.setNavigationItemSelectedListener(
@@ -195,6 +334,19 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger_menu);
         }
+        setToolbarTitle(getString(R.string.app_name));
+    }
+
+    /**
+     * Set the toolbar title
+     *
+     * @param iTitle [String] The title to be shown in the toolbar
+     */
+    protected void setToolbarTitle(String iTitle) {
+        if (mIvToolbarIcon != null)
+            mIvToolbarIcon.setVisibility(iTitle.equals(getString(R.string.app_name)) ? View.VISIBLE : View.GONE);
+        if (mTvToolbarTitle != null)
+            mTvToolbarTitle.setText(iTitle);
     }
 
     /*
@@ -214,8 +366,8 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
             case R.id.nav_language:
                 startActivityForResult(new Intent(this, GenericListActivity.class).putExtra(AppConstants.EXTRA_REQ_CODE, AppConstants.REQ_LANGUAGE), AppConstants.REQ_LANGUAGE);
                 break;
-            case R.id.nav_referral:
-                startActivity(new Intent(this, ReferralActivity.class));
+            case R.id.nav_share_app:
+                startActivity(new Intent(this, ShareAppActivity.class));
                 break;
             case R.id.nav_faq:
                 openUrl(getString(R.string.link_coming_soon));
@@ -237,6 +389,13 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         } else {
             showSingleActionError(AppConstants.VALUE_DEFAULT, iUrl, AppConstants.VALUE_DEFAULT);
         }
+    }
+
+    /**
+     * Shows dialog to give rating for previous dVPN session.
+     */
+    private void showRatingDialog() {
+        RatingDialogFragment.newInstance().show(getSupportFragmentManager(), RATING_DIALOG_TAG);
     }
 
     /**
@@ -322,20 +481,36 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     private void loadFragment(Fragment iFragment) {
         toggleTestNetSwitch(!(iFragment instanceof VpnConnectedFragment));
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, iFragment).commit();
+        if (iFragment instanceof VpnSelectFragment) {
+            mIbSearch.setVisibility(View.VISIBLE);
+            mIbSort.setVisibility(View.VISIBLE);
+        } else {
+            mIbSearch.setVisibility(View.GONE);
+            mIbSort.setVisibility(View.GONE);
+            mLlSearch.setVisibility(View.GONE);
+        }
+        closeSearch();
     }
 
     /*
      * Replaces the existing fragment in the container with VpnSelectFragment
      */
-    private void loadVpnFragment(String iMessage) {
-        loadFragment(VpnSelectFragment.newInstance(iMessage));
+    private void loadVpnSelectFragment(String iMessage, String iLocation) {
+        if (!mFragmentMap.containsKey(VPN_SELECT_FRAGMENT)) {
+            mFragmentMap.put(VPN_SELECT_FRAGMENT, VpnSelectFragment.newInstance(iMessage));
+        }
+        loadFragment(mFragmentMap.get(VPN_SELECT_FRAGMENT));
+        Logger.logInfo("loadVpnSelectFragment", iLocation);
     }
 
     /*
      * Replaces the existing fragment in the container with WalletFragment
      */
     private void loadWalletFragment() {
-        loadFragment(WalletFragment.newInstance());
+        if (!mFragmentMap.containsKey(WALLET_FRAGMENT)) {
+            mFragmentMap.put(WALLET_FRAGMENT, WalletFragment.newInstance());
+        }
+        loadFragment(mFragmentMap.get(WALLET_FRAGMENT));
     }
 
     /*
@@ -359,21 +534,22 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         switch (item.getItemId()) {
             case android.R.id.home:
+                closeSearch();
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
 
             case R.id.action_vpn:
-                if ((aFragment instanceof WalletFragment)) {
+                if ((getCurrentFragment() instanceof WalletFragment)) {
                     toggleItemState(item.getItemId());
-                    loadVpnFragment(null);
+                    loadVpnSelectFragment(null, "onOptionsItemSelected action_vpn");
                 }
                 return true;
 
             case R.id.action_wallet:
-                if (!(aFragment instanceof WalletFragment)) {
+                if (!(getCurrentFragment() instanceof WalletFragment)) {
+                    closeSearch();
                     toggleItemState(item.getItemId());
                     loadWalletFragment();
                 }
@@ -468,12 +644,11 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
         switch (requestCode) {
             case AppConstants.REQ_VPN_HISTORY:
                 if (resultCode == RESULT_OK) {
-                    if (!(aFragment instanceof WalletFragment))
-                        loadVpnFragment(null);
+                    if (!(getCurrentFragment() instanceof WalletFragment))
+                        loadVpnSelectFragment(null, "onActivityResult REQ_VPN_HISTORY");
                 }
                 break;
             case AppConstants.REQ_RESET_PIN:
@@ -488,7 +663,7 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case AppConstants.REQ_VPN_PAY:
                 if (resultCode == RESULT_OK) {
-                    loadVpnFragment(null);
+                    loadVpnSelectFragment(null, "onActivityResult REQ_VPN_PAY");
                 }
                 break;
             case AppConstants.REQ_VPN_INIT_PAY:
@@ -503,9 +678,10 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
                 break;
             case AppConstants.REQ_LANGUAGE:
                 if (resultCode == RESULT_OK) {
-                    refreshMenuTitles();
-                    if (!(aFragment instanceof WalletFragment))
-                        loadVpnFragment(null);
+                    reloadApp();
+                } else {
+                    if (!(getCurrentFragment() instanceof WalletFragment))
+                        loadVpnSelectFragment(null, "onActivityResult REQ_LANGUAGE");
                     else
                         loadWalletFragment();
                 }
@@ -514,24 +690,13 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
     }
 
     /*
-     * Refresh the navigation menu titles after a new language is set
+     * Reload the app after a new language is set
      */
-    private void refreshMenuTitles() {
-        Menu aMenu = mNavMenuView.getMenu();
-        MenuItem aMenuTxHistory = aMenu.findItem(R.id.nav_tx_history);
-        aMenuTxHistory.setTitle(R.string.transaction_history);
-        MenuItem aMenuVpnHistory = aMenu.findItem(R.id.nav_vpn_history);
-        aMenuVpnHistory.setTitle(R.string.vpn_history);
-        MenuItem aMenuResetPin = aMenu.findItem(R.id.nav_reset_pin);
-        aMenuResetPin.setTitle(R.string.reset_pin);
-        MenuItem aMenuLanguage = aMenu.findItem(R.id.nav_language);
-        aMenuLanguage.setTitle(R.string.language);
-        MenuItem aMenuReferral = aMenu.findItem(R.id.nav_referral);
-        aMenuReferral.setTitle(R.string.referrals);
-        MenuItem aMenuSocialLinks = aMenu.findItem(R.id.nav_faq);
-        aMenuSocialLinks.setTitle(R.string.faq);
-        MenuItem aMenuLogout = aMenu.findItem(R.id.nav_logout);
-        aMenuLogout.setTitle(R.string.logout);
+    private void reloadApp() {
+        Intent aIntent = new Intent(this, DashboardActivity.class);
+        aIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
+        startActivity(aIntent);
     }
 
     /*
@@ -551,17 +716,17 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
         AppPreferences.getInstance().saveBoolean(AppConstants.PREFS_IS_TEST_NET_ACTIVE, isChecked);
         mSwitchState.setText(getString(R.string.test_net, getString(isChecked ? R.string.on : R.string.off)));
 
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
+        Fragment aFragment = getCurrentFragment();
         if (aFragment instanceof WalletFragment) {
             ((WalletFragment) aFragment).updateBalance();
         } else if (!(aFragment instanceof VpnConnectedFragment))
-            loadVpnFragment(null);
+            loadVpnSelectFragment(null, "onCheckedChanged");
     }
 
 
     @Override
     public void onFragmentLoaded(String iTitle) {
-        // Unimplemented interface method
+        setToolbarTitle(iTitle);
     }
 
     @Override
@@ -617,44 +782,55 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
-        Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-        if (isPositiveButton) {
-            if (iTag.equals(AppConstants.TAG_INIT_PAY) && aFragment instanceof VpnSelectFragment)
-                ((VpnSelectFragment) aFragment).makeInitPayment();
-            else if (iTag.equals(AppConstants.TAG_LOGOUT))
-                logoutUser();
+        Fragment aFragment = getCurrentFragment();
+        if (isPositiveButton && iTag.equals(AppConstants.TAG_LOGOUT)) {
+            logoutUser();
+            iDialog.dismiss();
+        } else if (aFragment instanceof VpnSelectFragment) {
+            ((VpnSelectFragment) aFragment).onActionButtonClicked(iTag, iDialog, isPositiveButton);
         }
-        iDialog.dismiss();
     }
 
     @Override
     public void updateState(String state, String logMessage, int localizedResId, ConnectionStatus level) {
         Logger.logError("VPN_STATE", state + " - " + logMessage + " : " + getString(localizedResId), null);
         runOnUiThread(() -> {
-            Fragment aFragment = getSupportFragmentManager().findFragmentById(R.id.fl_container);
-            if (state.equals("CONNECTED") || (state.equals("USER_VPN_PERMISSION"))) {
-                if (AppPreferences.getInstance().getLong(AppConstants.PREFS_CONNECTION_START_TIME) == 0L && state.equals("CONNECTED"))
-                    AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, System.currentTimeMillis());
-                SentinelApp.isVpnConnected = true;
-            }
+            Fragment aFragment = getCurrentFragment();
             // Called when the VPN connection terminates
-            if (!VpnStatus.isVPNActive()) {
-                if (SentinelApp.isVpnConnected && !mHasActivityResult) {
-                    SentinelApp.isVpnInitiated = false;
-                    SentinelApp.isVpnConnected = false;
-                    AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                    if (!(aFragment instanceof WalletFragment))
-                        loadVpnFragment(state.equals("NOPROCESS") ? null : getString(localizedResId));
+            if (state.equals("USER_VPN_PERMISSION_CANCELLED")
+                    || state.equals("CONNECTRETRY")
+                    || (state.equals("NOPROCESS") && SentinelApp.isVpnConnected)) {
+                AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
+                if (!(aFragment instanceof WalletFragment)) {
+                    switch (state) {
+                        case "USER_VPN_PERMISSION_CANCELLED":
+                            loadVpnSelectFragment(getString(localizedResId), "updateState USER_VPN_PERMISSION_CANCELLED");
+                            break;
+                        case "CONNECTRETRY":
+                            loadVpnSelectFragment(getString(R.string.network_lost), "updateState CONNECTRETRY");
+                            break;
+                        default:
+                            showRatingDialog();
+                            loadVpnSelectFragment(null, "updateState default");
+                            AnalyticsHelper.triggerOVPNDisconnectDone();
+                            break;
+                    }
                 }
-            }
-            // Called when VPN permission is not given
-            if (state.equals("USER_VPN_PERMISSION_CANCELLED")) {
                 SentinelApp.isVpnInitiated = false;
                 SentinelApp.isVpnConnected = false;
-                AppPreferences.getInstance().saveLong(AppConstants.PREFS_CONNECTION_START_TIME, 0L);
-                if (!(aFragment instanceof WalletFragment))
-                    loadVpnFragment(getString(localizedResId));
+                SentinelApp.isVpnReconnectFailed = false;
+            } else {
+                if (aFragment != null && aFragment instanceof VpnConnectedFragment) {
+                    runOnUiThread(() -> {
+                        ((VpnConnectedFragment) aFragment).updateStatus(getString(localizedResId));
+                    });
+                }
             }
+
+            if (state.equals("CONNECTED")) {
+                AnalyticsHelper.triggerOVPNConnectDone();
+            }
+
             // Called when user connects to a VPN node from other activity
             if (mHasActivityResult) {
                 onVpnConnectionInitiated(AppPreferences.getInstance().getString(AppConstants.PREFS_CONFIG_PATH));
@@ -665,5 +841,79 @@ public class DashboardActivity extends AppCompatActivity implements CompoundButt
 
     @Override
     public void setConnectedVPN(String uuid) {
+    }
+
+    @Override
+    public void updateByteCount(long in, long out, long diffIn, long diffOut) {
+        Fragment aFragment = getCurrentFragment();
+        if (aFragment != null && aFragment instanceof VpnConnectedFragment) {
+            String aDownloadSpeed = humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String aUploadSpeed = humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String aTotalData = humanReadableByteCount(in, false, getResources());
+            runOnUiThread(() -> {
+                ((VpnConnectedFragment) aFragment).updateByteCount(aDownloadSpeed, aUploadSpeed, aTotalData);
+            });
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ib_search:
+                openSearch();
+                break;
+            case R.id.ib_sort:
+                openSortDialog();
+                break;
+            case R.id.ib_close_search:
+                closeSearch();
+                break;
+            case R.id.ib_clear_search:
+                mEtSearch.getText().clear();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void openSearch() {
+        mLlSearch.setVisibility(View.VISIBLE);
+        mEtSearch.setFocusable(true);
+        mEtSearch.setFocusableInTouchMode(true);
+        mEtSearch.requestFocus();
+        showKeyboard(mEtSearch);
+    }
+
+    private void openSortDialog() {
+        if (mSortDialogActionListener != null) {
+            SortFilterByDialogFragment.newInstance(AppConstants.TAG_SORT_BY, getCurrentSortType(), toFilterByBookmark(), mSortDialogActionListener).show(getSupportFragmentManager(), AppConstants.SORT_BY_DIALOG_TAG);
+        }
+    }
+
+    private void closeSearch() {
+        hideKeyboard();
+        mLlSearch.setVisibility(View.GONE);
+        mEtSearch.getText().clear();
+        mEtSearch.clearFocus();
+        mCurrentSearchString.delete(0, mCurrentSearchString.length());
+    }
+
+    private void showKeyboard(View iView) {
+        InputMethodManager aInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert aInputMethodManager != null;
+        aInputMethodManager.showSoftInput(iView, InputMethodManager.SHOW_FORCED);
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager aInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        if (aInputMethodManager != null) {
+            aInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

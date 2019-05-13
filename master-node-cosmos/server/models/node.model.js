@@ -39,6 +39,10 @@ let nodeSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  moniker: {
+    type: String,
+    default: '',
+  },
   location: {
     latitude: {
       type: Number,
@@ -76,25 +80,34 @@ let nodeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  info: {
-    status: {
-      type: String,
-      required: true,
-      default: 'down'
-    },
-    startOn: {
-      type: Date,
-      required: true,
-      default: Date.now
-    },
-    pingOn: {
-      type: Date,
-      required: true,
-      default: Date.now
-    }
+  ratingPoints: {
+    type: Number,
+    required: true,
+    default: 5,
+  },
+  ratingCount: {
+    type: Number,
+    required: true,
+    default: 1,
   },
   addedOn: {
     type: Date,
+    required: true,
+    default: Date.now
+  },
+  lastOn: {
+    type: Date,
+    required: true,
+    default: Date.now
+  },
+  status: {
+    type: String,
+    required: true,
+    default: 'down'
+  },
+  statusOn: {
+    type: Date,
+    required: true,
     default: Date.now
   }
 }, {

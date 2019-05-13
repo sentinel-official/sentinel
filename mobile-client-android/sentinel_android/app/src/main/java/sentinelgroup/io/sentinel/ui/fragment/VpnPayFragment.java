@@ -1,10 +1,12 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -49,7 +51,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
     private SwipeRefreshLayout mSrReload;
     private Button mBtnMakePayment, mBtnReportPayment, mBtnViewVpn;
 
-    private String mValue, mSessionId;
+    private String mValue, mSessionId, mToAddress;
 
     public VpnPayFragment() {
         // Required empty public constructor
@@ -112,7 +114,10 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initViewModel() {
-        VpnPayViewModelFactory aFactory = InjectorModule.provideVpnPayViewModelFactory(getContext());
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        VpnPayViewModelFactory aFactory = InjectorModule.provideVpnPayViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(VpnPayViewModel.class);
 
         mViewModel.getVpnUsageLiveEvent().observe(this, vpnUsage -> {
@@ -143,6 +148,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setupVpnUsageData(Session iSession) {
+        mToAddress = iSession.accountAddress;
         // Construct and set - Sent Due SpannableString
         String aSentDue = getString(R.string.sents, Converter.getFormattedTokenString(iSession.amount));
         String aSentDueSubString = aSentDue.substring(aSentDue.indexOf(' '));
@@ -189,6 +195,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
         aBundle.putBoolean(AppConstants.EXTRA_IS_VPN_PAY, true);
         aBundle.putBoolean(AppConstants.EXTRA_IS_INIT, false);
         aBundle.putString(AppConstants.EXTRA_AMOUNT, iAmount);
+        aBundle.putString(AppConstants.EXTRA_TO_ADDRESS, mToAddress);
         if (iSessionId != null)
             aBundle.putString(AppConstants.EXTRA_SESSION_ID, iSessionId);
         aIntent.putExtras(aBundle);
@@ -263,6 +270,7 @@ public class VpnPayFragment extends Fragment implements View.OnClickListener {
 
             case R.id.btn_view_vpn:
                 loadNextActivity(new Intent(getActivity(), VpnListActivity.class), AppConstants.REQ_CODE_NULL);
+                getActivity().overridePendingTransition(R.anim.enter_right_to_left, R.anim.exit_left_to_right);
                 break;
         }
     }

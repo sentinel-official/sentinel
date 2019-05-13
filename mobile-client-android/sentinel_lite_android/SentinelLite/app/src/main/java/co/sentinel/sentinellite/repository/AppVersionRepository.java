@@ -48,7 +48,6 @@ public class AppVersionRepository {
 
     public void fetchSlcVersionInfo() {
         getVersionInfoSlc();
-        ;
     }
 
     public void fetchSncVersionInfo() {

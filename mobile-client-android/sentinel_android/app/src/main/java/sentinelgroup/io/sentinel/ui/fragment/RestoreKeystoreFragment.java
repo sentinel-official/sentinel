@@ -1,16 +1,20 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +29,14 @@ import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 
 import java.io.File;
+import java.util.Objects;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
 import sentinelgroup.io.sentinel.ui.custom.OnGenericFragmentInteractionListener;
+import sentinelgroup.io.sentinel.ui.dialog.DoubleActionDialogFragment;
 import sentinelgroup.io.sentinel.util.AppConstants;
+import sentinelgroup.io.sentinel.util.AppPreferences;
 import sentinelgroup.io.sentinel.util.Logger;
 import sentinelgroup.io.sentinel.util.Status;
 import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModel;
@@ -43,7 +50,7 @@ import sentinelgroup.io.sentinel.viewmodel.RestoreKeystoreViewModelFactory;
  * Use the {@link RestoreKeystoreFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RestoreKeystoreFragment extends Fragment implements TextWatcher, View.OnClickListener {
+public class RestoreKeystoreFragment extends Fragment implements TextWatcher, View.OnClickListener, DoubleActionDialogFragment.OnDialogActionListener {
 
     private RestoreKeystoreViewModel mViewModel;
 
@@ -105,7 +112,10 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
     }
 
     private void initViewModel() {
-        RestoreKeystoreViewModelFactory aFactory = InjectorModule.provideRestoreKeystoreViewModelFactory();
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        RestoreKeystoreViewModelFactory aFactory = InjectorModule.provideRestoreKeystoreViewModelFactory(getActivity(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(RestoreKeystoreViewModel.class);
 
         mViewModel.getRestoreLiveEvent().observe(this, keystoreResource -> {
@@ -114,7 +124,7 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                     showProgressDialog(true, getString(R.string.restoring_accunt));
                 } else if (keystoreResource.data != null && keystoreResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
-                    loadNextFragment(keystoreResource.data);
+                    mViewModel.fetchAccountInfo();
                 } else if (keystoreResource.message != null && keystoreResource.status.equals(Status.ERROR)) {
                     mTetPassword.setText("");
                     hideProgressDialog();
@@ -123,6 +133,82 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
                 }
             }
         });
+
+        mViewModel.getAccountInfoLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.data.account != null && genericResponseResource.data.account.referralId != null) {
+                        AppPreferences.getInstance().saveString(AppConstants.PREFS_REF_ID, genericResponseResource.data.account.referralId);
+                    }
+                    if (genericResponseResource.data.account != null && genericResponseResource.data.account.address != null && !TextUtils.isEmpty(genericResponseResource.data.account.address) && !TextUtils.isEmpty(genericResponseResource.data.account.deviceId) && AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS).equals(genericResponseResource.data.account.address) && aDeviceId.equals(genericResponseResource.data.account.deviceId)) {
+                        loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                    } else {
+                        mViewModel.addAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS), null);
+                    }
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC)) {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ERROR_GENERIC");
+                        showDoubleActionDialog(AppConstants.TAG_GET_ACCOUNT, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
+                    } else if (genericResponseResource.message.equals(getString(R.string.no_internet))) {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: NO INTERNET");
+                        showDoubleActionDialog(AppConstants.TAG_GET_ACCOUNT, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
+                    } else {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ELSE");
+                        mViewModel.addAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS), null);
+                    }
+                }
+            }
+        });
+
+        mViewModel.getAddAccountLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.restoring_accunt));
+                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_ACCOUNT, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_ACCOUNT, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
+                    else {
+                        if (genericResponseResource.message.equals("Device is already registered.")) {
+                            mViewModel.updateAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                        } else {
+                            showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                        }
+                    }
+                }
+            }
+        });
+
+        mViewModel.getUpdateAccountLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.restoring_accunt));
+                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    loadNextFragment(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC)) {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ERROR_GENERIC");
+                        showDoubleActionDialog(AppConstants.TAG_UPDATE_ACCOUNT, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
+                    } else if (genericResponseResource.message.equals(getString(R.string.no_internet))) {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: NO INTERNET");
+                        showDoubleActionDialog(AppConstants.TAG_UPDATE_ACCOUNT, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
+                    } else {
+                        Logger.logDebug("RestoreKeystoreFragment", "getUpdateAccountLiveEvent: ELSE");
+                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                    }
+                }
+            }
+        });
+
     }
 
     private boolean isStoragePermissionGranted(int iClickedId) {
@@ -213,6 +299,12 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         }
     }
 
+    private void showDoubleActionDialog(String iTag, int iTitleId, String iMessage, int iPositiveOptionId, int iNegativeOptionId) {
+        if (mListener != null) {
+            mListener.onShowDoubleActionDialog(iTag, iTitleId, iMessage, iPositiveOptionId, iNegativeOptionId);
+        }
+    }
+
     public void loadNextFragment(String iAccountAddress) {
         if (mListener != null) {
             mListener.onLoadNextFragment(SetPinFragment.newInstance(iAccountAddress));
@@ -267,6 +359,24 @@ public class RestoreKeystoreFragment extends Fragment implements TextWatcher, Vi
         } else {
             mIsRequested = false;
             Toast.makeText(getContext(), R.string.storage_permission_denied, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton) {
+        iDialog.dismiss();
+        if (isPositiveButton) {
+            switch (iTag) {
+                case AppConstants.TAG_GET_ACCOUNT:
+                    mViewModel.fetchAccountInfo();
+                    break;
+                case AppConstants.TAG_ADD_ACCOUNT:
+                    mViewModel.addAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS), null);
+                    break;
+                case AppConstants.TAG_UPDATE_ACCOUNT:
+                    mViewModel.updateAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                    break;
+            }
         }
     }
 }

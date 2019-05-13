@@ -16,7 +16,7 @@ import sentinelgroup.io.sentinel.util.AppConstants;
 
 public class SendActivity extends BaseActivity {
     private boolean mIsVpnPay, mIsInit;
-    private String mAmount, mSessionId;
+    private String mAmount, mSessionId, mToAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +55,11 @@ public class SendActivity extends BaseActivity {
             mIsVpnPay = aBundle.getBoolean(AppConstants.EXTRA_IS_VPN_PAY);
             mIsInit = aBundle.getBoolean(AppConstants.EXTRA_IS_INIT);
             mAmount = aBundle.getString(AppConstants.EXTRA_AMOUNT);
+            mToAddress = aBundle.getString(AppConstants.EXTRA_TO_ADDRESS);
             if (mIsVpnPay && !mIsInit)
                 mSessionId = aBundle.getString(AppConstants.EXTRA_SESSION_ID);
         }
-        loadFragment(SendFragment.newInstance(mIsVpnPay, mIsInit, mAmount, mSessionId));
+        loadFragment(SendFragment.newInstance(mIsVpnPay, mIsInit, mAmount, mSessionId, mToAddress));
     }
 
     @Override

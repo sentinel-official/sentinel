@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.text.TextUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -66,6 +67,11 @@ public class ProfileManager {
         prefsedit.putString(LAST_CONNECTED_PROFILE, connectedProfile.getUUIDString());
         prefsedit.apply();
         mLastConnectedVpn = connectedProfile;
+    }
+
+    public static boolean isVpnConnected(Context c) {
+        SharedPreferences prefs = Preferences.getDefaultSharedPreferences(c);
+        return !TextUtils.isEmpty(prefs.getString(LAST_CONNECTED_PROFILE, null));
     }
 
     /**

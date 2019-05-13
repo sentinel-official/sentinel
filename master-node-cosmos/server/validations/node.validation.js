@@ -24,6 +24,7 @@ let updateNode = (req, res, next) => {
       pricePerGB: joi.number(),
       encMethod: joi.string(),
       description: joi.string().allow(''),
+      moniker: joi.string().allow(''),
       location: joi.object().keys({
         latitude: joi.number().required(),
         longitude: joi.number().required(),

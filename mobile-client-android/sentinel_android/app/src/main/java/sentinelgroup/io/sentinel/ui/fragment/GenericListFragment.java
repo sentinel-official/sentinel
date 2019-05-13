@@ -1,6 +1,7 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -163,8 +164,9 @@ public class GenericListFragment extends Fragment implements GenericListAdapter.
     }
 
     @Override
-    public void onRootViewClicked(String iLanguageCode) {
-        SentinelApp.changeLanguage(getContext(), iLanguageCode);
+    public void onRootViewClicked(GenericListItem iItem) {
+        SentinelApp.changeLanguage(getContext(), iItem.getItemCode());
+        Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_OK);
         Objects.requireNonNull(getActivity()).onBackPressed();
     }
 }

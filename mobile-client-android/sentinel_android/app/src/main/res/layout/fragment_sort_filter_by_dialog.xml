@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWindowDark"
+    android:minWidth="200dp"
+    android:orientation="vertical"
+    tools:mContext=".ui.dialog.SortByDialogFragment">
+
+    <TextView
+        android:id="@+id/tv_filter_title"
+        style="@style/CustomTextAppearance.Text16.WhiteNormal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/margin_16"
+        android:paddingTop="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_16"
+        android:paddingBottom="@dimen/margin_8"
+        android:text="@string/filter_by_title" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/cb_filter_by_bookmark"
+        style="@style/CustomTextAppearance.Text14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginEnd="@dimen/margin_8"
+        android:layout_marginBottom="@dimen/margin_8"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/margin_8"
+        android:paddingTop="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_8"
+        android:paddingBottom="@dimen/margin_16"
+        android:text="@string/filter_by_bookmark"
+        android:textColor="@color/selector_checked_text_white"
+        app:buttonTint="@color/colorButtonOrange" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:layout_marginStart="@dimen/margin_16"
+        android:layout_marginEnd="@dimen/margin_16"
+        android:background="@color/colorCardDark" />
+
+    <TextView
+        android:id="@+id/tv_sort_title"
+        style="@style/CustomTextAppearance.Text16.WhiteNormal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/margin_16"
+        android:paddingTop="@dimen/margin_16"
+        android:paddingEnd="@dimen/margin_16"
+        android:paddingBottom="@dimen/margin_8"
+        android:text="@string/sort_by_title" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_sort_type_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/margin_8" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="@color/colorCardDark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_dialog_negative"
+            style="@style/CustomTextAppearance.TransparentOrangeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/action_cancel" />
+
+        <View
+            android:layout_width="@dimen/margin_1"
+            android:layout_height="match_parent"
+            android:background="@color/colorCardDark" />
+
+        <Button
+            android:id="@+id/btn_dialog_positive"
+            style="@style/CustomTextAppearance.TransparentOrangeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/action_apply" />
+    </LinearLayout>
+
+</LinearLayout>

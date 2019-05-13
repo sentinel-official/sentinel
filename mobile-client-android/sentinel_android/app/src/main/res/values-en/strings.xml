@@ -6,7 +6,9 @@
     <string name="or">OR</string>
     <string name="restore_account_desc">Already have an account?\nRestore your Keystore File</string>
     <string name="confirm_password_hint">Confirm Password</string>
-    <string name="next">Next</string>
+    <string name="action_next">Next</string>
+    <string name="action_done">Done</string>
+    <string name="action_apply">Apply</string>
     <string name="secure_key_desc">Copy your private key and keystore file to some secured place.\n<b>We do not store any of your keys in our databases.</b>\nIf you lose them, you would not be able to access your account.</string>
     <string name="address_desc">Your Address</string>
     <string name="private_key_desc">Private Key</string>
@@ -17,14 +19,14 @@
     <string name="restore_password_hint">Enter Keystore Password</string>
     <string name="vpn">VPN</string>
     <string name="transaction_history">Transaction History</string>
-    <string name="vpn_history">VPN History</string>
+    <string name="vpn_history">dVPN History</string>
     <string name="reset_pin">Reset PIN</string>
     <string name="disconnect">Disconnect</string>
     <string name="view_vpns">VIEW VPNs</string>
     <string name="make_payment">Make Payment</string>
     <string name="vpn_pay_desc">Please go ahead and pay for the previous session to connect to VPN.\nIf you have already paid, Please wait for a couple of minutes, or you can report the payment</string>
-    <string name="view_vpn_list">VPN List</string>
-    <string name="view_socks5_list">SOCKS5 List</string>
+    <string name="view_vpn_list">VPN Nodes</string>
+    <string name="view_socks5_list">SOCKS5 Nodes</string>
     <string name="connect_to_vpn">Connect to VPN</string>
     <string name="connect">Connect</string>
     <string name="sent_desc">Total SENT Tokens</string>
@@ -43,6 +45,7 @@
     <string name="sent_paid_desc">Total SENTs Paid</string>
     <string name="total_duration">Total Duration</string>
     <string name="total_received_data">Total Received Data</string>
+    <string name="vpn_history_empty_list_message">You currently do not have any VPN history.</string>
     <string name="session_id">Session ID</string>
     <string name="received_data">Received Data</string>
     <string name="duration">Duration</string>
@@ -55,11 +58,13 @@
     <string name="create_auid">Create User ID</string>
     <string name="no_internet">No internet connectivity. Please try again.</string>
     <string name="password_mismatch">Password and Confirm Password did not match</string>
-    <string name="please_note">Please Note</string>
+    <string name="please_note">Attention</string>
     <string name="secure_keys">Secure Your Keys</string>
     <string name="storage_permission_denied">Storage permission not granted.</string>
     <string name="key_copied">Private Key copied to clipboard</string>
+    <string name="referral_id_copied">Referral ID copied to clipboard</string>
     <string name="address_copied">Address copied to clipboard</string>
+    <string name="link_copied">Referral Link copied to clipboard</string>
     <string name="hash_copied">Transaction Hash copied to clipboard</string>
     <string name="set_app_pin">Set App PIN</string>
     <string name="pin_mismatch">Pin and Confirm Pin did not match</string>
@@ -83,15 +88,18 @@
     <string name="sents">%1s SENTs</string>
     <string name="eths">%1s ETH</string>
     <string name="pay_sents">Pay %1s SENTs</string>
-    <string name="vpn_location">%1s, %2s</string>
+    <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Bandwidth %s</string>
-    <string name="vpn_bandwidth_connected">Bandwidth\n%s</string>
+    <string name="vpn_bandwidth_connected">Connection Speed</string>
     <string name="vpn_price">Price (SENTs/GB) %s</string>
-    <string name="vpn_price_connected">Price (SENTs/GB)\n%s</string>
+    <string name="vpn_price_connected">Price (SENTs/GB)</string>
     <string name="vpn_latency">Latency %s</string>
-    <string name="vpn_latency_connected">Latency\n%s</string>
-    <string name="vpn_duration_connected">Duration\n%s</string>
+    <string name="vpn_node_version">Version %s</string>
+    <string name="vpn_node_rating">Rating %s</string>
+    <string name="vpn_latency_connected">Latency</string>
+    <string name="vpn_enc_method_connected">Encryption</string>
+    <string name="vpn_duration_connected">Duration</string>
     <string name="vpn_bandwidth_value">%.2f Mbps</string>
     <string name="vpn_price_value">%.0f SENTs</string>
     <string name="vpn_latency_value">%.3f ms</string>
@@ -101,8 +109,6 @@
     <string name="restoring_accunt">Restoring account. Please wait…</string>
     <string name="verifying_credentials">Verifying credentials. Please wait…</string>
     <string name="resetting_pin">Resetting app PIN. Please wait…</string>
-    <string name="gas_limit_sents">42000</string>
-    <string name="gas_limit_eth">21000</string>
     <string name="sending">Sending…</string>
     <string name="signing_transaction">Validating &amp; signing transaction. Please wait…</string>
     <string name="init_vpn_pay">100</string>
@@ -116,7 +122,10 @@
     <string name="city">City:</string>
     <string name="country">Country:</string>
     <string name="bandwidth">Bandwidth:</string>
+    <string name="node_version">Version:</string>
+    <string name="encryption">Encryption:</string>
     <string name="latency">Latency:</string>
+    <string name="node_rating">Rating:</string>
     <string name="price">Price (SENTs / GB):</string>
     <string name="coming_soon">Coming soon…</string>
     <string name="fetching_config">Fetching VPN configurations…</string>
@@ -155,6 +164,7 @@
     <string name="no_scan_results">Scan results not found.</string>
     <string name="not_a_address">The scanned result is not an Account Address. Discarding scanned results.</string>
     <string name="retry">Retry</string>
+    <string name="action_cancel">Cancel</string>
     <string name="vpn_history_main_net_unavailable">No VPN history found in MAINNET.</string>
     <string name="vpn_main_net_unavailable">No VPN nodes available in MAINNET, switch to TESTNET.</string>
     <string name="tx_history_main_net_unavailable">No Transaction History found in MAINNET.</string>
@@ -162,11 +172,14 @@
     <string name="logout_desc">Logging out will clear your keystore file, make sure you have saved it.</string>
     <string name="language">Language</string>
     <string name="select_language">Select Language</string>
+    <string name="referral_id">Referral ID</string>
+    <string name="invitation_link">Invitation Link</string>
+    <string name="invitation_desc">Share this link with your friend to invite them to Sentinel dVPN app</string>
     <string name="view_tx_history_for">View Tx History for</string>
     <string name="payment_done_success">Payment Done Successfully</string>
     <string name="send_to_hint">Send To or Scan To Send</string>
     <string name="referral_code">Referral code</string>
-    <string name="referrals">Referrals</string>
+    <string name="share_app">Share App</string>
     <string name="send_to">Send to…</string>
     <string name="password_hint">Enter Password to Create User ID</string>
     <string name="key_not_copied_alert">You have not copied your Private Key.\nPlease copy your Private key to proceed.</string>
@@ -175,18 +188,23 @@
     <string name="off">OFF</string>
     <string name="upload_keystore_desc">Upload Keystore file</string>
     <string name="uploaded_keystore_desc">Keystore File Uploaded</string>
-    <string name="referral_desc">This address is your referral code.\nShare this to receive tokens for every new Sign Up.</string>
+    <string name="referral_desc">Welcome to the Sentinel Referral Utility Drop.\n\nUsers who test this Lite Client will be able to claim their reward(s) after 21 or so days from the time that they had first installed the application and consumed a minimum of 100 MB of data from the Sentinel dVPN community hosted network.\n\nThe referral air drop reward schedule is as follows: \n\n500 SENT : For downloading the Sentinel Android Google Play Client and using 100 MB of data \n\n300 SENT : For downloading the Sentinel Network Client which includes a mobile ERC20 wallet. This client will have to be downloaded by users in order to claim $SENT\n\n200 SENT : For every referral who downloads either SLC or SNC</string>
     <string name="referral_code_desc">Your referral tokens can be claimed when you make your first VPN payment.</string>
     <string name="no_of_referrals">No. of referrals</string>
     <string name="reward_earned">Total reward tokens earned</string>
+    <string name="invite_friend">Invite Friend</string>
     <string name="address">Address</string>
     <string name="share_address">Share address</string>
-    <string name="share_string">Hey, check out this new dVPN android app. Use my referral code to get free tokens when you sign up.\nReferral code: %s</string>
-    <string name="info_title_1">Share your Referral Code to earn tokens for every Sign Up</string>
-    <string name="info_title_2">Open source wallet and secure VPN platform</string>
+    <string name="share_string">Hey, check out this new dVPN android app. Use my Referral ID to get free tokens when you sign up.\n\nReferral ID: %1$s\n\nLink: %2$s</string>
+    <string name="branch_share_title">Hey, check out this new dVPN Android app.</string>
+    <string name="branch_share_desc">Use my Referral ID to get free tokens when you Sign Up.\nReferral ID: %1$s</string>
+    <string name="info_title_1">Share your Referral ID to earn tokens for every Sign Up</string>
+    <string name="info_title_2">Secure decentralized VPN with built-in crypto wallet</string>
+    <string name="info_desc_1">Share the Sentinel app with friends, use the dVPN App and get incentivized for community development &amp; decentralization of the network</string>
+    <string name="info_desc_2">Decentralized VPN right at your finger tips\nUse VPN and pay in tokens\nSend and receive tokens</string>
     <string name="disconnect_vpn_to_logout">You are connected to a VPN.\nDisconnect the VPN to logout.</string>
     <string name="referral_claimed">You have claimed your free referral tokens.\nView the updated token balance in your wallet.</string>
-    <string name="generic_error">Something went wrong. Please try again.</string>
+    <string name="generic_error">Unable to reach server. Please retry.</string>
     <string name="storage_error">Storage not found. Unable to store keystore file.</string>
     <string name="adding_referral">Adding referral details. Please wait…</string>
     <string name="yes">Yes</string>
@@ -195,11 +213,34 @@
     <string name="claim_bonus">Claim Bonus</string>
     <string name="update_available">Update Available</string>
     <string name="update_desc">A new version has been released and is available for download.\n\nKindly download and install the latest version in order to use the app.</string>
-    <string name="downloading_app_tite">Downloading…</string>
     <string name="download">Download</string>
+    <string name="referral_address_invalid">You have entered an invalid Referral ID. Please enter valid Referral Id</string>
     <string name="referral_address_missing">You have not entered a referral code.\n\nDo you wish to continue without applying a referral code?</string>
     <string name="empty_list_message">There are no items to display.</string>
-
+    <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
+    <string name="can_claim_after">Can claim after: %s</string>
+    <string name="read_more">Read More</string>
+    <string name="label_rate_session">Please rate your experience with the previous dVPN session</string>
+    <string name="error_select_rating">Please select rating</string>
+    <string name="action_skip">Skip</string>
+    <string name="action_rate">Rate</string>
+    <string name="filter_by_title">Filters</string>
+    <string name="filter_by_bookmark">Show favourites only</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_country_a">Country</string>
+    <string name="sort_by_country_d">Country ↓</string>
+    <string name="sort_by_latency_i">Latency ↑</string>
+    <string name="sort_by_latency_d">Latency</string>
+    <string name="sort_by_bandwidth_i">Bandwidth ↑</string>
+    <string name="sort_by_bandwidth_d">Bandwidth</string>
+    <string name="sort_by_price_i">Price ↑</string>
+    <string name="sort_by_price_d">Price ↓</string>
+    <string name="sort_by_rating_i">Rating ↑</string>
+    <string name="sort_by_rating_d">Rating</string>
+    <string name="hint_search_vpn_list">Search by country</string>
+    <string name="alert_bookmark_added">VPN added to favourites</string>
+    <string name="alert_bookmark_removed">VPN removed from favourites</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>
@@ -279,7 +320,6 @@
     <string name="abi_mismatch">Preferred native ABI precedence of this device (%1$s) and ABI reported by native libraries (%2$s) mismatch</string>
     <string name="unhandled_exception_context">%3$s: %1$s\n\n%2$s</string>
     <string name="unhandled_exception">Unhandled exception: %1$s\n\n%2$s</string>
-    <string name="unknown_state" translatable="false">Unknown state</string>
     <string name="state_connecting">Connecting</string>
     <string name="state_wait">Waiting for server reply</string>
     <string name="state_auth">Authenticating</string>
@@ -305,9 +345,6 @@
     <string name="deprecated_tls_remote">Config uses option tls-remote that was deprecated in 2.3 and finally removed in 2.4</string>
     <string name="ipv4_format_error">Error parsing the IPv4 address</string>
     <string name="shortcut_profile_notfound">Profile specified in shortcut not found</string>
-    <string name="state_user_vpn_permission" translatable="false">Waiting for user permission to use VPN API</string>
-    <string name="state_user_vpn_password" translatable="false">Waiting for user VPN password</string>
-    <string name="state_user_vpn_permission_cancelled" translatable="false">VPN API permission dialog cancelled.\n\nPlease grant this permission to use VPN services</string>
     <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
     <string name="config_error_found">Error in Configuration</string>
     <string name="no_vpn_support_image">Your image does not support the VPNService API.</string>
@@ -319,4 +356,11 @@
     <string name="pkcs12_file_encryption_key">PKCS12 File Encryption Key</string>
     <string name="private_key_password">Private Key Password</string>
     <string name="error_rsa_sign">Error signing with Android keystore key %1$s: %2$s</string>
+    <string name="help">Help</string>
+    <string name="tx_history_empty_list_message">You currently do not have any Transaction history.</string>
+    <string name="vpn_empty_list_message">There are no unoccupied VPNs available at the moment.</string>
+    <string name="vpn_enc_method">Encryption %s</string>
+    <string name="ok">OK</string>
+    <string name="registering_device">Setting-up Device. Please wait…</string>
+    <string name="downloading_app_title">Downloading…</string>
 </resources>

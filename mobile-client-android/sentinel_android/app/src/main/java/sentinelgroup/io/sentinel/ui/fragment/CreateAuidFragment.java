@@ -1,11 +1,13 @@
 package sentinelgroup.io.sentinel.ui.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -18,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.Objects;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
@@ -42,7 +46,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     private OnGenericFragmentInteractionListener mListener;
 
-    private TextInputEditText mTetPassword, mTetConfirmPassword, mTetReferral;
+    private TextInputEditText mTetPassword, mTetConfirmPassword;
     private Button mBtnNext;
 
     private boolean mIsRequested;
@@ -85,7 +89,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     private void initView(View iView) {
         mTetPassword = iView.findViewById(R.id.tet_password);
         mTetConfirmPassword = iView.findViewById(R.id.tet_confirm_password);
-        mTetReferral = iView.findViewById(R.id.tet_referral);
         mBtnNext = iView.findViewById(R.id.btn_next);
         // Set listeners
         mTetPassword.addTextChangedListener(this);
@@ -94,7 +97,11 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
     }
 
     private void initViewModel() {
-        CreateAuidViewModelFactory aFactory = InjectorModule.provideCreateAccountViewModelFactory(getContext());
+
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(Objects.requireNonNull(getActivity()).getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        CreateAuidViewModelFactory aFactory = InjectorModule.provideCreateAccountViewModelFactory(getContext(), aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(CreateAuidViewModel.class);
 
         mViewModel.getSessionClearedLiveEvent().observe(this, sessionCleared -> {
@@ -123,13 +130,11 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             if (accountResource != null) {
                 hideProgressDialog();
                 if (accountResource.data != null && accountResource.status.equals(Status.SUCCESS)) {
+                    AppPreferences.getInstance().saveString(AppConstants.PREFS_ACCOUNT_ADDRESS, accountResource.data.accountAddress);
                     mAccountAddress = accountResource.data.accountAddress;
                     mPrivateKey = accountResource.data.privateKey;
                     mKeystoreFilePath = accountResource.data.keystoreFilePath;
-                    String aReferralAddress = mTetReferral.getText().toString().trim();
-                    if (validateReferral(aReferralAddress)) {
-                        mViewModel.addReferralAddress(mAccountAddress, aReferralAddress);
-                    }
+                    addAccountInfo(null);
                 } else if (accountResource.message != null && accountResource.status.equals(Status.ERROR)) {
                     if (accountResource.message.equals(AppConstants.STORAGE_ERROR))
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.storage_error), AppConstants.VALUE_DEFAULT);
@@ -141,38 +146,65 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        mViewModel.getReferralLiveEvent().observe(this, genericResponseResource -> {
+        mViewModel.getAddAccountLiveEvent().observe(this, genericResponseResource -> {
             if (genericResponseResource != null) {
                 if (genericResponseResource.status.equals(Status.LOADING)) {
-                    showProgressDialog(true, getString(R.string.adding_referral));
+                    showProgressDialog(true, getString(R.string.generic_loading_message));
                 } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
                     hideProgressDialog();
                     loadNextFragment();
                 } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
                     hideProgressDialog();
-                    clearReferralField();
-                    if (genericResponseResource.message.equals(AppConstants.GENERIC_ERROR))
-                        showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), AppConstants.VALUE_DEFAULT);
-                    else
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
+                    else {
+                        if (genericResponseResource.message.equals("Device is already registered.")) {
+                            mViewModel.updateAccountInfo(AppPreferences.getInstance().getString(AppConstants.PREFS_ACCOUNT_ADDRESS));
+                        } else {
+                            showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                        }
+                    }
+                }
+            }
+        });
+
+        mViewModel.getUpdateAccountLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.status.equals(Status.LOADING)) {
+                    showProgressDialog(true, getString(R.string.generic_loading_message));
+                } else if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    hideProgressDialog();
+                    loadNextFragment();
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    hideProgressDialog();
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
+                    else {
                         showSingleActionDialog(AppConstants.VALUE_DEFAULT, genericResponseResource.message, AppConstants.VALUE_DEFAULT);
+                    }
                 }
             }
         });
     }
 
+    public void addAccountInfo(String iReferralAddress) {
+        mViewModel.addAccountInfo(mAccountAddress, iReferralAddress);
+    }
+
     private void createNewAccount() {
         String aPassword = mTetPassword.getText().toString().trim();
         String aPassword2 = mTetConfirmPassword.getText().toString().trim();
-        String aReferral = mTetReferral.getText().toString().trim();
 
         if (TextUtils.isEmpty(mAccountAddress)) {
             if (validatePassword(aPassword, aPassword2)) {
                 mViewModel.createNewAccount(aPassword);
             }
         } else {
-            if (validateReferral(aReferral)) {
-                mViewModel.addReferralAddress(mAccountAddress, aReferral);
-            }
+            addAccountInfo(null);
         }
 
     }
@@ -182,15 +214,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
             mTetConfirmPassword.setText("");
             mTetConfirmPassword.requestFocus();
             showSingleActionDialog(AppConstants.VALUE_DEFAULT, getString(R.string.password_mismatch), AppConstants.VALUE_DEFAULT);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private boolean validateReferral(String iReferralAddress) {
-        if (TextUtils.isEmpty(iReferralAddress)) {
-            showDoubleActionDialog(AppConstants.TAG_ADD_REFERRAL, AppConstants.VALUE_DEFAULT, getString(R.string.referral_address_missing), R.string.yes, R.string.no);
             return false;
         } else {
             return true;
@@ -211,15 +234,6 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
                 }
         }
         return true;
-    }
-
-    private void clearReferralField() {
-        mTetReferral.setText("");
-        // disable the password and confirm password field
-        mTetPassword.setFocusable(false);
-        mTetPassword.setFocusableInTouchMode(false);
-        mTetConfirmPassword.setFocusable(false);
-        mTetConfirmPassword.setFocusableInTouchMode(false);
     }
 
     // Interface interaction methods
@@ -255,6 +269,7 @@ public class CreateAuidFragment extends Fragment implements View.OnClickListener
 
     public void loadNextFragment() {
         if (mListener != null) {
+            AppPreferences.getInstance().saveString(AppConstants.PREFS_BRANCH_REFERRER_ID, "");
             AppPreferences.getInstance().saveString(AppConstants.PREFS_ACCOUNT_ADDRESS, mAccountAddress);
             mListener.onLoadNextFragment(SecureKeysFragment.newInstance(mAccountAddress, mPrivateKey, mKeystoreFilePath));
         }

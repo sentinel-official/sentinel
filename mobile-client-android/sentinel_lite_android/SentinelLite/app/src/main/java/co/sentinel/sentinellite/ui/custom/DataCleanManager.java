@@ -35,8 +35,11 @@ public class DataCleanManager {
      */
     private static void deleteFilesByDirectory(File iFile) {
         if (iFile != null && iFile.exists() && iFile.isDirectory()) {
-            for (File aItem : iFile.listFiles()) {
-                aItem.delete();
+            File[] aListFiles = iFile.listFiles();
+            if (aListFiles != null && aListFiles.length > 0) {
+                for (File aItem : aListFiles) {
+                    aItem.delete();
+                }
             }
         }
     }

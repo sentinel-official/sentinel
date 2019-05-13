@@ -9,7 +9,10 @@ import android.widget.TextView;
 
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
+import java.util.ArrayList;
+
 import co.sentinel.sentinellite.R;
+import co.sentinel.sentinellite.network.model.OnBoardingInfo;
 import co.sentinel.sentinellite.ui.adapter.InfoPagerAdapter;
 import co.sentinel.sentinellite.ui.custom.ZoomOutPageTransformer;
 
@@ -18,6 +21,7 @@ public class OnBoardingActivity extends AppCompatActivity {
     private ViewPager mVpInfoPager;
     private DotsIndicator mVpiInfoDots;
     private TextView mTvNext;
+    private ArrayList<OnBoardingInfo> mList = new ArrayList<>();
 
     private InfoPagerAdapter mAdapter;
 
@@ -36,38 +40,22 @@ public class OnBoardingActivity extends AppCompatActivity {
         mVpiInfoDots = findViewById(R.id.vpi_info_dots);
         mTvNext = findViewById(R.id.btn_next);
         // setup viewpager and its adapter
-        mAdapter = new InfoPagerAdapter(getSupportFragmentManager(), this);
+        initList();
+        mAdapter = new InfoPagerAdapter(getSupportFragmentManager(), this, mList);
         mVpInfoPager.setAdapter(mAdapter);
         mVpInfoPager.setPageTransformer(true, new ZoomOutPageTransformer());
-//        mVpInfoPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                mTvNext.setVisibility(position == 1 ? View.VISIBLE : View.GONE);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//            }
-//        });
         // setup DotsIndicator
+        mVpiInfoDots.setVisibility(mList.size() > 1 ? View.VISIBLE : View.GONE);
         mVpiInfoDots.setDotsClickable(true);
         mVpiInfoDots.setViewPager(mVpInfoPager);
         // Set listeners
-        mTvNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int aCurrentItem = mVpInfoPager.getCurrentItem();
-                if (aCurrentItem == 0) {
-                    mVpInfoPager.setCurrentItem(mVpInfoPager.getCurrentItem() + 1);
-                } else {
-                    openLauncherActivity();
-                }
-            }
+        mTvNext.setOnClickListener(v -> {
+            openLauncherActivity();
         });
+    }
+
+    private void initList() {
+        mList.add(new OnBoardingInfo(R.drawable.ic_info_vpn, R.string.info_title_2, R.string.info_desc_2));
     }
 
     private void openLauncherActivity() {

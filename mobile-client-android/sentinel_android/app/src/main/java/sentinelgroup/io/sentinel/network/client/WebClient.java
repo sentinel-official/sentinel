@@ -20,8 +20,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sentinelgroup.io.sentinel.network.api.AppVersionWebService;
+import sentinelgroup.io.sentinel.network.api.BonusWebService;
 import sentinelgroup.io.sentinel.network.api.GenericWebService;
-import sentinelgroup.io.sentinel.network.api.ReferralWebService;
 import sentinelgroup.io.sentinel.util.Logger;
 
 /**
@@ -29,26 +29,40 @@ import sentinelgroup.io.sentinel.util.Logger;
  */
 public class WebClient {
     private static final String GENERIC_BASE_URL = "https://api.sentinelgroup.io/";
-    private static final String REFERRAL_BASE_URL = "https://refer-api.sentinelgroup.io/";
+    private static final String REFERRAL_BASE_URL_LIVE = "https://refer-api.sentinelgroup.io/";
+    private static final String REFERRAL_BASE_URL_TEST = "http://185.144.156.148:9000";
+    private static final String REFERRAL_BASE_URL = REFERRAL_BASE_URL_LIVE;
     private static final String App_VERSION_BASE_URL = "https://version-api.sentinelgroup.io/";
 
     private static OkHttpClient sHttpClient = enableTls12OnPreLollipop(new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .retryOnConnectionFailure(false)
             .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(new AuthInterceptor())).build();
 
-    private static Retrofit sGenericClient, sReferralClient, sAppVersionClient;
+    private static OkHttpClient sHttpRetryClient = sHttpClient.newBuilder()
+            .retryOnConnectionFailure(true)
+            .build();
+
+    private static OkHttpClient sHttpLongTimeoutClient = sHttpClient.newBuilder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build();
+
+    private static Retrofit sGenericClient, sGenericRetryClient, sReferralClient, sReferralLongTimeoutClient, sAppVersionClient;
 
     private static GenericWebService sGenericWebService;
-    private static ReferralWebService sReferralWebService;
+    private static BonusWebService sBonusWebService;
     private static AppVersionWebService sAppVersionWebService;
 
     static {
         setupGenericRestClient();
+        setupGenericRetryRestClient();
         setupReferralRestClient();
+        setupReferralLongTimeoutRestClient();
         setupAppVersionClient();
     }
 
@@ -63,10 +77,26 @@ public class WebClient {
                 .build();
     }
 
+    private static void setupGenericRetryRestClient() {
+        sGenericRetryClient = new Retrofit.Builder()
+                .baseUrl(GENERIC_BASE_URL)
+                .client(sHttpRetryClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
     private static void setupReferralRestClient() {
         sReferralClient = new Retrofit.Builder()
                 .baseUrl(REFERRAL_BASE_URL)
                 .client(sHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    private static void setupReferralLongTimeoutRestClient() {
+        sReferralLongTimeoutClient= new Retrofit.Builder()
+                .baseUrl(REFERRAL_BASE_URL)
+                .client(sHttpLongTimeoutClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -83,6 +113,10 @@ public class WebClient {
         return sGenericClient;
     }
 
+    public static Retrofit getGenericRetryClient() {
+        return sGenericRetryClient;
+    }
+
     public static Retrofit getReferralClient() {
         return sReferralClient;
     }
@@ -95,8 +129,16 @@ public class WebClient {
         return sGenericClient.create(GenericWebService.class);
     }
 
-    public static ReferralWebService getReferralWebService() {
-        return sReferralClient.create(ReferralWebService.class);
+    public static GenericWebService getGenericRetryWebService() {
+        return sGenericRetryClient.create(GenericWebService.class);
+    }
+
+    public static BonusWebService getBonusWebService() {
+        return sReferralClient.create(BonusWebService.class);
+    }
+
+    public static BonusWebService getBonusLongTimeoutWebService() {
+        return sReferralLongTimeoutClient.create(BonusWebService.class);
     }
 
     public static AppVersionWebService getAppVersionWebService() {

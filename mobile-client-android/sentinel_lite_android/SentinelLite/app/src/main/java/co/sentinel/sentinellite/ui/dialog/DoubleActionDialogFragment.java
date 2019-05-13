@@ -18,6 +18,7 @@ import android.widget.TextView;
 import java.util.Objects;
 
 import co.sentinel.sentinellite.R;
+import co.sentinel.sentinellite.util.AppConstants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -133,14 +134,14 @@ public class DoubleActionDialogFragment extends DialogFragment {
         aTvDialogBody.setText(mMessage);
         aBtnPositive.setText(mPositiveOptionId);
         aBtnNegative.setText(mNegativeOptionId);
-        aBtnPositive.setOnClickListener(v -> onActionButtonClick(true));
-        aBtnNegative.setOnClickListener(v -> onActionButtonClick(false));
+        aBtnPositive.setOnClickListener(v -> onActionButtonClick(AppConstants.POSITIVE_BUTTON));
+        aBtnNegative.setOnClickListener(v -> onActionButtonClick(AppConstants.NEGATIVE_BUTTON));
     }
 
     // Interface interaction method
-    public void onActionButtonClick(boolean iIsPositiveButton) {
+    public void onActionButtonClick(int iButtonType) {
         if (mListener != null) {
-            mListener.onActionButtonClicked(mTag, getDialog(), iIsPositiveButton);
+            mListener.onActionButtonClicked(mTag, getDialog(), iButtonType);
         }
     }
 
@@ -175,12 +176,11 @@ public class DoubleActionDialogFragment extends DialogFragment {
         /**
          * Notifies the observer when the dialog's button is clicked
          *
-         * @param iTag             [String] The Tag assigned to the fragment when it's added to the
-         *                         container
-         * @param iDialog          [Dialog] The instance of this dialog
-         * @param isPositiveButton [boolean] Indicates if the button pressed in positive button or
-         *                         negative button
+         * @param iTag        [String] The Tag assigned to the fragment when it's added to the
+         *                    container
+         * @param iDialog     [Dialog] The instance of this dialog
+         * @param iButtonType [int] Indicates if the type of button pressed {@link co.sentinel.sentinellite.util.AppConstants.POSITIVE_BUTTON}, {@link co.sentinel.sentinellite.util.AppConstants.NEGATIVE_BUTTON}, {@link co.sentinel.sentinellite.util.AppConstants.NEUTRAL_BUTTON}
          */
-        void onActionButtonClicked(String iTag, Dialog iDialog, boolean isPositiveButton);
+        void onActionButtonClicked(String iTag, Dialog iDialog, int iButtonType);
     }
 }

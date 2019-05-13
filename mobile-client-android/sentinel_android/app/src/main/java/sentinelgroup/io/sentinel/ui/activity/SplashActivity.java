@@ -1,5 +1,6 @@
 package sentinelgroup.io.sentinel.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.arch.lifecycle.ViewModelProviders;
@@ -9,10 +10,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.widget.TextView;
 
+import de.blinkt.openvpn.core.ProfileManager;
 import sentinelgroup.io.sentinel.BuildConfig;
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.di.InjectorModule;
@@ -41,16 +45,54 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!isTaskRoot()) {
+            final Intent aIntent = getIntent();
+            final String aIntentAction = aIntent.getAction();
+            if (aIntent.hasCategory(Intent.CATEGORY_LAUNCHER) && aIntentAction != null && aIntentAction.equals(Intent.ACTION_MAIN)) {
+                finish();
+                return;
+            }
+        }
         setContentView(R.layout.activity_splash);
-        initViewModel();
+        if (ProfileManager.isVpnConnected(this)) {
+            Intent aIntent = new Intent(this, DashboardActivity.class);
+            aIntent.putExtra(AppConstants.EXTRA_NOTIFICATION_ACTIVITY, AppConstants.HOME);
+            aIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(aIntent);
+        } else {
+            initViewModel();
+        }
     }
 
     private void initViewModel() {
+        String aVersionName = getString(R.string.app_version, BuildConfig.VERSION_NAME);
+        ((TextView) findViewById(R.id.tv_app_version)).setText(aVersionName);
+
         // init download manager
         mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 
-        SplashViewModelFactory aFactory = InjectorModule.provideSplashViewModelFactory();
+        // init Device ID
+        @SuppressLint("HardwareIds") String aDeviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        SplashViewModelFactory aFactory = InjectorModule.provideSplashViewModelFactory(this, aDeviceId);
         mViewModel = ViewModelProviders.of(this, aFactory).get(SplashViewModel.class);
+
+        mViewModel.getAccountInfoLiveEvent().observe(this, genericResponseResource -> {
+            if (genericResponseResource != null) {
+                if (genericResponseResource.data != null && genericResponseResource.status.equals(Status.SUCCESS)) {
+                    mViewModel.fetchSncVersionInfo();
+                } else if (genericResponseResource.message != null && genericResponseResource.status.equals(Status.ERROR)) {
+                    if (genericResponseResource.message.equals(AppConstants.ERROR_GENERIC))
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, getString(R.string.generic_error), R.string.retry, R.string.action_cancel);
+                    else if (genericResponseResource.message.equals(getString(R.string.no_internet)))
+                        showDoubleActionError(TAG_ERROR, AppConstants.VALUE_DEFAULT, genericResponseResource.message, R.string.retry, R.string.action_cancel);
+                    else {
+                        clearAppData();
+                        mViewModel.fetchSncVersionInfo();
+                    }
+                }
+            }
+        });
 
         mViewModel.getVersionInfoLiveEvent().observe(this, versionInfoResource -> {
             if (versionInfoResource != null) {
@@ -93,6 +135,15 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
                     .show(getSupportFragmentManager(), DOUBLE_ACTION_DIALOG_TAG);
     }
 
+    /*
+     * Logout user by clearing all the values in shared preferences and reloading the
+     * LauncherActivity
+     */
+    private void clearAppData() {
+        AppPreferences.getInstance().clearSavedData(this);
+        mViewModel.clearUserSession();
+    }
+
     private void loadNextActivityAfterDelay() {
         mHandler = new Handler();
         mRunnable = () -> {
@@ -121,7 +172,7 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
         else
             aDownloadUri = Uri.parse("https://" + mFileUrl);
         DownloadManager.Request aRequest = new DownloadManager.Request(aDownloadUri);
-        aRequest.setTitle(getString(R.string.downloading_app_tite))
+        aRequest.setTitle(getString(R.string.downloading_app_title))
                 .setDescription(mFileName)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Sentinel/" + "/" + mFileName);
@@ -148,10 +199,11 @@ public class SplashActivity extends AppCompatActivity implements DoubleActionDia
             if (iTag.equals(TAG_UPDATE)) {
                 updateApp();
             } else if (iTag.equals(TAG_ERROR)) {
-                mViewModel.reload();
+                mViewModel.fetchAccountInfo();
             }
         } else {
             finish();
         }
     }
+
 }

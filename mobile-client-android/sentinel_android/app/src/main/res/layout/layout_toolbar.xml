@@ -6,47 +6,147 @@
     android:layout_height="wrap_content"
     android:background="@color/colorCardDark">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/toolbar_title"
-            style="@style/CustomTextAppearance.Toolbar"
-            android:text="@string/app_name" />
-    </android.support.v7.widget.Toolbar>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
-    <LinearLayout
+        <LinearLayout
+            android:id="@+id/llTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/toolbar_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="-16dp"
+                android:layout_marginEnd="@dimen/margin_8"
+                android:src="@drawable/ic_app_icon_small"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                style="@style/CustomTextAppearance.Toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/app_name" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/margin_40"
         android:background="@color/colorTextBlack"
         android:elevation="@dimen/margin_8"
-        android:orientation="horizontal"
-        android:translationZ="@dimen/margin_8"
-        tools:ignore="UnusedAttribute">
+        android:translationZ="@dimen/margin_8">
 
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/switch_net"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:background="@color/colorCardShadow"
+            android:background="@color/colorTextBlack"
             android:gravity="center_vertical"
-            android:padding="@dimen/margin_8"
-            app:trackTint="@color/colorTextWhiteWithAlpha50" />
+            android:orientation="horizontal"
+            tools:ignore="UnusedAttribute">
 
-        <TextView
-            android:id="@+id/tv_switch_state"
-            style="@style/CustomTextAppearance.Text12.WhiteNormal"
-            android:layout_width="0dp"
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch_net"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:padding="@dimen/margin_8"
+                app:trackTint="@color/colorTextWhiteWithAlpha50" />
+
+            <TextView
+                android:id="@+id/tv_switch_state"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/ib_search"
+                android:layout_width="@dimen/margin_40"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/margin_16"
+                android:src="@drawable/ic_search"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/ib_sort"
+                android:layout_width="@dimen/margin_40"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_4"
+                android:layout_marginEnd="@dimen/margin_4"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/margin_16"
+                android:src="@drawable/ic_sort"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_search"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorCardShadow"
+            android:background="@color/colorTextBlack"
             android:gravity="center_vertical"
-            android:textAllCaps="true" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/ib_close_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/margin_4"
+                android:src="@drawable/ic_back" />
+
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_search"
+                style="@style/CustomTextAppearance"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="@string/hint_search_vpn_list"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:padding="@dimen/margin_8"
+                android:textColorHint="@color/colorTextWhiteWithAlpha50" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/ib_clear_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/margin_16"
+                android:src="@drawable/ic_close"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </FrameLayout>
 </android.support.design.widget.AppBarLayout>

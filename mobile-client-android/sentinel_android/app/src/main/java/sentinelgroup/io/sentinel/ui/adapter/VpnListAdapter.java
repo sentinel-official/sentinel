@@ -1,11 +1,11 @@
 package sentinelgroup.io.sentinel.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
@@ -17,9 +17,11 @@ import android.widget.TextView;
 import com.haipq.android.flagkit.FlagImageView;
 
 import java.util.List;
+import java.util.Locale;
 
 import sentinelgroup.io.sentinel.R;
 import sentinelgroup.io.sentinel.network.model.VpnListEntity;
+import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.Convert;
 import sentinelgroup.io.sentinel.util.Converter;
 import sentinelgroup.io.sentinel.util.SpannableStringUtil;
@@ -47,7 +49,7 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         VpnListEntity aItemData = mData.get(position);
-        holder.mTvLocation.setText(mContext.getString(R.string.vpn_location, aItemData.getLocation().city, aItemData.getLocation().country));
+        holder.mTvLocation.setText(aItemData.getLocation().country);
         // Set country flag
         holder.mFvFlag.setCountryCode(Converter.getCountryCode(aItemData.getLocation().country));
         // Construct and set - Bandwidth SpannableString
@@ -74,9 +76,27 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
                 .customStyle(Typeface.BOLD)
                 .build();
         holder.mTvLatency.setText(aStyleLatency);
-        // Set listeners
-        holder.mRootView.setOnClickListener(v -> onRootViewClick(aItemData));
-        holder.mBtnConnect.setOnClickListener(v -> onConnectClick(aItemData.getAccountAddress()));
+        // Construct and set - Node Version SpannableString
+        String aVersion = mContext.getString(R.string.vpn_node_version, aItemData.getVersion());
+        SpannableString aStyleVersion = new SpannableStringUtil.SpannableStringUtilBuilder(aVersion, aItemData.getVersion())
+                .color(ContextCompat.getColor(mContext, R.color.colorTextWhite))
+                .customStyle(Typeface.BOLD)
+                .build();
+        holder.mTvNodeVersion.setText(aStyleVersion);
+        // Construct and set - Node Rating SpannableString
+        String aRatingValue;
+        if (aItemData.getRating() == 0.0) {
+            aRatingValue = "N/A";
+        } else {
+            aRatingValue = String.format(Locale.getDefault(), "%.1f / %.1f", aItemData.getRating(), AppConstants.MAX_NODE_RATING);
+        }
+        String aRating = mContext.getString(R.string.vpn_node_rating, aRatingValue);
+        SpannableString aStyleRating = new SpannableStringUtil.SpannableStringUtilBuilder(aRating, aRatingValue)
+                .color(ContextCompat.getColor(mContext, R.color.colorTextWhite))
+                .customStyle(Typeface.BOLD)
+                .build();
+        holder.mTvNodeRating.setText(aStyleRating);
+        holder.mIbBookmark.setImageResource(aItemData.isBookmarked() ? R.drawable.ic_bookmark_active : R.drawable.ic_bookmark_inactive);
     }
 
     @Override
@@ -88,8 +108,9 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder {
         View mRootView;
         FlagImageView mFvFlag;
-        TextView mTvLocation, mTvBandwidth, mTvPrice, mTvLatency;
+        TextView mTvLocation, mTvBandwidth, mTvPrice, mTvLatency, mTvNodeVersion, mTvNodeRating;
         Button mBtnConnect;
+        AppCompatImageButton mIbBookmark;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -99,7 +120,15 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
             mTvBandwidth = itemView.findViewById(R.id.tv_bandwidth);
             mTvPrice = itemView.findViewById(R.id.tv_price);
             mTvLatency = itemView.findViewById(R.id.tv_latency);
+            mTvNodeVersion = itemView.findViewById(R.id.tv_node_version);
+            mTvNodeRating = itemView.findViewById(R.id.tv_node_rating);
             mBtnConnect = itemView.findViewById(R.id.btn_connect);
+            mIbBookmark = itemView.findViewById(R.id.ib_bookmark);
+
+            // Set listeners
+            mRootView.setOnClickListener(v -> onRootViewClick(mData.get(getAdapterPosition())));
+            mBtnConnect.setOnClickListener(v -> onConnectClick(mData.get(getAdapterPosition()).getAccountAddress()));
+            mIbBookmark.setOnClickListener(v -> onBookmarkClicked(mData.get(getAdapterPosition())));
         }
     }
 
@@ -155,9 +184,19 @@ public class VpnListAdapter extends RecyclerView.Adapter<VpnListAdapter.ViewHold
         }
     }
 
+    private void onBookmarkClicked(VpnListEntity iItemData) {
+        if (mItemClickListener != null) {
+            mItemClickListener.onBookmarkClicked(iItemData);
+            iItemData.setBookmarked(!iItemData.isBookmarked());
+            notifyDataSetChanged();
+        }
+    }
+
     public interface OnItemClickListener {
         void onRootViewClicked(VpnListEntity iItemData);
 
         void onConnectClicked(String iVpnAddress);
+
+        void onBookmarkClicked(VpnListEntity iItemData);
     }
 }

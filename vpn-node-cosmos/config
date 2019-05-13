@@ -2,6 +2,7 @@
     "account": {
         "address": null
     }, 
+    "moniker": "", 
     "api_port": 3000, 
     "description": "", 
     "openvpn": {

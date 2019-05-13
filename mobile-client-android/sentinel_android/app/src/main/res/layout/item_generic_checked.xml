@@ -11,7 +11,6 @@
         android:background="?android:attr/selectableItemBackground"
         android:checkMark="@null"
         android:textColor="@color/selector_checked_text_white"
-        android:drawableLeft="@drawable/selector_checked_view"
         android:drawablePadding="@dimen/margin_16"
         android:drawableStart="@drawable/selector_checked_view"
         android:gravity="center_vertical"

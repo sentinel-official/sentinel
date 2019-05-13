@@ -25,7 +25,7 @@ function getKeystoreFile() {
     }
 }
 
-export function setLanguage(state = 'en', action) {
+export function setLanguage(state = 'zh', action) {
     switch (action.type) {
         case types.LANGUAGE:
             return action.payload

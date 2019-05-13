@@ -34,7 +34,7 @@ def end_session(session_id):
                 'counter': signature['index'],
                 'name': node.config['account']['name'],
                 'gas': DEFAULT_GAS,
-                'isfinal': True,
+                'isfinal': signature['final'],
                 'password': node.config['account']['password'],
                 'sign': signature['hash']
             })

@@ -12,7 +12,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
-import com.bugsnag.android.Bugsnag;
+import com.amplitude.api.Amplitude;
 import com.google.android.gms.security.ProviderInstaller;
 
 import java.util.Locale;
@@ -27,14 +27,19 @@ public class SentinelApp extends MultiDexApplication {
     public static final String TAG = SentinelApp.class.getSimpleName();
 
     private static SentinelApp sInstance;
-    public static boolean isVpnInitiated, isVpnConnected;
+    public static boolean isVpnInitiated, isVpnConnected, isVpnReconnectFailed;
     public static Locale sLocale = null;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         PRNGFixes.apply();
-        Bugsnag.init(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannels();
         }
@@ -45,7 +50,8 @@ public class SentinelApp extends MultiDexApplication {
         StatusListener mStatus = new StatusListener();
         mStatus.init(getApplicationContext());
         sInstance = this;
-        MultiDex.install(this);
+        Amplitude.getInstance().initialize(this, "1e24e0776e2f0b2fe704d2eef83ca5d3").enableForegroundTracking(this);
+        Amplitude.getInstance().setLogLevel(Log.VERBOSE);
     }
 
     public static void changeLanguage(Context iContext, String iLanguageCode) {
@@ -54,11 +60,28 @@ public class SentinelApp extends MultiDexApplication {
             AppPreferences.getInstance().saveString(AppConstants.PREFS_SELECTED_LANGUAGE_CODE, iLanguageCode);
             // change/update config
             Configuration aConfig = iContext.getResources().getConfiguration();
-            sLocale = new Locale(iLanguageCode);
+            sLocale = new Locale(iLanguageCode, getCountryCodeByLanguageCode(iLanguageCode));
             Locale.setDefault(sLocale);
             Configuration aNewConfig = new Configuration(aConfig);
             aNewConfig.locale = sLocale;
+            aNewConfig.setLayoutDirection(sLocale);
             iContext.getResources().updateConfiguration(aNewConfig, iContext.getResources().getDisplayMetrics());
+        }
+    }
+
+    private static String getCountryCodeByLanguageCode(String iLanguageCode) {
+        switch (iLanguageCode) {
+            case "ru":
+                return "RU";
+            case "zh":
+                return "CN";
+            case "tr":
+                return "TR";
+            case "fa":
+                return "IR";
+            case "en":
+            default:
+                return Locale.getDefault().getCountry();
         }
     }
 

@@ -11,11 +11,13 @@ import co.sentinel.sentinellite.repository.AppVersionRepository;
 import co.sentinel.sentinellite.repository.BonusRepository;
 import co.sentinel.sentinellite.repository.VpnRepository;
 import co.sentinel.sentinellite.util.AppExecutors;
+import co.sentinel.sentinellite.viewmodel.BonusViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.DeviceRegisterViewModelFactory;
-import co.sentinel.sentinellite.viewmodel.ReferralViewModelFactory;
+import co.sentinel.sentinellite.viewmodel.RatingViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.SplashViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnConnectedViewModelFactory;
 import co.sentinel.sentinellite.viewmodel.VpnListViewModelFactory;
+import co.sentinel.sentinellite.viewmodel.VpnUsageViewModelFactory;
 
 /**
  * Provides static methods to inject the various classes needed for the application.
@@ -24,9 +26,10 @@ public class InjectorModule {
     /* Static private getter methods for Repository classes. */
     private static BonusRepository provideBonusRepository(Context iContext, String aDeviceId) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
-        BonusWebService aReferralWebService = WebClient.getReferralWebService();
+        BonusWebService aBonusWebService = WebClient.getBonusWebService();
+        BonusWebService iBonusLongTimeoutWebService = WebClient.getBonusLongTimeoutWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return BonusRepository.getInstance(aAppDatabase.getReferralInfoEntryDao(), aReferralWebService, aAppExecutors, aDeviceId);
+        return BonusRepository.getInstance(aAppDatabase.getBonusInfoEntryDao(), aBonusWebService, iBonusLongTimeoutWebService, aAppExecutors, aDeviceId);
     }
 
     private static AppVersionRepository provideAppVersionRepository() {
@@ -34,11 +37,17 @@ public class InjectorModule {
         return AppVersionRepository.getInstance(aAppVersionWebService);
     }
 
-    private static VpnRepository provideVpnRepository(Context iContext, String iDeviceId) {
+    public static VpnRepository provideVpnRepository(Context iContext, String iDeviceId) {
         AppDatabase aAppDatabase = AppDatabase.getInstance(iContext.getApplicationContext());
         GenericWebService aGenericWebService = WebClient.getGenericWebService();
+        GenericWebService aGenericRetryWebService = WebClient.getGenericRetryWebService();
         AppExecutors aAppExecutors = AppExecutors.getInstance();
-        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aGenericWebService, aAppExecutors, iDeviceId);
+        return VpnRepository.getInstance(aAppDatabase.getVpnListEntryDao(), aAppDatabase.getBookmarkDao(), aGenericWebService, aGenericRetryWebService, aAppExecutors, iDeviceId);
+    }
+
+    public static VpnUsageViewModelFactory provideVpnHistoryViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aRepository = provideVpnRepository(iContext, iDeviceId);
+        return new VpnUsageViewModelFactory(aRepository);
     }
 
     /* Static private getter methods for ViewModelFactory classes */
@@ -64,9 +73,13 @@ public class InjectorModule {
         return new VpnConnectedViewModelFactory(aRepository);
     }
 
-    public static ReferralViewModelFactory provideReferralViewModelFactory(Context iContext, String aDeviceId) {
+    public static BonusViewModelFactory provideBonusViewModelFactory(Context iContext, String aDeviceId) {
         BonusRepository aBonusRepository = provideBonusRepository(iContext, aDeviceId);
-        AppVersionRepository aAppVersionRepository = provideAppVersionRepository();
-        return new ReferralViewModelFactory(aBonusRepository, aAppVersionRepository);
+        return new BonusViewModelFactory(aBonusRepository);
+    }
+
+    public static RatingViewModelFactory provideRatingViewModelFactory(Context iContext, String iDeviceId) {
+        VpnRepository aVpnRepository = provideVpnRepository(iContext, iDeviceId);
+        return new RatingViewModelFactory(aVpnRepository);
     }
 }

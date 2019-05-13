@@ -73,7 +73,7 @@ public class HelperActivity extends AppCompatActivity implements ViewPager.OnPag
 
     @Override
     public void onPageSelected(int position) {
-        mBtnNext.setText(position == mAdapter.getCount() - 1 ? R.string.got_it : R.string.next);
+        mBtnNext.setText(position == mAdapter.getCount() - 1 ? R.string.got_it : R.string.action_next);
     }
 
     @Override

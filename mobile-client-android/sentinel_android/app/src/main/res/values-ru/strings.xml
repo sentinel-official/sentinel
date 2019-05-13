@@ -6,7 +6,9 @@
     <string name="or">ИЛИ</string>
     <string name="restore_account_desc">Уже есть аккаунт?\nВосстановите его с помощью файла хранилища.</string>
     <string name="confirm_password_hint">Подтвердить пароль</string>
-    <string name="next">Дальше</string>
+    <string name="action_next">Дальше</string>
+    <string name="action_done">Готово</string>
+    <string name="action_apply">применять</string>
     <string name="secure_key_desc">Сохраните ваш приватный ключ и файл хранилища в безопасное место.\n<b>Мы не храним ваши пароли в датабазе.</b>Если вы потеряете ваши данные, доступ к аккаунту будет утерян.</string>
     <string name="address_desc">Ваш адрес</string>
     <string name="private_key_desc">Приватный ключ</string>
@@ -17,7 +19,7 @@
     <string name="restore_password_hint">Введите пароль от хранилища</string>
     <string name="vpn">VPN</string>
     <string name="transaction_history">История Транзакций</string>
-    <string name="vpn_history">История VPN</string>
+    <string name="vpn_history">История dVPN</string>
     <string name="reset_pin">Сбросить PIN</string>
     <string name="disconnect">Отключиться</string>
     <string name="view_vpns">Список VPN</string>
@@ -60,6 +62,8 @@
     <string name="storage_permission_denied">Нет доступа к хранилищу</string>
     <string name="key_copied">Приватный ключ скопирован в буфер обмена</string>
     <string name="address_copied">Адрес скопирован в буфер обмена</string>
+    <string name="referral_id_copied">Реферальный код скопирован</string>
+    <string name="link_copied">реферальная ссылка скопирована</string>
     <string name="hash_copied">Хэш транзакции скопирован в буфер обмена</string>
     <string name="set_app_pin">Поставить PIN</string>
     <string name="pin_mismatch">PIN-коды не совпадают</string>
@@ -83,15 +87,18 @@
     <string name="sents">%1s SENTs</string>
     <string name="eths">%1s ETH</string>
     <string name="pay_sents">Заплатить %1s SENTs</string>
-    <string name="vpn_location">%1s, %2s</string>
+    <string name="vpn_location_city_country">%1s, %2s</string>
     <string name="vpn_ip">IP %1s</string>
     <string name="vpn_bandwidth">Скорость %s</string>
-    <string name="vpn_bandwidth_connected">Скорость\n%s</string>
+    <string name="vpn_bandwidth_connected">Скорость соединения</string>
     <string name="vpn_price">Цена (SENT/ГБ) %s</string>
-    <string name="vpn_price_connected">Цена (SENT/ГБ)\n%s</string>
+    <string name="vpn_price_connected">Цена (SENT/ГБ)</string>
     <string name="vpn_latency">Задержка %s</string>
-    <string name="vpn_latency_connected">Задержка\n%s</string>
-    <string name="vpn_duration_connected">Длительность\n%s</string>
+    <string name="vpn_node_version">Версия %s</string>
+    <string name="vpn_node_rating">Оценка %s</string>
+    <string name="vpn_latency_connected">Задержка</string>
+    <string name="vpn_enc_method_connected">Шифрование</string>
+    <string name="vpn_duration_connected">Длительность</string>
     <string name="vpn_bandwidth_value">%.2f Мб/с</string>
     <string name="vpn_price_value">%.0f SENT</string>
     <string name="vpn_latency_value">%.3f мс</string>
@@ -101,8 +108,6 @@
     <string name="restoring_accunt">Восстановление аккаунта. Подождите…</string>
     <string name="verifying_credentials">Проверка подписей. Подождите…</string>
     <string name="resetting_pin">Сброс PIN-кода.Подождите… </string>
-    <string name="gas_limit_sents">42000</string>
-    <string name="gas_limit_eth">21000</string>
     <string name="sending">Отправка…</string>
     <string name="signing_transaction">Проверка и подпись транзакции. Подождите…</string>
     <string name="init_vpn_pay">100</string>
@@ -117,6 +122,9 @@
     <string name="country">Страна:</string>
     <string name="bandwidth">Скорость:</string>
     <string name="latency">Задержка:</string>
+    <string name="encryption">Шифрование:</string>
+    <string name="node_version">Версия:</string>
+    <string name="node_rating">Оценка:</string>
     <string name="price">Цена (SENT/ГБ):</string>
     <string name="coming_soon">Скоро добавим…</string>
     <string name="fetching_config">Получение конфигураций VPN…</string>
@@ -148,13 +156,13 @@
     <string name="tx_details">Информация о транзакции</string>
     <string name="view_on_etherscan">Посмотреть на Etherscan</string>
     <string name="link_coming_soon">Скоро добавим.</string>
-    <string name="faq">FAQ</string>
     <string name="check_for_updates">Обновления</string>
     <string name="social_links">Ссылки на соцсети</string>
     <string name="got_it">Понял</string>
     <string name="no_scan_results">Результаты сканирования не найдены.</string>
     <string name="not_a_address">Отсканированный результат не является адресом учетной записи. Отбрасывание отсканированных результатов.</string>
     <string name="retry">Повторить</string>
+    <string name="action_cancel">Отмена</string>
     <string name="vpn_history_main_net_unavailable">В Основной Сети нет истории VPN.</string>
     <string name="vpn_main_net_unavailable">Нет доступных  узлов VPN в Основной Сети, переключитесь на Тестовую Сеть.</string>
     <string name="tx_history_main_net_unavailable">В Основной Сети нет транзакций.</string>
@@ -162,11 +170,14 @@
     <string name="logout_desc">Убедитесь в сохранности файла хранилища перед выходом из приложения.</string>
     <string name="language">Язык</string>
     <string name="select_language">Выбрать Язык</string>
+    <string name="referral_id">Реферальный код</string>
+    <string name="invitation_link">Ссылка на приглашение</string>
+    <string name="invitation_desc">Поделитесь этой ссылкой, чтобы ваши друзья смогли пользоваться приложением Sentinel dVPN</string>
     <string name="view_tx_history_for">История транзакций</string>
     <string name="payment_done_success">Платеж прошел успешно</string>
     <string name="send_to_hint">Введите или отсканируйте адрес отправки</string>
     <string name="referral_code">Реферальный код</string>
-    <string name="referrals">Рефералы</string>
+    <string name="share_app">Поделитесь приложением</string>
     <string name="send_to">Отправить…</string>
     <string name="password_hint">Введите пароль для создания пользовательского ID</string>
     <string name="key_not_copied_alert">Вы не скопировали ваш приватный ключ.\nСкопируйте его для дальнейшей работы.</string>
@@ -179,11 +190,16 @@
     <string name="referral_code_desc">Вы можете получить ваши реферальные токены только после оплаты первого VPN-сеанса.</string>
     <string name="no_of_referrals">Количество рефералов</string>
     <string name="reward_earned">Заработано токенов</string>
+    <string name="invite_friend">Пригласить друзей</string>
     <string name="address">Адрес</string>
     <string name="share_address">Поделитесь адресом</string>
-    <string name="share_string">Эй, зацени это новое dVPN Android приложение. Используй мой реферальный токен при регистрации.\nРеферальный код: %s</string>
-    <string name="info_title_1">Делись своим реферальным кодом для получения токенов за каждого нового пользователя</string>
-    <string name="info_title_2">Кошелек с открытым исходным кодом и защищенным VPN-сервисом</string>
+    <string name="share_string">Эй, зацени это новое dVPN Андроид-приложение. Используй мой код, чтобы получить бесплатные токены.\n\nРеферальный код: %1$s\n\nСсылка: %2$s</string>
+    <string name="branch_share_title">Эй, зацени это новое dVPN Андроид-приложение.</string>
+    <string name="branch_share_desc">Используй мой код, чтобы получить бесплатные токены.\nРеферальный код: %1$s</string>
+    <string name="info_title_1">Поделись своим реферальным кодом для бесплатных токенов за каждого зарегистрированного пользователя</string>
+    <string name="info_title_2">Защищённая децентрализованная VPN-платформа</string>
+    <string name="info_desc_1">Показывай приложение Sentinel друзьям, пользуйся бесплатным dVPN приложением и получай бонусы за поддержку сообщества и децентрализацию сети</string>
+    <string name="info_desc_2">Децентрализованный VPN-сервис прямо у вас под рукой</string>
     <string name="disconnect_vpn_to_logout">Вы подключены к VPN.\nОтключите VPN для выхода.</string>
     <string name="referral_claimed">Вы получили ваши реферальные токены.\nПосмотрите на обновленный баланс в вашем кошельке.</string>
     <string name="generic_error">Что-то пошло не так. Попробуйте ещё раз.</string>
@@ -195,13 +211,19 @@
     <string name="claim_bonus">Забрать бонус</string>
     <string name="update_available">Доступно обновление</string>
     <string name="update_desc">Новая версия уже доступна для скачивания.\n\nПожалуйста, скачайте и установите новую версию для стабильной работы приложения.</string>
-    <string name="downloading_app_tite">Скачивается…</string>
+    <string name="downloading_app_title">Скачивается…</string>
     <string name="download">Скачать</string>
     <string name="referral_address_missing">Вы не ввели реферальный код.\n\n Вы хотите продолжить без реферального кода?</string>
     <string name="empty_list_message">Нет истории для показа.</string>
     <string name="vpn_history_empty_list_message">В данный момент у вас нет истории подключений к VPN</string>
     <string name="tx_history_empty_list_message">В данный момент у вас нет истории транзакций</string>
     <string name="vpn_empty_list_message">В данный момент нет доступных VPN для подключения.</string>
+    <string name="network_lost">The VPN connection has been dropped as it failed to re-connect to the VPN node.\nPlease reconnect.</string>
+    <string name="can_claim_after">Можно забрать через: %s</string>
+    <string name="label_rate_session">Оцените качество данного подключения к dVPN</string>
+    <string name="error_select_rating">Please select rating</string>
+    <string name="action_skip">Пропустить</string>
+    <string name="action_rate">Оценить</string>
 
     <string-array name="spinner_list">
         <item>SENT</item>
@@ -281,7 +303,6 @@
     <string name="abi_mismatch">Preferred native ABI precedence of this device (%1$s) and ABI reported by native libraries (%2$s) mismatch</string>
     <string name="unhandled_exception_context">%3$s: %1$s\n\n%2$s</string>
     <string name="unhandled_exception">Необработанная ошибка: %1$s\n\n%2$s</string>
-    <string name="unknown_state" translatable="false">Unknown state</string>
     <string name="state_connecting">Подключается</string>
     <string name="state_wait">Ожидание ответа</string>
     <string name="state_auth">Аутентификация</string>
@@ -307,9 +328,6 @@
     <string name="deprecated_tls_remote">Config uses option tls-remote that was deprecated in 2.3 and finally removed in 2.4</string>
     <string name="ipv4_format_error">Ошибка в распознавании IPv4 адреса</string>
     <string name="shortcut_profile_notfound">Профиль указанный в ярлыке не найден</string>
-    <string name="state_user_vpn_permission" translatable="false">Ожжидание разрешения от пользователя для VPN API</string>
-    <string name="state_user_vpn_password" translatable="false">Ожидание пароля от VPN пользователя</string>
-    <string name="state_user_vpn_permission_cancelled" translatable="false">Диалог разрешения API VPN отменен.\n\nПредоставьте разрешение для использования служб VPN</string>
     <string name="always_on_warning"><![CDATA[If you did not get a VPN confirmation dialog, you have \"Always on VPN\" enabled for another app. In that case only that app is allowed to connect to a VPN. Check under Settings-> Networks more .. -> VPNS]]></string>
     <string name="config_error_found">Ошибка в конфигурации</string>
     <string name="no_vpn_support_image">Ваш образ не поддерживает VPNService API.</string>
@@ -321,4 +339,29 @@
     <string name="pkcs12_file_encryption_key">Ключ шифрования файлов PKCS12</string>
     <string name="private_key_password">Пароль приватного ключа</string>
     <string name="error_rsa_sign">Ошибка при входе с ключом Android хранилища %1$s: %2$s</string>
+    <string name="referral_address_invalid">Неправильно введен реферальный код. Попробуйте ещё раз.</string>
+    <string name="read_more">Узнать больше</string>
+    <string name="vpn_enc_method">Шифрование %s</string>
+    <string name="registering_device">Подготавливаем ваше устройство. Подождите…</string>
+    <string name="help">Помогите</string>
+    <string name="faq">FAQ</string>
+    <string name="ok">OK</string>
+    <string name="filter_by_title">Фильтр</string>
+    <string name="filter_by_bookmark">Показывать только избранные</string>
+    <string name="sort_by_title">Сортировать по</string>
+    <string name="sort_by_rating_d">Рейтинг</string>
+    <string name="sort_by_rating_i">Рейтинг ↑</string>
+    <string name="sort_by_price_d">Цена ↓</string>
+    <string name="sort_by_price_i">Цена ↑</string>
+    <string name="sort_by_latency_i">Задержка ↑</string>
+    <string name="sort_by_latency_d">Задержка</string>
+    <string name="sort_by_default">По умолчанию</string>
+    <string name="sort_by_country_d">Страна ↓</string>
+    <string name="sort_by_country_a">Страна</string>
+    <string name="sort_by_bandwidth_i">Трафик ↑</string>
+    <string name="sort_by_bandwidth_d">Трафик</string>
+    <string name="hint_search_vpn_list">Поиск по стране</string>
+    <string name="alert_bookmark_added">Избранные VPN</string>
+    <string name="alert_bookmark_removed">Удаленные VPN</string>
+
 </resources>

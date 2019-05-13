@@ -8,6 +8,6 @@ import sentinelgroup.io.sentinel.network.model.VersionInfo;
  * REST API access points for Referral flow
  */
 public interface AppVersionWebService {
-    @GET(EndPoint.GET_LATEST_VERSION)
+    @GET(EndPoint.GET_LATEST_VERSION_SNC)
     Call<VersionInfo> getLatestAppVersion();
 }

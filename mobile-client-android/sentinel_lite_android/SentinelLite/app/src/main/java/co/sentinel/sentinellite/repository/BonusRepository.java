@@ -29,20 +29,26 @@ public class BonusRepository {
     private static BonusRepository sInstance;
     private final BonusInfoDao mDao;
     private final BonusWebService mBonusWebService;
+    private final BonusWebService mBonusLongTimeoutWebService;
     private final AppExecutors mAppExecutors;
     private final String mDeviceId;
-    private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoByDeviceIdLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAccountInfoByAddressLiveEvent;
     private final SingleLiveEvent<Resource<GenericResponse>> mRegisterDeviceIdLiveEvent;
     private final MutableLiveData<BonusInfoEntity> mBonusInfoMutableLiveData;
+    private final SingleLiveEvent<Resource<GenericResponse>> mLinkAccountLiveEvent;
 
-    private BonusRepository(BonusInfoDao iDao, BonusWebService iReferralWebService, AppExecutors iAppExecutors, String iDeviceId) {
+    private BonusRepository(BonusInfoDao iDao, BonusWebService iReferralWebService, BonusWebService iBonusLongTimeoutWebService, AppExecutors iAppExecutors, String iDeviceId) {
         this.mDao = iDao;
         this.mBonusWebService = iReferralWebService;
+        this.mBonusLongTimeoutWebService = iBonusLongTimeoutWebService;
         this.mAppExecutors = iAppExecutors;
         mDeviceId = iDeviceId;
-        mAccountInfoLiveEvent = new SingleLiveEvent<>();
+        mAccountInfoByDeviceIdLiveEvent = new SingleLiveEvent<>();
+        mAccountInfoByAddressLiveEvent = new SingleLiveEvent<>();
         mRegisterDeviceIdLiveEvent = new SingleLiveEvent<>();
         mBonusInfoMutableLiveData = new MutableLiveData<>();
+        mLinkAccountLiveEvent = new SingleLiveEvent<>();
 
         LiveData<BonusInfoEntity> aBonusInfoEntityLiveData = getBonusInfoMutableLiveData();
         aBonusInfoEntityLiveData.observeForever(referralInfoEntity -> {
@@ -54,10 +60,10 @@ public class BonusRepository {
         });
     }
 
-    public static BonusRepository getInstance(BonusInfoDao iDao, BonusWebService iReferralWebService, AppExecutors iAppExecutors, String iDeviceId) {
+    public static BonusRepository getInstance(BonusInfoDao iDao, BonusWebService iReferralWebService, BonusWebService iBonusLongTimeoutWebService, AppExecutors iAppExecutors, String iDeviceId) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new BonusRepository(iDao, iReferralWebService, iAppExecutors, iDeviceId);
+                sInstance = new BonusRepository(iDao, iReferralWebService, iBonusLongTimeoutWebService, iAppExecutors, iDeviceId);
             }
         }
         return sInstance;
@@ -71,12 +77,20 @@ public class BonusRepository {
     /*
      * public getter methods for LiveData and SingleLiveEvents
      */
-    public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoLiveEvent() {
-        return mAccountInfoLiveEvent;
+    public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoByDeviceIdLiveEvent() {
+        return mAccountInfoByDeviceIdLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getAccountInfoByAddressLiveEvent() {
+        return mAccountInfoByAddressLiveEvent;
     }
 
     public SingleLiveEvent<Resource<GenericResponse>> getRegisterDeviceIdLiveEvent() {
         return mRegisterDeviceIdLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getLinkAccountLiveEvent() {
+        return mLinkAccountLiveEvent;
     }
 
     public void registerDeviceId(String iReferralCode) {
@@ -84,26 +98,30 @@ public class BonusRepository {
                 .deviceIdReferral(mDeviceId)
                 .referredBy(iReferralCode)
                 .build();
-        addReferralAddress(aRequestBody);
+        addAccountInfo(aRequestBody);
     }
 
     public LiveData<BonusInfoEntity> getBonusInfoEntityLiveData() {
         return mDao.getBonusInfoEntity();
     }
 
-    public void fetchAccountInfo() {
-        getAccountDetails();
+    public void fetchAccountInfoByDeviceId() {
+        getAccountDetailsByDeviceId();
+    }
+
+    public void fetchAccountInfoByAddress(String iAddress) {
+        getAccountDetailsByAddress(iAddress);
     }
 
     public void fetchBonusInfo() {
-        getReferralInfo();
+        getBonusInfo();
     }
 
     /*
      * Network call
      */
-    private void getAccountDetails() {
-        mBonusWebService.getAccountInfo(mDeviceId).enqueue(new Callback<GenericResponse>() {
+    private void getAccountDetailsByDeviceId() {
+        mBonusLongTimeoutWebService.getAccountInfoByDeviceIdAddress(BonusWebService.ACCOUNT_INFO_BY_DEVICE_ID, mDeviceId).enqueue(new Callback<GenericResponse>() {
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 reportSuccessResponse(response);
@@ -119,7 +137,7 @@ public class BonusRepository {
                     if (iResponse.body() != null && iResponse.body().account != null && iResponse.body().account.referralId != null) {
                         AppPreferences.getInstance().saveString(AppConstants.PREFS_REF_ID, iResponse.body().account.referralId);
                     }
-                    mAccountInfoLiveEvent.postValue(Resource.success(iResponse.body()));
+                    mAccountInfoByDeviceIdLiveEvent.postValue(Resource.success(iResponse.body()));
                 } else {
                     reportErrorResponse(iResponse, null);
                 }
@@ -128,17 +146,54 @@ public class BonusRepository {
             private void reportErrorResponse(Response<GenericResponse> iResponse, String iThrowableLocalMessage) {
                 if (iResponse != null) {
                     ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
-                    mAccountInfoLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
+                    mAccountInfoByDeviceIdLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
                 } else if (iThrowableLocalMessage != null) {
-                    mAccountInfoLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                    mAccountInfoByDeviceIdLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
                 } else {
-                    mAccountInfoLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+                    mAccountInfoByDeviceIdLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
                 }
             }
         });
     }
 
-    private void addReferralAddress(GenericRequestBody iRequestBody) {
+    private void getAccountDetailsByAddress(String iAddress) {
+        mAccountInfoByAddressLiveEvent.postValue(Resource.loading(null));
+        mBonusWebService.getAccountInfoByDeviceIdAddress(BonusWebService.ACCOUNT_INFO_BY_ADDRESS, iAddress).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
+            }
+
+            private void reportSuccessResponse(Response<GenericResponse> iResponse) {
+                if (iResponse.isSuccessful()) {
+                    if (iResponse.body() != null && iResponse.body().account != null && iResponse.body().account.referralId != null) {
+                        AppPreferences.getInstance().saveString(AppConstants.PREFS_REF_ID, iResponse.body().account.referralId);
+                    }
+                    mAccountInfoByAddressLiveEvent.postValue(Resource.success(iResponse.body()));
+                } else {
+                    reportErrorResponse(iResponse, null);
+                }
+            }
+
+            private void reportErrorResponse(Response<GenericResponse> iResponse, String iThrowableLocalMessage) {
+                if (iResponse != null) {
+                    ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
+                    mAccountInfoByAddressLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
+                } else if (iThrowableLocalMessage != null) {
+                    mAccountInfoByAddressLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                } else {
+                    mAccountInfoByAddressLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
+                }
+            }
+        });
+    }
+
+    private void addAccountInfo(GenericRequestBody iRequestBody) {
         mRegisterDeviceIdLiveEvent.postValue(Resource.loading(null));
         mBonusWebService.addAccount(iRequestBody).enqueue(new Callback<GenericResponse>() {
             @Override
@@ -172,7 +227,7 @@ public class BonusRepository {
         });
     }
 
-    private void getReferralInfo() {
+    private void getBonusInfo() {
         mBonusWebService.getBonusInfo(mDeviceId).enqueue(new Callback<BonusInfoEntity>() {
             @Override
             public void onResponse(Call<BonusInfoEntity> call, Response<BonusInfoEntity> response) {
@@ -189,6 +244,40 @@ public class BonusRepository {
                         iResponse.body().setDeviceId(mDeviceId);
                         mBonusInfoMutableLiveData.postValue(iResponse.body());
                     }
+                }
+            }
+        });
+    }
+
+    public void linkSncSlcAccounts(String iSncRefId, String iSlcRefId, GenericRequestBody iRequestBody) {
+        mLinkAccountLiveEvent.postValue(Resource.loading(null));
+        mBonusWebService.linkSncSlcAccounts(iSncRefId, iSlcRefId, iRequestBody).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                reportSuccessResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                reportErrorResponse(null, t instanceof NoConnectivityException ? t.getLocalizedMessage() : null);
+            }
+
+            private void reportSuccessResponse(Response<GenericResponse> iResponse) {
+                if (iResponse.isSuccessful()) {
+                    mLinkAccountLiveEvent.postValue(Resource.success(iResponse.body()));
+                } else {
+                    reportErrorResponse(iResponse, null);
+                }
+            }
+
+            private void reportErrorResponse(Response<GenericResponse> iResponse, String iThrowableLocalMessage) {
+                if (iResponse != null) {
+                    ApiError aError = ApiErrorUtils.parseGenericError(iResponse);
+                    mLinkAccountLiveEvent.postValue(Resource.error(aError.getMessage() != null ? aError.getMessage() : AppConstants.ERROR_GENERIC, iResponse.body()));
+                } else if (iThrowableLocalMessage != null) {
+                    mLinkAccountLiveEvent.postValue(Resource.error(iThrowableLocalMessage, null));
+                } else {
+                    mLinkAccountLiveEvent.postValue(Resource.error(AppConstants.ERROR_GENERIC, null));
                 }
             }
         });

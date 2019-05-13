@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import sentinelgroup.io.sentinel.network.model.Account;
 import sentinelgroup.io.sentinel.network.model.GenericRequestBody;
 import sentinelgroup.io.sentinel.network.model.GenericResponse;
+import sentinelgroup.io.sentinel.repository.BonusRepository;
 import sentinelgroup.io.sentinel.repository.CreateAuidRepository;
 import sentinelgroup.io.sentinel.util.AppConstants;
 import sentinelgroup.io.sentinel.util.AppExecutors;
@@ -22,18 +23,24 @@ import sentinelgroup.io.sentinel.util.SingleLiveEvent;
 public class CreateAuidViewModel extends ViewModel {
     private final CreateAuidRepository mRepository;
     private final AppExecutors mAppExecutors;
+    private final BonusRepository mBonusRepository;
     private final SingleLiveEvent<Resource<Account>> mAccountLiveEvent;
     private final SingleLiveEvent<Resource<Account>> mKeystoreFileLiveEvent;
-    private final SingleLiveEvent<Resource<GenericResponse>> mReferralLiveEvent;
     private final SingleLiveEvent<Boolean> mSessionClearedLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mAddAccountLiveEvent;
+    private final SingleLiveEvent<Resource<GenericResponse>> mUpdateAccountLiveEvent;
+    private final String mDeviceId;
 
-    CreateAuidViewModel(CreateAuidRepository iRepository, AppExecutors iAppExecutors) {
+    CreateAuidViewModel(CreateAuidRepository iRepository, AppExecutors iAppExecutors, BonusRepository iBonusRepository, String iDeviceId) {
         mRepository = iRepository;
         mAppExecutors = iAppExecutors;
+        mBonusRepository = iBonusRepository;
         mAccountLiveEvent = iRepository.getAccountLiveEvent();
-        mKeystoreFileLiveEvent = new SingleLiveEvent<>();
-        mReferralLiveEvent = iRepository.getReferralLiveEvent();
+        mUpdateAccountLiveEvent = iBonusRepository.getUpdateAccountLiveEvent();
         mSessionClearedLiveEvent = iRepository.getSessionClearedLiveEvent();
+        mKeystoreFileLiveEvent = new SingleLiveEvent<>();
+        mDeviceId = iDeviceId;
+        mAddAccountLiveEvent = iBonusRepository.getAddAccountLiveEvent();
     }
 
     /*
@@ -47,12 +54,16 @@ public class CreateAuidViewModel extends ViewModel {
         return mKeystoreFileLiveEvent;
     }
 
-    public SingleLiveEvent<Resource<GenericResponse>> getReferralLiveEvent() {
-        return mReferralLiveEvent;
-    }
-
     public SingleLiveEvent<Boolean> getSessionClearedLiveEvent() {
         return mSessionClearedLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getAddAccountLiveEvent() {
+        return mAddAccountLiveEvent;
+    }
+
+    public SingleLiveEvent<Resource<GenericResponse>> getUpdateAccountLiveEvent() {
+        return mUpdateAccountLiveEvent;
     }
 
     /*
@@ -65,12 +76,20 @@ public class CreateAuidViewModel extends ViewModel {
         mRepository.createNewAccount(aBody);
     }
 
-    public void addReferralAddress(String iClientAddress, String iReferralAddress) {
+    public void addAccountInfo(String iAccountAddress, String iReferredBy) {
         GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
-                .clientAddress(iClientAddress)
-                .referralAddress(iReferralAddress)
+                .deviceIdReferral(mDeviceId)
+                .address(iAccountAddress)
+                .referredBy(iReferredBy)
                 .build();
-        mRepository.addReferralAddress(aBody);
+        mBonusRepository.addAccountInfo(aBody);
+    }
+
+    public void updateAccountInfo(String iAccountAddress) {
+        GenericRequestBody aBody = new GenericRequestBody.GenericRequestBodyBuilder()
+                .address(iAccountAddress)
+                .build();
+        mBonusRepository.updateAccount(mDeviceId, aBody);
     }
 
     public void saveAccount(Account iData) {

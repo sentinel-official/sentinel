@@ -5,34 +5,30 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import sentinelgroup.io.sentinel.R;
+import java.util.ArrayList;
+
+import sentinelgroup.io.sentinel.network.model.OnBoardingInfo;
 import sentinelgroup.io.sentinel.ui.fragment.InfoFragment;
 
 public class InfoPagerAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
+    private ArrayList<OnBoardingInfo> mList;
 
-    public InfoPagerAdapter(FragmentManager fm, Context iContext) {
+    public InfoPagerAdapter(FragmentManager fm, Context iContext, ArrayList<OnBoardingInfo> iList) {
         super(fm);
         mContext = iContext;
+        this.mList = iList;
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return mList.size();
     }
 
     @Override
     public Fragment getItem(int position) {
-        Fragment aFragment = null;
-        switch (position) {
-            case 0:
-                aFragment = InfoFragment.newInstance(R.drawable.ic_info_referral, -1, R.string.info_title_1, -1);
-                break;
-            case 1:
-                aFragment = InfoFragment.newInstance(R.drawable.menu_vpn_unselected, R.drawable.menu_wallet_unselected, R.string.info_title_2, -1);
-                break;
-        }
+        Fragment aFragment = InfoFragment.newInstance(mList.get(position));
         return aFragment;
     }
 }

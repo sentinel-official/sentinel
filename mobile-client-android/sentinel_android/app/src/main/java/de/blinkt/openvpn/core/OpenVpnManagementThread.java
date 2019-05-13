@@ -353,8 +353,8 @@ public class OpenVpnManagementThread implements Runnable, OpenVPNManagement {
     private void processByteCount(String argument) {
         //   >BYTECOUNT:{BYTES_IN},{BYTES_OUT}
         int comma = argument.indexOf(',');
-        long in = Long.parseLong(argument.substring(0, comma));
-        long out = Long.parseLong(argument.substring(comma + 1));
+        long in = Long.parseLong(argument.substring(0, comma).trim());
+        long out = Long.parseLong(argument.substring(comma + 1).trim());
         VpnStatus.updateByteCount(in, out);
     }
 

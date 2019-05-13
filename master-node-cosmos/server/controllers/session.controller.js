@@ -1,8 +1,8 @@
 let async = require('async');
-let lodash = require('lodash');
 let nodeDbo = require('../dbos/node.dbo');
 let sessionDbo = require('../dbos/session.dbo');
 let sessionHelper = require('../helpers/session.helper');
+let { GB } = require('../../config/vars');
 
 
 /**
@@ -14,13 +14,20 @@ let sessionHelper = require('../helpers/session.helper');
  * @apiSuccess {String} url URL of the node endpoint.
  * @apiSuccess {String} sessionId Unique session ID.
  * @apiSuccess {String} token Token for communication with node.
+ * @apiSuccess {Object} maxUsage Max usage limit.
+ * @apiSuccess {Number} maxUsage.download Max download limit.
+ * @apiSuccess {Number} maxUsage.upload Max upload limit.
  * @apiSuccessExample Success-Response:
  *   HTTP/1.1 200 OK
  *   {
  *     success: true,
  *     url: ''
  *     sessionId: ''
- *     token: ''
+ *     token: '',
+ *     maxUsage: {
+ *       download: 0,
+ *       upload: 0
+ *     }
  *   }
  */
 let addSession = (req, res) => {
@@ -39,8 +46,8 @@ let addSession = (req, res) => {
         });
     }, (payment, next) => {
       nodeDbo.getNode({
-        accountAddress: payment.to,
-        'info.status': 'up'
+        'accountAddress': payment.to,
+        'status': 'up'
       }, (error, node) => {
         if (error) next({
           status: 500,
@@ -55,8 +62,17 @@ let addSession = (req, res) => {
     }, (payment, node, next) => {
       let token = sessionHelper.generateToken();
       let url = `http://${node.IP}:${node.APIPort}`;
+      let maxUsage = {
+        download: GB,
+        upload: GB
+      };
+      if (payment.lockedAmount) {
+        maxUsage.download = Math.round(GB * (payment.lockedAmount / node.pricePerGB));
+        maxUsage.upload = Math.round(GB * (payment.lockedAmount / node.pricePerGB));
+      }
       sessionHelper.sendUserDetails(`${url}/clients/${payment.from}/sessions/${payment.sessionId}`, {
-        token
+        token,
+        maxUsage
       }, (error) => {
         if (error) next({
           status: 500,
@@ -68,6 +84,7 @@ let addSession = (req, res) => {
             clientAccountAddress: payment.from,
             nodeAccountAddress: payment.to,
             token,
+            maxUsage
           });
       });
     }, (url, session, next) => {
@@ -81,6 +98,7 @@ let addSession = (req, res) => {
             status: 200,
             sessionId: session.sessionId,
             token: session.token,
+            maxUsage: session.maxUsage,
             url
           });
         });
@@ -116,7 +134,7 @@ let getSessions = (req, res) => {
   async.waterfall([
     (next) => {
       sessionDbo.getSessions({
-        clientAccountAddress: accountAddress
+        'clientAccountAddress': accountAddress
       }, (error, sessions) => {
         if (error) next({
           status: 500,

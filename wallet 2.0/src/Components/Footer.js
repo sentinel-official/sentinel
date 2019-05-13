@@ -128,7 +128,9 @@ class Footer extends Component {
                     console.log("disconnect response in Footer ", res)
 
                     let regError = '';
-
+                    this.props.clearUsage();
+                    this.props.setVpnStatus(false);
+                    deleteTmAccount();
                     this.setState({
                         openSnack: true,
                         snackMessage:res,
@@ -156,11 +158,14 @@ class Footer extends Component {
         else{
             disconnectVPN((res) => {
                 if (res) {
-                    let regError = res.replace(/\s/g, "");
+                    let regError = res.message?res.message.replace(/\s/g, ""):'Disconnecting failed';
+                    this.props.clearUsage();
+                    this.props.setVpnStatus(false);
+                    deleteTmAccount();
                     this.setState({
                         openSnack: true,
                         snackMessage: lang[this.props.language][regError] ?
-                            lang[this.props.language][regError] : res,
+                            lang[this.props.language][regError] : res.message?res.message:'Disconnecting failed',
                         isDisabled: false, disconnectCalled: false
                     });
                 }
@@ -193,13 +198,15 @@ class Footer extends Component {
             if (this.props.vpnType === 'openvpn') {
                 disconnectVPN((res) => {
                     if (res) {
-                        let regError = res.replace(/\s/g, "");
+                        let regError = res.message?res.message.replace(/\s/g, ""):'Disconnecting failed';
+                        this.props.clearUsage();
                         this.setState({
                             openSnack: true,
                             snackMessage: lang[this.props.language][regError] ?
-                                lang[this.props.language][regError] : res,
+                                lang[this.props.language][regError] : res.message?res.message:'Disconnecting failed',
                             isDisabled: false
                         });
+                        this.props.setVpnStatus(false);
                     }
                     else {
                         this.setState({
@@ -214,6 +221,8 @@ class Footer extends Component {
                 disconnectSocks(this.props.walletAddr, (res) => {
                     if (res) {
                         let regError = res.replace(/\s/g, "");
+                        this.props.clearUsage();
+                        this.props.setVpnStatus(false);
                         this.setState({
                             openSnack: true,
                             snackMessage: lang[this.props.language][regError] ?

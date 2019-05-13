@@ -40,7 +40,7 @@ export function runGaiacli(cb) {
         }
     }
     else {
-        exec('resources\\extras\\gaiacli.exe advanced rest-server --node tcp://209.182.217.171:26657 --chain-id=Sentinel-dev-testnet',
+        exec('resources\\extras\\gaiacli.exe advanced rest-server --node http://tm-lcd.sentinelgroup.io:26657 --chain-id=Sentinel-testnet-1.1',
             function (err, stdout, stderr) {
                 if (err) {
                     cb(true)

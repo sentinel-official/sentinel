@@ -5,36 +5,44 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Rating } from 'material-ui-rating';
 import { rateVPNSession } from './../Actions/vpnlist.action';
+import { setCurrentTab } from '../Actions/sidebar.action';
 import TextField from '@material-ui/core/TextField';
 import { MuiThemeProvider } from 'material-ui/styles';
 import lang from '../Constants/language';
-import './ratingStyle.css'
+import './ratingStyle.css';
+
+let ratingStatements = ['Worst', 'Awful', 'Poor', 'Okay', 'Good', 'Excellent']
 
 class RatingDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rateValue: 5  
+            rateValue: 5,
+            comments: 'Excellent'
         }
     }
 
     handleCancel = () => {
         this.props.onClose();
+        this.props.setCurrentTab('vpnHistory');
     };
 
     handleOk = () => {
-        rateVPNSession(this.state.rateValue, (err) => {
+        rateVPNSession(this.state.rateValue, this.props.isTm, this.state.comments, (err) => {
             if (err) {
                 this.props.onClose();
                 let regError = (err.message).replace(/\s/g, "");
                 this.props.snackOpenDialog(lang[this.props.language][regError] ?
                     lang[this.props.language][regError] : err.message);
+                this.props.setCurrentTab('vpnHistory');
             } else {
                 this.props.onClose();
                 this.props.snackOpenDialog(lang[this.props.language].RatedSuccess);
+                this.props.setCurrentTab('vpnHistory');
             }
         })
     };
+
 
     render() {
         let { language, ...other } = this.props;
@@ -52,17 +60,20 @@ class RatingDialog extends React.Component {
                         <Rating
                             value={this.state.rateValue}
                             max={5}
-                            onChange={(value) => { this.setState({ rateValue: value }) }}
+                            onChange={(value) => {
+                                this.setState({ rateValue: value, comments: ratingStatements[value] });
+                            }}
                         />
                         <TextField
                             id="filled-multiline-flexible"
                             label={lang[language].Comment}
                             multiline
                             rowsMax="4"
-                            value={this.state.multiline}
+                            value={this.state.comments}
                             className="commentField"
                             margin="normal"
                             variant="filled"
+                            onChange={(e) => { this.setState({ comments: e.target.value }) }}
                         />
                     </DialogContent>
                     <DialogActions>
@@ -86,12 +97,14 @@ RatingDialog.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        language: state.setLanguage
+        language: state.setLanguage,
+        isTm: state.setTendermint,
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
+        setCurrentTab
     }, dispatch)
 }
 

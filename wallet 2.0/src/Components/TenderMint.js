@@ -20,7 +20,7 @@ class TenderMint extends Component {
         }
     }
 
-   
+
     render() {
         let { component, account, keys } = this.props;
         let { value } = this.state;
@@ -40,9 +40,9 @@ class TenderMint extends Component {
                     <div style={sidebarStyles.heightFull}>
                         {
                             account ?
-                                <TMAccountDetails />
+                                <TMAccountDetails isPopup={false} />
                                 :
-                                <CreateTMAccount />
+                                <CreateTMAccount isPopup={false} />
                         }
                     </div>
                 )

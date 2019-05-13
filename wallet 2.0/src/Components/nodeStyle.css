@@ -1,0 +1,88 @@
+.nodeCardStyle {
+  padding: 20px;
+  margin: 0px 10px 10px 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nodeCardStyle:hover {
+  box-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+.nodeLabel {
+  color:#989898;
+  font-weight: 800;
+  font-family: Montserrat, Medium;
+  font-size: 15px;
+}
+
+.nodeValue {
+  color: #626262;
+  font-weight: 500;
+  font-family: Montserrat;
+  font-size: 13px;
+}
+
+.copyStyle {
+  height: 18;
+  width: 15;
+  color: "#5ca1e8";
+  cursor: "pointer";
+  margin-left: 5;
+  margin-bottom: -3;
+}
+.mainDiv {
+  margin: 20px 10px 10px 10px;
+}
+.heading {
+  text-transform: uppercase;
+  font-size: 20px;
+    color: rgb(67, 67, 67);
+    font-family: Montserrat, Medium;
+    text-align: left;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.buttonsGroup {
+  display: flex;
+}
+.SecondDiv {
+  display: flex;
+  justify-content: space-between;
+}
+.listData{
+ 
+      height: 430px;
+      overflow-y: scroll;
+      margin-right: 10px;
+      margin-top: 10px;
+ 
+}
+.nodeGiveSpace{
+  margin: 0 15px;
+}
+.nodeGiveSpaceEnd{
+  margin: 0 60px 0 0;
+}
+
+.logoutButton{
+  color: #d9534f;
+  margin: 0 10px 0 0;
+}
+.rightDiv {
+  /* text-align: right; */
+}
+.nodeHeading{
+  font-family: Montserrat, Medium;
+  font-weight: 600;
+  font-size: 24px;
+  /* margin-left: 20px; */
+  margin-bottom: 25px;
+}
+.recoverHeading{
+  font-family: Montserrat, Medium;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 25px;
+}

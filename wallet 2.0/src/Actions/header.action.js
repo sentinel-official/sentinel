@@ -70,3 +70,10 @@ export function setTendermint(value) {
         payload: value
     }
 }
+
+export function setEthLogged(value) {
+    return {
+        type: types.ETH_LOGGED,
+        payload: value
+    }
+}

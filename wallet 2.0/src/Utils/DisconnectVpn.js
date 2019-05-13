@@ -44,9 +44,10 @@ export async function disconnectVPNNonWin(cb) {
         else {
             var command = 'kill -2 ' + pids;
             if (remote.process.platform === 'darwin') {
-                command = `/usr/bin/osascript -e 'do shell script "${command}" with administrator privileges'`
+                command = `/usr/bin/osascript -e 'do shell script "${command} " with administrator privileges'`
             }
-            exec(command, async function (error, stdout, stderr) {
+            exec(`${command}`, async function (error, stdout, stderr) {  
+                console.log("disconnecting...")
                 if (error) {
                     cb({ message: error.toString() || 'Disconnecting failed' })
                 }

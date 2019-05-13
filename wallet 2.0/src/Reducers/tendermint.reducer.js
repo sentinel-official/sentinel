@@ -44,3 +44,11 @@ export function setTMAccount(state = null, action) {
             return state
     }
 }
+export function getTMAccountsList(state = [], action) {
+    switch (action.type) {
+        case types.SET_TM_ACCOUNTS_LIST:
+            return action.payload;
+        default:
+            return state
+    }
+}

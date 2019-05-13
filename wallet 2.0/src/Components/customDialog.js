@@ -6,7 +6,7 @@ import { DialogContent, DialogContentText, DialogActions, Snackbar } from '@mate
 import OpenvpnAlert from './OpenvpnAlert';
 import { Row, Col } from 'react-flexbox-grid';
 import {
-    withStyles, Button, List, ListItem, ListItemText,
+    withStyles, Button, List,
     DialogTitle, Dialog,
 } from '@material-ui/core';
 import green from '@material-ui/core/colors/green';
@@ -15,12 +15,15 @@ import ConnectIcon from '@material-ui/icons/SwapVerticalCircle';
 import blue from '@material-ui/core/colors/blue';
 import { connectVPN } from '../Actions/connectOVPN'
 import { connectSocks } from '../Actions/connectSOCKS';
-import { setVpnStatus, payVPNTM, setActiveVpn } from '../Actions/vpnlist.action';
+import { setVpnStatus, payVPNTM, setActiveVpn, setVpnType } from '../Actions/vpnlist.action';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { initPaymentAction } from '../Actions/initPayment';
 import { getVPNUsageData } from "../Utils/utils";
 import lang from '../Constants/language';
 import { calculateUsage, socksVpnUsage } from '../Actions/calculateUsage';
+import { createAccountStyle } from '../Assets/createtm.styles';
+import '../Assets/footerStyle.css';
+import { Tooltip } from '@material-ui/core';
 
 const electron = window.require('electron');
 const { exec } = window.require('child_process');
@@ -41,7 +44,7 @@ const styles = theme => ({
     },
     container2: {
         width: 400,
-        padding: '0px 35px 25px 35px',
+        padding: '0 35px 0 33px',
         overflowX: 'hidden',
 
     },
@@ -90,6 +93,16 @@ const styles = theme => ({
         marginRight: theme.spacing.unit,
     },
 
+    enableButton: {
+        "&:hover": {
+            backgroundColor: '#2f3245'
+        },
+        backgroundColor: '#2f3245',
+    },
+    disableButton: {
+        backgroundColor: '#BDBDBD',
+    }
+
 });
 
 
@@ -107,7 +120,6 @@ class SimpleDialog extends React.Component {
 
     render() {
         const { classes, language, ...other } = this.props;
-
         return (
             <Dialog
                 open={this.props.open}
@@ -123,34 +135,56 @@ class SimpleDialog extends React.Component {
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].City}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
                         <Col xs={6}>  <label
-                            style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}
+                            style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}
                         >{this.props.data.city}</label> </Col>
 
                     </Row>
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Country}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.country}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.country}</label> </Col>
 
                     </Row>
 
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Bandwidth}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + lang[language].Mbps}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{(this.props.data.speed / (1024 * 1024)).toFixed(2) + lang[language].Mbps}</label> </Col>
                     </Row>
 
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Cost}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.price_per_GB + lang[language].SentPerGb}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.price_per_GB + lang[language].SentPerGb}</label> </Col>
                     </Row>
                     <Row>
                         <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Latency}</label> </Col>
                         <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
-                        <Col xs={6}>  <label style={{ fontWeight: 'bold', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.latency ? `${this.props.data.latency} ${lang[language].MS}` : 'None'}</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.latency ? `${this.props.data.latency} ${lang[language].MS}` : 'None'}</label> </Col>
                     </Row>
 
+                    <Row>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Protocol}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.node_type ? this.props.data.node_type : 'None'}</label> </Col>
+                    </Row>
+
+                   
+                    <Row>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Moniker}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>
+                            <Tooltip title={this.props.data.moniker ? this.props.data.moniker : 'None'}>
+                                <div className="dialog_moniker_value">{this.props.data.moniker ? this.props.data.moniker : 'None'}</div>
+                            </Tooltip></label> </Col>
+                    </Row>
+                   
+
+                    <Row>
+                        <Col xs={5}>  <label style={{ fontSize: 14, fontFamily: 'Roboto' }}>{lang[language].Version}</label> </Col>
+                        <Col xs={1}>   <label style={styles.dialogLabel}>:</label> </Col>
+                        <Col xs={6}>  <label style={{ fontWeight: '500', color: '#3d425c', fontFamily: 'Roboto', }}>{this.props.data.version ? this.props.data.version : 'None'}</label> </Col>
+                    </Row>
 
                     <List style={{ paddingBottom: 5 }}>
 
@@ -158,7 +192,9 @@ class SimpleDialog extends React.Component {
                         <div className={classes.listRoot}>
                             <Button disabled={this.props.isLoading || this.props.vpnStatus} variant="contained" aria-label={this.props.isLoading || this.props.vpnStatus ? lang[language].ConnectingdVPN : lang[language].Connect}
                                 onClick={() => this.props.onClicked(this.props.data.vpn_addr)}
-                                className={classes.button}>
+                                className={classes.enableButton}
+                                style={createAccountStyle.buttonStyle}
+                            >
                                 {!this.props.isLoading && this.props.success ? <CheckIcon
                                     className={classes.extendedIcon} /> :
                                     null
@@ -281,15 +317,19 @@ class SimpleDialogDemo extends React.Component {
     }
 
     handleListItemClick = (vpn_addr) => {
+
+        let node_type=this.props.data.node_type.toLocaleLowerCase();
+
+        this.props.setVpnType(node_type)
         if (this.props.isTm) {
             this.props.payVPNTM({ 'isPayment': true, 'data': this.props.data });
             this.props.setCurrentTab('send');
         }
         else {
             this.setState({ isLoading: true });
-            if (this.props.vpnType === 'openvpn') {
+            if (node_type === 'openvpn') {
                 connectVPN(this.props.getAccount, vpn_addr, remote.process.platform, null, (err, platformErr, res) => {
-                    console.log("VPn..res..", err, platformErr, res);
+                    // console.log("VPn..res..", err, platformErr, res);
                     if (platformErr) {
                         this.setState({ open: false, isLoading: false, openvpnAlert: true })
                     }
@@ -336,7 +376,7 @@ class SimpleDialogDemo extends React.Component {
                 connectSocks(this.props.getAccount, vpn_addr, remote.process.platform, (err, res) => {
                     if (this.state.isSocksRes) {
                     } else {
-                        console.log("Socks..res..", err, res);
+                        // console.log("Socks..res..", err, res);
                         if (err) {
                             if ('account_addr' in err)
                                 this.setState({
@@ -361,10 +401,10 @@ class SimpleDialogDemo extends React.Component {
                                 }
                             }
                         } else if (res) {
-                            console.log("Socks...", res);
+                            // console.log("Socks...", res);
                             if (remote.process.platform === 'win32') {
                                 exec('start iexplore "https://www.bing.com/search?q=my+ip&form=EDGHPT&qs=HS&cvid=f47c42614ae947668454bf39d279d717&cc=IN&setlang=en-GB"', function (stderr, stdout, error) {
-                                    console.log('browser opened');
+                                    // console.log('browser opened');
                                 });
                             }
                             this.setState({
@@ -407,6 +447,7 @@ class SimpleDialogDemo extends React.Component {
                         execIT={this.execIT}
                         language={this.props.language}
                         vpnStatus={this.props.vpnStatus}
+                        isTm = {this.props.isTm}
                     />
                     :
                     <AlertDialog
@@ -438,7 +479,7 @@ function mapDispatchToProps(dispatch) {
 
     return bindActionCreators({
         setCurrentTab, initPaymentAction, getVPNUsageData,
-        setVpnStatus, connectVPN, connectSocks, payVPNTM, setActiveVpn, socksVpnUsage
+        setVpnStatus, connectVPN, connectSocks, payVPNTM, setActiveVpn, socksVpnUsage, setVpnType
     }, dispatch)
 }
 

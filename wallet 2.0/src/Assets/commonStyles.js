@@ -22,7 +22,7 @@ export const historyLabel = {
     fontWeight: '700',
     fontFamily: 'Montserrat, Medium',
     fontSize: 15,
-    paddingRight: 10
+    // paddingRight: 10 
 };
 
 export const statusLabel = {

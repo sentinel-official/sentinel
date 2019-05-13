@@ -66,8 +66,8 @@ export function tokenTransaction(from_addr, to_addr, amount, gas_price, gas, pri
 
         var txParams = {
             nonce: web3.toHex(web3.eth.getTransactionCount(from_addr)),
-            gasPrice: web3.toHex(20 * 1e9),
-            gasLimit: web3.toHex(6 * 1e4),
+            gasPrice: gas_price,
+            gasLimit: gas,
             to: SENTINEL_ADDRESS,
             value: web3.toHex(0 * 1e18),
             data: data

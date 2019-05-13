@@ -9,6 +9,10 @@ import { Tooltip } from '@material-ui/core';
 import ReactTooltip from 'react-tooltip';
 import { bindActionCreators } from 'redux';
 import { sendError, setComponent } from '../Actions/authentication.action';
+import { setTestNet, setWalletType, setTendermint, setEthLogged } from '../Actions/header.action';
+import { setCurrentTab } from './../Actions/sidebar.action';
+import { disabledItemsMain } from '../Constants/constants';
+
 import {
     Checkbox, RaisedButton,
 
@@ -55,15 +59,15 @@ class TermsAndConditions extends Component {
                     <p style={createPagestyles.detailVal}>{this.state.account_addr}</p>
                     <p style={createPagestyles.detailHeadBold}>{lang[language].PrivateKey}:</p><p
                         style={createPagestyles.detailVal}>{this.state.private_key}
-                        
+
                         <Tooltip title={lang[language].Copy}>
-                        <CopyToClipboard text={this.state.private_key}
-                            onCopy={() => this.setState({
-                                snackMessage: lang[language].Copied,
-                                openSnack: true
-                            })}>
-                            <CopyIcon style={receiveStyles.clipBoard}/>
-                        </CopyToClipboard>
+                            <CopyToClipboard text={this.state.private_key}
+                                onCopy={() => this.setState({
+                                    snackMessage: lang[language].Copied,
+                                    openSnack: true
+                                })}>
+                                <CopyIcon style={receiveStyles.clipBoard} />
+                            </CopyToClipboard>
                         </Tooltip></p>
                     <ReactTooltip id="copyImage" place="bottom">
                         <span>{lang[language].Copy}</span>
@@ -90,7 +94,10 @@ class TermsAndConditions extends Component {
                     labelStyle={createPagestyles.yesButtonLabel}
                     buttonStyle={this.state.checked ? createPagestyles.yesButton : createPagestyles.disabledButton}
                     disabled={this.state.checked ? false : true}
-                    onClick={() => { this.props.setComponent('dashboard') }}
+                    onClick={() => {
+                        this.props.setComponent('dashboard');
+                        this.props.setEthLogged(true);
+                    }}
                 />
             </div>
         </MuiThemeProvider>
@@ -100,13 +107,19 @@ class TermsAndConditions extends Component {
 function mapStateToProps(state) {
     return {
         lang: state.setLanguage,
-        createAccountResponse: state.createAccount
+        createAccountResponse: state.createAccount,
+        currentTab: state.setCurrentTab,
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setComponent: setComponent
+        setComponent: setComponent,
+        setTestNet,
+        setTendermint,
+        setWalletType,
+        setCurrentTab,
+        setEthLogged
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToActions)(TermsAndConditions);

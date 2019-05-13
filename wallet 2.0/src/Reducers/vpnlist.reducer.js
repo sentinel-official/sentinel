@@ -18,12 +18,30 @@ export function setVpnType(state = 'socks5', action) {
     }
 }
 
+export function setProtocolType(state = 'all', action) {
+    switch (action.type) {
+        case types.SET_PROTOCOL_TYPE:
+            return action.payload;
+        default:
+            return state
+    }
+}
+
 export function setVpnStatus(state = false, action) {
     switch (action.type) {
         case types.SET_VPN_STATUS:
             return action.payload;
         default:
             return state
+    }
+}
+
+export function isConnectionEstablishing(state = false, action) {
+    switch (action.type) {
+        case types.SET_CONNECTION_ESTABLISHING_STATUS:
+            return action.payload;
+        default:
+            return state;
     }
 }
 

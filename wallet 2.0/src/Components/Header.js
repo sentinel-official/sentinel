@@ -28,7 +28,7 @@ import SimpleMenuTestnet from './SharedComponents/SimpleMenuTestnet';
 import SendIcon from '@material-ui/icons/Send';
 import lang from '../Constants/language';
 import { networkChange } from '../Actions/NetworkChange';
-import { setVpnType, setProtocolType} from '../Actions/vpnlist.action';
+import { setVpnType, setProtocolType } from '../Actions/vpnlist.action';
 import { setAccountVerified } from '../Actions/node.action';
 import { withStyles } from '@material-ui/core/styles';
 import { compose } from 'recompose';
@@ -215,15 +215,19 @@ class Header extends Component {
             this.setState({ openedMenu: false });
         } else {
             let mainAccount = this.props.keys.find(obj => obj.name === name);
-            setTMConfig(name, false);
-            if (TMInterval) {
-                clearInterval(TMInterval);
-                TMInterval = null;
+            if (mainAccount) {
+                setTMConfig(name, false);
+                if (TMInterval) {
+                    clearInterval(TMInterval);
+                    TMInterval = null;
+                }
+                this.props.logoutNode();
+                this.props.setAccountVerified(false)
+                this.props.setTMAccount(mainAccount);
+                this.setState({ openedMenu: false });
+            } else {
+                this.setState({ openedMenu: false });
             }
-            this.props.logoutNode();
-            this.props.setAccountVerified(false)
-            this.props.setTMAccount(mainAccount);
-            this.setState({ openedMenu: false });
         }
     }
 
@@ -250,7 +254,7 @@ class Header extends Component {
     }
     gotoHome = () => {
         console.log("going hoem")
-        if(this.props.isTest){
+        if (this.props.isTest) {
             this.props.setCurrentTab('vpnList');
         }
     }
@@ -291,14 +295,14 @@ class Header extends Component {
             <div style={headerStyles.mainDivStyle}>
                 <Grid>
                     <Row style={headerStyles.firstRowStyle}>
-                     <Col xs={1}>
-                        <Tooltip title="Sentinel Network" placement="right">
-                            <img src={'../src/Images/logo.svg'} alt="Sentinel Network" 
-                             onClick = {() => this.gotoHome()} 
-                              style={headerStyles.logoStyle} />
+                        <Col xs={1}>
+                            <Tooltip title="Sentinel Network" placement="right">
+                                <img src={'../src/Images/logo.svg'} alt="Sentinel Network"
+                                    onClick={() => this.gotoHome()}
+                                    style={headerStyles.logoStyle} />
                             </Tooltip>
                         </Col>
-                       
+
                         <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
                                 <span style={headerStyles.basicWallet}>
@@ -406,30 +410,30 @@ class Header extends Component {
                             }
                         </Col>
 
-                     
+
 
                         <Col xs={2} style={headerStyles.alignRight}>
-                        {isTendermint ? null : 
+                            {isTendermint ? null :
 
-                        <div>
-                            <div style={headerStyles.columnStyle}>
-                                <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
-                            </div>
+                                <div>
+                                    <div style={headerStyles.columnStyle}>
+                                        <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
+                                    </div>
 
-                            <Tooltip title={this.props.vpnStatus ? lang[language].CannotSwitch : ''}>
-                                <div style={headerStyles.toggleStyle}>
-                                    <Switch
-                                        disabled={this.props.vpnStatus || isTendermint}
-                                        checked={this.props.isTest}
-                                        onChange={this.testNetChange()}
-                                        color="primary"
-                                    />
+                                    <Tooltip title={this.props.vpnStatus ? lang[language].CannotSwitch : ''}>
+                                        <div style={headerStyles.toggleStyle}>
+                                            <Switch
+                                                disabled={this.props.vpnStatus || isTendermint}
+                                                checked={this.props.isTest}
+                                                onChange={this.testNetChange()}
+                                                color="primary"
+                                            />
+                                        </div>
+                                    </Tooltip>
                                 </div>
-                            </Tooltip>
-                            </div>
-                        }
+                            }
                         </Col>
-                        
+
 
                         <Col xsOffset={1} xs={1}>
                             {isTendermint ?
@@ -447,100 +451,100 @@ class Header extends Component {
                             }
                         </Col>
                         <Tooltip title={this.props.vpnStatus ? lang[language].CannotClickUser : ''}>
-                        <Col xs={1}>
-                        <Tooltip title={tmAccountsList.length === 1 ? lang[language].YourAccount :lang[language].YourAccounts}
-                        placement="left" >
-                            <IconButton
-                                buttonRef={node => {
-                                    this.anchorEl = node;
-                                }}
-                                aria-owns={this.state.openedMenu ? 'long-menu' : undefined}
-                                aria-haspopup="true"
-                                disabled={this.props.vpnStatus}
-                                onClick={this.handleMenuClick}
-                                style={headerStyles.buttonRefresh}>
-                                {/* <MoreVertIcon /> */}
-                                <AccountIcon viewBox='0 0 24 24' />
-                            </IconButton>
-                            </Tooltip>
-                            <Popper open={this.state.openedMenu} anchorEl={this.anchorEl}
-                                placement={'bottom-end'}
-                                style={headerStyles.popperDiv}
-                                transition disablePortal>
-                                {({ TransitionProps, placement }) => (
-                                    <Grow
-                                        {...TransitionProps}
-                                        id="long-menu"
-                                        style={{ transformOrigin: placement === 'bottom' ? 'left top' : 'left bottom' }}
-                                    >
-                                        <Paper>
-                                            <ClickAwayListener onClickAway={this.handleLogoutMenuClose}>
-                                                {this.props.isTendermint ?
-                                                    <div>
-                                                        <div style={headerStyles.accountsHeading}>{tmAccountsList.length === 1 ? lang[language].YourAccount :lang[language].YourAccounts}</div>
-                                                        <Divider variant="light" />
-                                                    </div>
-                                                    :
-                                                    null
-                                                }
-                                                {isTendermint && tmAccountDetails ?
-                                                    <div>
-                                                        <MenuList style={headerStyles.menuListStyle}>
-                                                            {
-                                                                tmAccountsList.map((item, index) => {
-                                                                    return (<MenuItem onClick={() => { this.onClickedAccount(item); }}
-                                                                        disabled={this.props.vpnStatus}>
-                                                                        <ListItemIcon>
-                                                                            <AccountIcon />
-                                                                        </ListItemIcon>
-                                                                        <ListItemText classes={{ primary: classes.primaryText }} inset
-                                                                            primary={item} />
-                                                                        {tmAccountDetails.name === item ?
-                                                                            <ListItemIcon>
-                                                                                <DoneIcon />
-                                                                            </ListItemIcon>
-                                                                            : null
-                                                                        }
-                                                                    </MenuItem>)
-                                                                })
-                                                            }
-                                                        </MenuList>
-                                                        <Divider variant="light" />
-                                                    </div>
-                                                    : null}
-                                                <MenuList>
+                            <Col xs={1}>
+                                <Tooltip title={tmAccountsList.length === 1 ? lang[language].YourAccount : lang[language].YourAccounts}
+                                    placement="left" >
+                                    <IconButton
+                                        buttonRef={node => {
+                                            this.anchorEl = node;
+                                        }}
+                                        aria-owns={this.state.openedMenu ? 'long-menu' : undefined}
+                                        aria-haspopup="true"
+                                        disabled={this.props.vpnStatus}
+                                        onClick={this.handleMenuClick}
+                                        style={headerStyles.buttonRefresh}>
+                                        {/* <MoreVertIcon /> */}
+                                        <AccountIcon viewBox='0 0 24 24' />
+                                    </IconButton>
+                                </Tooltip>
+                                <Popper open={this.state.openedMenu} anchorEl={this.anchorEl}
+                                    placement={'bottom-end'}
+                                    style={headerStyles.popperDiv}
+                                    transition disablePortal>
+                                    {({ TransitionProps, placement }) => (
+                                        <Grow
+                                            {...TransitionProps}
+                                            id="long-menu"
+                                            style={{ transformOrigin: placement === 'bottom' ? 'left top' : 'left bottom' }}
+                                        >
+                                            <Paper>
+                                                <ClickAwayListener onClickAway={this.handleLogoutMenuClose}>
+                                                    {this.props.isTendermint ?
+                                                        <div>
+                                                            <div style={headerStyles.accountsHeading}>{tmAccountsList.length === 1 ? lang[language].YourAccount : lang[language].YourAccounts}</div>
+                                                            <Divider variant="light" />
+                                                        </div>
+                                                        :
+                                                        null
+                                                    }
                                                     {isTendermint && tmAccountDetails ?
                                                         <div>
-                                                            <MenuItem onClick={this.addTMAccount} style={{ height: 20 }}
-                                                                disabled={this.props.vpnStatus}>
-                                                                <ListItemIcon>
-                                                                    <AddIcon />
-                                                                </ListItemIcon>
-                                                                <ListItemText inset primary={lang[language].CreateAccount} />
-                                                            </MenuItem>
-                                                            <MenuItem onClick={this.importTMAccount} style={{ height: 20 }}
-                                                                disabled={this.props.vpnStatus}>
-                                                                <ListItemIcon>
-                                                                    <ImportIcon />
-                                                                </ListItemIcon>
-                                                                <ListItemText inset primary={`${lang[language].Recover} ${lang[language].Account}`} />
-                                                            </MenuItem>
+                                                            <MenuList style={headerStyles.menuListStyle}>
+                                                                {
+                                                                    tmAccountsList.map((item, index) => {
+                                                                        return (<MenuItem onClick={() => { this.onClickedAccount(item); }}
+                                                                            disabled={this.props.vpnStatus}>
+                                                                            <ListItemIcon>
+                                                                                <AccountIcon />
+                                                                            </ListItemIcon>
+                                                                            <ListItemText classes={{ primary: classes.primaryText }} inset
+                                                                                primary={item} />
+                                                                            {tmAccountDetails.name === item ?
+                                                                                <ListItemIcon>
+                                                                                    <DoneIcon />
+                                                                                </ListItemIcon>
+                                                                                : null
+                                                                            }
+                                                                        </MenuItem>)
+                                                                    })
+                                                                }
+                                                            </MenuList>
+                                                            <Divider variant="light" />
                                                         </div>
                                                         : null}
-                                                    <MenuItem onClick={this.onLogoutClicked} style={{ height: 20 }}
-                                                        disabled={this.props.vpnStatus}>
-                                                        <ListItemIcon>
-                                                          <SwitchIcon />
-                                                        </ListItemIcon>
-                                                        <ListItemText inset primary={`${lang[language].SwitchNetwork}`} />
-                                                    </MenuItem>
-                                                </MenuList>
-                                            </ClickAwayListener>
-                                        </Paper>
-                                    </Grow>
-                                )}
-                            </Popper>
-                        </Col>
+                                                    <MenuList>
+                                                        {isTendermint && tmAccountDetails ?
+                                                            <div>
+                                                                <MenuItem onClick={this.addTMAccount} style={{ height: 20 }}
+                                                                    disabled={this.props.vpnStatus}>
+                                                                    <ListItemIcon>
+                                                                        <AddIcon />
+                                                                    </ListItemIcon>
+                                                                    <ListItemText inset primary={lang[language].CreateAccount} />
+                                                                </MenuItem>
+                                                                <MenuItem onClick={this.importTMAccount} style={{ height: 20 }}
+                                                                    disabled={this.props.vpnStatus}>
+                                                                    <ListItemIcon>
+                                                                        <ImportIcon />
+                                                                    </ListItemIcon>
+                                                                    <ListItemText inset primary={`${lang[language].Recover} ${lang[language].Account}`} />
+                                                                </MenuItem>
+                                                            </div>
+                                                            : null}
+                                                        <MenuItem onClick={this.onLogoutClicked} style={{ height: 20 }}
+                                                            disabled={this.props.vpnStatus}>
+                                                            <ListItemIcon>
+                                                                <SwitchIcon />
+                                                            </ListItemIcon>
+                                                            <ListItemText inset primary={`${lang[language].SwitchNetwork}`} />
+                                                        </MenuItem>
+                                                    </MenuList>
+                                                </ClickAwayListener>
+                                            </Paper>
+                                        </Grow>
+                                    )}
+                                </Popper>
+                            </Col>
                         </Tooltip>
                     </Row>
                 </Grid>

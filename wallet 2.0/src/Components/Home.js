@@ -159,16 +159,16 @@ class Home extends React.Component {
                         </div>
                     </div>
                     <div className="includes">
-                        <div className="give_space">
+                        {/*<div className="give_space">
                             <img
                                 src={'../src/Images/check-mark.svg'}
                                 width="15px"
                                 alt="tick"
                                 className="ticks"
                             />
-                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> 
                             {lang[language].Includes5}
-                        </div>
+                </div>*/}
                         <div>
                             <img
                                 src={'../src/Images/check-mark.svg'}

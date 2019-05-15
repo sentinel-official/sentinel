@@ -172,28 +172,28 @@ function isVPNConnected(cb) {
         cb(true)
       }
       else {
-        let stdOutput = execSync('tasklist /v /fo csv | findstr /i "Shadowsocks.exe"');
-        if (stdOutput) {
-          vpnType = 'socks5';
-          cb(true)
-        }
-        else {
+        // let stdOutput = execSync('tasklist /v /fo csv | findstr /i "Shadowsocks.exe"');
+        // if (stdOutput) {
+        //   vpnType = 'socks5';
+        //   cb(true)
+        // }
+        // else {
           cb(false)
-        }
+        // }
       }
     } catch (err) {
-      try {
-        let stdOutput = execSync('tasklist /v /fo csv | findstr /i "Shadowsocks.exe"');
-        if (stdOutput) {
-          vpnType = 'socks5'
-          cb(true);
-        }
-        else {
-          cb(false);
-        }
-      } catch (error) {
+      // try {
+      //   let stdOutput = execSync('tasklist /v /fo csv | findstr /i "Shadowsocks.exe"');
+      //   if (stdOutput) {
+      //     vpnType = 'socks5'
+      //     cb(true);
+      //   }
+      //   else {
+      //     cb(false);
+      //   }
+      // } catch (error) {
         cb(false)
-      }
+      // }
     }
   }
   else {
@@ -203,28 +203,28 @@ function isVPNConnected(cb) {
         cb(true);
       }
       else {
-        let stdOutput = execSync('pidof ss-local').toString();
-        if (stdOutput) {
-          vpnType = 'socks5'
-          cb(true);
-        }
-        else {
+        // let stdOutput = execSync('pidof ss-local').toString();
+        // if (stdOutput) {
+        //   vpnType = 'socks5'
+        //   cb(true);
+        // }
+        // else {
           cb(false);
-        }
+        // }
       }
     } catch (err) {
-      try {
-        let stdOutput = execSync('pidof ss-local').toString();
-        if (stdOutput) {
-          vpnType = 'socks5'
-          cb(true);
-        }
-        else {
-          cb(false);
-        }
-      } catch (error) {
+      // try {
+      //   let stdOutput = execSync('pidof ss-local').toString();
+      //   if (stdOutput) {
+      //     vpnType = 'socks5'
+      //     cb(true);
+      //   }
+      //   else {
+      //     cb(false);
+      //   }
+      // } catch (error) {
         cb(false)
-      }
+      // }
     }
   }
 }

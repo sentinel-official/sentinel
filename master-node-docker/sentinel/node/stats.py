@@ -634,6 +634,36 @@ class GetActiveSessionCount(object):
         resp.body = json.dumps(message)
 
 
+class GetLatestSessions(object):
+    def on_get(self, req, resp):
+        stats = []
+        result = db.connections.aggregate([{
+            "$sort":{
+                "start_time":-1
+            }},{
+                "$limit":5
+            },{
+                "$project":{
+                    "duration":{
+                        "$subtract":[{"$cond":[{"$eq":["$end_time",None]},int(time.time()),"$end_time"]},"$start_time"]
+                    },
+                    "data_transferred":"$server_usage.down",
+                    "status":{"$cond":[{"$eq":["$end_time",None]},True,False]}
+                }
+            }
+        ])
+
+        for doc in result:
+            doc['data_transferred'] = doc['data_transferred'] / (1024 * 1024)
+            doc['duration'] = doc['duration'] / 60
+            stats.append(doc)
+
+        message = {'success': True, 'data_transferred_units': 'MB', 'duration_units':'minutes', 'stats': stats }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+ 
+
 class GetDailyDurationCount(object):
     def on_get(self, req, resp):
         interval = req.get_param('interval')
@@ -774,6 +804,46 @@ class GetNodeStatistics(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
 
+
+class GetNodeBWStats(object):
+    def on_get(self, req, resp):
+        stats = []
+        result = db.connections.aggregate([{
+            "$group":{
+                "_id":"$vpn_addr",
+                "total_sessions_count":{
+                    "$sum":1
+                },
+                "total_bandwidth":{
+                    "$sum":"$server_usage.down"
+                },
+                "last_24hours":{
+                    "$sum":{
+                        "$cond":[{"$gte":["$start_time",{"$subtract":[int(time.time()),24*60*60]}]},"$server_usage.down",0]
+                    }
+                },
+                "last_7days":{
+                    "$sum":{"$cond":[{"$gte":["$start_time",{"$subtract":[int(time.time()),7*24*60*60]}]},"$server_usage.down",0]
+                }},
+                "last_month":{
+                    "$sum":{"$cond":[{"$gte":["$start_time",{"$subtract":[int(time.time()),30*24*60*60]}]},"$server_usage.down",0]
+                }
+            }}
+        },{
+            "$sort":{"total_bandwidth":-1}}
+        ])
+
+        for doc in result:
+            doc['total_bandwidth'] = doc['total_bandwidth'] / (1024 * 1024)
+            doc['last_24hours'] = doc['last_24hours'] / (1024 * 1024)
+            doc['last_7days'] = doc['last_7days'] / (1024 * 1024)
+            doc['last_month'] = doc['last_month'] / (1024 * 1024)
+            stats.append(doc)
+
+        message = {'success': True, 'units': 'MB', 'stats': stats }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
 
 class GetActiveSessionCountOld(object):
     def on_get(self, req, resp):

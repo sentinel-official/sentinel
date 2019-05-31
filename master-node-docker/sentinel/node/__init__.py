@@ -31,3 +31,4 @@ from .stats import GetTotalDataCount
 from .stats import GetTotalDataCountOld
 from .stats import GetTotalNodeCount
 from .stats import GetLatestSessions
+from .stats import GetTotalSessionsCount

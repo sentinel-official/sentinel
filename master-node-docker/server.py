@@ -30,6 +30,7 @@ from sentinel.node import DeRegisterNode
 from sentinel.node import GetActiveNodeCountOld
 # from sentinel.node import GetActiveNodeCount
 from sentinel.node import GetActiveSessionCount
+from sentinel.node import GetTotalSessionsCount
 from sentinel.node import GetActiveSessionCountOld
 from sentinel.node import GetAverageDuration
 from sentinel.node import GetAverageDurationOld
@@ -134,6 +135,7 @@ server.add_route('/stats/data/total-data', GetTotalDataCountOld())
 server.add_route('/stats/time/average-duration', GetAverageDurationOld())
 server.add_route('/stats/node/bandwidth-stats', GetNodeBWStats())
 server.add_route('/stats/sessions/latest', GetLatestSessions())
+server.add_route('/stats/sessions/total-count', GetTotalSessionsCount())
 
 # Token Swaps
 server.add_route('/swaps', Up())

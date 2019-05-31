@@ -634,6 +634,15 @@ class GetActiveSessionCount(object):
         resp.body = json.dumps(message)
 
 
+class GetTotalSessionsCount(object):
+    def on_get(self, req, resp):
+        count = db.connections.count()
+        message = {'success': True, 'count': count}
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
 class GetLatestSessions(object):
     def on_get(self, req, resp):
         stats = []

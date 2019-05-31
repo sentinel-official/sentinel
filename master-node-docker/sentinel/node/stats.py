@@ -644,6 +644,7 @@ class GetLatestSessions(object):
                 "$limit":5
             },{
                 "$project":{
+                    "_id": False,
                     "duration":{
                         "$subtract":[{"$cond":[{"$eq":["$end_time",None]},int(time.time()),"$end_time"]},"$start_time"]
                     },

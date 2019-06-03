@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-    menuItems, TMdisabledmenuItems, notTestItemIcons, notInTestMenuItems, testMenuItems,
-    testMenuItemsIcons, disabledItemsMain, disabledItemsTest, disabledItemsTM
+    menuItems, TMdisabledmenuItems, TMrecoverItems, notTestItemIcons, notInTestMenuItems, testMenuItems,
+    TMtestMenuItemsIcons, testMenuItemsIcons, disabledItemsMain, disabledItemsTest, disabledItemsTM
 } from '../Constants/constants';
 import { sidebarStyles } from '../Assets/sidebar.styles';
 import { setCurrentTab } from '../Actions/sidebar.action';
 import { setTendermint, setWalletType } from '../Actions/header.action';
-
 import MenuIcon from '@material-ui/icons/Menu';
 import HistoryIcon from '@material-ui/icons/History';
 import SendIcon from '@material-ui/icons/Send';
@@ -18,25 +17,11 @@ import ListIcon from '@material-ui/icons/List';
 import ReceiveIcon from '@material-ui/icons/CallReceived';
 import VpnHisIcon from '@material-ui/icons/VpnLock';
 import BackIcon from '@material-ui/icons/KeyboardBackspace';
-import { Drawer, IconButton, Tooltip } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import BackArrowIcon from '@material-ui/icons/ArrowBackOutlined';
 import { compose } from 'recompose';
 import lang from '../Constants/language';
-
-
-
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import StarBorder from '@material-ui/icons/StarBorder';
 
 import './sidebarStyle.css'
 
@@ -70,6 +55,7 @@ class Sidebar extends Component {
             openDrawer: false,
             openEth: true,
             openTmd: false,
+            activeMenu: ''
         }
         this.components = {
             sendIcon: SendIcon,
@@ -110,10 +96,8 @@ class Sidebar extends Component {
                 disabledItemsMain.includes(item.value)) { }
             else if (this.props.isTest && disabledItemsTest.includes(item.value)) { }
             else {
-                console.log("setting current ", item.value)
-                if (item.value === 'eth' || item.value === 'tmint') { console.log("not setting current1 ", item.value) }
+                if (item.value === 'eth' || item.value === 'tmint') { }
                 else {
-                    console.log("setting current1 ", item.value)
                     this.props.setCurrentTab(item.value);
 
                 }
@@ -123,11 +107,8 @@ class Sidebar extends Component {
             if (this.props.component !== 'dashboard' && disabledItemsTM.includes(item.value)) { }
             else if (!this.props.isTest) { }
             else {
-
-                console.log("in last if condition jh", this.props.isTest)
-                if (item.value === 'eth' || item.value === 'tmint') { console.log("not setting current2 ", item.value) }
+                if (item.value === 'eth' || item.value === 'tmint') { }
                 else {
-                    console.log("setting current2 ", item.value)
                     this.props.setCurrentTab(item.value);
 
                 }
@@ -147,13 +128,42 @@ class Sidebar extends Component {
         this.setState({ openDrawer: value })
     }
 
-    getIcon = (iconName) => {
+    getIcon = (iconName, item) => {
+        if (iconName === 'createIcon') {
+            return <img src={'../src/Images/create.svg'} alt="create_logo"
+                style={{ width: 25, paddingBottom: 7, marginTop: -3, opacity: 0.7 }} />
+        }
+
+        if (iconName === 'recoverIcon') {
+            return <img src={'../src/Images/recover.svg'} alt="recover_logo"
+                style={{ width: 25, paddingBottom: 7, marginTop: -3, opacity: 0.7 }} />
+        }
+        if (iconName === 'nodeIcon') {
+
+            return (
+                item.value === this.props.currentTab ?
+
+                    <div className="new_image">
+                        <img src={'../src/Images/sidebar_icons_new/NMT_c.png'}  alt="NMT_logo"
+                            style={{ width: 20, paddingBottom: 7, marginTop: -3, }} />
+                    </div>
+                    :
+
+                    <div className="new_image">
+                        <img src={'../src/Images/sidebar_icons_new/NMT.png'}  alt="NMT_logo"
+                            style={{ width: 20, paddingBottom: 7, marginTop: -3, }} />
+                    </div>
+            )
+
+            // return <img src={'../src/Images/NMT.svg'} alt="node_logo"
+            //         style={{ width: 20, paddingBottom: 7, marginTop: -3, opacity: 0.7}} />
+        }
         if (iconName === 'tmintIcon') {
             if (!this.props.isTenderMint)
                 return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
                     style={{ width: 25, paddingBottom: 7, marginTop: -3, opacity: 0.3 }} />
             else
-                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 25, paddingBottom: 7, marginTop: -3 }} />
+                return <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo" style={{ width: 25, paddingBottom: 7, marginTop: -3, opacity: 0.7 }} />
         }
         if (iconName === 'ethereumIcon') {
             if (this.props.isTenderMint)
@@ -162,20 +172,140 @@ class Sidebar extends Component {
 
             else
                 return <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                    style={{ width: 20, paddingBottom: 4, marginTop: -5, }} />
+                    style={{ width: 20, paddingBottom: 5, marginTop: -5, opacity: 0.7 }} />
+        }
+        if (iconName === 'listIcon') {
+
+            if (this.props.isTest)
+                return (
+                    item.value === this.props.currentTab ?
+                        <div className="new_image">
+                            <img src={'../src/Images/sidebar_icons_new/VPN_list_c.png'}  alt="list_logo"
+                                style={{ width: 25, paddingBottom: 5, marginTop: -5, }} />
+                        </div>
+                        :
+
+                        <div className="new_image">
+                            <img src={'../src/Images/sidebar_icons_new/VPN_list.png'}  alt="list_logo"
+                                style={{ width: 25, paddingBottom: 5, marginTop: -5, }} />
+                        </div>
+                )
+
+            else {
+                return (
+                    <div className="">
+                        <img src={'../src/Images/sidebar_icons_new/VPN_list.png'}  alt="list_logo"
+                            style={{ width: 25, paddingBottom: 5, marginTop: -5, opacity: 0.3}} />
+                    </div>
+                )
+            }
+            // if (this.props.isTest)
+            //     return <img src={'../src/Images/VPN_list.svg'} alt="vpn_list_logo"
+            //         style={{ width: 25, paddingBottom: 5, marginTop: -5,opacity: 0.7 }} />
+
+            // else
+            //     return <img src={'../src/Images/VPN_list.svg'} alt="vpn_list_logo"
+            //         style={{ width: 25, paddingBottom: 5, marginTop: -5, opacity: 0.3 }} />
+        }
+        if (iconName === 'vpnHisIcon') {
+
+            if (this.props.isTest)
+                return (
+
+                    item.value === this.props.currentTab ?
+                        <div className="new_image">
+                            <img src={'../src/Images/sidebar_icons_new/VPN_history_c.png'}  alt="vpvHistory_logo"
+                                style={{ width: 25, paddingBottom: 5, marginTop: -5, }} />
+                        </div>
+                        :
+                        <div className="new_image">
+                            <img src={'../src/Images/sidebar_icons_new/VPN_history.png'}  alt="vpvHistory_logo"
+                                style={{ width: 25, paddingBottom: 5, marginTop: -5, }} />
+                        </div>
+                )
+
+            else {
+                return (
+                    <div className="">
+                        <img src={'../src/Images/sidebar_icons_new/VPN_history.png'}  alt="vpvHistory_logo"
+                            style={{ width: 25, paddingBottom: 5, marginTop: -5,opacity: 0.3 }} />
+                    </div>
+                )
+            }
+
+
+            // if (this.props.isTest)
+            //     return <img src={'../src/Images/VPN_history.svg'} alt="vpn_history_logo"
+            //         style={{ width: 25, paddingBottom: 5, marginTop: -5,opacity: 0.7 }} />
+
+            // else
+            //     return <img src={'../src/Images/VPN_history.svg'} alt="vpn_history_logo"
+            //         style={{ width: 25, paddingBottom: 5, marginTop: -5, opacity: 0.3 }} />
+        }
+        if (iconName === 'sendIcon') {
+            return (
+
+                item.value === this.props.currentTab ?
+                    <div className="new_image">
+                        <img src={'../src/Images/sidebar_icons_new/Send_c.png'}  alt="send_logo"
+                            style={{ width: 30, marginLeft: 5, }} />
+                    </div>
+
+                    :
+
+                    <div className="new_image">
+                        <img src={'../src/Images/sidebar_icons_new/Send.png'}  alt="send_logo"
+                            style={{ width: 30, marginLeft: 5, }} />
+                    </div>
+            )
+
+            // return <img src={'../src/Images/Send.svg'} alt="send_logo"
+            //     style={{ width: 30, marginLeft:5, opacity: 0.7}} />
+
+        }
+        if (iconName === 'receiveIcon') {
+
+
+            return (
+                item.value === this.props.currentTab ?
+                    <div className="new_image">
+                        <img src={'../src/Images/sidebar_icons_new/Receive_c.png'}  alt="receive_logo"
+                            style={{ width: 30, marginLeft: 5, }} />
+                    </div>
+                    :
+                    <div className="new_image">
+                        <img src={'../src/Images/sidebar_icons_new/Receive.png'}  alt="receive_logo"
+                            style={{ width: 30, marginLeft: 5, }} />
+                    </div>
+            )
+
+
+            // return <img src={'../src/Images/Receive.svg'} alt="receive_logo"
+            //     style={{ width: 30,marginLeft:5, opacity: 0.7 }} />
+
+        }
+        if (iconName === 'historyIcon') {
+
+            return (
+                item.value === this.props.currentTab ?
+                    <div className="new_image">
+                        <img src={'../src/Images/sidebar_icons_new/Tr_list_c.png'}  alt="tx_list_logo"
+                            style={{ width: 25, paddingBottom: 5, marginTop: -5, }} />
+                    </div>
+                    :
+
+                    <div className="new_image">
+                        <img src={'../src/Images/sidebar_icons_new/Tr_list.png'}  alt="tx_list_logo"
+                            style={{ width: 25, paddingBottom: 5, marginTop: -5, }} />
+                    </div>
+            )
+            // return <img src={'../src/Images/Tr_list.svg'} alt="tx_history_logo"
+            //     style={{ width: 25, paddingBottom: 5, marginTop: -5, opacity: 0.7  }} />
+
         }
 
-        if (iconName === 'listIcon') {
-            if(this.props.isTest){
-                return <img src={'../src/Images/list.svg'} alt="etherem_logo"
-                style={{ width: 25, paddingBottom: 6, marginTop: 2}} />
-            }
-            else{
-                return <img src={'../src/Images/list.svg'} alt="etherem_logo"
-                style={{ width: 25, paddingBottom: 6, marginTop: 2, opacity:0.3}} />
-            }
-               
-        }
+
+
         else {
             let Icon = this.components[iconName];
             return <Icon />
@@ -198,51 +328,54 @@ class Sidebar extends Component {
 
 
     render() {
-        let { classes, isTest, isTenderMint, component, language } = this.props;
+        let { classes, isTest, isTenderMint, component, language, account } = this.props;
 
         let currentTab = this.props.currentTab;
         let sidebarMenuItems = isTest ? (isTenderMint && component !== 'dashboard' ?
-            TMdisabledmenuItems : testMenuItems) : notInTestMenuItems
+            (account ? TMdisabledmenuItems : TMrecoverItems) : testMenuItems) : notInTestMenuItems
         let menuItemsIcons = isTest ?
             (isTenderMint && component !== 'dashboard' ?
-                TMdisabledmenuItems : testMenuItemsIcons)
+                (account ? TMdisabledmenuItems : TMrecoverItems) : (isTenderMint ? TMtestMenuItemsIcons : testMenuItemsIcons))
             : notTestItemIcons
+
         return (
             <div style={sidebarStyles.totalDiv}>
 
-                {/* <div style={sidebarStyles.IconActiveDivStyle}>
-                    <Tooltip title={lang[language].ToggleMenu} placement="right">
-                        <MenuIcon onClick={this.toggleDrawer(true)}
-                        onMouseEnter={this.toggleDrawer(true)} />
-                    </Tooltip>
-                </div> */}
-
-                {/* <hr style={sidebarStyles.m_0} />
-                <hr style={sidebarStyles.m_0} /> */}
 
                 {
                     menuItemsIcons.map((item) => {
                         let isDisabled = !isTest && disabledItemsMain.includes(item.value);
                         return (
                             <div>
-                                <div style={
+                                <div 
+                                  className={
                                     isDisabled ?
-                                        sidebarStyles.IconDisabledDivStyle :
+                                        'IconDisabledDivStyle' :
                                         (item.value === currentTab ?
-                                            sidebarStyles.IconCurrentDivStyle :
-                                            sidebarStyles.IconActiveDivStyle)
-                                } onClick={() => { this.setMenu(item); }}
+                                            'IconCurrentDivStyle' :
+                                            'IconActiveDivStyle')
+                                }
+                                
+                                // style={
+                                //     isDisabled ?
+                                //         sidebarStyles.IconDisabledDivStyle :
+                                //         (item.value === currentTab ?
+                                //             sidebarStyles.IconCurrentDivStyle :
+                                //             sidebarStyles.IconActiveDivStyle)
+                                // } 
+                                onClick={() => { this.setMenu(item); }}
                                 >
                                     <Tooltip title={lang[language][item.name]} placement="right">
                                         <label
-                                            style={
+                                            className={
                                                 isDisabled ?
-                                                    sidebarStyles.disabledLabelStyle :
+                                                    'disabledLabelStyle' :
                                                     (item.value === currentTab ?
-                                                        sidebarStyles.IconActiveLabelStyle :
-                                                        sidebarStyles.IconNormalLabelStyle)
-                                            }>
-                                            {this.getIcon(item.icon)}
+                                                        'IconActiveLabelStyle' :
+                                                        'IconNormalLabelStyle')
+                                            }
+                                        >
+                                            {this.getIcon(item.icon, item)}
 
                                         </label>
                                     </Tooltip>
@@ -252,68 +385,7 @@ class Sidebar extends Component {
                         )
                     })
                 }
-                {/* <Drawer
-                    open={this.state.openDrawer}
-                    onClose={this.toggleDrawer(false)}
-                    classes={{ paper: classes.paper }}
-                >
-                    <div
-                        tabIndex={0}
-                        role="button"
-                        style={sidebarStyles.outlineNone}
-                    >
-                        <IconButton aria-label="Back" style={sidebarStyles.backArrowStyle} onClick={this.toggleDrawer(false)}>
-                            <BackArrowIcon />
-                        </IconButton>
-                        <div>
-                            {this.props.isTenderMint ?
-                                <div className="collapse_header">
-                                    <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
-                                        style={{ width: 20, }} />
-                                    <span className="collapse_heading">{lang[language].TM}</span>
-                                </div>
-                                :
-                                <div className="collapse_header"> <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                                    style={{ width: 20 }} />
-                                    <span className="collapse_heading">{lang[language].ETH}</span>
 
-                                </div>
-                            }
-                            <hr style={sidebarStyles.m_0} />
-
-                            <List component="div" disablePadding>
-                                {
-
-                                    sidebarMenuItems.map((item) => {
-                                        return (
-                                            <div>
-                                                <div style={
-                                                    (item.value === currentTab ?
-                                                        sidebarStyles.currentDivStyle :
-                                                        sidebarStyles.activeDivStyle)
-                                                } onClick={() => { this.setMenu(item),this.setState({openDrawer: false}) }}>
-                                                    <label
-                                                        style={
-                                                            
-                                                            (item.value === currentTab ?
-                                                                sidebarStyles.activeLabelStyle :
-                                                                sidebarStyles.normalLabelStyle)
-                                                        }>
-                                                        <span className="iconStyle"> {this.getIcon(item.icon)}</span> {lang[language][item.name]}
-
-                                                    </label>
-                                                </div>
-                                                <hr style={sidebarStyles.m_0} />
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </List>
-                        </div>
-
-                          <span style={sidebarStyles.drawerHeading}><span className='version_style'>{lang[language].VersionInSidebar}</span></span>
-                    </div>
-                </Drawer> */}
             </div>
         )
     }
@@ -330,6 +402,7 @@ function mapStateToProps(state) {
         currentTab: state.setCurrentTab,
         isTenderMint: state.setTendermint,
         component: state.setTMComponent,
+        account: state.createTMAccount
     }
 }
 

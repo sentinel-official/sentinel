@@ -1,71 +1,205 @@
 import React, { Component } from 'react';
-import { homePageStyles } from './../Assets/authenticate.styles';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { Grid, Row, Col } from 'react-flexbox-grid';
 import { sendError, setComponent } from '../Actions/authentication.action';
-import Toolbar from '@material-ui/core/Toolbar';
+import { setCurrentTab } from '../Actions/sidebar.action';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Button from '@material-ui/core/Button';
-let lang = require('./../Constants/language');
+import { setTestNet, setWalletType, setTendermint } from '../Actions/header.action';
+import { readFile, KEYSTORE_FILE } from '../Utils/Keystore';
+import Ripple from "rippl";
+import "./home.css";
 
-class Home extends Component {
-    componentDidCatch(error, info) {
-        sendError(error);
+let lang = require('../Constants/language');
+
+class Home extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            openSnack: false,
+            snackMessage: ''
+        }
+    }
+
+    clickedEth = () => {
+        readFile(KEYSTORE_FILE, (err) => {
+            setTimeout(() => {
+                if (err) this.props.setComponent('create');
+                else this.props.setComponent('authenticate');
+            }, 1000);
+        })
+    }
+
+    clickedTm = () => {
+        let currentTab = this.props.currentTab;
+        this.props.setTestNet(true);
+        this.props.setWalletType('TM');
+        this.props.setTendermint(true);
+        if (this.props.tmAccountDetails)
+            this.props.setCurrentTab(currentTab);
+        else
+            this.props.setCurrentTab('receive');
+        this.props.setComponent('dashboard');
     }
 
     render() {
         let language = this.props.language;
-        return (<div>
-            <Toolbar style={homePageStyles.toolbar}>\
-                            <img src={'../src/Images/logo.svg'} alt="Logo" style={homePageStyles.toolbarImage} />
-            </Toolbar>
-            <div style={homePageStyles.middleDiv} >
-                <Grid style={homePageStyles.middleDivGrid}>
-                    <br />
-                    <Row>
-                        <Col>
-                            <h2>{lang[language].AnonymousVPN}</h2>
-                        </Col>
-                        <p style={homePageStyles.middleDivText}>{lang[language].OpenSource}</p>
-                        <br /><br />
-                    </Row>
-                </Grid>
-                <Button variant="contained"
-                    style={homePageStyles.raisedButton}
-                    labelStyle={homePageStyles.yesButtonLabel}
-                    buttonStyle={homePageStyles.yesButton}
-                    onClick={() => { this.props.setComponent('create') }}
-                >{lang[language].CreateRestore}</Button>
-            </div>
-            <Grid >
-                <Row style={homePageStyles.m_l_20}>
-                    <Col xs={7} style={homePageStyles.bottomDivCol}>
-                        <div style={homePageStyles.m_l_p_5}>
-                            <h4 style={homePageStyles.moreAboutText}>{lang[language].SentinelAnonymity}</h4>
-                            <p style={{ fontSize: 14 }}>{lang[language].PeerToPeerMarket}</p>
+        return (
+            <div className="main_div">
+                <div className="section_1">
+                    <div className="section1_child">
+                        <div className="heading_section">
+                            <img
+                                src={'../src/Images/SENT_logo.svg'}
+                                width="300px"
+                                alt="logo"
+                            />
                         </div>
-                    </Col>
-                    <Col xs={4} style={homePageStyles.m_l_5}>
-                        <h4 style={homePageStyles.bottomDivBuilt}>{lang[language].BetaVersion}</h4>
-                        <hr align="left" style={homePageStyles.underLine} />
-                        <p style={homePageStyles.copyRight}>{lang[language].SentGroup}</p>
-                    </Col>
-                </Row>
-            </Grid>
-        </div>
-        )
+                        <div className="client_div">
+                            <span className="desk_1">{lang[language].DesktopClient}</span>
+                            <span className="version">{lang[language].DesktopClientVersion}</span>
+                        </div>
+                        <Ripple>
+                            <div className="network_section_1"
+                                onClick={() => { this.clickedTm() }} >
+                                <img
+                                    src={'../src/Images/TM.svg'}
+                                    width="30px"
+                                    alt="Tendermint_logo"
+                                />
+                                <div>
+                                    <div className="btn_div">
+                                        <p>{lang[language].TMNetworkMain}</p>
+                                        <p>{lang[language].TMNetworkSub}</p>
+                                    </div>
+                                </div>
+                                <div className="arrow">
+                                    <img
+                                        src={'../src/Images/Arrow.svg'}
+                                        width="30px"
+                                        alt="Arrow"
+                                    />
+                                </div>
+                            </div>
+                        </Ripple>
+                        <Ripple>
+                            <div className="network_section_2 section_a"
+                                onClick={() => { this.clickedEth() }} >
+                                <img
+                                    src={'../src/Images/Classic.svg'}
+                                    width="30px"
+                                    alt="Ethereum"
+                                />
+                                <div>
+                                    <div className="btn_div">
+                                        {/* swapping this persian text values here as it is a Right-to-Left language */}
+                                        <p>{language !== 'per' ? lang[language].ETHNetworkMain : lang[language].ETHNetworkSub}</p>
+                                        <p>{language !== 'per' ? lang[language].ETHNetworkSub : lang[language].ETHNetworkMain}</p>
+                                    </div>
+                                </div>
+                                <div className="arrow">
+                                    <img
+                                        src={'../src/Images/Arrow.svg'}
+                                        width="30px"
+                                        alt="Arrow"
+                                    />
+                                </div>
+                            </div>
+                        </Ripple>
+                    </div>
+                </div>
+                <div className="section_2">
+                    {/* <div className="open_app">
+                        <div>{lang[language].HomeOpenSource}</div>
+                        <div>{lang[language].ApplicationIncludes}:</div>
+                    </div> */}
+
+                    <div className="includes">
+                        <div className="give_space">
+                            <div>
+                                {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                                <img
+                                    src={'../src/Images/check-mark.svg'}
+                                    width="15px"
+                                    alt="tick"
+                                    className="ticks"
+                                />
+                                <span>{lang[language].Includes1}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <img
+                                src={'../src/Images/check-mark.svg'}
+                                width="15px"
+                                alt="tick"
+                                className="ticks"
+                            />
+                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            {lang[language].Includes2}
+                        </div>
+                    </div>
+                    <div className="includes">
+                        <div className="give_space">
+                            <img
+                                src={'../src/Images/check-mark.svg'}
+                                width="15px"
+                                alt="tick"
+                                className="ticks"
+                            />
+                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            {lang[language].Includes3}
+                        </div>
+                        <div>
+                            <img
+                                src={'../src/Images/check-mark.svg'}
+                                width="15px"
+                                alt="tick"
+                                className="ticks"
+                            />
+                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            {lang[language].Includes4}
+                        </div>
+                    </div>
+                    <div className="includes">
+                        <div className="give_space">
+                            <img
+                                src={'../src/Images/check-mark.svg'}
+                                width="15px"
+                                alt="tick"
+                                className="ticks"
+                            />
+                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            {lang[language].Includes5}
+                        </div>
+                        <div>
+                            <img
+                                src={'../src/Images/check-mark.svg'}
+                                width="15px"
+                                alt="tick"
+                                className="ticks"
+                            />
+                            {/* <CheckCircleIcon style={{ fontSize: 15, color: "blue" }} /> */}
+                            {lang[language].Includes6}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 function mapStateToProps(state) {
     return {
-        language: state.setLanguage
+        language: state.setLanguage,
+        tmAccountDetails: state.setTMAccount,
+        currentTab: state.setCurrentTab,
     }
 }
 
 function mapDispatchToActions(dispatch) {
     return bindActionCreators({
-        setComponent: setComponent
+        setComponent: setComponent,
+        setTestNet,
+        setTendermint,
+        setWalletType,
+        setCurrentTab,
     }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToActions)(Home);

@@ -22,6 +22,7 @@ import SimpleDialogDemo from "./customDialog";
 import lang from '../Constants/language';
 import { compose } from 'recompose';
 import { setCurrentVpn } from '../Actions/vpnlist.action';
+import '../Assets/footerStyle.css';
 
 let Country = window.require('countrynames');
 
@@ -56,18 +57,32 @@ class EnhancedTableHead extends React.Component {
     };
 
     render() {
-        const { order, orderBy, classes, language } = this.props;
+        const { order, orderBy, classes, language, isTM} = this.props;
 
-        let columnData = [
+        let columnData = isTM ? 
+         [
             { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
             { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
+            { id: 'node_type', numeric: false, disablePadding: false, label:lang[language].Protocol },
+            { id: 'moniker', numeric: false, disablePadding: true, label: lang[language].Moniker },
             { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth + lang[language].Mbps}` },
             { id: 'latency', numeric: true, disablePadding: false, label: `${lang[language].Latency + lang[language].MS}` },
-            { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
+            // { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
             { id: 'version', numeric: false, disablePadding: false, label: lang[language].Version },
             { id: 'rating', numeric: true, disablePadding: false, label: lang[language].Rating },
             { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
-        ];
+        ] :
+        [
+            { id: 'flag', numeric: false, disablePadding: false, label: lang[language].Flag },
+            { id: 'city', numeric: false, disablePadding: false, label: lang[language].Location },
+            { id: 'node_type', numeric: false, disablePadding: false, label:'Type' },
+            { id: 'bandwidth', numeric: true, disablePadding: false, label: `${lang[language].Bandwidth + lang[language].Mbps}` },
+            { id: 'latency', numeric: true, disablePadding: false, label: `${lang[language].Latency + lang[language].MS}` },
+            // { id: 'enc_method', numeric: false, disablePadding: false, label: lang[language].Algorithm },
+            { id: 'version', numeric: false, disablePadding: false, label: lang[language].Version },
+            { id: 'rating', numeric: true, disablePadding: false, label: lang[language].Rating },
+            { id: 'price_per_GB', numeric: true, disablePadding: false, label: lang[language].Price },
+        ] 
 
         return (
             <TableHead>
@@ -77,6 +92,8 @@ class EnhancedTableHead extends React.Component {
                             <TableCell
                                 key={column.id}
                                 numeric={column.numeric}
+                                align={columnData.numeric ? 'right' : 'center'}
+                                padding={columnData.disablePadding ? 'none' : 'default'}
                                 sortDirection={orderBy === column.id ? order : false}
                                 padding={"dense"}
                                 className={classes.head}
@@ -112,7 +129,7 @@ const alignStyle = theme => ({
     head: {
         padding: 7,
         textAlign: 'center'
-    }
+    },
 });
 
 EnhancedTableHead = withStyles(alignStyle)(EnhancedTableHead);
@@ -234,11 +251,14 @@ class EnhancedTable extends React.Component {
     };
 
 
-    showConnectDialog = (event, city, country, speed, latency, price_per_GB, vpn_addr) => {
+    showConnectDialog = (event, city, country, speed, latency, price_per_GB, vpn_addr, node_type, moniker, version, enc_method) => {
 
         let data = {
             'city': city, 'country': country, 'speed': speed,
-            'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr
+            'latency': latency, 'price_per_GB': price_per_GB, 'vpn_addr': vpn_addr, 
+            'node_type' : node_type ? node_type : "openvpn", //Remove the conditional statement when we gets node_type in vpnlist API response 
+            'moniker': moniker ? moniker : 'None',
+            'version':version, 'enc_method':enc_method,
         }
         this.props.setCurrentVpn(data);
         this.setState({
@@ -259,7 +279,9 @@ class EnhancedTable extends React.Component {
         let data = this.props.data.map(obj => {
             return createData(obj);
         });
+
         const { order, orderBy, } = this.state;
+        const { isTM } = this.props;
 
         return (
             <Paper className={classes.root}>
@@ -271,6 +293,7 @@ class EnhancedTable extends React.Component {
                             onRequestSort={this.handleRequestSort}
                             language={this.props.language}
                             rowCount={data.length}
+                            isTM = {isTM}
                         />
                         <TableBody>
                             {
@@ -281,37 +304,59 @@ class EnhancedTable extends React.Component {
                                             <TableRow
                                                 hover
                                                 onClick={event => this.showConnectDialog(event, n.location.city, n.location.country,
-                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr
+                                                    n.net_speed.download, n.latency, n.price_per_GB, n.account_addr, n.node_type,
+                                                    n.moniker, n.version, n.enc_method, 
                                                 )}
                                                 role="button"
                                                 key={n.id}
                                             
                                             >
-                                                <TableCell padding="dense" className={classes.head}>
+                                                <TableCell numeric padding="dense" className={classes.head}>
                                                     <Flag code={Country.getCode(n.location.country)} height="16" />
                                                 </TableCell>
                                                 <TableCell padding="dense" className={classes.head}>
                                                     {`${n.location.city}, `} {n.location.country}
                                                 </TableCell>
-                                                <TableCell numeric padding='default'>
+                                                <Tooltip title={n.enc_method ? n.enc_method : 'None'} 
+                                                   // placement="right"
+                                                >
+                                                <TableCell padding="dense" className={classes.head}>
+                                                    {n.nodeType ? n.nodeType : 'None'}
+                                                </TableCell>
+                                                </Tooltip>
+                                                { isTM ?
+                                                <Tooltip title={n.moniker ? n.moniker : 'None'} >
+                                                <TableCell numeric  padding="dense"
+                                                className={classes.head}
+                                               >
+                                                  <div className='moniker_value'>{n.moniker ? n.moniker : 'None' }</div>
+                                                  </TableCell> 
+                                                  </Tooltip>
+                                                : '' }
+                                                <TableCell numeric padding='dense'>
                                                     {((n.net_speed ? ('download' in n.net_speed ? n.net_speed.download : 0) : 0) / (1024 * 1024)).toFixed(2)}
                                                 </TableCell>
-                                                <TableCell numeric padding="dense" className={classes.head}>
+                                                <TableCell  numeric padding="dense" className={classes.head}>
                                                     {n.latency ? n.latency : 'None'}
                                                     {n.latency ? (n.latency === 'Loading...' ? null : '') : null}
                                                 </TableCell>
-                                                <TableCell padding="dense" className={classes.head}>
+                                                {/* <TableCell padding="dense" className={classes.head}>
                                                     {n.enc_method ? n.enc_method : 'None'}
-                                                </TableCell>
-                                                <TableCell padding="dense" className={classes.head}>
+                                                </TableCell> */}
+                                                
+                                                <TableCell  padding="dense" className={classes.head}>
                                                     {n.version ? n.version : 'None'}
                                                 </TableCell>
-                                                <TableCell numeric padding="dense" className={classes.head}>
-                                                    {n.rating ? n.rating : 'None'}
+                                                <TableCell numeric  padding="dense" className={classes.head}>
+                                                    {isTM ? 
+                                                    n.ratingCount && n.ratingCount !== 0 ? (n.ratingPoints/n.ratingCount).toFixed(2) : 'None'
+                                                    :
+                                                    n.rating ? n.rating : 'None'}
                                                 </TableCell>
-                                                <TableCell numeric padding="dense" className={classes.head}>
+                                                <TableCell numeric  padding="dense" className={classes.head}>
                                                     {n.price_per_GB ? n.price_per_GB : 100}
                                                 </TableCell>
+
                                             </TableRow>
                                         );
                                     })}
@@ -333,7 +378,8 @@ EnhancedTable.propTypes = {
 function mapStateToProps(state) {
     return {
         language: state.setLanguage,
-        isTest: state.setTestNet
+        isTest: state.setTestNet,
+        isTM: state.setTendermint,
     }
 }
 

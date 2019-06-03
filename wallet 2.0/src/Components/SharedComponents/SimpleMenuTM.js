@@ -25,7 +25,8 @@ const styles = theme => ({
   icon: {
     fill: 'black',
     right: '20px',
-    marginTop: 2
+    marginTop: 2,
+    right: 0,
 
   },
   list: {
@@ -33,7 +34,10 @@ const styles = theme => ({
     fontFamily: 'Montserrat,Medium',
     fontWeight: 600,
     fontSize: '18px',
-    alignItems: 'center'
+    alignItems: 'center',
+    height : '39px',
+
+
   },
   pivxList: {
     backgroundColor: '#fff',
@@ -71,8 +75,8 @@ class SimpleListMenu extends React.Component {
 
   componentWillMount() {
     if (this.props.isSend) {
-      this.props.token('ETH');
-      this.setState({ token: 'ETH' });
+      this.props.token('SENT');
+      this.setState({ token: 'SENT' });
       if (this.props.isVPN) {
         console.log("Props...", this.props)
         this.props.token('SENT');
@@ -116,11 +120,19 @@ class SimpleListMenu extends React.Component {
             }}
           >
 
+            {/* <MenuItem value={'SENT'}>
+              <img src={'../src/Images/logo.svg'} alt="sentinel_logo"
+                style={{ width: 16, paddingRight: 5, marginTop: -2 }} />
+              {isTest ? lang[language].TestSENTunit : lang[language].Sent}</MenuItem> */}
             <MenuItem value={'SENT'}>
-              /SENT
+            <img src={'../src/Images/logo.svg'} alt="sentinel_logo"
+                style={{ width: 16, paddingRight: 10, marginTop: -2, marginLeft: -10}} />
+              TSENT
               </MenuItem>
             <MenuItem value={'ETH'} >
-              /GB
+            <img src={''} 
+                style={{ width: 16, paddingRight: 10, marginTop: -2, marginLeft: -10}} />
+              GB
               </MenuItem>
           </Select>
         </div>

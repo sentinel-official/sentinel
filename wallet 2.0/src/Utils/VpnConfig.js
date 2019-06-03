@@ -17,6 +17,19 @@ export function getVPNPIDs(cb) {
     });
 }
 
+export function getWireguardPIDs(cb) {
+    exec('pidof wireguard', function (err, stdout, stderr) {
+        if (err) cb(true, null);
+        else if (stdout) {
+            let pids = stdout.trim();
+            cb(null, pids);
+        }
+        else {
+            cb(true, null);
+        }
+    });
+}
+
 export function getVPNProcesses(cb) {
     exec('tasklist /v /fo csv | findstr /i "openvpn.exe"', function (err, stdout, stderr) {
         if (stdout.toString() === '') {
@@ -85,6 +98,18 @@ export function isVPNConnected(cb) {
                 }
             });
         }
+
+        else if (localStorage.getItem('VPN_TYPE') === 'wireguard') {
+            getWireguardPIDs(function (err, pids) {
+                if (err) {
+                    cb(err, null)
+                } else if (pids) {
+                    cb(null, true)
+                } else {
+                    cb(true, false)
+                }
+            });
+        }
         else {
             getVPNPIDs(function (err, pids) {
                 if (err) {
@@ -97,6 +122,7 @@ export function isVPNConnected(cb) {
             });
         }
     }
+    
 }
 
 export function getVPNConnectedData(cb) {

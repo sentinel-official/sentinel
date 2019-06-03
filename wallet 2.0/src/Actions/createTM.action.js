@@ -2,10 +2,19 @@ import * as types from './../Constants/action.names';
 import { TM_URL } from '../Constants/constants';
 import axios from 'axios';
 
-export async function createTMAccount(name, password) {
-    let data = {
-        name: name,
-        password: password
+export async function createTMAccount(name, password, seed) {
+    let data;
+    if (seed) {
+        data = {
+            name: name,
+            password: password,
+            seed: seed
+        }
+    } else {
+        data = {
+            name: name,
+            password: password
+        }
     }
     try {
         let response = await axios.post(TM_URL + '/keys', data, {

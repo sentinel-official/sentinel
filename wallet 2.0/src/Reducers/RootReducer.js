@@ -1,21 +1,23 @@
 import { combineReducers } from 'redux';
 import { setLanguage, createAccount, setComponent } from './beforeAuth.reducer';
-import { setTestNet, getETHBalance, getSentBalance, setTendermint, getWalletType } from './header.reducer';
+import { setTestNet, getETHBalance, getSentBalance, setTendermint, getWalletType, getEthLogged } from './header.reducer';
 import { setCurrentTab } from './sidebar.reducer';
 import { getAccount } from './dashboard.reducer';
 import { getFreeAmount } from './receive.reducer';
 import { getAvailableTokens, getSentValue } from './swaps.reducer';
 import { getVPNHistory, getSnackMessage, getVPNDuePaymentDetails } from './vpnHistory.reducer';
 import { sendComponentReducer } from './sendcomponent.reducer';
-import { setListViewType, setVpnType, getVpnList, setVpnStatus, payVPNTM, getActiveVpn, getCurrentVpn } from './vpnlist.reducer';
+import { setListViewType, setVpnType, getVpnList, setVpnStatus, payVPNTM, getActiveVpn, getCurrentVpn,
+isConnectionEstablishing, setProtocolType} from './vpnlist.reducer';
 import { swixRateInState } from './swixReducer';
 import { testSENTHistory, testETHHistory } from './txnHistoryReducer'
 import { connectVPNReducer } from './connectVPN.reducer'
 import { initPaymentDetails } from './initPayment.reducer';
 import { VPNUsage } from './vpnUsage'
-import { getKeys, setTMComponent, tmBalance, setTMAccount } from './tendermint.reducer';
+import { getKeys, setTMComponent, tmBalance, setTMAccount, getTMAccountsList } from './tendermint.reducer';
 import { createTMAccount } from './createTM.reducer';
 import { getSessionInfo, sessionHistory } from './tmvpn.reducer';
+import { getDockerImages, getDockerContainers, getMonikers, getImagesClients, isLoggedOutNode, connectionStatus, isNMConnected, isAccountVerified } from './node.reducer';
 import { networkChange } from './NetworkChange'
 
 const rootReducer = combineReducers({
@@ -27,6 +29,7 @@ const rootReducer = combineReducers({
     getAccount,
     getETHBalance,
     getSentBalance,
+    getEthLogged,
     setCurrentTab,
     getFreeAmount,
     getAvailableTokens,
@@ -52,11 +55,23 @@ const rootReducer = combineReducers({
     setTendermint,
     payVPNTM,
     setTMAccount,
+    getTMAccountsList,
     sessionInfo: getSessionInfo,
     networkChange,
     getActiveVpn,
     getCurrentVpn,
-    sessionHistory
+    sessionHistory,
+    isConnectionEstablishing,
+
+    getDockerImages,
+    getDockerContainers,
+    getMonikers,
+    getImagesClients,
+    isLoggedOutNode,
+    connectionStatus,
+    isNMConnected,
+    isAccountVerified,
+    protocolType:setProtocolType,
 });
 
 export default rootReducer;

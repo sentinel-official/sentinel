@@ -2,29 +2,53 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import {
-    Switch, Snackbar, Tooltip, IconButton
+    Switch, Snackbar, Tooltip, IconButton, Menu, MenuItem, MenuList,
+    Select, Paper, Grow, ClickAwayListener, Popper, Divider, ListItemText, ListItemIcon
 } from '@material-ui/core';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
 import { headerStyles } from '../Assets/header.styles';
-import { setTestNet, getETHBalance, getSentBalance, setTendermint, setWalletType } from '../Actions/header.action';
-import { getTMBalance } from '../Actions/tendermint.action';
+import { setTestNet, getETHBalance, getSentBalance, setTendermint, setWalletType, setEthLogged } from '../Actions/header.action';
+import { setComponent } from '../Actions/authentication.action';
+import { getTMBalance, getKeys, setTMAccount } from '../Actions/tendermint.action';
 import { setCurrentTab } from './../Actions/sidebar.action';
+import { logoutNode } from './../Actions/node.action';
+import { setTMConfig } from '../Utils/UserConfig';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { disabledItemsMain, disabledItemsTest } from '../Constants/constants';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import LogoutIcon from '@material-ui/icons/PowerSettingsNew';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import SwitchIcon from '@material-ui/icons/SwapHoriz';
+import AddIcon from '@material-ui/icons/Add';
+import ImportIcon from '@material-ui/icons/PlayForWork';
+import AccountIcon from '@material-ui/icons/AccountCircle';
+import DoneIcon from '@material-ui/icons/Done';
 import SimpleMenuTestnet from './SharedComponents/SimpleMenuTestnet';
-import Select from '@material-ui/core/Select';
 import SendIcon from '@material-ui/icons/Send';
 import lang from '../Constants/language';
 import { networkChange } from '../Actions/NetworkChange';
-import { setVpnType } from '../Actions/vpnlist.action';
+import { setVpnType, setProtocolType} from '../Actions/vpnlist.action';
+import { setAccountVerified } from '../Actions/node.action';
+import { withStyles } from '@material-ui/core/styles';
+import { compose } from 'recompose';
+import CreateImportDialog from './CreateImportDialog';
+import PropTypes from 'prop-types';
 import '../Assets/headerStyle.css';
 
 let notTMInterval = null;
 let TMInterval = null;
+
+const Customstyles = theme => ({
+    primaryText: {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        width: 100
+    },
+    paper: {
+        width: '50%',
+    },
+});
 
 class Header extends Component {
     constructor(props) {
@@ -35,12 +59,32 @@ class Header extends Component {
             isGetBalanceCalled: false,
             openAccountMenu: false,
             walletType: 'ERC20',
-            isLoading: false
+            isLoading: false,
+            openedMenu: false,
+            openCreateDialog: false,
+            isCreate: true
         }
     }
 
     componentWillMount = () => {
         this.getERCBalances()
+    }
+
+    componentWillReceiveProps = (next) => {
+        if (next.ethLogged !== this.props.ethLogged && next.ethLogged) {
+            let currentTab = next.currentTab;
+            if (!next.vpnStatus) {
+                this.props.setTestNet(false);
+                if (disabledItemsMain.includes(currentTab))
+                    this.props.setCurrentTab('send');
+                else
+                    this.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
+            }
+            this.props.setWalletType('ERC');
+            this.getERCBalances();
+            this.props.setTendermint(false);
+            this.props.setEthLogged(false);
+        }
     }
 
     handleClose = (event, reason) => {
@@ -55,27 +99,49 @@ class Header extends Component {
         this.setState(state => ({ openAccountMenu: !state.openAccountMenu }));
     };
 
+    handleMenuClick = event => {
+        if (this.state.openedMenu) {
+            this.setState({ openedMenu: false });
+        } else {
+            this.setState({ openedMenu: true });
+        }
+    };
+
+    handleLogoutMenuClose = (event) => {
+        if (this.anchorEl.contains(event.target)) {
+            return;
+        }
+        this.setState({ openedMenu: false });
+    };
+
+    onLogoutClicked = () => {
+        this.props.logoutNode();
+        this.props.setAccountVerified(false)
+        this.props.setComponent('home');
+        this.props.setProtocolType('all');
+    }
+
     testNetChange = () => event => {
 
         let value = event.target.checked;
         let currentTab = this.props.currentTab;
         this.props.setTestNet(value);
-        this.props.setWalletType('TM')
+        this.props.setWalletType('ERC')
 
         if (value) {
-            this.props.setTendermint(true);
+            // this.props.setTendermint(true);
             this.props.setVpnType('openvpn');
             this.props.networkChange('public');
             this.setState({
-                walletType: 'TENDERMINT'
+                walletType: 'ERC20'
             })
-            if (this.props.tmAccountDetails) {
-                this.props.getTMBalance(this.props.tmAccountDetails.address);
-                this.props.setCurrentTab('vpnList');
-            }
-            else {
-                this.props.setCurrentTab('receive');
-            }
+            // if (this.props.tmAccountDetails) {
+            //     this.props.getTMBalance(this.props.tmAccountDetails.address);
+            //     this.props.setCurrentTab('vpnList');
+            // }
+            // else {
+            //     this.props.setCurrentTab('receive');
+            // }
         }
         if (!value) {
             this.props.setTendermint(false);
@@ -86,9 +152,9 @@ class Header extends Component {
             this.setState({
                 walletType: 'ERC20'
             })
-            this.props.getETHBalance(this.props.walletAddress);
-            this.props.getSentBalance(this.props.walletAddress);
         }
+        this.props.getETHBalance(this.props.walletAddress);
+        this.props.getSentBalance(this.props.walletAddress);
         if ((value && disabledItemsTest.includes(currentTab))) {
             this.props.setCurrentTab('receive');
         }
@@ -121,7 +187,7 @@ class Header extends Component {
             this.props.setVpnType('socks5');
             this.props.getETHBalance(this.props.walletAddress);
             this.props.getSentBalance(this.props.walletAddress);
-            this.props.setCurrentTab(currentTab);
+            this.props.setCurrentTab(currentTab === 'recover' ? 'receive' : currentTab);
             this.setState({
                 walletType: 'ERC20'
             })
@@ -145,24 +211,70 @@ class Header extends Component {
             });
     }
 
+    onClickedAccount = (name) => {
+        if (this.props.tmAccountDetails.name === name) {
+            this.setState({ openedMenu: false });
+        } else {
+            let mainAccount = this.props.keys.find(obj => obj.name === name);
+            setTMConfig(name, false);
+            if (TMInterval) {
+                clearInterval(TMInterval);
+                TMInterval = null;
+            }
+            this.props.logoutNode();
+            this.props.setAccountVerified(false)
+            this.props.setTMAccount(mainAccount);
+            this.setState({ openedMenu: false });
+        }
+    }
+
+    handleDialogClose = () => {
+        this.setState({ openCreateDialog: false });
+    }
+
+    addTMAccount = () => {
+        this.setState({ openedMenu: false, isCreate: true, openCreateDialog: true });
+    }
+
+    importTMAccount = () => {
+        this.setState({ openedMenu: false, isCreate: false, openCreateDialog: true });
+    }
+
+    accountTmCreated = (value) => {
+        if (value) {
+            clearInterval(TMInterval);
+            TMInterval = null;
+            this.props.logoutNode();
+            this.props.setAccountVerified(false)
+
+        }
+    }
+    gotoHome = () => {
+        console.log("going hoem")
+        if(this.props.isTest){
+            this.props.setCurrentTab('vpnList');
+        }
+    }
+
     render() {
-        let { balance, isTendermint, tmAccountDetails, language, isTest, walletAddress } = this.props;
+        let { balance, isTendermint, tmAccountDetails, tmAccountsList, language, isTest, walletAddress } = this.props;
+        const { classes } = this.props;
 
-
-        if (!this.props.isTendermint && !notTMInterval) {
+        if (!isTendermint && !notTMInterval) {
             notTMInterval = setInterval(() => {
                 this.props.getETHBalance(walletAddress);
                 this.props.getSentBalance(walletAddress);
             }, 30000);
         }
 
-        if (this.props.isTendermint && !TMInterval && tmAccountDetails) {
+        if (isTendermint && !TMInterval && tmAccountDetails) {
+            this.getTMBalance();
             TMInterval = setInterval(() => {
                 this.props.getTMBalance(tmAccountDetails.address);
             }, 30000);
         }
 
-        if (this.props.isTendermint) {
+        if (isTendermint) {
             if (notTMInterval) {
                 clearInterval(notTMInterval);
                 notTMInterval = null;
@@ -180,9 +292,14 @@ class Header extends Component {
             <div style={headerStyles.mainDivStyle}>
                 <Grid>
                     <Row style={headerStyles.firstRowStyle}>
-                        <Col xs={1}>
-                            <img src={'../src/Images/logo.svg'} alt="sentinel network" style={headerStyles.logoStyle} />
+                     <Col xs={1}>
+                        <Tooltip title="Sentinel Network" placement="right">
+                            <img src={'../src/Images/logo.svg'} alt="Sentinel Network" 
+                             onClick = {() => this.gotoHome()} 
+                              style={headerStyles.logoStyle} />
+                            </Tooltip>
                         </Col>
+                       
                         <Col xs={3} style={headerStyles.sentinelColumn}>
                             <div>
                                 <span style={headerStyles.basicWallet}>
@@ -219,7 +336,7 @@ class Header extends Component {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={2}>
+                        <Col xs={3}>
                             {isTendermint ?
                                 (tmAccountDetails ?
                                     < div style={headerStyles.tmBalance}  >
@@ -290,8 +407,12 @@ class Header extends Component {
                             }
                         </Col>
 
+                     
 
                         <Col xs={2} style={headerStyles.alignRight}>
+                        {isTendermint ? null : 
+
+                        <div>
                             <div style={headerStyles.columnStyle}>
                                 <p style={headerStyles.toggleLabelisTest}>{lang[language].TestNet}</p>
                             </div>
@@ -299,61 +420,22 @@ class Header extends Component {
                             <Tooltip title={this.props.vpnStatus ? lang[language].CannotSwitch : ''}>
                                 <div style={headerStyles.toggleStyle}>
                                     <Switch
-                                        disabled={this.props.vpnStatus}
+                                        disabled={this.props.vpnStatus || isTendermint}
                                         checked={this.props.isTest}
                                         onChange={this.testNetChange()}
                                         color="primary"
                                     />
                                 </div>
                             </Tooltip>
-                        </Col>
-
-
-
-
-
-                        <Col xs={3} style={headerStyles.alignRight}>
-
-                            <div
-
-                            >
-
-
-                                <Select
-                                    displayEmpty
-                                    disabled={!this.props.isTest || this.props.vpnStatus ? true : false}
-                                    value={this.props.walletValue} onChange={this.tendermintChange()}
-
-                                    className={this.props.isTest ? 'dropDownStyle' : 'disabledDropDownStyle'}
-                                >
-
-                                    <MenuItem value='TM'>
-                                        <img src={'../src/Images/tmint-logo-green.svg'} alt="tendermint_logo"
-                                            style={isTest ? { width: 15, paddingRight: 5, marginTop: -5 } : { width: 15, paddingRight: 5, marginTop: -5, opacity: 0.2 }} />
-
-                                        {lang[language].TestNetTM}
-                                    </MenuItem>
-                                    <MenuItem value='ERC'>
-                                        {/* <SendIcon /> */}
-                                        <img src={'../src/Images/ethereum.svg'} alt="etherem_logo"
-                                            style={{ width: 12, paddingRight: 5, marginTop: -5 }} />
-
-                                        {lang[language].TestNetETH}
-                                    </MenuItem>
-
-                                </Select>
-
-
                             </div>
-
+                        }
                         </Col>
-                        <Col xs={1}>
+                        
 
+                        <Col xsOffset={1} xs={1}>
                             {isTendermint ?
-
                                 <Tooltip title={lang[language].RefreshBalTM} placement="bottom-end">
                                     <IconButton onClick={() => { this.getTMBalance() }} style={headerStyles.buttonRefresh}>
-
                                         <RefreshIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -365,7 +447,102 @@ class Header extends Component {
                                 </Tooltip>
                             }
                         </Col>
-
+                        <Tooltip title={this.props.vpnStatus ? lang[language].CannotClickUser : ''}>
+                        <Col xs={1}>
+                        <Tooltip title={tmAccountsList.length === 1 ? lang[language].YourAccount :lang[language].YourAccounts}
+                        placement="left" >
+                            <IconButton
+                                buttonRef={node => {
+                                    this.anchorEl = node;
+                                }}
+                                aria-owns={this.state.openedMenu ? 'long-menu' : undefined}
+                                aria-haspopup="true"
+                                disabled={this.props.vpnStatus}
+                                onClick={this.handleMenuClick}
+                                style={headerStyles.buttonRefresh}>
+                                {/* <MoreVertIcon /> */}
+                                <AccountIcon viewBox='0 0 24 24' />
+                            </IconButton>
+                            </Tooltip>
+                            <Popper open={this.state.openedMenu} anchorEl={this.anchorEl}
+                                placement={'bottom-end'}
+                                style={headerStyles.popperDiv}
+                                transition disablePortal>
+                                {({ TransitionProps, placement }) => (
+                                    <Grow
+                                        {...TransitionProps}
+                                        id="long-menu"
+                                        style={{ transformOrigin: placement === 'bottom' ? 'left top' : 'left bottom' }}
+                                    >
+                                        <Paper>
+                                            <ClickAwayListener onClickAway={this.handleLogoutMenuClose}>
+                                                {this.props.isTendermint ?
+                                                    <div>
+                                                        <div style={headerStyles.accountsHeading}>{tmAccountsList.length === 1 ? lang[language].YourAccount :lang[language].YourAccounts}</div>
+                                                        <Divider variant="light" />
+                                                    </div>
+                                                    :
+                                                    null
+                                                }
+                                                {isTendermint && tmAccountDetails ?
+                                                    <div>
+                                                        <MenuList style={headerStyles.menuListStyle}>
+                                                            {
+                                                                tmAccountsList.map((item, index) => {
+                                                                    return (<MenuItem onClick={() => { this.onClickedAccount(item); }}
+                                                                        disabled={this.props.vpnStatus}>
+                                                                        <ListItemIcon>
+                                                                            <AccountIcon />
+                                                                        </ListItemIcon>
+                                                                        <ListItemText classes={{ primary: classes.primaryText }} inset
+                                                                            primary={item} />
+                                                                        {tmAccountDetails.name === item ?
+                                                                            <ListItemIcon>
+                                                                                <DoneIcon />
+                                                                            </ListItemIcon>
+                                                                            : null
+                                                                        }
+                                                                    </MenuItem>)
+                                                                })
+                                                            }
+                                                        </MenuList>
+                                                        <Divider variant="light" />
+                                                    </div>
+                                                    : null}
+                                                <MenuList>
+                                                    {isTendermint && tmAccountDetails ?
+                                                        <div>
+                                                            <MenuItem onClick={this.addTMAccount} style={{ height: 20 }}
+                                                                disabled={this.props.vpnStatus}>
+                                                                <ListItemIcon>
+                                                                    <AddIcon />
+                                                                </ListItemIcon>
+                                                                <ListItemText inset primary={lang[language].CreateAccount} />
+                                                            </MenuItem>
+                                                            <MenuItem onClick={this.importTMAccount} style={{ height: 20 }}
+                                                                disabled={this.props.vpnStatus}>
+                                                                <ListItemIcon>
+                                                                    <ImportIcon />
+                                                                </ListItemIcon>
+                                                                <ListItemText inset primary={`${lang[language].Recover} ${lang[language].Account}`} />
+                                                            </MenuItem>
+                                                        </div>
+                                                        : null}
+                                                    <MenuItem onClick={this.onLogoutClicked} style={{ height: 20 }}
+                                                        disabled={this.props.vpnStatus}>
+                                                        <ListItemIcon>
+                                                          <SwitchIcon />
+                                                        </ListItemIcon>
+                                                        <ListItemText inset primary={`${lang[language].SwitchNetwork}`} />
+                                                    </MenuItem>
+                                                </MenuList>
+                                            </ClickAwayListener>
+                                        </Paper>
+                                    </Grow>
+                                )}
+                            </Popper>
+                        </Col>
+                        </Tooltip>
                     </Row>
                 </Grid>
                 <Snackbar
@@ -374,10 +551,23 @@ class Header extends Component {
                     onClose={this.handleClose}
                     message={this.state.snackMessage}
                 />
+                <CreateImportDialog
+                    classes={{
+                        paper: classes.paper,
+                    }}
+                    open={this.state.openCreateDialog}
+                    isCreate={this.state.isCreate}
+                    tmAccountDone={this.accountTmCreated}
+                    onClose={this.handleDialogClose}
+                />
             </div >
         )
     }
 }
+
+Header.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
 
 function mapStateToProps(state) {
     return {
@@ -392,6 +582,9 @@ function mapStateToProps(state) {
         vpnStatus: state.setVpnStatus,
         balance: state.tmBalance,
         tmAccountDetails: state.setTMAccount,
+        tmAccountsList: state.getTMAccountsList,
+        ethLogged: state.getEthLogged,
+        keys: state.getKeys
     }
 }
 
@@ -405,8 +598,15 @@ function mapDispatchToActions(dispatch) {
         setWalletType,
         getTMBalance,
         networkChange,
-        setVpnType
+        setVpnType,
+        setComponent,
+        getKeys,
+        setTMAccount,
+        logoutNode,
+        setEthLogged,
+        setAccountVerified,
+        setProtocolType,
     }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToActions)(Header);
+export default compose(withStyles(Customstyles), connect(mapStateToProps, mapDispatchToActions))(Header);

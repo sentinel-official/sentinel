@@ -24,7 +24,7 @@ const sessionStyles = {
     noTransactionsStyle: {
         display: 'flex',
         justifyContent: 'center',
-        paddingTop: '20%',
+        paddingTop: '17%',
         fontSize: '25px',
         color: '#c3c3c3'
     },

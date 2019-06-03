@@ -119,7 +119,7 @@ export function getOVPNAndSave(account_addr, vpn_ip, vpn_port, vpn_addr, nonce, 
 
 export function ovpnSave(vpn_data, session_id, ovpn, cb) {
     if (remote.process.platform === 'win32' || remote.process.platform === 'darwin') {
-        for (var i = 15; i <= 20; i++) {
+        for (var i = 11; i <= 20; i++) {
             if (ovpn[i].split(' ')[0] === 'up' || ovpn[i].split(' ')[0] === 'down') {
                 delete (ovpn[i]);
             }
@@ -140,8 +140,10 @@ export function ovpnSave(vpn_data, session_id, ovpn, cb) {
 
 
 export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
+
     let data = {
-        token: session_data.token
+        token: session_data.token,
+
     }
     if (fs.existsSync(OVPN_FILE)) {
         cb(null);
@@ -149,6 +151,7 @@ export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
         let sess_id = session_data.sessionId;
         axios({
             url: session_data.url + `/clients/${account_addr}/sessions/${sess_id}/credentials`,
+            // url: 'http://35.200.183.162:3000/' + `/clients/${account_addr}/sessions/${sess_id}/credentials`,
             method: 'POST',
             data: data,
             headers: {
@@ -168,14 +171,97 @@ export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
                     });
                 }
                 else {
-                    cb({ message: 'Error occured while getting ovpn' })
+                    cb({ message: 'Error occurred while getting ovpn file' })
                 }
             })
             .catch(err => {
-                cb({ message: 'Error occured while getting ovpn' })
+                cb({ message: 'Error occurred while getting ovpn file' })
             })
     }
 }
+
+export function getWireguardTM(account_addr, vpn_data, session_data, cb) {
+   
+    let pubg = localStorage.getItem("PUBG") ? localStorage.getItem("PUBG").trim() : '';
+    let data = {
+        token: session_data.token,
+        pub_key: pubg
+    }
+    let sess_id = session_data.sessionId;
+    axios({
+        url: session_data.url + `/clients/${account_addr}/sessions/${sess_id}/credentials`,
+        method: 'POST',
+        data: data,
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        },
+        timeout: 10000
+    })
+        .then(response => {
+            console.log("Getting Session Credentials...")
+            if (response.data.success) {
+                localStorage.setItem('TOKEN', session_data.token);
+                localStorage.setItem('TM_VPN_URL', session_data.url);
+                localStorage.setItem('SESSION_NAME', session_data.sessionId);
+                localStorage.setItem('CONNECTED_VPN', vpn_data.vpn_addr);
+                localStorage.setItem('LOCATION', vpn_data.city);
+                localStorage.setItem('SPEED', Number(vpn_data.speed / (1024 * 1024)).toFixed(2) + ' Mbps');
+                localStorage.setItem('IPGENERATED', response.data.wireguard.EndPoint.split(':')[0]);
+
+                localStorage.setItem('VPN_TYPE', 'wireguard');
+
+                localStorage.setItem("WG_ALLOWEDIPS", response.data.wireguard.AllowedIPs);
+                localStorage.setItem("WG_PUBKEY", response.data.wireguard.Publickey);
+                localStorage.setItem("WG_IP", response.data.wireguard.ip);
+                localStorage.setItem("WG_ENDPOINT", response.data.wireguard.EndPoint);
+                localStorage.setItem("WG_PERSISTENT", response.data.wireguard.PersistentKeepAlive);
+                if (localStorage.getItem("WG_IP") !== null) {
+                    cb(null)
+                }
+
+            }
+            else {
+                cb({ message: 'Error occured while getting wireguard' })
+            }
+        })
+        .catch(err => {
+            cb({ message: 'Error occured while getting wireguard' })
+        })
+}
+
+export function disConnectWireguard(myToken, cb) {
+    let account_addr = localStorage.getItem('tmAccount');
+    let sess_id = localStorage.getItem("SESSION_NAME");
+    let session_url = localStorage.getItem('TM_VPN_URL');
+    let data = {
+        token: myToken
+    }
+    axios({
+        url: session_url + `/clients/${account_addr}/sessions/${sess_id}/disconnect`,
+        method: 'POST',
+        data: data,
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        }
+
+    })
+        .then(response => {
+            console.log("Diconnecting WG..")
+            if (response.data.success) {
+                cb(null)
+            }
+            else {
+                // cb({ message: 'Error occured while disconnecting wireguard' })
+                cb(null)
+            }
+        })
+        .catch(err => {
+            cb({ message: 'Error occured while disconnecting wireguard' })
+        })
+}
+
 
 export async function getVPNUsageData(account_addr) {
     let uri, data;
@@ -197,7 +283,6 @@ export async function getVPNUsageData(account_addr) {
     }
 
     let request = await axios.post(uri, data);
-
     return {
         payload: request,
         type: VPN_USAGE

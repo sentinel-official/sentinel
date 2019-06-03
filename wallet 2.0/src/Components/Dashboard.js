@@ -8,9 +8,10 @@ import { getVPNUsageData } from "../Utils/utils";
 import { getVPNConnectedData } from '../Utils/VpnConfig';
 import { setTestNet, setWalletType } from '../Actions/header.action';
 import { setActiveVpn, setVpnType, setVpnStatus } from './../Actions/vpnlist.action';
-import { getKeys, setTMComponent, getTendermintAccount, setTMAccount } from './../Actions/tendermint.action';
+import { getKeys, setTMComponent, getTendermintAccount, setTMAccount, setTMAccountslist } from './../Actions/tendermint.action';
 import { calculateUsage, getStartValues, socksVpnUsage } from '../Actions/calculateUsage';
 import { dashboardStyles } from '../Assets/dashboard.styles';
+import { setCurrentTab } from './../Actions/sidebar.action';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -36,42 +37,35 @@ class Dashboard extends Component {
 
     componentWillMount = () => {
         this.props.getAccount();
-        this.props.setTestNet(false);
-        this.props.setWalletType('TM');
-        getVPNConnectedData((err, data, sock) => {
-            if (err) { }
-            else {
-                this.props.setTestNet(true);
-                this.props.setActiveVpn(data);
-                this.props.setVpnType(sock ? 'socks5' : 'openvpn');
-                this.props.setVpnStatus(true);
-                this.props.setWalletType('ERC');
-                getStartValues();
-            }
-        })
+        // this.props.setTestNet(false);
+        // this.props.setWalletType('TM');
         this.props.getKeys().then(res => {
             if (res.payload.length !== 0) {
-                getTendermintAccount((name) => {
+                getTendermintAccount((name, accounts) => {
                     if (name) {
                         let mainAccount = res.payload.find(obj => obj.name === name)
                         if (mainAccount) {
                             this.props.setTMAccount(mainAccount);
+                            this.props.setTMAccountslist(accounts);
                             this.props.setTMComponent('dashboard');
                         }
                         else {
-                            console.log("Account...", mainAccount, name)
                             this.props.setTMComponent('home');
+                            this.props.setCurrentTab('receive');
+                            this.props.setTMAccountslist(accounts);
                         }
                     }
                     else {
-                        console.log("No Account in TMConfig..", name)
                         this.props.setTMComponent('home');
+                        this.props.setCurrentTab('receive');
+                        this.props.setTMAccountslist(accounts);
                     }
                 });
             }
             else {
-                console.log("No Keys")
                 this.props.setTMComponent('home');
+                this.props.setCurrentTab('receive');
+                this.props.setTMAccountslist([]);
             }
         });
     }
@@ -136,7 +130,9 @@ function mapDispatchToActions(dispatch) {
         socksVpnUsage,
         getKeys,
         setTMComponent,
-        setTMAccount
+        setTMAccount,
+        setTMAccountslist,
+        setCurrentTab
     }, dispatch)
 }
 

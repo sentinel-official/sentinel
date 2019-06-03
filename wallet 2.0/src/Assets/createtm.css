@@ -1,0 +1,16 @@
+
+.showPassword{
+    float: right;
+    margin-top: -43px !important;
+    outline:none
+};
+.showPassword:focus{
+    outline: none !important;
+}
+.loginHeading{
+    font-family: Montserrat, Medium;
+    font-weight: 600;
+    font-size: 24px;
+    margin-left: 20px;
+    margin-bottom: 35px;
+}

@@ -25,6 +25,8 @@ class VpnListView extends Component {
                 node.price_per_GB = node.pricePerGB;
                 node.enc_method = node.encMethod;
                 node.ip = node.IP;
+                node.node_type = node.nodeType
+                node.rating = (node.ratingPoints/node.ratingCount).toFixed(2)
             })
         }
         list = list.filter(function (item) {
@@ -32,13 +34,45 @@ class VpnListView extends Component {
                 nextProps.query.toLowerCase()
             ) !== -1) || (item.location.country.toLowerCase().search(
                 nextProps.query.toLowerCase()
-            ) !== -1);
+            ) !== -1)
+            
+            ||
+            (item.moniker ? ( item.moniker.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            : '' )
+            ||
+            (item.net_speed.download ? ( (item.net_speed.download/ (1024 * 1024).toFixed(3)).toString().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            : '' )
+            ||
+            (item.version.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            ||
+            (item.node_type ? ( item.node_type.toLowerCase().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            : '' )
+            ||
+            (item.rating ? ( item.rating.toString().search(
+                nextProps.query.toLowerCase()
+            ) !== -1)
+            : '' )
+            ||
+            (item.price_per_GB.toString().search(
+                nextProps.query
+            ) !== -1)
+            
+            ;
         });
         this.setState({ updatedList: list });
     }
 
     componentDidMount() {
         let list = this.props.availableVpns;
+
         if (this.props.isTM) {
             list.map((node) => {
                 node.net_speed = node.netSpeed;
@@ -46,6 +80,8 @@ class VpnListView extends Component {
                 node.price_per_GB = node.pricePerGB;
                 node.enc_method = node.encMethod;
                 node.ip = node.IP;
+                node.node_type = node.nodeType
+                node.rating = (node.ratingPoints/node.ratingCount).toFixed(2)
             })
         }
         this.setState({ updatedList: list });

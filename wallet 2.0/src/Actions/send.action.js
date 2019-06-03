@@ -52,7 +52,7 @@ export async function transferAmount(net, data) {
     net: net
   }
   let BS_URL = localStorage.getItem('B_URL');
-  console.log('in transferamt', JSON.stringify(data1), BS_URL, typeof (BS_URL))
+  // console.log('in transferamt', JSON.stringify(data1), BS_URL, typeof (BS_URL))
   try {
     let response = await axios.post(BS_URL + '/client/raw-transaction', data1);
     console.log('in trnsfer amt respose', response);

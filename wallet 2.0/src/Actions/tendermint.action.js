@@ -1,6 +1,6 @@
 import * as types from './../Constants/action.names';
 import { TM_URL, TM_FREE_TOKEN_URL, TMain_URL } from '../Constants/constants';
-import { getTMConfig } from './../Utils/UserConfig';
+import { getTMConfig, getWireguardConfig, getWireguardKeys} from './../Utils/UserConfig';
 import axios from 'axios';
 
 // Fetch TxHash from MN API
@@ -75,9 +75,19 @@ export function getTendermintAccount(cb) {
     getTMConfig((err, data) => {
         let configData = data ? JSON.parse(data) : {};
         if (configData && 'tmUserName' in configData)
-            cb(configData.tmUserName)
+            cb(configData.tmUserName, configData.accounts)
         else
-            cb(null)
+            cb(null, [])
+    })
+}
+export function generateWireguardKeys(cb) {
+    console.log("getting wireguard keys ");
+    getWireguardKeys( (err, data) => {
+      
+        if (data )
+        return('Hello Im generated keys')
+    else
+        cb(null)
     })
 }
 
@@ -85,6 +95,35 @@ export function setTMAccount(data) {
     return {
         type: types.SET_TM_ACCOUNT,
         payload: data
+    }
+}
+
+export function setTMAccountslist(data) {
+    return {
+        type: types.SET_TM_ACCOUNTS_LIST,
+        payload: data
+    }
+}
+
+export async function getManualRefund(data) {
+    try {
+        let response = await axios.post(TM_URL + '/refund', data, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            }
+        })
+        return {
+            type: types.GET_MANUAL_REFUND,
+            payload: response.data,
+            error: null
+        }
+    } catch (err) {
+        return {
+            type: types.GET_MANUAL_REFUND,
+            payload: null,
+            error: err.response || 'Something went wrong'
+        }
     }
 }
 
@@ -160,14 +199,21 @@ export async function getTxInfo(hash, time) {
         return ({
             hash: response.data.hash,
             amount: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ?
-                100 * (10 ** 8) - parseInt(response.data.tx.value.msg[0].value.Coins[0].amount) :
-                response.data.tx.value.msg[0].value.Coins[0].amount,
+                (response.data.result.tags[3] ? parseFloat(new Buffer(response.data.result.tags[3].value, 'base64').toString()) : 100 * (10 ** 8))
+                - parseInt(response.data.tx.value.msg[0].value.Coins[0].amount) :
+                (response.data.tx.value.msg[0].type === 'sentinel/clientrefund' ?
+                    (response.data.result.tags[1] ? parseFloat(new Buffer(response.data.result.tags[1].value, 'base64').toString()) : 0)
+                    : response.data.tx.value.msg[0].value.Coins[0].amount),
             from: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ?
                 `Released`
-                : response.data.tx.value.msg[0].value.From,
+                : (response.data.tx.value.msg[0].type === 'sentinel/clientrefund' ?
+                    `Refunded` : response.data.tx.value.msg[0].value.From),
             to: response.data.tx.value.msg[0].value.To ? response.data.tx.value.msg[0].value.To : 'ClaimedBy',
-            sessionId: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ?
-                new Buffer(response.data.tx.value.msg[0].value.Sessionid, 'base64').toString() : null,
+            sessionId: response.data.tx.value.msg[0].type === 'sentinel/getvpnpayment' ||
+                response.data.tx.value.msg[0].type === 'sentinel/clientrefund' ?
+                new Buffer(response.data.tx.value.msg[0].value.Sessionid, 'base64').toString() :
+                (response.data.tx.value.msg[0].type === 'sentinel/payvpnservice' ?
+                    new Buffer(response.data.result.tags[1].value, 'base64').toString() : null),
             gas: response.data.result.gas_used,
             timestamp: time
         })

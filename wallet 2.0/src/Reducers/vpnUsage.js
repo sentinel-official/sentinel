@@ -3,6 +3,8 @@ import { VPN_USAGE } from './../Constants/action.names';
 export function VPNUsage(state = null, action) {
     switch (action.type) {
         case VPN_USAGE:
+
+        // console.log("vpn usage in action ", action.payload)
             if( action.payload.data && action.payload.data.success) {
                 return action.payload.data['usage']
             } else if (action.payload.data && action.payload.data.message)  {

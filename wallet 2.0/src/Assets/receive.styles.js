@@ -85,7 +85,11 @@ const receiveStyles = {
     getTokenButtonStyle:{
        textAlign:'center'
     },
-    m_b_2: { marginBottom: '2%' }
+    m_b_2: { marginBottom: '2%' },
+    refundRequestDiv: {
+       
+        textAlign:'center',
+    }
 }
 
 module.exports = {

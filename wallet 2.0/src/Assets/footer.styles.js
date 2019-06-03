@@ -40,7 +40,7 @@ const footerStyles = {
         textTransform: 'none',
         fontSize: 14,
         marginBottom: 0,
-        textAlign: 'left',
+        textAlign: 'center',
         overflow: 'hidden',
         textOverflow: 'ellipsis'
     },
@@ -48,7 +48,8 @@ const footerStyles = {
         textAlign: 'left'
     },
     vpnConnected:{
-        padding:0
+        padding:0,
+        textAlign:'center',
     },
     disconnectStyle: {
         color: '#fff',

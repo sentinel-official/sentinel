@@ -46,9 +46,10 @@ class TMTransactionsHistory extends React.Component {
                         return (
                             <div style={historyStyles.data}>
                                 <History ownWallet={this.props.account.address} date={parseInt(Date.parse(data.timestamp) / 1000)}
-                                    to={data.to === 'ClaimedBy' ? lang[language]['LockedForSession'] : data.to}
+                                    to={data.to === 'ClaimedBy' ? `${lang[language]['LockedForSession']} ${data.sessionId}` : data.to}
                                     gas={data.gas}
-                                    from={data.from === 'Released' ? `${lang[language]['ReleasedFromSession']} ${data.sessionId}` : data.from}
+                                    from={data.from === 'Released' ? `${lang[language]['ReleasedFromSession']} ${data.sessionId}` :
+                                        (data.from === 'Refunded' ? `${lang[language]['RefundedFromSession']} ${data.sessionId}` : data.from)}
                                     unit={'TSENT'}
                                     amount={parseInt(data.amount) / (10 ** 8).toFixed(8)} status={'Success'} tx={data.hash} />
                             </div>

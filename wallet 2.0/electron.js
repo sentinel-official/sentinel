@@ -32,12 +32,13 @@ function windowManager() {
   this.createWindow = () => {
     if (process.platform === 'win32') screenHeight = 700;
     else screenHeight = 672;
-    this.window = new BrowserWindow({ title: "Sentinel Network - dVPN - alpha-0.11.1", resizable: false, maximizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
+    this.window = new BrowserWindow({ title: "Sentinel Network - dVPN - alpha-0.1.2", resizable: false, maximizable: false, width: 1000, height: screenHeight, icon: './public/icon256x256.png' });
     this.window.loadURL(url.format({
       pathname: path.join(__dirname, 'build/index.html'),
       protocol: 'file:',
       slashes: true
     }));
+    // this.window.loadURL('http://localhost:3000');
 
     this.window.on('close', async (e) => {
       let self = this;
@@ -49,6 +50,18 @@ function windowManager() {
       }
       showTmPrompt = true;
       if (isTM === 'true') {
+        if (process.platform === 'linux'){
+          exec(`wg-quick down wg0`, async function (error, stdout, stderr) {  
+            console.log("disconnecting local Wireguard...")
+            if (error) throw error;
+            else {
+                // removeItemsLocal();
+                // clearConfig();
+                cb(null);
+            }
+        });
+        }
+
         isTMVPNConnected(function (isConnected) {
           if (showTmPrompt && isConnected) {
             // e.preventDefault();
@@ -88,6 +101,10 @@ function windowManager() {
             app.quit();
           }
         })
+
+
+
+
       } else {
         isVPNConnected((isConnected) => {
           if (process.platform === 'win32')
@@ -246,7 +263,7 @@ function stopVPN(cb) {
     try {
       var cmd;
       if (vpnType === 'socks5')
-        cmd = 'net stop sentinelSocksv111 /f  && taskkill /IM sentinel.exe /f'
+        cmd = 'net stop sentinelSocksv12 /f  && taskkill /IM sentinel.exe /f'
       else cmd = 'taskkill /IM openvpn.exe /f  && taskkill /IM sentinel.exe /f';
       let stdout = execSync(cmd)
       if (stdout) cb(null);
@@ -355,58 +372,86 @@ app.on('ready', function () {
       },
     ]
   },
-  // {
-  //   label: "Language",
-  //   submenu: [
-  //     {
-  //       label: 'English', type: 'checkbox', checked: true, click() {
-  //         m.items[1].submenu.items[0].checked = true;
-  //         m.items[1].submenu.items[1].checked = false;
-  //         m.items[1].submenu.items[2].checked = false;
-  //         m.items[1].submenu.items[3].checked = false;
-  //         m.items[1].submenu.items[4].checked = false;
-  //         mainWindow.window.webContents.send('lang', 'en');
-  //       }
-  //     },
-  //     {
-  //       label: 'Japanese', type: 'checkbox', checked: false, click() {
-  //         m.items[1].submenu.items[0].checked = false;
-  //         m.items[1].submenu.items[1].checked = true;
-  //         m.items[1].submenu.items[2].checked = false;
-  //         m.items[1].submenu.items[3].checked = false;
-  //         m.items[1].submenu.items[4].checked = false;
-  //         mainWindow.window.webContents.send('lang', 'ja');
-  //       }
-  //     }, {
-  //       label: 'Spanish', type: 'checkbox', checked: false, click() {
-  //         m.items[1].submenu.items[0].checked = false;
-  //         m.items[1].submenu.items[1].checked = false;
-  //         m.items[1].submenu.items[2].checked = true;
-  //         m.items[1].submenu.items[3].checked = false;
-  //         m.items[1].submenu.items[4].checked = false;
-  //         mainWindow.window.webContents.send('lang', 'es');
-  //       }
-  //     }, {
-  //       label: 'Russian', type: 'checkbox', checked: false, click() {
-  //         m.items[1].submenu.items[0].checked = false;
-  //         m.items[1].submenu.items[1].checked = false;
-  //         m.items[1].submenu.items[2].checked = false;
-  //         m.items[1].submenu.items[3].checked = true;
-  //         m.items[1].submenu.items[4].checked = false;
-  //         mainWindow.window.webContents.send('lang', 'ru');
-  //       }
-  //     },{
-  //       label: 'Chinese', type: 'checkbox', checked: false, click() {
-  //         m.items[1].submenu.items[0].checked = false;
-  //         m.items[1].submenu.items[1].checked = false;
-  //         m.items[1].submenu.items[2].checked = false;
-  //         m.items[1].submenu.items[3].checked = false;
-  //         m.items[1].submenu.items[4].checked = true;
-  //         mainWindow.window.webContents.send('lang', 'zh');
-  //       }
-  //     },
-  //   ]
-  // }
+  {
+    label: "Language",
+    submenu: [
+      {
+        label: 'English', type: 'checkbox', checked: true, click() {
+          m.items[1].submenu.items[0].checked = true;
+          m.items[1].submenu.items[1].checked = false;
+          m.items[1].submenu.items[2].checked = false;
+          m.items[1].submenu.items[3].checked = false;
+          // m.items[1].submenu.items[4].checked = false;
+          // m.items[1].submenu.items[5].checked = false;
+          mainWindow.window.webContents.send('lang', 'en');
+        }
+        // },
+        // {
+        //   label: 'Japanese', type: 'checkbox', checked: false, click() {
+        //     m.items[1].submenu.items[0].checked = false;
+        //     m.items[1].submenu.items[1].checked = true;
+        //     m.items[1].submenu.items[2].checked = false;
+        //     m.items[1].submenu.items[3].checked = false;
+        //     m.items[1].submenu.items[4].checked = false;
+        //     m.items[1].submenu.items[5].checked = false;
+        //     mainWindow.window.webContents.send('lang', 'ja');
+        //   }
+        // }, {
+        //   label: 'Spanish', type: 'checkbox', checked: false, click() {
+        //     m.items[1].submenu.items[0].checked = false;
+        //     m.items[1].submenu.items[1].checked = false;
+        //     m.items[1].submenu.items[2].checked = true;
+        //     m.items[1].submenu.items[3].checked = false;
+        //     m.items[1].submenu.items[4].checked = false;
+        //     m.items[1].submenu.items[5].checked = false;
+        //     mainWindow.window.webContents.send('lang', 'es');
+        //   }
+      }, {
+        label: 'Chinese', type: 'checkbox', checked: false, click() {
+          m.items[1].submenu.items[0].checked = false;
+          m.items[1].submenu.items[1].checked = true;
+          m.items[1].submenu.items[2].checked = false;
+          m.items[1].submenu.items[3].checked = false;
+          // m.items[1].submenu.items[3].checked = false;
+          // m.items[1].submenu.items[4].checked = true;
+          // m.items[1].submenu.items[5].checked = false;
+          mainWindow.window.webContents.send('lang', 'zh');
+        }
+      }, {
+        label: 'Russian', type: 'checkbox', checked: false, click() {
+          m.items[1].submenu.items[0].checked = false;
+          m.items[1].submenu.items[1].checked = false;
+          m.items[1].submenu.items[2].checked = true;
+          m.items[1].submenu.items[3].checked = false;
+          // m.items[1].submenu.items[4].checked = false;
+          // m.items[1].submenu.items[5].checked = false;
+          mainWindow.window.webContents.send('lang', 'ru');
+        }
+      },
+      {
+        label: 'Persian', type: 'checkbox', checked: false, click() {
+          m.items[1].submenu.items[0].checked = false;
+          m.items[1].submenu.items[1].checked = false;
+          m.items[1].submenu.items[2].checked = false;
+          m.items[1].submenu.items[3].checked = true;
+          // m.items[1].submenu.items[4].checked = false;
+          // m.items[1].submenu.items[5].checked = false;
+          mainWindow.window.webContents.send('lang', 'per');
+        }
+      },
+      // {
+      //   label: 'Turkish', type: 'checkbox', checked: false, click() {
+      //     m.items[1].submenu.items[0].checked = false;
+      //     m.items[1].submenu.items[1].checked = false;
+      //     m.items[1].submenu.items[2].checked = false;
+      //     m.items[1].submenu.items[3].checked = false;
+      //     m.items[1].submenu.items[4].checked = false;
+      //     m.items[1].submenu.items[5].checked = true;
+      //     mainWindow.window.webContents.send('lang', 'tu');
+      //   }
+      // },
+    ]
+  }
   ])
   Menu.setApplicationMenu(m)
 })

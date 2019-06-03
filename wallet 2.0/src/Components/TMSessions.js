@@ -6,8 +6,6 @@ import { Card, CardContent, IconButton, Snackbar, Tooltip } from '@material-ui/c
 import { withStyles } from '@material-ui/core/styles';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import CopyIcon from '@material-ui/icons/FileCopyOutlined';
-import { compose } from 'recompose';
-import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { getSessionHistory } from '../Actions/tmvpn.action';
 import { sessionStyles } from '../Assets/tmsessions.styles';
@@ -16,8 +14,6 @@ import { historyLabel, historyValue, cardStyle, statusLabel, statusValue } from 
 import { historyStyles } from '../Assets/txhistory.styles';
 import { vpnhistoryStyles, styles } from '../Assets/vpnhistory.style';
 import '../Assets/commonStyles.css';
-
-import moment from 'moment';
 import _ from 'lodash';
 let lang = require('./../Constants/language');
 
@@ -108,8 +104,8 @@ class TMSessions extends Component {
     render() {
         let { sessions, language } = this.props;
         let sessionOutput;
-        let filteredSes = sessions.filter(obj => obj.endedOn)
-        let sortedSessions = _.sortBy(filteredSes, o => o.endedOn).reverse();
+        let filteredSes = sessions.filter(obj => obj.startedOn)
+        let sortedSessions = _.sortBy(filteredSes, o => o.startedOn).reverse();
         const { classes } = this.props;
         let paymentCount = 0;
         let durationCount = 0;
@@ -117,8 +113,8 @@ class TMSessions extends Component {
         if (sortedSessions.length > 0) {
             sessionOutput = sortedSessions.map((sessionData) => {
                 let sessionAmount = sessionData.amount ? parseInt(sessionData.amount.split('s')[0]) / (10 ** 8) : 0;
-                let sessionDuration = (Date.parse(new Date(sessionData.endedOn)) -
-                    Date.parse(new Date(sessionData.startedOn))) / 1000;
+                let sessionDuration = sessionData.endedOn && sessionData.startedOn ? (Date.parse(new Date(sessionData.endedOn)) -
+                    Date.parse(new Date(sessionData.startedOn))) / 1000 : 0;
                 paymentCount += parseFloat(sessionAmount.toFixed(8));
                 dataCount += sessionData.usage.download;
                 durationCount += sessionDuration;
@@ -127,6 +123,16 @@ class TMSessions extends Component {
                         <Card className="cardStyle" >
                             <div>
                                 <label style={historyLabel}>{`${lang[language].SessionId}:`}&nbsp;<span style={historyValue}>{sessionData.sessionId}</span></label>
+                                <Tooltip title={lang[language].Copy}>
+                                    <CopyToClipboard text={sessionData.sessionId}
+                                        onCopy={() => this.setState({
+                                            snackMessage: lang[language].Copied,
+                                            openSnack: true
+                                        })}>
+
+                                        <CopyIcon style={receiveStyles.clipBoard} />
+                                    </CopyToClipboard>
+                                </Tooltip>
                             </div>
                             <div>
                                 <label style={historyLabel}>{`${lang[language].NodeID}:`}&nbsp;<span style={historyValue}>{sessionData.nodeAccountAddress}</span></label>
@@ -141,10 +147,7 @@ class TMSessions extends Component {
                                     </CopyToClipboard>
                                 </Tooltip>
                             </div>
-                            <div>
-                                <label style={historyLabel}>{`${lang[language].ReceivedData}:`}&nbsp;
-                                <span style={historyValue}>{this.getPaymentBytes(sessionData.usage.download)}</span></label>
-                            </div>
+
 
                             {sessionData.amount ?
                                 <div>
@@ -154,15 +157,22 @@ class TMSessions extends Component {
                                 </div>
                                 : ''
                             }
-
                             <div>
-                                <label style={historyLabel}>{`${lang[language].Duration}:`}&nbsp;
-                                <span style={historyValue}>{sessionDuration}{lang[language].Secs}</span></label>
-
-                            </div>
-                            <div>
-                                <label style={historyLabel}>{`${lang[language].Time}:`}&nbsp;
+                                <label style={historyLabel}>{`${lang[language].SessionStartTime}:`}&nbsp;
                                 <span style={historyValue}>{new Date(sessionData.startedOn).toLocaleString()}</span></label>
+                            </div>
+                            {sessionData.endedOn ?
+                                <div>
+                                    <label style={historyLabel}>{`${lang[language].Duration}:`}&nbsp;
+                                <span style={historyValue}>{sessionData.endedOn ? sessionDuration : 0}{lang[language].Secs}</span></label>
+
+                                </div>
+                                : null}
+
+
+                            <div>
+                                <label style={historyLabel}>{`${lang[language].ReceivedData}:`}&nbsp;
+                                <span style={historyValue}>{this.getPaymentBytes(sessionData.usage.download)}</span></label>
                             </div>
                         </Card>
                     </div>
@@ -201,11 +211,11 @@ class TMSessions extends Component {
                         </div>
                         :
                         this.state.loading ?
-                            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%', fontSize: '25px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '25%', fontSize: '25px', color: '#c3c3c3' }}>
                                 {lang[language].Loading}
                             </div>
                             :
-                            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '20%', fontSize: '25px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '25%', fontSize: '25px', color: '#c3c3c3' }}>
                                 {lang[language].NoPrevSessions}
                             </div>
 

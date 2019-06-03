@@ -7,13 +7,11 @@ import { Provider } from 'react-redux';
 import registerServiceWorker from './registerServiceWorker';
 import { createStore, applyMiddleware } from 'redux';
 import promiseMiddleware from 'redux-promise';
+import thunk from 'redux-thunk';
 import rootReducer from './Reducers/RootReducer';
 
 
-
-
-
-const createStoreWithMiddleware = applyMiddleware(promiseMiddleware)(createStore);
+const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, thunk)(createStore);
 
 ReactDOM.render(
     <Provider store={createStoreWithMiddleware(rootReducer)}>

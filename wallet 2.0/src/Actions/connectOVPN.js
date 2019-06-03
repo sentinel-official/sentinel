@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { CONNECT_VPN } from '../Constants/action.names';
-import { checkDependencies, getOVPNAndSave, getUserHome, getOVPNTM } from '../Utils/utils';
+import { checkDependencies, getOVPNAndSave, getUserHome, getOVPNTM, getWireguardTM } from '../Utils/utils';
 import { getVPNPIDs } from '../Utils/VpnConfig';
 import { getConfig } from '../Utils/UserConfig';
 import { disconnectVPN } from '../Utils/DisconnectVpn';
@@ -11,6 +11,7 @@ const sudo = remote.require('sudo-prompt');
 const SENT_DIR = getUserHome() + '/.sentinel';
 const CONFIG_FILE = SENT_DIR + '/config';
 const OVPN_FILE = SENT_DIR + '/client.ovpn';
+const WIREGUARD_CONFIG_FILE = SENT_DIR + '/wg0.conf';
 const fs = window.require('fs');
 let async = window.require('async');
 const { exec, execSync } = window.require('child_process');
@@ -23,6 +24,7 @@ let outputCount = 0;
 let count = 0;
 
 export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
+    console.log("tryin to connect VPN also..")
     checkVPNDependencies(os, (otherErr, winErr) => {
         if (otherErr) cb(otherErr, false, null);
         else if (winErr) cb(null, winErr, null);
@@ -40,56 +42,9 @@ export async function connectVPN(account_addr, vpn_addr, os, data, cb) {
             }
         }
     })
-    // switch (os) {
-    //     case 'win32':
-    //         checkOpenvpn((error) => {
-    //             if (error) cb(null, error, null);
-    //             else {
-
-    //             }
-    //         })
-    //         break;
-
-    //     case 'darwin':
-    //         checkMacDependencies((err) => {
-    //             if (err) cb(err, false, null);
-    //             else {
-    //                 if (localStorage.getItem('isTM') === 'true') {
-    //                     tmConnect(account_addr, vpn_addr, data, (err, res) => {
-    //                         cb(err, false, res)
-    //                     });
-    //                 }
-    //                 else {
-    //                     testConnect(account_addr, vpn_addr, (err, res) => {
-    //                         cb(err, false, res)
-    //                     });
-    //                 }
-    //             }
-    //         })
-    //     case 'linux': {
-    //         checkDependencies(['openvpn'], (e, o, se) => {
-    //             if (o) {
-    //                 if (localStorage.getItem('isTM') === 'true') {
-    //                     tmConnect(account_addr, vpn_addr, data, (err, res) => {
-    //                         cb(err, false, res)
-    //                     });
-    //                 }
-    //                 else {
-    //                     testConnect(account_addr, vpn_addr, (err, res) => {
-    //                         cb(err, false, res)
-    //                     });
-    //                 }
-    //             } else {
-    //                 console.log("dependecy error")
-    //             }
-    //         });
-    //         break;
-    //     }
-    //     default: {
-    //         break;
-    //     }
-    // }
 }
+
+
 
 export async function checkVPNDependencies(os, cb) {
     switch (os) {
@@ -164,6 +119,7 @@ export async function testConnect(account_addr, vpn_addr, cb) {
 
 }
 
+
 export async function tmConnect(account_addr, vpn_data, session_data, cb) {
     getOVPNTM(account_addr, vpn_data, session_data, (err) => {
         if (err) cb(err, null);
@@ -178,7 +134,6 @@ export async function tmConnect(account_addr, vpn_data, session_data, cb) {
         }
     })
 }
-
 export async function connectwithOVPN(resp, cb) {
     let command;
     let initialIP = '';

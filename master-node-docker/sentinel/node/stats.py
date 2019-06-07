@@ -833,6 +833,14 @@ class GetNodeBWStats(object):
                        )) if req.get_param('from') else 0)
         _end_date = (int(req.get_param('to')) if req.get_param('to'
                      ) else int(time.time()))
+        now = datetime.datetime.now()
+        last_month_start = (datetime.datetime(now.year - 1, 12,
+                            1) if now.month
+                            == 1 else datetime.datetime(now.year,
+                            now.month - 1, 1))
+        last_month_end = datetime.datetime(now.year, now.month, 1)
+        last_month_start_ts = int(last_month_start.strftime('%s'))
+        last_month_end_ts = int(last_month_end.strftime('%s'))
         result = db.connections.aggregate([
             {'$match': {'$expr': {'$and': [{'$gte': ['$start_time',
              _start_date]}, {'$lte': ['$end_time', _end_date]}]}}},
@@ -848,10 +856,11 @@ class GetNodeBWStats(object):
                                , {'$subtract': [int(time.time()), 7
                                * 24 * 60 * 60]}]}, '$server_usage.down'
                                , 0]}},
-                'last_month': {'$sum': {'$cond': [{'$gte': ['$start_time'
-                               , {'$subtract': [int(time.time()), 30
-                               * 24 * 60 * 60]}]}, '$server_usage.down'
-                               , 0]}},
+                'last_month': {'$sum': {'$cond': [{'$and': [{'$gte': ['$start_time'
+                               , last_month_start_ts]},
+                               {'$lt': ['$start_time',
+                               last_month_end_ts]}]},
+                               '$server_usage.down', 0]}},
                 }},
             {'$lookup': {
                 'from': 'nodes',
@@ -896,7 +905,7 @@ class GetNodeBWStats(object):
                                   {'$lte': ['$$ratingDoc.timestamp',
                                   _end_date]}]}}}},
                 }},
-            {'$sort': {'total_bandwidth': -1}},
+            {'$sort': {'last_24hours': -1}},
             ])
 
         for doc in result:

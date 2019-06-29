@@ -208,24 +208,19 @@ class GetTotalDataCount(object):
                      ) else int(time.time()))
         if _format is not None:
             total_count = []
-            result = db.connections.aggregate([
-                {'$match': {'$expr': {'$and': [{'$gte': ['$start_time',
-                _start_date]}, {'$lte': ['$end_time', _end_date]}]}}},
-                {
-                '$group': {
-                    '_id': None,
-                    'total': {
-                        '$sum': '$server_usage.down'
-                    }
-                }
-            }])
+            result = db.connections.aggregate([{'$match': {'start_time': {'$gte': _start_date},
+                    'end_time': {'$lte': _end_date}}},
+                    {'$group': {'_id': None,
+                    'total': {'$sum': '$server_usage.down'}}}])
+
             for doc in result:
                 doc['total'] = doc['total'] / (1024 * 1024)
                 total_count.append(doc)
 
-            message = {'success': True, 'units': 'MB', 'stats': total_count[0]['total']}
-
+            message = {'success': True, 'units': 'MB',
+                       'stats': total_count[0]['total']}
         else:
+
             message = {'success': False, 'message': 'No param found'}
 
         resp.status = falcon.HTTP_200
@@ -842,8 +837,8 @@ class GetNodeBWStats(object):
         last_month_start_ts = int(last_month_start.strftime('%s'))
         last_month_end_ts = int(last_month_end.strftime('%s'))
         result = db.connections.aggregate([
-            {'$match': {'$expr': {'$and': [{'$gte': ['$start_time',
-             _start_date]}, {'$lte': ['$end_time', _end_date]}]}}},
+            {'$match': {'start_time': {'$gte': _start_date},
+             'end_time': {'$lte': _end_date}}},
             {'$group': {
                 '_id': '$vpn_addr',
                 'total_sessions_count': {'$sum': 1},

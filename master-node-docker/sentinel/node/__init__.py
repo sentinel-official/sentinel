@@ -26,6 +26,9 @@ from .stats import GetDailyTotalSentsUsed
 # from .stats import GetLastAverageDuration
 from .stats import GetLastDataCount
 from .stats import GetNodeStatistics
+from .stats import GetNodeBWStats
 from .stats import GetTotalDataCount
 from .stats import GetTotalDataCountOld
 from .stats import GetTotalNodeCount
+from .stats import GetLatestSessions
+from .stats import GetTotalSessionsCount

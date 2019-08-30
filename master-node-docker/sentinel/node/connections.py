@@ -15,6 +15,8 @@ def calculate_amount(used_bytes, price_per_gb):
 
 
 class UpdateConnections(object):
+    auth = {'auth_disabled': True}
+
     # With version 0.0.3-alpha fixes
     def on_post(self, req, resp):
         token = str(req.body['token'])

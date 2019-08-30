@@ -7,7 +7,9 @@ import falcon
 from ..db import db
 
 
-class UpdateMixerNodeInfo(object):
+class UpdateSwixerNodeInfo(object):
+    auth = {'auth_disabled': True}
+
     def on_post(self, req, resp):
         token = str(req.body['token'])
         account_addr = str(req.body['account_addr']).lower()

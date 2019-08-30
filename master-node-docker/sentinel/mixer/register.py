@@ -8,7 +8,9 @@ import falcon
 from ..db import db
 
 
-class RegisterMixerNode(object):
+class RegisterSwixerNode(object):
+    auth = {'auth_disabled': True}
+
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
         ip = str(req.body['ip'])
@@ -45,7 +47,9 @@ class RegisterMixerNode(object):
         resp.body = json.dumps(message)
 
 
-class DeRegisterMixerNode(object):
+class DeRegisterSwixerNode(object):
+    auth = {'auth_disabled': True}
+
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
         token = req.body['token']

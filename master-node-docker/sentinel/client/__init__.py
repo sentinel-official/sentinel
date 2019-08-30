@@ -3,6 +3,7 @@ from .account import CreateNewAccount
 from .account import GetBalance
 from .account import GetETHHistory
 from .account import GetSentHistory
+from .auth import GetToken
 from .connection import UpdateConnection
 from .mixer import GetMixerNodessList
 from .mixer import GetMixerToAddress

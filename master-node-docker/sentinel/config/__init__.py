@@ -27,6 +27,7 @@ from .swaps import TOKENS as SWAP_TOKENS
 from .tokens import MAIN_TOKENS
 from .tokens import RINKEBY_TOKENS
 from .vars import DECIMALS
+from .vars import JWT_SECRET
 from .vars import LIMIT_100MB
 from .vars import LIMIT_10MB
 from .vars import SESSIONS_SALT

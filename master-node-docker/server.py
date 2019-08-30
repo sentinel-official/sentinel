@@ -11,6 +11,7 @@ from sentinel.client import GetMixerNodessList
 from sentinel.client import GetMixerToAddress
 from sentinel.client import GetSentHistory
 from sentinel.client import GetSocksList
+from sentinel.client import GetToken
 from sentinel.client import GetVpnCredentials
 from sentinel.client import GetVpnCurrentUsage
 from sentinel.client import GetVpnUsage
@@ -64,6 +65,7 @@ from sentinel.swaps import GetSwapAddressBalance
 from sentinel.swaps import SwapStatus
 from sentinel.swaps import TokenSwapRawTransaction
 from sentinel.utils import JSONTranslator
+from sentinel.utils import auth_middleware
 
 
 class Up(object):
@@ -77,10 +79,12 @@ class Up(object):
 
 
 cors = CORS(allow_all_origins=True)
-server = falcon.API(middleware=[cors.middleware, JSONTranslator()])
+server = falcon.API(
+    middleware=[cors.middleware, auth_middleware, JSONTranslator()])
 server.add_route('/', Up())
 
 # Clients
+server.add_route('/client/token', GetToken())
 server.add_route('/client/account', CreateNewAccount())
 server.add_route('/client/account/balance', GetBalance())
 server.add_route('/client/account/history/eth', GetETHHistory())

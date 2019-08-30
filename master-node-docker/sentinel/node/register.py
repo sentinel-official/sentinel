@@ -22,6 +22,8 @@ def get_latency(url):
 
 
 class RegisterNode(object):
+    auth = {'auth_disabled': True}
+
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
         ip = str(req.body['ip'])
@@ -96,6 +98,8 @@ class RegisterNode(object):
 
 
 class DeRegisterNode(object):
+    auth = {'auth_disabled': True}
+
     def on_post(self, req, resp):
         account_addr = str(req.body['account_addr']).lower()
         token = str(req.body['token'])

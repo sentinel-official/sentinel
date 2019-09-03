@@ -20,6 +20,7 @@ import Dashboard from './Components/Dashboard';
 import { runGaiacli } from './Utils/Gaiacli';
 import { B_URL } from './Constants/constants';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { networkChange } from './Actions/NetworkChange';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -70,6 +71,9 @@ class App extends Component {
                     else {
                         this.props.setTestNet(true);
                         this.props.setActiveVpn(data);
+                        if (data.isPrivate) {
+                            this.props.networkChange('private');
+                        }
                         this.props.setVpnType(sock ? 'socks5' : 'openvpn');
                         this.props.setVpnStatus(true);
                         this.props.setWalletType('ERC');
@@ -147,10 +151,10 @@ class App extends Component {
                     return <div style={defaultPageStyle.division}>
                         <img src='../src/Images/Sentinel_Logo.gif'
                         //  style={defaultPageStyle.image} 
-                         />
+                        />
                         {/* <p style={defaultPageStyle.p}>Sentinel</p> */}
-                        <CircularProgress className={styles.progress} 
-                        style={{color: '#008BF1',position:"absolute",top: '50%'}}
+                        <CircularProgress className={styles.progress}
+                            style={{ color: '#008BF1', position: "absolute", top: '50%' }}
                         />
                     </div>
                 }
@@ -167,6 +171,7 @@ function mapDispatchToActions(dispatch) {
         setWalletType,
         setVpnStatus,
         setVpnType,
+        networkChange
     }, dispatch);
 }
 

@@ -142,18 +142,18 @@ export async function rateVPNSession(value, isTm, comments, cb) {
                 comments: comments
             }
         } else {
-            url = B_URL + '/client/vpn/rate';
+            let baseUrl = localStorage.getItem('B_URL');
+            url = baseUrl + '/client/vpn/rate';
             data = {
                 vpn_addr: localStorage.getItem('CONNECTED_VPN'),
                 rating: value,
                 session_name: localStorage.getItem('SESSION_NAME')
             }
         }
-        let response = await axios.post(url, data, {
+        let response = await axiosInstance.post(url, data, {
             headers: {
                 'Accept': 'application/json',
-                'Content-type': 'application/json',
-                'Authorization': localStorage.getItem('access_token')
+                'Content-type': 'application/json'
             }
         })
         if (response.data.success) {

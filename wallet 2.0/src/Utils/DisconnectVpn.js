@@ -74,11 +74,11 @@ export function removeSessionLocal() {
 
 export async function clearConfig() {
     getConfig(function (err, confdata) {
-        let newData = {};
+        // let newData = {};
         let data = confdata ? JSON.parse(confdata) : {};
-        newData.isConnected = null;
-        newData.connectedAddr = null;
-        let keystore = JSON.stringify(newData);
+        data.isConnected = null;
+        data.connectedAddr = null;
+        let keystore = JSON.stringify(data);
         fs.writeFile(CONFIG_FILE, keystore, function (err) {
         });
     })

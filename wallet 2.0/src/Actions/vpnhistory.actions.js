@@ -1,5 +1,6 @@
 import config from '../Constants/config';
 import axios from 'axios';
+import { axiosInstance } from '../Actions/AxiosGlobalConfig';
 import { sendError } from './authentication.action';
 import { B_URL } from './../Constants/constants';
 import * as types from './../Constants/action.names';
@@ -26,7 +27,8 @@ export async function getVpnHistory(account_addr) {
     let data = JSON.stringify({
       account_addr: account_addr,
     })
-    let response = await axios.post(B_URL + '/client/vpn/usage', data, {
+    let baseUrl = localStorage.getItem('B_URL');
+    let response = await axiosInstance.post(baseUrl + '/client/vpn/usage', data, {
       headers: {
         'Accept': 'application/json',
         'Content-type': 'application/json'
@@ -115,16 +117,11 @@ export const compareTransaction = (sessionData, txhash, account_addr, isTest, cb
 }
 
 export function reportPayment(data, cb) {
+  let baseUrl = localStorage.getItem('B_URL');
   try {
-    fetch(B_URL + '/client/vpn/report', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      body: JSON.stringify(data)
-    }).then(function (response) {
+    axiosInstance.post(baseUrl + '/client/vpn/report',
+      data
+    ).then(function (response) {
       if (response.status === 200) {
         response.json().then(function (response) {
           if (response.success === true) {

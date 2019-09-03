@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { axiosInstance } from '../Actions/AxiosGlobalConfig';
 import { B_URL } from '../Constants/constants'
 import { CONFIG_FILE } from '../Utils/utils';
 import { VPN_USAGE } from '../Constants/action.names';
@@ -11,7 +12,8 @@ const os = window.require('os');
 const netStat = window.require('net-stat');
 
 export function sendUsage(accountAddr, usage) {
-    let uri = `${B_URL}/client/update-connection`;
+    let baseUrl = localStorage.getItem('B_URL');
+    let uri = `${baseUrl}/client/update-connection`;
     let connections = [{
         'usage': usage,
         'client_addr': accountAddr,
@@ -22,7 +24,7 @@ export function sendUsage(accountAddr, usage) {
         'connections': connections
     };
 
-    axios.post(uri, data).then(res => { });
+    axiosInstance.post(uri, data).then(res => { });
 }
 
 export function setStartValues(downVal, upVal) {

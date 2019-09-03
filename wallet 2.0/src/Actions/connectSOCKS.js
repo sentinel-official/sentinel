@@ -143,7 +143,8 @@ export async function socksConnect(account_addr, vpn_addr, cb) {
         account_addr: account_addr,
         vpn_addr: vpn_addr
     };
-    axios({ url: `${B_URL}/client/vpn`, method: 'POST', data: data, timeout: 20000 })
+    let baseUrl = localStorage.getItem('B_URL');
+    axios({ url: `${baseUrl}/client/vpn`, method: 'POST', data: data, timeout: 20000 })
         .then(resp => {
             if (resp.data.success) {
                 getSocksCreds(account_addr, resp.data['ip'], resp.data['port'], resp.data['vpn_addr'], resp.data['token'], function (err, data) {

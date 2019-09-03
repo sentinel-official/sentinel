@@ -1,13 +1,13 @@
 import { sendError } from "./authentication.action";
 import axios from 'axios';
-// import { axiosInstance as axios }  from '../Actions/AxiosGlobalConfig';
+import { axiosInstance } from '../Actions/AxiosGlobalConfig';
 import * as sendComponentTypes from '../Constants/sendcomponent.types';
 import { B_URL } from '../Constants/constants';
 
 export async function payVPNUsage(data) {
   console.log('post data ', data)
   let BS_URL = localStorage.getItem('B_URL');
-  let response = await axios.post(BS_URL + '/client/vpn/pay', data);
+  let response = await axiosInstance.post(BS_URL + '/client/vpn/pay', data);
   console.log('vpn usage', response)
   if (response.status === 200) {
     if (response.data.success) {
@@ -54,7 +54,7 @@ export async function transferAmount(net, data) {
   let BS_URL = localStorage.getItem('B_URL');
   // console.log('in transferamt', JSON.stringify(data1), BS_URL, typeof (BS_URL))
   try {
-    let response = await axios.post(BS_URL + '/client/raw-transaction', data1);
+    let response = await axiosInstance.post(BS_URL + '/client/raw-transaction', data1);
     console.log('in trnsfer amt respose', response);
     if (response.status === 200) {
       if (response.data.success === true) {

@@ -122,7 +122,7 @@ export function isVPNConnected(cb) {
             });
         }
     }
-    
+
 }
 
 export function getVPNConnectedData(cb) {
@@ -139,6 +139,10 @@ export function getVPNConnectedData(cb) {
                 else localStorage.setItem('VPN_TYPE', 'openvpn');
                 isVPNConnected(function (err, connected) {
                     if (connected) {
+                        if (config.isPrivate && config.gatewayUrl) {
+                            localStorage.setItem("B_URL", config.gatewayUrl);
+                            localStorage.setItem('authcode', config.authcode)
+                        }
                         localStorage.setItem('IPGENERATED', config.ipConnected);
                         localStorage.setItem('LOCATION', config.location);
                         localStorage.setItem('SPEED', config.speed);
@@ -148,7 +152,8 @@ export function getVPNConnectedData(cb) {
                             ip: config.ipConnected,
                             location: config.location,
                             speed: config.speed,
-                            vpn_addr: config.connectedAddr
+                            vpn_addr: config.connectedAddr,
+                            isPrivate: config.isPrivate
                         }
                         cb(null, connectedData, isSock)
                     }

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { axiosInstance } from '../Actions/AxiosGlobalConfig';
 import { CONNECT_VPN } from '../Constants/action.names';
 import { checkDependencies, getOVPNAndSave, getUserHome, getOVPNTM, getWireguardTM } from '../Utils/utils';
 import { getVPNPIDs } from '../Utils/VpnConfig';
@@ -98,7 +99,8 @@ export async function testConnect(account_addr, vpn_addr, cb) {
         account_addr: account_addr,
         vpn_addr: vpn_addr
     };
-    axios({ url: `${B_URL}/client/vpn`, method: 'POST', data: data, timeout: 20000 })
+    let baseUrl = localStorage.getItem('B_URL');
+    axiosInstance({ url: `${baseUrl}/client/vpn`, method: 'POST', data: data, timeout: 20000 })
         .then(resp => {
             console.log("Getting VPN Details...");
             if (resp.data.success) {

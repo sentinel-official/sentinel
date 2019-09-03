@@ -181,7 +181,7 @@ export function getOVPNTM(account_addr, vpn_data, session_data, cb) {
 }
 
 export function getWireguardTM(account_addr, vpn_data, session_data, cb) {
-   
+
     let pubg = localStorage.getItem("PUBG") ? localStorage.getItem("PUBG").trim() : '';
     let data = {
         token: session_data.token,
@@ -282,7 +282,7 @@ export async function getVPNUsageData(account_addr) {
         };
     }
 
-    let request = await axios.post(uri, data);
+    let request = await axiosInstance.post(uri, data);
     return {
         payload: request,
         type: VPN_USAGE

@@ -5,6 +5,7 @@ import { sendError } from './authentication.action';
 import { FREE_AMOUNT_API } from '../Constants/api.routes';
 import { GET_FREE_AMOUNT } from './../Constants/action.names';
 import axios from 'axios';
+import { axiosInstance } from './AxiosGlobalConfig';
 
 var ACCOUNT_ADDR = '';
 export function getAccount(cb) {
@@ -27,7 +28,7 @@ export function getAccount(cb) {
 export function getFreeAmount(account_addr) {
     try {
         let BURL = localStorage.getItem('B_URL');
-        let request = axios({
+        let request = axiosInstance({
             url: BURL + FREE_AMOUNT_API,
             method: 'POST',
             data: {

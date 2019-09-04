@@ -116,7 +116,8 @@ class Header extends Component {
 
     onLogoutClicked = () => {
         this.props.logoutNode();
-        this.props.setAccountVerified(false)
+        this.props.setAccountVerified(false);
+        this.props.networkChange('public');
         this.props.setComponent('home');
         this.props.setProtocolType('all');
     }

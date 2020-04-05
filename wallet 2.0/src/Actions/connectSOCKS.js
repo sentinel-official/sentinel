@@ -129,7 +129,7 @@ export async function checksentinelSocks(cb) {
             cb(null);
         } else {
             let username = getUserHome();
-            exec(`${username}\\AppData\\Local\\Sentinel\\app-0.1.2\\resources\\extras\\socks5\\service.exe`, function (execErr, execOut, execStd) {
+            exec(`${username}\\AppData\\Local\\Sentinel\\app-0.1.3\\resources\\extras\\socks5\\service.exe`, function (execErr, execOut, execStd) {
                 exec(`net start sentinelSocksv12`, function (stderr, stdout, error) {
                     cb(null);
                 });

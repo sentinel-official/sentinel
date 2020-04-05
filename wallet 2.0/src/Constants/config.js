@@ -3,7 +3,7 @@
 const config = {
     'main': {
         masterUrl: 'https://api.sentinelgroup.io:8333',
-        infuraUrl: 'https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy',
+        infuraUrl: 'https://mainnet.infura.io/v3/5f7d36c20a8c448da6fbb8c03808dbbe',
         sentinelAddress: '0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037',
         gasLimit: 5000000,
         ethBalanceUrl: `https://api.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=balance&tag=latest&address=`,
@@ -16,7 +16,7 @@ const config = {
     },
     'test': {
         masterUrl: 'http://api.sentinelgroup.io:8333',
-        infuraUrl: 'https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy',
+        infuraUrl: 'https://rinkeby.infura.io/v3/5f7d36c20a8c448da6fbb8c03808dbbe',
         sentinelAddress: '0x29317B796510afC25794E511e7B10659Ca18048B',
         gasLimit: 2500000,
         ethBalanceUrl: `https://api-rinkeby.etherscan.io/api?apikey=Y5BJ5VA3XZ59F63XQCQDDUWU2C29144MMM&module=account&action=balance&tag=latest&address=`,

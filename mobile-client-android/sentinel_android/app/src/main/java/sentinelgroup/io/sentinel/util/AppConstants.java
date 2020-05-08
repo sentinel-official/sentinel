@@ -67,8 +67,8 @@ public class AppConstants {
     public static final String FOLDER_NAME = "Sentinel";
     public static final String FILE_NAME = "keystore.file";
     public static final String CONFIG_NAME = "client.ovpn";
-    public static final String INFURA_URL_MAIN_NET = "https://mainnet.infura.io/aiAxnxbpJ4aG0zed1aMy";
-    public static final String INFURA_URL_TEST_NET = "https://rinkeby.infura.io/aiAxnxbpJ4aG0zed1aMy";
+    public static final String INFURA_URL_MAIN_NET = "https://mainnet.infura.io/v3/5f7d36c20a8c448da6fbb8c03808dbbe";
+    public static final String INFURA_URL_TEST_NET = "https://rinkeby.infura.io/v3/5f7d36c20a8c448da6fbb8c03808dbbe";
     public static final String SENTINEL_ADDRESS_MAIN_NET = "0xa44E5137293E855B1b7bC7E2C6f8cD796fFCB037";
     public static final String SENTINEL_ADDRESS_TEST_NET = "0x29317B796510afC25794E511e7B10659Ca18048B";
     public static final String TX_MAIN_NET = "https://etherscan.io/tx/";

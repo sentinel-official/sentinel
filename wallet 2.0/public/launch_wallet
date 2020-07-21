@@ -1,3 +1,8 @@
 #!/bin/sh
 
-gksu /usr/lib/sentinel/sentinel
+if command -v pkexec > /dev/null
+then
+  pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY /usr/lib/sentinel/sentinel
+else
+  gksu /usr/lib/sentinel/sentinel
+fi

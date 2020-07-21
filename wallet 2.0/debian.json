@@ -8,5 +8,5 @@
   "lintianOverrides": [
     "changelog-file-missing-in-native-package"
   ],
-  "depends": ["openvpn", "libgconf2-4", "gksu","shadowsocks-libev", "wireguard"]
+  "depends": ["openvpn", "shadowsocks-libev", "wireguard", "gksu | policykit-1", "libgconf-2-4 | libgconf2-4"]
 }

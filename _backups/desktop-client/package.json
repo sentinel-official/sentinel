@@ -19,7 +19,7 @@
     "dist": "electron-builder"
   },
   "devDependencies": {
-    "electron": "^1.7.9",
+    "electron": "^9.1.1",
     "electron-builder": "^19.46.4"
   },
   "build": {

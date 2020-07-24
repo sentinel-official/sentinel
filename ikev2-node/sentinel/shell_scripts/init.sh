@@ -11,6 +11,7 @@ openssl req \
   -sha256 \
   -key ~/.sentinel/site.key \
   -subj "/CN=${PUBLIC_IP}" \
+  -addext "subjectAltName=IP:${PUBLIC_IP},DNS:${PUBLIC_IP}" \
   -out ~/.sentinel/site.csr
 
 CSR=$(echo -n $(cat -e ~/.sentinel/site.csr) | sed -e 's/\$ /\\n/g' | sed -e 's/\$//g')

@@ -17,11 +17,16 @@ class SignRSAKey(object):
             f.write(csr)
             f.close()
 
+        command = 'echo subjectAltName=IP:{},DNS:{} > /root/issued/{}.ext'.format(ip, ip, ip)
+        proc = subprocess.Popen(command, shell=True)
+        proc.wait()
+
         command = 'openssl x509 ' + \
                   '-req ' + \
                   '-CA /root/ca.crt ' + \
                   '-CAkey /root/ca.key ' + \
                   '-CAcreateserial ' + \
+                  '-extfile /root/issued/{}.ext '.format(ip) + \
                   '-in /root/issued/{}.csr '.format(ip) + \
                   '-out /root/issued/{}.crt '.format(ip) + \
                   '-days 365 ' + \

@@ -28,7 +28,7 @@ class Node(object):
             'moniker': '',
             'description': '',
         }
-        self.version = '0.0.1-alpha'
+        self.version = '0.0.2-alpha'
 
         if config is not None:
             self.config['account_addr'] = str(

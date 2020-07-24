@@ -32,6 +32,7 @@ def register_node(node):
         'price_per_gb': node.config['price_per_gb'],
         'moniker': node.config['moniker'],
         'description': node.config['description'],
+        'enc_method': 'AES-256-CBC',
         'vpn_type': 'IKEv2',
         'location': node.location,
         'net_speed': node.net_speed,

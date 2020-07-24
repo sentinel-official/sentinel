@@ -2,38 +2,30 @@
 
 PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 
-pki --gen \
-  --type rsa \
-  --size 4096 \
-  --outform pem >~/.sentinel/ca.pem
+openssl genrsa \
+  -out ~/.sentinel/site.key \
+  4096
 
-pki --gen \
-  --type rsa \
-  --size 4096 \
-  --outform pem >~/.sentinel/privkey.pem
+openssl req \
+  -new \
+  -sha256 \
+  -key ~/.sentinel/site.key \
+  -subj "/CN=${PUBLIC_IP}" \
+  -out ~/.sentinel/site.csr
 
-pki --self --ca --lifetime 360 \
-  --in ~/.sentinel/ca.pem \
-  --type rsa \
-  --dn "CN=${PUBLIC_IP}" \
-  --outform pem >~/.sentinel/chain.pem
+CSR=$(echo -n $(cat -e ~/.sentinel/site.csr) | sed -e 's/\$ /\\n/g' | sed -e 's/\$//g')
 
-pki --pub \
-  --in ~/.sentinel/privkey.pem \
-  --type rsa | pki --issue \
-  --lifetime 180 \
-  --cacert ~/.sentinel/chain.pem \
-  --cakey ~/.sentinel/ca.pem \
-  --dn "CN=${PUBLIC_IP}" \
-  --san "${PUBLIC_IP}" \
-  --san @"${PUBLIC_IP}" \
-  --flag serverAuth \
-  --flag ikeIntermediate \
-  --outform pem >~/.sentinel/cert.pem
+curl --request POST \
+  --silent \
+  --show-error \
+  --fail \
+  --header 'Content-Type: application/json' \
+  --url 'https://api.sentinelgroup.io/node/keys/sign' \
+  --data "{\"csr\":\"${CSR}\",\"ip\":\"${PUBLIC_IP}\"}" \
+  --output ~/.sentinel/site.crt
 
-cp ~/.sentinel/chain.pem /etc/ipsec.d/cacerts/chain.pem
-cp ~/.sentinel/cert.pem /etc/ipsec.d/certs/cert.pem
-cp ~/.sentinel/privkey.pem /etc/ipsec.d/private/privkey.pem
+cp ~/.sentinel/site.key /etc/ipsec.d/private/private.pem
+cp ~/.sentinel/site.crt /etc/ipsec.d/certs/cert.pem
 
 cp /root/sentinel/shell_scripts/ipsec.conf /etc/ipsec.conf
 cp /root/sentinel/shell_scripts/strongswan.conf /etc/strongswan.conf
@@ -41,7 +33,7 @@ cp /root/sentinel/shell_scripts/strongswan.conf /etc/strongswan.conf
 sed -i 's/=left_id/='"${PUBLIC_IP}"'/g' /etc/ipsec.conf
 
 echo '
-: RSA privkey.pem
+: RSA private.pem
 ' >/etc/ipsec.secrets
 ipsec rereadall
 

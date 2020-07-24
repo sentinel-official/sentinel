@@ -203,15 +203,15 @@ class GetTotalDataCount(object):
     def on_get(self, req, resp):
         _format = req.get_param('format')
         _start_date = (int(req.get_param('from'
-                       )) if req.get_param('from') else 0)
+                                         )) if req.get_param('from') else 0)
         _end_date = (int(req.get_param('to')) if req.get_param('to'
-                     ) else int(time.time()))
+                                                               ) else int(time.time()))
         if _format is not None:
             total_count = []
             result = db.connections.aggregate([{'$match': {'start_time': {'$gte': _start_date},
-                    'end_time': {'$lte': _end_date}}},
-                    {'$group': {'_id': None,
-                    'total': {'$sum': '$server_usage.down'}}}])
+                                                           'end_time': {'$lte': _end_date}}},
+                                               {'$group': {'_id': None,
+                                                           'total': {'$sum': '$server_usage.down'}}}])
 
             for doc in result:
                 doc['total'] = doc['total'] / (1024 * 1024)
@@ -639,10 +639,11 @@ class GetActiveSessionCount(object):
 class GetTotalSessionsCount(object):
     def on_get(self, req, resp):
         _start_date = (int(req.get_param('from'
-                       )) if req.get_param('from') else 0)
+                                         )) if req.get_param('from') else 0)
         _end_date = (int(req.get_param('to')) if req.get_param('to'
-                     ) else int(time.time()))
-        count = db.connections.count({"$and":[{"start_time":{"$gte":_start_date}},{"end_time":{"$lte":_end_date}}]})
+                                                               ) else int(time.time()))
+        count = db.connections.count(
+            {"$and": [{"start_time": {"$gte": _start_date}}, {"end_time": {"$lte": _end_date}}]})
         message = {'success': True, 'count': count}
 
         resp.status = falcon.HTTP_200
@@ -653,20 +654,21 @@ class GetLatestSessions(object):
     def on_get(self, req, resp):
         stats = []
         result = db.connections.aggregate([{
-            "$sort":{
-                "start_time":-1
-            }},{
-                "$limit":5
-            },{
-                "$project":{
-                    "_id": False,
-                    "duration":{
-                        "$subtract":[{"$cond":[{"$eq":["$end_time",None]},int(time.time()),"$end_time"]},"$start_time"]
-                    },
-                    "data_transferred":"$server_usage.down",
-                    "status":{"$cond":[{"$eq":["$end_time",None]},True,False]}
-                }
+            "$sort": {
+                "start_time": -1
+            }}, {
+            "$limit": 5
+        }, {
+            "$project": {
+                "_id": False,
+                "duration": {
+                    "$subtract": [{"$cond": [{"$eq": ["$end_time", None]}, int(time.time()), "$end_time"]},
+                                  "$start_time"]
+                },
+                "data_transferred": "$server_usage.down",
+                "status": {"$cond": [{"$eq": ["$end_time", None]}, True, False]}
             }
+        }
         ])
 
         for doc in result:
@@ -674,11 +676,11 @@ class GetLatestSessions(object):
             doc['duration'] = doc['duration'] / 60
             stats.append(doc)
 
-        message = {'success': True, 'data_transferred_units': 'MB', 'duration_units':'minutes', 'stats': stats }
+        message = {'success': True, 'data_transferred_units': 'MB', 'duration_units': 'minutes', 'stats': stats}
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps(message)
- 
+
 
 class GetDailyDurationCount(object):
     def on_get(self, req, resp):
@@ -825,44 +827,44 @@ class GetNodeBWStats(object):
     def on_get(self, req, resp):
         stats = []
         _start_date = (int(req.get_param('from'
-                       )) if req.get_param('from') else 0)
+                                         )) if req.get_param('from') else 0)
         _end_date = (int(req.get_param('to')) if req.get_param('to'
-                     ) else int(time.time()))
+                                                               ) else int(time.time()))
         now = datetime.datetime.now()
         last_month_start = (datetime.datetime(now.year - 1, 12,
-                            1) if now.month
-                            == 1 else datetime.datetime(now.year,
-                            now.month - 1, 1))
+                                              1) if now.month
+                                                    == 1 else datetime.datetime(now.year,
+                                                                                now.month - 1, 1))
         last_month_end = datetime.datetime(now.year, now.month, 1)
         last_month_start_ts = int(last_month_start.strftime('%s'))
         last_month_end_ts = int(last_month_end.strftime('%s'))
         result = db.connections.aggregate([
             {'$match': {'start_time': {'$gte': _start_date},
-             'end_time': {'$lte': _end_date}}},
+                        'end_time': {'$lte': _end_date}}},
             {'$group': {
                 '_id': '$vpn_addr',
                 'total_sessions_count': {'$sum': 1},
                 'total_bandwidth': {'$sum': '$server_usage.down'},
                 'last_24hours': {'$sum': {'$cond': [{'$gte': ['$start_time'
-                                 , {'$subtract': [int(time.time()), 24
-                                 * 60 * 60]}]}, '$server_usage.down',
-                                 0]}},
+                    , {'$subtract': [int(time.time()), 24
+                                     * 60 * 60]}]}, '$server_usage.down',
+                                                    0]}},
                 'last_7days': {'$sum': {'$cond': [{'$gte': ['$start_time'
-                               , {'$subtract': [int(time.time()), 7
-                               * 24 * 60 * 60]}]}, '$server_usage.down'
-                               , 0]}},
+                    , {'$subtract': [int(time.time()), 7
+                                     * 24 * 60 * 60]}]}, '$server_usage.down'
+                    , 0]}},
                 'last_month': {'$sum': {'$cond': [{'$and': [{'$gte': ['$start_time'
-                               , last_month_start_ts]},
-                               {'$lt': ['$start_time',
-                               last_month_end_ts]}]},
-                               '$server_usage.down', 0]}},
-                }},
+                    , last_month_start_ts]},
+                                                            {'$lt': ['$start_time',
+                                                                     last_month_end_ts]}]},
+                                                  '$server_usage.down', 0]}},
+            }},
             {'$lookup': {
                 'from': 'nodes',
                 'localField': '_id',
                 'foreignField': 'account_addr',
                 'as': 'node_details',
-                }},
+            }},
             {'$unwind': '$node_details'},
             {'$project': {
                 '_id': '$_id',
@@ -875,13 +877,13 @@ class GetNodeBWStats(object):
                 'uptime': '$node_details.vpn.init_on',
                 'lastSeen': '$node_details.vpn.ping_on',
                 'rating': {'$ifNull': ['$node_details.rating', None]},
-                }},
+            }},
             {'$lookup': {
                 'from': 'ratings',
                 'localField': '_id',
                 'foreignField': 'vpn_addr',
                 'as': 'rating_docs',
-                }},
+            }},
             {'$project': {
                 '_id': '$_id',
                 'total_sessions_count': '$total_sessions_count',
@@ -894,18 +896,18 @@ class GetNodeBWStats(object):
                 'last_seen': '$lastSeen',
                 'current_rating': '$rating',
                 'total_ratings': {'$size': {'$filter': {'input': '$rating_docs'
-                                  , 'as': 'ratingDoc',
-                                  'cond': {'$and': [{'$gte': ['$$ratingDoc.timestamp'
-                                  , _start_date]},
-                                  {'$lte': ['$$ratingDoc.timestamp',
-                                  _end_date]}]}}}},
-                }},
+                    , 'as': 'ratingDoc',
+                                                        'cond': {'$and': [{'$gte': ['$$ratingDoc.timestamp'
+                                                            , _start_date]},
+                                                                          {'$lte': ['$$ratingDoc.timestamp',
+                                                                                    _end_date]}]}}}},
+            }},
             {'$sort': {'last_24hours': -1}},
-            ])
+        ])
 
         for doc in result:
             doc['total_bandwidth'] = doc['total_bandwidth'] / (1024
-                    * 1024)
+                                                               * 1024)
             doc['last_24hours'] = doc['last_24hours'] / (1024 * 1024)
             doc['last_7days'] = doc['last_7days'] / (1024 * 1024)
             doc['last_month'] = doc['last_month'] / (1024 * 1024)

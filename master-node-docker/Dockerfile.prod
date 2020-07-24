@@ -6,7 +6,7 @@ ADD app.py server.py run.sh /root/
 
 ENV SENT_ENV=PROD
 
-RUN apk add --no-cache gcc gmp-dev libffi-dev make mongodb musl-dev openssl-dev python3 python3-dev redis && \
+RUN apk add --no-cache gcc gmp-dev libffi-dev make mongodb musl-dev openssl openssl-dev python3 python3-dev redis && \
     mkdir -p /data/db && \
     wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
     python3 /tmp/get-pip.py && \

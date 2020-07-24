@@ -1,6 +1,7 @@
 # coding=utf-8
 from .connections import UpdateConnections
 from .info import UpdateNodeInfo
+from .keys import SignRSAKey
 from .register import DeRegisterNode
 from .register import RegisterNode
 from .stats import GetActiveNodeCountOld
@@ -25,10 +26,10 @@ from .stats import GetDailySessionCount
 from .stats import GetDailyTotalSentsUsed
 # from .stats import GetLastAverageDuration
 from .stats import GetLastDataCount
-from .stats import GetNodeStatistics
+from .stats import GetLatestSessions
 from .stats import GetNodeBWStats
+from .stats import GetNodeStatistics
 from .stats import GetTotalDataCount
 from .stats import GetTotalDataCountOld
 from .stats import GetTotalNodeCount
-from .stats import GetLatestSessions
 from .stats import GetTotalSessionsCount

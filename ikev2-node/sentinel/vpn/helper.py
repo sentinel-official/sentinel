@@ -86,11 +86,3 @@ def remove_shared(remote_id):
     s = vici.Session()
     s.unload_shared({'id': remote_id})
     print('removed user ' + remote_id)
-
-
-def get_ca_cert():
-    f = open('/etc/ipsec.d/cacerts/chain.pem', 'r')
-    lines = f.readlines()
-    f.close()
-
-    return lines

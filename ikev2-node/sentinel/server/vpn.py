@@ -8,7 +8,6 @@ import falcon
 from ..db import db
 from ..vpn import add_secret
 from ..vpn import disconnect_client
-from ..vpn import get_ca_cert
 from ..vpn import wait_and_remove_credentials
 
 
@@ -37,7 +36,6 @@ class GetVpnCredentials(object):
                     'status': 'credentials shared'
                 }
             })
-            cert = get_ca_cert()
             username, password = add_secret(name)
             start_new_thread(wait_and_remove_credentials, (str.encode(name),))
 
@@ -52,8 +50,7 @@ class GetVpnCredentials(object):
                     'vpn': {
                         'username': username,
                         'password': password
-                    },
-                    'cert': cert,
+                    }
                 },
                 'session_name': name
             }

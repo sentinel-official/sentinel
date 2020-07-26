@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Vector;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 
 public class VpnStatus {
     final static java.lang.Object readFileLock = new Object();

@@ -8,3 +8,17 @@
 /build
 /captures
 .externalNativeBuild
+
+.idea/
+
+app/src/test/
+
+app/src/androidTest/
+
+app/langAll/
+
+app/release/
+
+app/liveBuild/
+
+app/src/langTurkish/

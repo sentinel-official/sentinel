@@ -4,6 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/nodesTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nodes"
+        android:textSize="24dp"
+        android:textColor="@color/colorTextWhite"
+        android:fontFamily="@font/opensansbold"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/settingsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/extra"
+        android:textSize="24dp"
+        android:textColor="@color/colorTextWhite"
+        android:fontFamily="@font/opensansbold"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
@@ -16,10 +43,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabGravity="fill"
+        android:visibility="gone"
         app:tabIndicatorHeight="0dp"
         app:tabMode="fixed"
         app:tabPaddingEnd="0dp"
         app:tabPaddingStart="0dp" />
+
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/tabDots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:dotsColor="@color/colorTextWhite"
+        app:dotsStrokeColor="@color/colorTextWhite"
+        app:selectedDotColor="@color/colorTextWhite"
+        app:layout_constraintBottom_toTopOf="@+id/vp_vpn_select"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:dotsCornerRadius="8dp"
+        app:dotsSize="8dp"
+        app:dotsSpacing="4dp"
+        app:dotsStrokeWidth="1dp"
+        />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_vpn_select"
@@ -28,5 +73,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/nodesTitle" />
 </android.support.constraint.ConstraintLayout>

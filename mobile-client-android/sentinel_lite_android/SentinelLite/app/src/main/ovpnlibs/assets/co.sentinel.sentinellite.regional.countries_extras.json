@@ -1,0 +1,1765 @@
+[{
+  "alpha2": "AD",
+  "capital": "Andorra la Vella",
+  "area": "468.0",
+  "population": "84,000",
+  "continent": "EU"
+},
+  {
+    "alpha2": "AE",
+    "capital": "Abu Dhabi",
+    "area": "82,880.0",
+    "population": "4,975,593",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "AF",
+    "capital": "Kabul",
+    "area": "647,500.0",
+    "population": "29,121,286",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "AG",
+    "capital": "St. John's",
+    "area": "443.0",
+    "population": "86,754",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "AI",
+    "capital": "The Valley",
+    "area": "102.0",
+    "population": "13,254",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "AL",
+    "capital": "Tirana",
+    "area": "28,748.0",
+    "population": "2,986,952",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "AM",
+    "capital": "Yerevan",
+    "area": "29,800.0",
+    "population": "2,968,000",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "AN",
+    "capital": "Willemstad",
+    "area": "960.0",
+    "population": "300,000",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "AO",
+    "capital": "Luanda",
+    "area": "1,246,700.0",
+    "population": "13,068,161",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "AQ",
+    "capital": null,
+    "area": "14,000,000.0",
+    "population": "0",
+    "continent": "AN"
+  },
+  {
+    "alpha2": "AR",
+    "capital": "Buenos Aires",
+    "area": "2,766,890.0",
+    "population": "41,343,201",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "AS",
+    "capital": "Pago Pago",
+    "area": "199.0",
+    "population": "57,881",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "AT",
+    "capital": "Vienna",
+    "area": "83,858.0",
+    "population": "8,205,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "AU",
+    "capital": "Canberra",
+    "area": "7,686,850.0",
+    "population": "21,515,754",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "AW",
+    "capital": "Oranjestad",
+    "area": "193.0",
+    "population": "71,566",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "AX",
+    "capital": "Mariehamn",
+    "area": "1,580.0",
+    "population": "26,711",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "AZ",
+    "capital": "Baku",
+    "area": "86,600.0",
+    "population": "8,303,512",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "BA",
+    "capital": "Sarajevo",
+    "area": "51,129.0",
+    "population": "4,590,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "BB",
+    "capital": "Bridgetown",
+    "area": "431.0",
+    "population": "285,653",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "BD",
+    "capital": "Dhaka",
+    "area": "144,000.0",
+    "population": "156,118,464",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "BE",
+    "capital": "Brussels",
+    "area": "30,510.0",
+    "population": "10,403,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "BF",
+    "capital": "Ouagadougou",
+    "area": "274,200.0",
+    "population": "16,241,811",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "BG",
+    "capital": "Sofia",
+    "area": "110,910.0",
+    "population": "7,148,785",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "BH",
+    "capital": "Manama",
+    "area": "665.0",
+    "population": "738,004",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "BI",
+    "capital": "Bujumbura",
+    "area": "27,830.0",
+    "population": "9,863,117",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "BJ",
+    "capital": "Porto-Novo",
+    "area": "112,620.0",
+    "population": "9,056,010",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "BL",
+    "capital": "Gustavia",
+    "area": "21.0",
+    "population": "8,450",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "BM",
+    "capital": "Hamilton",
+    "area": "53.0",
+    "population": "65,365",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "BN",
+    "capital": "Bandar Seri Begawan",
+    "area": "5,770.0",
+    "population": "395,027",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "BO",
+    "capital": "Sucre",
+    "area": "1,098,580.0",
+    "population": "9,947,418",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "BQ",
+    "capital": null,
+    "area": "328.0",
+    "population": "18,012",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "BR",
+    "capital": "Brasilia",
+    "area": "8,511,965.0",
+    "population": "201,103,330",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "BS",
+    "capital": "Nassau",
+    "area": "13,940.0",
+    "population": "301,790",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "BT",
+    "capital": "Thimphu",
+    "area": "47,000.0",
+    "population": "699,847",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "BV",
+    "capital": null,
+    "area": "49.0",
+    "population": "0",
+    "continent": "AN"
+  },
+  {
+    "alpha2": "BW",
+    "capital": "Gaborone",
+    "area": "600,370.0",
+    "population": "2,029,307",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "BY",
+    "capital": "Minsk",
+    "area": "207,600.0",
+    "population": "9,685,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "BZ",
+    "capital": "Belmopan",
+    "area": "22,966.0",
+    "population": "314,522",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "CA",
+    "capital": "Ottawa",
+    "area": "9,984,670.0",
+    "population": "33,679,000",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "CC",
+    "capital": "West Island",
+    "area": "14.0",
+    "population": "628",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "CD",
+    "capital": "Kinshasa",
+    "area": "2,345,410.0",
+    "population": "70,916,439",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "CF",
+    "capital": "Bangui",
+    "area": "622,984.0",
+    "population": "4,844,927",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "CG",
+    "capital": "Brazzaville",
+    "area": "342,000.0",
+    "population": "3,039,126",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "CH",
+    "capital": "Bern",
+    "area": "41,290.0",
+    "population": "8,484,100",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "CI",
+    "capital": "Yamoussoukro",
+    "area": "322,460.0",
+    "population": "21,058,798",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "CK",
+    "capital": "Avarua",
+    "area": "240.0",
+    "population": "21,388",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "CL",
+    "capital": "Santiago",
+    "area": "756,950.0",
+    "population": "16,746,491",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "CM",
+    "capital": "Yaounde",
+    "area": "475,440.0",
+    "population": "19,294,149",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "CN",
+    "capital": "Beijing",
+    "area": "9,596,960.0",
+    "population": "1,330,044,000",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "CO",
+    "capital": "Bogota",
+    "area": "1,138,910.0",
+    "population": "47,790,000",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "CR",
+    "capital": "San Jose",
+    "area": "51,100.0",
+    "population": "4,516,220",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "CS",
+    "capital": "Belgrade",
+    "area": "102,350.0",
+    "population": "10,829,175",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "CU",
+    "capital": "Havana",
+    "area": "110,860.0",
+    "population": "11,423,000",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "CV",
+    "capital": "Praia",
+    "area": "4,033.0",
+    "population": "508,659",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "CW",
+    "capital": "Willemstad",
+    "area": "444.0",
+    "population": "141,766",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "CX",
+    "capital": "Flying Fish Cove",
+    "area": "135.0",
+    "population": "1,500",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "CY",
+    "capital": "Nicosia",
+    "area": "9,250.0",
+    "population": "1,102,677",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "CZ",
+    "capital": "Prague",
+    "area": "78,866.0",
+    "population": "10,476,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "DE",
+    "capital": "Berlin",
+    "area": "357,021.0",
+    "population": "81,802,257",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "DJ",
+    "capital": "Djibouti",
+    "area": "23,000.0",
+    "population": "740,528",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "DK",
+    "capital": "Copenhagen",
+    "area": "43,094.0",
+    "population": "5,484,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "DM",
+    "capital": "Roseau",
+    "area": "754.0",
+    "population": "72,813",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "DO",
+    "capital": "Santo Domingo",
+    "area": "48,730.0",
+    "population": "9,823,821",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "DZ",
+    "capital": "Algiers",
+    "area": "2,381,740.0",
+    "population": "34,586,184",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "EC",
+    "capital": "Quito",
+    "area": "283,560.0",
+    "population": "14,790,608",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "EE",
+    "capital": "Tallinn",
+    "area": "45,226.0",
+    "population": "1,291,170",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "EG",
+    "capital": "Cairo",
+    "area": "1,001,450.0",
+    "population": "80,471,869",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "EH",
+    "capital": "El-Aaiun",
+    "area": "266,000.0",
+    "population": "273,008",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "ER",
+    "capital": "Asmara",
+    "area": "121,320.0",
+    "population": "5,792,984",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "ES",
+    "capital": "Madrid",
+    "area": "504,782.0",
+    "population": "46,505,963",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "ET",
+    "capital": "Addis Ababa",
+    "area": "1,127,127.0",
+    "population": "88,013,491",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "FI",
+    "capital": "Helsinki",
+    "area": "337,030.0",
+    "population": "5,244,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "FJ",
+    "capital": "Suva",
+    "area": "18,270.0",
+    "population": "875,983",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "FK",
+    "capital": "Stanley",
+    "area": "12,173.0",
+    "population": "2,638",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "FM",
+    "capital": "Palikir",
+    "area": "702.0",
+    "population": "107,708",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "FO",
+    "capital": "Torshavn",
+    "area": "1,399.0",
+    "population": "48,228",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "FR",
+    "capital": "Paris",
+    "area": "547,030.0",
+    "population": "64,768,389",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "GA",
+    "capital": "Libreville",
+    "area": "267,667.0",
+    "population": "1,545,255",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "GB",
+    "capital": "London",
+    "area": "244,820.0",
+    "population": "62,348,447",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "GD",
+    "capital": "St. George's",
+    "area": "344.0",
+    "population": "107,818",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "GE",
+    "capital": "Tbilisi",
+    "area": "69,700.0",
+    "population": "4,630,000",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "GF",
+    "capital": "Cayenne",
+    "area": "91,000.0",
+    "population": "195,506",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "GG",
+    "capital": "St Peter Port",
+    "area": "78.0",
+    "population": "65,228",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "GH",
+    "capital": "Accra",
+    "area": "239,460.0",
+    "population": "24,339,838",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "GI",
+    "capital": "Gibraltar",
+    "area": "6.5",
+    "population": "27,884",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "GL",
+    "capital": "Nuuk",
+    "area": "2,166,086.0",
+    "population": "56,375",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "GM",
+    "capital": "Banjul",
+    "area": "11,300.0",
+    "population": "1,593,256",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "GN",
+    "capital": "Conakry",
+    "area": "245,857.0",
+    "population": "10,324,025",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "GP",
+    "capital": "Basse-Terre",
+    "area": "1,780.0",
+    "population": "443,000",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "GQ",
+    "capital": "Malabo",
+    "area": "28,051.0",
+    "population": "1,014,999",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "GR",
+    "capital": "Athens",
+    "area": "131,940.0",
+    "population": "11,000,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "GS",
+    "capital": "Grytviken",
+    "area": "3,903.0",
+    "population": "30",
+    "continent": "AN"
+  },
+  {
+    "alpha2": "GT",
+    "capital": "Guatemala City",
+    "area": "108,890.0",
+    "population": "13,550,440",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "GU",
+    "capital": "Hagatna",
+    "area": "549.0",
+    "population": "159,358",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "GW",
+    "capital": "Bissau",
+    "area": "36,120.0",
+    "population": "1,565,126",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "GY",
+    "capital": "Georgetown",
+    "area": "214,970.0",
+    "population": "748,486",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "HK",
+    "capital": "Hong Kong",
+    "area": "1,092.0",
+    "population": "6,898,686",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "HM",
+    "capital": null,
+    "area": "412.0",
+    "population": "0",
+    "continent": "AN"
+  },
+  {
+    "alpha2": "HN",
+    "capital": "Tegucigalpa",
+    "area": "112,090.0",
+    "population": "7,989,415",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "HR",
+    "capital": "Zagreb",
+    "area": "56,542.0",
+    "population": "4,284,889",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "HT",
+    "capital": "Port-au-Prince",
+    "area": "27,750.0",
+    "population": "9,648,924",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "HU",
+    "capital": "Budapest",
+    "area": "93,030.0",
+    "population": "9,982,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "ID",
+    "capital": "Jakarta",
+    "area": "1,919,440.0",
+    "population": "242,968,342",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "IE",
+    "capital": "Dublin",
+    "area": "70,280.0",
+    "population": "4,622,917",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "IL",
+    "capital": "Jerusalem",
+    "area": "20,770.0",
+    "population": "7,353,985",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "IM",
+    "capital": "Douglas",
+    "area": "572.0",
+    "population": "75,049",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "IN",
+    "capital": "New Delhi",
+    "area": "3,287,590.0",
+    "population": "1,173,108,018",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "IO",
+    "capital": "Diego Garcia",
+    "area": "60.0",
+    "population": "4,000",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "IQ",
+    "capital": "Baghdad",
+    "area": "437,072.0",
+    "population": "29,671,605",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "IR",
+    "capital": "Tehran",
+    "area": "1,648,000.0",
+    "population": "76,923,300",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "IS",
+    "capital": "Reykjavik",
+    "area": "103,000.0",
+    "population": "308,910",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "IT",
+    "capital": "Rome",
+    "area": "301,230.0",
+    "population": "60,340,328",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "JE",
+    "capital": "Saint Helier",
+    "area": "116.0",
+    "population": "90,812",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "JM",
+    "capital": "Kingston",
+    "area": "10,991.0",
+    "population": "2,847,232",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "JO",
+    "capital": "Amman",
+    "area": "92,300.0",
+    "population": "6,407,085",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "JP",
+    "capital": "Tokyo",
+    "area": "377,835.0",
+    "population": "127,288,000",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "KE",
+    "capital": "Nairobi",
+    "area": "582,650.0",
+    "population": "40,046,566",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "KG",
+    "capital": "Bishkek",
+    "area": "198,500.0",
+    "population": "5,776,500",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "KH",
+    "capital": "Phnom Penh",
+    "area": "181,040.0",
+    "population": "14,453,680",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "KI",
+    "capital": "Tarawa",
+    "area": "811.0",
+    "population": "92,533",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "KM",
+    "capital": "Moroni",
+    "area": "2,170.0",
+    "population": "773,407",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "KN",
+    "capital": "Basseterre",
+    "area": "261.0",
+    "population": "51,134",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "KP",
+    "capital": "Pyongyang",
+    "area": "120,540.0",
+    "population": "22,912,177",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "KR",
+    "capital": "Seoul",
+    "area": "98,480.0",
+    "population": "48,422,644",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "KW",
+    "capital": "Kuwait City",
+    "area": "17,820.0",
+    "population": "2,789,132",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "KY",
+    "capital": "George Town",
+    "area": "262.0",
+    "population": "44,270",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "KZ",
+    "capital": "Nur-Sultan",
+    "area": "2,717,300.0",
+    "population": "15,340,000",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "LA",
+    "capital": "Vientiane",
+    "area": "236,800.0",
+    "population": "6,368,162",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "LB",
+    "capital": "Beirut",
+    "area": "10,400.0",
+    "population": "4,125,247",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "LC",
+    "capital": "Castries",
+    "area": "616.0",
+    "population": "160,922",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "LI",
+    "capital": "Vaduz",
+    "area": "160.0",
+    "population": "35,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "LK",
+    "capital": "Colombo",
+    "area": "65,610.0",
+    "population": "21,513,990",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "LR",
+    "capital": "Monrovia",
+    "area": "111,370.0",
+    "population": "3,685,076",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "LS",
+    "capital": "Maseru",
+    "area": "30,355.0",
+    "population": "1,919,552",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "LT",
+    "capital": "Vilnius",
+    "area": "65,200.0",
+    "population": "2,944,459",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "LU",
+    "capital": "Luxembourg",
+    "area": "2,586.0",
+    "population": "497,538",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "LV",
+    "capital": "Riga",
+    "area": "64,589.0",
+    "population": "2,217,969",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "LY",
+    "capital": "Tripoli",
+    "area": "1,759,540.0",
+    "population": "6,461,454",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "MA",
+    "capital": "Rabat",
+    "area": "446,550.0",
+    "population": "33,848,242",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "MC",
+    "capital": "Monaco",
+    "area": "1.9",
+    "population": "32,965",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "MD",
+    "capital": "Chisinau",
+    "area": "33,843.0",
+    "population": "4,324,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "ME",
+    "capital": "Podgorica",
+    "area": "14,026.0",
+    "population": "666,730",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "MF",
+    "capital": "Marigot",
+    "area": "53.0",
+    "population": "35,925",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "MG",
+    "capital": "Antananarivo",
+    "area": "587,040.0",
+    "population": "21,281,844",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "MH",
+    "capital": "Majuro",
+    "area": "181.3",
+    "population": "65,859",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "MK",
+    "capital": "Skopje",
+    "area": "25,333.0",
+    "population": "2,062,294",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "ML",
+    "capital": "Bamako",
+    "area": "1,240,000.0",
+    "population": "13,796,354",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "MM",
+    "capital": "Nay Pyi Taw",
+    "area": "678,500.0",
+    "population": "53,414,374",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "MN",
+    "capital": "Ulaanbaatar",
+    "area": "1,565,000.0",
+    "population": "3,086,918",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "MO",
+    "capital": "Macao",
+    "area": "254.0",
+    "population": "449,198",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "MP",
+    "capital": "Saipan",
+    "area": "477.0",
+    "population": "53,883",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "MQ",
+    "capital": "Fort-de-France",
+    "area": "1,100.0",
+    "population": "432,900",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "MR",
+    "capital": "Nouakchott",
+    "area": "1,030,700.0",
+    "population": "3,205,060",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "MS",
+    "capital": "Plymouth",
+    "area": "102.0",
+    "population": "9,341",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "MT",
+    "capital": "Valletta",
+    "area": "316.0",
+    "population": "403,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "MU",
+    "capital": "Port Louis",
+    "area": "2,040.0",
+    "population": "1,294,104",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "MV",
+    "capital": "Male",
+    "area": "300.0",
+    "population": "395,650",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "MW",
+    "capital": "Lilongwe",
+    "area": "118,480.0",
+    "population": "15,447,500",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "MX",
+    "capital": "Mexico City",
+    "area": "1,972,550.0",
+    "population": "112,468,855",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "MY",
+    "capital": "Kuala Lumpur",
+    "area": "329,750.0",
+    "population": "28,274,729",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "MZ",
+    "capital": "Maputo",
+    "area": "801,590.0",
+    "population": "22,061,451",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "NA",
+    "capital": "Windhoek",
+    "area": "825,418.0",
+    "population": "2,128,471",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "NC",
+    "capital": "Noumea",
+    "area": "19,060.0",
+    "population": "216,494",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "NE",
+    "capital": "Niamey",
+    "area": "1,267,000.0",
+    "population": "15,878,271",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "NF",
+    "capital": "Kingston",
+    "area": "34.6",
+    "population": "1,828",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "NG",
+    "capital": "Abuja",
+    "area": "923,768.0",
+    "population": "154,000,000",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "NI",
+    "capital": "Managua",
+    "area": "129,494.0",
+    "population": "5,995,928",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "NL",
+    "capital": "Amsterdam",
+    "area": "41,526.0",
+    "population": "16,645,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "NO",
+    "capital": "Oslo",
+    "area": "324,220.0",
+    "population": "5,009,150",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "NP",
+    "capital": "Kathmandu",
+    "area": "140,800.0",
+    "population": "28,951,852",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "NR",
+    "capital": "Yaren",
+    "area": "21.0",
+    "population": "10,065",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "NU",
+    "capital": "Alofi",
+    "area": "260.0",
+    "population": "2,166",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "NZ",
+    "capital": "Wellington",
+    "area": "268,680.0",
+    "population": "4,252,277",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "OM",
+    "capital": "Muscat",
+    "area": "212,460.0",
+    "population": "2,967,717",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "PA",
+    "capital": "Panama City",
+    "area": "78,200.0",
+    "population": "3,410,676",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "PE",
+    "capital": "Lima",
+    "area": "1,285,220.0",
+    "population": "29,907,003",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "PF",
+    "capital": "Papeete",
+    "area": "4,167.0",
+    "population": "270,485",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "PG",
+    "capital": "Port Moresby",
+    "area": "462,840.0",
+    "population": "6,064,515",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "PH",
+    "capital": "Manila",
+    "area": "300,000.0",
+    "population": "99,900,177",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "PK",
+    "capital": "Islamabad",
+    "area": "803,940.0",
+    "population": "184,404,791",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "PL",
+    "capital": "Warsaw",
+    "area": "312,685.0",
+    "population": "38,500,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "PM",
+    "capital": "Saint-Pierre",
+    "area": "242.0",
+    "population": "7,012",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "PN",
+    "capital": "Adamstown",
+    "area": "47.0",
+    "population": "46",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "PR",
+    "capital": "San Juan",
+    "area": "9,104.0",
+    "population": "3,916,632",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "PS",
+    "capital": "East Jerusalem",
+    "area": "5,970.0",
+    "population": "3,800,000",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "PT",
+    "capital": "Lisbon",
+    "area": "92,391.0",
+    "population": "10,676,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "PW",
+    "capital": "Melekeok",
+    "area": "458.0",
+    "population": "19,907",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "PY",
+    "capital": "Asuncion",
+    "area": "406,750.0",
+    "population": "6,375,830",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "QA",
+    "capital": "Doha",
+    "area": "11,437.0",
+    "population": "840,926",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "RE",
+    "capital": "Saint-Denis",
+    "area": "2,517.0",
+    "population": "776,948",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "RO",
+    "capital": "Bucharest",
+    "area": "237,500.0",
+    "population": "21,959,278",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "RS",
+    "capital": "Belgrade",
+    "area": "88,361.0",
+    "population": "7,344,847",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "RU",
+    "capital": "Moscow",
+    "area": "17,100,000.0",
+    "population": "140,702,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "RW",
+    "capital": "Kigali",
+    "area": "26,338.0",
+    "population": "11,055,976",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "SA",
+    "capital": "Riyadh",
+    "area": "1,960,582.0",
+    "population": "25,731,776",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "SB",
+    "capital": "Honiara",
+    "area": "28,450.0",
+    "population": "559,198",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "SC",
+    "capital": "Victoria",
+    "area": "455.0",
+    "population": "88,340",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "SD",
+    "capital": "Khartoum",
+    "area": "1,861,484.0",
+    "population": "35,000,000",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "SE",
+    "capital": "Stockholm",
+    "area": "449,964.0",
+    "population": "9,828,655",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "SG",
+    "capital": "Singapore",
+    "area": "692.7",
+    "population": "4,701,069",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "SH",
+    "capital": "Jamestown",
+    "area": "410.0",
+    "population": "7,460",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "SI",
+    "capital": "Ljubljana",
+    "area": "20,273.0",
+    "population": "2,007,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "SJ",
+    "capital": "Longyearbyen",
+    "area": "62,049.0",
+    "population": "2,550",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "SK",
+    "capital": "Bratislava",
+    "area": "48,845.0",
+    "population": "5,455,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "SL",
+    "capital": "Freetown",
+    "area": "71,740.0",
+    "population": "5,245,695",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "SM",
+    "capital": "San Marino",
+    "area": "61.2",
+    "population": "31,477",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "SN",
+    "capital": "Dakar",
+    "area": "196,190.0",
+    "population": "12,323,252",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "SO",
+    "capital": "Mogadishu",
+    "area": "637,657.0",
+    "population": "10,112,453",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "SR",
+    "capital": "Paramaribo",
+    "area": "163,270.0",
+    "population": "492,829",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "SS",
+    "capital": "Juba",
+    "area": "644,329.0",
+    "population": "8,260,490",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "ST",
+    "capital": "Sao Tome",
+    "area": "1,001.0",
+    "population": "197,700",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "SV",
+    "capital": "San Salvador",
+    "area": "21,040.0",
+    "population": "6,052,064",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "SX",
+    "capital": "Philipsburg",
+    "area": "21.0",
+    "population": "37,429",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "SY",
+    "capital": "Damascus",
+    "area": "185,180.0",
+    "population": "22,198,110",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "SZ",
+    "capital": "Mbabane",
+    "area": "17,363.0",
+    "population": "1,354,051",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "TC",
+    "capital": "Cockburn Town",
+    "area": "430.0",
+    "population": "20,556",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "TD",
+    "capital": "N'Djamena",
+    "area": "1,284,000.0",
+    "population": "10,543,464",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "TF",
+    "capital": "Port-aux-Francais",
+    "area": "7,829.0",
+    "population": "140",
+    "continent": "AN"
+  },
+  {
+    "alpha2": "TG",
+    "capital": "Lome",
+    "area": "56,785.0",
+    "population": "6,587,239",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "TH",
+    "capital": "Bangkok",
+    "area": "514,000.0",
+    "population": "67,089,500",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "TJ",
+    "capital": "Dushanbe",
+    "area": "143,100.0",
+    "population": "7,487,489",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "TK",
+    "capital": null,
+    "area": "10.0",
+    "population": "1,466",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "TL",
+    "capital": "Dili",
+    "area": "15,007.0",
+    "population": "1,154,625",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "TM",
+    "capital": "Ashgabat",
+    "area": "488,100.0",
+    "population": "4,940,916",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "TN",
+    "capital": "Tunis",
+    "area": "163,610.0",
+    "population": "10,589,025",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "TO",
+    "capital": "Nuku'alofa",
+    "area": "748.0",
+    "population": "122,580",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "TR",
+    "capital": "Ankara",
+    "area": "780,580.0",
+    "population": "77,804,122",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "TT",
+    "capital": "Port of Spain",
+    "area": "5,128.0",
+    "population": "1,328,019",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "TV",
+    "capital": "Funafuti",
+    "area": "26.0",
+    "population": "10,472",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "TW",
+    "capital": "Taipei",
+    "area": "35,980.0",
+    "population": "22,894,384",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "TZ",
+    "capital": "Dodoma",
+    "area": "945,087.0",
+    "population": "41,892,895",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "UA",
+    "capital": "Kyiv",
+    "area": "603,700.0",
+    "population": "45,415,596",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "UG",
+    "capital": "Kampala",
+    "area": "236,040.0",
+    "population": "33,398,682",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "UM",
+    "capital": null,
+    "area": "0.0",
+    "population": "0",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "US",
+    "capital": "Washington",
+    "area": "9,629,091.0",
+    "population": "310,232,863",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "UY",
+    "capital": "Montevideo",
+    "area": "176,220.0",
+    "population": "3,477,000",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "UZ",
+    "capital": "Tashkent",
+    "area": "447,400.0",
+    "population": "27,865,738",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "VA",
+    "capital": "Vatican City",
+    "area": "0.4",
+    "population": "921",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "VC",
+    "capital": "Kingstown",
+    "area": "389.0",
+    "population": "104,217",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "VE",
+    "capital": "Caracas",
+    "area": "912,050.0",
+    "population": "27,223,228",
+    "continent": "SA"
+  },
+  {
+    "alpha2": "VG",
+    "capital": "Road Town",
+    "area": "153.0",
+    "population": "21,730",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "VI",
+    "capital": "Charlotte Amalie",
+    "area": "352.0",
+    "population": "108,708",
+    "continent": "NA"
+  },
+  {
+    "alpha2": "VN",
+    "capital": "Hanoi",
+    "area": "329,560.0",
+    "population": "89,571,130",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "VU",
+    "capital": "Port Vila",
+    "area": "12,200.0",
+    "population": "221,552",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "WF",
+    "capital": "Mata Utu",
+    "area": "274.0",
+    "population": "16,025",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "WS",
+    "capital": "Apia",
+    "area": "2,944.0",
+    "population": "192,001",
+    "continent": "OC"
+  },
+  {
+    "alpha2": "XK",
+    "capital": "Pristina",
+    "area": "10,908.0",
+    "population": "1,800,000",
+    "continent": "EU"
+  },
+  {
+    "alpha2": "YE",
+    "capital": "Sanaa",
+    "area": "527,970.0",
+    "population": "23,495,361",
+    "continent": "AS"
+  },
+  {
+    "alpha2": "YT",
+    "capital": "Mamoudzou",
+    "area": "374.0",
+    "population": "159,042",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "ZA",
+    "capital": "Pretoria",
+    "area": "1,219,912.0",
+    "population": "49,000,000",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "ZM",
+    "capital": "Lusaka",
+    "area": "752,614.0",
+    "population": "13,460,305",
+    "continent": "AF"
+  },
+  {
+    "alpha2": "ZW",
+    "capital": "Harare",
+    "area": "390,580.0",
+    "population": "13,061,000",
+    "continent": "AF"
+  }
+]

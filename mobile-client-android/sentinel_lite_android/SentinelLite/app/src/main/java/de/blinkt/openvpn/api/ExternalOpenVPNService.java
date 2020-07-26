@@ -4,7 +4,6 @@
  */
 package de.blinkt.openvpn.api;
 
-import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -17,7 +16,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.VpnService;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -31,7 +29,7 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.ConfigParser;
 import de.blinkt.openvpn.core.ConfigParser.ConfigParseError;

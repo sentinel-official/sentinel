@@ -21,7 +21,7 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.Locale;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 
 /**
  * Created by arne on 23.01.16.

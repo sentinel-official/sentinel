@@ -47,10 +47,6 @@ public class ExternalAppDatabase {
         prefedit.apply();
     }
 
-    public void clearAllApiApps() {
-        saveExtAppList(new HashSet<String>());
-    }
-
     public void removeApp(String packagename) {
         Set<String> allowedapps = getExtAppList();
         allowedapps.remove(packagename);

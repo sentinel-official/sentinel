@@ -47,7 +47,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 import de.blinkt.openvpn.core.Connection;
 import de.blinkt.openvpn.core.NativeUtils;
 import de.blinkt.openvpn.core.OpenVPNService;

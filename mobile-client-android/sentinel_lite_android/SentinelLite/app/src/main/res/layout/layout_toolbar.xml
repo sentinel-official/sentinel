@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorCardDark">
+    app:elevation="0dp"
+    android:background="@android:color/transparent">
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -13,20 +14,53 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            app:elevation="0dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        <ImageView
+            android:id="@+id/searchBtn"
+            android:layout_width="35dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_search"
+            android:paddingLeft="18dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
+            android:layout_marginEnd="12dp"
+            />
+
+        <ImageView
+            android:id="@+id/sortBtn"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_filter"
+            android:paddingRight="15dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
+            android:layout_marginStart="12dp"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
+            >
 
             <ImageView
                 android:id="@+id/toolbar_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="-16dp"
                 android:layout_marginEnd="@dimen/margin_8"
                 android:src="@drawable/ic_app_icon_small"
@@ -44,7 +78,11 @@
             android:background="@color/colorTextBlack"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
+            >
+
 
             <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/ib_close_search"
@@ -79,5 +117,5 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-    </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
 </android.support.design.widget.AppBarLayout>

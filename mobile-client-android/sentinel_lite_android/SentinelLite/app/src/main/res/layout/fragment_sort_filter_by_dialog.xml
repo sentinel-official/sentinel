@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorWindowDark"
+    android:background="@color/dialogPrimaryDark"
     android:minWidth="200dp"
     android:orientation="vertical"
     tools:mContext=".ui.dialog.SortByDialogFragment">
 
     <TextView
-        android:id="@+id/tv_filter_title"
         style="@style/CustomTextAppearance.Text16.WhiteNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,6 +22,7 @@
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/cb_filter_by_bookmark"
         style="@style/CustomTextAppearance.Text14"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_8"
@@ -45,10 +45,10 @@
         android:background="@color/colorCardDark" />
 
     <TextView
-        android:id="@+id/tv_sort_title"
         style="@style/CustomTextAppearance.Text16.WhiteNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:paddingStart="@dimen/margin_16"
         android:paddingTop="@dimen/margin_16"
         android:paddingEnd="@dimen/margin_16"

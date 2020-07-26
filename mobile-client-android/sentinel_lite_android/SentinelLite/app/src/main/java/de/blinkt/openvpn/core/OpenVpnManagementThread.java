@@ -13,7 +13,7 @@ import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -28,8 +28,8 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Vector;
 
-import co.sentinel.sentinellite.BuildConfig;
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.BuildConfig;
+import co.sentinel.lite.R;
 import de.blinkt.openvpn.VpnProfile;
 
 public class OpenVpnManagementThread implements Runnable, OpenVPNManagement {

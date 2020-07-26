@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/tv_vpn_state"
-        style="@style/CustomTextAppearance.Text14.WhiteNormal"
+        style="@style/CustomTextAppearance.Text16.WhiteNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_16"
@@ -21,13 +21,13 @@
         android:paddingTop="@dimen/margin_4"
         android:paddingEnd="@dimen/margin_8"
         android:paddingBottom="@dimen/margin_4"
-        android:textColor="@color/colorTextDarkBlue"
+        android:textColor="@color/colorTextWhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_duration"
         app:layout_constraintVertical_bias="0.0" />
 
-    <co.sentinel.sentinellite.ui.custom.BlurFlagImageView
+    <co.sentinel.lite.ui.custom.BlurFlagImageView
         android:id="@+id/fv_flag"
         android:layout_width="match_parent"
         android:layout_height="@dimen/vpn_connected_flag_height"
@@ -35,10 +35,11 @@
         android:paddingTop="@dimen/margin_8"
         android:paddingBottom="@dimen/margin_8"
         android:scaleType="fitXY"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/fl_download_speed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_vpn_state" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/ll_location"
@@ -46,36 +47,39 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_16"
         android:layout_marginEnd="@dimen/margin_16"
-        android:background="@color/colorLocationBackgroundAlpha60"
+        android:background="@android:color/transparent"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/fv_flag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fv_flag"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5">
 
         <TextView
             android:id="@+id/tv_location"
-            style="@style/CustomTextAppearance.Text24"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="28dp"
+            android:textColor="@color/colorTextWhite"
             android:layout_marginTop="@dimen/margin_8"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:paddingStart="@dimen/margin_8"
             android:paddingTop="@dimen/margin_8"
             android:paddingEnd="@dimen/margin_8" />
 
         <TextView
             android:id="@+id/tv_ip"
-            style="@style/CustomTextAppearance.Text18"
+            style="@style/CustomTextAppearance.Text16.Gray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_8"
+            android:layout_marginTop="0dp"
             android:layout_marginBottom="@dimen/margin_8"
-            android:gravity="center"
+            android:textSize="20dp"
+            android:textColor="@color/colorTextWhite"
+            android:textStyle="bold"
             android:paddingStart="@dimen/margin_8"
-            android:paddingTop="@dimen/margin_4"
+            android:paddingTop="0dp"
             android:paddingEnd="@dimen/margin_8"
             android:paddingBottom="@dimen/margin_8" />
 
@@ -88,6 +92,7 @@
         android:background="@android:color/transparent"
         android:paddingStart="@dimen/margin_16"
         android:paddingEnd="@dimen/margin_8"
+        android:visibility="gone"
         android:paddingBottom="@dimen/margin_16"
         android:src="@drawable/ic_bookmark_inactive"
         app:layout_constraintEnd_toEndOf="@+id/ll_location"
@@ -102,7 +107,7 @@
         app:layout_constraintEnd_toStartOf="@+id/fl_upload_speed"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fv_flag">
+        app:layout_constraintTop_toBottomOf="@+id/ll_location">
 
         <TextView
 
@@ -111,6 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@color/colorTextWhite"
             android:drawableStart="@drawable/ic_download_speed"
             android:drawablePadding="@dimen/margin_8"
             android:gravity="center_horizontal|bottom" />
@@ -135,6 +141,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/download_speed"
         app:layout_constraintEnd_toStartOf="@+id/upload_speed"
         app:layout_constraintHorizontal_bias="0.5"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/download_speed"
         app:layout_constraintTop_toTopOf="@+id/fl_download_speed"
         app:layout_constraintVertical_bias="0.5" />
@@ -158,6 +165,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@color/colorTextWhite"
             android:drawableStart="@drawable/ic_upload_speed"
             android:drawablePadding="@dimen/margin_8" />
     </FrameLayout>
@@ -183,6 +191,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/download_speed"
         app:layout_constraintEnd_toStartOf="@+id/data_used"
         app:layout_constraintHorizontal_bias="0.5"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/upload_speed"
         app:layout_constraintTop_toTopOf="@+id/fl_download_speed"
         app:layout_constraintVertical_bias="0.5" />
@@ -205,6 +214,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@color/colorTextWhite"
             android:drawableStart="@drawable/ic_data_usage"
             android:drawablePadding="@dimen/margin_8" />
     </FrameLayout>
@@ -224,35 +234,36 @@
 
     <TextView
         android:id="@+id/bandwidth"
-        style="@style/CustomTextAppearance.Text12.GrayNormal"
+        style="@style/CustomTextAppearance.Text16.Gray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_8"
-        android:background="@color/colorCardShadow"
+        android:layout_marginTop="@dimen/margin_12"
+        android:background="@android:color/transparent"
         android:gravity="center"
+        android:layout_marginStart="16dp"
         android:paddingTop="@dimen/margin_24"
         android:paddingBottom="@dimen/margin_8"
         android:text="@string/vpn_bandwidth_connected"
-        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/download_speed" />
 
     <TextView
         android:id="@+id/tv_bandwidth"
-        style="@style/CustomTextAppearance.Text20"
+        android:textSize="28dp"
+        android:fontFamily="@font/opensanssemibold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorCardShadow"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/transparent"
         android:gravity="center"
         android:paddingBottom="@dimen/margin_24"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toStartOf="parent"
+        android:textColor="@color/colorTextWhite"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bandwidth" />
 
     <TextView
         android:id="@+id/latency"
-        style="@style/CustomTextAppearance.Text12.Gray"
+        style="@style/CustomTextAppearance.Text16.Gray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_8"
@@ -268,13 +279,13 @@
 
     <TextView
         android:id="@+id/tv_latency"
-        style="@style/CustomTextAppearance.Text10"
+        style="@style/CustomTextAppearance.Text12"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_8"
         android:gravity="center"
         android:paddingBottom="@dimen/margin_8"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorTextWhite"
         app:layout_constraintEnd_toEndOf="@+id/latency"
         app:layout_constraintStart_toStartOf="@+id/latency"
         app:layout_constraintTop_toBottomOf="@+id/latency" />
@@ -282,23 +293,24 @@
     <View
         android:layout_width="@dimen/margin_1"
         android:layout_height="@dimen/margin_48"
-        android:background="@color/colorCardDark"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/tv_latency"
         app:layout_constraintEnd_toStartOf="@+id/tv_enc_method"
         app:layout_constraintHorizontal_bias="0.5"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/tv_latency"
         app:layout_constraintTop_toTopOf="@+id/latency"
         app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/enc_method"
-        style="@style/CustomTextAppearance.Text12.Gray"
+        style="@style/CustomTextAppearance.Text16.Gray"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/margin_8"
         android:layout_marginEnd="@dimen/margin_8"
         android:drawableTop="@drawable/ic_enc_method"
-        android:drawablePadding="@dimen/margin_8"
+        android:drawablePadding="@dimen/margin_4"
         android:gravity="center_horizontal|bottom"
         android:text="@string/vpn_enc_method_connected"
         app:layout_constraintBottom_toBottomOf="@+id/latency"
@@ -310,12 +322,12 @@
 
     <TextView
         android:id="@+id/tv_enc_method"
-        style="@style/CustomTextAppearance.Text10"
+        style="@style/CustomTextAppearance.Text12"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
         android:paddingBottom="@dimen/margin_8"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorTextWhite"
         app:layout_constraintBottom_toBottomOf="@+id/tv_latency"
         app:layout_constraintEnd_toEndOf="@+id/enc_method"
         app:layout_constraintStart_toStartOf="@+id/enc_method"
@@ -325,7 +337,7 @@
     <View
         android:layout_width="@dimen/margin_1"
         android:layout_height="@dimen/margin_48"
-        android:background="@color/colorCardDark"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/tv_latency"
         app:layout_constraintEnd_toStartOf="@+id/tv_duration"
         app:layout_constraintHorizontal_bias="0.5"
@@ -335,12 +347,12 @@
 
     <TextView
         android:id="@+id/duration"
-        style="@style/CustomTextAppearance.Text12.Gray"
+        style="@style/CustomTextAppearance.Text16.Gray"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/margin_8"
         android:drawableTop="@drawable/ic_duration"
-        android:drawablePadding="@dimen/margin_8"
+        android:drawablePadding="@dimen/margin_4"
         android:gravity="center_horizontal|bottom"
         android:text="@string/vpn_duration_connected"
         app:layout_constraintBottom_toBottomOf="@+id/enc_method"
@@ -352,12 +364,12 @@
 
     <TextView
         android:id="@+id/tv_duration"
-        style="@style/CustomTextAppearance.Text10"
+        style="@style/CustomTextAppearance.Text12"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
         android:paddingBottom="@dimen/margin_8"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorTextWhite"
         app:layout_constraintBottom_toBottomOf="@+id/tv_enc_method"
         app:layout_constraintEnd_toEndOf="@+id/duration"
         app:layout_constraintStart_toStartOf="@+id/duration"
@@ -367,7 +379,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/margin_8"
-        android:background="@color/colorCardShadow"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@+id/btn_disconnect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -379,8 +391,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/disconnect"
+        android:background="@drawable/settings_tile_background_1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_view_vpn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -390,7 +403,9 @@
         android:layout_height="0dp"
         android:enabled="false"
         android:text="@string/view_vpns"
+        android:visibility="gone"
         android:textAllCaps="false"
+        android:background="@drawable/vpn_card_background"
         app:layout_constraintBottom_toBottomOf="@+id/btn_disconnect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_disconnect"

@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 
 //import android.util.Log;
 

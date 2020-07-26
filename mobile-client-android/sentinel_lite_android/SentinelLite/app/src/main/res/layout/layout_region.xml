@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cl_region"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <View
+            android:id="@+id/viewHider"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_random"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/vpn_card_background"
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_random"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryPassive"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline_random"
+                />
+
+            <TextView
+                android:id="@+id/tv_quickconnect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/quick"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/opensansbold"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_random"
+
+                />
+
+            <TextView
+                android:id="@+id/tv_quickconnectLite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/connect_lite"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/opensansregular"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toEndOf="@id/tv_quickconnect"
+                app:layout_constraintBottom_toTopOf="@id/guideline_random"
+                />
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                app:layout_constraintTop_toTopOf="@id/tv_quickconnectLite"
+                app:layout_constraintBottom_toBottomOf="@id/tv_quickconnectLite"
+                app:layout_constraintStart_toEndOf="@id/tv_quickconnectLite"
+                android:src="@drawable/ic_lightning"
+                android:tint="@color/colorTextWhite"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect to a random node"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensansregular"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_random"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_fav"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_random"
+            android:background="@drawable/vpn_card_background"
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_fav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryPassive"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline_fav"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/favorites"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/opensansbold"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_fav"
+
+                />
+
+            <TextView
+                android:id="@+id/tvCountFav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensanssemibold"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_fav"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/available_nodes"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensansregular"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toEndOf="@id/tvCountFav"
+                app:layout_constraintTop_toBottomOf="@id/guideline_fav"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_na"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_fav"
+            android:background="@drawable/vpn_card_background"
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_na"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryPassive"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline_na"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="North America"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/opensansbold"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_na"
+
+                />
+
+            <TextView
+                android:id="@+id/tvCountNa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensanssemibold"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_na"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/available_nodes"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensansregular"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toEndOf="@id/tvCountNa"
+                app:layout_constraintTop_toBottomOf="@id/guideline_na"
+                />
+
+    </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_europe"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_na"
+            android:background="@drawable/vpn_card_background"
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_europe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryPassive"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline_europe"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Europe"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/opensansbold"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_europe"
+
+                />
+
+            <TextView
+                android:id="@+id/tvCountEurope"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensanssemibold"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_europe"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/available_nodes"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensansregular"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toEndOf="@id/tvCountEurope"
+                app:layout_constraintTop_toBottomOf="@id/guideline_europe"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_asia"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_europe"
+            android:background="@drawable/vpn_card_background"
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_asia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryPassive"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline_asia"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Asia"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/opensansbold"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_asia"
+
+                />
+
+            <TextView
+                android:id="@+id/tvCountAsia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensanssemibold"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_asia"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/available_nodes"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensansregular"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toEndOf="@id/tvCountAsia"
+                app:layout_constraintTop_toBottomOf="@id/guideline_asia"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_oceania"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_asia"
+            android:background="@drawable/vpn_card_background"
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_oceania"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryPassive"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline_oceania"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Oceania"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/opensansbold"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_oceania"
+
+                />
+
+            <TextView
+                android:id="@+id/tvCountOceania"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensanssemibold"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_oceania"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/available_nodes"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensansregular"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toEndOf="@id/tvCountOceania"
+                app:layout_constraintTop_toBottomOf="@id/guideline_oceania"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_africa"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_oceania"
+            android:background="@drawable/vpn_card_background"
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_africa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryPassive"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline_africa"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Africa"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/opensansbold"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_africa"
+
+                />
+
+            <TextView
+                android:id="@+id/tvCountAfrica"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensanssemibold"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_africa"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/available_nodes"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensansregular"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toEndOf="@id/tvCountAfrica"
+                app:layout_constraintTop_toBottomOf="@id/guideline_africa"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_sa"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_africa"
+            android:background="@drawable/vpn_card_background"
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline_sa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryPassive"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideline_sa"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="South America"
+                android:layout_marginStart="18dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/opensansbold"
+                android:textSize="18dp"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_sa"
+
+                />
+
+            <TextView
+                android:id="@+id/tvCountSa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="loading"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensanssemibold"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_sa"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/available_nodes"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/opensansregular"
+                android:textColor="@color/colorTextWhite"
+                app:layout_constraintStart_toEndOf="@id/tvCountSa"
+                app:layout_constraintTop_toBottomOf="@id/guideline_sa"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.NestedScrollView>

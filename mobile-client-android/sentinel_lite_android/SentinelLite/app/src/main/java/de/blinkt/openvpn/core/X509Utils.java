@@ -35,7 +35,7 @@ import java.util.Vector;
 
 import javax.security.auth.x500.X500Principal;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 import de.blinkt.openvpn.VpnProfile;
 
 public class X509Utils {

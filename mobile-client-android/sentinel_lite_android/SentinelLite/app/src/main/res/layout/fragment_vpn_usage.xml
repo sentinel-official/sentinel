@@ -5,129 +5,183 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ClTiles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <include layout="@layout/layout_settings_tiles"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/auto_switch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:text="@string/auto_connect"
+        android:fontFamily="@font/opensansregular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ClTiles"
+        android:visibility="visible"
+        android:checked="false"
+        android:textColor="@color/colorTextWhite"
+        android:padding="0dp"
+        android:paddingStart="5dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="10dp"
+        />
+
+    <TextView
+        android:id="@+id/usageTitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/usage"
+        android:textSize="24dp"
+        android:textColor="@color/colorTextWhite"
+        android:fontFamily="@font/opensansbold"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/colorCardDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/auto_switch"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/history"
+        android:textSize="24dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorTextWhite"
+        android:fontFamily="@font/opensansregular"
+        app:layout_constraintStart_toEndOf="@id/usageTitle1"
+        app:layout_constraintTop_toBottomOf="@id/auto_switch"
+        />
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="14dp"
+        app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="@dimen/margin_4"
-        app:cardElevation="@dimen/margin_4"
+        app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
         app:layout_constraintBottom_toTopOf="@+id/sr_reload"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/usageTitle1">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/vpn_card_background"
+            >
+
+
 
             <TextView
                 android:id="@+id/tv_total_sessions"
-                style="@style/CustomTextAppearance.Text24"
+                style="@style/CustomTextAppearance.Text14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:drawablePadding="@dimen/margin_16"
-                android:drawableStart="@drawable/ic_app_icon_small"
-                android:gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/opensanssemibold"
+                android:gravity="center"
                 android:paddingStart="@dimen/margin_8"
                 android:paddingEnd="@dimen/margin_8"
                 app:layout_constraintBottom_toTopOf="@+id/total_sessions"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/total_sessions"
-                style="@style/CustomTextAppearance.Text12.Gray"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:text="@string/total_sessions"
-                app:layout_constraintBottom_toTopOf="@+id/divider"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_total_sessions" />
+                android:text="@string/sessions"
+                android:fontFamily="@font/opensansregular"
+                app:layout_constraintStart_toStartOf="@id/tv_total_sessions"
+                app:layout_constraintEnd_toEndOf="@id/tv_total_sessions"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_sessions"
+                />
 
-            <ImageView
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_1"
-                android:layout_marginBottom="24dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:src="@color/colorCardShadow"
-                app:layout_constraintBottom_toTopOf="@+id/tv_total_duration"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/total_sessions"
-                app:layout_constraintVertical_chainStyle="spread"
-                tools:ignore="ContentDescription" />
+
 
             <TextView
                 android:id="@+id/tv_total_duration"
-                style="@style/CustomTextAppearance.Text24"
-                android:layout_width="0dp"
+                style="@style/CustomTextAppearance.Text14"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/opensanssemibold"
                 android:gravity="center"
                 android:paddingStart="@dimen/margin_8"
                 android:paddingEnd="@dimen/margin_8"
                 app:layout_constraintBottom_toTopOf="@+id/total_duration"
-                app:layout_constraintEnd_toStartOf="@+id/tv_total_received_data"
-                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/total_duration"
-                style="@style/CustomTextAppearance.Text12.Gray"
-                android:layout_width="0dp"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:text="@string/total_duration"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tv_total_duration"
-                app:layout_constraintStart_toStartOf="@+id/tv_total_duration"
+                android:text="@string/duration"
+                android:fontFamily="@font/opensansregular"
+                app:layout_constraintEnd_toEndOf="@id/tv_total_duration"
+                app:layout_constraintStart_toStartOf="@id/tv_total_duration"
                 app:layout_constraintTop_toBottomOf="@+id/tv_total_duration" />
 
             <TextView
                 android:id="@+id/tv_total_received_data"
-                style="@style/CustomTextAppearance.Text24"
-                android:layout_width="0dp"
+                style="@style/CustomTextAppearance.Text14"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="5dp"
                 android:gravity="center"
+                android:fontFamily="@font/opensanssemibold"
                 android:paddingStart="@dimen/margin_8"
                 android:paddingEnd="@dimen/margin_8"
                 app:layout_constraintBottom_toTopOf="@+id/total_duration"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_total_duration"
-                app:layout_constraintTop_toTopOf="@+id/tv_total_duration" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/total_received_data"
-                style="@style/CustomTextAppearance.Text12.Gray"
-                android:layout_width="0dp"
+                style="@style/CustomTextAppearance.Text12.WhiteNormal"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:gravity="center"
-                android:text="@string/total_received_data"
-                app:layout_constraintBottom_toBottomOf="@+id/total_duration"
-                app:layout_constraintEnd_toEndOf="@+id/tv_total_received_data"
-                app:layout_constraintStart_toStartOf="@+id/tv_total_received_data"
-                app:layout_constraintTop_toTopOf="@+id/total_duration" />
+                android:fontFamily="@font/opensansregular"
+                android:text="@string/received"
+                app:layout_constraintEnd_toEndOf="@id/tv_total_received_data"
+                app:layout_constraintStart_toStartOf="@id/tv_total_received_data"
+                app:layout_constraintTop_toBottomOf="@+id/tv_total_received_data" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/total_duration"
+                />
+
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
@@ -144,10 +198,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <co.sentinel.sentinellite.ui.custom.EmptyRecyclerView
+            <co.sentinel.lite.ui.custom.EmptyRecyclerView
                 android:id="@+id/rv_vpn_history"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                />
 
             <TextView
                 android:id="@+id/tv_empty_message"
@@ -160,4 +216,7 @@
                 android:text="@string/vpn_usage_empty_list_message" />
         </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <include layout="@layout/layout_social"/>
+
 </android.support.constraint.ConstraintLayout>

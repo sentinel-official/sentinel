@@ -29,7 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 
 
 public class ConfirmDialog extends Activity implements CompoundButton.OnCheckedChangeListener, DialogInterface.OnClickListener {

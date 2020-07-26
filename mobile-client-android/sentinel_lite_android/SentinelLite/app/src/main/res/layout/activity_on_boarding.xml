@@ -51,13 +51,12 @@
 
     <ImageView
         android:id="@+id/app_icon"
-        android:layout_width="@dimen/margin_64"
+        android:layout_width="@dimen/margin_48"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/app_name"
+        android:layout_marginTop="40dp"
         app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,10 +73,9 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="@string/sentinel"
         android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@+id/vp_info_pager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,18 +89,39 @@
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontal_guideline1" />
+        app:layout_constraintTop_toBottomOf="@+id/app_name" />
+
 
     <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
         android:id="@+id/vpi_info_dots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:dotsColor="@color/colorInfoDots"
+        app:dotsColor="@color/colorTextWhite"
+        app:dotsStrokeColor="@color/colorTextWhite"
+        app:selectedDotColor="@color/colorTextWhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline2"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline1"
-        app:layout_constraintTop_toBottomOf="@+id/horizontal_guideline2" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_guideline2"
+        app:dotsCornerRadius="8dp"
+        app:dotsSize="8dp"
+        app:dotsSpacing="4dp"
+        app:dotsStrokeWidth="1dp"
+        />
+
+    <TextView
+        android:id="@+id/btn_website"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/vpi_info_dots"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="30dp"
+        android:text="@string/learn_more"
+        android:textColor="@color/colorTextWhite"
+        android:fontFamily="@font/opensansregular"
+        />
 
     <TextView
         android:id="@+id/btn_next"
@@ -114,6 +133,7 @@
         android:focusable="true"
         android:padding="@dimen/margin_16"
         android:text="@string/action_next"
+        android:fontFamily="@font/opensansregular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline2"

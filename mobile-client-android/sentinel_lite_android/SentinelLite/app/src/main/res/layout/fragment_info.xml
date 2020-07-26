@@ -12,15 +12,14 @@
         android:layout_marginEnd="@dimen/margin_16"
         android:layout_marginStart="@dimen/margin_16"
         android:layout_marginTop="@dimen/margin_8"
-        app:cardBackgroundColor="@color/colorCardInfoBackground"
+        app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="@dimen/margin_4"
-        app:cardElevation="@dimen/margin_2"
+        app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
         tools:context=".ui.fragment.InfoFragment">
 
         <ScrollView
-            android:id="@+id/sv_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
@@ -37,9 +36,10 @@
 
                 <ImageView
                     android:id="@+id/iv_image_1"
-                    android:layout_width="@dimen/margin_48"
-                    android:layout_height="@dimen/margin_48"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="80dp"
                     android:layout_marginBottom="16dp"
                     android:scaleType="fitCenter"
                     tools:ignore="ContentDescription" />
@@ -53,6 +53,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_marginEnd="@dimen/margin_8"
                     android:layout_marginStart="@dimen/margin_8"
+                    android:fontFamily="@font/opensanssemibold"
                     android:gravity="center" />
 
                 <TextView
@@ -62,6 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/margin_8"
                     android:layout_marginStart="@dimen/margin_8"
+                    android:fontFamily="@font/opensansregular"
                     android:gravity="center" />
 
             </LinearLayout>

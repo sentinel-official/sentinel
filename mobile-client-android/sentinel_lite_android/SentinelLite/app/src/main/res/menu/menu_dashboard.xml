@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
+
+   <!-- <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search"
         android:title="@string/hint_search_vpn_list"
         app:showAsAction="always" />
-    <item
+        <item
         android:id="@+id/action_sort"
-        android:icon="@drawable/ic_sort"
+        android:icon="@drawable/ic_filter"
         android:title="@string/sort_by_title"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
+
 </menu>

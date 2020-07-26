@@ -5,56 +5,61 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="4dp"
-    app:cardBackgroundColor="@color/colorCardDark"
+    android:layout_marginStart="@dimen/margin_12"
+    android:layout_marginTop="@dimen/margin_8"
+    android:layout_marginEnd="@dimen/margin_12"
+    android:layout_marginBottom="@dimen/margin_4"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="@dimen/margin_4"
-    app:cardElevation="@dimen/margin_4"
+    app:cardElevation="0dp"
     app:cardPreventCornerOverlap="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorCardShadow">
+        android:background="@drawable/vpn_card_background">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/colorCardDark"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_location"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_location"
-            tools:ignore="ContentDescription" />
 
         <com.haipq.android.flagkit.FlagImageView
             android:id="@+id/fv_flag"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/margin_24"
-            android:paddingStart="@dimen/margin_8"
+            android:layout_height="@dimen/margin_20"
+            android:paddingStart="@dimen/margin_20"
             android:paddingEnd="@dimen/margin_8"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+            app:layout_constraintBottom_toTopOf="@+id/tv_bandwidth"
             app:layout_constraintEnd_toStartOf="@+id/tv_location"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_location" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_location"
-            style="@style/CustomTextAppearance.Text20"
+            style="@style/CustomTextAppearance.Text18"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingStart="@dimen/margin_8"
+            android:text=""
+            android:paddingStart="@dimen/margin_4"
             android:paddingTop="@dimen/margin_16"
             android:paddingEnd="@dimen/margin_8"
-            android:paddingBottom="@dimen/margin_16"
-            app:layout_constraintBottom_toTopOf="@+id/tv_bandwidth"
+            android:paddingBottom="@dimen/margin_12"
+            android:fontFamily="@font/opensanssemibold"
+            app:layout_constraintBottom_toBottomOf="@+id/fv_flag"
             app:layout_constraintEnd_toStartOf="@+id/ib_bookmark"
             app:layout_constraintStart_toEndOf="@+id/fv_flag"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/fv_flag" />
+
+        <!-- REVAMP tag vpn item with continent -->
+        <TextView
+            android:id="@+id/tv_region"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textColor="@color/colorTextWhite"
+            app:layout_constraintBottom_toBottomOf="@+id/fv_flag"
+            app:layout_constraintEnd_toStartOf="@+id/ib_bookmark"
+            app:layout_constraintStart_toEndOf="@+id/fv_flag"
+            app:layout_constraintTop_toTopOf="@id/fv_flag" />
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/ib_bookmark"
@@ -73,10 +78,11 @@
             style="@style/CustomTextAppearance.Text12.GrayNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="0dp"
             android:layout_marginBottom="12dp"
-            android:paddingStart="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_18"
             android:paddingEnd="@dimen/margin_8"
+            android:fontFamily="@font/opensansregular"
             app:layout_constraintBottom_toTopOf="@+id/tv_enc_method"
             app:layout_constraintEnd_toStartOf="@+id/btn_connect"
             app:layout_constraintHorizontal_bias="0.5"
@@ -89,10 +95,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:paddingStart="@dimen/margin_8"
+            android:visibility="gone"
+            android:paddingStart="@dimen/margin_18"
             android:paddingEnd="@dimen/margin_8"
+            android:fontFamily="@font/opensansregular"
             app:layout_constraintBottom_toTopOf="@+id/tv_latency"
-            app:layout_constraintEnd_toEndOf="@+id/tv_bandwidth"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_bandwidth" />
 
@@ -102,10 +110,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:paddingStart="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_18"
             android:paddingEnd="@dimen/margin_8"
+            android:fontFamily="@font/opensansregular"
             app:layout_constraintBottom_toTopOf="@+id/tv_node_version"
-            app:layout_constraintEnd_toEndOf="@+id/tv_enc_method"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_enc_method" />
 
@@ -115,10 +124,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:paddingStart="@dimen/margin_8"
+            android:paddingStart="@dimen/margin_18"
             android:paddingEnd="@dimen/margin_8"
+            android:visibility="gone"
+            android:fontFamily="@font/opensansregular"
             app:layout_constraintBottom_toTopOf="@+id/tv_node_rating"
-            app:layout_constraintEnd_toEndOf="@+id/tv_latency"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_latency" />
 
@@ -127,11 +138,12 @@
             style="@style/CustomTextAppearance.Text12.GrayNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:paddingStart="@dimen/margin_8"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="@dimen/margin_18"
             android:paddingEnd="@dimen/margin_8"
+            android:fontFamily="@font/opensansregular"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tv_node_version"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_node_version" />
 
@@ -140,12 +152,15 @@
             style="@style/CustomTextAppearance.BlackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="2dp"
             android:text="@string/connect"
+            android:fontFamily="@font/opensanssemibold"
+            android:textColor="@color/colorTextWhite"
+            android:background="@android:color/transparent"
+            android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_bandwidth"
-            app:layout_constraintTop_toTopOf="@+id/tv_bandwidth" />
+            app:layout_constraintStart_toEndOf="@+id/tv_bandwidth"/>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

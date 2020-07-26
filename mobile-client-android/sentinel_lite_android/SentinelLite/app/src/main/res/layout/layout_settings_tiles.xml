@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        />
+
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1"
+        />
+
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9"
+        />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clLanguage"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline50"
+        app:layout_constraintTop_toBottomOf="@id/clAbout"
+        android:background="@drawable/settings_tile_background"
+        >
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guidelineLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"
+            />
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="15dp"
+            android:alpha="0.8"
+            android:src="@drawable/ic_language_black_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/guidelineLanguage"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:textSize="12dp"
+            android:text="@string/language"
+            android:fontFamily="@font/opensansregular"
+            android:textColor="@color/colorTextWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guidelineLanguage"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clShare"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginStart ="6dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintStart_toStartOf="@id/guideline50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/settings_tile_background"
+        >
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guidelineShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"
+            />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="15dp"
+            android:alpha="0.8"
+            android:src="@drawable/ic_share_black_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/guidelineShare"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:textSize="12dp"
+            android:text="@string/share_app"
+            android:fontFamily="@font/opensansregular"
+            android:textColor="@color/colorTextWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guidelineShare"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clAbout"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline50"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/settings_tile_background_1"
+        >
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guidelineAbout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"
+            />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="15dp"
+            android:alpha="0.8"
+            android:src="@drawable/ic_info_black_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/guidelineAbout"
+            />
+
+        <TextView
+            android:id="@+id/aboutTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:textSize="12dp"
+            android:text="@string/about"
+            android:fontFamily="@font/opensansregular"
+            android:textColor="@color/colorTextWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guidelineAbout"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clSocial"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginStart ="6dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="@id/guideline50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/clShare"
+        android:background="@drawable/settings_tile_background"
+        >
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guidelineSocial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"
+            />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="15dp"
+            android:alpha="0.8"
+            android:src="@drawable/ic_whatshot_black_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/guidelineSocial"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:textSize="12dp"
+            android:text="@string/social"
+            android:fontFamily="@font/opensansregular"
+            android:textColor="@color/colorTextWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guidelineSocial"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

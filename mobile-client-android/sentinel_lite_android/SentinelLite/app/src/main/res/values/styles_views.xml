@@ -24,10 +24,6 @@
         <item name="android:textSize">@dimen/text_32</item>
     </style>
 
-    <style name="CustomTextAppearance.Text10">
-        <item name="android:textSize">@dimen/text_10</item>
-    </style>
-
     <style name="CustomTextAppearance.Text12">
         <item name="android:textSize">@dimen/text_12</item>
     </style>
@@ -41,7 +37,7 @@
     </style>
 
     <style name="CustomTextAppearance.Text18">
-        <item name="android:textSize">@dimen/text_16</item>
+        <item name="android:textSize">@dimen/text_18</item>
     </style>
 
     <style name="CustomTextAppearance.Text20">
@@ -52,27 +48,8 @@
         <item name="android:textSize">@dimen/text_24</item>
     </style>
 
-    <style name="CustomTextAppearance.Text32">
-        <item name="android:textSize">@dimen/text_32</item>
-    </style>
-
     <style name="CustomTextAppearance.Text12.Gray">
         <item name="android:textColor">@color/colorTextGray</item>
-    </style>
-
-    <style name="CustomTextAppearance.Text12.White50Normal">
-        <item name="android:textColor">@color/colorTextWhiteWithAlpha50</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="CustomTextAppearance.Text12.OrangeNormal">
-        <item name="android:textColor">@color/colorButtonOrange</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="CustomTextAppearance.Text12.BlueNormal">
-        <item name="android:textColor">@color/colorTextBlue</item>
-        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="CustomTextAppearance.Text12.GrayNormal">
@@ -98,10 +75,6 @@
         <item name="android:textStyle">normal</item>
     </style>
 
-    <style name="CustomTextAppearance.Text14.Blue">
-        <item name="android:textColor">@color/colorTextBlue</item>
-    </style>
-
 
     <style name="CustomTextAppearance.Text14.InfoWhiteNormal">
         <item name="android:textColor">@color/colorTextInfoWhite</item>
@@ -112,41 +85,18 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="CustomTextAppearance.Text16.Gray">
+        <item name="android:textColor">@color/colorTextGray</item>
+        <item name="android:textSize">@dimen/text_16</item>
+    </style>
+
     <style name="CustomTextAppearance.Text18.InfoWhite">
         <item name="android:textColor">@color/colorTextInfoWhite</item>
     </style>
 
-    <style name="CustomTextAppearance.Text20.Orange">
-        <item name="android:textColor">@color/colorButtonOrange</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="CustomTextAppearance.Text32.Orange">
-        <item name="android:textColor">@color/colorButtonOrange</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
     <!-- Navigation Drawer Item Theme -->
-    <style name="DrawerItemTheme">
-        <item name="android:textSize">@dimen/text_18</item>
-        <item name="android:fontFamily">@font/dinpro</item>
-        <item name="android:listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
-        <item name="listPreferredItemHeightSmall">48dp</item><!-- item size in menu-->
-        <item name="android:textColor">@color/colorTextInfoWhite</item>
-    </style>
 
     <!-- TextInputLayout And TextInputEditText Theme -->
-    <style name="TextInputLayoutTheme" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/colorButtonOrange</item>
-        <item name="android:textSize">@dimen/text_12</item>
-        <item name="android:fontFamily">@font/dinpro</item>
-    </style>
-
-    <style name="TextInputEditTextTheme">
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorAccent</item>
-        <item name="colorControlNormal">@color/colorControlNormal</item>
-    </style>
 
     <!-- EditText Themes -->
 
@@ -192,13 +142,6 @@
         <item name="android:paddingBottom">@dimen/margin_8</item>
         <item name="android:textColor">@color/colorButtonOrange</item>
         <item name="android:background">@drawable/shape_button_black</item>
-    </style>
-
-    <style name="CustomTextAppearance.HelperButton">
-        <item name="android:minHeight">@dimen/margin_48</item>
-        <item name="android:minWidth">@dimen/margin_128</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:background">@drawable/shape_helper_button</item>
     </style>
 
     <style name="CustomTextAppearance.TransparentOrangeButton">

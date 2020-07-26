@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 import de.blinkt.openvpn.VpnProfile;
 
 public class ProxyDetection {

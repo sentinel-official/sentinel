@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Vector;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 import de.blinkt.openvpn.VpnProfile;
 
 public class VPNLaunchHelper {

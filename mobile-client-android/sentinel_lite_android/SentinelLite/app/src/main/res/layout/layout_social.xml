@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/clSocialLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_shade"
+        />
+
+    <View
+        android:id="@+id/dismissView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/ib_telegram"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="40dp"
+        android:textSize="22dp"
+        android:textColor="@color/colorTextWhite"
+        android:fontFamily="@font/opensanssemibold"
+        android:text="Find us online"
+        />
+
+    <ImageButton
+        android:id="@+id/ib_telegram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toTopOf="@id/btnClose"
+        app:layout_constraintEnd_toStartOf="@+id/ib_medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/menu_footer_telegram"
+        tools:ignore="ContentDescription" />
+
+    <ImageButton
+        android:id="@+id/ib_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@+id/ib_telegram"
+        app:layout_constraintEnd_toStartOf="@+id/ib_twitter"
+        app:layout_constraintStart_toEndOf="@+id/ib_telegram"
+        app:layout_constraintTop_toTopOf="@+id/ib_telegram"
+        app:srcCompat="@drawable/menu_footer_medium"
+        tools:ignore="ContentDescription" />
+
+    <ImageButton
+        android:id="@+id/ib_twitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@+id/ib_medium"
+        app:layout_constraintEnd_toStartOf="@+id/ib_website"
+        app:layout_constraintStart_toEndOf="@+id/ib_medium"
+        app:layout_constraintTop_toTopOf="@+id/ib_medium"
+        app:srcCompat="@drawable/menu_footer_twitter"
+        tools:ignore="ContentDescription" />
+
+    <ImageButton
+        android:id="@+id/ib_website"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@+id/ib_twitter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ib_twitter"
+        app:layout_constraintTop_toTopOf="@+id/ib_twitter"
+        app:srcCompat="@drawable/menu_footer_website"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="100dp"
+        android:gravity="center"
+        android:text="Close"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_close"
+        android:fontFamily="@font/opensansbold"
+        android:textColor="@color/colorTextWhite"
+        android:textSize="18dp"
+        />
+
+</android.support.constraint.ConstraintLayout>

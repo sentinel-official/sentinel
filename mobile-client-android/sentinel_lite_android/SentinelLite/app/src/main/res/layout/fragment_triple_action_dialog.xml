@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorCardDark"
+    android:background="@color/dialogPrimaryDark"
     android:orientation="vertical">
 
     <TextView
@@ -32,7 +32,6 @@
     </ScrollView>
 
     <ImageView
-        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_1"
         android:background="@color/colorCardShadow"

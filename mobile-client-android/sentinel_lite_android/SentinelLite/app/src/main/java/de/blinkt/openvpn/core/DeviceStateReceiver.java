@@ -15,7 +15,7 @@ import android.os.Handler;
 
 import java.util.LinkedList;
 
-import co.sentinel.sentinellite.R;
+import co.sentinel.lite.R;
 import de.blinkt.openvpn.core.VpnStatus.ByteCountListener;
 
 import static de.blinkt.openvpn.core.OpenVPNManagement.pauseReason;
@@ -183,10 +183,6 @@ public class DeviceStateReceiver extends BroadcastReceiver implements ByteCountL
             VpnStatus.logInfo(R.string.netstatus, netstatestring);
         VpnStatus.logDebug(String.format("Debug state info: %s, pause: %s, shouldbeconnected: %s, network: %s ", netstatestring, getPauseReason(), shouldBeConnected(), network));
         lastStateMsg = netstatestring;
-    }
-
-    public boolean isUserPaused() {
-        return userpause == connectState.DISCONNECTED;
     }
 
     private boolean shouldBeConnected() {

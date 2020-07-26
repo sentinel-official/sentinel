@@ -48,14 +48,14 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Vector;
 
-import co.sentinel.sentinellite.R;
-import co.sentinel.sentinellite.SentinelLiteApp;
-import co.sentinel.sentinellite.di.InjectorModule;
-import co.sentinel.sentinellite.network.model.GenericResponse;
-import co.sentinel.sentinellite.repository.VpnRepository;
-import co.sentinel.sentinellite.ui.activity.DashboardActivity;
-import co.sentinel.sentinellite.util.AppConstants;
-import co.sentinel.sentinellite.util.AppPreferences;
+import co.sentinel.lite.R;
+import co.sentinel.lite.SentinelLiteApp;
+import co.sentinel.lite.di.InjectorModule;
+import co.sentinel.lite.network.model.GenericResponse;
+import co.sentinel.lite.repository.VpnRepository;
+import co.sentinel.lite.ui.activity.DashboardActivity;
+import co.sentinel.lite.util.AppConstants;
+import co.sentinel.lite.util.AppPreferences;
 import de.blinkt.openvpn.LaunchVPN;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.core.VpnStatus.ByteCountListener;
@@ -298,7 +298,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 //            default:
 //                return R.drawable.ic_notification;
 //        }
-        return R.drawable.ic_notification;
+        return R.drawable.ic_notif;
     }
 
     private void jbNotificationExtras(int priority, android.app.Notification.Builder nbuilder) {

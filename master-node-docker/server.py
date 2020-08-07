@@ -7,6 +7,7 @@ from falcon_cors import CORS
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
 from sentinel.client import GetETHHistory
+from sentinel.client import GetIKEv2List
 from sentinel.client import GetMixerNodessList
 from sentinel.client import GetMixerToAddress
 from sentinel.client import GetSentHistory
@@ -94,6 +95,7 @@ server.add_route('/client/vpn', GetVpnCredentials())
 server.add_route('/client/vpn/current', GetVpnCurrentUsage())
 server.add_route('/client/vpn/list', GetVpnsList())
 server.add_route('/client/vpn/socks-list', GetSocksList())
+server.add_route('/client/vpn/ikev2-list', GetIKEv2List())
 server.add_route('/client/vpn/usage', GetVpnUsage())
 server.add_route('/client/vpn/pay', PayVpnUsage())
 server.add_route('/client/vpn/report', ReportPayment())

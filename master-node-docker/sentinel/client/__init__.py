@@ -8,6 +8,7 @@ from .mixer import GetMixerNodessList
 from .mixer import GetMixerToAddress
 from .mixer import InitiateMix
 from .transactions import RawTransaction
+from .vpn import GetIKEv2List
 from .vpn import GetSocksList
 from .vpn import GetVpnCredentials
 from .vpn import GetVpnCurrentUsage

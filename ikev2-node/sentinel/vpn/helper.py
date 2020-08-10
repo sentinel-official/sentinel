@@ -64,9 +64,6 @@ def add_secret(username):
     s = vici.Session()
     password = generate_random_string()
     s.load_shared({'id': username, 'type': 'EAP', 'data': password})
-    print('added credentials for' + username)
-    print('username: ' + username)
-    print('password: ', password)
     return username, password
 
 
@@ -85,4 +82,3 @@ def disconnect_client(username, connection_id):
 def remove_shared(remote_id):
     s = vici.Session()
     s.unload_shared({'id': remote_id})
-    print('removed user ' + remote_id)

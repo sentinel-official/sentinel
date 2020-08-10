@@ -28,9 +28,11 @@ Do-it-Yourself setup by building your own Docker image
 `git clone https://github.com/sentinel-official/sentinel.git --branch master --depth 1`
 3. Navigate to the folder with code to build the Docker image  
 `cd ~/sentinel/ikev2-node`
-4. Build the Docker image  
+4. Copy the CA certificate  
+`cp ../master-node-docker/ca.crt ca.crt`
+5. Build the Docker image  
 `sudo docker build --file Dockerfile --tag sentinel-ikev2-node --compress --force-rm --no-cache .`
-5. Navigate to the folder where the Docker container was set up. In our case, it is the User's home directory  
+6. Navigate to the folder where the Docker container was set up. In our case, it is the User's home directory  
 `mkdir -p $HOME/.sentinel`
-6. Run the image and configure the node  
+7. Run the image and configure the node  
 `sudo docker run -it --privileged --mount type=bind,source=$HOME/.sentinel,target=$HOME/.sentinel -p 3000:3000/tcp -p 500:500/udp -p 4500:4500/udp sentinel-ikev2-node`

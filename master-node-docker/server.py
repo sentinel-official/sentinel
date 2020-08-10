@@ -7,6 +7,7 @@ from falcon_cors import CORS
 from sentinel.client import CreateNewAccount
 from sentinel.client import GetBalance
 from sentinel.client import GetETHHistory
+from sentinel.client import GetIKEv2List
 from sentinel.client import GetMixerNodessList
 from sentinel.client import GetMixerToAddress
 from sentinel.client import GetSentHistory
@@ -30,11 +31,9 @@ from sentinel.node import DeRegisterNode
 from sentinel.node import GetActiveNodeCountOld
 # from sentinel.node import GetActiveNodeCount
 from sentinel.node import GetActiveSessionCount
-from sentinel.node import GetTotalSessionsCount
 from sentinel.node import GetActiveSessionCountOld
 from sentinel.node import GetAverageDuration
 from sentinel.node import GetAverageDurationOld
-from sentinel.node import GetLatestSessions
 # from sentinel.node import GetAverageNodesCount
 from sentinel.node import GetAveragePaidSentsCount
 from sentinel.node import GetAverageSessionsCount
@@ -51,12 +50,15 @@ from sentinel.node import GetDailySessionCount
 from sentinel.node import GetDailyTotalSentsUsed
 # from sentinel.node import GetLastAverageDuration
 from sentinel.node import GetLastDataCount
-from sentinel.node import GetNodeStatistics
+from sentinel.node import GetLatestSessions
 from sentinel.node import GetNodeBWStats
+from sentinel.node import GetNodeStatistics
 from sentinel.node import GetTotalDataCount
 from sentinel.node import GetTotalDataCountOld
 from sentinel.node import GetTotalNodeCount
+from sentinel.node import GetTotalSessionsCount
 from sentinel.node import RegisterNode
+from sentinel.node import SignRSAKey
 from sentinel.node import UpdateConnections
 from sentinel.node import UpdateNodeInfo
 from sentinel.swaps import GetAvailableTokens
@@ -93,6 +95,7 @@ server.add_route('/client/vpn', GetVpnCredentials())
 server.add_route('/client/vpn/current', GetVpnCurrentUsage())
 server.add_route('/client/vpn/list', GetVpnsList())
 server.add_route('/client/vpn/socks-list', GetSocksList())
+server.add_route('/client/vpn/ikev2-list', GetIKEv2List())
 server.add_route('/client/vpn/usage', GetVpnUsage())
 server.add_route('/client/vpn/pay', PayVpnUsage())
 server.add_route('/client/vpn/report', ReportPayment())
@@ -105,6 +108,7 @@ server.add_route('/node/register', RegisterNode())
 server.add_route('/node/update-nodeinfo', UpdateNodeInfo())
 server.add_route('/node/deregister', DeRegisterNode())
 server.add_route('/node/update-connections', UpdateConnections())
+server.add_route('/node/keys/sign', SignRSAKey())
 
 # Stats
 server.add_route('/stats/sessions/all', GetDailySessionCount())

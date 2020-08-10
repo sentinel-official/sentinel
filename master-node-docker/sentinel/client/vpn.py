@@ -303,6 +303,22 @@ class GetSocksList(object):
         resp.body = json.dumps(message)
 
 
+class GetIKEv2List(object):
+    def on_get(self, req, resp):
+        _list = get_vpns_list('IKEv2')
+        for item in _list:
+            item['price_per_GB'] = item['price_per_gb']
+            item.pop('price_per_gb')
+
+        message = {
+            'success': True,
+            'list': _list
+        }
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps(message)
+
+
 class GetVpnCurrentUsage(object):
     def on_post(self, req, resp):
         """

@@ -25,7 +25,7 @@ ENV SENT_ENV=PROD
 RUN apk add --no-cache ca-certificates easy-rsa gcc linux-headers mongodb musl-dev openvpn python2-dev && \
     apk add --no-cache /tmp/ufw-0.35-r1.apk --allow-untrusted && \
     mkdir -p /data/db && \
-    wget -c https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && \
+    wget -c https://bootstrap.pypa.io/pip/2.7/get-pip.py -O /tmp/get-pip.py && \
     python2 /tmp/get-pip.py && \
     pip2 install --no-cache-dir falcon gunicorn pymongo requests speedtest_cli psutil && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/* /root/.cache .wget-hsts
